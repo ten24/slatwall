@@ -48,7 +48,7 @@ component accessors="true" displayname="ResponseBean" hint="bean to encapsulate 
 		this.setStatusCode("");
 		this.setData({});
 		this.setMessageBeans([]);
-		this.setErrorBean(new Slatwall.com.utility.errorBean());
+		this.setErrorBean(new Slatwall.com.utility.ErrorBean());
 		
 		// Populate all keys passed in
 		for(var key in arguments) {
