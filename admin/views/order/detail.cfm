@@ -83,6 +83,7 @@ Notes:
 	 		<cf_SlatwallPropertyDisplay object="#rc.Order#" property="OrderTotal" edit="#rc.edit#" displayType="table">
 		</table>
 	</div>
+	<div class="clear"></div>
 	<div class="paymentInfo">
 		<table class="stripe">
 			<tr>
