@@ -49,7 +49,8 @@ component displayname="Gateway Request"  accessors="true" output="false" extends
 	
 	// Credit Card Info
 	property name="nameOnCreditCard" ormType="string";
-	property name="creditCardNumber" type="string";   
+	property name="creditCardNumber" type="string"; 
+	property name="creditCardType" type="string"; 
 	property name="expirationMonth" type="numeric";   
 	property name="expirationYear" type="numeric";
 	property name="securityCode" type="numeric";
@@ -93,6 +94,7 @@ component displayname="Gateway Request"  accessors="true" output="false" extends
 		// Populate Credit Card Info
 		setNameOnCreditCard(arguments.orderPaymentCreditCard.getNameOnCreditCard());
 		setCreditCardNumber(arguments.orderPaymentCreditCard.getCreditCardNumber());
+		setCreditCardType(arguments.orderPaymentCreditCard.getCreditCardType());
 		setExpirationMonth(arguments.orderPaymentCreditCard.getExpirationMonth());
 		setExpirationYear(arguments.orderPaymentCreditCard.getExpirationYear());
 		setSecurityCode(arguments.orderPaymentCreditCard.getSecurityCode());
