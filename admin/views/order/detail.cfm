@@ -93,7 +93,7 @@ Notes:
 			<cfloop array="#local.payments#" index="local.thisPayment">
 			<tr>
 				<td class="varWidth">#$.Slatwall.rbKey("entity.paymentMethod." & local.thisPayment.getPaymentMethod().getPaymentMethodID())#</td>
-				<td>#dollarFormat(local.thisPayment.getAmount())#</td>
+				<td>#lsCurrencyFormat(local.thisPayment.getAmount())#</td>
 				<td class="administration">
 		          <ul class="one">
 		          	<li class="zoomIn">           
@@ -119,15 +119,15 @@ Notes:
 		<p><strong>#$.Slatwall.rbKey("admin.order.detail.ordertotals")#</strong></p>
 		<dl class="orderTotals">
 			<dt>#$.Slatwall.rbKey("admin.order.detail.subtotal")#</dt> 
-			<dd>#dollarFormat(rc.order.getSubtotal())#</dd>
+			<dd>#lsCurrencyFormat(rc.order.getSubtotal())#</dd>
 			<dt>#$.Slatwall.rbKey("admin.order.detail.totaltax")#</dt>
-			<dd>#dollarFormat(rc.order.getTaxtotal())#</dd>
+			<dd>#lsCurrencyFormat(rc.order.getTaxtotal())#</dd>
 			<dt>#$.Slatwall.rbKey("admin.order.detail.totalFulfillmentCharge")#</dt>
-			<dd>#dollarFormat(rc.order.getFulfillmentTotal())#</dd>
+			<dd>#lsCurrencyFormat(rc.order.getFulfillmentTotal())#</dd>
 			<dt>#$.Slatwall.rbKey("admin.order.detail.totalDiscounts")#</dt>
-			<dd>#dollarFormat(rc.order.getDiscountTotal())#</dd>
+			<dd>#lsCurrencyFormat(rc.order.getDiscountTotal())#</dd>
 			<dt><strong>#$.Slatwall.rbKey("admin.order.detail.total")#</strong></dt> 
-			<dd><strong>#dollarFormat(rc.order.getTotal())#</strong></dd>
+			<dd><strong>#lsCurrencyFormat(rc.order.getTotal())#</strong></dd>
 		</dl>
 	</div>
 	<div class="clear">

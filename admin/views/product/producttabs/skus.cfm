@@ -135,7 +135,7 @@ Notes:
 				<!--- Loop over all Price Groups and create actual values --->
 				<cfloop from="1" to="#arrayLen(rc.priceGroupSmartList.getPageRecords())#" index="local.i">
 					<cfset local.priceGroup = rc.priceGroupSmartList.getPageRecords()[local.i] />
-					<td>#DollarFormat(local.thisSku.getPriceByPriceGroup(priceGroup=local.priceGroup))#</td>
+					<td>#lsCurrencyFormat(local.thisSku.getPriceByPriceGroup(priceGroup=local.priceGroup))#</td>
 					
 					
 				</cfloop>
@@ -145,14 +145,14 @@ Notes:
 					<cfif rc.edit>
 						$<input type="text" size="6" name="skus[#local.skuCount#].price" value="#decimalFormat(local.thisSku.getPrice())#" />
 					<cfelse>
-						#DollarFormat(local.thisSku.getPrice())#
+						#lsCurrencyFormat(local.thisSku.getPrice())#
 					</cfif>
 				</td>
 				<td>
 					<cfif rc.edit>
 						 $<input type="text" size="6" name="skus[#local.skuCount#].listPrice" value="#decimalFormat(local.thisSku.getListPrice())#" />         
 					<cfelse>
-						#DollarFormat(local.thisSku.getListPrice())#
+						#lsCurrencyFormat(local.thisSku.getListPrice())#
 					</cfif>
 				</td>
 				<td>
