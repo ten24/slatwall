@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An e-commerce plugin for Mura CMS
     Copyright (C) 2011 ten24, LLC
@@ -35,33 +35,18 @@
 
 Notes:
 
---->
-<cfparam name="rc.account" type="any" />
-
-<cfoutput>
-	<table id="CartList" class="listing-grid stripe">
-		<tr>
-			<th>#rc.$.Slatwall.rbKey("entity.order.createdDateTime")#</th>
-			<th class="varWidth">#rc.$.Slatwall.rbKey("entity.account.fullName")#</th>
-			<th>#rc.$.Slatwall.rbKey("entity.order.total")#</th>
-			<th>&nbsp</th>
-		</tr>
-		<cfloop array="#rc.orderSmartList.getPageRecords()#" index="local.order">
-			<cfif local.order.getOrderStatusType().getSystemCode() eq "ostNotPlaced">
-			<tr>
-				<td>#DateFormat(Local.Order.getCreatedDateTime(), "medium")#</td>
-				<td class="varWidth">
-					#Local.Order.getAccount().getFullName()# <cfif local.order.getAccount().isGuestAccount()>(#$.slatwall.rbKey('admin.order.account.isguestaccount')#)</cfif>
-				</td>
-				<td>#lsCurrencyFormat(local.order.getTotal())#</td>
-				<td class="administration">
-					<ul class="one">
-					  <cf_SlatwallActionCaller action="admin:order.detailcart" querystring="orderID=#local.order.getOrderID()#" class="detail" type="list">
-					</ul>     						
-				</td>
-			</tr>
-			</cfif>
-		</cfloop>
-	</table>
-	<cf_SlatwallSmartListPager smartList="#rc.orderSmartList#">
-</cfoutput>
+*/
+component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
+	
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "payment";
+	}
+	
+	public string function getDisplayName() {
+		return "SagePayDirect";
+	}
+}
