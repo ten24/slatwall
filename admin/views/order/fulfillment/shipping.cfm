@@ -72,10 +72,10 @@ Notes:
 				<td>#local.orderItem.getSku().getSkuCode()#</td>
 				<td class="varWidth">#local.orderItem.getSku().getProduct().getBrand().getBrandName()# #local.orderItem.getSku().getProduct().getProductName()#</td>			
 				<td>#local.orderItem.getOrderItemStatusType().getType()#</td>
-				<td>#dollarFormat(local.orderItem.getPrice())#</td>
+				<td>#lsCurrencyFormat(local.orderItem.getPrice())#</td>
 				<td>#int(local.orderItem.getQuantity())#</td>
 				<td>#local.orderItem.getQuantityDelivered()#</td>
-				<td>#dollarFormat(local.orderItem.getExtendedPrice())#</td>
+				<td>#lsCurrencyFormat(local.orderItem.getExtendedPrice())#</td>
 				<td>
 				<cfif local.orderItem.getQuantityUndelivered() gt 0>
 					<div>
@@ -103,25 +103,25 @@ Notes:
 				#$.slatwall.rbKey("entity.orderFulfillment.subtotal")#:
 			</dt>
 			<dd>
-				#dollarFormat( local.orderFulfillment.getSubTotal() )#
+				#lsCurrencyFormat( local.orderFulfillment.getSubTotal() )#
 			</dd>
 			<dt>
 				#$.slatwall.rbKey("entity.orderFulfillment.shippingCharge")#:
 			</dt>
 			<dd>
-				#dollarFormat( local.orderFulfillment.getShippingCharge() )#
+				#lsCurrencyFormat( local.orderFulfillment.getShippingCharge() )#
 			</dd>
 			<dt>
 				#$.slatwall.rbKey("entity.orderFulfillment.tax")#:
 			</dt>
 			<dd>
-				#dollarFormat( local.orderFulfillment.getTax() )#
+				#lsCurrencyFormat( local.orderFulfillment.getTax() )#
 			</dd>
 			<dt>
 				#$.slatwall.rbKey("entity.orderFulfillment.total")#:
 			</dt>
 			<dd>
-				#dollarFormat( local.orderFulfillment.getTotalCharge() )#
+				#lsCurrencyFormat( local.orderFulfillment.getTotalCharge() )#
 			</dd>
 		</dl>
 	</div>

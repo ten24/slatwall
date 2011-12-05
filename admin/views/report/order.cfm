@@ -87,11 +87,11 @@ Notes:
 				<tr>
 					<td>#DateFormat("#rc.orderReport.Year#-#rc.orderReport.Month#-#rc.orderReport.Day#", $.slatwall.setting('advanced_dateFormat'))#</td>
 					<td>#rc.orderReport.cartCreatedOrderCount#</td>
-					<td>#dollarFormat(rc.orderReport.cartCreatedSubtotalAfterDiscount)#</td>
+					<td>#lsCurrencyFormat(rc.orderReport.cartCreatedSubtotalAfterDiscount)#</td>
 					<td>#rc.orderReport.orderPlacedOrderCount#</td>
-					<td>#dollarFormat(rc.orderReport.orderPlacedSubtotalAfterDiscount)#</td>
+					<td>#lsCurrencyFormat(rc.orderReport.orderPlacedSubtotalAfterDiscount)#</td>
 					<td>#rc.orderReport.orderClosedOrderCount#</td>
-					<td>#dollarFormat(rc.orderReport.orderClosedSubtotalAfterDiscount)#</td>
+					<td>#lsCurrencyFormat(rc.orderReport.orderClosedSubtotalAfterDiscount)#</td>
 				</tr>
 			</cfloop>
 			

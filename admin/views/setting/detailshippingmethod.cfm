@@ -134,7 +134,7 @@ Notes:
 									<td>#local.shippingRate.getMaxWeight()#</td>
 									<td>#local.shippingRate.getMinPrice()#</td>
 									<td>#local.shippingRate.getMaxPrice()#</td>
-									<td>#DollarFormat(local.shippingRate.getShippingRate())#</td>
+									<td>#lsCurrencyFormat(local.shippingRate.getShippingRate())#</td>
 									<td class="administration">
 										<ul class="one">
 											<cf_SlatwallActionCaller action="admin:setting.deleteshippingrate" querystring="shippingrateid=#local.shippingRate.getShippingRateID()#" class="delete" type="list">
