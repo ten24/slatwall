@@ -37,7 +37,7 @@ Notes:
     Integration for SagePay VSP Direct using Protocol 2.23 (non 3D-Secured at this time).
     Tested on Adobe ColdFusion 9.01.
 */
-component accessors="true" output="false" displayname="SagePay" implements="Slatwall.integrationServices.PaymentInterface" {
+component accessors="true" output="false" displayname="SagePay" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {
 
 	// Custom Properties that need to be set by the end user
 	property name="vendorID" validateRequired="true" displayname="Vendor ID" type="string";
