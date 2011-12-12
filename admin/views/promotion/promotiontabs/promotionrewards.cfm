@@ -91,17 +91,17 @@ Notes:
 						<cfif !isNull(local.thisPromotionReward.getItemPercentageOff()) && isNumeric(local.thisPromotionReward.getItemPercentageOff())>
 							#local.thisPromotionReward.getItemPercentageOff()#&##37; #$.Slatwall.rbKey("admin.promotion.discount.off")#
 						<cfelseif !isNull(local.thisPromotionReward.getItemAmountOff()) && isNumeric(local.thisPromotionReward.getItemAmountOff())>
-							#dollarFormat(local.thisPromotionReward.getItemAmountOff())# #$.Slatwall.rbKey("admin.promotion.discount.off")#
+							#local.thisPromotionReward.getFormattedValue('itemAmountOff', 'currency')# #$.Slatwall.rbKey("admin.promotion.discount.off")#
 						<cfelseif !isNull(local.thisPromotionReward.getItemAmount()) && isNumeric(local.thisPromotionReward.getItemAmount())>
-							#dollarFormat(local.thisPromotionReward.getItemAmount())# #$.Slatwall.rbKey("admin.promotion.discount.price")#
+							#local.thisPromotionReward.getFormattedValue('itemAmount', 'currency')# #$.Slatwall.rbKey("admin.promotion.discount.price")#
 						</cfif>
 					<cfelseif local.thisPromotionReward.getRewardType() eq "shipping">
 						<cfif !isNull(local.thisPromotionReward.getShippingPercentageOff()) && isNumeric(local.thisPromotionReward.getShippingPercentageOff())>
 							#local.thisPromotionReward.getShippingPercentageOff()#&##37; #$.Slatwall.rbKey("admin.promotion.discount.off")#
 						<cfelseif !isNull(local.thisPromotionReward.getShippingAmountOff()) && isNumeric(local.thisPromotionReward.getShippingAmountOff())>
-							#dollarFormat(local.thisPromotionReward.getShippingAmountOff())# #$.Slatwall.rbKey("admin.promotion.discount.off")#
+							#local.thisPromotionReward.getFormattedValue('shippingAmountOff', 'currency')# #$.Slatwall.rbKey("admin.promotion.discount.off")#
 						<cfelseif !isNull(local.thisPromotionReward.getShippingAmount()) && isNumeric(local.thisPromotionReward.getShippingAmount())>
-							#dollarFormat(local.thisPromotionReward.getShippingAmount())# #$.Slatwall.rbKey("admin.promotion.discount.price")#
+							#local.thisPromotionReward.getFormattedValue('shippingAmount', 'currency')# #$.Slatwall.rbKey("admin.promotion.discount.price")#
 						</cfif>
 					</cfif>		
 				</td>

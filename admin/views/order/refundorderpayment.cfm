@@ -44,7 +44,7 @@ Notes:
 	<form class="modal" method="post" action="#buildURL('admin:order.processOrderPaymentRefund')#">
 		<input type="hidden" name="orderPaymentID" value="#rc.orderPaymentID#" />
 		<input type="hidden" name="providerTransactionID" value="#rc.providerTransactionID#" />
-		<p>#rc.$.Slatwall.rbKey("admin.order.enterPaymentRefundAmount")#: #dollarformat(rc.orderpayment.getAmountCharged())#</p>
+		<p>#rc.$.Slatwall.rbKey("admin.order.enterPaymentRefundAmount")#: #rc.orderpayment.getFormattedValue('amountCharged', 'currency')#</p>
 		$ <input class="refundAmount" type="text" name="refundAmount" value="0" size="10" />
 		<br><br>
 		<div id="actionButtons" class="clearfix">

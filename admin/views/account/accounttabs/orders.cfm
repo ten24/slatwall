@@ -55,7 +55,7 @@ Notes:
 				<td>#DateFormat(Local.Order.getOrderOpenDateTime(), "medium")#</td>
 				<td class="varWidth"><cfif not isNull(local.order.getAccount())>#Local.Order.getAccount().getFullName()#</cfif></td>
 				<td>#Local.Order.getOrderStatusType().getType()#</td>
-				<td>#DollarFormat(local.order.getTotal())#</td>
+				<td>#local.order.getFormattedValue('total', 'currency')#</td>
 				<td class="administration">
 					<ul class="one">
 					  <cf_SlatwallActionCaller action="admin:order.detail" querystring="orderID=#local.order.getOrderID()#" class="detail" type="list">

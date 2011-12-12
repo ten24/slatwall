@@ -84,10 +84,10 @@ Notes:
 					</cfif>
 				</td>				
 				<td>#local.orderItem.getOrderItemStatusType().getType()#</td>				
-				<td>#dollarFormat(local.orderItem.getPrice())#</td>
+				<td>#local.orderItem.getFormattedValue('price', 'currency')#</td>
 				<td>#int(local.orderItem.getQuantity())#</td>
 				<td>#local.orderItem.getQuantityDelivered()#</td>
-				<td>#dollarFormat(local.orderItem.getExtendedPrice())#</td>
+				<td>#local.orderItem.getFormattedValue('extendedPrice', 'currency')#</td>
 			</tr>
 		</cfloop>
 	</table>
@@ -105,19 +105,19 @@ Notes:
 				#$.slatwall.rbKey("entity.orderFulfillment.subtotal")#:
 			</dt>
 			<dd>
-				#dollarFormat( local.orderFulfillment.getSubTotal() )#
+				#local.orderFulfillment.getFormattedValue('subTotal', 'currency')#
 			</dd>
 			<dt>
 				#$.slatwall.rbKey("entity.orderFulfillment.shippingCharge")#:
 			</dt>
 			<dd>
-				#dollarFormat( local.orderFulfillment.getShippingCharge() )#
+				#local.orderFulfillment.getFormattedValue('shippingCharge', 'currency')#
 			</dd>
 			<dt>
 				#$.slatwall.rbKey("entity.orderFulfillment.tax")#:
 			</dt>
 			<dd>
-				#dollarFormat( local.orderFulfillment.getTax() )#
+				#local.orderFulfillment.getFormattedValue('tax', 'currency')#
 			</dd>
 			<!--- discounts for fulfillment --->
 			<cfif local.orderFulfillment.getItemDiscountAmountTotal() gt 0>
@@ -125,7 +125,7 @@ Notes:
 					#$.slatwall.rbKey("entity.orderFulfillment.itemDiscountAmountTotal")#:
 				</dt>
 				<dd class="discountAmount">
-					 - #dollarFormat( local.orderFulfillment.getItemDiscountAmountTotal() )#
+					 - #local.orderFulfillment.getFormattedValue('itemDiscountAmountTotal', 'currency')#
 				</dd>
 			</cfif>
 			<cfif local.orderFulfillment.getDiscountAmount() gt 0>
@@ -133,14 +133,14 @@ Notes:
 					#$.slatwall.rbKey("entity.orderFulfillmentShipping.discountAmount")#:
 				</dt>
 				<dd class="discountAmount">
-					 - #dollarFormat( local.orderFulfillment.getDiscountAmount() )#
+					 - #local.orderFulfillment.getFormattedValue('discountAmount', 'currency')#
 				</dd>
 			</cfif>
 			<dt>
 				#$.slatwall.rbKey("entity.orderFulfillment.total")#:
 			</dt>
 			<dd>
-				#dollarFormat( local.orderFulfillment.getTotalCharge() )#
+				#local.orderFulfillment.getFormattedValue('totalCharge', 'currency')#
 			</dd>
 		</dl>
 	</div>

@@ -60,9 +60,9 @@ Notes:
 		<td>
 			#listChangeDelims(local.orderPayment.getAuthorizationCodes(),"<br>")#
 		</td>
-		<td>#dollarFormat(local.orderPayment.getAmountAuthorized())#</td>
-		<td>#dollarFormat(local.orderPayment.getAmountCharged())#</td>
-		<td>#dollarFormat(local.orderPayment.getAmountCredited())#</td>		
+		<td>#local.orderPayment.getFormattedValue('amountAuthorized', 'currency')#</td>
+		<td>#local.orderPayment.getFormattedValue('amountCharged', 'currency')#</td>
+		<td>#local.orderPayment.getFormattedValue('amountCredited', 'currency')#</td>		
 	</tr>
 </table>
 <!--- display link to refund payment if amount has been charged --->

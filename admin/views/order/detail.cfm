@@ -93,7 +93,7 @@ Notes:
 			<cfloop array="#local.payments#" index="local.thisPayment">
 			<tr>
 				<td class="varWidth">#$.Slatwall.rbKey("entity.paymentMethod." & local.thisPayment.getPaymentMethod().getPaymentMethodID())#</td>
-				<td>#dollarFormat(local.thisPayment.getAmount())#</td>
+				<td>#local.thisPayment.getFormattedValue('amount', 'currency')#</td>
 				<td class="administration">
 		          <ul class="one">
 		          	<li class="zoomIn">           
