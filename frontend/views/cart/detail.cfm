@@ -52,34 +52,34 @@ Notes:
 						<dt class="title"><a href="#local.orderItem.getSku().getProduct().getProductURL()#" title="#local.orderItem.getSku().getProduct().getTitle()#">#local.orderItem.getSku().getProduct().getTitle()#</a></dt>
 						<dd class="options">#local.orderItem.getSku().displayOptions()#</dd>
 						<dd class="customizations">#local.orderItem.displayCustomizations()#</dd>
-						<dd class="price">#DollarFormat(local.orderItem.getPrice())#</dd>
+						<dd class="price">#local.orderItem.getFormattedValue('price', 'currency')#</dd>
 						<dd class="quantity">
 							<input type="hidden" name="orderItems[#formIndex#].orderItemID" value="#local.orderItem.getOrderItemID()#" />
 							<input name="orderItems[#formIndex#].quantity" value="#NumberFormat(local.orderItem.getQuantity(),"0")#" size="3" />
 							<a href="?slatAction=frontend:cart.removeItem&orderItemID=#local.orderItem.getOrderItemID()#">Remove</a>
 						</dd>
 						<cfif local.orderItem.getDiscountAmount()>
-							<dd class="extended">#DollarFormat(local.orderItem.getExtendedPrice())#</dd>
-							<dd class="discount">- #DollarFormat(local.orderItem.getDiscountAmount())#</dd>
-							<dd class="extendedAfterDiscount">#DollarFormat(local.orderItem.getExtendedPriceAfterDiscount())#</dd>
+							<dd class="extended">#local.orderItem.getFormattedValue('price', 'extendedPrice')#</dd>
+							<dd class="discount">- #local.orderItem.getFormattedValue('discountAmount', 'extendedPrice')#</dd>
+							<dd class="extendedAfterDiscount">#local.orderItem.getFormattedValue('extendedPriceAfterDiscount', 'currency')#</dd>
 						<cfelse>
-							<dd class="extendedAfterDiscount">#DollarFormat(local.orderItem.getExtendedPriceAfterDiscount())#</dd>
+							<dd class="extendedAfterDiscount">#local.orderItem.getFormattedValue('extendedPriceAfterDiscount', 'currency')#</dd>
 						</cfif>
 					</dl>
 				</cfloop>
 				<dl class="totals">
 					<dt class="subtotal">Subtotal</dt>
-					<dd class="subtotal">#DollarFormat($.slatwall.cart().getSubtotal())#</dd>
+					<dd class="subtotal">#$.slatwall.cart().getFormattedValue('subtotal', 'currency')#</dd>
 					<dt class="shipping">Delivery</dt>
-					<dd class="shipping">#DollarFormat($.slatwall.cart().getFulfillmentTotal())#</dd>
+					<dd class="shipping">#$.slatwall.cart().getFormattedValue('fulfillmentTotal', 'currency')#</dd>
 					<dt class="tax">Tax</dt>
-					<dd class="tax">#DollarFormat($.slatwall.cart().getTaxTotal())#</dd>
+					<dd class="tax">#$.slatwall.cart().getFormattedValue('taxTotal', 'currency')#</dd>
 					<cfif $.slatwall.cart().getDiscountTotal() gt 0>
 						<dt class="discount">Discount</dt>
-						<dd class="discount">- #DollarFormat($.slatwall.cart().getDiscountTotal())#</dd>
+						<dd class="discount">- #$.slatwall.cart().getFormattedValue('discountTotal', 'currency')#</dd>
 					</cfif>
 					<dt class="total">Total</dt>
-					<dd class="total">#DollarFormat($.slatwall.cart().getTotal())#</dd>
+					<dd class="total">#$.slatwall.cart().getFormattedValue('total', 'currency')#</dd>
 				</dl>
 			</div>
 			<div class="actionButtons">
