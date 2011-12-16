@@ -53,9 +53,9 @@ Notes:
 				<cfif local.order.getOrderStatusType().getSystemCode() neq "ostNotPlaced">
 					<tr>
 						<td>#local.order.getOrderNumber()#</td>
-						<td>#DateFormat(Local.Order.getOrderOpenDateTime(), "medium")#</td>
+						<td>#local.order.getFormattedValue('orderOpenDateTime', 'date')#</td>
 						<td>#local.order.getOrderStatusType().getType()#</td>
-						<td>#DollarFormat(local.order.getTotal())#</td>
+						<td>#local.order.getFormattedValue('total', 'currency')#</td>
 						<td><a href="#$.createHREF(filename='order-status', queryString='orderID=#local.order.getOrderID()#')#">View Details</a></td>
 					</tr>
 				</cfif>

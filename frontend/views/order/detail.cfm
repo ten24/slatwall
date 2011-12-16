@@ -36,6 +36,8 @@
 Notes:
 
 --->
+
+
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.orderID" type="string" />
 <cfparam name="rc.orderNumber" type="string" />
@@ -64,7 +66,7 @@ Notes:
 				<cf_SlatwallPropertyDisplay object="#rc.order#" property="OrderNumber">
 				<cf_SlatwallPropertyDisplay object="#rc.order.getOrderStatusType()#" title="#rc.$.Slatwall.rbKey('entity.order.orderStatusType')#" property="Type">
 				<cf_SlatwallPropertyDisplay object="#rc.order#" property="orderOpenDateTime">
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="orderTotal">
+				<cf_SlatwallPropertyDisplay object="#rc.order#" property="total">
 			</dl>
 			<table>
 				<tr>
@@ -79,10 +81,10 @@ Notes:
 					<tr>
 						<td>#local.orderItem.getSku().getSkuCode()#</td>
 						<td class="varWidth">#local.orderItem.getSku().getProduct().getBrand().getBrandName()# #local.orderItem.getSku().getProduct().getProductName()#</td>
-						<td>#dollarFormat(local.orderItem.getPrice())#</td>
+						<td>#local.orderItem.getFormattedValue('price', 'currency')#</td>
 						<td>#int(local.orderItem.getQuantity())#</td>
 						<td>#local.orderItem.getQuantityDelivered()#</td>
-						<td>#dollarFormat(local.orderItem.getExtendedPrice())#</td>
+						<td>#local.orderItem.getFormattedValue('extendedPrice', 'currency')#</td>
 					</tr>
 				</cfloop>
 			</table>
