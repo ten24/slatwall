@@ -51,7 +51,7 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderDeliveryItemID" inverse="true" cascade="all"; // Used For Returns
 	
 	// Non-Persistent Properties
-	property name="quantityReturned";
+	property name="quantityReturned" persistent="false";
 	
 	public numeric function getQuantityReturned() {
 		if(!structKeyExists(variables, "quantityReturned")) {

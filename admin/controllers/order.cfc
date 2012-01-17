@@ -74,6 +74,16 @@ component extends="BaseController" persistent="false" accessors="true" output="f
 	       getFW().redirect("admin:order.list");
 	   }
 	}
+	
+	public void function detailReturn(required struct rc) {
+	   rc.order = getOrderService().getOrder(rc.orderID);
+	   
+	   if(!isNull(rc.order) and !rc.order.isNew()) {
+	       rc.itemTitle &= ": Order No. " & rc.order.getOrderNumber();
+	   } else {
+	       getFW().redirect("admin:order.list");
+	   }
+	}
 
 	public void function createOrderReturn(required struct rc) {
 		rc.order = getOrderService().getOrder(rc.orderID);

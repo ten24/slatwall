@@ -816,6 +816,8 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 		order.setOrderType(getTypeService().getTypeBySystemCode("otReturnOrder"));
 		order.setOrderStatusType(getTypeService().getTypeBySystemCode("ostNew"));
 		order.setReferencedOrder(originalOrder);
+		
+		var stockReceiver = getStockService().newStockReceiverOrder();
 	
 		// Create OrderReturn entity (to save the fulfillment amount)
 		var orderReturn = this.newOrderReturn();
@@ -823,11 +825,6 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 		orderReturn.setOrder(order);
 		orderReturn.setFulfillmentRefundAmount(val(data.refundShippingAmount));
 		orderReturn.setReturnLocation(location);
-		
-		// In order to handle the "stock" aspect of this return. Create a StockReceiver, which will be 
-		// further populated with StockRecieverItems, one for each item being returned.
-		var stockReceiver = getStockService().newStockReceiverOrder();
-		stockReceiver.setOrder(order);
 		
 		// Load order with order items. Loop over all deliveries, then delivered items
 		for(var j = 1; j <= ArrayLen(originalOrder.getOrderDeliveries()); j++) {
@@ -837,51 +834,59 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 				var quantityReturning = data["quantity_orderItemId(#originalOrderItem.getOrderItemID()#)_orderDeliveryId(#orderDelivery.getOrderDeliveryID()#)"];
 				var priceReturning = data["price_orderItemId(#originalOrderItem.getOrderItemID()#)_orderDeliveryId(#orderDelivery.getOrderDeliveryID()#)"];
 			
-				// Create a new orderItem and populate it's basic properties from the original order item, and 
-				// from the user submitted input.
-				var orderItem = this.newOrderItem();
-				orderItem.setReferencedOrderItem(originalOrderItem);
-				orderItem.setReferencedOrderDeliveryItem(orderDelivery.getOrderDeliveryItems()[i]);
-				orderItem.setOrder(order);
-				orderItem.setPrice(priceReturning);
-				orderItem.setQuantity(quantityReturning);
-				orderItem.setSku(originalOrderItem.getSku());
-				orderItem.setOrderItemStatusType(getTypeService().getTypeBySystemCode('oistReturned'));
-				orderItem.setOrderItemType(getTypeService().getTypeBySystemCode('oitReturn'));
-			
-				// Populate the Tax on this order by creating new tax entities, but using the same rate as the 
-				// original orderItem.
-				for(var k=1; k <= ArrayLen(originalOrderItem.getAppliedTaxes()); k++) {
-					var originalAppliedTax = originalOrderItem.getAppliedTaxes()[k];
-					var appliedTax = getTaxService().newOrderItemAppliedTax();
-					
-					appliedTax.setOrderItem(orderItem);
-					appliedTax.setTaxCategoryRate(originalAppliedTax.getTaxCategoryRate());
-					appliedTax.setTaxRate(originalAppliedTax.getTaxRate());
-					appliedTax.setTaxAmount(originalAppliedTax.getTaxRate() * (orderItem.getQuantity() * priceReturning));
+				if(quantityReturning GT 0) {
+					// Create a new orderItem and populate it's basic properties from the original order item, and from the user submitted input.
+					var orderItem = this.newOrderItem();
+					orderItem.setReferencedOrderItem(originalOrderItem);
+					orderItem.setReferencedOrderDeliveryItem(orderDelivery.getOrderDeliveryItems()[i]);
+					orderItem.setOrder(order);
+					orderItem.setPrice(priceReturning);
+					orderItem.setQuantity(quantityReturning);
+					orderItem.setSku(originalOrderItem.getSku());
+					orderItem.setOrderItemStatusType(getTypeService().getTypeBySystemCode('oistReturned'));
+					orderItem.setOrderItemType(getTypeService().getTypeBySystemCode('oitReturn'));
+				
+					// Populate the Tax on this order by creating new tax entities, but using the same rate as the original orderItem.
+					//dumpScreen(originalOrderItem.getAppliedTaxes());
+					for(var k=1; k <= ArrayLen(originalOrderItem.getAppliedTaxes()); k++) {
+						var originalAppliedTax = originalOrderItem.getAppliedTaxes()[k];
+						var appliedTax = getTaxService().newOrderItemAppliedTax();
+						
+						appliedTax.setOrderItem(orderItem);
+						appliedTax.setTaxCategoryRate(originalAppliedTax.getTaxCategoryRate());
+						appliedTax.setTaxRate(originalAppliedTax.getTaxRate());
+						appliedTax.setTaxAmount((originalAppliedTax.getTaxRate() / 100) * (orderItem.getQuantity() * priceReturning));
+					}
+				
+					// Add this order item to the OrderReturns entity
+					orderItem.setOrderReturn(orderReturn);
+				
+					// Add stock receiver item to stock receiver
+					var stock = getStockService().getStockBySkuAndLocation(originalOrderItem.getSku(), location);
+					var stockReceiverItem = getStockService().newStockReceiverItem();
+					stockReceiverItem.setStockReceiver(stockReceiver);
+					stockReceiverItem.setOrderItem(orderItem);
+					stockReceiverItem.setQuantity(quantityReturning);
+					stockReceiverItem.setStock(stock);
 				}
-			
-				// Add this order item to the OrderReturns entity
-				orderItem.setOrderReturn(orderReturn);
-			
-				// Add stock receiver item to stock receiver
-				var stock = getStockService().getStockBySkuAndLocation(originalOrderItem.getSku(), location);
-				var stockReceiverItem = getStockService().newStockReceiverItem();
-				stockReceiverItem.setStockReceiver(stockReceiver);
-				stockReceiverItem.setOrderItem(orderItem);
-				stockReceiverItem.setQuantity(quantityReturning);
-				stockReceiverItem.setStock(stock);
 			}
 		}
 
 		this.saveOrder(order);
 		
-		// If !order.hasErrors() Then create stockReceiver & stockReceiverItems save stockReceiver
-		 
-		// If !stockReceiver.hasErrors() Then set orderStatus to closed
-		
-		getStockService().saveStockReceiver(stockReceiver);
-		
+		if(!order.hasErrors()) {
+			// In order to handle the "stock" aspect of this return. Create a StockReceiver, which will be 
+			// further populated with StockRecieverItems, one for each item being returned.
+			
+			stockReceiver.setOrder(order);
+			getStockService().saveStockReceiver(stockReceiver);
+			
+			if(!stockReceiver.hasErrors()) {
+				// This must be called AFTER the save or else the type-validation will fail
+				order.setOrderStatusType(getTypeService().getTypeBySystemCode("ostClosed"));
+			}
+		}
+
 		return true;
 	}
 	

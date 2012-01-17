@@ -50,6 +50,7 @@ Notes:
 				<th>#$.slatwall.rbKey("entity.vendorOrderitem.stockLocation")#</th>
 				<th>#$.slatwall.rbKey("entity.vendorOrderitem.quantityIn")#</th>
 				<th>#$.slatwall.rbKey("entity.vendorOrderitem.detail.cost")#</th>
+				<th>#$.slatwall.rbKey("entity.vendorOrderitem.detail.extendedCost")#</th>
 			</tr>
 				
 			<cfloop array="#rc.vendorOrderItemSmartList.getRecords()#" index="local.vendorOrderItem">
@@ -59,6 +60,7 @@ Notes:
 					<td>#local.vendorOrderItem.getStock().getLocation().getLocationName()#</td>								
 					<td>#int(local.vendorOrderItem.getQuantity())#</td>
 					<td>#local.vendorOrderItem.getFormattedValue('cost', 'currency')#</td>
+					<td>#local.vendorOrderItem.getFormattedValue('extendedCost', 'currency')#</td>
 				</tr>
 			</cfloop>
 		</table>

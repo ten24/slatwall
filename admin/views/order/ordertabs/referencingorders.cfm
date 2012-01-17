@@ -63,7 +63,8 @@ Notes:
 					<td>#local.referencingOrder.getFormattedValue('total', 'currency')#</td>
 					<td class="administration">
 						<ul class="one">
-						  <cf_SlatwallActionCaller action="admin:order.detail" querystring="orderID=#local.referencingOrder.getOrderID()#" class="detail" type="list">
+							<!--- In the future this action might need to be dynamic, as we're hardcoding all "referincing orders" to returns --->
+							<cf_SlatwallActionCaller action="admin:order.detailReturn" querystring="orderID=#local.referencingOrder.getOrderID()#" class="detail" type="list">
 						</ul>     						
 					</td>
 				</tr>

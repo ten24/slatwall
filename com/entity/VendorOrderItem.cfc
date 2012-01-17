@@ -56,6 +56,9 @@ component displayname="Vendor Order Item" entityname="SlatwallVendorOrderItem" t
 	property name="modifiedDateTime" ormtype="timestamp";
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
+	// Non-persistant properties
+	property name="extendedCost" persistent="false" formatType="currency";
+	
 	public any function init() {
 		if(isNull(variables.stockReceiverItems)) {
 			variables.stockReceiverItems = [];	
@@ -80,6 +83,10 @@ component displayname="Vendor Order Item" entityname="SlatwallVendorOrderItem" t
        }
        structDelete(variables,"vendorOrder");
     }
+    
+    public numeric function getExtendedCost() {
+		return getCost() * getQuantity();
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

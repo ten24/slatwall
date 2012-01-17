@@ -58,6 +58,7 @@ Notes:
 				<th colspan="2">#$.Slatwall.rbKey("admin.order.detail.basicorderinfo")#</th>
 			</tr>
 			<cf_SlatwallPropertyDisplay object="#rc.Order#" property="OrderNumber" edit="#rc.edit#" displayType="table">
+			<cf_SlatwallPropertyDisplay object="#rc.Order.getReferencedOrder()#" property="OrderNumber" edit="#rc.edit#" displayType="table" title="#rc.$.Slatwall.rbKey('entity.order.OrderNumberToOriginal')#">
 			<cf_SlatwallPropertyDisplay object="#rc.Order.getOrderType()#" title="#rc.$.Slatwall.rbKey('entity.order.orderType')#" property="Type" edit="#rc.edit#"  displayType="table">
 			<cf_SlatwallPropertyDisplay object="#rc.Order.getOrderStatusType()#" title="#rc.$.Slatwall.rbKey('entity.order.orderStatusType')#" property="Type" edit="#rc.edit#"  displayType="table">
 			<cf_SlatwallPropertyDisplay object="#rc.Order#" property="OrderOpenDateTime" edit="#rc.edit#"  displayType="table">
@@ -117,16 +118,16 @@ Notes:
 					<dd>#rc.order.getFormattedValue('subtotal', 'currency')#</dd>
 					<dt>#$.Slatwall.rbKey("admin.order.detail.totaltax")#</dt>
 					<dd>#rc.order.getFormattedValue('taxTotal', 'currency')#</dd>
-					<dt>#$.Slatwall.rbKey("admin.order.detail.totalFulfillmentCharge")#</dt>
-					<dd>#rc.order.getFormattedValue('fulfillmentTotal', 'currency')#</dd>
-					<dt>#$.Slatwall.rbKey("admin.order.detail.totalDiscounts")#</dt>
-					<dd>#rc.order.getFormattedValue('discountTotal', 'currency')#</dd>
+					<dt>#$.Slatwall.rbKey("admin.order.detail.totalFulfillmentRefund")#</dt>
+					<dd>#rc.order.getFormattedValue('fulfillmentRefundTotal', 'currency')#</dd>
+					<!---<dt>#$.Slatwall.rbKey("admin.order.detail.totalDiscounts")#</dt>
+					<dd>#rc.order.getFormattedValue('discountTotal', 'currency')#</dd>--->
 					<dt><strong>#$.Slatwall.rbKey("admin.order.detail.total")#</strong></dt> 
 					<dd><strong>#rc.order.getFormattedValue('total', 'currency')#</strong></dd>
 				</dl>
 			</dt>
 		</div>
-		<div style="display:inline-block; width:300px;">		
+		<!---<div style="display:inline-block; width:300px;">		
 			<div class="buttons">
 				<!--- Only show return button if order is a sales order --->
 				<cfif rc.order.getOrderType().getSystemCode() EQ "otSalesOrder"> 
@@ -141,76 +142,122 @@ Notes:
 					</cfif>
 				</cfloop>
 			</div>	
-		</div>
+		</div>--->
 		
 		
 	</div>
 	
 	<div class="clear">
-		<div class="tabs initActiveTab ui-tabs ui-widget ui-widget-content ui-corner-all">
-			<ul>
-				<li><a href="##tabOrderFulfillments" onclick="return false;"><span>#rc.$.Slatwall.rbKey("admin.order.detail.tab.orderFulfillments")#</span></a></li>	
-				<li><a href="##tabOrderDeliveries" onclick="return false;"><span>#rc.$.Slatwall.rbKey("admin.order.detail.tab.orderDeliveries")#</span></a></li>
-				
-				<cfif arrayLen(rc.order.getReferencingOrders())>
-					<li><a href="##tabReferencingOrders" onclick="return false;"><span>#rc.$.Slatwall.rbKey("admin.order.detail.tab.referencingOrders")#</span></a></li>
-				</cfif>
-				
-				<cfif rc.order.getOrderType().getSystemCode() EQ "otReturnOrder">
-					<li><a href="##tabReturnOrderItems" onclick="return false;"><span>#rc.$.Slatwall.rbKey("admin.order.detail.tab.returnOrderItems")#</span></a></li>
-				</cfif>
-<!---				<li><a href="##tabOrderActivityLog" onclick="return false;"><span>#rc.$.Slatwall.rbKey("admin.order.detail.tab.orderActivityLog")#</span></a></li>--->
-			</ul>
+	
 		
-			<div id="tabOrderFulfillments">
-				<cfset local.fulfillmentNumber = 0 />
-				<cfloop array="#rc.order.getOrderFulfillments()#" index="local.thisOrderFulfillment">
-					<cfset local.fulfillmentNumber++ />
-					<h4>#$.Slatwall.rbKey("entity.fulfillment")# #local.fulfillmentNumber#</h4>
-					<div class="buttons">
-						<cfif local.thisOrderFulfillment.isProcessable()>
-						<cf_SlatwallActionCaller action="admin:order.detailorderfulfillment" text="#$.slatwall.rbKey('admin.orderfulfillment.process')#" queryString="orderfulfillmentid=#local.thisOrderFulfillment.getOrderFulfillmentID()#" class="button" />
+		<table class="listing-grid stripe">
+			<tr>
+				<th>#$.slatwall.rbKey("entity.sku.skucode")#</th>
+				<th class="varWidth">#$.slatwall.rbKey("entity.product.brand")# - #$.slatwall.rbKey("entity.product.productname")#</th>
+				<!---<th>#$.slatwall.rbKey("admin.order.list.actions")#</th>--->
+				<th>#$.slatwall.rbKey("entity.orderitem.status")#</th>
+				<th>#$.slatwall.rbKey("entity.orderitem.price")#</th>
+				<th>#$.slatwall.rbKey("admin.order.detail.quantityreturned")#</th>
+				<th>#$.slatwall.rbKey("entity.orderitem.extendedprice")#</th>
+			</tr>
+				
+			<cfloop array="#rc.order.getOrderItems()#" index="local.orderItem">
+				<tr>
+					<td>#local.orderItem.getSku().getSkuCode()#</td>
+					<td class="varWidth">
+						<strong>#local.orderItem.getSku().getProduct().getBrand().getBrandName()# #local.orderItem.getSku().getProduct().getProductName()#</strong>
+						<cfif local.orderItem.hasAttributeValue() or arrayLen(local.orderItem.getSku().getOptions())>
+						  <ul class="inlineAdmin">
+				          	<li class="zoomIn">           
+								<a class="customizations detail" id="show_#local.orderItem.getOrderItemID()#" title="#$.slatwall.rbKey('admin.order.orderItem.optionsandcustomizations')#" href="##">#$.slatwall.rbKey("admin.order.orderItem.optionsandcustomizations")#</a>
+							</li>
+							<li class="zoomOut">           
+								<a class="customizations detail" id="show_#local.orderItem.getOrderItemID()#" title="#$.slatwall.rbKey('admin.order.orderItem.optionsandcustomizations')#" href="##">#$.slatwall.rbKey("admin.order.orderItem.optionsandcustomizations")#</a>
+							</li>
+				          </ul>
+						  <div class="clear" style="display:none;">
+						  <hr>
+							<cfif arrayLen(local.orderItem.getSku().getOptions())>
+								<div><h5>Options</h5>
+									<ul>
+									<cfloop array="#local.orderItem.getSku().getOptions()#" index="local.option" >
+										<li>#local.option.getOptionGroup().getOptionGroupName()#: #local.option.getOptionName()#</li>
+									</cfloop>
+									</ul>
+								</div>
+							</cfif>
+							<cfif arrayLen(local.orderItem.getAttributeValues())>
+								<div><h5>Customizations</h5>
+									#local.orderItem.displayCustomizations(format="htmlList")#
+								</div>
+							</cfif>
+						  </div> 
 						</cfif>
-					</div>
-					<!--- set up order fullfillment in params struct to pass into view which shows information specific to the fulfillment method --->
-					<cfset local.params.orderfulfillment = local.thisOrderFulfillment />
-					#view("order/ordertabs/fulfillment/#local.thisOrderFulfillment.getFulfillmentMethodID()#", local.params)#
-				</cfloop>
-			</div>
-			
-			<div id="tabOrderDeliveries">
-				<cfset local.orderDeliveries = rc.order.getOrderDeliveries() />
-				<cfset local.deliveryNumber = 0 />
-				<cfif arrayLen(local.orderDeliveries)>
-					<cfloop array="#local.orderDeliveries#" index="local.thisOrderDelivery">
-						<cfset local.deliveryNumber++ />
-						<!--- set up order delivery in params struct to pass into view which shows information specific to the fulfillment method--->
-						<cfset local.params.orderDelivery = local.thisOrderDelivery />
-						<cfset local.params.orderID = rc.order.getOrderID() />
-						<cfset local.params.deliveryNumber = local.deliveryNumber />
-						#view("order/ordertabs/delivery/#local.thisOrderDelivery.getFulfillmentMethod().getFulfillmentmethodID()#", local.params)# 
-					</cfloop>
-				<cfelse>
-					#$.slatwall.rbKey("admin.order.detail.noorderdeliveries")#
+					</td>				
+					<td>#local.orderItem.getOrderItemStatusType().getType()#</td>				
+					<td>#local.orderItem.getFormattedValue('price', 'currency')#</td>
+					<td>#int(local.orderItem.getQuantity())#</td>
+					<td>#local.orderItem.getFormattedValue('extendedPrice', 'currency')#</td>
+				</tr>
+			</cfloop>
+		</table>
+		<!---<div class="shippingAddress">
+			<h5>#$.slatwall.rbKey("entity.orderFulfillment.shippingAddress")#</h5>
+			<cf_SlatwallAddressDisplay address="#local.orderFulfillment.getShippingAddress()#" edit="false" />
+		</div>
+		<div class="shippingMethod">
+			<h5>#$.slatwall.rbKey("entity.orderFulfillment.shippingMethod")#</h5>
+			#local.orderFulfillment.getShippingMethod().getShippingMethodName()#	
+		</div>--->
+		<!---<div class="totals">
+			<dl class="fulfillmentTotals">
+				<dt>
+					#$.slatwall.rbKey("entity.orderFulfillment.subtotal")#:
+				</dt>
+				<dd>
+					#local.order.getFormattedValue('subTotal', 'currency')#
+				</dd>
+				<dt>
+					#$.slatwall.rbKey("entity.orderFulfillment.shippingCharge")#:
+				</dt>
+				<dd>
+					#local.order.getFormattedValue('fulfillmentRefundTotal', 'currency')#
+				</dd>
+				<dt>
+					#$.slatwall.rbKey("entity.orderFulfillment.tax")#:
+				</dt>
+				<dd>
+					#local.order.getFormattedValue('taxTotal', 'currency')#
+				</dd>
+				<!--- discounts for fulfillment --->
+				<cfif local.orderFulfillment.getItemDiscountAmountTotal() gt 0>
+					<dt>
+						#$.slatwall.rbKey("entity.orderFulfillment.itemDiscountAmountTotal")#:
+					</dt>
+					<dd class="discountAmount">
+						 - #local.orderFulfillment.getFormattedValue('itemDiscountAmountTotal', 'currency')#
+					</dd>
 				</cfif>
-			</div>
-			
-				
-			<cfif rc.order.getOrderType().getSystemCode() EQ "otReturnOrder">
-				<div id="tabReturnOrderItems">
-					<!---#view("order/ordertabs/returnorderitems")#--->
-				</div>
-			</cfif>
-			
-			<cfif arrayLen(rc.order.getReferencingOrders())>
-				<div id="tabReferencingOrders">
-					#view("order/ordertabs/referencingorders")# 
-				</div>
-			</cfif>
-		<!---	<div id="tabOrderActivityLog">
-				
-			</div>--->
-		</div> <!-- tabs -->
+				<cfif local.orderFulfillment.getDiscountAmount() gt 0>
+					<dt>
+						#$.slatwall.rbKey("entity.orderFulfillmentShipping.discountAmount")#:
+					</dt>
+					<dd class="discountAmount">
+						 - #local.orderFulfillment.getFormattedValue('discountAmount', 'currency')#
+					</dd>
+				</cfif>
+				<dt>
+					#$.slatwall.rbKey("entity.orderFulfillment.total")#:
+				</dt>
+				<dd>
+					#local.orderFulfillment.getFormattedValue('totalCharge', 'currency')#
+				</dd>
+			</dl>
+		</div>
+		<div class="clear"></div>--->
+		
+	
+		
 	</div>
 </div>
 </cfoutput>

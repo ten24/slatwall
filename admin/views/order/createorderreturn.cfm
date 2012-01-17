@@ -174,7 +174,7 @@ Notes:
 						<th style="white-space:normal; vertical-align: text-bottom;">Original Discount Amount</th>
 						<th style="white-space:normal; vertical-align: text-bottom;">Extended Price After Discount</th>
 						<th style="white-space:normal; vertical-align: text-bottom;">Previously Returned Quantity</th>
-						<th style="white-space:normal; vertical-align: text-bottom;">Previously Returned Amount</th>
+						<!---<th style="white-space:normal; vertical-align: text-bottom;">Previously Returned Amount</th>--->
 						<th style="white-space:normal; vertical-align: text-bottom;">Return Price</th>
 						<th style="white-space:normal; vertical-align: text-bottom;">Returning</th>
 						<th style="white-space:normal; vertical-align: text-bottom;">Return Extended Amount</th>
@@ -221,15 +221,16 @@ Notes:
 								<td>#local.orderItem.getFormattedValue('discountAmount', 'currency')#</td>
 								<td>#local.orderItem.getFormattedValue('extendedPriceAfterDiscount', 'currency')#</td>
 								
-								<cfset local.quantityPriceAlreadyReturned = local.orderItem.getQuantityPriceAlreadyReturned()>
+								<!---<cfset local.quantityPriceAlreadyReturned = local.orderItem.getQuantityPriceAlreadyReturned()>
 								<td>#local.quantityPriceAlreadyReturned.quantity#</td>
-								<td>#local.quantityPriceAlreadyReturned.price#</td>
+								<td>#local.quantityPriceAlreadyReturned.price#</td>--->
+								<td>#local.orderDeliveryItem.getQuantityReturned()#</td>
 								
 								<!--- In order to guess the previous per-item price, take the qty ordered, and the ext price, and devide --->
 								<td><input type="text" name="price_orderItemId(#local.orderItem.getOrderItemId()#)_orderDeliveryId(#rc.order.getOrderDeliveries()[i].getOrderDeliveryID()#)" class="priceReturningInput" value="#local.orderItem.getExtendedPriceAfterDiscount() / local.orderItem.getQuantity()#"></td>
 								<td>
 									<select name="quantity_orderItemId(#local.orderItem.getOrderItemId()#)_orderDeliveryId(#rc.order.getOrderDeliveries()[i].getOrderDeliveryID()#)" class="quantityReturningSelect">
-										<cfloop from="0" to="#abs(local.orderDeliveryItem.getQuantity() - local.quantityPriceAlreadyReturned.quantity)#" index="local.i">
+										<cfloop from="0" to="#abs(local.orderDeliveryItem.getQuantity() - local.orderDeliveryItem.getQuantityReturned())#" index="local.i">
 											<option value="#local.i#">#local.i#</option>
 										</cfloop>
 									</select>

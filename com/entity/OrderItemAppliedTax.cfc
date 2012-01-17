@@ -51,7 +51,7 @@ component displayname="Order Item Applied Tax" entityname="SlatwallOrderItemAppl
 	public void function setOrderItem(required OrderItem orderItem) {
 		variables.orderItem = arguments.orderItem;
 		if(isNew() || !arguments.orderItem.hasAppliedTaxes(this)) {
-			arrayAppend(arguments.orderItem.getAppliedTaxes(),this);
+			arrayAppend(arguments.orderItem.getAppliedTaxes(), this);
 		}
 	}
 	
@@ -59,9 +59,9 @@ component displayname="Order Item Applied Tax" entityname="SlatwallOrderItemAppl
 		if(!structKeyExists(arguments, "orderItem")) {
 			arguments.orderItem = variables.orderItem;
 		}
-		var index = arrayFind(arguments.orderItem.getAppliedTaxes(),this);
+		var index = arrayFind(arguments.orderItem.getAppliedTaxes(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.orderItem.getAppliedTaxes(),index);
+			arrayDeleteAt(arguments.orderItem.getAppliedTaxes(), index);
 		}    
 		structDelete(variables,"orderItem");
     }

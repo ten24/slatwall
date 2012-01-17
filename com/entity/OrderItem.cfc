@@ -57,8 +57,8 @@ component displayname="Order Item" entityname="SlatwallOrderItem" table="Slatwal
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
-	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns
-	property name="referencedOrderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="referencedOrderDeliveryItemID"; // Used For Returns
+	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
+	property name="referencedOrderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="referencedOrderDeliveryItemID"; // Used For Returns. This is set when this order is a return.
 	
 	// Related Object Properties (one-to-many)
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="OrderItemAppliedPromotion" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
@@ -171,6 +171,10 @@ component displayname="Order Item" entityname="SlatwallOrderItem" table="Slatwal
     }
     
     public struct function getQuantityPriceAlreadyReturned() {
+    	
+    	
+    	
+    	
     	return getService("OrderService").getQuantityPriceSkuAlreadyReturned(getOrder().getOrderID(), getSku().getSkuID());
     }
     

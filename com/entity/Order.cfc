@@ -79,6 +79,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	property name="orderDiscountAmountTotal" persistent="false" formatType="currency"; 
 	property name="discountTotal" persistent="false" formatType="currency";
 	property name="fulfillmentTotal" persistent="false" formatType="currency";
+	property name="fulfillmentRefundTotal" persistent="false" formatType="currency";
 	
 	public any function init() {
 		if(isNull(variables.orderItems)) {
@@ -208,8 +209,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 		return fulfillmentTotal;
 	}
 	
+	public numeric function getFulfillmentRefundTotal() {
+		var fulfillmentRefundTotal = 0;
+		for(var i=1; i<=arrayLen(getOrderReturns()); i++) {
+			fulfillmentRefundTotal += getOrderReturns()[i].getFulfillmentRefundAmount();
+		}
+		
+		return fulfillmentRefundTotal;
+	}
+	
 	public numeric function getTotal() {
-		return getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal();
+		return getSubtotal() + getTaxTotal() + getFulfillmentTotal() + getFulfillmentRefundTotal() - getDiscountTotal();
 	}
 	
 	public void function removeAllOrderItems() {

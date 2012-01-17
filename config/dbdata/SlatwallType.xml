@@ -73,6 +73,8 @@
 		<Record typeID="444df2bcac18a033c7611b0e046e7de9" parentTypeID="444df2bac3f06e0645cf38f1d6a4e443" type="Picked" systemCode="oistPicked" />
 		<Record typeID="444df2bdd89b4fe8f128c3a7590c99b6" parentTypeID="444df2bac3f06e0645cf38f1d6a4e443" type="Backordered" systemCode="oistBackordered" />
 		<Record typeID="444df2bedf079c901347d35abab7c032" parentTypeID="444df2bac3f06e0645cf38f1d6a4e443" type="Fulfilled" systemCode="oistFulfilled" />
+		<Record typeID="444df2eeaa187f8f633304d856fd8eda" parentTypeID="444df2bac3f06e0645cf38f1d6a4e443" type="Returned" systemCode="oistReturned" />
+		
 		
 		<Record typeID="444df34bcafb2e904eefff689e4c52ab" parentTypeID="NULL" type="Order Item Action Types" systemCode="orderItemActionType" />
 		<Record typeID="444df34ae09ebeac9ada5d47a210eefe" parentTypeID="444df34bcafb2e904eefff689e4c52ab" type="Fulfill Item" systemCode="oiatFulfill" />
@@ -107,7 +109,7 @@
 <!--
 Below Are UUID's to use... delete after using
 
-444df2eeaa187f8f633304d856fd8eda
+
 444df2ef9cb25116d6396b34d89c9312
 444df2f0fed139ff94191de8fcd1f61b
 444df2f1cc40d0ea8a2de6f542ab4f1d

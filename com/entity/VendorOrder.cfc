@@ -106,7 +106,7 @@ component displayname="Vendor VendorOrder" entityname="SlatwallVendorOrder" tabl
 	public numeric function getSubtotal() {
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getVendorOrderItems()); i++) {
-			subtotal += getVendorOrderItems()[i].getCost();
+			subtotal += getVendorOrderItems()[i].getExtendedCost();
 		}
 		return subtotal;
 	}
