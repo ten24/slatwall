@@ -169,7 +169,7 @@ component extends="BaseController" persistent="false" accessors="true" output="f
 			var res = REFindNoCase("cost_skuid\((.+)\)", key, 1, true);
 
 			if(ArrayLen(res.pos) == 2) {
-				var skuID = mid(key, res.pos[2], res.len[2]);
+				var skuID = lcase(mid(key, res.pos[2], res.len[2]));
 				var cost = val(rc[key]);
 				if(len(skuID)) {
 					skuCosts[skuID] = cost;
@@ -182,8 +182,8 @@ component extends="BaseController" persistent="false" accessors="true" output="f
 			var res = REFindNoCase("qty_skuid\((.+)\)_locationid\((.+)\)", key, 1, true);
 
 			if(ArrayLen(res.pos) == 3) {
-				var skuID = mid(key, res.pos[2], res.len[2]);
-				var locationID= mid(key, res.pos[3], res.len[3]);
+				var skuID = lcase(mid(key, res.pos[2], res.len[2]));
+				var locationID= lcase(mid(key, res.pos[3], res.len[3]));
 				var quantity = val(rc[key]);
 				if(len(skuID) && len(locationID)) {
 					// We've found one of the inputs. See if a VendorOrderItem already exists with this sku and location. If so, then update it. Otherwise, we will have to create one, and possibly even the stock!
@@ -209,7 +209,7 @@ component extends="BaseController" persistent="false" accessors="true" output="f
 							vendorOrderItem.setCost(skuCosts[skuID]);
 						} else {
 							vendorOrder.removeVendorOrderItem(vendorOrderItem);
-							getVendorOrderService().deleteVendorOrderItem(vendorOrderItem);		// TODO!!!!!!!!!! Make sure this does not delete the stock!
+							getVendorOrderService().deleteVendorOrderItem(vendorOrderItem);	
 						}	
 					}
 				}

@@ -169,7 +169,7 @@ component extends="BaseController" persistent="false" accessors="true" output="f
 			var res = REFindNoCase("quantity_skuid\((.+)\)", key, 1, true);
 
 			if(ArrayLen(res.pos) == 2) {
-				var skuID = mid(key, res.pos[2], res.len[2]);
+				var skuID = lcase(mid(key, res.pos[2], res.len[2]));
 				var quantity = val(rc[key]);
 				var stock = getStockService().getStockBySkuAndLocation(getSkuService().getSku(skuID), getLocationService().getLocation(rc.receiveForLocationID));
 				

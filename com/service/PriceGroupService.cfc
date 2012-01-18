@@ -373,5 +373,6 @@ component extends="Slatwall.com.service.BaseService" persistent="false" accessor
 
 		return SerializeJSON(priceGroupData);
 	}
+	
 			
 }

@@ -110,7 +110,7 @@ Notes:
 					<cfloop array="#rc.priceGroupRate.getProducts()#" index="product">
 						<cfset idsList = ListAppend(idsList, product.getProductId())>
 					</cfloop>
-					<cf_SlatwallPropertyDisplay object="#rc.priceGroupRate#" fieldName="priceGroupRates[1].Products" property="products" edit="true"  fieldType="multiselect" value="#idsList#"  />
+					<cf_SlatwallPropertyDisplay object="#rc.priceGroupRate#" property="products" fieldName="priceGroupRates[1].Products"  edit="true"  fieldType="multiselect" value="#idsList#"  />
 					
 					<!--- Build a list of ids for the "selected" SKUs --->
 					<!---<cfset idsList = "">
