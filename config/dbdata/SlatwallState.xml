@@ -65,9 +65,12 @@
 		<Record stateCode="NB" stateName="New Brunswick" countryCode="CA" />
 		<Record stateCode="NL" stateName="Newfoundland and Labrador" countryCode="CA" />
 		<Record stateCode="NS" stateName="Nova Scotia" countryCode="CA" />
+		<Record stateCode="NT" stateName="Northwest Territories" countryCode="CA" />
+		<Record stateCode="NU" stateName="Nunavut" countryCode="CA" />
 		<Record stateCode="ON" stateName="Ontario" countryCode="CA" />
 		<Record stateCode="PE" stateName="Prince Edward Island" countryCode="CA" />
 		<Record stateCode="QC" stateName="Quebec" countryCode="CA" />
 		<Record stateCode="SK" stateName="Saskatchewan" countryCode="CA" />
+		<Record stateCode="YT" stateName="Yukon" countryCode="CA" />
 	</Records>
 </Table>
