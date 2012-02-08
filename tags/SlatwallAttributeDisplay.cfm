@@ -49,7 +49,7 @@ Notes:
 			<dt><label for="attribute.#attributes.attribute.getAttributeID()#">#attributes.attribute.getAttributeName()#<cfif attributes.attribute.getRequiredFlag() EQ 1> *</cfif></label></dt>
 			<dd>
 				<cfswitch expression="#attributes.attribute.getAttributeType().getSystemCode()#">
-					<cfcase value="atSelectBox">
+					<cfcase value="atSelect">
 						<select name="attribute.#attributes.attribute.getAttributeID()#" id="attribute.#attributes.attribute.getAttributeID()#">
 							<option value="#attributes.attribute.getDefaultValue()#">Select an option</option>
 							<cfloop array="#attributes.attribute.getAttributeOptions()#" index="attributeOption" >
