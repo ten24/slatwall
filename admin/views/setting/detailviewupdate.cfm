@@ -39,7 +39,7 @@ Notes:
 <cfoutput>
 	<div class="svoadminsettingdetailviewupdate">
 		<form action="#buildURL(action='admin:setting.updatefrontendviews')#" method="post">
-			<p>Only Click this button if you are 100% sure that you want to updated all of the views in you the <strong>#rc.$.event('siteid')#</strong> site directory</p>
+			<p>Only Click this button if you are 100% sure that you want to update all of the views in the <strong>#rc.$.event('siteid')#</strong> site directory</p>
 			<cf_SlatwallActionCaller action="admin:setting.updatefrontendviews" type="submit" class="button" confirmRequired="true">
 		</form>
 	</div>
