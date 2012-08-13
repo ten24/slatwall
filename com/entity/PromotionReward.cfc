@@ -141,7 +141,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
        structDelete(variables,"promotionPeriod");
     }
 
-	// Eligable Price Groups (many-to-many - owner)
+	// Eligible Price Groups (many-to-many - owner)
 	public void function addEligiblePriceGroup(required any eligiblePriceGroup) {
 		if(arguments.eligiblePriceGroup.isNew() or !hasEligiblePriceGroup(arguments.eligiblePriceGroup)) {
 			arrayAppend(variables.eligiblePriceGroups, arguments.eligiblePriceGroup);
