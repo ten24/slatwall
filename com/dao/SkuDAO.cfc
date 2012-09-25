@@ -127,7 +127,7 @@ Notes:
 			GROUP BY
 				SlatwallSku.skuID
 			ORDER BY
-				SUM(SlatwallOption.sortOrder * POWER(10, #getNextOptionGroupSortOrder()# - SlatwallOptionGroup.sortOrder)) ASC
+				SUM(SlatwallOption.sortOrder * CAST(POWER(10, #getNextOptionGroupSortOrder()# - SlatwallOptionGroup.sortOrder) as bigint)) ASC
 		</cfquery>
 		
 		<cfreturn sorted />
