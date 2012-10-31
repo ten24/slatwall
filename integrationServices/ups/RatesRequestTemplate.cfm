@@ -61,6 +61,7 @@
 					<PostalCode>#setting('shipFromPostalCode')#</PostalCode>
 					<CountryCode>#setting('shipFromCountryCode')#</CountryCode>
 				</Address>
+                		<ShipperNumber>#setting('shipperNumber')#</ShipperNumber>
 			</Shipper>
 			<ShipTo>
 				<Address>
