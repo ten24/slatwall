@@ -15,12 +15,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this library statically or dynamically with other modules is
     making a combined work based on this library.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
+
     As a special exception, the copyright holders of this library give you
     permission to link this library with independent modules to produce an
     executable, regardless of the license terms of these independent
@@ -42,18 +42,18 @@ Notes:
 <cfoutput>
 	<cf_SlatwallDetailForm object="#rc.productReview#" edit="#rc.edit#">
 		<cf_SlatwallActionBar type="detail" object="#rc.productReview#" edit="#rc.edit#"></cf_SlatwallActionBar>
-		
+
 		<cf_SlatwallDetailHeader>
 			<cf_SlatwallPropertyList>
 				<cf_SlatwallPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
-				<cf_SlatwallPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="false">
-				<cf_SlatwallPropertyDisplay object="#rc.productReview#" property="review" edit="false">
+				<cf_SlatwallPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
 			</cf_SlatwallPropertyList>
 		</cf_SlatwallDetailHeader>
-		
+
 		<cf_SlatwallTabGroup object="#rc.productReview#">
 			<!--- <cf_SlatwallTab view="admin:section/tabsfolder/view" /> --->
 		</cf_SlatwallTabGroup>
-		
+
 	</cf_SlatwallDetailForm>
 </cfoutput>
