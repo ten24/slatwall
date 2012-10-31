@@ -15,12 +15,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this library statically or dynamically with other modules is
     making a combined work based on this library.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
+
     As a special exception, the copyright holders of this library give you
     permission to link this library with independent modules to produce an
     executable, regardless of the license terms of these independent
@@ -37,7 +37,7 @@ Notes:
 
 */
 component displayname="Product Review" entityname="SlatwallProductReview" table="SlatwallProductReview" persistent="true" output="false" accessors="true" extends="BaseEntity" {
-	
+
 	// Persistent Properties
 	property name="productReviewID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
@@ -49,48 +49,48 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	
+
 	// Remote Properties
 	property name="remoteID" ormtype="string";
-	
+
 	// Audit properties
 	property name="createdDateTime" ormtype="timestamp";
 	property name="createdByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
 	property name="modifiedDateTime" ormtype="timestamp";
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
-	
+
 	public any function init() {
 		setActiveFlag(0);
-		
+
 		if(isNull(variables.reviewTitle)) {
 			variables.reviewTitle = "";
 		}
 		if(isNull(variables.rating)) {
 			variables.rating = 0;
 		}
-		
+
 		return super.init();
 	}
-	
+
 	public string function getReviewerGravatarURL(numeric size=80) {
 		var server = "http://www.gravatar.com";
-		
+
 		if(cgi.server_port eq 443) {
 			server = "https://secure.gravatar.com";
 		}
-		
+
 		if(!isNull(getAccount())) {
 			return "#server#/avatar/#lcase(hash(lcase(getAccount().getEmailAddress()), "MD5" ))#?s=#arguments.size#";
 		}
 		return "#server#/avatar/00000000000000000000000000000000?s=#arguments.size#";
-	}	
-	
+	}
+
 	// ============ START: Non-Persistent Property Methods =================
-	
+
 	// ============  END:  Non-Persistent Property Methods =================
-		
+
 	// ============= START: Bidirectional Helper Methods ===================
-	
+
 	// Product (many-to-one)
 	public void function setProduct(required any product) {
 		variables.product = arguments.product;
@@ -108,7 +108,7 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 		}
 		structDelete(variables, "product");
 	}
-	
+
 	// Account (many-to-one)
 	public void function setAccount(required any account) {
 		variables.account = arguments.account;
@@ -130,39 +130,39 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
-	
+
 	// ===============  END: Custom Validation Methods =====================
-	
+
 	// =============== START: Custom Formatting Methods ====================
-	
+
 	// ===============  END: Custom Formatting Methods =====================
-	
+
 	// ============== START: Overridden Implicet Getters ===================
-	
+
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
-	
+
 	public string function getSimpleRepresentationPropertyName() {
 		return "reviewTitle";
 	}
-	
+
 	// ==================  END:  Overridden Methods ========================
-	
+
 	// =================== START: ORM Event Hooks  =========================
-	
+
 	public void function preInsert(){
 		super.preInsert();
-		
+
 		// This bit of logic sets a product review as whatever the current account is (We might want to move this to the service)
-		if( isNull(variables.account) && !isNull(getSlatwallScope().getCurrentAccount()) ) {
+		if( isNull(variables.account) && !isNull(getSlatwallScope().getCurrentAccount()) && !getSlatwallScope().getCurrentAccount().isNew() ) {
 			setAccount(getSlatwallScope().getCurrentAccount());
 		}
 	}
-	
+
 	// ===================  END:  ORM Event Hooks  =========================
-	
+
 	// ================== START: Deprecated Methods ========================
-	
+
 	// ==================  END:  Deprecated Methods ========================
 }
