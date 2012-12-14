@@ -169,6 +169,70 @@ h4 {
 	display:none;
 	max-width:80%;
 }
+.modal-body {
+	padding-right:25px;
+}
+
+.textautocomplete:disabled {
+	cursor: default;
+}
+.autoselect-container {
+	position:relative;
+}
+.autocomplete-selected {
+	position:absolute;
+	float:left;
+	top:6px;
+	left:4px;
+	width:206px;
+	padding:4px 5px 4px 5px;
+}
+.autocomplete-options {
+	position:absolute;
+	top:28px;
+	margin:3px 0px 0px 0px;
+	height:300px;
+	width:361px;
+	overflow-y: auto;
+	padding:0px;
+	z-index: 1000;
+	ul {
+		list-style:none;
+		margin:0px;
+		background-color: #ffffff;
+		li {
+			list-style:none;
+			a {
+				display:block;
+				color:#333;
+				text-decoration:none;
+				height:55px;
+				width:330px;
+				padding: 7px;
+				border: 1px solid #efefef;
+				margin:0px;
+				font-size:11px;
+				line-height:14px;
+				overflow:hidden;
+				span.adminIcon {
+					float:left;
+					margin-right:5px;
+				}
+				span {
+					display:block;
+				}
+				span.fullName {
+					font-size:12px;
+					font-weight:bold;
+				}
+			}
+			a:hover {
+				background-color: rgba(85, 170, 239, 0.04);
+				border: 1px solid rgba(85, 170, 239, 0.50);
+			}
+		}
+	}
+}
 
 .control-group {
 	margin-bottom: 5px !important;

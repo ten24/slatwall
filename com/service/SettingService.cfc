@@ -172,11 +172,14 @@ globalEncryptionKeySize
 			productImageMediumHeight = {fieldType="text", formatType="pixels"},
 			productImageLargeWidth = {fieldType="text", formatType="pixels"},
 			productImageLargeHeight = {fieldType="text", formatType="pixels"},
+			productImageOptionCodeDelimiter = {fieldType="select"},
 			productMissingImagePath = {fieldType="text"},
 			productTitleString = {fieldType="text"},
 			productHTMLTitleString = {fieldType="text"},
 			productMetaDescriptionString = {fieldType="textarea"},
 			productMetaKeywordsString = {fieldType="textarea"},
+			productShowDetailWhenNotPublishedFlag = {fieldType="yesno"},
+			
 			
 			// Product Type
 			productTypeDisplayTemplate = {fieldType="select"},
@@ -225,6 +228,8 @@ globalEncryptionKeySize
 					return optionSL.getRecords();
 				case "brandDisplayTemplate": case "productDisplayTemplate": case "productTypeDisplayTemplate" : case "contentRestrictedContentDisplayTemplate" :
 					return getContentService().getDisplayTemplateOptions();
+				case "productImageOptionCodeDelimiter":
+					return ['-','_'];
 				case "globalCurrencyLocale":
 					return ['Chinese (China)','Chinese (Hong Kong)','Chinese (Taiwan)','Dutch (Belgian)','Dutch (Standard)','English (Australian)','English (Canadian)','English (New Zealand)','English (UK)','English (US)','French (Belgian)','French (Canadian)','French (Standard)','French (Swiss)','German (Austrian)','German (Standard)','German (Swiss)','Italian (Standard)', 'Italian (Swiss)','Japanese','Korean','Norwegian (Bokmal)','Norwegian (Nynorsk)','Portuguese (Brazilian)','Portuguese (Standard)','Spanish (Mexican)','Spanish (Modern)','Spanish (Standard)','Swedish'];
 				case "globalCurrencyType":

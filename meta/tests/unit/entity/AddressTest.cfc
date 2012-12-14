@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) 2011 ten24, LLC
@@ -35,30 +35,17 @@
 
 Notes:
 
---->
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-<cfparam name="rc.returnAction" type="string" default="admin:setting.edittask&taskID=#rc.taskID#" />
-<cfparam name="rc.processTaskSmartList" type="any" />
-<!--- Not sure how this is supposed to work --->
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
+		
+		variables.entityService = "addressService";
+		variables.entity = request.slatwallScope.getService( variables.entityService ).newAddress();
+	}
+	
+	
+}
 
-<cfset availableSchedules = [] />
-<cfset aSchedules = rc.$.slatwall.getService('taskService').getTask(rc.taskID).getTaskSchedules() />
-
-<cfloop array="#aSchedules#" index="schedule">
-	<cfset arrayAppend(availableSchedules,{value=schedule.getTaskScheduleID(), name=schedule.getSchedule().getScheduleName()}) />
-</cfloop>	
-
-<cfoutput>
-	<cf_SlatwallProcessForm>
-		
-		<cf_SlatwallActionBar type="process" />	
-		
-		<cf_SlatwallProcessListing processSmartList="#rc.processTaskSmartList#">
-			<cf_SlatwallProcessColumn data="taskScheduleID" fieldType="select" valueOptions="#availableSchedules#" fieldClass="span2" value="" />
-		</cf_SlatwallProcessListing>
-		
-		<input type="hidden" name="processcontext" value="#rc.processcontext#" />
-		<input type="hidden" name="returnAction" value="#rc.returnAction#" />
-	</cf_SlatwallProcessForm>
-		
-</cfoutput>

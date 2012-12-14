@@ -236,7 +236,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SlatwallProd
 		if( !structKeyExists(variables, "optionGroups") ) {
 			variables.optionGroups = [];
 			var smartList = getService("OptionService").getOptionGroupSmartList();
-			smartList.addFilter("options_skus_product_productID",this.getProductID());
+			smartList.addFilter("options.skus.product.productID",this.getProductID());
 			smartList.addOrder("sortOrder|ASC");
 			variables.optionGroups = smartList.getRecords();
 		}
@@ -763,7 +763,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SlatwallProd
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astProduct');
-			variables.assignedAttributeSetSmartList.addWhereCondition(" (aslatwallattributeset.globalFlag = 1 OR aslatwallproducttype.productTypeIDPath LIKE '%#getProductType().getProductTypeID()#') )" );
+			variables.assignedAttributeSetSmartList.addWhereCondition(" (aslatwallattributeset.globalFlag = 1 OR (aslatwallproducttype.productTypeID IN ('#replace(getProductType().getProductTypeIDPath(),",","','","all")#') ) )" );
 		}
 		
 		return variables.assignedAttributeSetSmartList;

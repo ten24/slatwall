@@ -36,7 +36,17 @@
 Notes:
 
 --->
-<cfparam name="orderDelivery" type="any" />
+<cfparam name="$" type="any" />
+<cfparam name="orderFulfillment" type="any" />
+
+<!--- Currently setup to only send the most recent delivery confirmation --->
+<cfset local.orderDeliveries = orderFulfillment.getOrder().getOrderDeliveries() />
+<cfset local.orderDelivery = local.orderDeliveries[1] />
+<cfloop array="#local.orderDeliveries#" index="local.thisOrderDelivery" >
+	<cfif local.orderDelivery.getCreatedDateTime() LT local.thisOrderDelivery.getCreatedDateTime()>
+		<cfset local.orderDelivery = local.thisOrderDelivery />
+	</cfif>
+</cfloop>
 
 <cfoutput>
 	<html>

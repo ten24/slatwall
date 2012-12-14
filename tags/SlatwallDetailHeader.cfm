@@ -36,9 +36,15 @@
 Notes:
 
 --->
+<cfparam name="attributes.fluidDisplay" type="boolean" default="true" />
+
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
-		<div class="row-fluid">
+		<cfif attributes.fluidDisplay>
+			<div class="row-fluid">
+		<cfelse>
+			<div class="row">
+		</cfif>
 	</cfoutput>
 <cfelse>
 	<cfoutput>

@@ -1,6 +1,6 @@
 <!---
 
-    Slatwall - An Open Source eCommerce Platform
+    Slatwall - An e-commerce plugin for Mura CMS
     Copyright (C) 2011 ten24, LLC
 
     This program is free software: you can redistribute it and/or modify
@@ -36,24 +36,14 @@
 Notes:
 
 --->
-
-
-<cfparam name="rc.returnAction" type="string" default="admin:setting.edittask&taskScheduleID=#rc.taskScheduleID#" />
-<cfparam name="rc.processTaskScheduleSmartList" type="any" />
+<cfparam name="rc.order" type="any" />
 
 <cfoutput>
-	<cf_SlatwallProcessForm>
+	<cf_SlatwallListingDisplay smartList="#rc.order.getPromotionCodesSmartList()#">
+			
+		<cf_SlatwallListingColumn propertyIdentifier="promotionCode" />
+		<cf_SlatwallListingColumn tdclass="primary" propertyIdentifier="promotion.promotionName" />
 		
-		<cf_SlatwallActionBar type="process" />
-		
-		<p>
-			Are you sure you wish to run this task?
-		</p>	
-		
-        <cf_SlatwallProcessListing processSmartList="#rc.processTaskScheduleSmartList#"></cf_SlatwallProcessListing>
-		
-		<input type="hidden" name="processcontext" value="#rc.processcontext#" />
-		<input type="hidden" name="returnAction" value="admin:setting.edittask&taskScheduleID=#rc.taskScheduleID#" />
-	</cf_SlatwallProcessForm>
-		
+	</cf_SlatwallListingDisplay>
+	
 </cfoutput>

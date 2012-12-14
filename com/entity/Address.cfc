@@ -134,6 +134,30 @@ component displayname="Address" entityname="SlatwallAddress" table="SlatwallAddr
 
 	// ================== START: Overridden Methods ========================
 	
+	public string function getSimpleRepresentation() {
+		var simpleRepresentation = "";
+		if( !isNull(getStreetAddress()) ) {
+			simpleRepresentation = listAppend(simpleRepresentation, " #getStreetAddress()#" );
+		}
+		if( !isNull(getStreet2Address()) ) {
+			simpleRepresentation = listAppend(simpleRepresentation, " #getStreet2Address()#" );
+		}
+		if( !isNull(getCity()) ) {
+			simpleRepresentation = listAppend(simpleRepresentation, " #getCity()#" );
+		}
+		if( !isNull(getStateCode()) ) {
+			simpleRepresentation = listAppend(simpleRepresentation, " #getStateCode()#" );
+		}
+		if( !isNull(getPostalCode()) ) {
+			simpleRepresentation = listAppend(simpleRepresentation, " #getPostalCode()#" );
+		}
+		if( !isNull(getCountryCode()) ) {
+			simpleRepresentation = listAppend(simpleRepresentation, " #getCountryCode()#" );
+		}
+		
+		return simpleRepresentation;
+	}
+	
 	// This overrides the base validation method to dynamically add rules based on country specific requirements
 	public any function validate() {
 		

@@ -165,20 +165,6 @@ component displayname="Base Object" accessors="true" output="false" {
 		return getMessageBean().getMessages();
 	}
 	
-	/*
-	// @hint Returns the error message of a given error name
-	public struct function getMessage( required string messageName ) {
-		
-		// Check First that the error exists, and if it does return it
-		if( getMessageBean().hasMessage(arguments.messageName) ) {
-			return getMessageBean().getMessage( arguments.messageName );
-		}
-		
-		// Default behavior if the error isn't found is to return an empty array
-		return [];
-	}
-	*/
-	
 	// @hint Returns true if there are any messages
 	public boolean function hasMessages( ) {
 		return getMessageBean().hasMessages();
@@ -496,12 +482,6 @@ component displayname="Base Object" accessors="true" output="false" {
 			return "";
 		}
 		
-		/*
-		if(isSimpleValue(value) && arguments.formatValue) {
-			return this.formatValue(value, getPropertyFormatType(pa[1]));
-		}
-		*/
-		
 		return value;
 	}
 
@@ -611,17 +591,6 @@ component displayname="Base Object" accessors="true" output="false" {
 	// @hint public method for getting the title to be used for a property from the rbFactory, this is used a lot by the SlatwallPropertyDisplay
 	public string function getPropertyTitle(required string propertyName) {
 		return rbKey("entity.#getClassName()#.#arguments.propertyName#");
-		/*
-		var exactMatch = rbKey("entity.#getClassName()#.#arguments.propertyName#");
-		if(right(exactMatch, 8) != "_missing") {
-			return exactMatch;
-		}
-		var genericMatch = rbKey("entity.define.#arguments.propertyName#");
-		if(right(genericMatch, 8) != "_missing") {
-			return genericMatch;
-		}
-		return exactMatch;
-		*/
 	}
 	
 	// @hint public method for getting the title hint to be used for a property from the rbFactory, this is used a lot by the SlatwallPropertyDisplay
@@ -631,12 +600,6 @@ component displayname="Base Object" accessors="true" output="false" {
 			return exactMatch;
 		}
 		return "";
-		/*
-		var genericMatch = rbKey("entity.define.#arguments.propertyName#_hint");
-		if(right(genericMatch, 8) != "_missing") {
-			return genericMatch;
-		}
-		*/
 	}
 	
 	// @hint public method to get the rbKey value for a property in a subentity
@@ -726,62 +689,6 @@ component displayname="Base Object" accessors="true" output="false" {
 		return "text";
 	}
 	
-	public boolean function hasProperty(required string propertyName) {
-		var properties = getProperties();
-		for(var i=1; i<=arrayLen(properties); i++) {
-			if(properties[i].name == arguments.propertyName) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/*
-	// @help public method for getting a recursive list of all the meta data of the properties of an object
-	public array function getProperties() {
-		if(!structKeyExists(variables, "metaProperties")) {
-			var metaData = getMetaData(this);
-			
-			variables.metaProperties = metaData.properties;
-			
-			// Also add any extended data
-			if(structKeyExists(metaData, "extends") && structKeyExists(metaData.extends, "properties")) {
-				variables.metaProperties = getService("utilityService").arrayConcat(metaData.extends.properties, variables.metaProperties);
-			}
-		}
-		return variables.metaProperties;
-	}
-	*/
-	
-	public array function getProperties() {
-		if( !hasApplicationValue("classPropertyCache_#getClassFullname()#") ) {
-			var metaData = getMetaData(this);
-			var metaProperties = metaData.properties;
-			
-			// Also add any extended data
-			if(structKeyExists(metaData, "extends") && structKeyExists(metaData.extends, "properties")) {
-				metaProperties = getService("utilityService").arrayConcat(metaData.extends.properties, metaProperties);
-			}
-			
-			setApplicationValue("classPropertyCache_#getClassFullname()#", metaProperties);
-		}
-		
-		return getApplicationValue("classPropertyCache_#getClassFullname()#");
-	}
-	
-	
-	// @help public method for getting the meta data of a specific property
-	public struct function getPropertyMetaData(string propertyName) {
-		var properties = getProperties();
-		for(var i=1; i<=arrayLen(properties); i++) {
-			if(properties[i].name eq arguments.propertyName) {
-				return properties[i];
-			}
-		}
-		// If no properties found with the name throw error 
-		throw("No property found with name #propertyName# in #getClassName()#");
-	}
-	
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
 		
@@ -848,12 +755,12 @@ component displayname="Base Object" accessors="true" output="false" {
 	
 	// @help Public method to get the fully qualified dot notation class name
 	public any function getClassFullname() {
-		return getMetaData( this ).fullname;
+		return getThisMetaData().fullname;
 	}
 	
 	// @help Public method to determine if this is a persistent object
 	public any function isPersistent() {
-		var metaData = getMetaData( this );
+		var metaData = getThisMetaData();
 		if(structKeyExists(metaData, "persistent") && metaData.persistent) {
 			return true;
 		}
@@ -918,9 +825,11 @@ component displayname="Base Object" accessors="true" output="false" {
 			case "url": {
 				return '<a href="#arguments.value#" target="_blank">' & arguments.value & '</a>';
 			}
+			/*
 			case "email": {
 				return '<a href="mailto:#arguments.value#" target="_blank">' & arguments.value & '</a>';
 			}
+			*/
 		}
 		
 		return arguments.value;
@@ -1007,13 +916,77 @@ component displayname="Base Object" accessors="true" output="false" {
 		arrayAppend(request.context.messages, arguments);
 	}
 	
-	public string function stringReplace( required string templateString, boolean formatValues=false ) {
-		return getService("utilityService").replaceStringTemplate(arguments.templateString, this, arguments.formatValues);
+	public boolean function hasProperty(required string propertyName) {
+		return structKeyExists( getPropertiesStruct(), arguments.propertyName );
+	}
+	
+	// @help public method for getting the meta data of a specific property
+	public struct function getPropertyMetaData( required string propertyName ) {
+		var propertiesStruct = getPropertiesStruct();
+		
+		if(structKeyExists(propertiesStruct, arguments.propertyName)) {
+			return propertiesStruct[ arguments.propertyName ];
+		}
+		
+		// If no properties found with the name throw error 
+		throw("No property found with name #propertyName# in #getClassName()#");
 	}
 	
 	// ===========================  END:  UTILITY METHODS ===========================================
 	
+	// ==================== START: APPLICATION CACHED META VALUES ===================================
+	
+	public array function getProperties() {
+		if( !hasApplicationValue("classPropertyCache_#getClassFullname()#") ) {
+			var metaData = getMetaData(this);
+			var metaProperties = metaData.properties;
+			
+			// Also add any extended data
+			if(structKeyExists(metaData, "extends") && structKeyExists(metaData.extends, "properties")) {
+				metaProperties = getService("utilityService").arrayConcat(metaData.extends.properties, metaProperties);
+			}
+			
+			setApplicationValue("classPropertyCache_#getClassFullname()#", metaProperties);
+		}
+		
+		return getApplicationValue("classPropertyCache_#getClassFullname()#");
+	}
+	
+	public struct function getPropertiesStruct() {
+		if( !hasApplicationValue("classPropertyStructCache_#getClassFullname()#") ) {
+			var propertiesStruct = {};
+			var properties = getProperties();
+			
+			for(var i=1; i<=arrayLen(properties); i++) {
+				propertiesStruct[ properties[i].name ] = properties[ i ];
+			}
+			
+			setApplicationValue("classPropertyStructCache_#getClassFullname()#", propertiesStruct);
+		}
+		
+		return getApplicationValue("classPropertyStructCache_#getClassFullname()#");
+	}
+	
+	// ====================  END: APPLICATION CACHED META VALUES ====================================
+	
+	// ==================== START: INTERNALLY CACHED META VALUES ====================================
+	
+	// @help Public method that caches locally the meta data of this object
+	public any function getThisMetaData(){
+		if(!structKeyExists(variables, "thisMetaData")) {
+			variables.thisMetaData = getMetaData( this );
+		}
+		return variables.thisMetaData;
+	}
+	
+	// ====================  END: INTERNALLY CACHED META VALUES =====================================
+	
 	// ========================= START: DELIGATION HELPERS ==========================================
+	
+	// @hint helper function to pass this entity along with a template to the string replace function
+	public string function stringReplace( required string templateString, boolean formatValues=false ) {
+		return getService("utilityService").replaceStringTemplate(arguments.templateString, this, arguments.formatValues);
+	}
 	
 	// @hint  helper function for returning the slatwallScope from the request scope
 	public any function getSlatwallScope() {

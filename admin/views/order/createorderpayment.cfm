@@ -41,7 +41,7 @@ Notes:
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.paymentMethod" type="any" />
 <cfparam name="rc.orderPaymentTypeSystemCode" type="string" />
-<cfparam name="rc.edit" type="boolean" default="tr" />
+<cfparam name="rc.edit" type="boolean" default="true" />
 
 <cfsilent>
 	<cfset local.amount = rc.order.getTotal() - rc.order.getPaymentAmountTotal() />

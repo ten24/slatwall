@@ -162,7 +162,9 @@ component displayname="Payment Transaction" entityname="SlatwallPaymentTransacti
 	}
 	
 	public void function preDelete() {
-		throw("Deleting a Payment Transaction is not allowed because this illustrates a fundamental flaw in accounting.");
+		if(isNull(getOrderPayment()) || ( !isNull(getOrderPayment().getOrder()) && getOrderPayment().getOrder().getOrderStatusType().getSystemCode() neq "ostNotPlaced" ) ) {
+			throw("Deleting a Payment Transaction is not allowed because this illustrates a fundamental flaw in accounting.");	
+		}
 	}
 	// ===================  END:  ORM Event Hooks  =========================
 	

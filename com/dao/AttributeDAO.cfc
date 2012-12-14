@@ -45,4 +45,23 @@ Notes:
 		<cfreturn ormExecuteQuery("SELECT av FROM SlatwallAttributeValue av INNER JOIN FETCH av.attribute att INNER JOIN FETCH att.attributeSet ats WHERE av.#primaryIDPropertyIdentifier# = ?", [arguments.primaryIDValue], false, {ignoreCase="true"}) />
 	</cffunction>
 	
+	<cffunction name="getAttributeCodesQueryByAttributeSetType" returntype="query" access="public">
+		<cfargument name="attributeSetType" required="true" type="string" />
+		
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			SELECT
+				SlatwallAttribute.attributeCode
+			FROM
+				SlatwallAttribute
+			  INNER JOIN
+			  	SlatwallAttributeSet on SlatwallAttribute.attributeSetID = SlatwallAttributeSet.attributeSetID
+			  INNER JOIN
+			  	SlatwallType on SlatwallAttributeSet.attributeSetTypeID = SlatwallType.typeID
+			WHERE
+				SlatwallType.systemCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetType#"/>
+		</cfquery>
+		<cfreturn rs />
+	</cffunction> 
+	
 </cfcomponent>

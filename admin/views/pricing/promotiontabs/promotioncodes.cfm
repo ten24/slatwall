@@ -47,11 +47,11 @@ Notes:
 							   recordEditModal="true"
 							   recordDeleteAction="admin:pricing.deletepromotioncode"
 							   recordDeleteQueryString="returnAction=admin:pricing.detailpromotion&promotionID=#rc.promotion.getPromotionID()###tabpromotioncodes">
-		<cf_SlatwallListingColumn tdclass="primary" propertyIdentifier="promotionCode" />
-		<cf_SlatwallListingColumn propertyIdentifier="startDateTime" />
-		<cf_SlatwallListingColumn propertyIdentifier="endDateTime" />
-		<cf_SlatwallListingColumn propertyIdentifier="maximumUseCount" />
-		<cf_SlatwallListingColumn propertyIdentifier="maximumAccountUseCount" />
+		<cf_SlatwallListingColumn tdclass="primary" propertyIdentifier="promotionCode" search="true" />
+		<cf_SlatwallListingColumn propertyIdentifier="startDateTime" range="true" />
+		<cf_SlatwallListingColumn propertyIdentifier="endDateTime" range="true" />
+		<cf_SlatwallListingColumn propertyIdentifier="maximumUseCount" range="true" />
+		<cf_SlatwallListingColumn propertyIdentifier="maximumAccountUseCount" range="true" />
 	</cf_SlatwallListingDisplay>
 	
 	<cf_SlatwallActionCaller action="admin:pricing.createpromotioncode" class="btn btn-inverse" icon="plus icon-white" queryString="promotionID=#rc.promotion.getPromotionID()#" modal="true" />

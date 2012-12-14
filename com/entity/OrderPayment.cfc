@@ -162,19 +162,10 @@ component displayname="Order Payment" entityname="SlatwallOrderPayment" table="S
 	public numeric function getAmountAuthorized() {
 		var amountAuthorized = 0;
 			
-		switch(getPaymentMethodType()) {
-		
-			case "creditCard" :
-				amountAuthorized = 0;
-				for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-					amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
-				}
-				break;
-				
-			default :
-				amountAuthorized = getAmount();
+		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
+			amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
 		}
-		
+			
 		return amountAuthorized;
 	}
 	

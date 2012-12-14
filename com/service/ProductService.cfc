@@ -202,17 +202,12 @@ component extends="BaseService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveProduct(required any product, required struct data) {
-		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
-			if(!isNull(arguments.product.getProductName())) {
-				param name="arguments.data.productName" default="#arguments.product.getProductName()#";
-			} else {
-				param name="arguments.data.productName" default="";
-			}
-			data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SlatwallProduct");
-		}
-		
 		// populate bean from values in the data Struct
 		arguments.product.populate(arguments.data);
+		
+		if(isNull(arguments.product.getURLTitle())) {
+			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SlatwallProduct"));
+		}
 		
 		// If this is a new product and it doesn't have any errors... there are a few additional steps we need to take
 		if(arguments.product.isNew() && !arguments.product.hasErrors()) {

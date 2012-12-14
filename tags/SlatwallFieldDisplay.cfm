@@ -63,6 +63,8 @@ Notes:
 	
 	<cfparam name="attributes.errors" type="array" default="#arrayNew(1)#" />			<!--- hint: This holds any errors for the current field if needed --->
 		
+	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
+		
 	<cfswitch expression="#attributes.displaytype#">
 		<!--- DL Case --->
 		<cfcase value="dl">
@@ -137,7 +139,7 @@ Notes:
 		<cfcase value="plain">
 			<cfif attributes.edit>
 				<cfoutput>
-					<cf_SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" valueOptionsSmartList="#attributes.valueOptionsSmartList#" />
+					<cf_SlatwallFormField attributecollection="#attributes#" />
 					<cf_SlatwallErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 				</cfoutput>
 			<cfelse>

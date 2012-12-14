@@ -46,8 +46,10 @@
 		<Record settingID="dbb3278fc40b735e096f76d3f6a4037a" settingName="productImageMediumHeight" settingValue="300" />
 		<Record settingID="dbb3278cd959dc151f36ae48ce579b47" settingName="productImageLargeWidth" settingValue="600" />
 		<Record settingID="dbb32790a3d4fc2a1cec88be34c9dbc6" settingName="productImageLargeHeight" settingValue="600" />
+		<Record settingID="dbb32801f856cefe9571571405c90957" settingName="productImageOptionCodeDelimiter" settingValue="-" />
 		<Record settingID="dbb327fbdba2dfd5a9d385ba7fa98ee0" settingName="productMissingImagePath" settingValue="/plugins/Slatwall/assets/images/missingimage.jpg" />
 		<Record settingID="dbb327ae9d9464c25a229dce1b18a0e5" settingName="productTitleString" settingValue="${brand.brandName} ${productName}" />
+		<Record settingID="dbb32800cda3d64df34a388d19eae81d" settingName="productShowDetailWhenNotPublishedFlag" settingValue="0" />
 		
 		<Record settingID="dbb3279aa919ec2609ab33bfbfa732e6" settingName="skuAllowBackorderFlag" settingValue="0" />
 		<Record settingID="dbb3279708f5d43e0e5a45a1918b0e2b" settingName="skuAllowPreorderFlag" settingValue="0" />
@@ -90,9 +92,6 @@
 Below Are UUID's to use... delete after using
 
 	
-	
-	dbb32800cda3d64df34a388d19eae81d
-	dbb32801f856cefe9571571405c90957
 	dbb32802d0afe98f27c73469f742355e
 	dbb32803f69d7e560900faa65ffa53ec
 	dbb32804977b1824636aa1e075e7b690

@@ -161,7 +161,7 @@ component extends="Slatwall.com.service.BaseService" persistent="false" accessor
 		} else if (arguments.product.getProductType().getBaseProductType() == "contentAccess") {
 			// Make sure there was at least one contentAccess Product
 			if(!structKeyExists(arguments.data, "accessContents") || !listLen(arguments.data.accessContents)) {
-				arguments.product.addError("accessContents", rbKey('entity.product.accesscontentsrequired'));
+				arguments.product.addError("accessContents", rbKey('validate.product.accesscontentsrequired'));
 			}
 			
 			// If the product still doesn't have any errors then we can create the skus
@@ -300,6 +300,23 @@ component extends="Slatwall.com.service.BaseService" persistent="false" accessor
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
+	
+	public any function getSkuSmartList(struct data={}, currentURL="") {
+		arguments.entityName = "SlatwallSku";
+		
+		var smartList = getDAO().getSmartList(argumentCollection=arguments);
+		
+		smartList.joinRelatedProperty("SlatwallSku", "product");
+		smartList.joinRelatedProperty("SlatwallProduct", "productType");
+		
+		smartList.addKeywordProperty(propertyIdentifier="skuCode", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="skuID", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
+		
+		
+		return smartList;
+	}
 	
 	// ====================  END: Smart List Overrides ========================
 	

@@ -52,6 +52,7 @@
 	<bean id="utilityFormService" class="Slatwall.com.service.UtilityFormService" />
 	<bean id="utilityLogService" class="Slatwall.com.service.UtilityLogService" />
 	<bean id="utilityORMService" class="Slatwall.com.service.UtilityORMService">
+		<property name="attributeService"><ref bean="attributeService" /></property>
 		<property name="entityServiceMapping">
 			<map>
 				<entry key="Access"><value>accessService</value></entry>

@@ -38,6 +38,7 @@ Notes:
 */
 component displayname="Base Entity" accessors="true" extends="Slatwall.com.utility.BaseObject" {
 
+	property name="simpleRepresentation" type="string" persistent="false";
 	property name="persistableErrors" type="array" persistent="false";
 	property name="assignedAttributeSetSmartList" type="struct" persistent="false";
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
@@ -197,6 +198,15 @@ component displayname="Base Entity" accessors="true" extends="Slatwall.com.utili
 		}
 		
 		return variables.attributeValuesByAttributeCodeStruct;
+	}
+	
+	public void function clearAttributeCache() {
+		if(structKeyExists(variables, "attributeValuesByAttributeIDStruct")) {
+			structDelete(variables, "attributeValuesByAttributeIDStruct");
+		}
+		if(structKeyExists(variables, "attributeValuesByAttributeCodeStruct")) {
+			structDelete(variables, "attributeValuesByAttributeCodeStruct");
+		}
 	}
 	
 	// @hint Returns the persistableErrors array, if one hasn't been setup yet it returns a new one
@@ -576,6 +586,12 @@ component displayname="Base Entity" accessors="true" extends="Slatwall.com.utili
 	
 	public void function preInsert(){
 		if(!this.isPersistable()) {
+			for(var errorName in getErrors()) {
+				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
+					logSlatwall("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);	
+				}
+			}
+			writeDump(getErrors());
 			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors");
 		}
 		
@@ -623,6 +639,11 @@ component displayname="Base Entity" accessors="true" extends="Slatwall.com.utili
 	
 	public void function preUpdate(struct oldData){
 		if(!this.isPersistable()) {
+			for(var errorName in getErrors()) {
+				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
+					logSlatwall("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);	
+				}
+			}
 			writeDump(getErrors());
 			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors");
 		}

@@ -85,6 +85,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non Persistent
+	property name="adminIcon" persistent="false";
 	property name="guestAccountFlag" persistent="false" formatType="yesno";
 	property name="fullName" persistent="false";
 	property name="emailAddress" persistent="false" formatType="email";
@@ -93,7 +94,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 	property name="password" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" formattype="currency";
 	property name="termAccountBalance" persistent="false" formattype="currency";
+	property name="gravatarURL" persistent="false";
 	
+
 	public boolean function isGuestAccount() {
 		return isNull(getCmsAccountID());
 	}
@@ -104,6 +107,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 		} else {
 			return "http://www.gravatar.com/avatar/#lcase(hash(lcase(getEmailAddress()), "MD5" ))#?s=#arguments.size#";	
 		}
+	}
+	
+	public string function getAdminIcon() {
+		return '<img src="#getGravatarURL(55)#" style="width:55px;" />';
 	}
 	
 	public string function getAllPermissions(){
@@ -141,7 +148,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 		return getPrimaryEmailAddress().getEmailAddress();
 	}
 	
-	public string function getAddress() {
+	public any function getAddress() {
 		return getPrimaryAddress().getAddress();
 	}
 	

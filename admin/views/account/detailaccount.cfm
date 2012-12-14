@@ -44,19 +44,34 @@ Notes:
 		<cf_SlatwallActionCaller action="admin:account.createaccountaddress" queryString="accountID=#rc.account.getAccountID()#" type="list" modal=true />
 	</cf_SlatwallActionBar>
 	
-	<cf_SlatwallDetailHeader>
-		<cf_SlatwallPropertyList divclass="span6">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" property="firstName" edit="#rc.edit#">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" property="emailAddress" edit="#rc.edit#">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" property="password" edit="#rc.edit#">			
-		</cf_SlatwallPropertyList>
-		<cf_SlatwallPropertyList divclass="span6">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false">
-		</cf_SlatwallPropertyList>
-	</cf_SlatwallDetailHeader>
+	<cfif rc.account.isNew()>
+		<cf_SlatwallDetailHeader>
+			<cf_SlatwallPropertyList>
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="firstName" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="emailAddress" fieldnameprefix="primaryEmailAddress." edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="phoneNumber" fieldnameprefix="primaryPhoneNumber." edit="#rc.edit#">
+				<input type="hidden" name="primaryAddress.accountAddressName" value="Primary Address" />
+				<cf_SlatwallAddressDisplay address="#rc.account.getPrimaryAddress().getAddress()#" showName="false" showCompany="false" fieldnameprefix="primaryAddress.address." />
+			</cf_SlatwallPropertyList>
+		</cf_SlatwallDetailHeader>
+	<cfelse>
+		<cf_SlatwallDetailHeader>
+			<cf_SlatwallPropertyList divclass="span6">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="firstName" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="emailAddress" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="password" edit="#rc.edit#">			
+			</cf_SlatwallPropertyList>
+			<cf_SlatwallPropertyList divclass="span6">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false">
+				<cf_SlatwallPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false">
+			</cf_SlatwallPropertyList>
+		</cf_SlatwallDetailHeader>
+	</cfif>
+	
 	
 	<cf_SlatwallTabGroup object="#rc.account#" allowCustomAttributes="true">
 		<cf_SlatwallTab view="admin:account/accounttabs/addresses" />

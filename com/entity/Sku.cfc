@@ -79,6 +79,7 @@ component displayname="Sku" entityname="SlatwallSku" table="SlatwallSku" persist
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
+	property name="adminIcon" persistent="false";
 	property name="optionsDisplay" persistent="false";
 	property name="currentAccountPrice" type="numeric" formatType="currency" persistent="false";
 	property name="currencyCode" type="string" persistent="false";
@@ -93,6 +94,7 @@ component displayname="Sku" entityname="SlatwallSku" table="SlatwallSku" persist
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="nextEstimatedAvailableDate" type="string" persistent="false";
+	
 	
     public boolean function getDefaultFlag() {
     	if(getProduct().getDefaultSku().getSkuID() == getSkuID()) {
@@ -148,7 +150,7 @@ component displayname="Sku" entityname="SlatwallSku" table="SlatwallSku" persist
 		var optionString = "";
 		for(var option in getOptions()){
 			if(option.getOptionGroup().getImageGroupFlag()){
-				optionString &= "-" & reReplaceNoCase(option.getOptionCode(), "[^a-z0-9\-\_]","","all");
+				optionString &= getProduct().setting('productImageOptionCodeDelimiter') & reReplaceNoCase(option.getOptionCode(), "[^a-z0-9\-\_]","","all");
 			}
 		}
 		return reReplaceNoCase(getProduct().getProductCode(), "[^a-z0-9\-\_]","","all") & optionString & ".#setting('globalImageExtension')#";
@@ -311,6 +313,10 @@ component displayname="Sku" entityname="SlatwallSku" table="SlatwallSku" persist
 	// END: Quantity Helper Methods
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getAdminIcon() {
+		return getImage(width=55, height=55);
+	}
 	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {

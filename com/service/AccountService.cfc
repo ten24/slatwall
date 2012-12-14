@@ -92,6 +92,110 @@ component extends="BaseService" accessors="true" output="false" {
 		return account;
 	}
 	
+	public any function updateCmsUserFromAccount(required any cmsUser, required any Account) {
+		
+		// Sync Name & Company
+		arguments.cmsUser.setFName(arguments.account.getFirstName());
+		arguments.cmsUser.setLName(arguments.account.getLastName());
+		if(!isNull(arguments.account.getCompany())) {
+			arguments.cmsUser.setCompany(arguments.account.getCompany());	
+		}
+		
+		// Sync Primary Email
+		if(!isNull(arguments.account.getPrimaryEmailAddress())) {
+			if(arguments.cmsUser.getUsername() == arguments.cmsUser.getEmail()) {
+				arguments.cmsUser.setUsername(arguments.account.getPrimaryEmailAddress().getEmailAddress());	
+			}
+			arguments.cmsUser.setEmail(arguments.account.getPrimaryEmailAddress().getEmailAddress());	
+		}
+		
+		// Reset the password as whatever was already in the database
+		
+		// TODO: Sync the mobile phone number
+		// TODO: Loop over addresses and sync them as well.
+				
+		return arguments.cmsUser;
+	}
+	
+	public any function updateAccountFromCmsUser(required any account, required any cmsUser) {
+		
+		// Sync Name & Company
+		if(arguments.account.getFirstName() != arguments.cmsUser.getFName()){
+			arguments.account.setFirstName(arguments.cmsUser.getFName());
+		}
+		if(arguments.account.getLastName() != arguments.cmsUser.getLName()) {
+			arguments.account.setLastName(arguments.cmsUser.getLName());
+		}
+		if(arguments.account.getCompany() != arguments.cmsUser.getCompany()) {
+			arguments.account.setCompany(arguments.cmsUser.getCompany());
+		}
+		
+		// Sync the primary email if out of sync
+		if( isNull(arguments.account.getPrimaryEmailAddress()) || arguments.account.getPrimaryEmailAddress().getEmailAddress() != arguments.cmsUser.getEmail()) {
+			// Setup the new primary email object
+			
+			// Attempt to find that e-mail address in all of our emails
+			for(var i=1; i<=arrayLen(arguments.account.getAccountEmailAddresses()); i++) {
+				if(arguments.account.getAccountEmailAddresses()[i].getEmailAddress() == arguments.cmsUser.getEmail()) {
+					var primaryEmail = arguments.account.getAccountEmailAddresses()[i];
+				}
+			}
+			if( isNull(primaryEmail) ) {
+				var primaryEmail = this.newAccountEmailAddress();
+				primaryEmail.setEmailAddress(arguments.cmsUser.getEmail());
+				primaryEmail.setAccount(arguments.account);
+				getDAO().save(target=primaryEmail);
+			}
+			arguments.account.setPrimaryEmailAddress(primaryEmail);
+		}
+		
+		// TODO: Sync the mobile phone number
+		// TODO: Loop over addresses and set those up as well.
+		
+		return arguments.account;
+	}
+	
+	
+	
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	public any function processAccountPayment(required any accountPayment, struct data={}, string processContext="process") {
+		
+		param name="arguments.data.amount" default="0";
+		
+		// CONTEXT: offlineTransaction
+		if (arguments.processContext == "offlineTransaction") {
+		
+			var newPaymentTransaction = getPaymentService().newPaymentTransaction();
+			newPaymentTransaction.setTransactionType( "offline" );
+			newPaymentTransaction.setAccountPayment( arguments.accountPayment );
+			newPaymentTransaction = getPaymentService().savePaymentTransaction(newPaymentTransaction, arguments.data);
+			
+			if(newPaymentTransaction.hasErrors()) {
+				arguments.accountPayment.addError('processing', 'There was an unknown error trying to add an offline transaction for this order payment.');	
+			}
+			
+		} else {
+			
+			getPaymentService().processPayment(arguments.accountPayment, arguments.processContext, arguments.data.amount);
+			
+		}
+		
+		return arguments.accountPayment;
+	}
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
 	public any function saveAccount(required any account, required struct data, required string siteID=request.muraScope.event('siteID')) {
 		
 		var wasNew = arguments.account.isNew();
@@ -173,10 +277,17 @@ component extends="BaseService" accessors="true" output="false" {
 		
 		
 		// If the account doesn't have errors, is new, has and email address and password, has a password passed in, and not supposed to be a guest account. then attempt to setup the username and password in Mura
-		if( !arguments.account.hasErrors() && wasNew && !isNull(arguments.account.getPrimaryEmailAddress()) && structKeyExists(arguments.data, "password") && (!structKeyExists(arguments.data, "guestAccount") || arguments.data.guestAccount == false) ) {
+		if( !arguments.account.hasErrors() && wasNew && (!isNull(arguments.account.getPrimaryEmailAddress()) || (structKeyExists(arguments.data, "username") && len(arguments.data.username))) && structKeyExists(arguments.data, "password") && (!structKeyExists(arguments.data, "guestAccount") || arguments.data.guestAccount == false) ) {
+			
+			var username="";
+			if(structKeyExists(arguments.data, "username") && len(arguments.data.username)) {
+				username=arguments.data.username;
+			} else if (!isNull(arguments.account.getPrimaryEmailAddress())) {
+				username=arguments.account.getPrimaryEmailAddress().getEmailAddress();
+			}
 			
 			// Try to get the user out of the mura database using the primaryEmail as the username
-			var cmsUser = getUserManager().getBean().loadBy(siteID=arguments.siteID, username=arguments.account.getPrimaryEmailAddress().getEmailAddress());
+			var cmsUser = getUserManager().getBean().loadBy(siteID=arguments.siteID, username=username);
 			
 			if(!cmsUser.getIsNew()) {
 				getSlatwallScope().setORMHasErrors( true );
@@ -187,7 +298,7 @@ component extends="BaseService" accessors="true" output="false" {
 				arguments.account.addError("password", rbKey('validate.account.password'));
 			} else {
 				// Setup a new mura user
-				cmsUser.setUsername(arguments.account.getPrimaryEmailAddress().getEmailAddress());
+				cmsUser.setUsername(username);
 				cmsUser.setPassword(arguments.data.password);
 				cmsUser.setSiteID(arguments.siteID);
 				
@@ -268,83 +379,37 @@ component extends="BaseService" accessors="true" output="false" {
 		return arguments.account;
 	}
 	
-	public any function updateCmsUserFromAccount(required any cmsUser, required any Account) {
-		
-		// Sync Name & Company
-		arguments.cmsUser.setFName(arguments.account.getFirstName());
-		arguments.cmsUser.setLName(arguments.account.getLastName());
-		if(!isNull(arguments.account.getCompany())) {
-			arguments.cmsUser.setCompany(arguments.account.getCompany());	
-		}
-		
-		// Sync Primary Email
-		if(!isNull(arguments.account.getPrimaryEmailAddress())) {
-			if(arguments.cmsUser.getUsername() == arguments.cmsUser.getEmail()) {
-				arguments.cmsUser.setUsername(arguments.account.getPrimaryEmailAddress().getEmailAddress());	
-			}
-			arguments.cmsUser.setEmail(arguments.account.getPrimaryEmailAddress().getEmailAddress());	
-		}
-		
-		// Reset the password as whatever was already in the database
-		
-		// TODO: Sync the mobile phone number
-		// TODO: Loop over addresses and sync them as well.
-				
-		return arguments.cmsUser;
-	}
+	// ======================  END: Save Overrides ============================
 	
-	public any function updateAccountFromCmsUser(required any account, required any cmsUser) {
-		
-		// Sync Name & Company
-		if(arguments.account.getFirstName() != arguments.cmsUser.getFName()){
-			arguments.account.setFirstName(arguments.cmsUser.getFName());
-		}
-		if(arguments.account.getLastName() != arguments.cmsUser.getLName()) {
-			arguments.account.setLastName(arguments.cmsUser.getLName());
-		}
-		if(arguments.account.getCompany() != arguments.cmsUser.getCompany()) {
-			arguments.account.setCompany(arguments.cmsUser.getCompany());
-		}
-		
-		// Sync the primary email if out of sync
-		if( isNull(arguments.account.getPrimaryEmailAddress()) || arguments.account.getPrimaryEmailAddress().getEmailAddress() != arguments.cmsUser.getEmail()) {
-			// Setup the new primary email object
-			
-			// Attempt to find that e-mail address in all of our emails
-			for(var i=1; i<=arrayLen(arguments.account.getAccountEmailAddresses()); i++) {
-				if(arguments.account.getAccountEmailAddresses()[i].getEmailAddress() == arguments.cmsUser.getEmail()) {
-					var primaryEmail = arguments.account.getAccountEmailAddresses()[i];
-				}
-			}
-			if( isNull(primaryEmail) ) {
-				var primaryEmail = this.newAccountEmailAddress();
-				primaryEmail.setEmailAddress(arguments.cmsUser.getEmail());
-				primaryEmail.setAccount(arguments.account);
-				getDAO().save(target=primaryEmail);
-			}
-			arguments.account.setPrimaryEmailAddress(primaryEmail);
-		}
-		
-		// TODO: Sync the mobile phone number
-		// TODO: Loop over addresses and set those up as well.
-		
-		return arguments.account;
-	}
+	// ==================== START: Smart List Overrides =======================
 	
+
 	public any function getAccountSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccount";
 		
 		var smartList = getDAO().getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left");
+		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left");
+		smartList.joinRelatedProperty("SlatwallAccount", "primaryAddress", "left");
 		
-		smartList.addKeywordProperty(propertyIdentifier="firstName", weight=3);
-		smartList.addKeywordProperty(propertyIdentifier="lastName", weight=3);
-		smartList.addKeywordProperty(propertyIdentifier="company", weight=3);
-		smartList.addKeywordProperty(propertyIdentifier="primaryEmailAddress.emailAddress", weight=3);
+		smartList.addKeywordProperty(propertyIdentifier="firstName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="lastName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="company", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="primaryEmailAddress.emailAddress", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="primaryPhoneNumber.phoneNumber", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="primaryAddress.streetAddress", weight=1);
 		
 		return smartList;
 	}
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
+	
+	// ===================== START: Delete Overrides ==========================
 	
 	public boolean function deleteAccount(required any account) {
 	
@@ -373,54 +438,6 @@ component extends="BaseService" accessors="true" output="false" {
 		return true;
 	}
 	
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	public any function processAccountPayment(required any accountPayment, struct data={}, string processContext="process") {
-		
-		param name="arguments.data.amount" default="0";
-		
-		// CONTEXT: offlineTransaction
-		if (arguments.processContext == "offlineTransaction") {
-		
-			var newPaymentTransaction = getPaymentService().newPaymentTransaction();
-			newPaymentTransaction.setTransactionType( "offline" );
-			newPaymentTransaction.setAccountPayment( arguments.accountPayment );
-			newPaymentTransaction = getPaymentService().savePaymentTransaction(newPaymentTransaction, arguments.data);
-			
-			if(newPaymentTransaction.hasErrors()) {
-				arguments.accountPayment.addError('processing', 'There was an unknown error trying to add an offline transaction for this order payment.');	
-			}
-			
-		} else {
-			
-			getPaymentService().processPayment(arguments.accountPayment, arguments.processContext, arguments.data.amount);
-			
-		}
-		
-		return arguments.accountPayment;
-	}
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
+	// =====================  END: Delete Overrides ===========================
 	
 }

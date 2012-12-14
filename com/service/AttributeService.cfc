@@ -38,8 +38,26 @@ Notes:
 */
 
 component  extends="Slatwall.com.service.BaseService" accessors="true" {
+
+	variables.attributeCodesListByAttributeSetType = {};
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public string function getAttributeCodesListByAttributeSetType( required string attributeSetType ) {
+		if(!structKeyExists(variables.attributeCodesListByAttributeSetType, arguments.attributeSetType)) {
+			
+			var attributeCodeList = ""; 
+			var rs = getDAO().getAttributeCodesQueryByAttributeSetType( arguments.attributeSetType );
+			
+			for(var i=1; i<=rs.recordCount; i++) {
+				attributeCodeList = listAppend(attributeCodeList, rs[ "attributeCode" ][i]);			
+			}
+			
+			variables.attributeCodesListByAttributeSetType[ arguments.attributeSetType ] = attributeCodeList;
+		}
+		
+		return variables.attributeCodesListByAttributeSetType[ arguments.attributeSetType ];
+	}
 	
 	// =====================  END: Logical Methods ============================
 	

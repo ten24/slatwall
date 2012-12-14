@@ -87,17 +87,22 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 			save( arguments.order );
 			
 			// if a filfillmentMethodID is passed in the data, set orderfulfillment to that
-			if(structKeyExists(arguments.data, "fulfillmentMethodID")) {
+			if(structKeyExists(arguments.data, "fulfillmentMethodID") && !structKeyExists(arguments, "orderFulfillment")) {
 				// make sure this is eligible fulfillment method
 				if(listFindNoCase(arguments.sku.setting('skuEligibleFulfillmentMethods'), arguments.data.fulfillmentMethodID)) {
 					var fulfillmentMethod = this.getFulfillmentService().getFulfillmentMethod(arguments.data.fulfillmentMethodID);
-					arguments.orderFulfillment = this.getOrderFulfillment({order=arguments.order,fulfillmentMethod=fulfillmentMethod},true);
-					if(arguments.orderFulfillment.isNew()) {
-						arguments.orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
-						arguments.orderFulfillment.setOrder( arguments.order );
-						arguments.orderFulfillment.setCurrencyCode( arguments.order.getCurrencyCode() ) ;
-						// Push the fulfillment into the hibernate scope
-						getDAO().save(arguments.orderFulfillment);
+					if(!isNull(fulfillmentMethod)) {
+						arguments.orderFulfillment = this.getOrderFulfillment({order=arguments.order,fulfillmentMethod=fulfillmentMethod},true);
+						if(arguments.orderFulfillment.isNew()) {
+							if(structKeyExists(arguments.data, "orderFulfillment"))	{
+								arguments.orderFulfillment.populate( arguments.data.orderFulfillment );	
+							}
+							arguments.orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
+							arguments.orderFulfillment.setOrder( arguments.order );
+							arguments.orderFulfillment.setCurrencyCode( arguments.order.getCurrencyCode() ) ;
+							// Push the fulfillment into the hibernate scope
+							getDAO().save(arguments.orderFulfillment);
+						}
 					}
 				}
 				
@@ -1415,22 +1420,22 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 					accountAddress.setAccountAddressName(data.accountAddresses[data.addressIndex].accountAddressName);
 				}
 			
-			
 				// If there was previously a shipping Address we need to remove it and recalculate
 				if(!isNull(arguments.orderFulfillment.getShippingAddress())) {
 					arguments.orderFulfillment.removeShippingAddress();
+					arguments.orderFulfillment.setAccountAddress(accountAddress);
 					getService("ShippingService").updateOrderFulfillmentShippingMethodOptions( arguments.orderFulfillment );
 					getTaxService().updateOrderAmountsWithTaxes(arguments.orderFulfillment.getOrder());
-				}
-
 				// If there was previously an account address and we switch it, then we need to recalculate
-				if(!isNull(arguments.orderFulfillment.getAccountAddress()) && arguments.orderFulfillment.getAccountAddress().getAccountAddressID() != accountAddress.getAccountAddressID()) {
+				} else if (!isNull(arguments.orderFulfillment.getAccountAddress()) && arguments.orderFulfillment.getAccountAddress().getAccountAddressID() != accountAddress.getAccountAddressID()) {
+					arguments.orderFulfillment.setAccountAddress(accountAddress);
 					getTaxService().updateOrderAmountsWithTaxes(arguments.orderFulfillment.getOrder());
 					getService("ShippingService").updateOrderFulfillmentShippingMethodOptions( arguments.orderFulfillment );
+				// Else just set the account address
+				} else {
+					arguments.orderFulfillment.setAccountAddress(accountAddress);	
 				}
-
-				// Set the new account address in the order
-				arguments.orderFulfillment.setAccountAddress(accountAddress);
+				
 			
 			// USING SHIPPING ADDRESS
 			} else {
@@ -1464,6 +1469,7 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 			
 			// If no shippingMethodOption, then just check for a shippingMethodID that was passed in
 			} else if (structKeyExists(arguments.data, "shippingMethodID")) {
+				
 				var shippingMethod = getShippingService().getShippingMethod(arguments.data.shippingMethodID);
 				
 				// If this is a valid shipping method, then we can loop over all of the shippingMethodOptions and make sure this one exists
@@ -1506,10 +1512,17 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 		smartList.joinRelatedProperty("SlatwallOrder", "account", "left", true);
 		smartList.joinRelatedProperty("SlatwallOrder", "orderType", "left", true);
 		smartList.joinRelatedProperty("SlatwallOrder", "orderStatusType", "left", true);
+		smartList.joinRelatedProperty("SlatwallOrder", "orderOrigin", "left", true);
+		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left", true);
+		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left", true);
 		
 		smartList.addKeywordProperty(propertyIdentifier="orderNumber", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="account.firstName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="account.lastName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="account.company", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="account.primaryEmailAddress.emailAddress", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="account.primaryPhoneNumber.phoneNumber", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="orderOrigin.orderOriginName", weight=1);
 		
 		return smartList;
 	}

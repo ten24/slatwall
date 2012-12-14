@@ -346,6 +346,8 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.c
 					// If there were not error messages then que and process emails & print options
 					} else if (!isNull(entity)) {
 						
+						// TODO: Sending email needs to get moved out of this loop
+						// We need to persist the records to db before we send out emails
 						// Send out E-mails
 						if(structKeyExists(arguments.rc.processOptions, "email")) {
 							for(var emailEvent in arguments.rc.processOptions.email) {

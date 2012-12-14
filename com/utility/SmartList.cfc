@@ -16,7 +16,7 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-component displayname="Smart List" accessors="true" persistent="false" output="false" {
+component displayname="Smart List" accessors="true" persistent="false" output="false" extends="BaseObject" {
 	
 	property name="baseEntityName" type="string";
 	property name="cacheable" type="boolean";
@@ -81,17 +81,14 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 		setPageRecordsStart(arguments.pageRecordsStart);
 		setPageRecordsShow(arguments.pageRecordsShow);
 		
-		// Temporary Slatwall Specific Bug Fix For Railo
-		var baseEntity = entityNew(arguments.entityName);
-		var baseEntityMeta = getMetaData(baseEntity);
-		
-		setBaseEntityName(baseEntityMeta.entityName);
+		setBaseEntityName( getService("utilityORMService").getProperlyCasedFullEntityName( arguments.entityName ) );
 		
 		addEntity(
-			entityName=baseEntityMeta.entityName,
-			entityAlias="a#lcase(baseEntityMeta.entityName)#",
-			entityFullName=baseEntityMeta.fullName,
-			entityProperties=getPropertiesStructFromEntityMeta(baseEntityMeta)
+			entityName=getBaseEntityName(),
+			entityAlias="a#lcase(getBaseEntityName())#",
+			entityFullName=getService("utilityORMService").getProperlyCasedFullClassNameByEntityName( arguments.entityName ),
+			entityProperties=getService("utilityORMService").getPropertiesStructByEntityName( arguments.entityName ),
+			attributeCount=0
 		);
 		
 		if(structKeyExists(arguments, "data")) {
@@ -116,7 +113,11 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 				} else if(left(i,3) == "FR#variables.dataKeyDelimiter#" && isBoolean(arguments.data[i]) && arguments.data[i]) {
 					removeFilter(propertyIdentifier=right(i, len(i)-3));
 				} else if(left(i,3) == "FK#variables.dataKeyDelimiter#") {
-					addLikeFilter(propertyIdentifier=right(i, len(i)-3), value="%#arguments.data[i]#%");
+					var likeValueList = "";
+					for(var x=1; x<=listLen(arguments.data[i], variables.valueDelimiter); x++) {
+						likeValueList = listAppend(likeValueList, "%#listGetAt(arguments.data[i], x, variables.valueDelimiter)#%");
+					}
+					addLikeFilter(propertyIdentifier=right(i, len(i)-3), value=likeValueList);
 				} else if(left(i,4) == "FKR#variables.dataKeyDelimiter#" && isBoolean(arguments.data[i]) && arguments.data[i]) {
 					removeLikeFilter(propertyIdentifier=right(i, len(i)-4));
 				} else if(left(i,2) == "R#variables.dataKeyDelimiter#") {
@@ -206,98 +207,150 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 		return propertyStruct;
 	}
 	
-	public string function joinRelatedProperty(required string parentEntityName, required string relatedProperty, string joinType="", boolean fetch) {
-		var parentEntityFullName = variables.entities[ arguments.parentEntityName ].entityFullName;
-		
-		if(listLen(variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].cfc,".") < 2) {
-			var newEntityCFC = Replace(parentEntityFullName, listLast(parentEntityFullName,"."), variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].cfc);	
-		} else {
-			var newEntityCFC = variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].cfc;
-		}
-		var newEntity = createObject("component","#newEntityCFC#");
-		var newEntityMeta = getMetaData(newEntity);
-		
-		if(structKeyExists(newEntityMeta, "entityName")) {
-			var newEntityName = newEntityMeta.entityName;
-		} else {
-			var newEntityName = listLast(newEntityMeta.fullName,".");
-		}
-		
-		var aliaseOK = false;
-		var aoindex = 1;
-		var aolist = "a,b,c,d,e,f,g,h,i,j,k,l";
-		var baseAliase = newEntityName;
-		do {
-			var newEntityAlias = "#listGetAt(aolist,aoindex)##lcase(baseAliase)#";
-			if(aoindex > 1) {
-				newEntityName = "#lcase(newEntityName)#_#UCASE(listGetAt(aolist,aoindex))#";
-			}
-			if( (structKeyExists(variables.entities, newEntityName) && variables.entities[newEntityName].entityAlias == newEntityAlias && variables.entities[newEntityName].parentRelatedProperty != relatedProperty) || newEntityAlias == variables.entities[ arguments.parentEntityName ].entityAlias) {
-				aoindex++;
-			} else {
-				aliaseOK = true;
-			}
-		} while(!aliaseOK);
-		
-		// Check to see if this is a Self Join, and setup appropriatly.
-		if(newEntityAlias == variables.entities[ arguments.parentEntityName ].entityAlias) {
-			arguments.fetch = false;
-		}
-		
-		if(!structKeyExists(variables.entities,newEntityName)) {
-			arrayAppend(variables.entityJoinOrder, newEntityName);
+	public string function joinRelatedProperty(required string parentEntityName, required string relatedProperty, string joinType="", boolean fetch, boolean isAttribute=false) {
+		if(arguments.isAttribute) {
 			
-			if(variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].fieldtype == "many-to-one" && !structKeyExists(arguments, "fetch") && arguments.parentEntityName == getBaseEntityName()) {
-				arguments.fetch = true;
-			} else if(variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].fieldtype == "one-to-one" && !structKeyExists(arguments, "fetch")) {
-				arguments.fetch = true;
-			} else if(!structKeyExists(arguments, "fetch")) {
+			var newEntityMeta = getService("utilityORMService").getEntityObject( "AttributeValue" ).getThisMetaData();
+			var newEntityName = "#parentEntityName#_#UCASE(arguments.relatedProperty)#";
+			var newEntityAlias = "#variables.entities[ arguments.parentEntityName ].entityAlias#_#lcase(arguments.relatedProperty)#";
+			
+			if(!structKeyExists(variables.entities, newEntityName)) {
+				arrayAppend(variables.entityJoinOrder, newEntityName);
+				
+				confirmWhereGroup(1);
+				variables.whereGroups[1].filters["#newEntityAlias#.attribute.attributeCode"] = arguments.relatedProperty;
+				
+				addEntity(
+					entityName=newEntityName,
+					entityAlias=newEntityAlias,
+					entityFullName="Slatwall.com.entity.AttributeValue",
+					entityProperties=getPropertiesStructFromEntityMeta(newEntityMeta),
+					parentAlias=variables.entities[ arguments.parentEntityName ].entityAlias,
+					parentRelatedProperty="attributeValues",
+					joinType=arguments.joinType,
+					fetch=false
+				);
+			}
+			
+			return newEntityName;
+		} else {
+			var newEntityMeta = getService("utilityORMService").getEntityObject( variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].cfc ).getThisMetaData();
+		
+			// Figure out the newEntityName
+			if(structKeyExists(newEntityMeta, "entityName")) {
+				var newEntityName = newEntityMeta.entityName;
+			} else {
+				var newEntityName = listLast(newEntityMeta.fullName,".");
+			}
+			
+			// Figure out the newEntityAliase
+			var aliaseOK = false;
+			var aoindex = 1;
+			var aolist = "a,b,c,d,e,f,g,h,i,j,k,l";
+			var baseAliase = newEntityName;
+			do {
+				var newEntityAlias = "#listGetAt(aolist,aoindex)##lcase(baseAliase)#";
+				if(aoindex > 1) {
+					newEntityName = "#lcase(newEntityName)#_#UCASE(listGetAt(aolist,aoindex))#";
+				}
+				if( (structKeyExists(variables.entities, newEntityName) && variables.entities[newEntityName].entityAlias == newEntityAlias && variables.entities[newEntityName].parentRelatedProperty != relatedProperty) || newEntityAlias == variables.entities[ arguments.parentEntityName ].entityAlias) {
+					aoindex++;
+				} else {
+					aliaseOK = true;
+				}
+			} while(!aliaseOK);
+			
+			// Check to see if this is a Self Join, and setup appropriatly.
+			if(newEntityAlias == variables.entities[ arguments.parentEntityName ].entityAlias) {
 				arguments.fetch = false;
 			}
 			
-			addEntity(
-				entityName=newEntityName,
-				entityAlias=newEntityAlias,
-				entityFullName=newEntityMeta.fullName,
-				entityProperties=getPropertiesStructFromEntityMeta(newEntityMeta),
-				parentAlias=variables.entities[ arguments.parentEntityName ].entityAlias,
-				parentRelationship=variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].fieldtype,
-				parentRelatedProperty=variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].name,
-				joinType=arguments.joinType,
-				fetch=arguments.fetch
-			);
-		} else {
-			if(arguments.joinType != "") {
-				variables.entities[newEntityName].joinType = arguments.joinType;
+			if(!structKeyExists(variables.entities,newEntityName)) {
+				arrayAppend(variables.entityJoinOrder, newEntityName);
+				
+				if(variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].fieldtype == "many-to-one" && !structKeyExists(arguments, "fetch") && arguments.parentEntityName == getBaseEntityName()) {
+					arguments.fetch = true;
+				} else if(variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].fieldtype == "one-to-one" && !structKeyExists(arguments, "fetch")) {
+					arguments.fetch = true;
+				} else if(!structKeyExists(arguments, "fetch")) {
+					arguments.fetch = false;
+				}
+				
+				addEntity(
+					entityName=newEntityName,
+					entityAlias=newEntityAlias,
+					entityFullName=newEntityMeta.fullName,
+					entityProperties=getPropertiesStructFromEntityMeta(newEntityMeta),
+					parentAlias=variables.entities[ arguments.parentEntityName ].entityAlias,
+					parentRelatedProperty=variables.entities[ arguments.parentEntityName ].entityProperties[ arguments.relatedProperty ].name,
+					joinType=arguments.joinType,
+					fetch=arguments.fetch
+				);
+			} else {
+				if(arguments.joinType != "") {
+					variables.entities[newEntityName].joinType = arguments.joinType;
+				}
+				if(structKeyExists(arguments, "fetch")) {
+					variables.entities[newEntityName].fetch = arguments.fetch;
+				}
 			}
-			if(structKeyExists(arguments, "fetch")) {
-				variables.entities[newEntityName].fetch = arguments.fetch;
-			}
+			
+			return newEntityName;	
 		}
-		
-		return newEntityName;
 	}
 	
-	private void function addEntity(required string entityName, required string entityAlias, required string entityFullName, required struct entityProperties, string parentAlias="", string parentRelationship="",string parentRelatedProperty="", string joinType="") {
+	private void function addEntity(required string entityName, required string entityAlias, required string entityFullName, required struct entityProperties, string parentAlias="", string parentRelatedProperty="", string joinType="") {
 		variables.entities[arguments.entityName] = duplicate(arguments);
 	}
 	
 	private string function getAliasedProperty(required string propertyIdentifier, boolean fetch) {
 		var entityName = getBaseEntityName();
 		var entityAlias = variables.entities[getBaseEntityName()].entityAlias;
-		for(var i=1; i<listLen(arguments.propertyIdentifier, variables.subEntityDelimiters); i++) {
+		
+		var propertyExists = getService("utilityORMService").getHasPropertyByEntityNameAndPropertyIdentifier(entityName=entityName, propertyIdentifier=arguments.propertyIdentifier);
+		var propertyIsAttribute = false;
+		
+		if(!propertyExists) {
+			var propertyIsAttribute = getService("utilityORMService").getHasAttributeByEntityNameAndPropertyIdentifier(entityName=entityName, propertyIdentifier=arguments.propertyIdentifier);
+			if(!propertyIsAttribute) {
+				return "";	
+			}
+		}
+		
+		if(propertyIsAttribute && listLen(arguments.propertyIdentifier, variables.subEntityDelimiters) eq 1) {
 			if(structKeyExists(arguments,"fetch")){
-				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=listGetAt(arguments.propertyIdentifier, i, variables.subEntityDelimiters),fetch=arguments.fetch);
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=arguments.propertyIdentifier,fetch=arguments.fetch,isAttribute=true);
 			} else {
-				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=listGetAt(arguments.propertyIdentifier, i, variables.subEntityDelimiters));
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=arguments.propertyIdentifier,isAttribute=true);
 			}
 			entityAlias = variables.entities[entityName].entityAlias;
+		} else {
+			for(var i=1; i<listLen(arguments.propertyIdentifier, variables.subEntityDelimiters); i++) {
+				var thisProperty = listGetAt(arguments.propertyIdentifier, i, variables.subEntityDelimiters);
+				var isAttribute = false;
+				if(propertyIsAttribute && listLen(arguments.propertyIdentifier, variables.subEntityDelimiters) == i+1) {
+					isAttribute = true;
+				}
+				if(structKeyExists(arguments,"fetch")){
+					entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,fetch=arguments.fetch,isAttribute=isAttribute);
+				} else {
+					entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,isAttribute=isAttribute);
+				}
+				entityAlias = variables.entities[entityName].entityAlias;
+			}
+		}
+		
+		if(propertyIsAttribute) {
+			return "#entityAlias#.attributeValue";	
 		}
 		return "#entityAlias#.#variables.entities[entityName].entityProperties[listLast(propertyIdentifier, variables.subEntityDelimiters)].name#";
 	}
 	
 	public void function addSelect(required string propertyIdentifier, required string alias) {
-		variables.selects[getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier,fetch=false)] = arguments.alias;
+		var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier,fetch=false);
+		if(len(aliasedProperty)) {
+			variables.selects[aliasedProperty] = arguments.alias;	
+		} 
 	}
 	
 	public void function addWhereCondition(required string condition, struct conditionParams={}) {
@@ -311,8 +364,9 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 		} else {
 			var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
 		}
-		
-		variables.whereGroups[arguments.whereGroup].filters[aliasedProperty] = arguments.value;
+		if(len(aliasedProperty)) {
+			variables.whereGroups[arguments.whereGroup].filters[aliasedProperty] = arguments.value;	
+		}
 	}
 	
 	public void function removeFilter(required string propertyIdentifier, numeric whereGroup=1) {
@@ -322,7 +376,6 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 			structDelete(variables.whereGroups[arguments.whereGroup].filters, aliasedProperty);
 		};
 	}
-	
 	public any function getFilters(string propertyIdentifier, numeric whereGroup=1) {
 		confirmWhereGroup(arguments.whereGroup);
 		if( structKeyExists(arguments, "propertyIdentifier") ) {
@@ -338,8 +391,9 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 	public void function addLikeFilter(required string propertyIdentifier, required string value, numeric whereGroup=1) {
 		confirmWhereGroup(arguments.whereGroup);
 		var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
-		
-		variables.whereGroups[arguments.whereGroup].likeFilters[aliasedProperty] = arguments.value;
+		if(len(aliasedProperty)) {
+			variables.whereGroups[arguments.whereGroup].likeFilters[aliasedProperty] = arguments.value;	
+		}
 	}
 	public void function removeLikeFilter(required string propertyIdentifier, whereGroup=1) {
 		confirmWhereGroup(arguments.whereGroup);
@@ -348,19 +402,68 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 			structDelete(variables.whereGroups[arguments.whereGroup].likeFilters, aliasedProperty);
 		};
 	}
+	public any function getLikeFilters(string propertyIdentifier, numeric whereGroup=1) {
+		confirmWhereGroup(arguments.whereGroup);
+		if( structKeyExists(arguments, "propertyIdentifier") ) {
+			var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
+			if(structKeyExists(variables.whereGroups[ arguments.whereGroup ].likeFilters, aliasedProperty)){
+				return variables.whereGroups[ arguments.whereGroup ].likeFilters[aliasedProperty];
+			}
+			return "";
+		}
+		return variables.whereGroups[ arguments.whereGroup ].likeFilters; 
+	}
 	
 	public void function addInFilter(required string propertyIdentifier, required string value, numeric whereGroup=1) {
 		confirmWhereGroup(arguments.whereGroup);
 		var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
-		
-		variables.whereGroups[arguments.whereGroup].inFilters[aliasedProperty] = arguments.value;
+		if(len(aliasedProperty)) {
+			variables.whereGroups[arguments.whereGroup].inFilters[aliasedProperty] = arguments.value;	
+		}
+	}
+	public void function removeInFilter(required string propertyIdentifier, whereGroup=1) {
+		confirmWhereGroup(arguments.whereGroup);
+		var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
+		if(structKeyExists(variables.whereGroups[arguments.whereGroup].inFilters, aliasedProperty)){
+			structDelete(variables.whereGroups[arguments.whereGroup].inFilters, aliasedProperty);
+		};
+	}
+	public any function getInFilters(string propertyIdentifier, numeric whereGroup=1) {
+		confirmWhereGroup(arguments.whereGroup);
+		if( structKeyExists(arguments, "propertyIdentifier") ) {
+			var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
+			if(structKeyExists(variables.whereGroups[ arguments.whereGroup ].inFilters, aliasedProperty)){
+				return variables.whereGroups[ arguments.whereGroup ].inFilters[aliasedProperty];
+			}
+			return "";
+		}
+		return variables.whereGroups[ arguments.whereGroup ].inFilters; 
 	}
 	
 	public void function addRange(required string propertyIdentifier, required string value, numeric whereGroup=1) {
 		confirmWhereGroup(arguments.whereGroup);
 		var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
-		
-		variables.whereGroups[arguments.whereGroup].ranges[aliasedProperty] = arguments.value;
+		if(len(aliasedProperty)) {
+			variables.whereGroups[arguments.whereGroup].ranges[aliasedProperty] = arguments.value;
+		}
+	}
+	public void function removeRange(required string propertyIdentifier, whereGroup=1) {
+		confirmWhereGroup(arguments.whereGroup);
+		var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
+		if(structKeyExists(variables.whereGroups[arguments.whereGroup].ranges, aliasedProperty)){
+			structDelete(variables.whereGroups[arguments.whereGroup].ranges, aliasedProperty);
+		};
+	}
+	public any function getRanges(string propertyIdentifier, numeric whereGroup=1) {
+		confirmWhereGroup(arguments.whereGroup);
+		if( structKeyExists(arguments, "propertyIdentifier") ) {
+			var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
+			if(structKeyExists(variables.whereGroups[ arguments.whereGroup ].ranges, aliasedProperty)){
+				return variables.whereGroups[ arguments.whereGroup ].ranges[aliasedProperty];
+			}
+			return "";
+		}
+		return variables.whereGroups[ arguments.whereGroup ].ranges; 
 	}
 	
 	public void function addOrder(required string orderStatement, numeric position) {
@@ -370,12 +473,16 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 			orderDirection = "DESC";
 		}
 		var aliasedProperty = getAliasedProperty(propertyIdentifier=propertyIdentifier);
-		
-		arrayAppend(variables.orders, {property=aliasedProperty, direction=orderDirection});
+		if(len(aliasedProperty)) {
+			arrayAppend(variables.orders, {property=aliasedProperty, direction=orderDirection});
+		}
 	}
 
 	public void function addKeywordProperty(required string propertyIdentifier, required numeric weight) {
-		variables.keywordProperties[getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier)] = arguments.weight;
+		var aliasedProperty = getAliasedProperty(propertyIdentifier=propertyIdentifier);
+		if(len(aliasedProperty)) {
+			variables.keywordProperties[aliasedProperty] = arguments.weight;
+		}
 	}
 	
 	public void function addHQLParam(required string paramName, required any paramValue) {
@@ -620,19 +727,35 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 	}
 
 	public array function getRecords(boolean refresh=false) {
-		if( !structKeyExists(variables, "records") || arguments.refresh == true) {
-			variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+		try {
+			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
+				variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+			}
+			return variables.records;
+		} catch(any e) {
+			writeDump(variables.wheregroups);
+			writeDump(getHQL());
+			writeDump(getHQLParams());
+			writeDump(e);
+			abort;	
 		}
-		return variables.records;
 	}
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		if( !structKeyExists(variables, "pageRecords")) {
-			saveState();
-			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+		try {
+			if( !structKeyExists(variables, "pageRecords")) {
+				saveState();
+				variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+			}
+			return variables.pageRecords;
+		} catch(any e) {
+			writeDump(variables.wheregroups);
+			writeDump(getHQL());
+			writeDump(getHQLParams());
+			writeDump(e);
+			abort;		
 		}
-		return variables.pageRecords;
 	}
 	
 	public numeric function getRecordsCount() {
@@ -683,7 +806,7 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL=variables.currentURL) {
 		// Generate full URL if one wasn't passed in
 		if(arguments.currentURL == "") {
-			arguments.currentURL &= CGI.SCRIPT_NAME;
+			//arguments.currentURL &= CGI.SCRIPT_NAME;
 			if(CGI.PATH_INFO != "" && CGI.PATH_INFO neq CGI.SCRIPT_NAME) {
 				arguments.currentURL &= CGI.PATH_INFO;	
 			}
@@ -724,7 +847,7 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 					} else if(arguments.appendValues) {
 						for(var i=1; i<=listLen(newQueryKeys[key], variables.valueDelimiter); i++) {
 							var thisVal = listGetAt(newQueryKeys[key], i, variables.valueDelimiter);
-							var findCount = listFind(oldQueryKeys[key], thisVal, variables.valueDelimiter);
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, variables.valueDelimiter);
 							if(findCount) {
 								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, variables.valueDelimiter);
 								if(arguments.toggleKeys) {
@@ -733,7 +856,11 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 							}
 						}
 						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
-							modifiedURL &= "#key#=#oldQueryKeys[key]##variables.valueDelimiter##newQueryKeys[key]#&";	
+							if(left(key, 1) eq "r") {
+								modifiedURL &= "#key#=#newQueryKeys[key]#&";	
+							} else {
+								modifiedURL &= "#key#=#oldQueryKeys[key]##variables.valueDelimiter##newQueryKeys[key]#&";
+							}
 						} else if(len(oldQueryKeys[key])) {
 							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 						}
@@ -756,10 +883,6 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 				modifiedURL &= "P#variables.dataKeyDelimiter#Start=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Start' ]#&";
 			} else if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Current") ) {
 				modifiedURL &= "P#variables.dataKeyDelimiter#Current=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Current' ]#&";
-			} else if( structKeyExists(oldQueryKeys, "P#variables.dataKeyDelimiter#Start") ) {
-				modifiedURL &= "P#variables.dataKeyDelimiter#Start=#oldQueryKeys[ 'P#variables.dataKeyDelimiter#Start' ]#&";
-			} else if( structKeyExists(oldQueryKeys, "P#variables.dataKeyDelimiter#Current") ) {
-				modifiedURL &= "P#variables.dataKeyDelimiter#Current=#oldQueryKeys[ 'P#variables.dataKeyDelimiter#Current' ]#&";
 			}
 		}
 		
@@ -769,13 +892,34 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 		} else if( structKeyExists(oldQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
 			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#oldQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
 		}
-	
-		return left(modifiedURL, len(modifiedURL)-1);
+		
+		if(right(modifiedURL, 1) eq "&" || right(modifiedURL, 1) eq "?") {
+			modifiedURL = left(modifiedURL, len(modifiedURL)-1);
+		}
+		
+		// Always return lower case
+		return lcase(modifiedURL);
 	}
 	
-	public boolean function isFilterApplied(required string filter,required string value){
+	public boolean function isFilterApplied(required string filter, required string value){
 		var exists = false;
 		if(structKeyExists(url,"F#variables.dataKeyDelimiter##arguments.filter#") && listFindNoCase(url["F#variables.dataKeyDelimiter##arguments.filter#"],arguments.value,variables.valueDelimiter)){
+			exists = true;
+		}
+		return exists;
+	}
+	
+	public boolean function isLikeFilterApplied(required string filter, required string value){
+		var exists = false;
+		if(structKeyExists(url,"FK#variables.dataKeyDelimiter##arguments.filter#") && listFindNoCase(url["FK#variables.dataKeyDelimiter##arguments.filter#"],arguments.value,variables.valueDelimiter)){
+			exists = true;
+		}
+		return exists;
+	}
+	
+	public boolean function isRangeApplied(required string range, required string value){
+		var exists = false;
+		if(structKeyExists(url,"R#variables.dataKeyDelimiter##arguments.range#") and url["R#variables.dataKeyDelimiter##arguments.range#"] eq arguments.value){
 			exists = true;
 		}
 		return exists;
@@ -824,7 +968,7 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 		for(var i=1; i<=arrayLen(variables.whereGroups); i++) {
 			for(var key in variables.whereGroups[i].ranges) {
 				if(key == rangeProperty) {
-					structDelete(variables.whereGroups[i].filters, key);
+					structDelete(variables.whereGroups[i].ranges, key);
 				}
 			}
 		}

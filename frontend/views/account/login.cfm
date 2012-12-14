@@ -78,7 +78,7 @@ Notes:
 			<button type="submit">Login</button>
 			<a href="##" class="forgotPassword">Forgot Password</a>
 			<div class="forgotPassword" style="display:none;">
-				<p>#$.slatwall.rbKey('user.forgotloginmessage')#</p>
+				<p>#$.slatwall.rbKey('validate.account.forgotloginmessage')#</p>
 				Email Address: <input type="text" name="forgotPasswordEmail" value="" /><button type="submit">Submit</button>
 			</div>
 		</form>

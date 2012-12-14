@@ -45,7 +45,12 @@ Notes:
 	<cfparam name="attributes.valueOptions" type="array" default="#arrayNew(1)#" />
 	<cfparam name="attributes.valueOptionsSmartList" type="any" default="" />
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />
-	
+	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
+		
+	<cfparam name="attributes.autocompletePropertyIdentifiers" type="string" default="" />
+	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />
+	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" /> 
+	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -73,7 +78,6 @@ Notes:
 			</cfif>
 		</cfloop>
 	</cfsilent>
-	
 	<cfswitch expression="#attributes.fieldType#">
 		<cfcase value="hidden">
 			<cfoutput>
@@ -166,6 +170,32 @@ Notes:
 		<cfcase value="text">
 			<cfoutput>
 				<input type="text" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" class="#attributes.fieldClass#" #attributes.fieldAttributes# />
+			</cfoutput>
+		</cfcase>
+		<cfcase value="textautocomplete">
+			<cfoutput>
+				<cfset suggestionsID = createUUID() />
+				<div class="autoselect-container">
+					<input type="hidden" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" />
+					<input type="text" name="#attributes.fieldName#-autocompletesearch" class="textautocomplete #attributes.fieldClass#" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
+					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="icon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
+					<div class="autocomplete-options" style="display:none;">
+						<ul id="#suggestionsID#">
+							<cfif len(attributes.value)>
+								<li>
+									<a href="##" class="textautocompleteadd" data-acvalue="#attributes.value#" data-acname="Greg Moser">
+									<cfloop list="#attributes.autocompletePropertyIdentifiers#" index="pi">
+										<span class="#pi#">#attributes.autocompleteSelectedValueDetails[ pi ]#</span>
+									</cfloop>
+									</a>
+								</li>
+							</cfif>
+						</ul>
+					</div>
+					<cfif len(attributes.modalCreateAction)>
+						<cf_SlatwallActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
+					</cfif>
+				</div>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textarea">
