@@ -76,6 +76,7 @@ Notes:
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />			<!--- hint: This is the value property that will get assigned to the hidden field when selected --->
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" /> 		<!--- hint: This is the single name property that shows once an option is selected --->
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
+	<cfparam name="attributes.autocompleteShow" type="integer" default="10" />
 	
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is uesd to pass specific additional fieldAttributes when in edit mode --->
 	
@@ -130,6 +131,7 @@ Notes:
 		
 		<!--- Setup textautocomplete values if they wern't passed in --->
 		<cfif attributes.fieldType eq "textautocomplete">
+			<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-show="#attributes.autocompleteShow#"', ' ') />
 			<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-acpropertyidentifiers="#attributes.autocompletePropertyIdentifiers#"', ' ') />
 			<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-entityName="#attributes.object.getPropertyMetaData(attributes.property).cfc#"', ' ') />
 			<cfif not len(attributes.autocompleteValueProperty)>
