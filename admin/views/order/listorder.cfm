@@ -60,9 +60,9 @@ Notes:
 <cf_SlatwallListingDisplay smartList="#rc.orderSmartList#" 
 							recordDetailAction="admin:order.detailorder">
 	<cf_SlatwallListingColumn propertyIdentifier="orderNumber" search="true" />
-	<cf_SlatwallListingColumn tdclass="primary" propertyIdentifier="account.company" />
-	<cf_SlatwallListingColumn propertyIdentifier="account.firstName" />
-	<cf_SlatwallListingColumn propertyIdentifier="account.lastName" />
+	<cf_SlatwallListingColumn tdclass="primary" propertyIdentifier="account.company" search="true"/>
+	<cf_SlatwallListingColumn propertyIdentifier="account.firstName" search="true" />
+	<cf_SlatwallListingColumn propertyIdentifier="account.lastName" search="true" />
 	<cf_SlatwallListingColumn propertyIdentifier="orderType.type" filter=true />
 	<cf_SlatwallListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" filter="true" />
 	<cf_SlatwallListingColumn propertyIdentifier="orderOrigin.orderOriginName" filter="true" />
