@@ -524,7 +524,7 @@ function updateTextAutocompleteSuggestions( autocompleteField, data ) {
 			keywords: jQuery(autocompleteField).val()
 		};
 		thisData["f:activeFlag"] = 1;
-		thisData["P:Show"] = 4;
+		thisData["P:Show"] = jQuery( autocompleteField ).data('show');
 		var piarr = jQuery(autocompleteField).data('acpropertyidentifiers').split(',');
 		if( piarr.indexOf( jQuery(autocompleteField).data('acvalueproperty') ) === -1 ) {
 			thisData["propertyIdentifiers"] += ',' + jQuery(autocompleteField).data('acvalueproperty');
