@@ -144,6 +144,13 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 		
 		// set next bill date
 		subscriptionUsage.setNextBillDate(arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getEndDate());
+		
+		// Force Next Bill Date to day of the month specified in Subscription Term
+		if(isnumeric(arguments.orderItem.getSku().getSubscriptionTerm().getForceBillingOnDay())){
+			subscriptionUsage.setNextBillDate(getForceNextBillDate(arguments.orderItem.getSku().getSubscriptionTerm().getForceBillingOnDay(), arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getTermMonths(), arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getTermYears(), subscriptionUsage.getNextBillDate()));
+		}
+		
+		// set expiration date
 		subscriptionUsage.setExpirationDate(subscriptionUsage.getNextBillDate());
 		
 		// set next reminder date to now, it will get updated when the reminder gets sent
@@ -544,6 +551,24 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 				} 
 			}
 		}
+	}
+	
+	// force monthly or yearly payments to occur on a certain day of the month (only applicable if payment term is months or years)
+	// if today's calendar day is greater than the iForceBillingOnDay, pushes NextBillDate to the next month
+	public any function getForceNextBillDate(required any dayOfMonthToForce, any termMonths, any termYears, any nextBillDate, any startDate = now()) {
+		var rNextBillDate = arguments.nextBillDate;
+		var forceBillingOnDay = int(arguments.dayOfMonthToForce);
+		// can only force payment day on month or year payment terms
+		if(not isnull(arguments.termMonths) or not isnull(arguments.termYears)){ 
+			// set nextBillDate's "day" to forceBillingOnDay
+			rNextBillDate=DateAdd("d",forceBillingOnDay-Day(rNextBillDate),rNextBillDate);
+			// is today's calendar day greater than the iForceBillingOnDay?
+			if(Day(now()) gt forceBillingOnDay) {
+				// push NextBillDate to the next month since we've already charged for the next period in the initial purchase
+				rNextBillDate = DateAdd("m",1,rNextBillDate);
+			}
+		}
+		return rNextBillDate;
 	}
 	
 

@@ -54,6 +54,7 @@ Notes:
 				<cf_SlatwallPropertyDisplay object="#rc.subscriptionTerm#" property="autoPayFlag" edit="#rc.edit#">
 				<cf_SlatwallPropertyDisplay object="#rc.subscriptionTerm#" property="autoRetryPaymentDays" edit="#rc.edit#">
 				<cf_SlatwallPropertyDisplay object="#rc.subscriptionTerm#" property="renewalReminderDays" edit="#rc.edit#">
+				<cf_SlatwallPropertyDisplay object="#rc.subscriptionTerm#" property="forceBillingOnDay" edit="#rc.edit#">
 			</cf_SlatwallPropertyList>
 		</cf_SlatwallDetailHeader>
 
