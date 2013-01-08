@@ -61,10 +61,10 @@ component extends="mura.plugin.plugincfc" output="false" {
 	
 	// Bundled up here, later we unbundle from from utilities
 	public void function toBundle(pluginConfig, bundle, siteid) {
-		
-		// Add DB Data to the /plugin/customSettings folder
-		var bundleUtility = createObject("component", "integrationsServices.mura.bundleUtility").init();
-		bundleUtility.toBundle(argumentcollection=arguments);
+
+	    // Add DB Data to the /plugin/customSettings folder
+	    var bundleUtility = createObject("component", "Slatwall.integrationServices.mura.bundleUtility").init();
+	    bundleUtility.toBundle(argumentcollection=arguments);
 	}
 		
 }
