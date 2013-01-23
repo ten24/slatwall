@@ -41,6 +41,5 @@ Notes:
 <cfoutput>
 	<cf_SlatwallListingDisplay smartList="#rc.orderItem.getAppliedPromotionsSmartList()#">
 		<cf_SlatwallListingColumn tdclass="primary" propertyIdentifier="promotion.promotionName" />
-		<cf_SlatwallListingColumn propertyIdentifier="amount" />
 	</cf_SlatwallListingDisplay>
 </cfoutput>
