@@ -55,7 +55,7 @@ Notes:
 		</cf_HibachiDetailHeader>
 		
 		<cf_HibachiTabGroup object="#rc.brand#" allowCustomAttributes="true">
-			<cf_HibachiTab view="admin:entity/brandtabs/products" />
+			<cf_HibachiTab view="admin:entity/brandtabs/products" text="#$.slatwall.rbkey('entity.brand.products')#" />
 			<cf_HibachiTab view="admin:entity/brandtabs/vendors" />
 			<cf_HibachiTab view="admin:entity/brandtabs/brandsettings" />
 		</cf_HibachiTabGroup>
