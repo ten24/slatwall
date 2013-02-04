@@ -72,34 +72,14 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 	
 	private string function getRequestData(required any requestBean){
 		var requestData = "";
-		requestData = "TENDER=C&VERBOSITY=#variables.verbosity#";
 		
 		requestData = listAppend(requestData,getLoginNVP(),"&");
 		requestData = listAppend(requestData,getPaymentNVP(requestBean),"&");
 		requestData = listAppend(requestData,getCustomerNVP(requestBean),"&");
 		
-		if(variables.transactionCodes[arguments.requestBean.getTransactionType()] == "Capture" || variables.transactionCodes[arguments.requestBean.getTransactionType()] == "Return"){
-			requestData = listAppend(requestData,"ORIGID=#requestBean.getProviderTransactionID()#","&");
+		if(variables.transactionCodes[arguments.requestBean.getTransactionType()] == "Return" || variables.transactionCodes[arguments.requestBean.getTransactionType()] == "Capture"){
+			requestData = listAppend(requestData,"PNRef=#requestBean.getProviderTransactionID()#","&");
 		}
-		
-		// This is a bit of a hack because PayFlow Pro doesn't allow for second delay capture on an original authroization code.  So if the transactionType is delayed capture, and we have already captured a partial... then we will need to just recharge
-	/*	var forceSale = false;
-		if( arguments.requestBean.getTransactionType() eq "chargePreAuthorization" ) {
-			var query = new Query();
-			query.setSQL("SELECT paymentTransactionID FROM SlatwallPaymentTransaction WHERE orderPaymentID = '#arguments.requestBean.getOrderPaymentID()#' AND transactionType = 'chargePreAuthorization' AND authorizationCode IN (SELECT authorizationCode FROM SlatwallPaymentTransaction WHERE providerTransactionID='#requestBean.getProviderTransactionID()#')"); 
-			var qresults = query.Execute().getResult();
-			
-			if(qresults.recordCount) {
-				forceSale = true;
-			}
-		}
-		
-		if(forceSale) {
-			requestData = listAppend(requestData, "TRXTYPE=S", "&");
-		} else {
-			requestData = listAppend(requestData, "TRXTYPE=#variables.transactionCodes[arguments.requestBean.getTransactionType()]#", "&");
-		}*/
-		// END HACK
 		
 		return requestData;
 	}
@@ -107,60 +87,26 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 	private string function getLoginNVP(){
 		var loginData = [];
 		arrayAppend(loginData,"UserName=#setting('userName')#");
-		arrayAppend(loginData,"PARTNER=#setting('partnerID')#");
-		arrayAppend(loginData,"VENDOR=#setting('vendorID')#");
-		arrayAppend(loginData,"Password=Password123");
+		arrayAppend(loginData,"Password=#setting('password')#");
 		return arrayToList(loginData,"&");
 	}
 	
 	private string function getPaymentNVP(required any requestBean){
 		var paymentData = [];
-		arrayAppend(paymentData,"ACCT[#len(requestBean.getCreditCardNumber())#]=#requestBean.getCreditCardNumber()#");
-		arrayAppend(paymentData,"EXPDATE[4]=#numberFormat(Left(requestBean.getExpirationMonth(),2),'00')##Right(requestBean.getExpirationYear(),2)#");
-		arrayAppend(paymentData,"CVNUM[#len(requestBean.getSecurityCode())#]=#requestBean.getSecurityCode()#");
-		arrayAppend(paymentData,"AMT[#len(requestBean.getTransactionAmount())#]=#requestBean.getTransactionAmount()#");
-		
-		// Try to populate the custom one and two for order payments
-	/*	if(!isNull(requestBean.getOrderPaymentID()) && len(requestBean.getOrderPaymentID())) {
-			var entity = getService("orderService").getOrderPayment( requestBean.getOrderPaymentID() );
-			var template1 = setting('orderPaymentCommentOneTemplate');
-			var template2 = setting('orderPaymentCommentTwoTemplate');
-		} else if (!isNull(requestBean.getAccountPaymentID()) && len(requestBean.getAccountPaymentID())) {
-			var entity = getService("accountService").getAccountPayment( requestBean.getAccountPaymentID() );
-			var template1 = setting('accountPaymentCommentOneTemplate');
-			var template2 = setting('accountPaymentCommentTwoTemplate');
-		}
-		*/
-		if(!isNull(entity)) {
-			var comment1 = entity.stringReplace(template1);
-			var comment2 = entity.stringReplace(template2);
-			
-			if(len(comment1) gt 128) {
-				comment1 = left(comment1, 128);	
-			}
-			if(len(comment2) gt 128) {
-				comment2 = left(comment2, 128);
-			}
-			
-			arrayAppend(paymentData,"COMMENT1[#len(comment1)#]=#comment1#");
-			arrayAppend(paymentData,"COMMENT2[#len(comment2)#]=#comment2#");			
-		}
+		arrayAppend(paymentData,"CardNum=#requestBean.getCreditCardNumber()#");
+		arrayAppend(paymentData,"ExpDate=#numberFormat(Left(requestBean.getExpirationMonth(),2),'00')##Right(requestBean.getExpirationYear(),2)#");
+		arrayAppend(paymentData,"CVNum=#requestBean.getSecurityCode()#");
+		arrayAppend(paymentData,"TransType=#variables.transactionCodes[requestBean.getTransactionType()]#");
+		arrayAppend(paymentData,"Amount=#requestBean.getTransactionAmount()#");
 		
 		return arrayToList(paymentData,"&");
 	}
 	
 	private string function getCustomerNVP(required any requestBean){
 		var customerData = [];
-		//arrayAppend(customerData,"CUSTREF[#len(requestBean.getOrderID())#]=#requestBean.getOrderID()#");
-		//arrayAppend(customerData,"CUSTCODE[#len(requestBean.getAccountID())#]=#requestBean.getAccountID()#");
-		arrayAppend(customerData,"FIRSTNAME[#len(requestBean.getAccountFirstName())#]=#requestBean.getAccountFirstName()#");
-		arrayAppend(customerData,"LASTNAME[#len(requestBean.getAccountLastName())#]=#requestBean.getAccountLastName()#");
-		arrayAppend(customerData,"STREET[#len(requestBean.getBillingStreetAddress())#]=#requestBean.getBillingStreetAddress()#");
-		arrayAppend(customerData,"CITY[#len(requestBean.getBillingCity())#]=#requestBean.getBillingCity()#");
-		arrayAppend(customerData,"STATE[#len(requestBean.getBillingStateCode())#]=#requestBean.getBillingStateCode()#");
-		arrayAppend(customerData,"ZIP[#len(requestBean.getBillingPostalCode())#]=#requestBean.getBillingPostalCode()#");
-		arrayAppend(customerData,"EMAIL[#len(requestBean.getAccountPrimaryEmailAddress())#]=#requestBean.getAccountPrimaryEmailAddress()#");
-		arrayAppend(customerData,"PHONENUM[#len(requestBean.getAccountPrimaryPhoneNumber())#]=#requestBean.getAccountPrimaryPhoneNumber()#");
+		arrayAppend(customerData,"NameOnCard=#requestBean.getAccountFirstName()#");
+		arrayAppend(customerData,"Street=#requestBean.getBillingStreetAddress()#");
+		arrayAppend(customerData,"Zip=#requestBean.getBillingPostalCode()#");
 		return arrayToList(customerData,"&");
 	}
 	
@@ -168,24 +114,20 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 		
 		var httpRequest = new http();
 		httpRequest.setMethod("POST");
-		httpRequest.setUrl(getGatewayURL() & requestData);
+		httpRequest.setUrl(getGatewayURL());
 		httpRequest.setPort(getGatewayPort());
 		httpRequest.setTimeout(variables.timeout);
 		httpRequest.setResolveurl(false);
 		
 		httpRequest.addParam(type="header",name="Content-Type",VALUE="text/namevalue");
 		httpRequest.addParam(type="header",name="Content-Length",VALUE="#Len(requestData)#");
-		httpRequest.addParam(type="header",name="Host",value="#getGatewayAddress()#");
-		httpRequest.addParam(type="header",name="X-VPS-REQUEST-ID",VALUE="#arguments.requestID#");
-		httpRequest.addParam(type="header",name="X-VPS-CLIENT-TIMEOUT",VALUE="#variables.timeout#");
-		httpRequest.addParam(type="header",name="X-VPS-VIT-INTEGRATION-PRODUCT",VALUE="Slatwall");
 		httpRequest.addParam(type="body",value="#requestData#");
 		
 		return httpRequest.send().getPrefix();
 	}
 	
 	private string function getGatewayURL(){
-		return "https://" & getGatewayAddress() & "?";
+		return "https://" & getGatewayAddress();
 	}
 	
 	private numeric function getGatewayPort(){
@@ -202,29 +144,21 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 	
 	private any function getResponseBean(required struct rawResponse, required any requestData, required any requestBean){
 		var response = new Slatwall.model.transient.payment.CreditCardTransactionResponseBean();
-		var responseDataArray = listToArray(rawResponse.fileContent,"&");
-		var responseData = {result="",respmsg="",authcode="",pnref="",avsaddr="",avszip="",cvv2match=""};
-		for(var item in responseDataArray){
-			responseData[listFirst(item,"=")] = listRest(item,"=");
-		}
 		
-		// Populate the data with the raw response & request
-		var data = {
-			responseData = arguments.rawResponse,
-			requestData = arguments.requestData
-		};
-		response.setData(data);
+		var xmlResponse = XmlParse(REReplace(rawResponse.fileContent, "^[^<]*", "", "one"));
+		
+		response.setData(xmlResponse);
 		
 		// Add message for what happened
-		response.addMessage(responseData["result"], responseData["respmsg"]);
+		response.addMessage("Result", xmlResponse.Response.RespMSG);
 		
 		// Set the status Code
-		response.setStatusCode(responseData["result"]);
+		response.setStatusCode(xmlResponse.Response.Result.xmlText);
 		
 		// Check to see if it was successful
-		if(responseData["result"] != 0) {
+		if(xmlResponse.Response.Result.xmlText != 0) {
 			// Transaction did not go through
-			response.addError(responseData["result"], responseData["respmsg"]);
+			response.addError("Error", xmlResponse.Response.RespMSG.xmlText);
 		} else {
 			if(requestBean.getTransactionType() == "authorize") {
 				response.setAmountAuthorized(requestBean.getTransactionAmount());
@@ -238,23 +172,32 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 			}
 		}
 		
-		response.setTransactionID(responseData["pnref"]);
-		response.setAuthorizationCode(responseData["authcode"]);
-		
-		if(responseData["avsaddr"] == 'Y' && responseData["avszip"] == 'Y') {
-			response.setAVSCode("Y");
-		} else if(responseData["avsaddr"] == 'N' && responseData["avszip"] == 'Y') {
-			response.setAVSCode("Z");
-		} else if(responseData["avsaddr"] == 'N' && responseData["avszip"] == 'N') {
-			response.setAVSCode("N");
-		} else {
-			response.setAVSCode("E");
+		if(structKeyExists(xmlResponse.Response, "PNRef")) {
+			response.setTransactionID(xmlResponse.Response.PNRef.xmlText);
 		}
 		
-		if(responseData["cvv2match"] == 'Y') {
-			response.setSecurityCodeMatch(true);
-		} else {
-			response.setSecurityCodeMatch(false);
+		if(structKeyExists(xmlResponse.Response, "AuthCode")) {
+			response.setAuthorizationCode(xmlResponse.Response.AuthCode.xmlText);
+		}
+		
+		if(structKeyExists(xmlResponse.Response, "GetAVSResult")) {
+			if(xmlResponse.Response.GetAVSResult.xmlText == 'Y') {
+				response.setAVSCode("Y");
+			} else if(xmlResponse.Response.GetAVSResult.xmlText == 'Z') {
+				response.setAVSCode("Z");
+			} else if(xmlResponse.Response.GetAVSResult.xmlText == 'N') {
+				response.setAVSCode("N");
+			} else {
+				response.setAVSCode("E");
+			}
+		}
+		
+		if(structKeyExists(xmlResponse.Response, "GetCVResult")) {
+			if(xmlResponse.Response.GetCVResult.xmlText == 'M') {
+				response.setSecurityCodeMatch(true);
+			} else {
+				response.setSecurityCodeMatch(false);
+			}
 		}
 		
 		return response;
