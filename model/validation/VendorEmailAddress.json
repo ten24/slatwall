@@ -1,0 +1,6 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"emailAddress":			[{"contexts":"save","required":true,"dataType":"email"}]
+	}
+}

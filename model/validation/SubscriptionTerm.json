@@ -1,0 +1,9 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"subscriptionTermName":			[{"contexts":"save","required":true}],
+		"initialTerm":					[{"contexts":"save","required":true}],
+		"renewalTerm":					[{"contexts":"save","required":true}],
+		"skus":							[{"contexts":"delete","maxCollection":0}]
+	}
+}

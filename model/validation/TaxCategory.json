@@ -1,0 +1,6 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"taxCategoryName":			[{"contexts":"save","required":true}]
+	}
+}

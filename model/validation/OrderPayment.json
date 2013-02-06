@@ -1,0 +1,19 @@
+{
+	"contexts":["save","edit","delete","chargePreAuthorization","authorizeAndCharge","authorize","credit"],
+	"properties":{
+		"orderPaymentID":		[{"contexts":"delete","maxLength":0}],
+		"paymentMethodType":	[{"contexts":"save","required":true}],
+		"nameOnCreditCard":		[{"contexts":"save","required":true}],
+		"creditCardNumber":		[{"contexts":"save","required":true,"dataType":"creditCardNumber"}],
+		"amountUnauthorized":	[{"contexts":"authorize","minValue":0.01}],
+		"amountUncaptured":		[{"contexts":"chargePreAuthorization","minValue":0.01}],
+		"amountUnreceived":		[{"contexts":"authorizeAndCharge","minValue":0.01}],
+		"amountUncredited":		[{"contexts":"placeOrder","eqProperty":"paymentAmountTotal"}]
+		"paymentMethodType":	[{"contexts":"chargePreAuthorization,authorizeAndCharge,authorize,credit","inList":"creditCard"}],
+		"orderStatusCode":		[
+		    {"contexts":"chargePreAuthorization,authorizeAndCharge,authorize,credit","inList":"ostNew,ostProcessing,ostOnHold"},
+			{"contexts":"edit","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
+		],
+		"termPaymentAccount":	[{"contexts":"save","required":true}]
+	}
+}

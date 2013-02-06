@@ -1,0 +1,8 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"priceGroupName":					[{"contexts":"save","required":true}],
+		"priceGroupCode":					[{"contexts":"save","required":true}],
+		"priceGroupCode":					[{"contexts":"save","required":true,"dataType":"numeric"}]
+	}
+}

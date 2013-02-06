@@ -1,0 +1,9 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"roundingRuleName":			[{"contexts":"save","required":true}],
+		"roundingRuleExpression":	[{"contexts":"save","method":"hasExpressionWithListOfNumericValuesOnly"}],
+		"roundingRuleDirection":	[{"contexts":"save","required":true}],
+		"priceGroupRates":			[{"contexts":"delete","maxCollection":0}]
+	}
+}

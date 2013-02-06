@@ -1,0 +1,6 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"orderFulfillments":		[{"contexts":"delete","maxCollection":0}]
+	}
+}

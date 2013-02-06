@@ -1,0 +1,7 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"imageName":		[{"contexts":"save","required":true}],
+		"imageType":		[{"contexts":"save","required":true}]
+	}
+}

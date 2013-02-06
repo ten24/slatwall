@@ -1,0 +1,10 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"minWeight":		[{"contexts":"save","dataType":"numeric"}],
+		"maxWeight":		[{"contexts":"save","dataType":"numeric"}],
+		"minPrice":			[{"contexts":"save","dataType":"numeric"}],
+		"maxPrice":			[{"contexts":"save","dataType":"numeric"}],
+		"shippingRate":		[{"contexts":"save","required":true,"dataType":"numeric"}]
+	}
+}

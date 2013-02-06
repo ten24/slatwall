@@ -9,11 +9,11 @@
 			{"contexts":"addOrderPayment,cancelOrder,closeOrder","inList":"ostNew,ostProcessing,ostOnHold"},
 			{"contexts":"createReturn","inList":"ostNew,ostProcessing,ostOnHold,ostClosed"},
 			{"contexts":"takeOffHold","inList":"ostOnHold"},
-			{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"},
+			{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"}
 		],
-		"quantityDelivered":		[
+		"quantityDelivered":[
 			{"contexts":"cancelOrder","maxValue":0},
-			{"contexts":"createReturn","minValue":0}   
+			{"contexts":"createReturn","minValue":1}   
 		],
 		"quantityReceived":	[{"contexts":"cancelOrder","maxValue":0}],
 		"total":			[{"contexts":"placeOrder","eqProperty":"paymentAmountTotal"}]

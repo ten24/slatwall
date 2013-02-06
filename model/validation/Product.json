@@ -1,0 +1,18 @@
+{
+	"contexts":["save","edit","delete","updateSkus","addOptionGroup","addOption","addSubscriptionTerm"],
+	"properties":{
+		"urlTitle":							[{"contexts":"save","required":true,"method":"hasUniqueURLTitle"}],
+		"productName":						[{"contexts":"save","required":true}],
+		"productCode":						[{"contexts":"save","required":true,"method":"hasUniqueProductCode"}],
+		"productType":						[{"contexts":"save","required":true}],
+		"unusedProductOptions":				[{"contexts":"addOption","minCollectionValue":1}],
+		"unusedProductOptionGroups":		[{"contexts":"addOptionGroup","minCollectionValue":1}],
+		"unusedProductSubscriptionTerms":	[{"contexts":"addSubscriptionTerm","minCollectionValue":1}],
+		"baseProductType":					[
+		    	{"contexts":"addOptionGroup,addOption","inList":"merchandise"},
+		    	{"contexts":"addSubscriptionTerm","inList":"subscription"}
+		 ]
+		"price":							[{"contexts":"save","inList":"creditCard"}],
+		"listPrice":						[{"contexts":"save","dataType":"numeric"}]
+	}
+}

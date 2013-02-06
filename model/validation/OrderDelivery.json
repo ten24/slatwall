@@ -1,0 +1,6 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"orderDeliveryItems":					[{"contexts":"save","minCollection":0}]
+	}
+}

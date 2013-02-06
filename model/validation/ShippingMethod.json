@@ -1,0 +1,7 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"shippingMethodName":			[{"contexts":"save","required":true}],
+		"orderFulfillments":			[{"contexts":"delete","maxCollection":0}]
+	}
+}

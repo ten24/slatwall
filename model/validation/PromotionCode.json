@@ -1,0 +1,8 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"promotionCodes":			[{"contexts":"save","method":"hasUniquePromotionCodes"}],
+		"startDateTime":			[{"contexts":"save","dataType":"date"}],
+		"endDateTime":				[{"contexts":"save","dataType":"date"}]
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"skuID":				[{"contexts":"save","required":true,"method":"isNotDefaultSku"}],
+		"stocks":				[{"contexts":"delete","maxCollection":0}],
+		"skuCode":				[{"contexts":"save","required":true,"method":"hasUniqueSkuCode"}],
+		"options":				[
+		 		{"contexts":"save","required":true,"method":"hasUniqueOptions"},
+		 		{"contexts":"save","required":true,"method":"hasOneOptionPerOptionGroup"}
+		]
+	}
+}

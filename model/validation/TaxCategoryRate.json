@@ -1,0 +1,6 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"taxRate":			[{"contexts":"save","required":true,"dataType":"numeric"}]
+	}
+}

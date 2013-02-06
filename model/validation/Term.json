@@ -1,0 +1,17 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"termName":								[{"contexts":"save","required":true}],
+		"termHours":							[{"contexts":"save","required":true}],
+		"termDays":								[{"contexts":"save","required":true}],
+		"termMonths":							[{"contexts":"save","required":true}],
+		"termYears":							[{"contexts":"save","required":true}],
+		"paymentTerms":							[{"contexts":"delete","maxCollection":0}],
+		"initialSubscriptionTerms":				[{"contexts":"delete","maxCollection":0}],
+		"renewalSubscriptionTerms":				[{"contexts":"delete","maxCollection":0}],
+		"gracePeriodSubscriptionTerms":			[{"contexts":"delete","maxCollection":0}],
+		"initialSubscriptionUsageTerms":		[{"contexts":"delete","maxCollection":0}],
+		"renewalSubscriptionUsageTerms":		[{"contexts":"delete","maxCollection":0}],
+		"gracePeriodSubscriptionUsageTerms":	[{"contexts":"delete","maxCollection":0}]
+	}
+}

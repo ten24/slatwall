@@ -1,0 +1,6 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"taskName":			[{"contexts":"save","required":true}]
+	}
+}

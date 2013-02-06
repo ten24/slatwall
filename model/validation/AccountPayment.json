@@ -1,0 +1,8 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"amount":					[{"contexts":"save","required":true}],
+		"paymentMethod":			[{"contexts":"save","required":true}],
+		"accountPaymentType":		[{"contexts":"save","required":true}]
+	}
+}

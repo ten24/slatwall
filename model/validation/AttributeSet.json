@@ -1,0 +1,8 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"attributeSetName":			[{"contexts":"save","required":true}],
+		"attributeSetCode":			[{"contexts":"save","required":true,"method":"hasUniqueURLTitle"}],
+		"attributeSetType":			[{"contexts":"save","required":true}]
+	}
+}

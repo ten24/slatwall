@@ -1,0 +1,9 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"orderItemType":			[{"contexts":"save","required":true}],
+		"orderItemStatusType":		[{"contexts":"save","required":true}],
+		"sku":						[{"contexts":"save","required":true}],
+		"quantity":					[{"contexts":"save","dataType":"numeric"}]
+	}
+}

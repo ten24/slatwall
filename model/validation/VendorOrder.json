@@ -1,0 +1,10 @@
+{
+	"contexts":["save","edit","delete","addOrderItems"],
+	"properties":{
+		"vendor":								[{"contexts":"save","required":true}],
+		"vendorOrderType":						[{"contexts":"save","required":true}],
+		"vendorOrderStatusType":				[{"contexts":"save","required":true}],
+		"vendorSkus":							[{"contexts":"addOrderItems","minCollection":1}],
+		"stockReceivers":						[{"contexts":"delete","maxCollection":0}]
+	}
+}

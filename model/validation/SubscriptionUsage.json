@@ -1,0 +1,6 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"subscriptionUsageID":				[{"contexts":"delete","maxCollection":0}]
+	}
+}

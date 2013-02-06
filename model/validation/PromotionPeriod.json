@@ -1,0 +1,7 @@
+{
+	"contexts":["save","placeOrder","delete","addOrderItem","addOrderPayment","placeOnHold","takeOffHold","cancelOrder","closeOrder","createReturn"],
+	"properties":{
+		"startDateTime":			[{"contexts":"save","required":true,"dataType":"date"}],
+		"endDateTime":				[{"contexts":"save","required":true,"dataType":"date"}]
+	}
+}

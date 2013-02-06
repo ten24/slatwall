@@ -1,0 +1,7 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"amountType":			[{"contexts":"save","required":true}],
+		"amount":				[{"contexts":"save","required":true,"dataType":"numeric"}]
+	}
+}

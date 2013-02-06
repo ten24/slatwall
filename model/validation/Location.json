@@ -1,0 +1,7 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"locationName":			[{"contexts":"save","required":true}],
+		"primaryAddress":		[{"contexts":"save","required":true}]
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"contexts":["save","edit","delete","addItems","processAdjustment"],
+	"properties":{
+		"stockAdjustmentType":			[{"contexts":"save","required":true}],
+		"stockAdjustmentStatusType":	[{"contexts":"save","required":true}],
+		"fromLocation":					[{"contexts":"save","required":true}],
+		"toLocation":					[{"contexts":"save","required":true}],
+		"statusCode":					[{"contexts":"addItems,processAdjustment,delete","inList":"sastNew"}],
+		"stockReceivers":				[{"contexts":"delete","maxCollection":0}]
+	}
+}

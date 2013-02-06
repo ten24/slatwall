@@ -1,0 +1,8 @@
+{
+	"contexts":["save","edit","delete"],
+	"properties":{
+		"scheduleName":			[{"contexts":"save","required":true}],
+		"recuringType":			[{"contexts":"save","required":true}],
+		"frequencyStartTime":	[{"contexts":"save","required":true}]
+	}
+}
