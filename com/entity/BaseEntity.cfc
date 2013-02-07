@@ -107,9 +107,8 @@ component displayname="Base Entity" accessors="true" extends="Slatwall.com.utili
 				if(structKeyExists(arguments.data, attributes[at].getAttributeCode())) {
 					var av = getAttributeValue(attributes[at].getAttributeCode(), true);
 					av.setAttributeValue( data[ attributes[at].getAttributeCode() ]);
-					av.setAttribute(at);
-					av.setAttributeType(attributeType);
-					av.invokeMethod("set#attributeType#", {1=this});			
+					av.setAttribute(attributes[at]);
+					av.setAttributeValueType(attributeType);
 				}
 			}
 		}
