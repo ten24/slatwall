@@ -84,7 +84,7 @@ Notes:
 							</tr>
 							<cfloop array="#slatwallContent.getSkus()#" index="local.sku">
 								<tr>
-									<td><a href="/plugins/slatwall/?slatAction=product.edit&productID=#sku.getProduct().getProductID()#">#sku.getProduct().getProductName()#</a></td>
+									<td><a href="#request.slatwallScope.getSlatwallRootPath()#/?slatAction=product.edit&productID=#sku.getProduct().getProductID()#">#sku.getProduct().getProductName()#</a></td>
 									<td>#sku.getSkuCode()#</td>
 									<td>#sku.getPrice()#</td>
 									<td><a href="" class="delete" /></td>
