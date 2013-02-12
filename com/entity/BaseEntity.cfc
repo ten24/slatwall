@@ -109,6 +109,7 @@ component displayname="Base Entity" accessors="true" extends="Slatwall.com.utili
 					av.setAttributeValue( data[ attributes[at].getAttributeCode() ]);
 					av.setAttribute(attributes[at]);
 					av.setAttributeValueType(attributeType);
+					av.invokeMethod("set#attributeType#", {1=this});
 				}
 			}
 		}
