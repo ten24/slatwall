@@ -237,7 +237,7 @@ component extends="BaseService" persistent="false" accessors="true" output="fals
 				// add service mapping if exists
 				var serviceMappingArray = xmlSearch(newXML,"beans/bean[@id = 'utilityORMService']/property/map/entry"); 
 				if(arrayLen(serviceMappingArray)) {
-					var serviceMapNode = arguments.originalXML.beans.bean[utilityORMServicePosOriginalXml].property.map[1];
+					var serviceMapNode = arguments.originalXML.beans.bean[utilityORMServicePosOriginalXml].property[2].map[1];
 					for(var entry in serviceMappingArray) {
 						arrayAppend(serviceMapNode.XmlChildren,XmlElemNew(arguments.originalXML,"entry"));
 						var newChildIndex = arrayLen(serviceMapNode.XmlChildren);
