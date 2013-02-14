@@ -107,7 +107,7 @@ component extends="BaseService" accessors="true" {
 		arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
 		
 		if(!structKeyExists(variables.entityObjects, arguments.entityName)) {
-			variables.entityObjects[ arguments.entityName ] = createObject(getProperlyCasedFullClassNameByEntityName( arguments.entityName ));
+			variables.entityObjects[ arguments.entityName ] = entityNew( arguments.entityName );
 		}
 		
 		return variables.entityObjects[ arguments.entityName ];
