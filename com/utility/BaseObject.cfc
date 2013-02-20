@@ -725,7 +725,7 @@ component displayname="Base Object" accessors="true" output="false" {
 	public string function getSimpleValuesSerialized() {
 		var data = {};
 		for(var key in variables) {
-			if( isSimpleValue(variables[key]) ) {
+			if( !isNull(variables[key]) && isSimpleValue(variables[key]) ) {
 				data[key] = variables[key];
 			}
 		}
