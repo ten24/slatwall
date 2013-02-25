@@ -47,7 +47,7 @@ Notes:
 	<cffunction name="readByAccountEmail" returntype="any" access="public">
 		<cfargument name="email" required="true" type="string">
 		
-		<cfreturn ormExecuteQuery("SELECT account FROM SlatwallAccountEmailAddress aSlatwallAccountEmail where aSlatwallAccountEmail.email=:email", {email=arguments.email}, true) />
+		<cfreturn ormExecuteQuery("SELECT account FROM SlatwallAccountEmailAddress aSlatwallAccountEmail where aSlatwallAccountEmail.emailAddress=:email", {email=arguments.email}, true) />
 	</cffunction>
 	
 </cfcomponent>
