@@ -764,10 +764,10 @@ component extends="Slatwall.com.service.BaseService" persistent="false" accessor
 				discountAmountPreRounding = precisionEvaluate(originalAmount * (reward.getAmount()/100));
 				break;
 			case "amountOff" :
-				discountAmountPreRounding = reward.getAmount();
+				discountAmountPreRounding = reward.getAmount() * quantity;
 				break;
 			case "amount" :
-				discountAmountPreRounding = precisionEvaluate(originalAmount - reward.getAmount());
+				discountAmountPreRounding = precisionEvaluate(arguments.price - reward.getAmount()) * arguments.quantity;
 				break;
 		}
 		

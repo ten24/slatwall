@@ -67,38 +67,20 @@ Notes:
 				sp.activeFlag = :activeFlag" />
 		
 		<cfif arguments.qualificationRequired>
-			<cfif len(promotionCodeList)>
-				<cfset hql &= " AND (" />
-				<cfset hql &= " ( " />
-				<cfset hql &= " EXISTS( SELECT pq.promotionQualifierID FROM SlatwallPromotionQualifier pq WHERE pq.promotionPeriod.promotionPeriodID = spp.promotionPeriodID )" />
-				<cfif len(noQualRequiredList)>
-					<cfset hql &= " OR spr.rewardType IN (:noQualRequiredList)" /> 
-				</cfif>
-				<cfset hql &= " ) " />
-				<cfset hql &= " OR EXISTS( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :now) AND (c.endDateTime is null or c.endDateTime > :now) )" />
-				<cfset hql &= ")" />
-			<cfelse>
-				<cfset hql &= " AND (" />
-				<cfset hql &= " ( " />
-				<cfset hql &= " EXISTS( SELECT pq.promotionQualifierID FROM SlatwallPromotionQualifier pq WHERE pq.promotionPeriod.promotionPeriodID = spp.promotionPeriodID ) " />
-				<cfif len(noQualRequiredList)>
-					<cfset hql &= " OR spr.rewardType IN (:noQualRequiredList)" /> 
-				</cfif>
-				<cfset hql &= " ) " /> 
-				<cfset hql &= " AND NOT EXISTS( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID )" />
-				<cfset hql &= ")" />
+			<cfset hql &= " AND (" />
+			<cfset hql &= " EXISTS( SELECT pq.promotionQualifierID FROM SlatwallPromotionQualifier pq WHERE pq.promotionPeriod.promotionPeriodID = spp.promotionPeriodID )" />
+			<cfif len(noQualRequiredList)>
+				<cfset hql &= " OR spr.rewardType IN (:noQualRequiredList)" /> 
 			</cfif>
-		<cfelse>
-			<cfif len(promotionCodeList)>
-				<cfset hql &=	" and (
-					  	NOT EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID )
-					  	  or
-					  	EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :now) AND (c.endDateTime is null or c.endDateTime > :now) )
-					  )" />
-			<cfelse>
-				<cfset hql &=	" and NOT EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID )" />
-			</cfif>	
+			<cfset hql &= " )" />
 		</cfif>
+		
+		<cfset hql &= " AND (" />
+		<cfset hql &= " NOT EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID )" />
+		<cfif len(promotionCodeList)>
+			<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :now) AND (c.endDateTime is null or c.endDateTime > :now) )" />	
+		</cfif>
+		<cfset hql &= " )" />
 			
 		<cfset var params = {
 			now = now(),
