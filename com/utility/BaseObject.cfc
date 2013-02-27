@@ -725,7 +725,7 @@ component displayname="Base Object" accessors="true" output="false" {
 	public string function getSimpleValuesSerialized() {
 		var data = {};
 		for(var key in variables) {
-			if( !isNull(variables[key]) && isSimpleValue(variables[key]) ) {
+			if( structKeyExists(variables, key) && isSimpleValue(variables[key]) ) {
 				data[key] = variables[key];
 			}
 		}
