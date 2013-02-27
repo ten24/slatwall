@@ -702,8 +702,8 @@ component extends="Slatwall.com.service.BaseService" persistent="false" accessor
 				}
 				
 				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-				if( !isNull(qualifier.getMinimumItemQuantity()) ) {
-					qualifierCount = int(qualifierCount / qualifier.getMinimumItemQuantity() );
+				if( !isNull(qualifier.getMinimumItemQuantity()) && qualifierCount < qualifier.getMinimumItemQuantity() ) {
+					qualifierCount = int(qualifierCount - qualifier.getMinimumItemQuantity() );
 				}
 				
 				// If this particular qualifier has less qualifications than the previous, well use the lower of the two qualifier counts
