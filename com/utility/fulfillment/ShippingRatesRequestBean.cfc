@@ -72,7 +72,7 @@ component accessors="true" output="false" extends="Slatwall.com.utility.RequestB
 		arrayAppend(getShippingItemRequestBeans(), new ShippingItemRequestBean(argumentcollection=arguments));
 	}
 	
-	public void function populateShipToWithAddress(required Slatwall.com.entity.Address address) {
+	public void function populateShipToWithAddress(required any address) {
 		if(!isNull(arguments.address.getName())) {
 			setShipToName(arguments.address.getName());
 		}
@@ -102,7 +102,7 @@ component accessors="true" output="false" extends="Slatwall.com.utility.RequestB
 		}
 	}
 	
-	public void function populateShipFromWithAddress(required Slatwall.com.entity.Address address) {
+	public void function populateShipFromWithAddress(required any address) {
 		if(!isNull(arguments.address.getName())) {
 			setShipFromName(arguments.address.getName());
 		}
