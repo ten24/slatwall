@@ -46,7 +46,7 @@ component extends="Slatwall.com.utility.BaseObject" {
 		return "";
 	}
 	
-	public Slatwall.com.utility.payment.CreditCardTransactionResponseBean function processCreditCard(required Slatwall.com.utility.payment.CreditCardTransactionRequestBean requestBean) {
+	public Slatwall.com.utility.payment.CreditCardTransactionResponseBean function processCreditCard(required any requestBean) {
 		throw("The processCreditCard() Method was not setup for this integration service");	
 	}
 	

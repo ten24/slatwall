@@ -41,8 +41,8 @@ Notes:
 	<cffunction name="getPaymentMethodTypes" access="public" returntype="string">
 	</cffunction>
 	
-	<cffunction name="processCreditCard" access="public" returntype="Slatwall.com.utility.payment.CreditCardTransactionResponseBean">
-		<cfargument name="requestBean" type="Slatwall.com.utility.payment.CreditCardTransactionRequestBean" required="true" />
+	<cffunction name="processCreditCard" access="public" returntype="any">
+		<cfargument name="requestBean" type="any" required="true" />
 		
 	</cffunction>
 	

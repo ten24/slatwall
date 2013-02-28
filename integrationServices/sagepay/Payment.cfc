@@ -52,7 +52,7 @@ component accessors="true" output="false" displayname="SagePay" implements="Slat
 		return "creditCard";
 	}
 	
-	public Slatwall.com.utility.payment.CreditCardTransactionResponseBean function processCreditCard(required Slatwall.com.utility.payment.CreditCardTransactionRequestBean requestBean) {
+	public Slatwall.com.utility.payment.CreditCardTransactionResponseBean function processCreditCard(required any requestBean) {
 		var rawResponse="";
 		var requestData=getRequestData(requestBean);
 		rawResponse=postRequest(requestData);

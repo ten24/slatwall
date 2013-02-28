@@ -74,7 +74,7 @@ component accessors="true" output="false" displayname="parcel2go" implements="Sl
 		return variables.shippingMethods;
 	}
 	
-	public Slatwall.com.utility.fulfillment.ShippingRatesResponseBean function getRates(required Slatwall.com.utility.fulfillment.ShippingRatesRequestBean requestBean) {
+	public Slatwall.com.utility.fulfillment.ShippingRatesResponseBean function getRates(required any requestBean) {
 		var responseBean = new Slatwall.com.utility.fulfillment.ShippingRatesResponseBean();
 		
 		// Insert Custom Logic Here
