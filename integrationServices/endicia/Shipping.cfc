@@ -64,7 +64,7 @@ component accessors="true" output="false" displayname="Endicia" implements="Slat
 		return "http://usps.com/Tracking?tracknumber=${trackingNumber}";
 	}
 	
-	public Slatwall.com.utility.fulfillment.ShippingRatesResponseBean function getRates(required any requestBean) {
+	public any function getRates(required any requestBean) {
 		var totalItemsWeight = 0;
 		var totalItemsValue = 0;
 		

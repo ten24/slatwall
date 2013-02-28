@@ -64,7 +64,7 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 		return "creditCard";
 	}
 	
-	public Slatwall.com.utility.payment.CreditCardTransactionResponseBean function processCreditCard(required any requestBean){
+	public any function processCreditCard(required any requestBean){
 		var requestData = getRequestData(requestBean);
 		var rawResponse = postRequest(requestData, requestBean.getTransactionID());
 		return getResponseBean(rawResponse, requestData, requestBean);

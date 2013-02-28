@@ -30,7 +30,7 @@
 		return "http://www.canadapost.ca/cpotools/apps/track/personal/findByTrackNumber?trackingNumber=${trackingNumber}";
 	}
 	
-	public Slatwall.com.utility.fulfillment.ShippingRatesResponseBean function getRates(required any requestBean) {
+	public any function getRates(required any requestBean) {
 		
        	var xmlPacket = "";
        	var xmlResponse = "";

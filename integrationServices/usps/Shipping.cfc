@@ -79,7 +79,7 @@ component accessors="true" output="false" displayname="USPS" implements="Slatwal
 		return "http://usps.com/Tracking?tracknumber=${trackingNumber}";
 	}
 	
-	public Slatwall.com.utility.fulfillment.ShippingRatesResponseBean function getRates(required any requestBean) {
+	public any function getRates(required any requestBean) {
 		
         var requestURL = "";
         

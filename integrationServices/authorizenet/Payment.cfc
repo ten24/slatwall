@@ -64,7 +64,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		return "creditCard";
 	}
 	
-	public Slatwall.com.utility.payment.CreditCardTransactionResponseBean function processCreditCard(required any requestBean){
+	public any function processCreditCard(required any requestBean){
 		var rawResponse = "";
 		var requestData = getRequestData(requestBean);
 		rawResponse = postRequest(requestData);

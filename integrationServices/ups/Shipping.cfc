@@ -73,7 +73,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		return "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
 	}
 	
-	public Slatwall.com.utility.fulfillment.ShippingRatesResponseBean function getRates(required any requestBean) {
+	public any function getRates(required any requestBean) {
 		var responseBean = new Slatwall.com.utility.fulfillment.ShippingRatesResponseBean();
 		
 		// Insert Custom Logic Here
