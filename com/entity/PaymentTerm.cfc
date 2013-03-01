@@ -76,7 +76,7 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="Sla
 	// Term (many-to-one)
 	public void function setTerm(required any term) {
 		variables.term = arguments.term;
-		if(isNew() or !arguments.term.hasPaymentTerms( this )) {
+		if( isNew() or !arguments.term.hasPaymentTerm(this) ) {
 			arrayAppend(arguments.term.getPaymentTerms(), this);
 		}
 	}
