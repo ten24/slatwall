@@ -85,9 +85,9 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="Sla
 		if(!structKeyExists(arguments, "term")) {
 			arguments.term = variables.term;
 		}
-		var index = arrayFind(arguments.term.getPaymentMethods(), this);
+		var index = arrayFind(arguments.term.getPaymentTerms(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.term.getPaymentMethods(), index);
+			arrayDeleteAt(arguments.term.getPaymentTerms(), index);
 		}
 		structDelete(variables, "term");
 	}
