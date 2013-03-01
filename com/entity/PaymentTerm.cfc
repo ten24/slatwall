@@ -76,10 +76,11 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="Sla
 	// Term (many-to-one)
 	public void function setTerm(required any term) {
 		variables.term = arguments.term;
-		if(isNew() or !arguments.term.hasPaymentMethod( this )) {
-			arrayAppend(arguments.term.getPaymentMethods(), this);
+		if( isNew() or !arguments.term.hasPaymentTerm(this) ) {
+			arrayAppend(arguments.term.getPaymentTerms(), this);
 		}
 	}
+	
 	public void function removeTerm(any term) {
 		if(!structKeyExists(arguments, "term")) {
 			arguments.term = variables.term;
