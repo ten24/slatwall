@@ -21,7 +21,7 @@
 		"amountUnauthorized":	[{"contexts":"authorize","minValue":0.01}],
 		"amountUncaptured":		[{"contexts":"chargePreAuthorization","minValue":0.01}],
 		"amountUnreceived":		[{"contexts":"authorizeAndCharge","minValue":0.01}],
-		"amountUncredited":		[{"contexts":"credit","minValue":0.01"}],
+		"amountUncredited":		[{"contexts":"credit","minValue":0.01}],
 		"paymentMethodType":	[{"contexts":"chargePreAuthorization,authorizeAndCharge,authorize,credit","inList":"creditCard"}],
 		"orderStatusCode":		[
 		    {"contexts":"chargePreAuthorization,authorizeAndCharge,authorize,credit","inList":"ostNew,ostProcessing,ostOnHold"},
