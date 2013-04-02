@@ -88,7 +88,11 @@
 					<Code>02</Code>
 				</PackagingType>
 				<PackageWeight>
-					<Weight>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</Weight>
+					<cfset weightlbs = arguments.requestBean.getTotalWeight( unitCode='lb' ) />
+					<cfif weightlbs lt 1>
+						<cfset weightlbs = 1 />
+					</cfif>
+					<Weight>#weightlbs#</Weight>
 					<UnitOfMeasurement>
 						<Code>LBS</Code>
 					</UnitOfMeasurement>
