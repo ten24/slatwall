@@ -257,7 +257,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="Sla
 			
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";
-			wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProductType().getProductTypeIDPath(),",","','","all")#')";
+			wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProductTypeIDPath(),",","','","all")#')";
 			wc &= ")";
 			
 			variables.assignedAttributeSetSmartList.addWhereCondition( wc );
