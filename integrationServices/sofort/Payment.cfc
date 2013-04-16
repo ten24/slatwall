@@ -10,27 +10,17 @@
 
 	<cfif arguments.cart.hasOrderPayment()>
 		<cfloop array="#arguments.cart.getOrderPayments()#" index="local.payment">
-			<cfif local.payment.getPaymentMethod().getPaymentMethodId() EQ local.paymentMethod.getPaymentMethodId()>
-				<cfset local.orderPayment = local.payment />
-			<cfelse>
-				<cfset arguments.cart.removeOrderPayment(local.payment) />
-				<cfset entityDelete(local.payment) />
-			</cfif>
+			<cfset entityDelete(local.payment) />
 		</cfloop>
+		<cfset arrayClear(arguments.cart.getOrderPayments()) />
 	</cfif>
 
-	<cfif isNull(local.orderPayment)>
-		<cfset local.orderPayment = local.paymentService.newOrderPayment() />
-	</cfif>
-
+	<cfset local.orderPayment = local.paymentService.newOrderPayment() />
 	<cfset local.orderPayment.setPaymentMethodType(getPaymentMethodTypes()) />
 	<cfset local.orderPayment.setPaymentMethod(local.paymentMethod) />
 	<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 	<cfset local.orderPayment.setCurrencyCode(arguments.cart.getCurrencyCode()) />
-
-	<cfif local.orderPayment.isNew()>
-		<cfset arguments.cart.addOrderPayment(local.orderPayment) />
-	</cfif>
+	<cfset arguments.cart.addOrderPayment(local.orderPayment) />
 	<cfset ormFlush() />
 
 	<cfset local.successUrl	= urlSessionFormat('#property('localURL')##$.createHREF(filename='checkout')#?payment=success&slatAction=sofort:payment.verify&transactionId=-TRANSACTION-#chr(35)#payment') />
