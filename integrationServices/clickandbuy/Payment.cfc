@@ -5,13 +5,30 @@
 
 	<cfset local.paymentService = arguments.cart.getService('paymentService') />
 	<cfset local.paymentMethods	= entityLoad('SlatwallPaymentMethod',{ paymentIntegration=getIntegration() },{ maxResults=1 }) />
-	<cfset local.orderPayment		= local.paymentService.newOrderPayment() />
+	<cfset local.paymentMethod	= local.paymentMethods[1] />
+
+	<cfif arguments.cart.hasOrderPayment()>
+		<cfloop array="#arguments.cart.getOrderPayments()#" index="local.payment">
+			<cfif local.payment.getPaymentMethod().getPaymentMethodId() EQ local.paymentMethod.getPaymentMethodId()>
+				<cfset local.orderPayment = local.payment />
+			<cfelse>
+				<cfset entityDelete(local.payment) />
+			</cfif>
+		</cfloop>
+	</cfif>
+
+	<cfif isNull(local.orderPayment)>
+		<cfset local.orderPayment = local.paymentService.newOrderPayment() />
+	</cfif>
 
 	<cfset local.orderPayment.setPaymentMethodType(getPaymentMethodTypes()) />
-	<cfset local.orderPayment.setPaymentMethod(local.paymentMethods[1]) />
+	<cfset local.orderPayment.setPaymentMethod(local.paymentMethod) />
 	<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 	<cfset local.orderPayment.setCurrencyCode(arguments.cart.getCurrencyCode()) />
-	<cfset arguments.cart.addOrderPayment(local.orderPayment) />
+
+	<cfif local.orderPayment.isNew()>
+		<cfset arguments.cart.addOrderPayment(local.orderPayment) />
+	</cfif>
 	<cfset ormFlush() />
 
 	<cfset local.successUrl	= urlSessionFormat('#property('localURL')##$.createHREF(filename='checkout')#?payment=success&slatAction=clickandbuy:payment.verify#chr(35)#payment') />
