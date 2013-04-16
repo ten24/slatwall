@@ -1,0 +1,1 @@
+﻿<cfoutput>ClickandBuy Error: #rc.result#</cfoutput>
