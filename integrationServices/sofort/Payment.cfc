@@ -16,6 +16,7 @@
 			<cfif local.payment.getPaymentMethod().getPaymentMethodId() EQ local.paymentMethod.getPaymentMethodId()>
 				<cfset local.orderPayment = local.payment />
 			<cfelse>
+				<cfset arguments.cart.removeOrderPayment(local.payment) />
 				<cfset entityDelete(local.payment) />
 			</cfif>
 		</cfloop>
