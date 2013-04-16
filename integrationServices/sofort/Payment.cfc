@@ -1,8 +1,5 @@
 ﻿<cfcomponent accessors="true" output="false" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment">
 
-<cfproperty name="pluginConfig" />
-
-
 <cffunction name="newPayment" access="public" returntype="string" hint="Get payment request">
 	<cfargument name="cart" required="true" hint="cart with all order-items" />
 
