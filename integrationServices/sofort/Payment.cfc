@@ -29,22 +29,24 @@
 			<abort_url>#xmlFormat(local.abortUrl)#</abort_url>
 			<su>
 				<amount>#arguments.cart.getTotal()#</amount>
-				<cfif setting('transferProductNames')>
-					<reasons>
-						<cfloop array="#arguments.cart.getOrderItems()#" index="local.orderItem">
-							<cfset local.maxLength	= 27 />
-							<cfset local.length			= 27 />
-							<cfset local.reason			= left(local.orderItem.getSku().getProduct().getTitle(),local.length) />
+				<reasons>
+					<cfloop array="#arguments.cart.getOrderItems()#" index="local.orderItem">
+						<cfset local.maxLength	= 27 />
+						<cfset local.length			= 27 />
+						<cfset local.reason			= left(local.orderItem.getSku().getProduct().getTitle(),local.length) />
 
-							<cfloop condition="len(local.reason) GT local.maxLength">
-								<cfset local.length -= 1 />
-								<cfset local.reason = left(local.reason,local.length) />
-							</cfloop>
-
-							<reason>#xmlFormat(reReplaceNoCase(local.reason,'[^0-9a-z\s\+\-,\.]','','all'))#</reason> <!--- Es sind nur 27 Zeichen erlaubt --->
+						<cfloop condition="len(local.reason) GT local.maxLength">
+							<cfset local.length -= 1 />
+							<cfset local.reason = left(local.reason,local.length) />
 						</cfloop>
-					</reasons>
-				</cfif>
+
+						<cfif setting('transferProductNames')>
+							<reason>#xmlFormat(left(reReplaceNoCase(local.reason,'[^0-9a-z\s\+\-,\.]','','all'),27))#</reason> <!--- Es sind nur 27 Zeichen erlaubt --->
+						<cfelse>
+							<reason>#xmlFormat(left(hash(local.reason),27))#</reason>
+						</cfif>
+					</cfloop>
+				</reasons>
 			</su>
 		</multipay>
 	</cfoutput></cfsavecontent>
@@ -81,12 +83,14 @@
 				OR xmlPathExists(local.transactionInfo,'transactions.transaction_details.test') AND local.transactionInfo.transactions.transaction_details.test.xmlText EQ 1>
 				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 				<cfset local.orderPayment.setAmountCharged(arguments.cart.getTotal()) />
-				<cfset local.paymentTransaction.setAmountAuthorized(local.orderPayment.getAmount()) />
+				<cfset local.paymentTransaction.setAmountAuthorized(arguments.cart.getTotal()) />
 			</cfif>
 
 			<cfset local.orderPayment.addPaymentTransaction(local.paymentTransaction) />
 		</cfif>
 	</cfloop>
+
+	<cfset ormFlush() />
 </cffunction>
 
 
