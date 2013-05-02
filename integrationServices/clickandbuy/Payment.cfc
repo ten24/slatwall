@@ -80,7 +80,6 @@
 
 			<cfif listFindNoCase('SUCCESS,PAYMENT_GUARANTEE',local.transactionStatus)>
 				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
-				<cfset local.orderPayment.setAmountCharged(arguments.cart.getTotal()) />
 				<cfset local.paymentTransaction.setAmountAuthorized(local.orderPayment.getAmount()) />
 			</cfif>
 
