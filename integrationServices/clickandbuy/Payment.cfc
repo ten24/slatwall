@@ -11,6 +11,7 @@
 	<cfset local.orderPayment.setPaymentMethodType(getPaymentMethodTypes()) />
 	<cfset local.orderPayment.setPaymentMethod(local.paymentMethod) />
 	<cfset local.orderPayment.setCurrencyCode(arguments.cart.getCurrencyCode()) />
+	<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 	<cfset arguments.cart.addOrderPayment(local.orderPayment) />
 	<cfset ormFlush() />
 
@@ -71,15 +72,15 @@
 
 	<cfloop array="#arguments.cart.getOrderPayments()#" index="local.orderPayment">
 		<cfif local.orderPayment.hasPaymentMethod() AND local.orderPayment.getPaymentMethod().getPaymentMethodId() EQ local.paymentMethod.getPaymentMethodId()>
-			<cfset local.transactionStatus	= variables.transactionStatus(local.orderPayment) />
+			<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 
+			<cfset local.transactionStatus	= variables.transactionStatus(local.orderPayment) />
 			<cfset local.paymentTransaction	= local.paymentService.newPaymentTransaction() />
 			<cfset local.paymentTransaction.setTransactionDateTime(now()) />
 			<cfset local.paymentTransaction.setCurrencyCode(arguments.cart.getCurrencyCode()) />
 			<cfset local.paymentTransaction.setProviderTransactionId(transactionId(local.orderPayment)) />
 
 			<cfif listFindNoCase('SUCCESS,PAYMENT_GUARANTEE',local.transactionStatus)>
-				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 				<cfset local.paymentTransaction.setAmountAuthorized(local.orderPayment.getAmount()) />
 			</cfif>
 
