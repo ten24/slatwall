@@ -82,7 +82,6 @@
 			<cfif xmlPathExists(local.transactionInfo,'transactions.transaction_details.status') AND listFindNoCase('received,pending',local.transactionInfo.transactions.transaction_details.status.xmlText)
 				OR xmlPathExists(local.transactionInfo,'transactions.transaction_details.test') AND local.transactionInfo.transactions.transaction_details.test.xmlText EQ 1>
 				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
-				<cfset local.orderPayment.setAmountCharged(arguments.cart.getTotal()) />
 				<cfset local.paymentTransaction.setAmountAuthorized(arguments.cart.getTotal()) />
 			</cfif>
 
