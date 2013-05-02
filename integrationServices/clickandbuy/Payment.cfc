@@ -7,17 +7,9 @@
 	<cfset local.paymentMethods	= entityLoad('SlatwallPaymentMethod',{ paymentIntegration=getIntegration() },{ maxResults=1 }) />
 	<cfset local.paymentMethod	= local.paymentMethods[1] />
 
-	<cfif arguments.cart.hasOrderPayment()>
-		<cfloop array="#arguments.cart.getOrderPayments()#" index="local.payment">
-			<cfset entityDelete(local.payment) />
-		</cfloop>
-		<cfset arrayClear(arguments.cart.getOrderPayments()) />
-	</cfif>
-
 	<cfset local.orderPayment = local.paymentService.newOrderPayment() />
 	<cfset local.orderPayment.setPaymentMethodType(getPaymentMethodTypes()) />
 	<cfset local.orderPayment.setPaymentMethod(local.paymentMethod) />
-	<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 	<cfset local.orderPayment.setCurrencyCode(arguments.cart.getCurrencyCode()) />
 	<cfset arguments.cart.addOrderPayment(local.orderPayment) />
 	<cfset ormFlush() />
@@ -83,16 +75,20 @@
 
 			<cfset local.paymentTransaction	= local.paymentService.newPaymentTransaction() />
 			<cfset local.paymentTransaction.setTransactionDateTime(now()) />
-			<cfset local.paymentTransaction.setCurrencyCode($.slatwall.cart().getCurrencyCode()) />
+			<cfset local.paymentTransaction.setCurrencyCode(arguments.cart.getCurrencyCode()) />
 			<cfset local.paymentTransaction.setProviderTransactionId(transactionId(local.orderPayment)) />
 
 			<cfif listFindNoCase('SUCCESS,PAYMENT_GUARANTEE',local.transactionStatus)>
+				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
+				<cfset local.orderPayment.setAmountCharged(arguments.cart.getTotal()) />
 				<cfset local.paymentTransaction.setAmountAuthorized(local.orderPayment.getAmount()) />
 			</cfif>
 
 			<cfset local.orderPayment.addPaymentTransaction(local.paymentTransaction) />
 		</cfif>
 	</cfloop>
+
+	<cfset ormFlush() />
 </cffunction>
 
 
