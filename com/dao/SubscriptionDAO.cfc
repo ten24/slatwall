@@ -80,12 +80,8 @@ Notes:
 		
 		<cfif getsu.recordCount>
 			<cfset var hql = "FROM SlatwallSubscriptionUsage WHERE subscriptionUsageID IN (:subscriptionUsageIDs)" />
-			<cfif structKeyExists(server, "railo")>
-				<cfset var returnQuery = ormExecuteQuery(hql, {subscriptionUsageIDs=valueList(getsu.subscriptionUsageID)}) />
-			<cfelse>
-				<cfset var returnQuery = ormExecuteQuery(hql, {subscriptionUsageIDs=listToArray(valueList(getsu.subscriptionUsageID))}) />		
-			</cfif>
-			<cfreturn returnQuery />
+			
+			<cfreturn ormExecuteQuery(hql, {subscriptionUsageIDs=listToArray(valueList(getsu.subscriptionUsageID))}) />
 		</cfif>
 		<cfreturn [] />
 		 
@@ -121,12 +117,8 @@ Notes:
 		
 		<cfif getsu.recordCount>
 			<cfset var hql = "FROM SlatwallSubscriptionUsage WHERE subscriptionUsageID IN (:subscriptionUsageIDs)" />
-			<cfif structKeyExists(server, "railo")>
-				<cfset var returnQuery = ormExecuteQuery(hql, {subscriptionUsageIDs=valueList(getsu.subscriptionUsageID)}) />
-			<cfelse>
-				<cfset var returnQuery = ormExecuteQuery(hql, {subscriptionUsageIDs=listToArray(valueList(getsu.subscriptionUsageID))}) />		
-			</cfif>
-			<cfreturn returnQuery />
+			
+			<cfreturn ormExecuteQuery(hql, {subscriptionUsageIDs=listToArray(valueList(getsu.subscriptionUsageID))}) />
 		</cfif>
 		<cfreturn [] />
 		 

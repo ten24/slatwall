@@ -88,26 +88,14 @@ Notes:
 		} />
 		
 		<cfif arguments.qualificationRequired and len(noQualRequiredList)>
-			<cfif structKeyExists(server, "railo")>
-				<cfset params.noQualRequiredList = noQualRequiredList />
-			<cfelse>
-				<cfset params.noQualRequiredList = listToArray(noQualRequiredList) />		
-			</cfif>
+			<cfset params.noQualRequiredList = listToArray(noQualRequiredList) />
 		</cfif>
 		
 		<cfif len(promotionCodeList)>
-			<cfif structKeyExists(server, "railo")>
-				<cfset params.promotionCodeList = arguments.promotionCodeList />
-			<cfelse>
-				<cfset params.promotionCodeList = listToArray(arguments.promotionCodeList) />		
-			</cfif>
+			<cfset params.promotionCodeList = listToArray(arguments.promotionCodeList) />
 		</cfif>
 		
-		<cfif structKeyExists(server, "railo")>
-			<cfset params.rewardTypeList = arguments.rewardTypeList />
-		<cfelse>
-			<cfset params.rewardTypeList = listToArray(arguments.rewardTypeList) />		
-		</cfif>
+		<cfset params.rewardTypeList = listToArray(arguments.rewardTypeList) />		
 		
 		<cfreturn ormExecuteQuery(hql, params) />
 	</cffunction>

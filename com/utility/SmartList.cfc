@@ -608,11 +608,9 @@ component displayname="Smart List" accessors="true" persistent="false" output="f
 				for(var inFilter in variables.whereGroups[i].inFilters) {
 					var paramID = "LF#replace(inFilter, ".", "", "all")##i#";
 					var paramValue = variables.whereGroups[i].inFilters[inFilter];
-					if(structKeyExists(server, "railo")) {
-						addHQLParam(paramID, paramValue);
-					} else {
-						addHQLParam(paramID, listToArray(paramValue));
-					}
+					
+					addHQLParam(paramID, listToArray(paramValue));
+					
 					hqlWhere &= " #inFilter# IN (:#paramID#) AND";
 				}
 				

@@ -44,12 +44,7 @@ Notes:
 		<cfset var hql = " FROM SlatwallCategory sc
 							WHERE sc.cmsCategoryID IN (:CmsCategoryIDs) " />
 			
-		<cfif structKeyExists(server, "railo")>
-			<cfset var returnQuery = ormExecuteQuery(hql, {CmsCategoryIDs=arguments.CmsCategoryIDs}) />
-		<cfelse>
-			<cfset var returnQuery = ormExecuteQuery(hql, {CmsCategoryIDs=listToArray(arguments.CmsCategoryIDs)}) />		
-		</cfif>
-		<cfreturn returnQuery />
+		<cfreturn ormExecuteQuery(hql, {CmsCategoryIDs=listToArray(arguments.CmsCategoryIDs)}) />
 	</cffunction>
 	
 	<cffunction name="getCmsCategoriesByCmsContentID" access="public">
