@@ -12,7 +12,6 @@
 	<cfset local.orderPayment.setPaymentMethodType(getPaymentMethodTypes()) />
 	<cfset local.orderPayment.setPaymentMethod(local.paymentMethod) />
 	<cfset local.orderPayment.setCurrencyCode(arguments.cart.getCurrencyCode()) />
-	<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 	<cfset arguments.cart.addOrderPayment(local.orderPayment) />
 	<cfset ormFlush() />
 
@@ -82,7 +81,8 @@
 
 			<cfif xmlPathExists(local.transactionInfo,'transactions.transaction_details.status') AND listFindNoCase('received,pending',local.transactionInfo.transactions.transaction_details.status.xmlText)
 				OR xmlPathExists(local.transactionInfo,'transactions.transaction_details.test') AND local.transactionInfo.transactions.transaction_details.test.xmlText EQ 1>
-				<cfset local.paymentTransaction.setAmountAuthorized(arguments.cart.getTotal()) />
+				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
+				<cfset local.paymentTransaction.setAmountReceived(arguments.cart.getTotal()) />
 			</cfif>
 
 			<cfset local.orderPayment.addPaymentTransaction(local.paymentTransaction) />
