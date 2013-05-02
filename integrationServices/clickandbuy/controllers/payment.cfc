@@ -28,7 +28,7 @@
 
 	<cfset variables.payment.verifyPayments($.slatwall.cart()) />
 
-	<cfif $.slatwall.cart().getTotal() LTE $.slatwall.cart().getPaymentAmountAuthorizedTotal()>
+	<cfif $.slatwall.cart().isPaid()>
 		<cfset getFW().redirectExact($.createHREF(filename='order-confirmation',queryString='slatAction=frontend:checkout.processOrder&orderId=#$.slatwall.cart().getOrderId()#')) />
 	<cfelse>
 		<cfset getFW().redirectExact($.createHREF(filename='checkout',queryString='slatAction=frontend:checkout.detail&payment=error#chr(35)#payment')) />

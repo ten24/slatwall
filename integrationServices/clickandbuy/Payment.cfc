@@ -11,7 +11,6 @@
 	<cfset local.orderPayment.setPaymentMethodType(getPaymentMethodTypes()) />
 	<cfset local.orderPayment.setPaymentMethod(local.paymentMethod) />
 	<cfset local.orderPayment.setCurrencyCode(arguments.cart.getCurrencyCode()) />
-	<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
 	<cfset arguments.cart.addOrderPayment(local.orderPayment) />
 	<cfset ormFlush() />
 
@@ -81,7 +80,8 @@
 			<cfset local.paymentTransaction.setProviderTransactionId(transactionId(local.orderPayment)) />
 
 			<cfif listFindNoCase('SUCCESS,PAYMENT_GUARANTEE',local.transactionStatus)>
-				<cfset local.paymentTransaction.setAmountAuthorized(local.orderPayment.getAmount()) />
+				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
+				<cfset local.paymentTransaction.setAmountReceived(arguments.cart.getTotal()) />
 			</cfif>
 
 			<cfset local.orderPayment.addPaymentTransaction(local.paymentTransaction) />
