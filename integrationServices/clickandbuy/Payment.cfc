@@ -18,7 +18,7 @@
 	<cfset local.abortUrl		= urlSessionFormat('#property('localURL')##$.createHREF(filename='checkout')#?payment=abort&slatAction=clickandbuy:payment.abort#chr(35)#payment') />
 
 	<cfsavecontent variable="local.soapBody"><cfoutput>
-		<pay:payRequest_Request>
+		<pay:payRequest_Request xmlns:pay="#property('apiVersion')#">
 			<pay:authentication>
 				<pay:merchantID>#xmlFormat(trim(setting('merchantId')))#</pay:merchantID>
 				<pay:projectID>#xmlFormat(trim(setting('projectId')))#</pay:projectID>
@@ -27,22 +27,24 @@
 			<pay:details>
 				<cfif len(trim(setting('consumerLanguage'))) EQ 2><pay:consumerLanguage>#xmlFormat(trim(setting('consumerLanguage')))#</pay:consumerLanguage></cfif>
 				<pay:amount>
-					<pay:amount>#xmlFormat(arguments.cart.getTotal())#</pay:amount>
+					<pay:amount>#xmlFormat(arguments.cart.getCalculatedTotal())#</pay:amount>
 					<cfif len(trim(setting('currency'))) EQ 3><pay:currency>#xmlFormat(trim(setting('currency')))#</pay:currency></cfif>
 				</pay:amount>
-				<pay:orderDetails>
-					<cfif len(setting('projectDescription'))><pay:text>#xmlFormat(setting('projectDescription'))#</pay:text></cfif>
-					<pay:itemList>
+				<cfif len(setting('projectDescription')) OR setting('transferProductNames')>
+					<pay:orderDetails>
+						<cfif len(setting('projectDescription'))><pay:text>#xmlFormat(setting('projectDescription'))#</pay:text></cfif>
 						<cfif setting('transferProductNames')>
-							<cfloop array="#arguments.cart.getOrderItems()#" index="local.orderItem">
-								<pay:item>
-									<pay:itemType>#xmlFormat('TEXT')#</pay:itemType>
-									<pay:description>#xmlFormat(local.orderItem.getSku().getProduct().getTitle())#</pay:description>
-								</pay:item>
-							</cfloop>
+							<pay:itemList>
+								<cfloop array="#arguments.cart.getOrderItems()#" index="local.orderItem">
+									<pay:item>
+										<pay:itemType>#xmlFormat('TEXT')#</pay:itemType>
+										<pay:description>#xmlFormat(local.orderItem.getSku().getProduct().getTitle())#</pay:description>
+									</pay:item>
+								</cfloop>
+							</pay:itemList>
 						</cfif>
-					</pay:itemList>
-				</pay:orderDetails>
+					</pay:orderDetails>
+				</cfif>
 				<pay:successURL>#xmlFormat(local.successUrl)#</pay:successURL>
 				<pay:failureURL>#xmlFormat(local.abortUrl)#</pay:failureURL>
 				<pay:externalID>#xmlFormat(local.orderPayment.getOrderPaymentId())#</pay:externalID>
@@ -71,7 +73,7 @@
 
 	<cfloop array="#arguments.cart.getOrderPayments()#" index="local.orderPayment">
 		<cfif local.orderPayment.hasPaymentMethod() AND local.orderPayment.getPaymentMethod().getPaymentMethodId() EQ local.paymentMethod.getPaymentMethodId()>
-			<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
+			<cfset local.orderPayment.setAmount(arguments.cart.getCalculatedTotal()) />
 
 			<cfset local.transactionStatus	= variables.transactionStatus(local.orderPayment) />
 			<cfset local.paymentTransaction	= local.paymentService.newPaymentTransaction() />
@@ -80,8 +82,8 @@
 			<cfset local.paymentTransaction.setProviderTransactionId(transactionId(local.orderPayment)) />
 
 			<cfif listFindNoCase('SUCCESS,PAYMENT_GUARANTEE',local.transactionStatus)>
-				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
-				<cfset local.paymentTransaction.setAmountReceived(arguments.cart.getTotal()) />
+				<cfset local.orderPayment.setAmount(arguments.cart.getCalculatedTotal()) />
+				<cfset local.paymentTransaction.setAmountReceived(arguments.cart.getCalculatedTotal()) />
 			</cfif>
 
 			<cfset local.orderPayment.addPaymentTransaction(local.paymentTransaction) />
@@ -188,7 +190,7 @@
 	<cfargument name="orderPayment" required="true" hint="Order payment to check status" />
 
 	<cfsavecontent variable="local.soapBody"><cfoutput>
-		<pay:statusRequest_Request>
+		<pay:statusRequest_Request xmlns:pay="#property('apiVersion')#">
 			<pay:authentication>
 				<pay:merchantID>#xmlFormat(trim(setting('merchantId')))#</pay:merchantID>
 				<pay:projectID>#xmlFormat(trim(setting('projectId')))#</pay:projectID>
@@ -213,23 +215,20 @@
 	<cfset local.result = '' />
 
 	<cfset arguments.soapBody = reReplace(arguments.soapBody,'>\s+','>','all') />
-	<cfsavecontent variable="local.soapBody">
-		<cfoutput>
-		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:pay="#property('apiVersion')#">
+	<cfsavecontent variable="local.soapBody"><cfoutput>
+		<?xml version="1.0" encoding="UTF-8"?>
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 			<soapenv:Header/>
-			<soapenv:Body>
-				#arguments.soapBody#
-			</soapenv:Body>
+			<soapenv:Body>#arguments.soapBody#</soapenv:Body>
 		</soapenv:Envelope>
-		</cfoutput>
-	</cfsavecontent>
-	<cflog text="request: #local.soapBody#" file="clickandbuy" type="information" />
+	</cfoutput></cfsavecontent>
 
 	<cfhttp method="post" url="#property('apiURL')#" result="local.response">
 		<cfhttpparam type="header" name="SOAPAction" value="#property('apiVersion')##arguments.method#" />
 		<cfhttpparam type="header" name="accept-encoding" value="no-compression" />
 		<cfhttpparam type="xml" value="#trim(local.soapBody)#" />
 	</cfhttp>
+	<cflog text="request: #local.soapBody#" file="clickandbuy" type="information" />
 
 	<cfset local.type = 'error' />
 	<cfif isXml(local.response.fileContent)>
