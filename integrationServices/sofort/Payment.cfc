@@ -24,11 +24,11 @@
 			<language_code>#xmlFormat(setting('language'))#</language_code>
 			<interface_version>#xmlFormat(property('interfaceVersion'))#</interface_version>
 			<currency_code>#xmlFormat(setting('currency'))#</currency_code>
-			<amount>#xmlFormat(arguments.cart.getTotal())#</amount>
+			<amount>#xmlFormat(arguments.cart.getCalculatedTotal())#</amount>
 			<success_url>#xmlFormat(local.successUrl)#</success_url>
 			<abort_url>#xmlFormat(local.abortUrl)#</abort_url>
 			<su>
-				<amount>#arguments.cart.getTotal()#</amount>
+				<amount>#arguments.cart.getCalculatedTotal()#</amount>
 				<reasons>
 					<cfloop array="#arguments.cart.getOrderItems()#" index="local.orderItem">
 						<cfset local.maxLength	= 27 />
@@ -81,8 +81,8 @@
 
 			<cfif xmlPathExists(local.transactionInfo,'transactions.transaction_details.status') AND listFindNoCase('received,pending',local.transactionInfo.transactions.transaction_details.status.xmlText)
 				OR xmlPathExists(local.transactionInfo,'transactions.transaction_details.test') AND local.transactionInfo.transactions.transaction_details.test.xmlText EQ 1>
-				<cfset local.orderPayment.setAmount(arguments.cart.getTotal()) />
-				<cfset local.paymentTransaction.setAmountReceived(arguments.cart.getTotal()) />
+				<cfset local.orderPayment.setAmount(arguments.cart.getCalculatedTotal()) />
+				<cfset local.paymentTransaction.setAmountReceived(arguments.cart.getCalculatedTotal()) />
 			</cfif>
 
 			<cfset local.orderPayment.addPaymentTransaction(local.paymentTransaction) />
