@@ -36,7 +36,7 @@
 Notes:
 
 --->
-<cfparam name="rc.product" type="any" />
+<cfparam name="rc.productType" type="any" />
 
 <cfoutput>
 	<cf_SlatwallSettingTable>
