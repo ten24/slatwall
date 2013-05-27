@@ -219,7 +219,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// If the previously selected shipping method does not exist in the options now, then we just remove it.
 			if( !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
 				arguments.orderFulfillment.setFulfillmentCharge(0);
-				arguments.orderFulfillment.setShippingMethod(javaCast("null",""));
+				arguments.orderFulfillment.clearShippingMethod();
 			}
 			
 			// Loop over all of the options now in the fulfillment, and do the final clean up
