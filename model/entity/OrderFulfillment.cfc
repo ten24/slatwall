@@ -363,6 +363,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		setShippingAddress( variables.accountAddress.getAddress().copyAddress( true ) );
 	}
 	
+	public void function clearShippingMethod(){
+		variables.shippingMethod=javaCast("null","");
+	}
+	
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
 	public void function setShippingMethod(required any shippingMethod) {
 		
