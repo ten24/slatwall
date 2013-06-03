@@ -432,6 +432,19 @@ function setupEventHandlers() {
 		}
 		listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 	});
+	//General Listing Search
+	jQuery('body').on('keyup', '.general-listing-search', function(e){
+		var data = {};
+		var tableID='';
+		data[ 'keywords' ] = jQuery(this).val();
+		if(typeof jQuery(this).attr('tableid') !=="undefined"){
+			tableID=jQuery(this).attr('tableid');
+		}else{
+			tableID=jQuery(this).closest('.table').attr('id');
+		}
+		listingDisplayUpdate(tableID, data );
+	});
+	
 	
 	// Listing Display - Sort Applying
 	jQuery('body').on('click', '.table-action-sort', function(e) {
