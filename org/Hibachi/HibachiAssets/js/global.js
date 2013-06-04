@@ -432,6 +432,22 @@ function setupEventHandlers() {
 		}
 		listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 	});
+	//General Listing Search
+	jQuery('body').on('keyup', '.general-listing-search', function(e){
+		var data = {};
+		var tableID='';
+		data[ 'keywords' ] = jQuery(this).val();
+		if(typeof jQuery(this).attr('tableid') !=="undefined"){
+			tableID=jQuery(this).attr('tableid');
+		}else{
+			tableID=jQuery(this).closest('.table').attr('id');
+		}
+		if(typeof jQuery(this).attr('propertyIdentifiers') !=="undefined"){
+			data['propertyIdentifiers']=jQuery(this).attr('propertyIdentifiers');
+		}
+		listingDisplayUpdate(tableID, data );
+	});
+	
 	
 	// Listing Display - Sort Applying
 	jQuery('body').on('click', '.table-action-sort', function(e) {
@@ -820,7 +836,11 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 		addLoadingDiv( tableID );
 		
 		data[ hibachiConfig.action ] = 'admin:ajax.updateListingDisplay';
-		data[ 'propertyIdentifiers' ] = jQuery('#' + tableID).data('propertyidentifiers');
+		if(typeof data[ 'propertyIdentifiers' ] !== 'undefined'){
+			data[ 'propertyIdentifiers' ]+=','+jQuery('#' + tableID).data('propertyidentifiers');
+		}else{
+			data[ 'propertyIdentifiers' ]=jQuery('#' + tableID).data('propertyidentifiers');
+		}
 		data[ 'processObjectProperties' ] = jQuery('#' + tableID).data('processobjectproperties');
 		if(data[ 'processObjectProperties' ].length) {
 			data[ 'processContext' ] = jQuery('#' + tableID).data('processcontext');
