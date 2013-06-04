@@ -68,7 +68,7 @@ Notes:
 				<div class="row-fluid">
 					--->
 					<div class="well well-small">
-						<input type="text" name="search" class="general-listing-search" placeholder="Search Sku Listing" tableid="LD#replace(rc.order.getAddOrderItemSkuOptionsSmartList().getSavedStateID(),'-','','all')#">
+						<input type="text" name="search" class="general-listing-search" propertyIdentifiers="alternateSkuCodes.alternateSkuCode" placeholder="Search Sku Listing" tableid="LD#replace(rc.order.getAddOrderItemSkuOptionsSmartList().getSavedStateID(),'-','','all')#">
 					</div>
 					<cf_HibachiListingDisplay smartList="#rc.order.getAddOrderItemSkuOptionsSmartList()#"
 											  recordProcessAction="admin:entity.processOrder"
