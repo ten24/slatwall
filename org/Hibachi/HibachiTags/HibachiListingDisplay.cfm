@@ -282,6 +282,14 @@
 		<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 			<thead>
 				<tr>
+					<th colspan='<cfif attributes.administativeCount>#arraylen(thistag.columns)+1# <cfelse>#arraylen(thistag.columns)#</cfif>'>
+						<div class="">
+							<input type="text" name="search" class="general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+							<a title="Clear Search" class="general-listing-search-clear btn btn-mini"><i class="icon-remove-sign"></i></a>
+						</div>	
+					</th>
+				</tr>
+				<tr>
 					<!--- Selectable --->
 					<cfif thistag.selectable>
 						<cfset class="select">

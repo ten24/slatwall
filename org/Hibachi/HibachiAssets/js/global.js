@@ -13,6 +13,12 @@ var globalSearchCache = {
 	onHold: false
 };
 
+//Utility delay function
+delay = function(func, wait) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    return setTimeout(function(){ return func.apply(null, args); }, wait);
+  };
+
 jQuery(document).ready(function() {
 	
 	setupEventHandlers();
@@ -432,6 +438,42 @@ function setupEventHandlers() {
 		}
 		listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 	});
+	
+		//General Listing Search
+	jQuery('.general-listing-search').keyup(function(e){
+		//Should stop bootstrap dropdowns from opening, *should*
+		e.stopPropagation();
+		//Delay for barcode readers, so we don't submit multiple requests
+		delay(function(e){
+			var data = {};
+			var tableID = '';
+			var code = e.which;
+			if (code == 13) {
+				
+				pendingCarriageReturn = true;
+			}
+			else {
+				pendingCarriageReturn = false;
+			}
+			data['keywords'] = e.currentTarget.value;
+			if (typeof jQuery(e.currentTarget).attr('tableid') !== "undefined") {
+				tableID = jQuery(e.currentTarget).attr('tableid');
+			}
+			else {
+				tableID = jQuery(e.currentTarget).closest('.table').attr('id');
+			}
+			
+			listingDisplayUpdate(tableID, data);
+		}, 500, e,this);
+	}
+	);
+	
+	//Clear general listing search
+	jQuery('body').on('click','.general-listing-search-clear', function(e){
+		e.stopPropagation();
+		jQuery(this).siblings('input').val('').keyup();
+	});
+	
 	
 	// Listing Display - Sort Applying
 	jQuery('body').on('click', '.table-action-sort', function(e) {
@@ -966,6 +1008,16 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 				
 				// Release the hold
 				listingUpdateRelease();
+				
+				//If there is a pending carriage return and only one record returned, perform it's first action
+				if(pendingCarriageReturn && r["pageRecords"].length==1){
+					var btn=jQuery(tableBodySelector +' tr td:last a.btn:first')[0];
+					jQuery('input[tableid='+tableID+'].general-listing-search').val('').keyup();
+					btn.click();
+					//Clear the search list
+					
+				}
+				pendingCarriageReturn=false;
 			}
 		});
 	
