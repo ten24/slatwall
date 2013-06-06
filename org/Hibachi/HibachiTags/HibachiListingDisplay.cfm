@@ -281,14 +281,19 @@
 	<cfoutput>
 		<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 			<thead>
+				<cfif not thistag.expandable>
 				<tr>
 					<th colspan='<cfif attributes.administativeCount>#arraylen(thistag.columns)+1# <cfelse>#arraylen(thistag.columns)#</cfif>'>
-						<div class="">
-							<input type="text" name="search" class="general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
-							<a title="Clear Search" class="general-listing-search-clear btn btn-mini"><i class="icon-remove-sign"></i></a>
-						</div>	
+						
+							<div class="">
+								<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+								<button class="btn btn-mini general-listing-search-clear" title="#attributes.hibachiScope.rbKey('define.clearSearch')#" ><i class="icon-remove-sign"></i></button>
+							</div>
+							
+						
 					</th>
 				</tr>
+				</cfif>
 				<tr>
 					<!--- Selectable --->
 					<cfif thistag.selectable>
