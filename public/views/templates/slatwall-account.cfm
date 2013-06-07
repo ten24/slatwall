@@ -263,10 +263,16 @@ Notes:
 													<input type="hidden" name="accountPhoneNumbers[1].accountPhoneNumberID" value="" />
 													<div class="control-group">
 								    					<div class="controls">
+								    						
+								    						<cfset newAccountPhoneNumber = $.slatwall.getAccount().getNewPropertyEntity( 'accountPhoneNumbers' ) />
+															
 							    							<div class="input-append">
-								    							<sw:formField type="text" name="accountPhoneNumbers[1].phoneNumber" fieldAttributes='placeholder="Add Phone Number"' class="span3" />
+							    								<sw:formField type="text" name="accountPhoneNumbers[1].phoneNumber" valueObject="#newAccountPhoneNumber#" valueObjectProperty="phoneNumber" fieldAttributes='placeholder="Add Phone Number"' class="span3" />
 																<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i></button>
 															</div>
+															
+															<sw:errorDisplay object="#newAccountPhoneNumber#" errorName="phoneNumber" />
+															
 								    					</div>
 								  					</div>
 												</form>
@@ -321,8 +327,14 @@ Notes:
 													<div class="control-group">
 								    					<div class="controls">
 							    							<div class="input-append">
-								    							<sw:formField type="text" name="accountEmailAddresses[1].emailAddress" fieldAttributes='placeholder="Add Email Address"' class="span3" />
-																<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i></button>
+							    								<cfset newAccountEmailAddress = $.slatwall.getAccount().getNewPropertyEntity( 'accountEmailAddresses' ) />
+															
+								    							<div class="input-append">
+								    								<sw:formField type="text" name="accountEmailAddresses[1].emailAddress" valueObject="#newAccountEmailAddress#" valueObjectProperty="emailAddress" fieldAttributes='placeholder="Add Email Address"' class="span3" />
+																	<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i></button>
+																</div>
+																
+																<sw:errorDisplay object="#newAccountEmailAddress#" errorName="emailAddress" />
 															</div>
 								    					</div>
 								  					</div>

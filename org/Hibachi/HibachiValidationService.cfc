@@ -130,7 +130,7 @@
 		return false;
 	}
 	
-	public any function getPopulatedPropertyValidationContext(required any object, required string propertyName, string context="") {
+	public any function getPopulatedPropertyValidationContext(required any object, required string propertyName, string originalContext="") {
 		
 		var validationStruct = getValidationStruct(object=arguments.object);
 		
@@ -147,7 +147,7 @@
 
 		}
 		
-		return arguments.context;
+		return arguments.originalContext;
 	}
 	
 	public any function validate(required any object, string context="", boolean setErrors=true) {

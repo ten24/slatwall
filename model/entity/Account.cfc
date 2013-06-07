@@ -443,7 +443,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 			variables.accountContentAccessesSmartList.joinRelatedProperty("SlatwallAccountContentAccess", "orderItem", "INNER", true);
 			variables.accountContentAccessesSmartList.joinRelatedProperty("SlatwallOrderItem", "order", "INNER", true);
 			variables.accountContentAccessesSmartList.joinRelatedProperty("SlatwallAccountContentAccess", "accessContents", "INNER", true);
-			variables.addFilter('account.accountID', getAccountID());
+			variables.accountContentAccessesSmartList.addFilter('account.accountID', getAccountID());
 		}
 		return variables.accountContentAccessesSmartList;
 	}

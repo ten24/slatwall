@@ -763,7 +763,23 @@ Notes:
 					<cfelseif not len(orderRequirementsList)>
 						<h4>Step 4 - Confirmation</h4>
 						
+						ADD Account Details Here
+						<hr />
+						Add Fuflillment Details Here
+						<hr />
+						Add Payment Details Here
 						
+						<form action="?s=1" method="post">
+							<input type="hidden" name="slatAction" value="public:cart.placeOrder" />
+						
+							<div class="control-group pull-right">
+								<div class="controls">
+									
+									<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
+									<button type="submit" class="btn btn-primary">Place Order</button>
+								</div>
+							</div>
+						</form>
 					</cfif>
 						
 				</div>
