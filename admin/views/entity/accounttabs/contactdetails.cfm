@@ -52,7 +52,8 @@ Notes:
 									  selectFieldName="primaryEmailAddress.accountEmailAddressID"
 									  selectValue="#rc.account.getPrimaryEmailAddress().getAccountEmailAddressID()#"
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
-									  edit="#rc.edit#">
+									  edit="#rc.edit#"
+									  showheader=false>
 						
 				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="emailAddress" />
 				<cf_HibachiListingColumn propertyIdentifier="accountEmailType.type" />
@@ -74,7 +75,8 @@ Notes:
 									  selectFieldName="primaryPhoneNumber.accountPhoneNumberID"
 									  selectValue="#rc.account.getPrimaryPhoneNumber().getAccountPhoneNumberID()#"
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
-									  edit="#rc.edit#">
+									  edit="#rc.edit#"
+									  showheader=false>
 						
 				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="phoneNumber" />
 				<cf_HibachiListingColumn propertyIdentifier="accountPhoneType.type" />
