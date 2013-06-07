@@ -399,6 +399,10 @@ component entityname="SlatwallOrderItem" table="SlatwallOrderItem" persistent="t
 		return getSku().getProduct().getTitle() & " - " & getSku().getSimpleRepresentation(); 
 	}
 	
+	public string function getSimpleRepresentationPropertyName(){
+		return "orderItemID";
+	}
+
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
