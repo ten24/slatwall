@@ -1208,7 +1208,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
 			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
 				
-				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di].getOrderItem();
+				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
 				
 				// If the sku has a subscriptionTerm, then we can process the item to setupSubscription
 				if(!isNull(orderDeliveryItem.getOrderItem().getSku().getSubscriptionTerm())) {

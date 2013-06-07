@@ -103,15 +103,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SlatwallAddr
 	}
 	
 	public array function getCountryCodeOptions() {
-		if(!structKeyExists(variables, "countryCodeOptions")) {
-			var smartList = getService("addressService").getCountrySmartList();
-			smartList.addFilter(propertyIdentifier="activeFlag", value=1);
-			smartList.addSelect(propertyIdentifier="countryName", alias="name");
-			smartList.addSelect(propertyIdentifier="countryCode", alias="value");
-			smartList.addOrder("countryName|ASC");
-			variables.countryCodeOptions = smartList.getRecords();
-		}
-		return variables.countryCodeOptions;
+		return getService("addressService").getCountryCodeOptions();
 	}
 	
 	public array function getStateCodeOptions() {

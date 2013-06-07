@@ -111,15 +111,6 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	// ===================================== END: Hibachi HOOKS
 	// ===================================== FW1 HOOKS
 	
-	public void function setupView() {
-		super.setupView();
-		
-		// If this is an integration subsystem, then apply add the default layout to the request.layout
-		if( !listFindNoCase("admin,frontend,public", getSubsystem(request.context.slatAction)) && (!structKeyExists(request,"layout") || request.layout)) {
-			setLayout("admin:main");
-		}
-	}
-	
 	// Allows for integration services to have a seperate directory structure
 	public any function getSubsystemDirPrefix( string subsystem ) {
 		if ( arguments.subsystem eq '' ) {
@@ -138,6 +129,10 @@ component extends="org.Hibachi.Hibachi" output="false" {
 			var customFullPath = replace(replace(replace(arguments.fullPath, "/admin/", "/custom/admin/"), "/frontend/", "/custom/frontend/"), "/public/", "/custom/public/");
 			if(fileExists(expandPath(customFullPath))) {
 				arguments.fullPath = customFullPath;
+			}
+		} else if(arguments.type eq "layout" && arguments.pathInfo.subsystem neq "common") {
+			if(arguments.pathInfo.path eq "default" && !fileExists(expandPath(arguments.fullPath))) {
+				arguments.fullPath = left(arguments.fullPath, findNoCase("/integrationServices/", arguments.fullPath)) & 'admin/layouts/default.cfm';
 			}
 		}
 		

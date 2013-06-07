@@ -146,18 +146,20 @@ Notes:
 
 <cftry>
 	<cfquery name="alterProductCategory">
-		ALTER TABLE SlatwallProductCategory 
-		ALTER COLUMN productID VARCHAR(32) NOT NULL;
+		ALTER TABLE SlatwallProductCategory
+		<cfif getApplicationValue("databaseType") eq "MySQL">MODIFY<cfelse>ALTER</cfif>
+		COLUMN productID VARCHAR(32) NOT NULL
 	</cfquery>
 	<cfcatch>
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>
 
-<cftry>	
+<cftry>
 	<cfquery name="alterCategory">
-		ALTER TABLE SlatwallProductCategory 
-		ALTER COLUMN categoryID VARCHAR(32) NOT NULL;
+		ALTER TABLE SlatwallProductCategory
+		<cfif getApplicationValue("databaseType") eq "MySQL">MODIFY<cfelse>ALTER</cfif>
+		COLUMN categoryID VARCHAR(32) NOT NULL
 	</cfquery>
 	<cfcatch>
 		<cfset local.scriptHasErrors = true />
@@ -166,8 +168,9 @@ Notes:
 
 <cftry>
 	<cfquery name="alterOrderPayment">
-		ALTER TABLE SlatwallOrderPayment 
-		ALTER COLUMN paymentMethodID VARCHAR(32) NOT NULL;
+		ALTER TABLE SlatwallOrderPayment
+		<cfif getApplicationValue("databaseType") eq "MySQL">MODIFY<cfelse>ALTER</cfif>
+		COLUMN paymentMethodID VARCHAR(32) NOT NULL
 	</cfquery>
 	<cfcatch>
 		<cfset local.scriptHasErrors = true />
@@ -177,7 +180,8 @@ Notes:
 <cftry>
 	<cfquery name="alterPaymentMethod">
 		ALTER TABLE SlatwallPaymentMethod 
-		ALTER COLUMN paymentMethodID VARCHAR(32) NOT NULL;
+		<cfif getApplicationValue("databaseType") eq "MySQL">MODIFY<cfelse>ALTER</cfif>
+		COLUMN paymentMethodID VARCHAR(32) NOT NULL
 	</cfquery>
 	<cfcatch>
 		<cfset local.scriptHasErrors = true />
@@ -186,8 +190,9 @@ Notes:
 
 <cftry>
 	<cfquery name="alterOrderFulfillment">
-		ALTER TABLE SlatwallOrderFulfillment 
-		ALTER COLUMN fulfillmentMethodID VARCHAR(32) NULL;
+		ALTER TABLE SlatwallOrderFulfillment
+		<cfif getApplicationValue("databaseType") eq "MySQL">MODIFY<cfelse>ALTER</cfif>
+		COLUMN fulfillmentMethodID VARCHAR(32) NULL
 	</cfquery>
 	<cfcatch>
 		<cfset local.scriptHasErrors = true />
@@ -197,7 +202,8 @@ Notes:
 <cftry>
 	<cfquery name="alterOrderDelivery">
 		ALTER TABLE SlatwallOrderDelivery 
-		ALTER COLUMN fulfillmentMethodID VARCHAR(32) NULL;
+		<cfif getApplicationValue("databaseType") eq "MySQL">MODIFY<cfelse>ALTER</cfif>
+		COLUMN fulfillmentMethodID VARCHAR(32) NULL
 	</cfquery>
 	<cfcatch>
 		<cfset local.scriptHasErrors = true />
@@ -207,14 +213,9 @@ Notes:
 <cftry>
 	<cfquery name="alterFulfillmentMethod">
 		ALTER TABLE SlatwallFulfillmentMethod 
-		ALTER COLUMN fulfillmentMethodID VARCHAR(32) NULL;
+		<cfif getApplicationValue("databaseType") eq "MySQL">MODIFY<cfelse>ALTER</cfif>
+		COLUMN fulfillmentMethodID VARCHAR(32) NULL
 	</cfquery>
-	<cfcatch>
-		<cfset local.scriptHasErrors = true />
-	</cfcatch>
-</cftry>
-
-<cftry>	
 	<cfcatch>
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>

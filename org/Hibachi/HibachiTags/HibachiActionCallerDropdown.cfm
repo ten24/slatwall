@@ -5,7 +5,7 @@
 <cfparam name="attributes.buttonClass" type="string" default="btn-primary" />
 
 <cfif thisTag.executionMode is "end">
-	<cfif len(thisTag.generatedContent) gt 5>
+	<cfif len(trim(thisTag.generatedContent)) gt 5>
 		<cfif attributes.type eq "button">
 			<cfoutput>
 				<div class="btn-group">

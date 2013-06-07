@@ -80,1029 +80,1055 @@ Notes:
 					
 					<!--- PRIMARY TAB NAV --->
 					<div class="tabable">
-					<ul class="nav nav-tabs" id="myTab">
-						<li class="active"><a href="##profile" data-toggle="tab">Profile</a></li>
-						<li><a href="##orders" data-toggle="tab">Orders</a></li>
-						<li><a href="##carts-and-quotes" data-toggle="tab">Carts & Quotes</a></li>
-						<li><a href="##subscriptions" data-toggle="tab">Subscriptions</a></li>
-					</ul>
-					
-					<!--- PRIMARY TAB CONTENT --->
-					<div class="tab-content">
+						<ul class="nav nav-tabs" id="myTab">
+							<li class="active"><a href="##profile" data-toggle="tab">Profile</a></li>
+							<li><a href="##orders" data-toggle="tab">Orders</a></li>
+							<li><a href="##carts-and-quotes" data-toggle="tab">Carts & Quotes</a></li>
+							<li><a href="##subscriptions" data-toggle="tab">Subscriptions</a></li>
+							<li><a href="##purchased-content" data-toggle="tab">Purchased Content</a></li>
+						</ul>
 						
-						<!--- ================== PROFILE TAB ======================== --->
-						<div class="tab-pane active" id="profile">
+						<!--- PRIMARY TAB CONTENT --->
+						<div class="tab-content">
 							
-							<div class="row">
+							<!--- ================== PROFILE TAB ======================== --->
+							<div class="tab-pane active" id="profile">
 								
-								<!--- Left Side General Details --->
-								<div class="span4">
+								<div class="row">
 									
-									<h4>Profile Details</h4>
-									<hr style="margin-top:10px;border-top-color:##ddd;" />
-									
-									<!--- Start: Update Account Form --->
-									<form action="?s=1" method="post">
+									<!--- Left Side General Details --->
+									<div class="span4">
 										
-										<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
-										<input type="hidden" name="slatAction" value="public:account.update" />
+										<h4>Profile Details</h4>
+										<hr style="margin-top:10px;border-top-color:##ddd;" />
+										
+										<!--- Start: Update Account Form --->
+										<form action="?s=1" method="post">
 											
-										<!--- First Name --->
-										<div class="control-group">
-					    					<label class="control-label" for="firstName">First Name</label>
-					    					<div class="controls">
-					    						
-												<sw:formField type="text" valueObject="#$.slatwall.getAccount()#" valueObjectProperty="firstName" class="span4" />
-												<sw:errorDisplay object="#$.slatwall.getAccount()#" errorName="firstName" />
+											<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
+											<input type="hidden" name="slatAction" value="public:account.update" />
 												
-					    					</div>
-					  					</div>
-										
-										<!--- Last Name --->
-										<div class="control-group">
-					    					<label class="control-label" for="lastName">Last Name</label>
-					    					<div class="controls">
-					    						
-												<sw:formField type="text" valueObject="#$.slatwall.getAccount()#" valueObjectProperty="lastName" class="span4" />
-												<sw:errorDisplay object="#$.slatwall.getAccount()#" errorName="lastName" />
-												
-					    					</div>
-					  					</div>
-										
-										<!--- Start: Custom "Account" Attribute Sets --->
-										<cfset accountAttributeSets = $.slatwall.getAccount().getAssignedAttributeSetSmartList().getRecords() />
-										
-										<!--- Only display if there are attribute sets assigned --->
-										<cfif arrayLen(accountAttributeSets)>
+											<!--- First Name --->
+											<div class="control-group">
+						    					<label class="control-label" for="firstName">First Name</label>
+						    					<div class="controls">
+						    						
+													<sw:formField type="text" valueObject="#$.slatwall.getAccount()#" valueObjectProperty="firstName" class="span4" />
+													<sw:errorDisplay object="#$.slatwall.getAccount()#" errorName="firstName" />
+													
+						    					</div>
+						  					</div>
 											
-											<!--- Loop over all of the attribute sets --->
-											<cfloop array="#accountAttributeSets#" index="attributeSet">
-												
-												<!--- display the attribute set name --->
-												<h5>#attributeSet.getAttributeSetName()#</h5>
-												
-												<!--- Loop over all of the attributes --->
-												<cfloop array="#attributeSet.getAttributes()#" index="attribute">
+											<!--- Last Name --->
+											<div class="control-group">
+						    					<label class="control-label" for="lastName">Last Name</label>
+						    					<div class="controls">
+						    						
+													<sw:formField type="text" valueObject="#$.slatwall.getAccount()#" valueObjectProperty="lastName" class="span4" />
+													<sw:errorDisplay object="#$.slatwall.getAccount()#" errorName="lastName" />
 													
-													<!--- Pull this attribute value object out of the order entity ---> 
-													<cfset attributeValueObject = $.slatwall.getAccount().getAttributeValue(attribute.getAttributeCode(), true) />
+						    					</div>
+						  					</div>
+											
+											<!--- Start: Custom "Account" Attribute Sets --->
+											<cfset accountAttributeSets = $.slatwall.getAccount().getAssignedAttributeSetSmartList().getRecords() />
+											
+											<!--- Only display if there are attribute sets assigned --->
+											<cfif arrayLen(accountAttributeSets)>
+												
+												<!--- Loop over all of the attribute sets --->
+												<cfloop array="#accountAttributeSets#" index="attributeSet">
 													
-													<!--- Display the attribute value --->
-													<div class="control-group">
+													<!--- display the attribute set name --->
+													<h5>#attributeSet.getAttributeSetName()#</h5>
+													
+													<!--- Loop over all of the attributes --->
+													<cfloop array="#attributeSet.getAttributes()#" index="attribute">
 														
-								    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
-								    					<div class="controls">
-								    						
-															<sw:formField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#attributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#attributeValueObject.getAttributeValueOptions()#" class="span4" />
-															<sw:errorDisplay object="#attributeValueObject#" errorName="password" />
+														<!--- Pull this attribute value object out of the order entity ---> 
+														<cfset attributeValueObject = $.slatwall.getAccount().getAttributeValue(attribute.getAttributeCode(), true) />
+														
+														<!--- Display the attribute value --->
+														<div class="control-group">
 															
-								    					</div>
-								  					</div>
+									    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
+									    					<div class="controls">
+									    						
+																<sw:formField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#attributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#attributeValueObject.getAttributeValueOptions()#" class="span4" />
+																<sw:errorDisplay object="#attributeValueObject#" errorName="password" />
+																
+									    					</div>
+									  					</div>
+														
+													</cfloop>
 													
 												</cfloop>
+											</cfif>
+											<!--- End: Custom Attribute Sets --->
+											
+											<!--- Update Button --->
+											<div class="control-group">
+						    					<div class="controls">
+						      						<button type="submit" class="btn btn-primary">Update Account</button>
+						    					</div>
+						  					</div>
+											
+										</form>
+										<!--- End: Update Account Form --->
+										
+										<br />
+										
+										<h4>Change Password</h4>
+										<hr style="margin-top:10px;border-top-color:##ddd;" />
+										
+										<!--- Start: Change Password Form --->
+										<form action="?s=1" method="post">
+											
+											<!--- Get the change password process object --->
+											<cfset changePasswordObj = $.slatwall.getAccount().getProcessObject('changePassword') />
+											
+											<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
+											<input type="hidden" name="slatAction" value="public:account.changePassword" />
 												
-											</cfloop>
-										</cfif>
-										<!--- End: Custom Attribute Sets --->
-										
-										<!--- Update Button --->
-										<div class="control-group">
-					    					<div class="controls">
-					      						<button type="submit" class="btn btn-primary">Update Account</button>
-					    					</div>
-					  					</div>
-										
-									</form>
-									<!--- End: Update Account Form --->
-									
-									<br />
-									
-									<h4>Change Password</h4>
-									<hr style="margin-top:10px;border-top-color:##ddd;" />
-									
-									<!--- Start: Change Password Form --->
-									<form action="?s=1" method="post">
-										
-										<!--- Get the change password process object --->
-										<cfset changePasswordObj = $.slatwall.getAccount().getProcessObject('changePassword') />
-										
-										<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
-										<input type="hidden" name="slatAction" value="public:account.changePassword" />
-											
-										<!--- New Password --->
-										<div class="control-group">
-					    					<label class="control-label" for="lastName">New Password</label>
-					    					<div class="controls">
-					    						
-												<sw:formField type="password" valueObject="#changePasswordObj#" valueObjectProperty="password" class="span4" />
-												<sw:errorDisplay object="#changePasswordObj#" errorName="password" />
-												
-					    					</div>
-					  					</div>
-										
-										<!--- Confirm New Password --->
-										<div class="control-group">
-					    					<label class="control-label" for="lastName">Confirm New Password</label>
-					    					<div class="controls">
-					    						
-												<sw:formField type="password" valueObject="#changePasswordObj#" valueObjectProperty="passwordConfirm" class="span4" />
-												<sw:errorDisplay object="#changePasswordObj#" errorName="passwordConfirm" />
-												
-					    					</div>
-					  					</div>
-										
-										<!--- Change Button --->
-										<div class="control-group">
-					    					<div class="controls">
-					      						<button type="submit" class="btn btn-primary">Change Password</button>
-					    					</div>
-					  					</div>
-										
-									</form>
-									<!--- End: Change Password Form --->
-									
-									<br />
-									
-								</div>
-								
-								<!--- Start: Right Side Contact & Payment Methods --->
-								<div class="span8">
-									
-									<!--- Start: Email & Phone --->
-									<div class="row">
-										
-										<!--- START: PHONE NUMBERS --->
-										<div class="span4">
-											<h4>Phone Numbers</h4>
-											
-											<!--- Start: Existing Phone Numbers --->
-											<table class="table table-condensed">
-												<cfloop array="#$.slatwall.getAccount().getAccountPhoneNumbersSmartList().getRecords()#" index="accountPhoneNumber">
-													<tr>
-														<td>
-															<span>#accountPhoneNumber.getPhoneNumber()#</span>
-															
-															<cfif accountPhoneNumber.getAccountPhoneNumberID() eq $.slatwall.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID()>
-																- <i class="icon-asterisk" title="#accountPhoneNumber.getPhoneNumber()# is the primary phone number for this account"></i>
-															<cfelse>
-																<span class="pull-right">
-																	<a href="?slatAction=public:account.update&primaryPhoneNumber.accountPhoneNumberID=#accountPhoneNumber.getAccountPhoneNumberID()#" title="Set #accountPhoneNumber.getPhoneNumber()# as your primary phone number"><i class="icon-asterisk"></i></a>&nbsp;
-																	<a href="?slatAction=public:account.deleteAccountPhoneNumber&accountPhoneNumberID=#accountPhoneNumber.getAccountPhoneNumberID()#" title="Delete Phone Number - #accountPhoneNumber.getPhoneNumber()#"><i class="icon-trash"></i></a>
-																</span>
-															</cfif>
-														</td>
-													</tr>
-												</cfloop>
-											</table>
-											<!--- End: Existing Phone Numbers --->
-											
-											<!--- Start: Add Phone Number Form --->
-											<form action="?s=1" method="post">
-												<input type="hidden" name="slatAction" value="public:account.update" />
-												<input type="hidden" name="accountPhoneNumbers[1].accountPhoneNumberID" value="" />
-												<div class="control-group">
-							    					<div class="controls">
-						    							<div class="input-append">
-							    							<sw:formField type="text" name="accountPhoneNumbers[1].phoneNumber" fieldAttributes='placeholder="Add Phone Number"' class="span3" />
-															<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i></button>
-														</div>
-							    					</div>
-							  					</div>
-											</form>
-											<!--- End: Add Phone Number Form --->
-											
-											<br />		
-										</div>
-										<!--- END: PHONE NUMBERS --->
-										
-										<!--- START: EMAIL ADDRESSES --->
-										<div class="span4">
-											<h4>Email Addresses</h4>
-											
-											<!--- Existing Email Addresses --->
-											<table class="table table-condensed">
-												
-												<!--- Loop over all of the existing email addresses --->
-												<cfloop array="#$.slatwall.getAccount().getAccountEmailAddressesSmartList().getRecords()#" index="accountEmailAddress">
+											<!--- New Password --->
+											<div class="control-group">
+						    					<label class="control-label" for="lastName">New Password</label>
+						    					<div class="controls">
+						    						
+													<sw:formField type="password" valueObject="#changePasswordObj#" valueObjectProperty="password" class="span4" />
+													<sw:errorDisplay object="#changePasswordObj#" errorName="password" />
 													
-													<tr>
-														<td>
-															
-															<!--- Email Address --->
-															<span>#accountEmailAddress.getEmailAddress()#</span>
-															
-															<!--- Admin buttons --->
-															<cfif accountEmailAddress.getAccountEmailAddressID() eq $.slatwall.getAccount().getPrimaryEmailAddress().getAccountEmailAddressID()>
-																- <i class="icon-asterisk" title="#accountEmailAddress.getEmailAddress()# is the primary email address for this account"></i>
-															<cfelse>
-																<span class="pull-right">
-																	<a href="?slatAction=public:account.update&primaryEmailAddress.accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#" title="Set #accountEmailAddress.getEmailAddress()# as your primary email address"><i class="icon-asterisk"></i></a>&nbsp;
-																	<a href="?slatAction=public:account.deleteAccountEmailAddress&accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#" title="Delete Email Address - #accountEmailAddress.getEmailAddress()#"><i class="icon-trash"></i></a>
-																</span>
-															</cfif>
-															
-														</td>
-													</tr>
+						    					</div>
+						  					</div>
+											
+											<!--- Confirm New Password --->
+											<div class="control-group">
+						    					<label class="control-label" for="lastName">Confirm New Password</label>
+						    					<div class="controls">
+						    						
+													<sw:formField type="password" valueObject="#changePasswordObj#" valueObjectProperty="passwordConfirm" class="span4" />
+													<sw:errorDisplay object="#changePasswordObj#" errorName="passwordConfirm" />
 													
-												</cfloop>
-											</table>
+						    					</div>
+						  					</div>
 											
-											<!--- Start: Add Email Address Form --->
-											<form action="?s=1" method="post">
-												
-												<!--- Hidden slatAction to update the account --->
-												<input type="hidden" name="slatAction" value="public:account.update" />
-												
-												<!--- Because we want to have a new accountEmailAddress, we set the ID as blank for the account update ---> 
-												<input type="hidden" name="accountEmailAddresses[1].accountEmailAddressID" value="" />
-												
-												<!--- Email Address --->
-												<div class="control-group">
-							    					<div class="controls">
-						    							<div class="input-append">
-							    							<sw:formField type="text" name="accountEmailAddresses[1].emailAddress" fieldAttributes='placeholder="Add Email Address"' class="span3" />
-															<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i></button>
-														</div>
-							    					</div>
-							  					</div>
-												
-											</form>
-											<!--- End: Add Email Address Form --->
+											<!--- Change Button --->
+											<div class="control-group">
+						    					<div class="controls">
+						      						<button type="submit" class="btn btn-primary">Change Password</button>
+						    					</div>
+						  					</div>
 											
-											<br />
-																							
-										</div>
-										<!--- END: EMAIL ADDRESSES --->
+										</form>
+										<!--- End: Change Password Form --->
+										
+										<br />
 										
 									</div>
-									<!--- End: Email & Phone --->
 									
-									
-									<!--- START: ADDRESS BOOK --->
-									<h4>Address Book</h4>
-									<hr style="margin-top:10px;border-top-color:##ddd;" />
+									<!--- Start: Right Side Contact & Payment Methods --->
+									<div class="span8">
 										
-									<ul class="thumbnails">
-										
-										<!--- Loop over each of the addresses that are saved against the account --->
-										<cfloop array="#$.slatwall.getAccount().getAccountAddressesSmartList().getRecords()#" index="accountAddress">
+										<!--- Start: Email & Phone --->
+										<div class="row">
 											
-											<li class="span4">
+											<!--- START: PHONE NUMBERS --->
+											<div class="span4">
+												<h4>Phone Numbers</h4>
 												
-												<!--- Display an address block --->	
-												<div class="thumbnail">
-													
-													<!--- Administration options --->
-													<div class="pull-right">
-														<span class="pull-right">
-															<!--- If this is the primary address, then just show the astricks --->
-															<cfif accountAddress.getAccountAddressID() eq $.slatwall.getAccount().getPrimaryAddress().getAccountAddressID()>
-																<i class="icon-asterisk" title="This is the primary address for your account"></i>
-															<!--- Otherwise add buttons to be able to delete the address, or make it the primary --->
-															<cfelse>
-																<a href="?slatAction=public:account.update&primaryAddress.accountAddressID=#accountAddress.getAccountAddressID()#" title="Set this as your primary phone address"><i class="icon-asterisk"></i></a>
-																<a href="?slatAction=public:account.deleteAccountAddress&accountAddressID=#accountAddress.getAccountAddressID()#" title="Delete Address"><i class="icon-trash"></i></a>
-															</cfif>
-														</span>
-													</div>
-													
-													<!--- Address Nickname if it exists --->
-													<cfif not isNull(accountAddress.getAccountAddressName())>
-														<strong>#accountAddress.getAccountAddressName()#</strong>
-													</cfif>
-													
-													<!--- Actual Address Details --->
-													<sw:addressDisplay address="#accountAddress.getAddress()#" />
-													
-													
-												</div>
-											</li>
-											
-										</cfloop>
-										
-										<!--- Start: New Address --->
-										<li class="span4">
-											
-											<div class="accordion" id="add-account-address">
-											
-												<div class="accordion-group">
-												
-													<!--- This is the top accordian header row --->
-													<div class="accordion-heading">
-														<a class="accordion-toggle" data-toggle="collapse" data-parent="##add-account-address" href="##new-account-address-form"><i class="icon-plus"></i>Add Account Address</a>
-													</div>
-												
-													<!--- This is the accordian details when expanded --->
-													<div id="new-account-address-form" class="accordion-body collapse">
-													
-														<div class="accordion-inner">
-															
-															<!--- get the newPropertyEntity for accountAddress --->
-															<cfset newAccountAddress = $.slatwall.getAccount().getNewPropertyEntity( 'accountAddresses' ) />
-															
-															<!--- Start: New Address Form --->
-															<form action="?s=1" method="post">
-																
-																<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
-																<input type="hidden" name="slatAction" value="public:account.update" />
-																
-																<!--- Set the accountAddressID to blank so tha it creates a new one --->
-																<input type="hidden" name="accountAddresses[1].accountAddressID" value="" />
-																
-																<!--- Nickname --->
-																<div class="control-group">
-											    					<label class="control-label" for="firstName">Nickname</label>
-											    					<div class="controls">
-											    						
-																		<sw:formField type="text" name="accountAddresses[1].accountAddressName" valueObject="#newAccountAddress#" valueObjectProperty="accountAddressName" class="span3" />
-																		<sw:errorDisplay object="#newAccountAddress#" errorName="accountAddressName" />
-																		
-											    					</div>
-											  					</div>
-																
-																<!--- New Address --->
-																<sw:addressForm id="newAccountAddress" address="#newAccountAddress.getAddress()#" fieldNamePrefix="accountAddresses[1].address." fieldClass="span3" />
-																
-																<!--- Update Button --->
-																<div class="control-group">
-											    					<div class="controls">
-											      						<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i> Add Address</button>
-											    					</div>
-											  					</div>
-																
-															</form>
-															<!--- End: New Address Form --->
-															
-														</div>
-													</div>
-												</div>
-											</div>
-										</li>
-										<!--- End: New Address --->
-											
-									</ul>
-									<!--- END: ADDRESS BOOK --->
-										
-									<br />
-									
-									<!--- START: PAYMENT METHODS --->
-									<h4>Payment Methods</h4>
-									<hr style="margin-top:10px;border-top-color:##ddd;" />
-									
-									<ul class="thumbnails">
-										
-										<!--- Loop over each of the addresses that are saved against the account --->
-										<cfloop array="#$.slatwall.getAccount().getAccountPaymentMethodsSmartList().getRecords()#" index="accountPaymentMethod">
-											
-											<li class="span4">
-												
-												<!--- Display an address block --->	
-												<div class="thumbnail">
-													
-													<!--- Administration options --->
-													<div class="pull-right">
-													
-														<span class="pull-right">
-															
-															<!--- If this is the primary payment method, then just show the astricks --->
-															<cfif accountPaymentMethod.getAccountPaymentMethodID() eq $.slatwall.getAccount().getPrimaryPaymentMethod().getAccountPaymentMethodID()>
-																<i class="icon-asterisk" title="This is the primary payment method for your account"></i>
-															<!--- Otherwise add buttons to be able to delete the address, or make it the primary --->
-															<cfelse>
-																<a href="?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=#accountPaymentMethod.getAccountPaymentMethodID()#" title="Set this as your primary phone address"><i class="icon-asterisk"></i></a>
-																<a href="?slatAction=public:account.deleteAccountPaymentMethod&accountPaymentMethodID=#accountPaymentMethod.getAccountPaymentMethodID()#" title="Delete Address"><i class="icon-trash"></i></a>
-															</cfif>
-															
-														</span>
-													</div>
-													
-													<strong>#accountPaymentMethod.getPaymentMethod().getPaymentMethodName()# <cfif not isNull(accountPaymentMethod.getAccountPaymentMethodName()) and len(accountPaymentMethod.getAccountPaymentMethodName())>- #accountPaymentMethod.getAccountPaymentMethodName()#</cfif></strong><br />
-													
-													<!--- Credit Card Display --->
-													<cfif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "creditCard">
-														#accountPaymentMethod.getCreditCardType()# - #accountPaymentMethod.getCreditCardLastFour()#<br />
-														#accountPaymentMethod.getNameOnCreditCard()#<br />
-														#accountPaymentMethod.getExpirationMonth()# / #accountPaymentMethod.getExpirationYear()#<br />
-														#accountPaymentMethod.getBillingAddress().getSimpleRepresentation()#
-													
-													<!--- External Display --->
-													<cfelseif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "external">
-														
-													<!--- Gift Card Display --->
-													<cfelseif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "giftCard">
-													
-													<!--- Term Payment Display --->
-													<cfelseif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "termPayment">
-														
-													</cfif>
-													
-												</div>
-												
-											</li>
-											
-										</cfloop>
-										
-										<!--- Start: New Payment Method --->
-											
-										<!--- get the newPropertyEntity for accountPaymentMethod --->
-										<cfset newAccountPaymentMethod = $.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethods' ) />
-										
-										<!--- verify that there are payment methods that can be saved --->
-										<cfif arrayLen(newAccountPaymentMethod.getPaymentMethodOptionsSmartList().getRecords())>
-											<li class="span4">
-												
-												<div class="accordion" id="add-account-payment-method">
-													
-													<!--- Loop over all of the potential payment methods that can be saved --->
-													<cfloop array="#newAccountPaymentMethod.getPaymentMethodOptionsSmartList().getRecords()#" index="paymentMethod">
-														
-														<cfset pmID = "pm#lcase(createUUID())#" /> 
-														
-														<div class="accordion-group">
-														
-															<!--- This is the top accordian header row --->
-															<div class="accordion-heading">
-																<a class="accordion-toggle" data-toggle="collapse" data-parent="##add-account-payment-method" href="###pmID#"><i class="icon-plus"></i>Add #paymentMethod.getPaymentMethodName()#</a>
-															</div>
-														
-															<!--- This is the accordian details when expanded --->
-															<div id="#pmID#" class="accordion-body collapse">
-															
-																<div class="accordion-inner">
-																	
-																	<!--- Start: New Payment Method Form --->
-																	<form action="?s=1" method="post">
-																		
-																		<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
-																		<input type="hidden" name="slatAction" value="public:account.update" />
-																		
-																		<!--- Set the accountAddressID to blank so tha it creates a new one --->
-																		<input type="hidden" name="accountPaymentMethods[1].accountPaymentMethodID" value="" />
-																		
-																		<input type="hidden" name="accountPaymentMethods[1].paymentMethod.paymentMethodID" value="#paymentMethod.getPaymentMethodID()#" />
-																		
-																		<!--- Nickname --->
-																		<div class="control-group">
-													    					<label class="control-label" for="firstName">Nickname</label>
-													    					<div class="controls">
-													    						
-																				<sw:formField type="text" name="accountPaymentMethods[1].accountPaymentMethodName" valueObject="#newAccountPaymentMethod#" valueObjectProperty="accountAddressName" class="span3" />
-																				<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="accountPaymentMethodName" />
-																				
-													    					</div>
-													  					</div>
-																		
-																		<!--- Credit Card --->
-																		<cfif paymentMethod.getPaymentMethodType() eq "creditCard">
-																			
-																			<!--- Credit Card Number --->
-																			<div class="control-group">
-														    					<label class="control-label" for="firstName">Credit Card Number</label>
-														    					<div class="controls">
-														    						
-																					<sw:formField type="text" name="accountPaymentMethods[1].creditCardNumber" valueObject="#newAccountPaymentMethod#" valueObjectProperty="creditCardNumber" class="span3" />
-																					<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="creditCardNumber" />
-																					
-														    					</div>
-														  					</div>
-																			
-																			<!--- Name on Credit Card --->
-																			<div class="control-group">
-														    					<label class="control-label" for="firstName">Name on Credit Card</label>
-														    					<div class="controls">
-														    						
-																					<sw:formField type="text" name="accountPaymentMethods[1].nameOnCreditCard" valueObject="#newAccountPaymentMethod#" valueObjectProperty="nameOnCreditCard" class="span3" />
-																					<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="nameOnCreditCard" />
-																					
-														    					</div>
-														  					</div>
-																			
-																			
-																			<!--- Security & Expiration Row --->
-																			<div class="row">
-																				
-																				<div class="span1">
-																					
-																					<!--- Security Code --->
-																					<div class="control-group">
-																    					<label class="control-label" for="rating">CVV</label>
-																    					<div class="controls">
-																    						
-																							<sw:formField type="text" name="accountPaymentMethods[1].securityCode" valueObject="#newAccountPaymentMethod#" valueObjectProperty="securityCode" class="span1" />
-																							<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="securityCode" />
-																							
-																    					</div>
-																  					</div>
-																					
-																				</div>
-																				
-																				
-																				<div class="span2">
-																					
-																					<!--- Expiration --->	
-																					<div class="control-group">
-																    					<label class="control-label pull-right" for="rating">Exp. (MM/YYYY)</label>
-																    					<div class="controls pull-right">
-																    						
-																							<sw:formField type="select" name="accountPaymentMethods[1].expirationMonth" valueObject="#newAccountPaymentMethod#" valueObjectProperty="expirationMonth" valueOptions="#newAccountPaymentMethod.getExpirationMonthOptions()#" class="span1" />
-																							<sw:formField type="select" name="accountPaymentMethods[1].expirationYear" valueObject="#newAccountPaymentMethod#" valueObjectProperty="expirationYear" valueOptions="#newAccountPaymentMethod.getExpirationYearOptions()#" class="span1" />
-																							<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="expirationMonth" />
-																							<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="expirationYear" />
-																							
-																    					</div>
-																  					</div>
-																					
-																				</div>
-																			</div>
-																			
-																			<hr />
-																			<h5>Address on Card</h5>
-																			
-																			<!--- Billing Address --->
-																			<sw:addressForm id="newBillingAddress" address="#newAccountPaymentMethod.getBillingAddress()#" fieldNamePrefix="accountPaymentMethods[1].billingAddress." fieldClass="span3" />
-																		<cfelseif paymentMethod.getPaymentMethodType() eq "external">
-																			
-																		<cfelseif paymentMethod.getPaymentMethodType() eq "giftCard">
-																			
-																			<!--- Gift Card Number --->
-																			<div class="control-group">
-														    					<label class="control-label" for="firstName">Gift Card Number</label>
-														    					<div class="controls">
-														    						
-																					<sw:formField type="text" name="accountPaymentMethods[1].giftCardNumber" valueObject="#newAccountPaymentMethod#" valueObjectProperty="giftCardNumber" class="span3" />
-																					<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="giftCardNumber" />
-																					
-														    					</div>
-														  					</div>
-																			
-																		<cfelseif paymentMethod.getPaymentMethodType() eq "termPayment">
-																			<hr />
-																			<h5>Billing Address</h5>
-																			
-																			<!--- Billing Address --->
-																			<sw:addressForm id="newBillingAddress" address="#newAccountPaymentMethod.getBillingAddress()#" fieldNamePrefix="accountPaymentMethods[1].billingAddress." fieldClass="span3" />
-																		</cfif>
-																		
-																		
-																		<!--- Update Button --->
-																		<div class="control-group">
-													    					<div class="controls">
-													      						<button type="submit" class="btn btn-primary"><i class="icon-plus"></i> Add Payment Method</button>
-													    					</div>
-													  					</div>
-																		
-																	</form>
-																	<!--- End: New Payment Method Form --->
-																	
-																</div>
-															</div>
-														</div>
-													</cfloop>
-												</div>
-											</li>
-										</cfif>
-										<!--- End: New Payment Method --->
-											
-									</ul>
-									<!--- END: PAYMENT METHODS --->
-									
-								</div>
-								<!--- End: Right Side Contact & Payment Methods --->
-								
-							</div>
-							
-						</div>
-						
-						<!--- ================== ORDER HISTORY TAB ================== --->
-						<div class="tab-pane" id="orders">
-							<h4>Order History</h4>
-							
-							<!--- Setup an accordian view for existing orders --->
-							<div class="accordion" id="order-history-acc">
-								
-								<!--- Loop over all of the orders that this account has placed --->
-								<cfloop array="#$.slatwall.account().getOrdersPlacedSmartList().getRecords()#" index="order">
-							  	
-								  	<!--- create a DOM ID to be used for open and closing --->
-								  	<cfset orderDOMID = "oid#order.getOrderID()#" />
-									
-									<div class="accordion-group">
-										
-										<!--- This is the top accordian header row --->
-										<div class="accordion-heading">
-											<a class="accordion-toggle" data-toggle="collapse" data-parent="##order-history-acc" href="###orderDOMID#">Order ## #order.getOrderNumber()# &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; #order.getFormattedValue('orderOpenDateTime', 'date' )# &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; #order.getFormattedValue('total')# <span class="pull-right">Status: #order.getOrderStatusType().getType()#</span></a>
-										</div>
-										
-										<!--- This is the accordian details when expanded --->
-										<div id="#orderDOMID#" class="accordion-body collapse">
-											
-											<div class="accordion-inner">
-													
-												<!--- Overview & Status --->
-												<h5>Overview & Status</h5>
-												<div class="row">
-													
-													<div class="span4">
-														<table class="table table-bordered table-condensed">
-															<tr>
-																<td>Order Status</td>
-																<td>#order.getOrderStatusType().getType()#</td>
-															</tr>
-															<tr>
-																<td>Order ##</td>
-																<td>#order.getOrderNumber()#</td>
-															</tr>
-															<tr>
-																<td>Order Placed</td>
-																<td>#order.getFormattedValue('orderOpenDateTime')#</td>
-															</tr>
-														</table>
-													</div>
-													<div class="span3">
-														<div class="btn-group">
-														    <a class="btn btn-large" href="##"><i class="icon-phone"></i></a>
-														    <a class="btn btn-large" href="##"><i class="icon-envelope"></i></a>
-														    <a class="btn btn-large" href="##"><i class="icon-print"></i></a>
-														</div>
-														<br />
-														<br />
-														<p>
-															If you have questions about your order, please contact customer service <a href="tel:888.555.5555">888.555.5555</a>
-														</p>
-													</div>
-													<div class="span4 pull-right">
-														<table class="table table-bordered table-condensed">
-															<tr>
-																<td>Subtotal</td>
-																<td>#order.getFormattedValue('subTotalAfterItemDiscounts')#</td>
-															</tr>
-															<tr>
-																<td>Delivery Charges</td>
-																<td>#order.getFormattedValue('fulfillmentChargeAfterDiscountTotal')#</td>
-															</tr>
-															<tr>
-																<td>Taxes</td>
-																<td>#order.getFormattedValue('taxTotal')#</td>
-															</tr>
-															<tr>
-																<td><strong>Total</strong></td>
-																<td><strong>#order.getFormattedValue('total')#</strong></td>
-															</tr>
-															<cfif order.getDiscountTotal() gt 0>
-																<tr>
-																	<td colspan="2" class="text-error">You saved #order.getFormattedValue('discountTotal')# on this order.</td>
-																</tr>
-															</cfif>
-														</table>
-													</div>
-												</div>
-												
-												<!--- Start: Order Details --->
-												<hr />
-												<h5>Order Details</h5>
-												<cfloop array="#order.getOrderFulfillments()#" index="orderFulfillment">
-													
-													<!--- Start: Fulfillment Table --->
-													<table class="table table-bordered table-condensed">
+												<!--- Start: Existing Phone Numbers --->
+												<table class="table table-condensed">
+													<cfloop array="#$.slatwall.getAccount().getAccountPhoneNumbersSmartList().getRecords()#" index="accountPhoneNumber">
 														<tr>
-															<!--- Fulfillment Details --->
-															<td class="well span3" rowspan="#arrayLen(orderFulfillment.getOrderFulfillmentItems()) + 1#">
+															<td>
+																<span>#accountPhoneNumber.getPhoneNumber()#</span>
 																
-																<!--- Fulfillment Name --->
-																<strong>#orderFulfillment.getFulfillmentMethod().getFulfillmentMethodName()#</strong><br />
-																
-																<!--- Fulfillment Details: Email --->
-																<cfif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
-																	<strong>Email Address:</strong> #orderFulfillment.getEmailAddress()#<br />
-																	
-																<!--- Fulfillment Details: Pickup --->
-																<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup" and not isNull(orderFulfillment.getPickupLocation())>
-																	<strong>Pickup Location:</strong> #orderFulfillment.getPickupLocation().getLocationName()#<br />
-																	<sw:addressDisplay address="#orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress()#" />
-																	
-																<!--- Fulfillment Details: Shipping --->
-																<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-																	<sw:addressDisplay address="#orderFulfillment.getAddress()#" />
-																	<cfif not isNull(orderFulfillment.getShippingMethod())>
-																		<strong>Shipping Method:</strong> #orderFulfillment.getShippingMethod().getShippingMethodName()#<br />
-																	</cfif>
-																	
+																<cfif accountPhoneNumber.getAccountPhoneNumberID() eq $.slatwall.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID()>
+																	- <i class="icon-asterisk" title="#accountPhoneNumber.getPhoneNumber()# is the primary phone number for this account"></i>
+																<cfelse>
+																	<span class="pull-right">
+																		<a href="?slatAction=public:account.update&primaryPhoneNumber.accountPhoneNumberID=#accountPhoneNumber.getAccountPhoneNumberID()#" title="Set #accountPhoneNumber.getPhoneNumber()# as your primary phone number"><i class="icon-asterisk"></i></a>&nbsp;
+																		<a href="?slatAction=public:account.deleteAccountPhoneNumber&accountPhoneNumberID=#accountPhoneNumber.getAccountPhoneNumberID()#" title="Delete Phone Number - #accountPhoneNumber.getPhoneNumber()#"><i class="icon-trash"></i></a>
+																	</span>
 																</cfif>
-																
-																<br />
-																<!--- Delivery Fee --->
-																<strong>Delivery Fee:</strong> #orderFulfillment.getFormattedValue('chargeAfterDiscount')#
 															</td>
-															
-															<!--- Additional Header Rows --->
-															<th>Sku Code</th>
-															<th>Product Title</th>
-															<th>Qty.</th>
-															<th>Price</th>
-															<th>Status</th>
-														</tr>
-														
-														<!--- Loop over the actual items in this orderFulfillment --->
-														<cfloop array="#orderFulfillment.getOrderFulfillmentItems()#" index="orderItem">
-															
-															<tr>
-																<!--- Sku Code --->
-																<td>#orderItem.getSku().getSkuCode()#</td>
-																
-																<!--- Product Title --->
-																<td>#orderItem.getSku().getProduct().getTitle()#</td>
-																
-																<!--- Quantity --->
-																<td>#orderItem.getQuantity()#</td>
-																
-																<!--- Price --->
-																<td>
-																	<cfif orderItem.getExtendedPrice() gt orderItem.getExtendedPriceAfterDiscount()>
-																		<span style="text-decoration:line-through;">#orderItem.getFormattedValue('extendedPrice')#</span> <span class="text-error">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</span><br />
-																	<cfelse>
-																		#orderItem.getFormattedValue('extendedPriceAfterDiscount')#	
-																	</cfif>
-																</td>
-																
-																<!--- Status --->
-																<td>#orderItem.getOrderItemStatusType().getType()#</td>
-															</tr>
-														</cfloop>
-														
-													</table>
-													<!--- End: Fulfillment Table --->
-														
-												</cfloop>
-												<!--- End: Order Details --->
-												
-												<!--- Start: Order Payments --->
-												<hr />
-												<h5>Order Payments</h5>
-												<table class="table table-bordered table-condensed table-striped">
-													<tr>
-														<th>Payment Details</td>
-														<th>Amount</td>
-													</tr>
-													<cfloop array="#order.getOrderPayments()#" index="orderPayment">
-														<tr>
-															<td>#orderPayment.getSimpleRepresentation()#</td>
-															<td>#orderPayment.getFormattedValue('amount')#</td>
 														</tr>
 													</cfloop>
 												</table>
-												<!--- End: Order Payments --->
+												<!--- End: Existing Phone Numbers --->
+												
+												<!--- Start: Add Phone Number Form --->
+												<form action="?s=1" method="post">
+													<input type="hidden" name="slatAction" value="public:account.update" />
+													<input type="hidden" name="accountPhoneNumbers[1].accountPhoneNumberID" value="" />
+													<div class="control-group">
+								    					<div class="controls">
+							    							<div class="input-append">
+								    							<sw:formField type="text" name="accountPhoneNumbers[1].phoneNumber" fieldAttributes='placeholder="Add Phone Number"' class="span3" />
+																<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i></button>
+															</div>
+								    					</div>
+								  					</div>
+												</form>
+												<!--- End: Add Phone Number Form --->
+												
+												<br />		
+											</div>
+											<!--- END: PHONE NUMBERS --->
+											
+											<!--- START: EMAIL ADDRESSES --->
+											<div class="span4">
+												<h4>Email Addresses</h4>
+												
+												<!--- Existing Email Addresses --->
+												<table class="table table-condensed">
 													
-												<!--- Start: Order Deliveries --->
-												<cfif arrayLen(order.getOrderDeliveries())>
-													<hr style="border-top-style:dashed !important; border-top-width:5px !important;" />
-													<h5>Order Deliveries</h5>
+													<!--- Loop over all of the existing email addresses --->
+													<cfloop array="#$.slatwall.getAccount().getAccountEmailAddressesSmartList().getRecords()#" index="accountEmailAddress">
+														
+														<tr>
+															<td>
+																
+																<!--- Email Address --->
+																<span>#accountEmailAddress.getEmailAddress()#</span>
+																
+																<!--- Admin buttons --->
+																<cfif accountEmailAddress.getAccountEmailAddressID() eq $.slatwall.getAccount().getPrimaryEmailAddress().getAccountEmailAddressID()>
+																	- <i class="icon-asterisk" title="#accountEmailAddress.getEmailAddress()# is the primary email address for this account"></i>
+																<cfelse>
+																	<span class="pull-right">
+																		<a href="?slatAction=public:account.update&primaryEmailAddress.accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#" title="Set #accountEmailAddress.getEmailAddress()# as your primary email address"><i class="icon-asterisk"></i></a>&nbsp;
+																		<a href="?slatAction=public:account.deleteAccountEmailAddress&accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#" title="Delete Email Address - #accountEmailAddress.getEmailAddress()#"><i class="icon-trash"></i></a>
+																	</span>
+																</cfif>
+																
+															</td>
+														</tr>
+														
+													</cfloop>
+												</table>
+												
+												<!--- Start: Add Email Address Form --->
+												<form action="?s=1" method="post">
 													
-													<cfloop array="#order.getOrderDeliveries()#" index="orderDelivery">
+													<!--- Hidden slatAction to update the account --->
+													<input type="hidden" name="slatAction" value="public:account.update" />
+													
+													<!--- Because we want to have a new accountEmailAddress, we set the ID as blank for the account update ---> 
+													<input type="hidden" name="accountEmailAddresses[1].accountEmailAddressID" value="" />
+													
+													<!--- Email Address --->
+													<div class="control-group">
+								    					<div class="controls">
+							    							<div class="input-append">
+								    							<sw:formField type="text" name="accountEmailAddresses[1].emailAddress" fieldAttributes='placeholder="Add Email Address"' class="span3" />
+																<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i></button>
+															</div>
+								    					</div>
+								  					</div>
+													
+												</form>
+												<!--- End: Add Email Address Form --->
+												
+												<br />
+																								
+											</div>
+											<!--- END: EMAIL ADDRESSES --->
+											
+										</div>
+										<!--- End: Email & Phone --->
+										
+										
+										<!--- START: ADDRESS BOOK --->
+										<h4>Address Book</h4>
+										<hr style="margin-top:10px;border-top-color:##ddd;" />
+											
+										<ul class="thumbnails">
+											
+											<!--- Loop over each of the addresses that are saved against the account --->
+											<cfloop array="#$.slatwall.getAccount().getAccountAddressesSmartList().getRecords()#" index="accountAddress">
+												
+												<li class="span4">
+													
+													<!--- Display an address block --->	
+													<div class="thumbnail">
+														
+														<!--- Administration options --->
+														<div class="pull-right">
+															<span class="pull-right">
+																<!--- If this is the primary address, then just show the astricks --->
+																<cfif accountAddress.getAccountAddressID() eq $.slatwall.getAccount().getPrimaryAddress().getAccountAddressID()>
+																	<i class="icon-asterisk" title="This is the primary address for your account"></i>
+																<!--- Otherwise add buttons to be able to delete the address, or make it the primary --->
+																<cfelse>
+																	<a href="?slatAction=public:account.update&primaryAddress.accountAddressID=#accountAddress.getAccountAddressID()#" title="Set this as your primary phone address"><i class="icon-asterisk"></i></a>
+																	<a href="?slatAction=public:account.deleteAccountAddress&accountAddressID=#accountAddress.getAccountAddressID()#" title="Delete Address"><i class="icon-trash"></i></a>
+																</cfif>
+															</span>
+														</div>
+														
+														<!--- Address Nickname if it exists --->
+														<cfif not isNull(accountAddress.getAccountAddressName())>
+															<strong>#accountAddress.getAccountAddressName()#</strong>
+														</cfif>
+														
+														<!--- Actual Address Details --->
+														<sw:addressDisplay address="#accountAddress.getAddress()#" />
+														
+														
+													</div>
+												</li>
+												
+											</cfloop>
+											
+											<!--- Start: New Address --->
+											<li class="span4">
+												
+												<div class="accordion" id="add-account-address">
+												
+													<div class="accordion-group">
+													
+														<!--- This is the top accordian header row --->
+														<div class="accordion-heading">
+															<a class="accordion-toggle" data-toggle="collapse" data-parent="##add-account-address" href="##new-account-address-form"><i class="icon-plus"></i>Add Account Address</a>
+														</div>
+													
+														<!--- This is the accordian details when expanded --->
+														<div id="new-account-address-form" class="accordion-body collapse">
+														
+															<div class="accordion-inner">
+																
+																<!--- get the newPropertyEntity for accountAddress --->
+																<cfset newAccountAddress = $.slatwall.getAccount().getNewPropertyEntity( 'accountAddresses' ) />
+																
+																<!--- Start: New Address Form --->
+																<form action="?s=1" method="post">
+																	
+																	<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
+																	<input type="hidden" name="slatAction" value="public:account.update" />
+																	
+																	<!--- Set the accountAddressID to blank so tha it creates a new one --->
+																	<input type="hidden" name="accountAddresses[1].accountAddressID" value="" />
+																	
+																	<!--- Nickname --->
+																	<div class="control-group">
+												    					<label class="control-label" for="firstName">Nickname</label>
+												    					<div class="controls">
+												    						
+																			<sw:formField type="text" name="accountAddresses[1].accountAddressName" valueObject="#newAccountAddress#" valueObjectProperty="accountAddressName" class="span3" />
+																			<sw:errorDisplay object="#newAccountAddress#" errorName="accountAddressName" />
+																			
+												    					</div>
+												  					</div>
+																	
+																	<!--- New Address --->
+																	<sw:addressForm id="newAccountAddress" address="#newAccountAddress.getAddress()#" fieldNamePrefix="accountAddresses[1].address." fieldClass="span3" />
+																	
+																	<!--- Update Button --->
+																	<div class="control-group">
+												    					<div class="controls">
+												      						<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i> Add Address</button>
+												    					</div>
+												  					</div>
+																	
+																</form>
+																<!--- End: New Address Form --->
+																
+															</div>
+														</div>
+													</div>
+												</div>
+											</li>
+											<!--- End: New Address --->
+												
+										</ul>
+										<!--- END: ADDRESS BOOK --->
+											
+										<br />
+										
+										<!--- START: PAYMENT METHODS --->
+										<h4>Payment Methods</h4>
+										<hr style="margin-top:10px;border-top-color:##ddd;" />
+										
+										<ul class="thumbnails">
+											
+											<!--- Loop over each of the addresses that are saved against the account --->
+											<cfloop array="#$.slatwall.getAccount().getAccountPaymentMethodsSmartList().getRecords()#" index="accountPaymentMethod">
+												
+												<li class="span4">
+													
+													<!--- Display an address block --->	
+													<div class="thumbnail">
+														
+														<!--- Administration options --->
+														<div class="pull-right">
+														
+															<span class="pull-right">
+																
+																<!--- If this is the primary payment method, then just show the astricks --->
+																<cfif accountPaymentMethod.getAccountPaymentMethodID() eq $.slatwall.getAccount().getPrimaryPaymentMethod().getAccountPaymentMethodID()>
+																	<i class="icon-asterisk" title="This is the primary payment method for your account"></i>
+																<!--- Otherwise add buttons to be able to delete the address, or make it the primary --->
+																<cfelse>
+																	<a href="?slatAction=public:account.update&primaryPaymentMethod.accountPaymentMethodID=#accountPaymentMethod.getAccountPaymentMethodID()#" title="Set this as your primary phone address"><i class="icon-asterisk"></i></a>
+																	<a href="?slatAction=public:account.deleteAccountPaymentMethod&accountPaymentMethodID=#accountPaymentMethod.getAccountPaymentMethodID()#" title="Delete Address"><i class="icon-trash"></i></a>
+																</cfif>
+																
+															</span>
+														</div>
+														
+														<strong>#accountPaymentMethod.getPaymentMethod().getPaymentMethodName()# <cfif not isNull(accountPaymentMethod.getAccountPaymentMethodName()) and len(accountPaymentMethod.getAccountPaymentMethodName())>- #accountPaymentMethod.getAccountPaymentMethodName()#</cfif></strong><br />
+														
+														<!--- Credit Card Display --->
+														<cfif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "creditCard">
+															#accountPaymentMethod.getCreditCardType()# - #accountPaymentMethod.getCreditCardLastFour()#<br />
+															#accountPaymentMethod.getNameOnCreditCard()#<br />
+															#accountPaymentMethod.getExpirationMonth()# / #accountPaymentMethod.getExpirationYear()#<br />
+															#accountPaymentMethod.getBillingAddress().getSimpleRepresentation()#
+														
+														<!--- External Display --->
+														<cfelseif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "external">
+															
+														<!--- Gift Card Display --->
+														<cfelseif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "giftCard">
+														
+														<!--- Term Payment Display --->
+														<cfelseif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "termPayment">
+															
+														</cfif>
+														
+													</div>
+													
+												</li>
+												
+											</cfloop>
+											
+											<!--- Start: New Payment Method --->
+												
+											<!--- get the newPropertyEntity for accountPaymentMethod --->
+											<cfset newAccountPaymentMethod = $.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethods' ) />
+											
+											<!--- verify that there are payment methods that can be saved --->
+											<cfif arrayLen(newAccountPaymentMethod.getPaymentMethodOptionsSmartList().getRecords())>
+												<li class="span4">
+													
+													<div class="accordion" id="add-account-payment-method">
+														
+														<!--- Loop over all of the potential payment methods that can be saved --->
+														<cfloop array="#newAccountPaymentMethod.getPaymentMethodOptionsSmartList().getRecords()#" index="paymentMethod">
+															
+															<cfset pmID = "pm#lcase(createUUID())#" /> 
+															
+															<div class="accordion-group">
+															
+																<!--- This is the top accordian header row --->
+																<div class="accordion-heading">
+																	<a class="accordion-toggle" data-toggle="collapse" data-parent="##add-account-payment-method" href="###pmID#"><i class="icon-plus"></i>Add #paymentMethod.getPaymentMethodName()#</a>
+																</div>
+															
+																<!--- This is the accordian details when expanded --->
+																<div id="#pmID#" class="accordion-body collapse">
+																
+																	<div class="accordion-inner">
+																		
+																		<!--- Start: New Payment Method Form --->
+																		<form action="?s=1" method="post">
+																			
+																			<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
+																			<input type="hidden" name="slatAction" value="public:account.update" />
+																			
+																			<!--- Set the accountAddressID to blank so tha it creates a new one --->
+																			<input type="hidden" name="accountPaymentMethods[1].accountPaymentMethodID" value="" />
+																			
+																			<input type="hidden" name="accountPaymentMethods[1].paymentMethod.paymentMethodID" value="#paymentMethod.getPaymentMethodID()#" />
+																			
+																			<!--- Nickname --->
+																			<div class="control-group">
+														    					<label class="control-label" for="firstName">Nickname</label>
+														    					<div class="controls">
+														    						
+																					<sw:formField type="text" name="accountPaymentMethods[1].accountPaymentMethodName" valueObject="#newAccountPaymentMethod#" valueObjectProperty="accountAddressName" class="span3" />
+																					<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="accountPaymentMethodName" />
+																					
+														    					</div>
+														  					</div>
+																			
+																			<!--- Credit Card --->
+																			<cfif paymentMethod.getPaymentMethodType() eq "creditCard">
+																				
+																				<!--- Credit Card Number --->
+																				<div class="control-group">
+															    					<label class="control-label" for="firstName">Credit Card Number</label>
+															    					<div class="controls">
+															    						
+																						<sw:formField type="text" name="accountPaymentMethods[1].creditCardNumber" valueObject="#newAccountPaymentMethod#" valueObjectProperty="creditCardNumber" class="span3" />
+																						<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="creditCardNumber" />
+																						
+															    					</div>
+															  					</div>
+																				
+																				<!--- Name on Credit Card --->
+																				<div class="control-group">
+															    					<label class="control-label" for="firstName">Name on Credit Card</label>
+															    					<div class="controls">
+															    						
+																						<sw:formField type="text" name="accountPaymentMethods[1].nameOnCreditCard" valueObject="#newAccountPaymentMethod#" valueObjectProperty="nameOnCreditCard" class="span3" />
+																						<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="nameOnCreditCard" />
+																						
+															    					</div>
+															  					</div>
+																				
+																				
+																				<!--- Security & Expiration Row --->
+																				<div class="row">
+																					
+																					<div class="span1">
+																						
+																						<!--- Security Code --->
+																						<div class="control-group">
+																	    					<label class="control-label" for="rating">CVV</label>
+																	    					<div class="controls">
+																	    						
+																								<sw:formField type="text" name="accountPaymentMethods[1].securityCode" valueObject="#newAccountPaymentMethod#" valueObjectProperty="securityCode" class="span1" />
+																								<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="securityCode" />
+																								
+																	    					</div>
+																	  					</div>
+																						
+																					</div>
+																					
+																					
+																					<div class="span2">
+																						
+																						<!--- Expiration --->	
+																						<div class="control-group">
+																	    					<label class="control-label pull-right" for="rating">Exp. (MM/YYYY)</label>
+																	    					<div class="controls pull-right">
+																	    						
+																								<sw:formField type="select" name="accountPaymentMethods[1].expirationMonth" valueObject="#newAccountPaymentMethod#" valueObjectProperty="expirationMonth" valueOptions="#newAccountPaymentMethod.getExpirationMonthOptions()#" class="span1" />
+																								<sw:formField type="select" name="accountPaymentMethods[1].expirationYear" valueObject="#newAccountPaymentMethod#" valueObjectProperty="expirationYear" valueOptions="#newAccountPaymentMethod.getExpirationYearOptions()#" class="span1" />
+																								<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="expirationMonth" />
+																								<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="expirationYear" />
+																								
+																	    					</div>
+																	  					</div>
+																						
+																					</div>
+																				</div>
+																				
+																				<hr />
+																				<h5>Address on Card</h5>
+																				
+																				<!--- Billing Address --->
+																				<sw:addressForm id="newBillingAddress" address="#newAccountPaymentMethod.getBillingAddress()#" fieldNamePrefix="accountPaymentMethods[1].billingAddress." fieldClass="span3" />
+																			<cfelseif paymentMethod.getPaymentMethodType() eq "external">
+																				
+																			<cfelseif paymentMethod.getPaymentMethodType() eq "giftCard">
+																				
+																				<!--- Gift Card Number --->
+																				<div class="control-group">
+															    					<label class="control-label" for="firstName">Gift Card Number</label>
+															    					<div class="controls">
+															    						
+																						<sw:formField type="text" name="accountPaymentMethods[1].giftCardNumber" valueObject="#newAccountPaymentMethod#" valueObjectProperty="giftCardNumber" class="span3" />
+																						<sw:errorDisplay object="#newAccountPaymentMethod#" errorName="giftCardNumber" />
+																						
+															    					</div>
+															  					</div>
+																				
+																			<cfelseif paymentMethod.getPaymentMethodType() eq "termPayment">
+																				<hr />
+																				<h5>Billing Address</h5>
+																				
+																				<!--- Billing Address --->
+																				<sw:addressForm id="newBillingAddress" address="#newAccountPaymentMethod.getBillingAddress()#" fieldNamePrefix="accountPaymentMethods[1].billingAddress." fieldClass="span3" />
+																			</cfif>
+																			
+																			
+																			<!--- Update Button --->
+																			<div class="control-group">
+														    					<div class="controls">
+														      						<button type="submit" class="btn btn-primary"><i class="icon-plus"></i> Add Payment Method</button>
+														    					</div>
+														  					</div>
+																			
+																		</form>
+																		<!--- End: New Payment Method Form --->
+																		
+																	</div>
+																</div>
+															</div>
+														</cfloop>
+													</div>
+												</li>
+											</cfif>
+											<!--- End: New Payment Method --->
+												
+										</ul>
+										<!--- END: PAYMENT METHODS --->
+										
+									</div>
+									<!--- End: Right Side Contact & Payment Methods --->
+									
+								</div>
+								
+							</div>
+							
+							<!--- ================== ORDER HISTORY TAB ================== --->
+							<div class="tab-pane" id="orders">
+								<h4>Order History</h4>
+								
+								<!--- Setup an accordian view for existing orders --->
+								<div class="accordion" id="order-history-acc">
+									
+									<!--- Loop over all of the orders that this account has placed --->
+									<cfloop array="#$.slatwall.account().getOrdersPlacedSmartList().getRecords()#" index="order">
+								  	
+									  	<!--- create a DOM ID to be used for open and closing --->
+									  	<cfset orderDOMID = "oid#order.getOrderID()#" />
+										
+										<div class="accordion-group">
+											
+											<!--- This is the top accordian header row --->
+											<div class="accordion-heading">
+												<a class="accordion-toggle" data-toggle="collapse" data-parent="##order-history-acc" href="###orderDOMID#">Order ## #order.getOrderNumber()# &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; #order.getFormattedValue('orderOpenDateTime', 'date' )# &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; #order.getFormattedValue('total')# <span class="pull-right">Status: #order.getOrderStatusType().getType()#</span></a>
+											</div>
+											
+											<!--- This is the accordian details when expanded --->
+											<div id="#orderDOMID#" class="accordion-body collapse">
+												
+												<div class="accordion-inner">
+														
+													<!--- Overview & Status --->
+													<h5>Overview & Status</h5>
+													<div class="row">
+														
+														<div class="span4">
+															<table class="table table-bordered table-condensed">
+																<tr>
+																	<td>Order Status</td>
+																	<td>#order.getOrderStatusType().getType()#</td>
+																</tr>
+																<tr>
+																	<td>Order ##</td>
+																	<td>#order.getOrderNumber()#</td>
+																</tr>
+																<tr>
+																	<td>Order Placed</td>
+																	<td>#order.getFormattedValue('orderOpenDateTime')#</td>
+																</tr>
+															</table>
+														</div>
+														<div class="span3">
+															<div class="btn-group">
+															    <a class="btn btn-large" href="##"><i class="icon-phone"></i></a>
+															    <a class="btn btn-large" href="##"><i class="icon-envelope"></i></a>
+															    <a class="btn btn-large" href="##"><i class="icon-print"></i></a>
+															</div>
+															<br />
+															<br />
+															<p>
+																If you have questions about your order, please contact customer service <a href="tel:888.555.5555">888.555.5555</a>
+															</p>
+														</div>
+														<div class="span4 pull-right">
+															<table class="table table-bordered table-condensed">
+																<tr>
+																	<td>Subtotal</td>
+																	<td>#order.getFormattedValue('subTotalAfterItemDiscounts')#</td>
+																</tr>
+																<tr>
+																	<td>Delivery Charges</td>
+																	<td>#order.getFormattedValue('fulfillmentChargeAfterDiscountTotal')#</td>
+																</tr>
+																<tr>
+																	<td>Taxes</td>
+																	<td>#order.getFormattedValue('taxTotal')#</td>
+																</tr>
+																<tr>
+																	<td><strong>Total</strong></td>
+																	<td><strong>#order.getFormattedValue('total')#</strong></td>
+																</tr>
+																<cfif order.getDiscountTotal() gt 0>
+																	<tr>
+																		<td colspan="2" class="text-error">You saved #order.getFormattedValue('discountTotal')# on this order.</td>
+																	</tr>
+																</cfif>
+															</table>
+														</div>
+													</div>
+													
+													<!--- Start: Order Details --->
+													<hr />
+													<h5>Order Details</h5>
+													<cfloop array="#order.getOrderFulfillments()#" index="orderFulfillment">
+														
+														<!--- Start: Fulfillment Table --->
 														<table class="table table-bordered table-condensed">
 															<tr>
-																<!--- Delivery Details --->
-																<td class="well span3" rowspan="#arrayLen(orderDelivery.getOrderDeliveryItems()) + 1#">
+																<!--- Fulfillment Details --->
+																<td class="well span3" rowspan="#arrayLen(orderFulfillment.getOrderFulfillmentItems()) + 1#">
 																	
 																	<!--- Fulfillment Name --->
-																	<strong>Date:</strong> #orderDelivery.getFormattedValue('createdDateTime')#<br />
+																	<strong>#orderFulfillment.getFulfillmentMethod().getFulfillmentMethodName()#</strong><br />
 																	
 																	<!--- Fulfillment Details: Email --->
-																	<cfif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
-																		<strong>Emailed To:</strong> #orderFulfillment.getEmailAddress()#<br />
+																	<cfif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
+																		<strong>Email Address:</strong> #orderFulfillment.getEmailAddress()#<br />
 																		
 																	<!--- Fulfillment Details: Pickup --->
-																	<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
-																		<strong>Picked Up At:</strong> #orderDelivery.getPickupLocation().getLocationName()#<br />
+																	<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup" and not isNull(orderFulfillment.getPickupLocation())>
+																		<strong>Pickup Location:</strong> #orderFulfillment.getPickupLocation().getLocationName()#<br />
+																		<sw:addressDisplay address="#orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress()#" />
 																		
 																	<!--- Fulfillment Details: Shipping --->
-																	<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-																		<strong>Shipped To:</strong><br />
-																		<sw:addressDisplay address="#orderDelivery.getShippingAddress()#" />
-																		<cfif not isNull(orderDelivery.getTrackingNumber())>
-																			<br />
-																			<strong>Tracking Number: <a href="##">#orderDelivery.getTrackingNumber()#</a></strong>
+																	<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+																		<sw:addressDisplay address="#orderFulfillment.getAddress()#" />
+																		<cfif not isNull(orderFulfillment.getShippingMethod())>
+																			<strong>Shipping Method:</strong> #orderFulfillment.getShippingMethod().getShippingMethodName()#<br />
 																		</cfif>
+																		
 																	</cfif>
 																	
-																	<!--- Amount Captured --->
-																	<cfif not isNull(orderDelivery.getPaymentTransaction())>
-																		<br />
-																		<strong>Charged:</strong> #orderDelivery.getPaymentTransaction().getFormattedValue('amountReceived')#
-																	</cfif>
-																	
+																	<br />
+																	<!--- Delivery Fee --->
+																	<strong>Delivery Fee:</strong> #orderFulfillment.getFormattedValue('chargeAfterDiscount')#
 																</td>
 																
 																<!--- Additional Header Rows --->
 																<th>Sku Code</th>
 																<th>Product Title</th>
 																<th>Qty.</th>
+																<th>Price</th>
+																<th>Status</th>
 															</tr>
-															<cfloop array="#orderDelivery.getOrderDeliveryItems()#" index="orderDeliveryItem">
+															
+															<!--- Loop over the actual items in this orderFulfillment --->
+															<cfloop array="#orderFulfillment.getOrderFulfillmentItems()#" index="orderItem">
+																
 																<tr>
-																	<td>#orderDeliveryItem.getOrderItem().getSku().getSkuCode()#</td>
-																	<td>#orderDeliveryItem.getOrderItem().getSku().getProduct().getTitle()#</td>
-																	<td>#orderDeliveryItem.getQuantity()#</td>
+																	<!--- Sku Code --->
+																	<td>#orderItem.getSku().getSkuCode()#</td>
+																	
+																	<!--- Product Title --->
+																	<td>#orderItem.getSku().getProduct().getTitle()#</td>
+																	
+																	<!--- Quantity --->
+																	<td>#orderItem.getQuantity()#</td>
+																	
+																	<!--- Price --->
+																	<td>
+																		<cfif orderItem.getExtendedPrice() gt orderItem.getExtendedPriceAfterDiscount()>
+																			<span style="text-decoration:line-through;">#orderItem.getFormattedValue('extendedPrice')#</span> <span class="text-error">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</span><br />
+																		<cfelse>
+																			#orderItem.getFormattedValue('extendedPriceAfterDiscount')#	
+																		</cfif>
+																	</td>
+																	
+																	<!--- Status --->
+																	<td>#orderItem.getOrderItemStatusType().getType()#</td>
 																</tr>
 															</cfloop>
+															
 														</table>
+														<!--- End: Fulfillment Table --->
+															
 													</cfloop>
+													<!--- End: Order Details --->
 													
-												</cfif>
-												<!--- End: Order Deliveries --->
-													
-											</div> <!--- END: accordion-inner --->
+													<!--- Start: Order Payments --->
+													<hr />
+													<h5>Order Payments</h5>
+													<table class="table table-bordered table-condensed table-striped">
+														<tr>
+															<th>Payment Details</td>
+															<th>Amount</td>
+														</tr>
+														<cfloop array="#order.getOrderPayments()#" index="orderPayment">
+															<tr>
+																<td>#orderPayment.getSimpleRepresentation()#</td>
+																<td>#orderPayment.getFormattedValue('amount')#</td>
+															</tr>
+														</cfloop>
+													</table>
+													<!--- End: Order Payments --->
+														
+													<!--- Start: Order Deliveries --->
+													<cfif arrayLen(order.getOrderDeliveries())>
+														<hr style="border-top-style:dashed !important; border-top-width:5px !important;" />
+														<h5>Order Deliveries</h5>
+														
+														<cfloop array="#order.getOrderDeliveries()#" index="orderDelivery">
+															<table class="table table-bordered table-condensed">
+																<tr>
+																	<!--- Delivery Details --->
+																	<td class="well span3" rowspan="#arrayLen(orderDelivery.getOrderDeliveryItems()) + 1#">
+																		
+																		<!--- Fulfillment Name --->
+																		<strong>Date:</strong> #orderDelivery.getFormattedValue('createdDateTime')#<br />
+																		
+																		<!--- Fulfillment Details: Email --->
+																		<cfif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
+																			<strong>Emailed To:</strong> #orderFulfillment.getEmailAddress()#<br />
+																			
+																		<!--- Fulfillment Details: Pickup --->
+																		<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
+																			<strong>Picked Up At:</strong> #orderDelivery.getPickupLocation().getLocationName()#<br />
+																			
+																		<!--- Fulfillment Details: Shipping --->
+																		<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+																			<strong>Shipped To:</strong><br />
+																			<sw:addressDisplay address="#orderDelivery.getShippingAddress()#" />
+																			<cfif not isNull(orderDelivery.getTrackingNumber())>
+																				<br />
+																				<strong>Tracking Number: <a href="##">#orderDelivery.getTrackingNumber()#</a></strong>
+																			</cfif>
+																		</cfif>
+																		
+																		<!--- Amount Captured --->
+																		<cfif not isNull(orderDelivery.getPaymentTransaction())>
+																			<br />
+																			<strong>Charged:</strong> #orderDelivery.getPaymentTransaction().getFormattedValue('amountReceived')#
+																		</cfif>
+																		
+																	</td>
+																	
+																	<!--- Additional Header Rows --->
+																	<th>Sku Code</th>
+																	<th>Product Title</th>
+																	<th>Qty.</th>
+																</tr>
+																<cfloop array="#orderDelivery.getOrderDeliveryItems()#" index="orderDeliveryItem">
+																	<tr>
+																		<td>#orderDeliveryItem.getOrderItem().getSku().getSkuCode()#</td>
+																		<td>#orderDeliveryItem.getOrderItem().getSku().getProduct().getTitle()#</td>
+																		<td>#orderDeliveryItem.getQuantity()#</td>
+																	</tr>
+																</cfloop>
+															</table>
+														</cfloop>
+														
+													</cfif>
+													<!--- End: Order Deliveries --->
+														
+												</div> <!--- END: accordion-inner --->
+												
+											</div> <!--- END: accordion-body --->
 											
-										</div> <!--- END: accordion-body --->
-										
-									</div> <!--- END: accordion-group --->
-										
-								</cfloop>
+										</div> <!--- END: accordion-group --->
+											
+									</cfloop>
+									
+								</div>
 								
 							</div>
 							
-						</div>
-						
-						<!--- =================== CARTS & QUOTES ===================== --->
-						<div class="tab-pane" id="carts-and-quotes">
-							<h4>Shopping Carts & Quotes</h4>
-							
-							<div class="accordion" id="cart-and-quotes-acc">
+							<!--- =================== CARTS & QUOTES ===================== --->
+							<div class="tab-pane" id="carts-and-quotes">
+								<h4>Shopping Carts & Quotes</h4>
 								
-								<cfset $.slatwall.account().getOrdersNotPlacedSmartList().addOrder('createdDateTime|DESC') />
-								
-								<!--- Loop over all of the 'notPlaced' orders --->
-								<cfloop array="#$.slatwall.account().getOrdersNotPlacedSmartList().getRecords()#" index="order">
+								<div class="accordion" id="cart-and-quotes-acc">
 									
-									<!--- Setup an orderID for the accordion --->
-									<cfset orderDOMID = "oid#order.getOrderID()#" />
+									<cfset $.slatwall.account().getOrdersNotPlacedSmartList().addOrder('createdDateTime|DESC') />
 									
-									<div class="accordion-group">
+									<!--- Loop over all of the 'notPlaced' orders --->
+									<cfloop array="#$.slatwall.account().getOrdersNotPlacedSmartList().getRecords()#" index="order">
 										
-										<!--- Main Button to expand order --->
-										<div class="accordion-heading">
-											<a class="accordion-toggle" data-toggle="collapse" data-parent="##cart-and-quotes-acc" href="###orderDOMID#">#order.getFormattedValue('createdDateTime', 'date')# <cfif order.getOrderID() eq $.slatwall.cart().getOrderID()><span class="pull-right"><i class="icon-shopping-cart"></i></span></cfif></a>
-			    						</div>
+										<!--- Setup an orderID for the accordion --->
+										<cfset orderDOMID = "oid#order.getOrderID()#" />
 										
-										<!--- Saved order content --->
-										<div id="#orderDOMID#" class="accordion-body collapse">
+										<div class="accordion-group">
 											
-											<div class="accordion-inner">
+											<!--- Main Button to expand order --->
+											<div class="accordion-heading">
+												<a class="accordion-toggle" data-toggle="collapse" data-parent="##cart-and-quotes-acc" href="###orderDOMID#">#order.getFormattedValue('createdDateTime', 'date')# <cfif order.getOrderID() eq $.slatwall.cart().getOrderID()><span class="pull-right"><i class="icon-shopping-cart"></i></span></cfif></a>
+				    						</div>
+											
+											<!--- Saved order content --->
+											<div id="#orderDOMID#" class="accordion-body collapse">
 												
-												<!--- Overview & Status --->
-												<h5>Overview & Status</h5>
-												<div class="row">
+												<div class="accordion-inner">
 													
-													<div class="span4">
-														<table class="table table-bordered table-condensed">
-															<tr>
-																<td>Cart Created</td>
-																<td>#order.getFormattedValue('createdDateTime')#</td>
-															</tr>
-															<tr>
-																<td>Last Updated</td>
-																<td>#order.getFormattedValue('modifiedDateTime')#</td>
-															</tr>
-														</table>
-													</div>
-													<div class="span4 pull-right">
-														<table class="table table-bordered table-condensed">
-															<tr>
-																<td>Current Subtotal</td>
-																<td>#order.getFormattedValue('subTotalAfterItemDiscounts')#</td>
-															</tr>
-															<tr>
-																<td>Est. Delivery Charges</td>
-																<td>#order.getFormattedValue('fulfillmentChargeAfterDiscountTotal')#</td>
-															</tr>
-															<tr>
-																<td>Est. Taxes</td>
-																<td>#order.getFormattedValue('taxTotal')#</td>
-															</tr>
-															<tr>
-																<td><strong>Est. Total</strong></td>
-																<td><strong>#order.getFormattedValue('total')#</strong></td>
-															</tr>
-															<cfif order.getDiscountTotal() gt 0>
-																<tr>
-																	<td colspan="2" class="text-error">This cart includes #order.getFormattedValue('discountTotal')# of savings.</td>
-																</tr>
-															</cfif>
-														</table>
-													</div>
-												</div>
-												
-												<!--- Start: Order Details --->
-												<hr />
-												<h5>Cart Items</h5>
-												<cfloop array="#order.getOrderFulfillments()#" index="orderFulfillment">
-													
-													<!--- Start: Fulfillment Table --->
-													<table class="table table-bordered table-condensed">
-														<tr>
-															<!--- Fulfillment Details --->
-															<td class="well span3" rowspan="#arrayLen(orderFulfillment.getOrderFulfillmentItems()) + 1#">
-																
-																<!--- Fulfillment Name --->
-																<strong>#orderFulfillment.getFulfillmentMethod().getFulfillmentMethodName()#</strong><br />
-																
-																<!--- Fulfillment Details: Email --->
-																<cfif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
-																	<strong>Email Address:</strong> #orderFulfillment.getEmailAddress()#<br />
-																	
-																<!--- Fulfillment Details: Pickup --->
-																<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
-																	<strong>Pickup Location:</strong> #orderFulfillment.getPickupLocation().getLocationName()#<br />
-																	<sw:addressDisplay address="#orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress()#" />
-																	
-																<!--- Fulfillment Details: Shipping --->
-																<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-																	<cfif not orderFulfillment.getAddress().getNewFlag()>
-																		<sw:addressDisplay address="#orderFulfillment.getAddress()#" />
-																	</cfif>
-																	<cfif not isNull(orderFulfillment.getShippingMethod())>
-																	<strong>Shipping Method:</strong> #orderFulfillment.getShippingMethod().getShippingMethodName()#<br />
-																	</cfif>
-																	
-																</cfif>
-																
-																<!--- Delivery Fee --->
-																<cfif orderFulfillment.getChargeAfterDiscount() gt 0>
-																	<br />
-																	<strong>Est. Delivery Fee:</strong> #orderFulfillment.getFormattedValue('chargeAfterDiscount')#
-																</cfif>
-															</td>
-															
-															<!--- Additional Header Rows --->
-															<th>Sku Code</th>
-															<th>Product Title</th>
-															<th>Qty.</th>
-															<th>Price</th>
-															<th>Status</th>
-														</tr>
+													<!--- Overview & Status --->
+													<h5>Overview & Status</h5>
+													<div class="row">
 														
-														<!--- Loop over the actual items in this orderFulfillment --->
-														<cfloop array="#orderFulfillment.getOrderFulfillmentItems()#" index="orderItem">
-															
+														<div class="span4">
+															<table class="table table-bordered table-condensed">
+																<tr>
+																	<td>Cart Created</td>
+																	<td>#order.getFormattedValue('createdDateTime')#</td>
+																</tr>
+																<tr>
+																	<td>Last Updated</td>
+																	<td>#order.getFormattedValue('modifiedDateTime')#</td>
+																</tr>
+															</table>
+														</div>
+														<div class="span4 pull-right">
+															<table class="table table-bordered table-condensed">
+																<tr>
+																	<td>Current Subtotal</td>
+																	<td>#order.getFormattedValue('subTotalAfterItemDiscounts')#</td>
+																</tr>
+																<tr>
+																	<td>Est. Delivery Charges</td>
+																	<td>#order.getFormattedValue('fulfillmentChargeAfterDiscountTotal')#</td>
+																</tr>
+																<tr>
+																	<td>Est. Taxes</td>
+																	<td>#order.getFormattedValue('taxTotal')#</td>
+																</tr>
+																<tr>
+																	<td><strong>Est. Total</strong></td>
+																	<td><strong>#order.getFormattedValue('total')#</strong></td>
+																</tr>
+																<cfif order.getDiscountTotal() gt 0>
+																	<tr>
+																		<td colspan="2" class="text-error">This cart includes #order.getFormattedValue('discountTotal')# of savings.</td>
+																	</tr>
+																</cfif>
+															</table>
+														</div>
+													</div>
+													
+													<!--- Start: Order Details --->
+													<hr />
+													<h5>Cart Items</h5>
+													<cfloop array="#order.getOrderFulfillments()#" index="orderFulfillment">
+														
+														<!--- Start: Fulfillment Table --->
+														<table class="table table-bordered table-condensed">
 															<tr>
-																<!--- Sku Code --->
-																<td>#orderItem.getSku().getSkuCode()#</td>
-																
-																<!--- Product Title --->
-																<td>#orderItem.getSku().getProduct().getTitle()#</td>
-																
-																<!--- Quantity --->
-																<td>#orderItem.getQuantity()#</td>
-																
-																<!--- Price --->
-																<td>
-																	<cfif orderItem.getExtendedPrice() gt orderItem.getExtendedPriceAfterDiscount()>
-																		<span style="text-decoration:line-through;">#orderItem.getFormattedValue('extendedPrice')#</span> <span class="text-error">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</span><br />
-																	<cfelse>
-																		#orderItem.getFormattedValue('extendedPriceAfterDiscount')#	
+																<!--- Fulfillment Details --->
+																<td class="well span3" rowspan="#arrayLen(orderFulfillment.getOrderFulfillmentItems()) + 1#">
+																	
+																	<!--- Fulfillment Name --->
+																	<strong>#orderFulfillment.getFulfillmentMethod().getFulfillmentMethodName()#</strong><br />
+																	
+																	<!--- Fulfillment Details: Email --->
+																	<cfif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
+																		<strong>Email Address:</strong> #orderFulfillment.getEmailAddress()#<br />
+																		
+																	<!--- Fulfillment Details: Pickup --->
+																	<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
+																		<strong>Pickup Location:</strong> #orderFulfillment.getPickupLocation().getLocationName()#<br />
+																		<sw:addressDisplay address="#orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress()#" />
+																		
+																	<!--- Fulfillment Details: Shipping --->
+																	<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+																		<cfif not orderFulfillment.getAddress().getNewFlag()>
+																			<sw:addressDisplay address="#orderFulfillment.getAddress()#" />
+																		</cfif>
+																		<cfif not isNull(orderFulfillment.getShippingMethod())>
+																		<strong>Shipping Method:</strong> #orderFulfillment.getShippingMethod().getShippingMethodName()#<br />
+																		</cfif>
+																		
+																	</cfif>
+																	
+																	<!--- Delivery Fee --->
+																	<cfif orderFulfillment.getChargeAfterDiscount() gt 0>
+																		<br />
+																		<strong>Est. Delivery Fee:</strong> #orderFulfillment.getFormattedValue('chargeAfterDiscount')#
 																	</cfif>
 																</td>
 																
-																<!--- Status --->
-																<td>#orderItem.getOrderItemStatusType().getType()#</td>
+																<!--- Additional Header Rows --->
+																<th>Sku Code</th>
+																<th>Product Title</th>
+																<th>Qty.</th>
+																<th>Price</th>
+																<th>Status</th>
 															</tr>
-														</cfloop>
+															
+															<!--- Loop over the actual items in this orderFulfillment --->
+															<cfloop array="#orderFulfillment.getOrderFulfillmentItems()#" index="orderItem">
+																
+																<tr>
+																	<!--- Sku Code --->
+																	<td>#orderItem.getSku().getSkuCode()#</td>
+																	
+																	<!--- Product Title --->
+																	<td>#orderItem.getSku().getProduct().getTitle()#</td>
+																	
+																	<!--- Quantity --->
+																	<td>#orderItem.getQuantity()#</td>
+																	
+																	<!--- Price --->
+																	<td>
+																		<cfif orderItem.getExtendedPrice() gt orderItem.getExtendedPriceAfterDiscount()>
+																			<span style="text-decoration:line-through;">#orderItem.getFormattedValue('extendedPrice')#</span> <span class="text-error">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</span><br />
+																		<cfelse>
+																			#orderItem.getFormattedValue('extendedPriceAfterDiscount')#	
+																		</cfif>
+																	</td>
+																	
+																	<!--- Status --->
+																	<td>#orderItem.getOrderItemStatusType().getType()#</td>
+																</tr>
+															</cfloop>
+															
+														</table>
+														<!--- End: Fulfillment Table --->
+															
+													</cfloop>
+													<!--- End: Order Details --->
 														
-													</table>
-													<!--- End: Fulfillment Table --->
-														
-												</cfloop>
-												<!--- End: Order Details --->
-													
-												<!--- Action Buttons --->
-												<cfif order.getOrderID() neq $.slatwall.cart().getOrderID()>
-													<div class="row">
-														<div class="span3 pull-right">
-															<div class="btn-group pull-right">
-																<a class="btn" href="?slatAction=public:cart.change&orderID=#order.getOrderID()#"><i class="icon-shopping-cart"></i> Swap to this Cart</a>
-																<a class="btn" href="?slatAction=public:cart.delete&orderID=#order.getOrderID()#"><i class="icon-trash"></i> Delete</a>
+													<!--- Action Buttons --->
+													<cfif order.getOrderID() neq $.slatwall.cart().getOrderID()>
+														<div class="row">
+															<div class="span3 pull-right">
+																<div class="btn-group pull-right">
+																	<a class="btn" href="?slatAction=public:cart.change&orderID=#order.getOrderID()#"><i class="icon-shopping-cart"></i> Swap to this Cart</a>
+																	<a class="btn" href="?slatAction=public:cart.delete&orderID=#order.getOrderID()#"><i class="icon-trash"></i> Delete</a>
+																</div>
 															</div>
 														</div>
-													</div>
-												</cfif>
-														
-											</div> <!--- END: accordion-inner --->
+													</cfif>
+															
+												</div> <!--- END: accordion-inner --->
+												
+											</div> <!--- END: accordion-body --->
+												
+										</div> <!--- END: accordion-group --->
 											
-										</div> <!--- END: accordion-body --->
-											
-									</div> <!--- END: accordion-group --->
-										
-								</cfloop>
+									</cfloop>
+									
+			 					</div>
+							</div>
+							
+							<!--- ==================== SUBSCRIPTIONS ==================== --->
+							<div class="tab-pane" id="subscriptions">
+								<h4>Subscription Management</h4>
+								Show Subscriptions Here
+							</div>
+							
+							<!--- ==================== PURCHASED CONTENT ==================== --->
+							<div class="tab-pane" id="purchased-content">
+								<h4>Purchased Content Access</h4>
 								
-		 					</div>
-						</div>
+								<table class="table">
+									<tr>
+										<th>Content Title</th>
+										<th>Order Number</th>
+										<th>Date Purchased</th>
+									</tr>
+									
+									<cfloop array="#$.slatwall.getAccount().getAccountContentAccessesSmartList().getRecords()#" index="accountContentAccess">
+										<cfloop array="#accountContentAccess.getContents()#" index="content">
+											<tr>
+												<td>#content.getTitle()#</td>
+												<td>#accountContentAccess.getOrderItem().getOrder().getOrderNumber()#</td>
+												<td>#accountContentAccess.getOrderItem().getOrder().getFormattedValue('orderOpenDateTime')#</td>
+											</tr>
+										</cfloop>
+									</cfloop>
+								</table>
+								
+							</div>
+							
+						</div> <!--- END OF TABABLE --->
 						
-						<!--- ==================== SUBSCRIPTIONS ==================== --->
-						<div class="tab-pane" id="subscriptions">
-							<h4>Subscription Management</h4>
-							Show Subscriptions Here
-						</div>
-						
-						</div>
 					</div>
 				</div>
 			</div>

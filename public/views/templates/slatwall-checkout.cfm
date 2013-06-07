@@ -890,11 +890,168 @@ Notes:
 					
 			</div>
 			
-		<!--- No Items In Cart --->
+<!--- ======================= ORDER PLACED & CONFIRMATION ============================= --->
 		<cfelseif $.slatwall.hasSessionValue('confirmationOrderID')>
 			
-			<cfset confirmationOrder = $.slatwall.getService('orderService').getOrder( $.slatwall.getSessionValue('confirmationOrderID') ) />
-			 
+			<!--- setup the order that just got placed in a local variable to be used by the following display --->
+			<cfset order = $.slatwall.getService('orderService').getOrder( $.slatwall.getSessionValue('confirmationOrderID') ) />
+			
+			<!--- Overview & Status --->
+			<h5>Your Order Has Been Placed!</h5>
+			<div class="row">
+				
+				<div class="span4">
+					<table class="table table-bordered table-condensed">
+						<tr>
+							<td>Order Status</td>
+							<td>#order.getOrderStatusType().getType()#</td>
+						</tr>
+						<tr>
+							<td>Order ##</td>
+							<td>#order.getOrderNumber()#</td>
+						</tr>
+						<tr>
+							<td>Order Placed</td>
+							<td>#order.getFormattedValue('orderOpenDateTime')#</td>
+						</tr>
+					</table>
+				</div>
+				<div class="span3">
+					<div class="btn-group">
+					    <a class="btn btn-large" href="##"><i class="icon-phone"></i></a>
+					    <a class="btn btn-large" href="##"><i class="icon-envelope"></i></a>
+					    <a class="btn btn-large" href="##"><i class="icon-print"></i></a>
+					</div>
+					<br />
+					<br />
+					<p>
+						If you have questions about your order, please contact customer service <a href="tel:888.555.5555">888.555.5555</a>
+					</p>
+				</div>
+				<div class="span4 pull-right">
+					<table class="table table-bordered table-condensed">
+						<tr>
+							<td>Subtotal</td>
+							<td>#order.getFormattedValue('subTotalAfterItemDiscounts')#</td>
+						</tr>
+						<tr>
+							<td>Delivery Charges</td>
+							<td>#order.getFormattedValue('fulfillmentChargeAfterDiscountTotal')#</td>
+						</tr>
+						<tr>
+							<td>Taxes</td>
+							<td>#order.getFormattedValue('taxTotal')#</td>
+						</tr>
+						<tr>
+							<td><strong>Total</strong></td>
+							<td><strong>#order.getFormattedValue('total')#</strong></td>
+						</tr>
+						<cfif order.getDiscountTotal() gt 0>
+							<tr>
+								<td colspan="2" class="text-error">You saved #order.getFormattedValue('discountTotal')# on this order.</td>
+							</tr>
+						</cfif>
+					</table>
+				</div>
+			</div>
+			
+			<!--- Start: Order Details --->
+			<hr />
+			<h5>Order Details</h5>
+			<cfloop array="#order.getOrderFulfillments()#" index="orderFulfillment">
+				
+				<!--- Start: Fulfillment Table --->
+				<table class="table table-bordered table-condensed">
+					<tr>
+						<!--- Fulfillment Details --->
+						<td class="well span3" rowspan="#arrayLen(orderFulfillment.getOrderFulfillmentItems()) + 1#">
+							
+							<!--- Fulfillment Name --->
+							<strong>#orderFulfillment.getFulfillmentMethod().getFulfillmentMethodName()#</strong><br />
+							
+							<!--- Fulfillment Details: Email --->
+							<cfif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
+								<strong>Email Address:</strong> #orderFulfillment.getEmailAddress()#<br />
+								
+							<!--- Fulfillment Details: Pickup --->
+							<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup" and not isNull(orderFulfillment.getPickupLocation())>
+								<strong>Pickup Location:</strong> #orderFulfillment.getPickupLocation().getLocationName()#<br />
+								<sw:addressDisplay address="#orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress()#" />
+								
+							<!--- Fulfillment Details: Shipping --->
+							<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+								<sw:addressDisplay address="#orderFulfillment.getAddress()#" />
+								<cfif not isNull(orderFulfillment.getShippingMethod())>
+									<strong>Shipping Method:</strong> #orderFulfillment.getShippingMethod().getShippingMethodName()#<br />
+								</cfif>
+								
+							</cfif>
+							
+							<br />
+							<!--- Delivery Fee --->
+							<strong>Delivery Fee:</strong> #orderFulfillment.getFormattedValue('chargeAfterDiscount')#
+						</td>
+						
+						<!--- Additional Header Rows --->
+						<th>Sku Code</th>
+						<th>Product Title</th>
+						<th>Qty.</th>
+						<th>Price</th>
+						<th>Status</th>
+					</tr>
+					
+					<!--- Loop over the actual items in this orderFulfillment --->
+					<cfloop array="#orderFulfillment.getOrderFulfillmentItems()#" index="orderItem">
+						
+						<tr>
+							<!--- Sku Code --->
+							<td>#orderItem.getSku().getSkuCode()#</td>
+							
+							<!--- Product Title --->
+							<td>#orderItem.getSku().getProduct().getTitle()#</td>
+							
+							<!--- Quantity --->
+							<td>#orderItem.getQuantity()#</td>
+							
+							<!--- Price --->
+							<td>
+								<cfif orderItem.getExtendedPrice() gt orderItem.getExtendedPriceAfterDiscount()>
+									<span style="text-decoration:line-through;">#orderItem.getFormattedValue('extendedPrice')#</span> <span class="text-error">#orderItem.getFormattedValue('extendedPriceAfterDiscount')#</span><br />
+								<cfelse>
+									#orderItem.getFormattedValue('extendedPriceAfterDiscount')#	
+								</cfif>
+							</td>
+							
+							<!--- Status --->
+							<td>#orderItem.getOrderItemStatusType().getType()#</td>
+						</tr>
+					</cfloop>
+					
+				</table>
+				<!--- End: Fulfillment Table --->
+					
+			</cfloop>
+			<!--- End: Order Details --->
+			
+			<!--- Start: Order Payments --->
+			<hr />
+			<h5>Order Payments</h5>
+			<table class="table table-bordered table-condensed table-striped">
+				<tr>
+					<th>Payment Details</td>
+					<th>Amount</td>
+				</tr>
+				<cfloop array="#order.getOrderPayments()#" index="orderPayment">
+					<tr>
+						<td>#orderPayment.getSimpleRepresentation()#</td>
+						<td>#orderPayment.getFormattedValue('amount')#</td>
+					</tr>
+				</cfloop>
+			</table>
+			<!--- End: Order Payments --->
+			
+<!--- ======================= NO ITEMS IN CART ============================= --->
+		<cfelse> 
 			<div class="row">
 				<div class="span12">
 					<p>There are no items in your cart.</p>

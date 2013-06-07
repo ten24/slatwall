@@ -1242,7 +1242,7 @@ function updateGlobalSearchResults() {
 		var data = {
 			keywords: jQuery('#global-search').val()
 		};
-		data[ hibachiConfig.action ] = 'admin:ajax.updateSortOrder';
+		data[ hibachiConfig.action ] = 'admin:ajax.updateGlobalSearchResults';
 		
 		jQuery.ajax({
 			url: hibachiConfig.baseURL + '/',

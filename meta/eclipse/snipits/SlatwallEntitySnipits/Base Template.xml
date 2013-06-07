@@ -85,9 +85,13 @@ component entityname="$${EntityName}" table="$${EntityName}" persistent="true" a
 	
 	// ===============  END: Custom Formatting Methods =====================
 	
-	// ============== START: Overridden Implicet Getters ===================
+	// ============== START: Overridden Implicit Getters ===================
 	
-	// ==============  END: Overridden Implicet Getters ====================
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
 	

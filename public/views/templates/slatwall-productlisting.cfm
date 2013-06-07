@@ -217,6 +217,9 @@ Notes:
 					<!--- END: Primary loop --->
 						
 				</ul>
+
+				<sw:smartListPager smartList="#$.slatwall.getProductSmartList()#" />
+
 			<!--- If there are no products for this current listing page, then tell the customer --->
 			<cfelse>
 				<p>There are currently no products to display.</p>
