@@ -1652,6 +1652,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return smartList;
 	}
 	
+public any function getOrderItemSmartList(struct data={}) {
+		arguments.entityName = "SlatwallOrderItem";
+
+		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		
+		smartList.joinRelatedProperty("SlatwallOrderItem", "sku", "left", true);
+		smartList.joinRelatedProperty("SlatwallSku", "product", "left", true);
+		smartList.joinRelatedProperty("SlatwallOrderItem", "orderItemStatusType", "left", true);
+		
+		smartList.addKeywordProperty(propertyIdentifier="sku.skuCode", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.product.calculatedTitle", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="orderItemStatusType.type", weight=1);
+	
+		
+		return smartList;
+	}
+
 	// ====================  END: Smart List Overrides ========================
 	
 	// ====================== START: Get Overrides ============================
