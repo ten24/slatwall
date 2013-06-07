@@ -42,13 +42,13 @@ component displayname="Account Content Access" entityname="SlatwallAccountConten
 	property name="accountContentAccessID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	
 	// Related Object Properties (Many-to-One)
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" fetch="join";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	
 	// Related Object Properties (One-to-Many)
 	
 	// Related Object Properties (Many-to-Many)
-	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SlatwallAccountContentAccessContent" fkcolumn="accountContentAccessID" inversejoincolumn="contentID";
+	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="many-to-many" linktable="SlatwallAccountContentAccessContent" fkcolumn="accountContentAccessID" inversejoincolumn="contentID";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -61,7 +61,8 @@ component displayname="Account Content Access" entityname="SlatwallAccountConten
 	
 	// Non-Persistent Properties
 
-
+	// DEPRECATED Properties
+	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SlatwallAccountContentAccessContent" fkcolumn="accountContentAccessID" inversejoincolumn="contentID"; // USE: contents
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

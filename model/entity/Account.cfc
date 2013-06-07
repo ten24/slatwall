@@ -434,6 +434,21 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	public any function getAccountContentAccessesSmartList() {
+		if(!structKeyExists(variables, "accountContentAccessesSmartList")) {
+			variables.accountContentAccessesSmartList = getService("accountService").getAccountContentAccessSmartList();
+			variables.accountContentAccessesSmartList.joinRelatedProperty("SlatwallAccountContentAccess", "orderItem", "INNER", true);
+			variables.accountContentAccessesSmartList.joinRelatedProperty("SlatwallOrderItem", "order", "INNER", true);
+			variables.accountContentAccessesSmartList.joinRelatedProperty("SlatwallAccountContentAccess", "accessContents", "INNER", true);
+			variables.accountContentAccessesSmartList.addFilter('account.accountID', getAccountID());
+		}
+		return variables.accountContentAccessesSmartList;
+	}
+	
+	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
 	

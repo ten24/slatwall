@@ -108,6 +108,7 @@ Notes:
 </cftry>
 
 <!--- Update providerGateway for the new CreditCard payment method --->
+<!---
 <cftry>
 	<cfquery name="local.getData">
 		SELECT
@@ -134,6 +135,7 @@ Notes:
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>
+--->
 
 <!--- Update paymentMethodID for all orderDeliveries where the paymentMethodID = "creditCard" --->
 <cftry>
@@ -215,6 +217,7 @@ Notes:
 </cftry>
 
 <!--- Create Content Record for Every Content in Mura Admin with type of SlatwallProductListing --->
+<!---
 <cftry>
 	<cfquery name="local.getData">
 		SELECT DISTINCT
@@ -256,7 +259,7 @@ Notes:
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>
-
+--->
 <!--- Delete Extended Attribute Type of "SlatwallProductListing" --->
 
 <!--- Delete Extended Attribute Type of "SlatwallProductTemplate" --->

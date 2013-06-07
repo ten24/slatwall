@@ -375,11 +375,8 @@ component extends="FW1.framework" {
 		// Announce the applicatoinRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
-		if(request.context.ajaxRequest) {
+		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			request.context.ajaxResponse["messages"] = request.context.messages;
-			if(structKeyExists(request, "exception")) {
-				request.context.ajaxResponse["exception"] = request.exception;
-			}
 			writeOutput( serializeJSON(request.context.ajaxResponse) );
 			abort;
 		}

@@ -197,11 +197,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SlatwallProd
 	}
 	
 	public string function getListingProductURL() {
-		var cgiPath = CGI.PATH_INFO;
-		if(right(cgiPath, 1) != '/') {
-			cgiPath &= '/';
-		}
-		return "#cgiPath##setting('globalURLKeyProduct')#/#getURLTitle()#/";
+		return "#setting('globalURLKeyProduct')#/#getURLTitle()#/";
 	}
 	
 	public string function getTemplate() {

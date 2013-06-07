@@ -174,6 +174,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public any function getAssignedAttributeSetSmartList(){
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
+			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "attributes", "INNER", true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('globalFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'ast#replace(getEntityName(),'Slatwall','')#');

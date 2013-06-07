@@ -54,7 +54,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="Slatwall
 	
 	// Related Object Properties (Many-To-One)
 	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
-	property name="attributeType" cfc="Type" fieldtype="many-to-one" fkcolumn="attributeTypeID" hb_optionsSmartListData="f:parentType.systemCode=attributeType";
+	property name="attributeType" cfc="Type" fieldtype="many-to-one" fkcolumn="attributeTypeID" hb_optionsSmartListData="f:parentType.systemCode=attributeType" fetch="join";
 	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
 
 	// Related Object Properties (One-To-Many)

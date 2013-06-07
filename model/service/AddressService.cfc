@@ -38,6 +38,10 @@ Notes:
 */
 component extends="HibachiService" accessors="true" output="false" {
 	
+	
+	// Cached Properties
+	property name="countryCodeOptions" type="array";
+	
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function isAddressInZone(required any address, required any addressZone) {
@@ -87,6 +91,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		return addressCopy;
 	}
 	
+	public array function getCountryCodeOptions() {
+		if(!structKeyExists(variables, "countryCodeOptions")) {
+			var smartList = this.getCountrySmartList();
+			smartList.addFilter(propertyIdentifier="activeFlag", value=1);
+			smartList.addSelect(propertyIdentifier="countryName", alias="name");
+			smartList.addSelect(propertyIdentifier="countryCode", alias="value");
+			smartList.addOrder("countryName|ASC");
+			variables.countryCodeOptions = smartList.getRecords();
+		}
+		return variables.countryCodeOptions;
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
@@ -98,6 +114,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveCountry(required any country, struct data={}, string context="save") {
+	
+		// Call the generic save method to populate and validate
+		arguments.country = save(entity=arguments.order, data=arguments.data, context=arguments.context);
+	
+		// remove the cache of country code options
+		structDelete(variables, "countryCodeOptions");
+		
+		return arguments.order;
+	}
 	
 	// ======================  END: Save Overrides ============================
 	

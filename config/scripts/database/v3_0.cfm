@@ -141,14 +141,13 @@ Notes:
 
 <!--- Allow for nulls in order payments --->
 <cftry>
-	<cfquery name="local.allowNull" dbtype="query">
+	<cfquery name="local.allowNull">
 		<cfif getApplicationValue("databaseType") eq "MySQL">
 			ALTER TABLE SlatwallOrderPayment MODIFY COLUMN amount decimal(19,2) NULL
 		<cfelse>
 			ALTER TABLE SlatwallOrderPayment ALTER COLUMN amount decimal(19,2) NULL
 		</cfif>
 	</cfquery>
-	
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Allowing nulls in Order Payments">
 		<cfset local.scriptHasErrors = true />
@@ -156,8 +155,8 @@ Notes:
 </cftry>
 
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v2_3 had errors when running">
-	<cfthrow detail="Part of Script v2_3 had errors when running">
+	<cflog file="Slatwall" text="General Log - Part of Script v3_0 had errors when running">
+	<cfthrow detail="Part of Script v3_0 had errors when running">
 <cfelse>
-	<cflog file="Slatwall" text="General Log - Script v2_3 has run with no errors">
+	<cflog file="Slatwall" text="General Log - Script v3_0 has run with no errors">
 </cfif>

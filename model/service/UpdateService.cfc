@@ -90,10 +90,10 @@ Notes:
 					<!--- if it's a database script look for db specific file --->
 					<cfif findNoCase("database/",script.getScriptPath())>
 						<cfset var dbSpecificFileName = replaceNoCase(script.getScriptPath(),".cfm",".#getApplicationValue("databaseType")#.cfm") />
-						<cfif fileExists("#getSlatwallRootDirectory()#/config/scripts/#dbSpecificFileName#")>
-							<cfinclude template="#getSlatwallScope().getBaseURL()#/config/scripts/#dbSpecificFileName#" />
-						<cfelseif fileExists("#getSlatwallRootDirectory()#/config/scripts/#script.getScriptPath()#")>
-							<cfinclude template="#getSlatwallScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
+						<cfif fileExists(expandPath("/Slatwall/config/scripts/#dbSpecificFileName#"))>
+							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#dbSpecificFileName#" />
+						<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#script.getScriptPath()#"))>
+							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						<cfelse>
 							<cfthrow message="update script file doesn't exist" />
 						</cfif>
