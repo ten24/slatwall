@@ -444,7 +444,10 @@ function setupEventHandlers() {
 		//Should stop bootstrap dropdowns from opening, *should*
 		e.stopPropagation();
 		//Delay for barcode readers, so we don't submit multiple requests
-		delay(function(e){
+		if(typeof generalListingSearchTimer !="undefined"){
+			clearTimeout(generalListingSearchTimer);
+		}
+		generalListingSearchTimer=delay(function(e){
 			var data = {};
 			var tableID = '';
 			var code = e.which;
@@ -464,7 +467,7 @@ function setupEventHandlers() {
 			}
 			
 			listingDisplayUpdate(tableID, data);
-		}, 500, e,this);
+		}, 500,e);
 	}
 	);
 	

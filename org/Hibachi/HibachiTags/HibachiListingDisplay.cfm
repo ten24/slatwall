@@ -283,11 +283,10 @@
 			<thead>
 				<cfif not thistag.expandable>
 				<tr>
-					<th colspan='<cfif attributes.administativeCount>#arraylen(thistag.columns)+1# <cfelse>#arraylen(thistag.columns)#</cfif>'>
+					<th class="listing-display-header" colspan='<cfif attributes.administativeCount>#arraylen(thistag.columns)+1# <cfelse>#arraylen(thistag.columns)#</cfif>'>
 						
 							<div class="">
 								<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
-								<button class="btn btn-mini general-listing-search-clear" title="#attributes.hibachiScope.rbKey('define.clearSearch')#" ><i class="icon-remove-sign"></i></button>
 							</div>
 							
 						
