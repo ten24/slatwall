@@ -441,33 +441,36 @@ function setupEventHandlers() {
 	
 		//General Listing Search
 	jQuery('.general-listing-search').keyup(function(e){
-		//Should stop bootstrap dropdowns from opening, *should*
-		e.stopPropagation();
-		//Delay for barcode readers, so we don't submit multiple requests
-		if(typeof generalListingSearchTimer !="undefined"){
-			clearTimeout(generalListingSearchTimer);
-		}
-		generalListingSearchTimer=delay(function(e){
-			var data = {};
-			var tableID = '';
-			var code = e.which;
-			if (code == 13) {
+		
+		if(e.which >= 47 || e.which ==13 || e.which==8  ){  //only react to visible chrs
+			//Should stop bootstrap dropdowns from opening, *should*
+			e.stopPropagation();
+			//Delay for barcode readers, so we don't submit multiple requests
+			if(typeof generalListingSearchTimer !="undefined"){
+				clearTimeout(generalListingSearchTimer);
+			}
+			generalListingSearchTimer=delay(function(e){
+				var data = {};
+				var tableID = '';
+				var code = e.which;
+				if (code == 13) {
+					
+					pendingCarriageReturn = true;
+				}
+				else {
+					pendingCarriageReturn = false;
+				}
+				data['keywords'] = e.currentTarget.value;
+				if (typeof jQuery(e.currentTarget).attr('tableid') !== "undefined") {
+					tableID = jQuery(e.currentTarget).attr('tableid');
+				}
+				else {
+					tableID = jQuery(e.currentTarget).closest('.table').attr('id');
+				}
 				
-				pendingCarriageReturn = true;
-			}
-			else {
-				pendingCarriageReturn = false;
-			}
-			data['keywords'] = e.currentTarget.value;
-			if (typeof jQuery(e.currentTarget).attr('tableid') !== "undefined") {
-				tableID = jQuery(e.currentTarget).attr('tableid');
-			}
-			else {
-				tableID = jQuery(e.currentTarget).closest('.table').attr('id');
-			}
-			
-			listingDisplayUpdate(tableID, data);
-		}, 500,e);
+				listingDisplayUpdate(tableID, data);
+			}, 500,e);
+		}
 	}
 	);
 	
