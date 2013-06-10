@@ -69,6 +69,11 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
+	public string function getExternalPaymentHTML() {
+		return "";
+	}
+	
+	// DEPRECATED
 	public string function getExternalPaymentCheckoutViewPath() {
 		return "/Slatwall/integrationServices/#getPackageName()#/views/checkout/externalpayment.cfm";
 	}

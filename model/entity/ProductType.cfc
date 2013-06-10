@@ -236,6 +236,18 @@ component displayname="Product Type" entityname="SlatwallProductType" table="Sla
 	
 	// ==============  END: Overridden Implicet Getters ====================
 	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	public any function getProductsSmartList() {
+		if(!structKeyExists(variables, "productsSmartList")) {
+			variables.productsSmartList = getService("productService").getProductSmartList();
+			variables.productsSmartList.addWhereCondition(" aslatwallproducttype.productTypeIDPath LIKE '#getProductTypeIDPath()#%'");
+		}
+		return variables.productsSmartList;
+	}
+	
+	// =============  END: Overridden Smart List Getters ===================
+	
 	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentation() {

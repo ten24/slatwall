@@ -41,7 +41,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.accountAddress#" edit="#rc.edit#" sRenderItem="detailaccount">
+	<cf_HibachiEntityDetailForm object="#rc.accountAddress#" edit="#rc.edit#" saveActionQueryString="accountID=#rc.account.getAccountID()#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.accountAddress#" edit="#rc.edit#" 
 					backAction="admin:entity.detailAccount" 
 					backQueryString="accountID=#rc.account.getAccountID()#"
@@ -49,14 +49,15 @@ Notes:
 					cancelQueryString="accountID=#rc.account.getAccountID()#">
 		</cf_HibachiEntityActionBar>
 		
-		<!--- Hidden field to allow rc.account to be set on invalid submit --->
-		<input type="hidden" name="accountID" value="#rc.account.getAccountID()#" />
-		
 		<!--- Hidden field to attach this to the account --->
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
-		<cf_HibachiPropertyDisplay object="#rc.accountAddress#" property="accountAddressName" edit="#rc.edit#">
-		<cf_SlatwallAdminAddressDisplay address="#rc.accountAddress.getAddress()#" fieldNamePrefix="address." edit="#rc.edit#">
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.accountAddress#" property="accountAddressName" edit="#rc.edit#">
+				<cf_SlatwallAdminAddressDisplay address="#rc.accountAddress.getAddress()#" fieldNamePrefix="address." edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
 

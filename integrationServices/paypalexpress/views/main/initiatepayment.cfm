@@ -1,0 +1,1 @@
+There was an issue sending your payment information to PayPal.

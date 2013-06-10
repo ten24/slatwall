@@ -164,6 +164,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					integration.setInstalledFlag(1);
 					integration.setIntegrationPackage(integrationPackage);
 					integration.setIntegrationName(integrationCFC.getDisplayName());
+					integration.setAuthenticationReadyFlag(0);
+					integration.setCustomReadyFlag(0);
+					integration.setFW1ReadyFlag(0);
+					integration.setPaymentReadyFlag(0);
+					integration.setShippingReadyFlag(0);
 					
 					var integrationTypes = integrationCFC.getIntegrationTypes();
 					

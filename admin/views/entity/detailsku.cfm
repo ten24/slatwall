@@ -41,12 +41,10 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.sku#" edit="#rc.edit#" enctype="multipart/form-data">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.sku#" edit="#rc.edit#" 
-					backAction="admin:entity.detailproduct" 
-					backQueryString="productID=#rc.product.getProductID()#" 
-					cancelAction="admin:entity.detailsku" 
-					deleteQueryString="redirectAction=admin:entity.detailProduct&productID=#rc.product.getProductID()#" />
+	<cf_HibachiEntityDetailForm object="#rc.sku#" edit="#rc.edit#" saveActionQueryString="skuID=#rc.sku.getSkuID()#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.sku#" edit="#rc.edit#">
+			<cf_HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
+		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
@@ -60,7 +58,6 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
-		
 		
 		<cf_HibachiTabGroup object="#rc.sku#">
 			<cfif rc.product.getBaseProductType() EQ "subscription">

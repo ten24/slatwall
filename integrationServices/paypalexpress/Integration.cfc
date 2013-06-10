@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) 2011 ten24, LLC
@@ -35,21 +35,32 @@
 
 Notes:
 
---->
-<cfparam name="rc.sku" type="any" />
-<cfparam name="rc.edit" type="boolean">
-
-<cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.sku.getAlternateSkuCodesSmartList()#"
-			recordEditAction="admin:entity.editalternateskucode"
-			recordEditQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#"
-			recordEditModal=true
-			recordDeleteAction="admin:entity.deletealternateskucode"
-			recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabalternateskucodes">
-			
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="alternateSkuCode" />
-		
-	</cf_HibachiListingDisplay>
+*/
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
 	
-	<cf_HibachiActionCaller action="admin:entity.createalternateskucode" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" modal="true" />
-</cfoutput>
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "payment,fw1";
+	}
+		
+	public string function getDisplayName() {
+		return "PayPal Express";
+	}
+
+	public struct function getSettings() {
+		var settings = {
+			cancelURL = {fieldType="text"},
+			externalPaymentReturnURL = {fieldType="text"},
+			paypalAccountEmail = {fieldType="text"},
+			paypalAccountUser = {fieldType="text"},
+			paypalAccountPassword = {fieldType="password", encryptValue=true},
+			paypalAccountSignature = {fieldType="text"},
+			paypalAccountSandboxFlag = {fieldType="yesno", defaultValue="0"}
+		};
+		
+		return settings;
+	}
+}

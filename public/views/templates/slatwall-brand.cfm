@@ -36,14 +36,75 @@
 Notes: 
 	
 --->
+
+<!--- This header include should be changed to the header of your site.  Make sure that you review the header to include necessary JS elements for slatwall templates to work ---> 
 <cfinclude template="_slatwall-header.cfm" />
-<div class="row">
-	<div class="span12">
-		<h2>#$.slatwall.brand().getBrandName()</h2>
+
+<!--- This import allows for the custom tags required by this page to work --->
+<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+
+<!---[DEVELOPER NOTES]															
+																				
+	If you would like to customize any of the public tags used by this			
+	template, the recommended method is to uncomment the below import,			
+	copy the tag you'd like to customize into the directory defined by			
+	this import, and then reference with swc:tagname instead of sw:tagname.		
+	Technically you can define the prefix as whatever you would like and use	
+	whatever directory you would like but we recommend using this for			
+	the sake of convention.														
+																				
+	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
+																				
+--->
+
+<cfoutput>
+	<div class="container">
+		
+		<div class="row">
+			<div class="span12">
+				<h2>#$.slatwall.getBrand().getBrandName()#</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span12">
+				
+				<ul class="thumbnails">
+					
+					<!--- Primary Loop that displays all of the products for this brand in the grid format --->
+					<cfloop array="#$.slatwall.getBrand().getProductsSmartList().getPageRecords()#" index="product">
+						
+						<!--- Individual Product --->
+						<li class="span3">
+							
+							<div class="thumbnail">
+								
+								<!--- Product Image --->
+								<img src="#product.getResizedImagePath(size='m')#" alt="#product.getCalculatedTitle()#" />
+								
+								<!--- The Calculated Title allows you to setup a title string as a dynamic setting.  When you call getTitle() it generates the title based on that title string setting. To be more perfomant this value is cached as getCalculatedTitle() ---> 
+								<h5>#product.getCalculatedTitle()#</h5>
+	      						
+								<!--- Check to see if the products price is > the sale price.  If so, then display the original price with a line through it --->
+								<cfif product.getPrice() gt product.getCalculatedSalePrice()>
+									<p><span style="text-decoration:line-through;">#product.getPrice()#</span> <span class="text-error">#product.getFormattedValue('calculatedSalePrice')#</span></p>
+								<cfelse>
+									<p>#product.getFormattedValue('calculatedSalePrice')#</p>	
+								</cfif>
+								
+								<!--- This is the link to the product detail page.  By using the getListingProductURL() instead of getProductURL() it will append to the end of the URL string so that the breadcrumbs on the detail page can know what listing page you came from.  This is also good for SEO purposes as long as you remember to add a canonical url meta information to the detail page --->
+								<a href="#product.getListingProductURL()#">Details / Buy</a>
+								
+							</div>
+							
+						</li>
+						
+					</cfloop> 
+					<!--- END: Primary loop --->
+						
+				</ul>
+			</div>
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="span4">Test</div>
-	<div class="span8">Test 2</div>
-</div>
+</cfoutput>
+
 <cfinclude template="_slatwall-footer.cfm" />

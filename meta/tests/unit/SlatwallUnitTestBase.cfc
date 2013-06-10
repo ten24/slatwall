@@ -49,5 +49,4 @@ component extends="mxunit.framework.TestCase" output="false" {
 		//variables.slatwallFW1Application.endSlatwallLifecycle();
 	}
 	
-	
 }

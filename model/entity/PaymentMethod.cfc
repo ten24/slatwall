@@ -94,6 +94,14 @@ component entityname="SlatwallPaymentMethod" table="SlatwallPaymentMethod" persi
 	property name="placeOrderCreditTransactionTypeOptions" persistent="false";
 	property name="paymentIntegrationOptions" persistent="false";
 	
+	public string function getExternalPaymentHTML() {
+		if(!isNull(getPaymentIntegration())) {
+			arguments.paymentMethod = this;
+			return getPaymentIntegration().getIntegrationCFC( "payment" ).getExternalPaymentHTML( argumentCollection=arguments );
+		}
+		return "";
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public array function getSaveAccountPaymentMethodTransactionTypeOptions() {

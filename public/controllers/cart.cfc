@@ -39,6 +39,8 @@ Notes:
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
 
 	property name="fw" type="any";
+	
+	property name="accountService" type="any";
 	property name="orderService" type="any";
 
 	public void function init( required any fw ) {
@@ -103,6 +105,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(!cart.hasErrors()) {
 			cart.clearProcessObject("addOrderItem");
+		}
+	}
+	
+	// Guest Account
+	public void function guestAccount(required any rc) {
+		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
+		
+		if( !account.hasErrors() ) {
+			rc.$.slatwall.getCart().setAccount( account );
+			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", false );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", true );	
 		}
 	}
 	

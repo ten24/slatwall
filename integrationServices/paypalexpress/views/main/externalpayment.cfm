@@ -1,0 +1,1 @@
+<cfoutput><a href="?slatAction=paypalexpress:main.initiatepayment&paymentMethodID=#paymentMethod.getPaymentMethodID()#"><img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;"></a></cfoutput>
