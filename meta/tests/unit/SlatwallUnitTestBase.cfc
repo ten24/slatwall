@@ -42,6 +42,8 @@ component extends="mxunit.framework.TestCase" output="false" {
 	public void function setUp() {
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
 		variables.slatwallFW1Application.bootstrap();
+		
+		request.slatwallScope.getAccount().setSuperUserFlag(1);
 	}
 	
 	// @hint put things in here that you want to run after EACH test

@@ -50,6 +50,7 @@ Notes:
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="subscriptionTermID" fieldType="select" valueOptions="#rc.product.getUnusedProductSubscriptionTerms()#" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="renewalPrice" edit="#rc.edit#">
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 	

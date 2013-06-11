@@ -59,6 +59,16 @@ component extends="SlatwallUnitTestBase" {
 		
 		ormFlush();
 	}
+	
+	public void function issue_1329() {
+		
+		var smartList = request.slatwallScope.getService("productService").getProductSmartList();
+		
+		smartList.addRange( 'calculatedQATS', 'XXX^' );
+		
+		smartList.getPageRecords();
+		
+	}
 
 	public void function issue_1331() {
 		
@@ -67,6 +77,22 @@ component extends="SlatwallUnitTestBase" {
 		product.setProductType( request.slatwallScope.getService("productService").getProductType('444df313ec53a08c32d8ae434af5819a') );
 		
 		assertFalse( product.isProcessable('addOptionGroup') );
+	}
+	
+	public void function issue_1335() {
+
+		var skuCurrency = entityNew("SlatwallSkuCurrency");
+
+		skuCurrency.setPrice( -20 );
+		skuCurrency.setListPrice( 'test' );
+		
+		skuCurrency.validate(context="save");
+		
+		assert( skuCurrency.hasError('price') );
+		assert( skuCurrency.hasError('listPrice') );
+		
+		assert( right( skuCurrency.getError('price')[1], 8) neq "_missing");
+		assert( right( skuCurrency.getError('listPrice')[1], 8) neq "_missing");
 	}
 	
 	public void function issue_1348() {
@@ -83,6 +109,7 @@ component extends="SlatwallUnitTestBase" {
 		
 		assert( right( sku.getError('price')[1], 8) neq "_missing");
 	}
+	
 
 }
 

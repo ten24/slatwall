@@ -130,6 +130,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	public any function getProductSmartList() {
 		if(!structKeyExists(variables, "productSmartList")) {
 			variables.productSmartList = getService("productService").getProductSmartList(data=url);
+			variables.productSmartList.setSelectDistinctFlag( 1 );
 			variables.productSmartList.addFilter('activeFlag', 1);
 			variables.productSmartList.addFilter('publishedFlag', 1);
 			variables.productSmartList.addRange('calculatedQATS', '1^');

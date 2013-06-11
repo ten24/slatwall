@@ -63,6 +63,9 @@ Notes:
 		<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
 			<cf_HibachiListingColumn propertyIdentifier="listPrice" />
 			<cf_HibachiListingColumn propertyIdentifier="price" />
+			<cfif  rc.product.getProductType().getBaseProductType() eq "subscription">
+				<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
+			</cfif>
 			<cf_HibachiListingColumn propertyIdentifier="salePrice" />
 		</cfif>
 	</cf_HibachiListingDisplay>

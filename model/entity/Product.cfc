@@ -105,6 +105,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SlatwallProd
 	property name="currencyCode" persistent="false";
 	property name="defaultProductImageFiles" persistent="false";
 	property name="price" hb_formatType="currency" persistent="false";
+	property name="renewalPrice" hb_formatType="currency" persistent="false";
 	property name="listPrice" hb_formatType="currency" persistent="false";
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
@@ -541,6 +542,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SlatwallProd
 	public any function getPrice() {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getPrice();
+		}
+	}
+	
+	public any function getRenewalPrice() {
+		if( structKeyExists(variables, "defaultSku") ) {
+			return getDefaultSku().getRenewalPrice();
 		}
 	}
 	

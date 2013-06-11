@@ -2,9 +2,9 @@
 	"properties":{
 		"skuID":				[{"contexts":"delete","method":"isNotDefaultSku"}],
 		"stocksDeletableFlag":	[{"contexts":"delete","eq":"true"}],
-		"listPrice":			[{"contexts":"save","required":true,"dataType":"numeric","gte":0}],
-		"price":			    [{"contexts":"save","required":true,"dataType":"numeric","gte":0}],
-		"renewalPrice":			[{"contexts":"save","required":true,"dataType":"numeric","gte":0}],
+		"listPrice":			[{"contexts":"save","required":true,"dataType":"numeric","minValue":0}],
+		"price":			    [{"contexts":"save","required":true,"dataType":"numeric","minValue":0}],
+		"renewalPrice":			[{"contexts":"save","required":true,"dataType":"numeric","minValue":0}],
 		"skuCode":				[{"contexts":"save","required":true,"unique":true}],
 		"options":				[
 			{"contexts":"save","method":"hasUniqueOptions"},

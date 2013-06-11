@@ -45,6 +45,7 @@ Notes:
 		<cfsetting requesttimeout="600" />
 		
 		<cftry>
+			<cfset var updateCopyStarted = false />
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadFileName = "slatwall.zip" />
@@ -62,12 +63,16 @@ Notes:
 			<cfzip action="unzip" destination="#getTempDirectory()#" file="#getTempDirectory()##downloadFileName#" >
 			<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
 			<cfset var sourcePath = getTempDirectory() & "#listFirst(dirList.name[1],'/')#" />
+			<cfset var updateCopyStarted = true />
 			<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
 			
 			<!--- if there is any error during update, restore the old files and throw the error --->
 			<cfcatch type="any">
-				<cfzip action="unzip" destination="#slatwallRootPath#" file="#getTempDirectory()#slatwall_bak.zip" >
-				<cfrethrow />
+				<cfif updateCopyStarted>
+					<cfzip action="unzip" destination="#slatwallRootPath#" file="#getTempDirectory()#slatwall_bak.zip" >
+				</cfif>
+				<cfset logHibachiException(cfcatch) />
+				<cfset getHibachiScope().showMessageKey('admin.main.update.unexpected_error') />
 			</cfcatch>
 			
 		</cftry>

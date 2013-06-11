@@ -38,6 +38,7 @@ Notes:
 --->
 <cfparam name="rc.setting" type="any">
 <cfparam name="rc.settingName" type="string">
+<cfparam name="rc.currentValue" type="string">
 <cfparam name="rc.edit" type="boolean">
 
 <cfset local.hiddenKeyFields = "" />
@@ -76,7 +77,7 @@ Notes:
 				<cfif not rc.setting.isNew() and structKeyExists(rc.setting.getSettingMetaData(), "encryptValue")>
 					<cf_HibachiPropertyDisplay object="#rc.setting#" property="settingValue" edit="#rc.edit#" data-emptyvalue="********" displayType="plain">
 				<cfelse>
-					<cf_HibachiPropertyDisplay object="#rc.setting#" property="settingValue" edit="#rc.edit#" displayType="plain">
+					<cf_HibachiPropertyDisplay object="#rc.setting#" property="settingValue" value="#rc.currentValue#" edit="#rc.edit#" displayType="plain">
 				</cfif>
 			</cf_HibachiPropertyList>
 			<cfif !rc.setting.isNew() and local.hasRelationshipKey>

@@ -40,12 +40,12 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 	
 	// Persistent Properties
 	property name="accountEmailAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="emailAddress" ormtype="string" hb_formatType="email";
+	property name="emailAddress" hb_populateEnabled="public" ormtype="string" hb_formatType="email";
 	property name="verifiedFlag" ormtype="boolean";
 	
 	// Related Object Properties (Many-To-One)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="accountEmailType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountEmailTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=accountEmailType";
+	property name="accountEmailType" hb_populateEnabled="public" cfc="Type" fieldtype="many-to-one" fkcolumn="accountEmailTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=accountEmailType";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

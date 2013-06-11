@@ -38,15 +38,11 @@ Notes:
 --->
 
 <cfparam name="rc.sku" type="any" />
-<cfset skuOptions = rc.$.slatwall.getService('productService').getFormattedOptionGroups(rc.product)/>
-<cfset skuValues = rc.sku.getOptionsValueStruct() />
 
 <cfoutput>
 	<cf_HibachiPropertyList>
-		<cfset count=1/>
-		<cfloop collection="#skuOptions#" item="option" >
-			<cf_HibachiFieldDisplay fieldName="options" title="#option#" value="#skuValues[option]#" valueoptions="#skuOptions[option]#" fieldtype="select" edit="#rc.edit#">
-			<cfset count++ />
-		</cfloop>		
+		<cfloop array="#rc.sku.getOptions()#" index="option">
+			<cf_HibachiFieldDisplay title="#option.getOptionGroup().getOptionGroupName()#" value="#option.getOptionName()#" edit="false">
+		</cfloop>
 	</cf_HibachiPropertyList>
 </cfoutput>

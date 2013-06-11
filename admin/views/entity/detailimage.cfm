@@ -48,15 +48,18 @@ Notes:
 	<cfset backQueryString = "productID=#rc.image.getProduct().getProductID()#" />	
 <cfelseif  not isNull(rc.image.getPromotion())>
 	<cfset backAction = "admin:entity.detailpromotion" />
-	<cfset backQueryString = "promotionID=#rc.image.getProduct().getProductID()#" />
+	<cfset backQueryString = "promotionID=#rc.image.getPromotion().getPromotionID()#" />
 <cfelseif not isNull(rc.image.getOption())>
-	<cfset backAction = "admin:entity.detailoptiont" />
-	<cfset backQueryString = "optionID=#rc.image.getProduct().getProductID()#" />
+	<cfset backAction = "admin:entity.detailoption" />
+	<cfset backQueryString = "optionID=#rc.image.getOption().getOptionID()#" />
 </cfif>
 
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#" backAction="#backAction#" backQueryString="#backQueryString#" />
+		<cf_HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#" 
+								   backAction="#backAction#" 
+								   backQueryString="#backQueryString#"
+								   deleteQueryString="redirectAction=#backAction#&#backQueryString#"  />
 
 		<cf_HibachiPropertyRow>
 			

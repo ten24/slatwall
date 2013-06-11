@@ -210,6 +210,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 	
+	// Setting
+	public void function createSetting(required struct rc) {
+		super.genericCreateMethod('Setting', rc);
+		rc.pageTitle = rc.$.slatwall.rbKey('setting.#rc.settingName#');
+	}
+	
+	// Sku Currency
+	public void function createSkuCurrency(required struct rc) {
+		super.genericCreateMethod('SkuCurrency', rc);
+		rc.pageTitle = rc.$.slatwall.rbKey('admin.entity.editSkuCurrency', {currencyCode=rc.currencyCode});
+	}
+	
+	public void function editSkuCurrency(required struct rc) {
+		super.genericEditMethod('SkuCurrency', rc);
+		rc.pageTitle = rc.$.slatwall.rbKey('admin.entity.editSkuCurrency', {currencyCode=rc.currencyCode});
+	}
+	
 	// Stock Adjustment
 	public void function createStockAdjustment(required struct rc) {
 		param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";

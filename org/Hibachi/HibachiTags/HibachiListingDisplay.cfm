@@ -338,7 +338,7 @@
 							</cfif>
 						</cfsilent>
 						<th class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif>>
-							<cfif not column.search and not column.sort and not column.filter and not column.range>
+							<cfif not column.sort and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
 								#column.title#
 							<cfelse>
 								<div class="dropdown">
@@ -351,12 +351,12 @@
 												<li><a href="##" class="listing-sort" data-sortdirection="DESC"><i class="icon-arrow-up"></i> Sort Decending</a></li>
 												<li class="divider"></li>
 											</cfif>
-											<cfif column.search>
+											<cfif column.search and not thistag.expandable>
 												<li class="nav-header">#attributes.hibachiScope.rbKey('define.search')#</li>
 												<li class="search-filter"><input type="text" class="listing-search span2" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
 												<li class="divider"></li>
 											</cfif>
-											<cfif column.range>
+											<cfif column.range and not thistag.expandable>
 												<cfsilent>
 													<cfset local.rangeClass = "text" />
 													<cfset local.fieldType = thistag.exampleEntity.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) />
@@ -369,7 +369,7 @@
 												<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# range-filter-upper span2" name="R:#column.propertyIdentifier#" value="" /></li>
 												<li class="divider"></li>
 											</cfif>
-											<cfif column.filter>
+											<cfif column.filter and not thistag.expandable>
 												<li class="nav-header">#attributes.hibachiScope.rbKey('define.filter')#</li>
 												<cfset filterOptions = attributes.smartList.getFilterOptions(valuePropertyIdentifier=column.propertyIdentifier, namePropertyIdentifier=column.propertyIdentifier) />
 												<div class="filter-scroll">
@@ -454,7 +454,10 @@
 								
 								<!--- Edit --->
 								<cfif len(attributes.recordEditAction)>
-									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="pencil" iconOnly="true" disabled="#record.isNotEditable()#" modal="#attributes.recordEditModal#" />
+									<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
+									<cfset local.disabled = local.editErrors.hasErrors() />
+									<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
+									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" />
 								</cfif>
 								
 								<!--- Delete --->

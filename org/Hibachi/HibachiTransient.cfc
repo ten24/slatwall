@@ -166,7 +166,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			var currentProperty = properties[p];
 			
 			// Check to see if this property has a key in the data that was passed in
-			if( structKeyExists(arguments.data, currentProperty.name) ) {
+			if( 
+				structKeyExists(arguments.data, currentProperty.name) && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled neq false) && (
+					!isPersistent()
+					||
+					(getHibachiScope().getPublicPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "public")
+					||
+					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))) {
 			
 				// ( COLUMN )
 				if( (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") && isSimpleValue(arguments.data[ currentProperty.name ]) && !structKeyExists(currentProperty, "hb_fileUpload") ) {
@@ -207,7 +213,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 						var entityService = getService( "hibachiService" ).getServiceByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
 						
 						// If there were additional values in the data, then we will get the entity by the primaryID and populate / validate by calling save in its service.
-						if(structCount(manyToOneStructData) gt 1 && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled eq false) ) {
+						if(structCount(manyToOneStructData) gt 1) {
 							
 							// Load the specifiv entity, if one doesn't exist, this will return a new entity
 							var thisEntity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=manyToOneStructData[primaryIDPropertyName],2=true});
@@ -268,7 +274,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							this.invokeMethod("add#currentProperty.singularName#", {1=thisEntity});
 							
 							// If there were additional values in the data array, then we use those values to populate the entity, and validating it aswell.
-							if(structCount(oneToManyArrayData[a]) gt 1 && (!structKeyExists(currentProperty, "hb_populateEnabled") || currentProperty.hb_populateEnabled eq false)) {
+							if(structCount(oneToManyArrayData[a]) gt 1) {
 								
 								// Populate the sub property
 								thisEntity.populate(oneToManyArrayData[a]);

@@ -263,10 +263,15 @@ Notes:
 							<!--- This hidden field tells Slatwall to add the promotionCode entered to the cart --->
 							<input type="hidden" name="slatAction" value="public:cart.addPromotionCode" />
 							
+							<cfset addPromotionCodeObj = $.slatwall.getCart().getProcessObject('addPromotionCode') />
+							
 							<!--- Promotion Code Input Field --->
 							<div class="control-group">
 								<div class="controls">
-									<input type="text" placeholder="Enter Promo Code Here.">
+									
+									<sw:formField type="text" name="promotionCode" valueObject="#addPromotionCodeObj#" valueObjectProperty="promotionCode" fieldAttributes=' placeholder="Enter Promo Code Here."' />
+									<sw:errorDisplay object="#addPromotionCodeObj#" errorName="promotionCode" />
+									
 								</div>
 							</div>
 							

@@ -60,8 +60,11 @@ Notes:
 			<cf_HibachiPropertyDisplay object="#rc.account#" property="firstName" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
+			
 		</cf_HibachiPropertyList>
 		<cf_HibachiPropertyList divclass="span6">
+			<cf_HibachiPropertyDisplay object="#rc.account#" property="guestAccountFlag" edit="false">
+			<cf_HibachiPropertyDisplay object="#rc.account#" property="superUserFlag" edit="#rc.edit and $.slatwall.getAccount().getSuperUserFlag()#">
 			<cf_HibachiPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false">
 			<cf_HibachiPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false">
 		</cf_HibachiPropertyList>

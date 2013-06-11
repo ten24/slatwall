@@ -45,10 +45,10 @@ component displayname="Order Return" entityname="SlatwallOrderReturn" table="Sla
 	
 	// Related Object Properties (many-to-one)
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	property name="returnLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="returnLocationID";
+	property name="returnLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="returnLocationID";
 	
 	// Related Object Properties (one-to-many)
-	property name="orderReturnItems" singularname="orderReturnItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderReturnID" cascade="all" inverse="true";
+	property name="orderReturnItems" hb_populateEnabled="public" singularname="orderReturnItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderReturnID" cascade="all" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";

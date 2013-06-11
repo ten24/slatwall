@@ -40,7 +40,7 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="amount" ormtype="big_decimal";
+	property name="amount" hb_populateEnabled="public" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
@@ -48,18 +48,18 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
-	property name="expirationMonth" ormType="string" hb_formfieldType="select";
-	property name="expirationYear" ormType="string" hb_formfieldType="select";
+	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
+	property name="expirationYear" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
 	property name="giftCardNumberEncrypted" ormType="string";
-	property name="nameOnCreditCard" ormType="string";
+	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="providerToken" ormType="string";
 	
 	// Related Object Properties (many-to-one)
-	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
-	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
+	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
+	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
-	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" fetch="join";
+	property name="paymentMethod" hb_populateEnabled="public" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" fetch="join";
 	property name="referencedOrderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="referencedOrderPaymentID";
 	property name="termPaymentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="termPaymentAccountID";
 	

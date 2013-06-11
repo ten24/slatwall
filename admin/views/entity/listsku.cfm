@@ -64,6 +64,7 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 		<cf_HibachiListingColumn propertyIdentifier="listPrice" />
 		<cf_HibachiListingColumn propertyIdentifier="price" />
+		<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</cf_HibachiListingDisplay>

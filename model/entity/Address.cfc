@@ -40,16 +40,16 @@ component displayname="Address" entityname="SlatwallAddress" table="SlatwallAddr
 	
 	// Persistent Properties
 	property name="addressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="name" ormtype="string";
-	property name="company" ormtype="string";
-	property name="phone" ormtype="string";
-	property name="streetAddress" ormtype="string";
-	property name="street2Address" ormtype="string";
-	property name="locality" ormtype="string";
-	property name="city" ormtype="string";
-	property name="stateCode" ormtype="string";
-	property name="postalCode" ormtype="string";
-	property name="countryCode" ormtype="string";
+	property name="name" hb_populateEnabled="public" ormtype="string";
+	property name="company" hb_populateEnabled="public" ormtype="string";
+	property name="phone" hb_populateEnabled="public" ormtype="string";
+	property name="streetAddress" hb_populateEnabled="public" ormtype="string";
+	property name="street2Address" hb_populateEnabled="public" ormtype="string";
+	property name="locality" hb_populateEnabled="public" ormtype="string";
+	property name="city" hb_populateEnabled="public" ormtype="string";
+	property name="stateCode" hb_populateEnabled="public" ormtype="string";
+	property name="postalCode" hb_populateEnabled="public" ormtype="string";
+	property name="countryCode" hb_populateEnabled="public" ormtype="string";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";

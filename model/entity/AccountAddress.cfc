@@ -40,11 +40,11 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	// Persistent Properties
 	property name="accountAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="accountAddressName" ormtype="string" hint="Nickname for this account Address"; 
+	property name="accountAddressName" hb_populateEnabled="public" ormtype="string" hint="Nickname for this account Address"; 
 	
 	// Related Object Properties
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="address" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID" cascade="all" hb_populateValidationContext="full";
+	property name="address" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID" cascade="all" hb_populateValidationContext="full";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";

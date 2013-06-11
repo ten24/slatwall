@@ -89,7 +89,8 @@ component entityname="SlatwallSubscriptionUsage" table="SlatwallSubscriptionUsag
 	}
 	
 	public void function copyOrderItemInfo(required any orderItem) {
-		setRenewalPrice(arguments.orderItem.getSku().getRenewalPrice());
+		setRenewalPrice( arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( arguments.orderItem.getCurrencyCode() ) );
+		setCurrencyCode( arguments.orderItem.getCurrencyCode() );
 		//copy all the info from subscription term
 		var subscriptionTerm = orderItem.getSku().getSubscriptionTerm();
 		setInitialTerm(subscriptionTerm.getInitialTerm());

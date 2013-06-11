@@ -85,7 +85,13 @@ component extends="FW1.framework" {
 	// =============== configCustomTags
 	
 	// Defaults
-	this.customtagpaths = this.mappings[ "/#variables.framework.applicationKey#" ] & "/org/Hibachi/HibachiTags";
+	if(!structKeyExists(this, "customtagpaths")) {
+		this.customtagpaths = ""; 
+	}
+	if(!listFindNoCase(this.customtagpaths, this.mappings[ "/#variables.framework.applicationKey#" ] & "/org/Hibachi/HibachiTags")) {
+		this.customtagpaths = listAppend(this.customtagpaths, this.mappings[ "/#variables.framework.applicationKey#" ] & "/org/Hibachi/HibachiTags" );	
+	}
+	//this.customtagpaths = this.mappings[ "/#variables.framework.applicationKey#" ] & "/org/Hibachi/HibachiTags";
 	
 	// Allow For Application Config 
 	try{include "../../config/configCustomTags.cfm";}catch(any e){}
