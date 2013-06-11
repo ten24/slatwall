@@ -304,7 +304,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setSuperUserFlag(arguments.data.superUserFlag);
 		}
 		
-		return arguments.order;
+		return arguments.account;
 	}
 	
 	
