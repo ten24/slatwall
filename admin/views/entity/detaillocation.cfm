@@ -41,13 +41,19 @@ Notes:
 
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.location#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.location#" />
-		
+		<cf_HibachiEntityActionBar type="detail" object="#rc.location#">
+			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" modal=true />
+		</cf_HibachiEntityActionBar>
+			
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.location#" property="locationName" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
+
+		<cf_HibachiTabGroup object="#rc.location#">
+			<cf_HibachiTab property="locationAddresses" />
+		</cf_HibachiTabGroup>
 
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
