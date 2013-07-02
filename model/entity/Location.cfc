@@ -40,7 +40,9 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	
 	// Persistent Properties
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="locationIDPath" ormtype="string";
 	property name="locationName" ormtype="string";
+	property name="activeFlag" ormtype="boolean" ;
 	
 	// Related Object Properties (Many-to-One)
 	property name="primaryAddress" cfc="LocationAddress" fieldtype="many-to-one" fkcolumn="locationAddressID";
@@ -61,6 +63,14 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	
+	// Related Object Properties (Many-To-One)
+	property name="parentLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="parentLocationID";
+	
+	// Related Object Properties (One-To-Many)
+	property name="childLocations" singularname="childLocation" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="parentLocationID" cascade="all";
+	property name="locations" singularname="location" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="locationID" lazy="extra" cascade="all";
+	
 	
 	public boolean function isDeletable() {
 		return !(getService("LocationService").isLocationBeingUsed(this) || getService("LocationService").getLocationCount() == 1);

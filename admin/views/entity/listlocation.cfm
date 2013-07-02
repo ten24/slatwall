@@ -47,7 +47,7 @@ Notes:
 						  recordEditAction="admin:entity.editlocation">
 						    
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationName" />
-	<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
+	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 </cf_HibachiListingDisplay>
 
 </cfoutput>
