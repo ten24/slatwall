@@ -201,6 +201,8 @@ component extends="HibachiService" accessors="true" {
 		for(var sku in arguments.product.getSkus()) {
 			sku.setImageFile( sku.generateImageFileName() );
 		}
+		
+		return arguments.product;
 	}
 	
 	public any function processProduct_updateSkus(required any product, required any processObject) {
@@ -241,6 +243,8 @@ component extends="HibachiService" accessors="true" {
 		} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
 		}
+		
+		return arguments.product;
 	}
 	
 	

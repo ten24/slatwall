@@ -48,6 +48,7 @@ Notes:
 							   recorddetailaction="admin:entity.detailvendororderitem"
 							   recorddetailmodal="true"
 							   recordeditaction="admin:entity.editvendororderitem"
+							   recordEditQueryString="redirectAction=admin:entity.listVendorOrderItem"
 							   recordeditmodal="true">
 		<cf_HibachiListingColumn propertyIdentifier="vendorOrder.vendor.vendorName" />
 		<cf_HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderNumber" />

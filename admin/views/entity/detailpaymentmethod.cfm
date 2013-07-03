@@ -66,8 +66,10 @@ Notes:
 				</cfif>
 			</cf_HibachiPropertyList>
 			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.paymentMethod#" property="saveAccountPaymentMethodTransactionType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.paymentMethod#" property="saveOrderPaymentTransactionType" edit="#rc.edit#">
+				<cfif listFindNoCase("creditCard,giftCard,external", rc.paymentMethod.getPaymentMethodType())>
+					<cf_HibachiPropertyDisplay object="#rc.paymentMethod#" property="saveAccountPaymentMethodTransactionType" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.paymentMethod#" property="saveOrderPaymentTransactionType" edit="#rc.edit#">
+				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.paymentMethod#" property="placeOrderChargeTransactionType" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.paymentMethod#" property="placeOrderCreditTransactionType" edit="#rc.edit#">
 			</cf_HibachiPropertyList>

@@ -495,8 +495,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SlatwallProd
 			var records = sl.getRecords();
 			
 			for(var record in records) {
-				if(!isNull(record.imageFile)) {
-					arrayAppend(variables.defaultProductImageFiles, record.imageFile);	
+				if(structKeyExists(record, "imageFile") && !isNull(record["imageFile"])) {
+					arrayAppend(variables.defaultProductImageFiles, record["imageFile"]);	
 				}
 			} 
 		}

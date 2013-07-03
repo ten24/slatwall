@@ -40,9 +40,7 @@ Notes:
 
 <cfoutput>
 	<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionOrderItemsSmartList()#">
-			
 		<cf_HibachiListingColumn propertyIdentifier="orderItem.order.orderNumber" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="orderItem.sku.product.productName" />
-		
 	</cf_HibachiListingDisplay>
 </cfoutput>

@@ -207,6 +207,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							requestBean.populatePaymentInfoWithOrderPayment( arguments.paymentTransaction.getPayment() );	
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPayment") {
 							requestBean.populatePaymentInfoWithAccountPayment( arguments.paymentTransaction.getPayment() );
+						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPaymentMethod") {
+							requestBean.populatePaymentInfoWithAccountPaymentMethod( arguments.paymentTransaction.getPayment() );
 						}
 						
 						// Wrap in a try / catch so that the transaction will still get saved to the DB even in error

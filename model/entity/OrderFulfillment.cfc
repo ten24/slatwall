@@ -40,7 +40,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	
 	// Persistent Properties
 	property name="orderFulfillmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="fulfillmentCharge" ormtype="big_decimal" default=0;
+	property name="fulfillmentCharge" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="manualFulfillmentChargeFlag" ormtype="boolean" hb_populateEnabled="false";
@@ -355,6 +355,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// ===============  END: Custom Formatting Methods =====================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public numeric function getFulfillmentCharge() {
+		if(!structKeyExists(variables, "fulfillmentCharge")) {
+			variables.fulfillmentCharge = 0;
+		}
+		return variables.fulfillmentCharge;
+	}
 	
 	public boolean function getManualfulfillmentChargeFlag() {
 		if(!structKeyExists(variables, "manualFulfillmentChargeFlag")) {

@@ -54,7 +54,6 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	property name="nameOnCreditCard" ormType="string";
 	property name="providerToken" ormType="string";
 	
-
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
 	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID" hb_optionsNullRBKey="define.select";
@@ -166,10 +165,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
+			if(!isNull(arguments.accountPaymentMethod.getCreditCardNumber())) {
+				setCreditCardNumber( arguments.accountPaymentMethod.getCreditCardNumber() );	
+			}
 			setNameOnCreditCard( arguments.accountPaymentMethod.getNameOnCreditCard() );
-			setCreditCardNumber( arguments.accountPaymentMethod.getCreditCardNumber() );
 			setExpirationMonth( arguments.accountPaymentMethod.getExpirationMonth() );
 			setExpirationYear( arguments.accountPaymentMethod.getExpirationYear() );
+			setCreditCardLastFour( arguments.accountPaymentMethod.getCreditCardLastFour() );
+			setCreditCardType( arguments.accountPaymentMethod.getCreditCardType() );
 		}
 		
 		// Gift Card

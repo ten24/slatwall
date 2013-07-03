@@ -112,9 +112,13 @@
 			
 			// if the entity still has no errors then we call call the process method
 			if(!arguments.entity.hasErrors()) {
-				this.invokeMethod("process#arguments.entity.getClassName()#_#arguments.processContext#", invokeArguments);
+				var methodName = "process#arguments.entity.getClassName()#_#arguments.processContext#";
+				arguments.entity = this.invokeMethod(methodName, invokeArguments);
+				if(isNull(arguments.entity)) {
+					throw("You have created a process method: #methodName# that does not return an entity.  All process methods should return an entity.");
+				}
 			}	
-			
+
 			// Announce the after events
 			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
 			if(arguments.entity.hasErrors()) {

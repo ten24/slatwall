@@ -40,12 +40,16 @@ Notes:
 <cfparam name="rc.vendorOrderItem" type="any" />
 <cfparam name="rc.vendorOrder" type="any" default="#rc.vendorOrderItem.getVendorOrder()#" />
 <cfparam name="rc.edit" type="boolean" />
+
 <cfoutput>
-	
-	
-	<cf_HibachiEntityDetailForm object="#rc.vendorOrderItem#" edit="#rc.edit#">
+	<cf_HibachiEntityDetailForm object="#rc.vendorOrderItem#" edit="#rc.edit#" saveActionQueryString="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.vendorOrderItem#" edit="#rc.edit#"
+								   backAction="admin:entity.detailvendororder"
+								   backQueryString="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#"
+								   cancelAction="admin:entity.detailvendororder"
+								   cancelQueryString="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#" />
+								   
 		<input type="hidden" name="vendorOrder.vendorOrderID" value="#rc.vendorOrder.getVendorOrderID()#" />
-		<input type="hidden" name="redirectAction" value="admin:entity.editVendorOrder&vendorOrderID=#rc.vendorOrder.getVendorOrderID()#" />
 
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>

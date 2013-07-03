@@ -624,31 +624,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
-	public any function processOrder_removeOrderItem(required any order, required struct data) {
-		
-		// Make sure that an orderItemID was passed in
-		if(structKeyExists(arguments.data, "orderItemID")) {
-			
-			// Loop over all of the items in this order
-			for(var i = 1; i <= arrayLen(arguments.order.getOrderItems()); i++)	{
-			
-				// Check to see if this item is the same ID as the one passed in to remove
-				if(arguments.order.getOrderItems()[i].getOrderItemID() == arguments.data.orderItemID) {
-				
-					// Actually Remove that Item
-					arguments.order.removeOrderItem( arguments.order.getOrderItems()[i] );
-					break;
-				}
-			}
-			
-		}
-		
-		// Call saveOrder to recalculate all the orderTotal stuff
-		arguments.order = this.saveOrder(arguments.order);
-		
-		return arguments.order;
-	}
-	
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
 		
 		// Get the populated newOrderPayment out of the processObject
@@ -699,37 +674,83 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
-	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
-		// Setup Account
-		if(arguments.processObject.getNewAccountFlag()) {
-			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+	public any function processOrder_addPromotionCode(required any order, required any processObject) {
+			
+		var pc = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
+		
+		if(isNull(pc) || !pc.getPromotion().getActiveFlag()) {
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
+		} else if ( (!isNull(pc.getStartDateTime()) && pc.getStartDateTime() > now()) || (!isNull(pc.getEndDateTime()) && pc.getEndDateTime() < now()) || !pc.getPromotion().getCurrentFlag()) {
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'));
+		} else if (arrayLen(pc.getAccounts()) && !pc.hasAccount(arguments.order.getAccount())) {
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'));
+		} else if( !isNull(pc.getMaximumAccountUseCount()) && pc.getMaximumAccountUseCount() <= getPromotionService().getPromotionCodeAccountUseCount(pc, arguments.order.getAccount()) ) {
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'));
+		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'));
 		} else {
-			var account = getAccountService().getAccount(processObject.getAccountID());
+			if(!arguments.order.hasPromotionCode( pc )) {
+				arguments.order.addPromotionCode( pc );
+				recalculateOrderAmounts(order=arguments.order);
+			}
+		}		
+		
+		return arguments.order;
+	}
+	
+	public any function processOrder_cancelOrder(required any order, struct data={}) {
+		
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
 		}
-		arguments.order.setAccount(account);
 		
-		// Setup the Order Origin
-		if( len(arguments.processObject.getOrderOriginID()) ) {
-			arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
-		}
-		
-		// Setup the Currency Code
-		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
-		
-		// Determine the order type
-		var orderType = getSettingService().getType( processObject.getOrderTypeID() );
-		
-		// If the order type is a return or exchange then setup the first order return
-		if (listFindNoCase("otReturnOrder,otExchangeOrder", orderType.getSystemCode())) {
+		// Loop over all the orderItems and set them to 0
+		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+			arguments.order.getOrderItems()[i].setQuantity(0);
 			
-			// Setup the first order fulfillment
-			var orderReturn = this.newOrderReturn();
+			// Remove any promotionsApplied
+			for(var p=arrayLen(arguments.order.getOrderItems()[i].getAppliedPromotions()); p>=1; p--) {
+				arguments.order.getOrderItems()[i].getAppliedPromotions()[p].removeOrderItem();
+			}
 			
-			orderReturn.setOrder( arguments.order );
+			// Remove any taxApplied
+			for(var t=arrayLen(arguments.order.getOrderItems()[i].getAppliedTaxes()); t>=1; t--) {
+				arguments.order.getOrderItems()[i].getAppliedTaxes()[t].removeOrderItem();
+			}
 		}
 		
-		// Save the order
-		arguments.order = this.saveOrder(arguments.order);
+		// Loop over all the fulfillments and remove any fulfillmentCharges, and promotions applied
+		for(var i=1; i<=arrayLen(arguments.order.getOrderFulfillments()); i++) {
+			arguments.order.getOrderFulfillments()[i].setFulfillmentCharge(0);
+			// Remove over any promotionsApplied
+			for(var p=arrayLen(arguments.order.getOrderFulfillments()[i].getAppliedPromotions()); p>=1; p--) {
+				arguments.order.getOrderFulfillments()[i].getAppliedPromotions()[p].removeOrderFulfillment();
+			}
+		}
+		
+		// Loop over all of the order discounts and remove them
+		for(var p=arrayLen(arguments.order.getAppliedPromotions()); p>=1; p--) {
+			arguments.order.getAppliedPromotions()[p].removeOrder();
+		}
+		
+		// Loop over all the payments and credit for any charges, and set paymentAmount to 0
+		for(var p=1; p<=arrayLen(arguments.order.getOrderPayments()); p++) {
+			var totalReceived = precisionEvaluate(arguments.order.getOrderPayments()[p].getAmountReceived() - arguments.order.getOrderPayments()[p].getAmountCredited());
+			if(totalReceived gt 0) {
+				var transactionData = {
+					amount = totalReceived,
+					transactionType = 'credit'
+				};
+				this.processOrderPayment(arguments.order.getOrderPayments()[p], transactionData, 'createTransaction');
+			}
+			// Set payment amount to 0
+			arguments.order.getOrderPayments()[p].setAmount(0);
+		}
+		
+		// Change the status
+		arguments.order.setOrderStatusType( getSettingService().getTypeBySystemCode("ostCanceled") );
 		
 		return arguments.order;
 	}
@@ -753,6 +774,92 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !hasPaymentTransaction ) {
 			this.deleteOrder( arguments.order );
 		}
+	}
+	
+	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
+		
+		// Setup Account
+		if(arguments.processObject.getNewAccountFlag()) {
+			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
+		} else {
+			var account = getAccountService().getAccount(processObject.getAccountID());
+		}
+		arguments.order.setAccount(account);
+		
+		// Setup Order Type
+		arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+		
+		// Setup the Order Origin
+		if( len(arguments.processObject.getOrderOriginID()) ) {
+			arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
+		}
+		
+		// Setup the Currency Code
+		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		
+		// Save the order
+		arguments.order = this.saveOrder(arguments.order);
+		
+		return arguments.order;
+	}
+	
+	public any function processOrder_createReturn(required any order, required any processObject) {
+		
+		// Create a new return order
+		var returnOrder = this.newOrder();
+		returnOrder.setAccount( arguments.order.getAccount() );
+		returnOrder.setOrderType( getSettingService().getTypeBySystemCode("otReturnOrder") );
+		returnOrder.setOrderStatusType( getSettingService().getTypeBySystemCode("ostNew") );
+		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
+		returnOrder.setReferencedOrder( arguments.order );
+		
+		// Create OrderReturn entity (to save the fulfillment amount)
+		var orderReturn = this.newOrderReturn();
+		orderReturn.setOrder( returnOrder );
+		orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+		orderReturn.setReturnLocation( arguments.processObject.getLocation() );
+	
+		// Look for that orderItem in the data records
+		for(var orderItemStruct in arguments.processObject.getOrderItems()) {
+			
+			// Verify that there was a quantity and that it was GT 0
+			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
+				
+				var originalOrderItem = this.getOrderItem( orderItemStruct.referencedOrderItem.orderItemID );
+				
+				// Create a new return orderItem
+				if(!isNull(originalOrderItem)) {
+					
+					// Create a new order item
+					var orderItem = this.newOrderItem();
+					
+					// Setup the details
+					orderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitReturn') );
+					orderItem.setOrderItemStatusType( getSettingService().getTypeBySystemCode('oistNew') );
+					orderItem.setPrice( orderItemStruct.price );
+					orderItem.setSkuPrice( originalOrderItem.getSku().getPrice() );
+					orderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+					orderItem.setQuantity( orderItemStruct.quantity );
+					orderItem.setSku( originalOrderItem.getSku() );
+					
+					// Add needed references
+					orderItem.setReferencedOrderItem( originalOrderItem );
+					orderItem.setOrderReturn( orderReturn );
+					orderItem.setOrder( returnOrder );
+					
+				}
+				
+			}
+		}
+		
+		// Recalculate the order amounts for tax and promotions
+		recalculateOrderAmounts( returnOrder );
+		
+		// Persit the new order
+		getHibachiDAO().save( returnOrder );
+		
+		// Return the new order so that the redirect takes users to this new order
+		return returnOrder;
 	}
 	
 	public any function processOrder_placeOrder(required any order, required struct data) {
@@ -881,112 +988,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
-	public any function processOrder_takeOffHold(required any order, struct data={}) {
+	public any function processOrder_removeOrderItem(required any order, required struct data) {
 		
-		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
-			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
-		}
-		
-		// Change the status
-		arguments.order.setOrderStatusType( getSettingService().getTypeBySystemCode("ostProcessing") );
-		
-		// Call the update order status incase this needs to be changed to closed.
-		updateOrderStatus( arguments.order );
-
-		return arguments.order;
-	}
-	
-	public any function processOrder_closeOrder(required any order, struct data={}) {
-		
-		// Call the update order status incase this needs to be changed to closed.
-		updateOrderStatus( arguments.order );
-		
-		return arguments.order;
-	}
-	
-	public any function processOrder_cancelOrder(required any order, struct data={}) {
-		
-		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
-			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
-		}
-		
-		// Loop over all the orderItems and set them to 0
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-			arguments.order.getOrderItems()[i].setQuantity(0);
+		// Make sure that an orderItemID was passed in
+		if(structKeyExists(arguments.data, "orderItemID")) {
 			
-			// Remove any promotionsApplied
-			for(var p=arrayLen(arguments.order.getOrderItems()[i].getAppliedPromotions()); p>=1; p--) {
-				arguments.order.getOrderItems()[i].getAppliedPromotions()[p].removeOrderItem();
+			// Loop over all of the items in this order
+			for(var i = 1; i <= arrayLen(arguments.order.getOrderItems()); i++)	{
+			
+				// Check to see if this item is the same ID as the one passed in to remove
+				if(arguments.order.getOrderItems()[i].getOrderItemID() == arguments.data.orderItemID) {
+				
+					// Actually Remove that Item
+					arguments.order.removeOrderItem( arguments.order.getOrderItems()[i] );
+					break;
+				}
 			}
 			
-			// Remove any taxApplied
-			for(var t=arrayLen(arguments.order.getOrderItems()[i].getAppliedTaxes()); t>=1; t--) {
-				arguments.order.getOrderItems()[i].getAppliedTaxes()[t].removeOrderItem();
-			}
 		}
 		
-		// Loop over all the fulfillments and remove any fulfillmentCharges, and promotions applied
-		for(var i=1; i<=arrayLen(arguments.order.getOrderFulfillments()); i++) {
-			arguments.order.getOrderFulfillments()[i].setFulfillmentCharge(0);
-			// Remove over any promotionsApplied
-			for(var p=arrayLen(arguments.order.getOrderFulfillments()[i].getAppliedPromotions()); p>=1; p--) {
-				arguments.order.getOrderFulfillments()[i].getAppliedPromotions()[p].removeOrderFulfillment();
-			}
-		}
-		
-		// Loop over all of the order discounts and remove them
-		for(var p=arrayLen(arguments.order.getAppliedPromotions()); p>=1; p--) {
-			arguments.order.getAppliedPromotions()[p].removeOrder();
-		}
-		
-		// Loop over all the payments and credit for any charges, and set paymentAmount to 0
-		for(var p=1; p<=arrayLen(arguments.order.getOrderPayments()); p++) {
-			var totalReceived = precisionEvaluate(arguments.order.getOrderPayments()[p].getAmountReceived() - arguments.order.getOrderPayments()[p].getAmountCredited());
-			if(totalReceived gt 0) {
-				var transactionData = {
-					amount = totalReceived,
-					transactionType = 'credit'
-				};
-				this.processOrderPayment(arguments.order.getOrderPayments()[p], transactionData, 'createTransaction');
-			}
-			// Set payment amount to 0
-			arguments.order.getOrderPayments()[p].setAmount(0);
-		}
-		
-		// Change the status
-		arguments.order.setOrderStatusType( getSettingService().getTypeBySystemCode("ostCanceled") );
+		// Call saveOrder to recalculate all the orderTotal stuff
+		arguments.order = this.saveOrder(arguments.order);
 		
 		return arguments.order;
 	}
 	
-	public any function processOrder_addPromotionCode(required any order, required any processObject) {
-			
-		var pc = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
-		
-		if(isNull(pc) || !pc.getPromotion().getActiveFlag()) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
-		} else if ( (!isNull(pc.getStartDateTime()) && pc.getStartDateTime() > now()) || (!isNull(pc.getEndDateTime()) && pc.getEndDateTime() < now()) || !pc.getPromotion().getCurrentFlag()) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'));
-		} else if (arrayLen(pc.getAccounts()) && !pc.hasAccount(arguments.order.getAccount())) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'));
-		} else if( !isNull(pc.getMaximumAccountUseCount()) && pc.getMaximumAccountUseCount() <= getPromotionService().getPromotionCodeAccountUseCount(pc, arguments.order.getAccount()) ) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'));
-		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
-			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'));
-		} else {
-			if(!arguments.order.hasPromotionCode( pc )) {
-				arguments.order.addPromotionCode( pc );
-				recalculateOrderAmounts(order=arguments.order);
-			}
-		}		
-		
-		return arguments.order;
-	}
-
 	public any function processOrder_removePromotionCode(required any order, required struct data) {
 		
 		if(structKeyExists(arguments.data, "promotionCodeID")) {
@@ -1005,60 +1031,46 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
-	public any function processOrder_createReturn(required any order, required any processObject) {
+	public any function processOrder_takeOffHold(required any order, struct data={}) {
 		
-		// Create a new return order
-		var returnOrder = this.newOrder();
-		returnOrder.setAccount( arguments.order.getAccount() );
-		returnOrder.setOrderType( getSettingService().getTypeBySystemCode("otReturnOrder") );
-		returnOrder.setOrderStatusType( getSettingService().getTypeBySystemCode("ostNew") );
-		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
-		returnOrder.setReferencedOrder( arguments.order );
-		
-		// Create OrderReturn entity (to save the fulfillment amount)
-		var orderReturn = this.newOrderReturn();
-		orderReturn.setOrder( returnOrder );
-		orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
-		orderReturn.setReturnLocation( arguments.processObject.getLocation() );
-	
-		// Look for that orderItem in the data records
-		for(var orderItemStruct in arguments.processObject.getOrderItems()) {
-			
-			// Verify that there was a quantity and that it was GT 0
-			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
-				
-				var originalOrderItem = this.getOrderItem( orderItemStruct.referencedOrderItem.orderItemID );
-				
-				// Create a new return orderItem
-				if(!isNull(originalOrderItem)) {
-					
-					// Create a new order item
-					var orderItem = this.newOrderItem();
-					
-					// Setup the details
-					orderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitReturn') );
-					orderItem.setOrderItemStatusType( getSettingService().getTypeBySystemCode('oistNew') );
-					orderItem.setPrice( orderItemStruct.price );
-					orderItem.setSkuPrice( originalOrderItem.getSku().getPrice() );
-					orderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
-					orderItem.setQuantity( orderItemStruct.quantity );
-					orderItem.setSku( originalOrderItem.getSku() );
-					
-					// Add needed references
-					orderItem.setReferencedOrderItem( originalOrderItem );
-					orderItem.setOrderReturn( orderReturn );
-					orderItem.setOrder( returnOrder );
-					
-				}
-				
-			}
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
 		}
 		
-		// Recalculate the order amounts for tax and promotions
-		recalculateOrderAmounts( returnOrder );
+		// Change the status
+		arguments.order.setOrderStatusType( getSettingService().getTypeBySystemCode("ostProcessing") );
 		
-		// Persit the new order
-		getHibachiDAO().save( returnOrder );
+		// Call the update order status incase this needs to be changed to closed.
+		arguments.order = this.processOrder(arguments.order, {}, 'updateStatus');
+
+		return arguments.order;
+	}
+	
+	public any function processOrder_updateStatus(required any order, struct data) {
+		param name="arguments.data.updateItems" default="false";
+		
+		// First we make sure that this order status is not 'closed', 'canceld', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
+		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
+			
+			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
+			if(arguments.order.getPaymentAmountReceivedTotal() == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
+				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostClosed") );
+				
+			// The default case is just to set it to processing
+			} else {
+				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostProcessing") );
+			}
+			
+		}
+		
+		// If we are supposed to update the items as well, loop over all items and pass to 'updateItemStatus'
+		if(arguments.data.updateItems) {
+			for(var orderItem in arguments.order.getOrderItems()) {
+				this.processOrderItem( orderItem, {}, 'updateStatus');
+			}
+		}
 		
 		return arguments.order;
 	}
@@ -1172,7 +1184,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
 			
 			// Update the orderStatus
-			updateOrderStatus( arguments.orderDelivery.getOrder(), true );
+			this.processOrder(arguments.orderDelivery.getOrder(), {updateItems=true}, 'updateStatus');
 			
 		} else {
 			arguments.processObject.addError('capturableAmount', rbKey('validate.processOrderDelivery_create.captureAmount'));
@@ -1204,7 +1216,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			subscriptionOrderItem.getSubscriptionUsage().setExpirationDate( subscriptionOrderItem.getSubscriptionUsage().getRenewalTerm().getEndDate(startDate) );
 			
-			getSubscriptionService().updateSubscriptionUsageStatus( subscriptionOrderItem.getSubscriptionUsage() );
+			getSubscriptionService().processSubscriptionUsage( subscriptionOrderItem.getSubscriptionUsage(), {}, 'updateStatus' );
 			
 			// set renewal benefit if needed
 			getSubscriptionService().setupRenewalSubscriptionBenefitAccess( subscriptionOrderItem.getSubscriptionUsage() );
@@ -1242,6 +1254,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return arguments.orderFulfillment;
+	}
+	
+	// Process: Order Item
+	public any function processOrderItem_updateStatus(required any orderItem) {
+		// First we make sure that this order item is not already fully fulfilled, or onHold because we cannont automatically update those statuses
+		if(!listFindNoCase("oistFulfilled,oistOnHold",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
+			
+			// If the quantityUndelivered is set to 0 then we can mark this as fulfilled
+			if(arguments.orderItem.getQuantityUndelivered() == 0) {
+				arguments.orderItem.setOrderItemStatusType(  getSettingService().getTypeBySystemCode("oistFulfilled") );
+				
+			// If the sku is setup to track inventory and the qoh is 0 then we can set the status to 'backordered'
+			} else if(arguments.orderItem.getSku().setting('skuTrackInventoryFlag') && arguments.orderItem.getSku().getQuantity('qoh') == 0) {
+				arguments.orderItem.setOrderItemStatusType(  getSettingService().getTypeBySystemCode("oistBackordered") );
+					
+			// Otherwise we just set this to 'processing' to show that the item is in limbo
+			} else {
+				arguments.orderItem.setOrderItemStatusType(  getSettingService().getTypeBySystemCode("oistProcessing") );
+				
+			}
+		}
+		
+		return arguments.orderItem;
 	}
 		
 	// Process: Order Return
@@ -1306,8 +1341,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			getStockService().saveStockReceiver( newStockReceiver );
 			
-			// Update the Order Status
-			updateOrderStatus( arguments.orderReturn.getOrder(), true );
+			// Update the orderStatus
+			this.processOrder(arguments.orderDelivery.getOrder(), {updateItems=true}, 'updateStatus');
 		
 			// Look to credit any order payments
 			if(arguments.data.autoProcessReturnPaymentFlag) {
@@ -1372,6 +1407,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the paymentTransaction has errors, then add those errors to the orderPayment itself
 		if(paymentTransaction.hasError('runTransaction')) {
 			arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+		} else {
+			this.processOrder(arguments.orderPayment.getOrder(), {}, 'updateStatus');
 		}
 		
 		return arguments.orderPayment;
@@ -1423,54 +1460,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Status Methods ===========================
-	
-	public void function updateOrderStatus( required any order, updateItemStatus=false ) {
-		// First we make sure that this order status is not 'closed', 'canceld', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
-		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
-			
-			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
-			if(arguments.order.getPaymentAmountReceivedTotal() == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
-				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostClosed") );
-				
-			// The default case is just to set it to processing
-			} else {
-				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostProcessing") );
-			}
-		}
-		
-		// If we are supposed to update the items as well, loop over all items and pass to 'updateItemStatus'
-		if(arguments.updateItemStatus) {
-			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-				updateOrderItemStatus( arguments.order.getOrderItems()[i] );
-			}
-		}
-	}
-	
-	public void function updateOrderItemStatus( required any orderItem ) {
-		
-		// First we make sure that this order item is not already fully fulfilled, or onHold because we cannont automatically update those statuses
-		if(!listFindNoCase("oistFulfilled,oistOnHold",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
-			
-			// If the quantityUndelivered is set to 0 then we can mark this as fulfilled
-			if(arguments.orderItem.getQuantityUndelivered() == 0) {
-				arguments.orderItem.setOrderItemStatusType(  getSettingService().getTypeBySystemCode("oistFulfilled") );
-				
-			// If the sku is setup to track inventory and the qoh is 0 then we can set the status to 'backordered'
-			} else if(arguments.orderItem.getSku().setting('skuTrackInventoryFlag') && arguments.orderItem.getSku().getQuantity('qoh') == 0) {
-				arguments.orderItem.setOrderItemStatusType(  getSettingService().getTypeBySystemCode("oistBackordered") );
-					
-			// Otherwise we just set this to 'processing' to show that the item is in limbo
-			} else {
-				arguments.orderItem.setOrderItemStatusType(  getSettingService().getTypeBySystemCode("oistProcessing") );
-				
-			}
-		}
-		
-	}
-	
-	// ======================  END: Status Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
 	

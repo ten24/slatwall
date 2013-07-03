@@ -506,7 +506,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				} else {
 					
 					// Place the id in the URL for redirects in case this was a new entity before
-					url[ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
+					url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();
 					
 					// Render or Redirect a Success
 					renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);	
@@ -531,7 +531,7 @@ component output="false" accessors="true" extends="HibachiController" {
 					arguments.rc.ajaxResponse["success"] = false;
 					
 					// Place the entities errors in the response
-					arguments.rc.ajaxResponse["entityErrors"] = entity.getErrors();
+					arguments.rc.ajaxResponse["entityErrors"] = arguments.rc[ arguments.entityName ].getErrors();
 					
 					// Place the process objects errors in the response
 					if(getFW().getBeanFactory().containsBean( "#arguments.entityName#_#arguments.rc.processContext#")) {
@@ -542,7 +542,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				} else {
 					
 					// Place the id in the URL for redirects in case this was a new entity before
-					url[ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
+					url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();
 				
 					// Render or Redirect a faluire
 					renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);

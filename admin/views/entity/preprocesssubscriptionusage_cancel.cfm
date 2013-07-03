@@ -36,18 +36,20 @@
 Notes:
 
 --->
-
-<cfparam name="rc.redirectAction" type="string" default="admin:entity.liststockreceiver" />
-<cfparam name="rc.processStockReceiverSmartList" type="any" />
-<cfparam name="rc.multiProcess" type="boolean" />
+<cfparam name="rc.subscriptionUsage" type="any" />
+<cfparam name="rc.processObject" type="any" />
 
 <cfoutput>
-	<cf_SlatwallProcessForm>
-		<cf_HibachiEntityActionBar type="process" />
+	<cf_HibachiEntityProcessForm entity="#rc.subscriptionUsage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailSubscriptionUsage">
 		
-		<cf_SlatwallProcessOptionBar>
-			<cf_SlatwallProcessOption data="locationID" fieldType="select" valueOptions="#$.slatwall.getService("locationService").getLocationOptions()#" />
-		</cf_SlatwallProcessOptionBar>
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.subscriptionUsage#">
+		</cf_HibachiEntityActionBar>
 		
-	</cf_SlatwallProcessForm>
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="effectiveDateTime" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityProcessForm>
 </cfoutput>

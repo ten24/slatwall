@@ -353,7 +353,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	
-	
 	// Account Payment
 	public any function processAccountPayment_createTransaction(required any accountPayment, required any processObject) {
 		
@@ -380,6 +379,32 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountPayment;	
 	}
 	
+	// Account Payment Method
+	public any function processAccountPaymentMethod_createTransaction(required any accountPaymentMethod, required any processObject) {
+		
+		// Create a new payment transaction
+		var paymentTransaction = getPaymentService().newPaymentTransaction();
+		
+		// Setup the accountPayment in the transaction to be used by the 'runTransaction'
+		paymentTransaction.setAccountPaymentMethod( arguments.accountPaymentMethod );
+		
+		// Setup the transaction data
+		transactionData = {
+			transactionType = processObject.getTransactionType(),
+			amount = processObject.getAmount()
+		};
+		
+		// Run the transaction
+		paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
+		
+		// If the paymentTransaction has errors, then add those errors to the orderPayment itself
+		if(paymentTransaction.hasError('runTransaction')) {
+			arguments.accountPaymentMethod.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+		}
+		
+		return arguments.accountPaymentMethod;	
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
@@ -403,7 +428,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Clear out any previous 'createTransaction' process objects
 			arguments.accountPaymentMethod.clearProcessObject( 'createTransaction' );
 			
-			arguments.accountPaymentMethod = this.processAccountPayment(arguments.accountPaymentMethod, transactionData, 'createTransaction');
+			arguments.accountPaymentMethod = this.processAccountPaymentMethod(arguments.accountPaymentMethod, transactionData, 'createTransaction');
 		}
 		
 		return arguments.accountPaymentMethod;

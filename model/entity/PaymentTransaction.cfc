@@ -57,6 +57,7 @@ component entityname="SlatwallPaymentTransaction" table="SlatwallPaymentTransact
 	
 	// Related Object Properties (many-to-one)
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
+	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
 	
 	// Related Object Properties (one-to-many)
@@ -93,6 +94,8 @@ component entityname="SlatwallPaymentTransaction" table="SlatwallPaymentTransact
 			return getOrderPayment();
 		} else if (!isNull(getAccountPayment())) {
 			return getAccountPayment();
+		} else if (!isNull(getAccountPaymentMethod())) {
+			return getAccountPaymentMethod();
 		}
 	}
 	
@@ -101,6 +104,24 @@ component entityname="SlatwallPaymentTransaction" table="SlatwallPaymentTransact
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Account Payment Method (many-to-one)    
+	public void function setAccountPaymentMethod(required any accountPaymentMethod) {    
+		variables.accountPaymentMethod = arguments.accountPaymentMethod;    
+		if(isNew() or !arguments.accountPaymentMethod.hasPaymentTransaction( this )) {    
+			arrayAppend(arguments.accountPaymentMethod.getPaymentTransactions(), this);    
+		}    
+	}    
+	public void function removeAccountPaymentMethod(any accountPaymentMethod) {    
+		if(!structKeyExists(arguments, "accountPaymentMethod")) {    
+			arguments.accountPaymentMethod = variables.accountPaymentMethod;    
+		}    
+		var index = arrayFind(arguments.accountPaymentMethod.getPaymentTransactions(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.accountPaymentMethod.getPaymentTransactions(), index);    
+		}    
+		structDelete(variables, "accountPaymentMethod");    
+	}
 	
 	// Account Payment (many-to-one)
 	public void function setAccountPayment(required any accountPayment) {

@@ -90,7 +90,7 @@ Notes:
 		<cf_HibachiTab view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
 		<cf_HibachiTab property="accountPayments" />
 		<cf_HibachiTab property="productReviews" />
-		<cf_HibachiTab view="admin:entity/accounttabs/subscriptionusage" />
+		<cf_HibachiTab view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
 		<cf_HibachiTab property="permissionGroups" />
 		<cf_HibachiTab view="admin:entity/accounttabs/accountsettings" />
 		

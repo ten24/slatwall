@@ -4,22 +4,17 @@
 		"orderStatusType":					[{"contexts":"save","required":true}],
 		"statusCode":						[
 		    									{"contexts":"placeOrder,delete","inList":"ostNotPlaced"},
-												{"contexts":"addSaleOrderItem","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
+												{"contexts":"addSaleOrderItem,addOrderPayment,addPromotionCode,updateStatus","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 												{"contexts":"cancelOrder,closeOrder","inList":"ostNew,ostProcessing,ostOnHold"},
 												{"contexts":"createReturn","inList":"ostNew,ostProcessing,ostOnHold,ostClosed"},
 												{"contexts":"takeOffHold","inList":"ostOnHold"},
-												{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"},
-												{"contexts":"addOrderPayment","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
-												{"contexts":"addPromotionCode","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}
+												{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"}
 		],
 		"quantityDelivered":				[
 												{"contexts":"cancelOrder","maxValue":0},
 												{"contexts":"createReturn","minValue":1}   
 		],
 		"quantityReceived":					[{"contexts":"cancelOrder","maxValue":0}],
-		"orderItems":						[{"contexts":"placeOrder,addOrderPayment","minCollection":1}],
-		"paymentAmountReceivedTotal":		[{"contexts":"closeOrder","eqProperty":"total"}],
-		"quantityUndelivered":				[{"contexts":"closeOrder","eq":0}],
-		"quantityUnreceived":				[{"contexts":"closeOrder","eq":0}]
+		"orderItems":						[{"contexts":"placeOrder,addOrderPayment","minCollection":1}]
 	}
 }

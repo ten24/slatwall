@@ -159,21 +159,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var reward = promotionRewards[pr];
 				
 				// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
-				promotionRewardUsageDetails[ reward.getPromotionRewardID() ] = {
-					usedInOrder = 0,
-					maximumUsePerOrder = 1000000,
-					maximumUsePerItem = 1000000,
-					maximumUsePerQualification = 1000000,
-					orderItemsUsage = []
-				};
-				if( !isNull(reward.getMaximumUsePerOrder()) && reward.getMaximumUsePerOrder() > 0) {
-					promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder = reward.getMaximumUsePerOrder();
-				}
-				if( !isNull(reward.getMaximumUsePerItem()) && reward.getMaximumUsePerItem() > 0 ) {
-					promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerItem = reward.getMaximumUsePerItem();
-				}
-				if( !isNull(reward.getMaximumUsePerQualification()) && reward.getMaximumUsePerQualification() > 0 ) {
-					promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification = reward.getMaximumUsePerQualification();
+				if(!structKeyExists(promotionRewardUsageDetails, reward.getPromotionRewardID())) {
+					promotionRewardUsageDetails[ reward.getPromotionRewardID() ] = {
+						usedInOrder = 0,
+						maximumUsePerOrder = 1000000,
+						maximumUsePerItem = 1000000,
+						maximumUsePerQualification = 1000000,
+						orderItemsUsage = []
+					};
+					if( !isNull(reward.getMaximumUsePerOrder()) && reward.getMaximumUsePerOrder() > 0) {
+						promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder = reward.getMaximumUsePerOrder();
+					}
+					if( !isNull(reward.getMaximumUsePerItem()) && reward.getMaximumUsePerItem() > 0 ) {
+						promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerItem = reward.getMaximumUsePerItem();
+					}
+					if( !isNull(reward.getMaximumUsePerQualification()) && reward.getMaximumUsePerQualification() > 0 ) {
+						promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification = reward.getMaximumUsePerQualification();
+					}
 				}
 				
 				// Setup the boolean for if the promotionPeriod is okToApply based on general use count
@@ -313,6 +315,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 														discountQuantity = discountQuantity,
 														discountPerUseValue = discountPerUseValue
 													});
+													
 												}
 												
 											}
@@ -450,7 +453,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} // END Promotion Period OK IF
 			
 			} // END of PromotionReward Loop
-			
 			
 			// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
 			for(var prID in promotionRewardUsageDetails) {
@@ -703,61 +705,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Set the qualification count to the total fulfillments
 			qualifierDetails.qualificationCount = 0;
+			var qualifiedItemsQuantity = 0;
 			
 			for(var orderItem in arguments.order.getOrderItems()) {
 				
 				var qualifiedOrderItemDetails = {
 					orderItem = orderItem,
-					qualificationCount = orderItem.getQuantity()
+					qualificationCount = 0
 				};
 				
-				if( 
-					// First check the simple value stuff
-					( !isNull(arguments.qualifier.getMinimumItemPrice()) && arguments.qualifier.getMinimumItemPrice() > orderItem.getPrice() )
-					||
-					( !isNull(arguments.qualifier.getMaximumItemPrice()) && arguments.qualifier.getMaximumItemPrice() < orderItem.getPrice() )
-					||
-					// Check the basic qualification groups for this item like, sku, product, productType, brand option
-					( arrayLen( arguments.qualifier.getProductTypes() ) && !arguments.qualifier.hasProductType( orderItem.getSku().getProduct().getProductType() ) )
-					||
-					( qualifier.hasExcludedProductType( orderItem.getSku().getProduct().getProductType() ) )
-					||
-					( arrayLen( arguments.qualifier.getProducts() ) && !qualifier.hasProduct( orderItem.getSku().getProduct() ) )
-					||
-					( qualifier.hasExcludedProduct( orderItem.getSku().getProduct() ) )
-					||
-					( arrayLen( arguments.qualifier.getSkus() ) && !qualifier.hasSku( orderItem.getSku() ) )
-					||
-					( qualifier.hasExcludedSku( orderItem.getSku() ) )
-					||
-					( arrayLen( arguments.qualifier.getBrands() ) && !qualifier.hasBrand( orderItem.getSku().getProduct().getBrand() ) ) 
-					||
-					( qualifier.hasExcludedBrand( orderItem.getSku().getProduct().getBrand() ) )
-					||
-					( arrayLen( arguments.qualifier.getOptions() ) && !qualifier.hasAnyOption( orderItem.getSku().getOptions() ) )
-					||
-					( qualifier.hasAnyExcludedOption( orderItem.getSku().getOptions() ) )
-					
-					){
+				if( getOrderItemInQualifier(qualifier=qualifier, orderItem=orderItem) ){
 						
-					qualifiedOrderItemDetails.qualificationCount = 0;
-					
-				}
-				
-				// As long as the above leaves this as still > 0
-				if(qualifiedOrderItemDetails.qualificationCount gt 0) {
-					// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-					if( !isNull(arguments.qualifier.getMinimumItemQuantity()) ) {
-						qualifiedOrderItemDetails.qualificationCount = int(qualifiedOrderItemDetails.qualificationCount / qualifier.getMinimumItemQuantity() );
-					}
-					
-					// Add this count to the larger count
-					qualifierDetails.qualificationCount += qualifiedOrderItemDetails.qualificationCount;
+					qualifiedOrderItemDetails.qualificationCount = orderItem.getQuantity();
+					qualifiedItemsQuantity += orderItem.getQuantity();
 					
 					// Add this orderItem to the array
 					arrayAppend(qualifierDetails.qualifiedOrderItemDetails, qualifiedOrderItemDetails);
+					
 				}
 				
+			}
+			
+			// As long as the above leaves this as still > 0
+			if(qualifiedItemsQuantity gt 0) {
+				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
+				if( !isNull(arguments.qualifier.getMinimumItemQuantity()) ) {
+					qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
+				}
 			}
 			
 		}
@@ -818,31 +792,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// First we run an "if" to see if this doesn't qualify for any reason and if so then set the count to 0
 					if( 
-						// First check the simple value stuff
-						( !isNull(qualifier.getMinimumItemPrice()) && qualifier.getMinimumItemPrice() > arguments.orderItem.getPrice() )
-						||
-						( !isNull(qualifier.getMaximumItemPrice()) && qualifier.getMaximumItemPrice() < arguments.orderItem.getPrice() )
-						||
-						// Check the basic qualification groups for this item like, sku, product, productType, brand option
-						( arrayLen( qualifier.getProductTypes() ) && !qualifier.hasProductType( arguments.orderItem.getSku().getProduct().getProductType() ) )
-						||
-						( qualifier.hasExcludedProductType( arguments.orderItem.getSku().getProduct().getProductType() ) )
-						||
-						( arrayLen( qualifier.getProducts() ) && !qualifier.hasProduct( arguments.orderItem.getSku().getProduct() ) )
-						||
-						( qualifier.hasExcludedProduct( arguments.orderItem.getSku().getProduct() ) )
-						||
-						( arrayLen( qualifier.getSkus() ) && !qualifier.hasSku( arguments.orderItem.getSku() ) )
-						||
-						( qualifier.hasExcludedSku( arguments.orderItem.getSku() ) )
-						||
-						( arrayLen( qualifier.getBrands() ) && !qualifier.hasBrand( arguments.orderItem.getSku().getProduct().getBrand() ) ) 
-						||
-						( qualifier.hasExcludedBrand( arguments.orderItem.getSku().getProduct().getBrand() ) )
-						||
-						( arrayLen( qualifier.getOptions() ) && !qualifier.hasAnyOption( arguments.orderItem.getSku().getOptions() ) )
-						||
-						( qualifier.hasAnyExcludedOption( arguments.orderItem.getSku().getOptions() ) )
+						!getOrderItemInQualifier(qualifier=qualifier, orderItem=thisOrderItem)
 						||
 						// Then check the match type of based on the current orderitem, and the orderItem we are getting a count for
 						( qualifier.getRewardMatchingType() == "sku" && thisOrderItem.getSku().getSkuID() != arguments.orderItem.getSku().getSkuID() )
@@ -888,6 +838,75 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return allQualifiersCount;
 	}
 
+
+	public boolean function getOrderItemInQualifier(required any qualifier, required any orderItem) {
+		
+		// START: Check Exclusions
+		
+		var hasExcludedProductType = false;
+		// Check all of the exclusions for an excluded product type
+		if(arrayLen(arguments.qualifier.getExcludedProductTypes())) {
+			var excludedProductTypeIDList = "";
+			for(var i=1; i<=arrayLen(arguments.qualifier.getExcludedProductTypes()); i++) {
+				excludedProductTypeIDList = listAppend(excludedProductTypeIDList, arguments.qualifier.getExcludedProductTypes()[i].getProductTypeID());
+			}
+		
+			for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+				if(listFindNoCase(excludedProductTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+					hasExcludedProductType = true;
+					break;
+				}	
+			}
+		}
+		
+		// If anything is excluded then we return false
+		if(	hasExcludedProductType
+			||
+			( !isNull(qualifier.getMinimumItemPrice()) && qualifier.getMinimumItemPrice() > arguments.orderItem.getPrice() )
+			||
+			( !isNull(qualifier.getMaximumItemPrice()) && qualifier.getMaximumItemPrice() < arguments.orderItem.getPrice() )
+			||
+			arguments.qualifier.hasExcludedProduct( arguments.orderItem.getSku().getProduct() )
+			||
+			arguments.qualifier.hasExcludedSku( arguments.orderItem.getSku() )
+			||
+			( arrayLen( arguments.qualifier.getExcludedBrands() ) && ( isNull( arguments.orderItem.getSku().getProduct().getBrand() ) || arguments.qualifier.hasExcludedBrand( arguments.orderItem.getSku().getProduct().getBrand() ) ) )
+			||
+			( arguments.qualifier.hasAnyExcludedOption( arguments.orderItem.getSku().getOptions() ) )
+			) {
+			return false;
+		}
+		
+		// START: Check Inclusions
+		
+		if(arrayLen(arguments.qualifier.getProductTypes())) {
+			var includedPropertyTypeIDList = "";
+			
+			for(var i=1; i<=arrayLen(arguments.qualifier.getProductTypes()); i++) {
+				includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, arguments.qualifier.getProductTypes()[i].getProductTypeID());
+			}
+			
+			for(var ptid=1; ptid<=listLen(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+				if(listFindNoCase(includedPropertyTypeIDList, listGetAt(arguments.orderItem.getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+					return true;
+				}	
+			}
+		}
+		if(arguments.qualifier.hasProduct( arguments.orderItem.getSku().getProduct() )) {
+			return true;
+		}
+		if(arguments.qualifier.hasSku( arguments.orderItem.getSku() )) {
+			return true;
+		}
+		if(!isNull(arguments.orderItem.getSku().getProduct().getBrand()) && arguments.qualifier.hasBrand( arguments.orderItem.getSku().getProduct().getBrand() )) {
+			return true;
+		}
+		if(arguments.qualifier.hasAnyOption( arguments.orderItem.getSku().getOptions() )) {
+			return true;
+		}
+		
+		return false;
+	}
 	
 	public boolean function getOrderItemInReward(required any reward, required any orderItem) {
 		

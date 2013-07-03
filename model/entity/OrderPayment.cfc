@@ -129,10 +129,14 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
+			if(!isNull(arguments.accountPaymentMethod.getCreditCardNumber())) {
+				setCreditCardNumber( arguments.accountPaymentMethod.getCreditCardNumber() );
+			}
 			setNameOnCreditCard( arguments.accountPaymentMethod.getNameOnCreditCard() );
-			setCreditCardNumber( arguments.accountPaymentMethod.getCreditCardNumber() );
 			setExpirationMonth( arguments.accountPaymentMethod.getExpirationMonth() );
 			setExpirationYear( arguments.accountPaymentMethod.getExpirationYear() );
+			setCreditCardLastFour( arguments.accountPaymentMethod.getCreditCardLastFour() );
+			setCreditCardType( arguments.accountPaymentMethod.getCreditCardType() );
 		}
 		
 		// Gift Card
@@ -150,7 +154,46 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 			setBillingAddress( arguments.accountPaymentMethod.getBillingAddress().copyAddress( true ) );
 		}
 		
-	}	
+	}
+	
+	public void function copyFromOrderPayment(required any orderPayment) {
+		
+		// Make sure the payment method matches
+		setPaymentMethod( arguments.orderPayment.getPaymentMethod() );
+		
+		// Check for a relational Account Payment Method
+		if(!isNull(arguments.orderPayment.getAccountPaymentMethod())) {
+			setAccountPaymentMethod(arguments.orderPayment.getAccountPaymentMethod());
+		}
+		
+		// Credit Card
+		if(listFindNoCase("creditCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
+				setCreditCardNumber( arguments.orderPayment.getCreditCardNumber() );
+			}
+			setNameOnCreditCard( arguments.orderPayment.getNameOnCreditCard() );
+			setExpirationMonth( arguments.orderPayment.getExpirationMonth() );
+			setExpirationYear( arguments.orderPayment.getExpirationYear() );
+			setCreditCardLastFour( arguments.orderPayment.getCreditCardLastFour() );
+			setCreditCardType( arguments.orderPayment.getCreditCardType() );
+		}
+		
+		// Gift Card
+		if(listFindNoCase("giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
+		}
+		
+		// Credit Card & Gift Card
+		if(listFindNoCase("creditCard,giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setProviderToken( arguments.orderPayment.getProviderToken() );
+		}
+		
+		// Credit Card & Term Payment
+		if(listFindNoCase("creditCard,termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setBillingAddress( arguments.orderPayment.getBillingAddress().copyAddress( true ) );
+		}
+		
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
