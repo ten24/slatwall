@@ -37,9 +37,14 @@ Notes:
 
 --->
 
-<!--- ProductType --->
+<!--- Content --->
 <cfquery name="local.activeFlag">
-	UPDATE SlatwallProductType SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+	UPDATE SlatwallContent SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+</cfquery>
+
+<!--- Location --->
+<cfquery name="local.activeFlag">
+	UPDATE SlatwallLocation SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
 <!--- Product --->
@@ -47,12 +52,13 @@ Notes:
 	UPDATE SlatwallProduct SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
+<!--- ProductType --->
+<cfquery name="local.activeFlag">
+	UPDATE SlatwallProductType SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+</cfquery>
+
 <!--- Sku --->
 <cfquery name="local.activeFlag">
 	UPDATE SlatwallSku SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
-<!--- Content --->
-<cfquery name="local.activeFlag">
-	UPDATE SlatwallContent SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
-</cfquery>

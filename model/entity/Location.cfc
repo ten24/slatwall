@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Location" entityname="SlatwallLocation" table="SlatwallLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" {
+component displayname="Location" entityname="SlatwallLocation" table="SlatwallLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation" {
 	
 	// Persistent Properties
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -51,7 +51,6 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	// Related Object Properties (One-to-Many)
 	property name="locationAddresses" singularname="locationAddress" cfc="LocationAddress" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
 	property name="childLocations" singularname="childLocation" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="parentLocationID" cascade="all";
-	property name="locations" singularname="location" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="locationID" lazy="extra" cascade="all";
 	
 	// Related Object Properties (Many-to-Many - owner)
 	
@@ -67,6 +66,8 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
+	// Non-Persistent Properties
+	property name="parentLocationOptions" persistent="false";
 	
 	
 	public boolean function isDeletable() {
@@ -82,6 +83,24 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getParentLocationOptions() {
+		if(!structKeyExists(variables, "parentLocationOptions")) {
+			var smartList = getPropertyOptionsSmartList( "parentLocation" );
+			var records = smartList.getRecords();
+			
+			variables.parentLocationOptions = [
+				{name=rbKey('define.none'), value=''}
+			];
+			
+			for(var i=1; i<=arrayLen(records); i++) {
+				if(records[i].getLocationID() != getLocationID()) {
+					arrayAppend(variables.parentLocationOptions, {name=records[i].getSimpleRepresentation(), value=records[i].getLocationID()});	
+				}
+			}
+		}
+		return variables.parentLocationOptions;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 	

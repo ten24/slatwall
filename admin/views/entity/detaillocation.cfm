@@ -44,15 +44,18 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.location#">
 			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" modal=true />
 		</cf_HibachiEntityActionBar>
-			
+		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.location#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.location#" property="locationName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
-
+		
 		<cf_HibachiTabGroup object="#rc.location#">
 			<cf_HibachiTab property="locationAddresses" />
+			<cf_HibachiTab view="admin:entity/locationtabs/locationconfigurationsettings" />
 		</cf_HibachiTabGroup>
 
 	</cf_HibachiEntityDetailForm>
