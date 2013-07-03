@@ -36,44 +36,40 @@
 Notes:
 
 --->
-<cfparam name="rc.attribute" type="any">
-<cfparam name="rc.attributeSet" type="any" default="#rc.attribute.getAttributeSet()#">
+<cfparam name="rc.locationConfiguration" type="any">
+<cfparam name="rc.location" type="any" default="#rc.locationConfiguration.getLocation()#">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#"
-								saveActionQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#">
-									
-		<cf_HibachiEntityActionBar type="detail" object="#rc.attribute#" edit="#rc.edit#"
-								   backAction="admin:entity.detailAttributeSet"
-								   backQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"
-								   cancelAction="admin:entity.detailAttributeSet"
-								   cancelQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#" />
+	<cf_HibachiEntityDetailForm object="#rc.locationConfiguration#" edit="#rc.edit#"
+								saveActionQueryString="locationID=#rc.location.getLocationID()#">
+								
+		<cf_HibachiEntityActionBar type="detail" object="#rc.locationConfiguration#"
+								   backAction="admin:entity.detaillocation"
+								   backQueryString="locationID=#rc.location.getLocationID()#"
+								   cancelAction="admin:entity.detaillocation"
+								   cancelQueryString="locationID=#rc.location.getLocationID()#"
+								   deleteQueryString="sRedirectAction=entity.detaillocation&locationID=#rc.location.getLocationID()#">
+								      
+		</cf_HibachiEntityActionBar>
 		
 		<cfif rc.edit>
-			
 			<!--- Hidden field to attach this to the attributeSet --->
-			<input type="hidden" name="attributeSet.attributeSetID" value="#rc.attributeSet.getAttributeSetID()#" />
+			<input type="hidden" name="location.locationID" value="#rc.location.getLocationID()#" />
 		</cfif>
-
+		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="requiredFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeHint" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="defaultValue" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeType" valueDefault="444df2a5a9088e72342c0b5eaf731c64" edit="#rc.edit and rc.attribute.isNew()#">
+				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="activeFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="locationConfigurationName" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
-
-		<cf_HibachiTabGroup object="#rc.attribute#">
-			<cfif not rc.attribute.isNew() and listFindNoCase( "atText,atPassword,atCheckBoxGroup,atMultiSelect,atRadioGroup,atSelect",rc.attribute.getAttributeType().getSystemCode() )>
-				<cf_HibachiTab view="admin:entity/attributetabs/attributeoptions" />
-			</cfif>
-			<cf_HibachiTab view="admin:entity/attributetabs/description" />
+		
+		<!---
+		<cf_HibachiTabGroup object="#rc.location#">
+			<cf_HibachiTab view="admin:entity/locationconfigurationtabs/locationconfigurationsettings" />
 		</cf_HibachiTabGroup>
+		--->
 
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

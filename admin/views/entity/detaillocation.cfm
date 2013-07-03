@@ -43,6 +43,7 @@ Notes:
 	<cf_HibachiEntityDetailForm object="#rc.location#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.location#">
 			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" modal=true />
+			<cf_HibachiActionCaller action="admin:entity.createlocationconfiguration" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" />
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
@@ -55,6 +56,7 @@ Notes:
 		
 		<cf_HibachiTabGroup object="#rc.location#">
 			<cf_HibachiTab property="locationAddresses" />
+			<cf_HibachiTab property="locationConfigurations" />
 			<cf_HibachiTab view="admin:entity/locationtabs/locationconfigurationsettings" />
 		</cf_HibachiTabGroup>
 

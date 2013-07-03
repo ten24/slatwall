@@ -39,12 +39,12 @@ Notes:
 component displayname="LocationConfiguration" entityname="SlatwallLocationConfiguration" table="SlatwallLocationConfiguration" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" {
 	
 	// Persistent Properties
-	property name="locationConfigurationID" ormtype="string";
+	property name="locationConfigurationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="locationConfigurationName" ormtype="string";
-	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" ;
 	
 	// Related Object Properties (Many-to-One)
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	
 	// Related Object Properties (One-to-Many)
 	
@@ -68,6 +68,24 @@ component displayname="LocationConfiguration" entityname="SlatwallLocationConfig
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Location (many-to-one)    
+	public void function setLocation(required any location) {    
+		variables.location = arguments.location;    
+		if(isNew() or !arguments.location.hasLocationConfiguration( this )) {    
+			arrayAppend(arguments.location.getLocationConfigurations(), this);    
+		}    
+	}    
+	public void function removeLocation(any location) {    
+		if(!structKeyExists(arguments, "location")) {    
+			arguments.location = variables.location;    
+		}    
+		var index = arrayFind(arguments.location.getLocationConfigurations(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.location.getLocationConfigurations(), index);    
+		}    
+		structDelete(variables, "location");    
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 	

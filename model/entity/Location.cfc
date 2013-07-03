@@ -50,6 +50,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	
 	// Related Object Properties (One-to-Many)
 	property name="locationAddresses" singularname="locationAddress" cfc="LocationAddress" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
+	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
 	property name="childLocations" singularname="childLocation" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="parentLocationID" cascade="all";
 	
 	// Related Object Properties (Many-to-Many - owner)
@@ -112,6 +113,14 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	}
 	public void function removeLocationAddress(required any locationAddress) {
 		arguments.locationAddress.removeLocation( this );
+	}
+	
+	// Location Configurations (one-to-many)
+	public void function addLocationConfiguration(required any locationConfiguration) {
+		arguments.locationConfiguration.setLocation( this );
+	}
+	public void function removeLocationConfiguration(required any locationConfiguration) {
+		arguments.locationConfiguration.removeLocation( this );
 	}
 	
 	// Physicals (many-to-many - inverse)
