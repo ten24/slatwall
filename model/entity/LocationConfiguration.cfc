@@ -1,4 +1,4 @@
-/*
+﻿/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) 2011 ten24, LLC
@@ -36,27 +36,21 @@
 Notes:
 
 */
-component displayname="Location" entityname="SlatwallLocation" table="SlatwallLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" {
+component displayname="LocationConfiguration" entityname="SlatwallLocationConfiguration" table="SlatwallLocationConfiguration" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationConfigurationService" hb_permission="this" {
 	
 	// Persistent Properties
+	property name="locationConfigurationID" ormtype="string";
+	property name="locationConfigurationName" ormtype="string";
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="locationIDPath" ormtype="string";
-	property name="locationName" ormtype="string";
 	property name="activeFlag" ormtype="boolean" ;
 	
 	// Related Object Properties (Many-to-One)
-	property name="primaryAddress" cfc="LocationAddress" fieldtype="many-to-one" fkcolumn="locationAddressID";
-	property name="parentLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="parentLocationID";
 	
 	// Related Object Properties (One-to-Many)
-	property name="locationAddresses" singularname="locationAddress" cfc="LocationAddress" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
-	property name="childLocations" singularname="childLocation" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="parentLocationID" cascade="all";
-	property name="locations" singularname="location" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="locationID" lazy="extra" cascade="all";
 	
 	// Related Object Properties (Many-to-Many - owner)
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SlatwallPhysicalLocation" fkcolumn="locationID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -69,40 +63,12 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	
 	
 	
-	public boolean function isDeletable() {
-		return !(getService("LocationService").isLocationBeingUsed(this) || getService("LocationService").getLocationCount() == 1);
-	}
-	
-	public any function getPrimaryAddress() {
-		if(isNull(variables.primaryAddress)) {
-			return getService("locationService").newLocationAddress();
-		} else {
-			return variables.primaryAddress;
-		}
-	}
-	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Location Addresses (one-to-many)
-	public void function addLocationAddress(required any locationAddress) {
-		arguments.locationAddress.setLocation( this );
-	}
-	public void function removeLocationAddress(required any locationAddress) {
-		arguments.locationAddress.removeLocation( this );
-	}
-	
-	// Physicals (many-to-many - inverse)
-	public void function addPhysical(required any physical) {
-		arguments.physical.addLocation( this );
-	}
-	public void function removePhysical(required any physical) {
-		arguments.physical.removeLocation( this );
-	}
-
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================

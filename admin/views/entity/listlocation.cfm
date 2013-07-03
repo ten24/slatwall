@@ -37,10 +37,20 @@ Notes:
 
 --->
 <cfparam name="rc.locationSmartList" type="any" />
-
 <cfoutput>
 	
 <cf_HibachiEntityActionBar type="listing" object="#rc.locationSmartList#" createModal="true" />
+<!---<cf_HibachiEntityActionBar type="listing" object="#rc.locationSmartList#" createModal="true" >
+
+	<!--- Create --->
+	<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+			<cf_HibachiActionCaller action="admin:entity.listlocation" text="#rc.$.slatwall.rbKey('entity.location')#" querystring="locationID=#rc.locationSmartList.getLocationID()#" type="list" />
+		</cf_HibachiActionCallerDropdown>
+	</cf_HibachiEntityActionBarButtonGroup>
+		
+</cf_HibachiEntityActionBar>
+--->
 
 <cf_HibachiListingDisplay smartList="#rc.locationSmartList#"
 						  recordDetailAction="admin:entity.detaillocation"
