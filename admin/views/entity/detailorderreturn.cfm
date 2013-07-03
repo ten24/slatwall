@@ -41,7 +41,13 @@ Notes:
 
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.orderReturn#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderReturn#" edit="#rc.edit#" backaction="admin:entity.detailorder" backquerystring="orderID=#rc.orderReturn.getOrder().getOrderID()#"></cf_HibachiEntityActionBar>
+		
+		<cf_HibachiEntityActionBar type="detail" object="#rc.orderReturn#" edit="#rc.edit#"
+								   backaction="admin:entity.detailorder"
+								   backquerystring="orderID=#rc.orderReturn.getOrder().getOrderID()#">
+			
+			<cf_HibachiProcessCaller action="admin:entity.processOrderReturn" entity="#rc.orderReturn#" processContext="receive" type="list" />
+		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>

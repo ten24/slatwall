@@ -54,35 +54,36 @@ Notes:
 				<!--- Add a hidden field for the orderID --->
 				<input type="hidden" name="newOrderPayment.order.orderID" value="#rc.order.getOrderID()#" />
 				
-				<!--- Display the amount that is going to be used, but allow for override --->				
-				<cfif not arrayLen(rc.order.getOrderPayments()) || (arrayLen(rc.order.getOrderPayments()) eq 1 && rc.order.getOrderPayments()[1].hasErrors())>
-					<div class="control-group">
-						<label class="control-label">#$.slatwall.rbKey('define.amount')#</label>
-						<div class="controls">
-							#$.slatwall.rbKey('admin.entity.detailOrderPayment.entireOrderTotal')#l - #rc.order.getFormattedValue('total')#<br />
-							<a href="##" id='changeAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
-						</div>
-						<script type="text/javascript">
-							(function($){
-								$(document).ready(function(e){
-									
-									// Bind to split button
-									$('body').on('click', '##changeAmount', function(e){
-										e.preventDefault();
-										$(this).closest('div').html('<input type="text" name="newOrderPayment.amount" value="#rc.order.getTotal()#" class="span3 required numeric" />');
-									});
-									
-								});
-							})( jQuery );
-						</script>
-					</div>
-					
-				<!--- Only Show Payment Amount if this is the second account payment --->
-				<cfelse>
-					<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" fieldName="newOrderPayment.amount" edit="#rc.edit#">
+				<cfset orderPaymentTypeID = rc.addOrderPaymentProcessObject.getNewOrderPayment().getOrderPaymentType().getTypeID() />
+				<cfif not rc.addOrderPaymentProcessObject.hasErrors() && not rc.addOrderPaymentProcessObject.getNewOrderPayment().hasErrors() && rc.order.getOrderPaymentAmountNeeded() lt 0>
+					<cfset orderPaymentTypeID = "444df2f1cc40d0ea8a2de6f542ab4f1d" />	
 				</cfif>
+				<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" value="#orderPaymentTypeID#" fieldName="newOrderPayment.orderPaymentType.typeID" edit="#rc.edit#">
 				
-				<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" fieldName="newOrderPayment.orderPaymentType.typeID" edit="#rc.edit#">
+				<div class="control-group">
+					<label class="control-label">#$.slatwall.rbKey('define.amount')#</label>
+					<div class="controls">
+						<span class="dynamic-charge">
+							#$.slatwall.rbKey('admin.entity.detailOrderPayment.dynamicCharge')#: #rc.order.getFormattedValue('total')#<br />
+							<a href="##" id='changeAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
+						</span>
+						<span class="dynamic-credit">
+						</span>
+					</div>
+					<script type="text/javascript">
+						(function($){
+							$(document).ready(function(e){
+								
+								// Bind to split button
+								$('body').on('click', '##changeAmount', function(e){
+									e.preventDefault();
+									$(this).closest('div').html('<input type="text" name="newOrderPayment.amount" value="#rc.order.getTotal()#" class="span3 required numeric" />');
+								});
+								
+							});
+						})( jQuery );
+					</script>
+				</div>
 				
 				<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
 				
@@ -92,3 +93,38 @@ Notes:
 		
 	</cf_HibachiEntityProcessForm>
 </cfoutput>
+
+
+<!---
+<!--- Display the amount that is going to be used, but allow for override --->				
+<cfif not arrayLen(rc.order.getOrderPayments()) || (arrayLen(rc.order.getOrderPayments()) eq 1 && rc.order.getOrderPayments()[1].hasErrors())>
+	<div class="control-group">
+		<label class="control-label">#$.slatwall.rbKey('define.amount')#</label>
+		<div class="controls">
+			#$.slatwall.rbKey('admin.entity.detailOrderPayment.entireOrderTotal')#: <span <cfif rc.order.getTotal() lt 0>class="negative"</cfif>>#rc.order.getFormattedValue('total')#</span><br />
+			<a href="##" id='changeAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
+		</div>
+		<script type="text/javascript">
+			(function($){
+				$(document).ready(function(e){
+					
+					// Bind to split button
+					$('body').on('click', '##changeAmount', function(e){
+						e.preventDefault();
+						$(this).closest('div').html('<input type="text" name="newOrderPayment.amount" value="#rc.order.getTotal()#" class="span3 required numeric" />');
+					});
+					
+				});
+			})( jQuery );
+		</script>
+	</div>
+	
+<!--- Only Show Payment Amount if this is the second account payment --->
+<cfelse>
+	<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" fieldName="newOrderPayment.amount" edit="#rc.edit#">
+</cfif>
+
+<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
+	
+</cf_HibachiDisplayToggle>
+--->

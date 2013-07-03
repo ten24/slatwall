@@ -433,10 +433,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderDAO().getMaxOrderNumber();
 	}
 	
-	public boolean function getPeerOrderPaymentNullAmountExistsFlag(required string orderID, required string orderPaymentID) {
-		return getOrderDAO().getPeerOrderPaymentNullAmountExistsFlag(argumentcollection=arguments);
-	}
-	
 	public numeric function getOrderPaymentNonNullAmountTotal(required string orderID) {
 		return getOrderDAO().getOrderPaymentNonNullAmountTotal(argumentcollection=arguments);
 	}
@@ -655,10 +651,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// If saveAccountPaymentMethodFlag is set to true, then we need to save this object
 			if(arguments.processObject.getSaveAccountPaymentMethodFlag()) {
+				
+				// Create a new Account Payment Method
 				var newAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
-				newAccountPaymentMethod.copyFromOrderPayment( newOrderPayment );
+				
+				// Attach to Account
 				newAccountPaymentMethod.setAccount( arguments.order.getAccount() );
 				
+				// Setup name if exists
+				if(!isNull(arguments.processObject.getSaveAccountPaymentMethodName())) {
+					newAccountPaymentMethod.setAccountPaymentMethodName( arguments.processObject.getSaveAccountPaymentMethodName() );	
+				}
+				
+				// Copy over details
+				newAccountPaymentMethod.copyFromOrderPayment( newOrderPayment );
+				
+				// Save it
 				newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod );
 			}
 
@@ -774,6 +782,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !hasPaymentTransaction ) {
 			this.deleteOrder( arguments.order );
 		}
+		
+		return this.newOrder();
 	}
 	
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
@@ -1280,111 +1290,45 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 		
 	// Process: Order Return
-	// (needs refactor)
-	public any function processOrderReturn_receiveReturn(required any orderReturn, struct data={}, string processContext="process") {
+	public any function processOrderReturn_receive(required any orderReturn, required any processObject) {
+		
+		var stockReceiver = getStockService().newStockReceiver();
+		stockReceiver.setReceiverType( "order" );
+		stockReceiver.setOrder( arguments.orderReturn.getOrder() );
+		
+		if(!isNull(processObject.getPackingSlipNumber())) {
+			stockReceiver.setPackingSlipNumber( processObject.getPackingSlipNumber() );
+		}
+		if(!isNull(processObject.getBoxCount())) {
+			stockReceiver.setBoxCount( processObject.getBoxCount() );
+		}
+		
+		var location = getLocationService().getLocation( arguments.processObject.getLocationID() );
+		
+		for(var thisRecord in arguments.data.orderReturnItems) {
 			
-		var hasAtLeastOneItemToReturn = false;
-		for(var i=1; i<=arrayLen(arguments.data.records); i++) {
-			if(isNumeric(arguments.data.records[i].receiveQuantity) && arguments.data.records[i].receiveQuantity gt 0) {
-				var hasAtLeastOneItemToReturn = true;		
+			if(val(thisRecord.quantity) gt 0) {
+				
+				var orderReturnItem = this.getOrderItem( thisRecord.orderReturnItem.orderItemID );
+				
+				if(!isNull(orderReturnItem)) {
+					var stock = getStockService().getStockBySkuAndLocation( orderReturnItem.getSku(), location );
+				
+					var stockReceiverItem = getStockService().newStockReceiverItem();
+				
+					stockreceiverItem.setQuantity( thisRecord.quantity );
+					stockreceiverItem.setStock( stock );
+					stockreceiverItem.setOrderItem( orderReturnItem );
+					stockreceiverItem.setStockReceiver( stockReceiver );
+				}
+				
 			}
 		}
 		
-		if(!hasAtLeastOneItemToReturn) {
-			arguments.orderReturn.addError('processing', 'You need to specify at least 1 item to be returned');
-		} else {
-			// Set this up to calculate how much credit to process if that flag is set later
-			var totalAmountToCredit = 0;
-			
-			// If this is the first Stock Receiver, then we should add the fulfillmentRefund to the total received amount
-			if(!arrayLen(arguments.orderReturn.getOrder().getStockReceivers()) && !isNull(arguments.orderReturn.getFulfillmentRefundAmount()) && arguments.orderReturn.getFulfillmentRefundAmount() > 0) {
-				totalAmountReceived = arguments.orderReturn.getFulfillmentRefundAmount();
-			}
-			
-			// Setup the received location
-			var receivedLocation = getLocationService().getLocation(arguments.data.locationID);
-			
-			// Create a new Stock Receiver
-			var newStockReceiver = getStockService().newStockReceiver();
-			newStockReceiver.setReceiverType( 'order' );
-			newStockReceiver.setOrder( arguments.orderReturn.getOrder() );
-			newStockReceiver.setBoxCount( arguments.data.boxcount );
-			newStockReceiver.setPackingSlipNumber( arguments.data.packingSlipNumber );
-			
-			for(var i=1; i<=arrayLen(arguments.data.records); i++) {
-				if(isNumeric(arguments.data.records[i].receiveQuantity) && arguments.data.records[i].receiveQuantity gt 0) {
-					
-					var orderItemReceived = this.getOrderItem( arguments.data.records[i].orderItemID );
-					var stockReceived = getStockService().getStockBySkuAndLocation(orderItemReceived.getSku(), receivedLocation);
-					
-					totalAmountToCredit = precisionEvaluate(totalAmountToCredit + (orderItemReceived.getExtendedPriceAfterDiscount() + orderItemReceived.getTaxAmount()) * ( arguments.data.records[i].receiveQuantity / orderItemReceived.getQuantity() ) );
-					
-					var newStockReceiverItem = getStockService().newStockReceiverItem();
-					newStockReceiverItem.setStockReceiver( newStockReceiver );
-					newStockReceiverItem.setOrderItem( orderItemReceived );
-					newStockReceiverItem.setStock( stockReceived );
-					newStockReceiverItem.setQuantity( arguments.data.records[i].receiveQuantity );
-					newStockReceiverItem.setCost( 0 );
-					
-					// Cancel a subscription if returned item has a subscriptionUsage
-					if(!isNull(orderItemReceived.getReferencedOrderItem())) {
-						var subscriptionOrderItem = getSubscriptionService().getSubscriptionOrderItem({orderItem=orderItemReceived.getReferencedOrderItem()});
-						if(!isNull(subscriptionOrderItem)) {
-							getSubscriptionService().processSubscriptionUsage(subscriptionUsage=subscriptionOrderItem.getSubscriptionUsage(), processContext="cancel");		
-						}
-					}
-					
-					// TODO: Cancel Content Access
-					
-				}
-			}
-			
-			getStockService().saveStockReceiver( newStockReceiver );
-			
-			// Update the orderStatus
-			this.processOrder(arguments.orderDelivery.getOrder(), {updateItems=true}, 'updateStatus');
+		getStockService().saveStockReceiver( stockReceiver );
 		
-			// Look to credit any order payments
-			if(arguments.data.autoProcessReturnPaymentFlag) {
-				
-				var totalAmountCredited = 0;
-				
-				for(var p=1; p<=arrayLen(arguments.orderReturn.getOrder().getOrderPayments()); p++) {
-					
-					var orderPayment = arguments.orderReturn.getOrder().getOrderPayments()[p];
-					
-					// Make sure that this is a credit card, and that it is a charge type of payment
-					if(orderPayment.getPaymentMethodType() == "creditCard" && orderPayment.getOrderPaymentType().getSystemCode() == "optCredit") {
-						
-						// Check to make sure this payment hasn't been fully received
-						if(orderPayment.getAmount() > orderPayment.getAmountCredited()) {
-							
-							var potentialCredit = precisionEvaluate(orderPayment.getAmount() - orderPayment.getAmountCredited());
-							if(potentialCredit > precisionEvaluate(totalAmountToCredit - totalAmountCredited)) {
-								var thisAmountToCredit = precisionEvaluate(totalAmountToCredit - totalAmountCredited);
-							} else {
-								var thisAmountToCredit = potentialCredit;
-							}
-							
-							orderPayment = processOrderPayment(orderPayment, {amount=thisAmountToCredit, providerTransactionID=orderPayment.getMostRecentChargeProviderTransactionID()}, "credit");
-							if(!orderPayment.hasErrors()) {
-								totalAmountCredited = precisionEvaluate(totalAmountCredited + thisAmountToCredit);
-							} else {
-								structDelete(orderPayment.getErrors(), "processing");
-							}
-							
-							// Stop trying to charge payments, if we have charged everything we need to
-							if(totalAmountToCredit == totalAmountCredited) {
-								break;
-							}
-						}
-					}
-				}
-			}
-			
-		}	
 		return arguments.orderReturn;
-	}	
+	}
 	
 	// Process: Order Payment
 	public any function processOrderPayment_createTransaction(required any orderPayment, required any processObject) {

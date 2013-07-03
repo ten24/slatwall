@@ -84,7 +84,7 @@ Notes:
 	
 	<cf_HibachiTabGroup object="#rc.account#">
 		<cf_HibachiTab view="admin:entity/accounttabs/contactdetails" />
-		<cf_HibachiTab property="accountPaymentMethods" />
+		<cf_HibachiTab property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
 		<cf_HibachiTab property="priceGroups" />
 		<cf_HibachiTab property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
 		<cf_HibachiTab view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />

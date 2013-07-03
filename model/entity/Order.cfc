@@ -94,20 +94,23 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
 	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
-	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
-	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
-	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
-	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
-	property name="paymentMethodOptionsSmartList" persistent="false";
+	property name="orderPaymentAmountNeeded" persistent="false";
+	property name="orderPaymentChargeAmountNeeded" persistent="false";
+	property name="orderPaymentCreditAmountNeeded" persistent="false";
 	property name="orderPaymentRefundOptions" persistent="false";
 	property name="orderRequirementsList" persistent="false";
 	property name="orderTypeOptions" persistent="false";
+	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
+	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
+	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="paymentMethodOptionsSmartList" persistent="false";
 	property name="promotionCodeList" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
 	property name="returnItemSmartList" persistent="false";
+	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
 	property name="saleItemSmartList" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
@@ -352,6 +355,50 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	
 	public any function getOrderRequirementsList() {
 		return getService("orderService").getOrderRequirementsList(order=this);
+	}
+	
+	public numeric function getOrderPaymentAmountNeeded() {
+		return precisionEvaluate( getTotal() - getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID()));
+	}
+	
+	public numeric function getOrderPaymentChargeAmountNeeded() {
+		var orderPaymentAmountNeeded = getOrderPaymentAmountNeeded();
+		if(orderPaymentAmountNeeded lt 0) {
+			return 0;
+		}
+		return orderPaymentAmountNeeded;
+	}
+	
+	public numeric function getOrderPaymentCreditAmountNeeded() {
+		var orderPaymentAmountNeeded = getOrderPaymentAmountNeeded();
+		if(orderPaymentAmountNeeded gt 0) {
+			return 0;
+		}
+		return orderPaymentAmountNeeded * -1;
+	}
+	
+	public any function getDynamicChargeOrderPayment() {
+		var returnOrderPayment = javaCast("null", "");
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge' && orderPayment.getDynamicAmountFlag()) {
+				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
+					returnOrderPayment = orderPayment;
+				}
+			}
+		}
+		return returnOrderPayment;
+	}
+	
+	public any function getDynamicCreditOrderPayment() {
+		var returnOrderPayment = javaCast("null", "");
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getOrderPaymentType().getSystemCode() eq 'optCredit' && orderPayment.getDynamicAmountFlag()) {
+				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
+					returnOrderPayment = orderPayment;
+				}
+			}
+		}
+		return returnOrderPayment;
 	}
 	
 	public numeric function getPaymentAmountTotal() {

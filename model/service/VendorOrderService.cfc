@@ -138,7 +138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var vendorOrderItem = this.getVendorOrderItem( thisRecord.vendorOrderItem.vendorOrderItemID );
 				var stock = getStockService().getStockBySkuAndLocation( vendorOrderItem.getStock().getSku(), location );
 				
-				var stockreceiverItem = getStockService().newStockReceiverItem();
+				var stockReceiverItem = getStockService().newStockReceiverItem();
 			
 				stockreceiverItem.setQuantity( thisRecord.quantity );
 				stockreceiverItem.setStock( stock );
@@ -147,6 +147,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 			}
 		}
+		
+		getStockService().saveStockReceiver( stockReceiver );
 		
 		return arguments.vendorOrder;
 	}

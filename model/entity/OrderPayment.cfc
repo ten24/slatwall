@@ -101,7 +101,6 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	property name="paymentMethodOptions" persistent="false";
 	property name="orderStatusCode" persistent="false";
 	property name="securityCode" persistent="false" hb_populateEnabled="public";
-	property name="peerOrderPaymentNullAmountExistsFlag" persistent="false";
 	property name="orderAmountNeeded" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
@@ -198,7 +197,7 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public boolean function getDynamicAmountFlag() {
-		if(isNull(variables.amount) && !getPeerOrderPaymentNullAmountExistsFlag()) {
+		if(isNull(variables.amount)) {
 			return true;
 		}
 		return false;
@@ -344,20 +343,6 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 			variables.paymentMethodOptions = sl.getRecords();
 		}
 		return variables.paymentMethodOptions;
-	}
-	
-	public any function getPeerOrderPaymentNullAmountExistsFlag() {
-		if(!structKeyExists(variables, "peerOrderPaymentNullAmountExistsFlag")) {
-			variables.peerOrderPaymentNullAmountExistsFlag = false;
-			if(!isNull(getOrder())) {
-				if(!isNull(getOrderPaymentID())) {
-					variables.peerOrderPaymentNullAmountExistsFlag = getService("orderService").getPeerOrderPaymentNullAmountExistsFlag(orderID=getOrder().getOrderID(), orderPaymentID=getOrderPaymentID());	
-				} else {
-					variables.peerOrderPaymentNullAmountExistsFlag = getService("orderService").getPeerOrderPaymentNullAmountExistsFlag(orderID=getOrder().getOrderID());
-				}	
-			}
-		}
-		return variables.peerOrderPaymentNullAmountExistsFlag;
 	}
 	
 	// Important this can be a negative number
@@ -524,20 +509,14 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	public any function getAmount() {
 		// If an amount has not been explicity set, then we can return another value if needed
 		if( !structKeyExists(variables, "amount") ) {
-			
-			// If there is an order, it has not been placed and there is only 1 order payment with no explicit value set... then we can return the order total.
-			if(!isNull(getOrder()) && listFindNoCase("ostNotPlaced,ostNew,ostOnHold,ostProcessing", getOrder().getOrderStatusType().getSystemCode()) && !getPeerOrderPaymentNullAmountExistsFlag()) {
-				var orderAmountNeeded = getOrderAmountNeeded();
-				if(orderAmountNeeded gt 0 && getOrderPaymentType().getSystemCode() eq "optCharge") {
-					return orderAmountNeeded;
-				} else if (orderAmountNeeded gt 0 && getOrderPaymentType().getSystemCode() eq "optCredit") {
-					return orderAmountNeeded * -1;
-				}
+			if(!isNull(getOrder()) && getOrderPaymentType().getSystemCode() eq 'optCharge' && getOrder().getDynamicChargeOrderPayment().getOrderPaymentID() eq getOrderPaymentID()) {
+				return getOrder().getOrderPaymentChargeAmountNeeded();
+			} else if (!isNull(getOrder()) && getOrderPaymentType().getSystemCode() eq 'optCredit' && getOrder().getDynamicCreditOrderPayment().getOrderPaymentID() eq getOrderPaymentID()) {
+				return getOrder().getOrderPaymentCreditAmountNeeded(); 
 			}
 			
-			// If for some reson the above logic did not fire then just return null
+			// Return null to describe that it hasn't been defined yet, but it will need to.
 			return ;
-			
 		}
 		
 		return variables.amount;

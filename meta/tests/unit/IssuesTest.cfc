@@ -167,5 +167,13 @@ component extends="SlatwallUnitTestBase" {
 		assert(account2HasErrors);
 	}
 	
+	public void function issue_1604() {
+		
+		var order = request.slatwallScope.getCart();
+		
+		order = request.slatwallScope.getService('orderService').processOrder(order, {}, 'clear');
+			
+		assert(!isNull(order));
+	}
 }
 

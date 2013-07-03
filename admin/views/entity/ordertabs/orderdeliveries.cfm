@@ -41,8 +41,7 @@ Notes:
 <cfoutput>
 	
 	<cf_HibachiListingDisplay smartList="#rc.order.getOrderDeliveriesSmartList()#"
-			recordDetailAction="admin:entity.detailorderdelivery"
-			recordDetailModal="true">
+							  recordDetailAction="admin:entity.detailorderdelivery">
 			
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
 		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />

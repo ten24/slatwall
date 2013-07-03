@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod" table="SlatwallFulfillmentMethod" persistent=true output=false accessors=true extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
+component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod" table="SlatwallFulfillmentMethod" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="fulfillmentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
