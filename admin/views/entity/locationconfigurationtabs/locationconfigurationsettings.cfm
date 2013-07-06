@@ -1,4 +1,4 @@
-﻿<!---
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) 2011 ten24, LLC
@@ -36,40 +36,12 @@
 Notes:
 
 --->
-<cfparam name="rc.locationConfiguration" type="any">
-<cfparam name="rc.location" type="any" default="#rc.locationConfiguration.getLocation()#">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.locationConfiguration" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.locationConfiguration#" edit="#rc.edit#"
-								saveActionQueryString="locationID=#rc.location.getLocationID()#">
-								
-		<cf_HibachiEntityActionBar type="detail" object="#rc.locationConfiguration#"
-								   backAction="admin:entity.detaillocation"
-								   backQueryString="locationID=#rc.location.getLocationID()#"
-								   cancelAction="admin:entity.detaillocation"
-								   cancelQueryString="locationID=#rc.location.getLocationID()#"
-								   deleteQueryString="sRedirectAction=entity.detaillocation&locationID=#rc.location.getLocationID()#">
-								      
-		</cf_HibachiEntityActionBar>
-		
-		<cfif rc.edit>
-			<!--- Hidden field to attach this to the attributeSet --->
-			<input type="hidden" name="location.locationID" value="#rc.location.getLocationID()#" />
-		</cfif>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="locationConfigurationName" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		
-		<cf_HibachiTabGroup object="#rc.locationConfiguration#">
-			<cf_HibachiTab view="admin:entity/locationconfigurationtabs/locationconfigurationsettings" />
-		</cf_HibachiTabGroup>
-		
-
-	</cf_HibachiEntityDetailForm>
+	<cf_SlatwallSettingTable>
+		<cf_SlatwallSetting settingName="locationConfigurationCapacity" settingObject="#rc.locationConfiguration#" />
+		<cf_SlatwallSetting settingName="locationConfigurationAdditionalPreReservationTime" settingObject="#rc.locationConfiguration#" />
+		<cf_SlatwallSetting settingName="locationConfigurationAdditionalPostReservationTime" settingObject="#rc.locationConfiguration#" />
+	</cf_SlatwallSettingTable>
 </cfoutput>
