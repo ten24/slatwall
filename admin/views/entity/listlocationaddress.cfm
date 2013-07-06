@@ -1,4 +1,4 @@
-﻿<!---
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) 2011 ten24, LLC
@@ -36,29 +36,14 @@
 Notes:
 
 --->
-<cfparam name="rc.location" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.locationAddressSmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.location#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.location#">
-			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" modal="true" />
-			<cf_HibachiActionCaller action="admin:entity.createlocationconfiguration" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" />
-		</cf_HibachiEntityActionBar>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.location#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.location#" property="locationName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.location#">
-			<cf_HibachiTab property="locationAddresses" />
-			<cf_HibachiTab property="locationConfigurations" />
-			<cf_HibachiTab view="admin:entity/locationtabs/locationconfigurationsettings" />
-		</cf_HibachiTabGroup>
-
-	</cf_HibachiEntityDetailForm>
+	<cf_HibachiEntityActionBar type="listing" object="#rc.locationAddressSmartList#" createModal="true" />
+	
+	<!---<cf_HibachiListingDisplay smartList="#rc.locationAddressSmartList#"
+							  recordDetailAction="admin:entity.detaillocationaddress"
+							  recordEditAction="admin:entity.editlocationaddress">
+							    
+	</cf_HibachiListingDisplay>--->
 </cfoutput>
