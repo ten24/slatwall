@@ -117,18 +117,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// set account
 		subscriptionUsage.setAccount(arguments.orderItem.getOrder().getAccount());
 		
-		// set payment method is there was only 1 payment method for the order
-		// if there are multiple orderPayment, logic needs to get added for user to defined the paymentMethod for renewals
-		if(arrayLen(arguments.orderItem.getOrder().getOrderPayments()) == 1) {
-			subscriptionUsage.setAccountPaymentMethod(arguments.orderItem.getOrder().getOrderPayments()[1].getAccountPaymentMethod());
+		// Loop over the orderPayments to see if we can add an accountPaymentMethod
+		for(var orderPayment in arguments.orderItem.getOrder().getOrderPayments()) {
+			if(!isNull(orderPayment.getAccountPaymentMethod())) {
+				subscriptionUsage.setAccountPaymentMethod( orderPayment.getAccountPaymentMethod() );	
+			}
 		}
 		
-		// set next bill date
-		subscriptionUsage.setNextBillDate(arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getEndDate());
-		subscriptionUsage.setExpirationDate(subscriptionUsage.getNextBillDate());
+		// Set the Expiration & Next Bill Date
+		subscriptionUsage.setExpirationDate( arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getEndDate() );
+		subscriptionUsage.setNextBillDate( subscriptionUsage.getExpirationDate() );
 		
-		// set next reminder date to now, it will get updated when the reminder gets sent
-		subscriptionUsage.setNextReminderEmailDate(now());
+		// Setup the next Reminder email 
+		if( len(subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
+			// Find the first reminder day
+			var firstReminder = listFirst(subscriptionUsage.setting('subscriptionUsageRenewalReminderDays'));
+			// Make sure it is numeric
+			if(isNumeric(firstReminder)) {
+				// Setup teh next reminder emailDate
+				subscriptionUsage.setNextReminderEmailDate( dateAdd("d", firstReminder, subscriptionUsage.getExpirationDate()) );	
+			}
+		}
 		
 		// add active status to subscription usage
 		setSubscriptionUsageStatus(subscriptionUsage, 'sstActive');
@@ -315,6 +324,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSubscriptionDAO().getUniquePreviousSubscriptionOrderPayments( argumentCollection=arguments );
 	}
 	
+	public any function getSubscriptionUsageForRenewal() {
+		return getSubscriptionDAO().getSubscriptionUsageForRenewal();
+	}
+	
+	public any function getSubscriptionUsageForRenewalReminder() {
+		return getSubscriptionDAO().getSubscriptionUsageForRenewalReminder();
+	}
+	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
@@ -397,6 +414,46 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// TODO: Add Retry Logic
 		}
 
+		return arguments.subscriptionUsage;
+	}
+	
+	public any function processSubscriptionUsage_sendRenewalReminder(required any subscriptionUsage) {
+		
+		if(len(subscriptionUsage.setting('subscriptionUsageRenewalReminderEmailTemplate'))) {
+			
+			var email = getEmailService().newEmail();
+			var emailData = {
+				subscriptionUsageID = subscriptionUsage.getSubscriptionUsageID(),
+				emailTemplateID = subscriptionUsage.setting('subscriptionUsageRenewalReminderEmailTemplate')
+			};
+			
+			email = getEmailService().processEmail(email, emailData, 'createFromTemplate');
+			email = getEmailService().processEmail(email, {}, 'addToQueue');
+			
+			// Setup the next Reminder email 
+			if( len(arguments.subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
+				
+				// Loop over each of the days looking for the next one
+				for(var nextReminderDay in listToArray(subscriptionUsage.setting('subscriptionUsageRenewalReminderDays'))) {
+					
+					// Setup what the date would be if we used this option
+					var nextReminderDate = dateAdd("d", nextReminderDay, subscriptionUsage.getExpirationDate());
+					
+					// If this option is > than now, then we can set the date and break out of loop
+					if(nextReminderDate > now()) {
+						// Set the next date
+						subscriptionUsage.setNextReminderEmailDate( nextReminderDate );	
+						
+						break;
+					}
+				}
+			}
+			
+			
+		} else {
+			throw("No reminder email template found.  Please update the setting 'Subscription Renewal Reminder Email Template' either globally, for the subscription term, or subscription usage.");
+		}
+		
 		return arguments.subscriptionUsage;
 	}
 	

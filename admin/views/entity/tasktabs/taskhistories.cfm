@@ -44,10 +44,10 @@ Notes:
 
 <cfoutput>
 	<cf_HibachiListingDisplay smartlist="#rc.task.getTaskHistoriesSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="createdDateTime"/>
-		<cf_HibachiListingColumn propertyidentifier="successFlag" />
-		<cf_HibachiListingColumn propertyidentifier="response" />
+		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="response" />
 		<cf_HibachiListingColumn propertyidentifier="startTime" />
 		<cf_HibachiListingColumn propertyidentifier="endTime" />
+		<cf_HibachiListingColumn propertyidentifier="duration" />
+		<cf_HibachiListingColumn propertyidentifier="successFlag" />
 	</cf_HibachiListingDisplay>
 </cfoutput>

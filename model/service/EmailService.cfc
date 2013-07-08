@@ -164,7 +164,7 @@ Notes:
 						}
 						
 						if(len(templateFileResponse) && !structKeyExists(local.emailData, "bodyHTML")) {
-							local.emailData.bodyHTML = templateFileRespone;
+							local.emailData.bodyHTML = templateFileResponse;
 						}
 						
 						arguments.email.populate( local.emailData );

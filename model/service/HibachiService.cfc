@@ -40,15 +40,18 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiService" {
 		arguments.entity = super.save(argumentcollection=arguments);
 		
 		// If an entity was saved and the activeFlag is now 0 it needs to be removed from all setting values
-		if(!arguments.entity.hasErrors() && arguments.entity.hasProperty('activeFlag') && !arguments.entity.getActiveFlag()) {
+		if(!arguments.entity.hasErrors() && arguments.entity.hasProperty('activeFlag')) {
 			
-			var settingsRemoved = getService("settingService").updateAllSettingValuesToRemoveSpecificID( arguments.entity.getPrimaryIDValue() );
+			var settingsRemoved = 0;
+			if(!arguments.entity.getActiveFlag()) {
+				var settingsRemoved = getService("settingService").updateAllSettingValuesToRemoveSpecificID( arguments.entity.getPrimaryIDValue() );	
+			}
 			
-			if(settingsRemoved gt 0) {
+			if(settingsRemoved gt 0 || listFindNoCase("Currency,FulfillmentMethod,OrderOrigin,PaymentTerm,PaymentMethod", arguments.entity.getClassName())) {
 				getService("settingService").clearAllSettingsCache();
 			}
 		}
-		
+	
 		return arguments.entity;
 	}
 

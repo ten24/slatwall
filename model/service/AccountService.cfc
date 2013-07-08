@@ -534,8 +534,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPhoneNumber(javaCast("null", ""));
 			arguments.account.setPrimaryAddress(javaCast("null", ""));
 			
-			getAccountDAO().removeAccountFromAllSessions( accountID );
-			getAccountDAO().removeAccountFromAuditProperties( accountID );
+			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
+			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 			
 			return delete( arguments.account );
 		}

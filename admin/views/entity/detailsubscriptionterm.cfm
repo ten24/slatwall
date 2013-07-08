@@ -54,12 +54,11 @@ Notes:
 				<!---<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="allowProrateFlag" edit="#rc.edit#">--->
 				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="autoRenewFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="autoPayFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="autoRetryPaymentDays" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="renewalReminderDays" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.subscriptionTerm#">
+			<cf_HibachiTab view="admin:entity/subscriptiontermtabs/subscriptionusagesettings" />
 		</cf_HibachiTabGroup>
 
 	</cf_HibachiEntityDetailForm>

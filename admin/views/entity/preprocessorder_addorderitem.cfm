@@ -57,7 +57,7 @@ Notes:
 					<!--- Sku Properties --->
 					<cf_HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuCode" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.processObject.getSku().getProduct()#" property="productName" edit="false">
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="optionsDisplay" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
 					
 					<!--- Order Item Details --->
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">

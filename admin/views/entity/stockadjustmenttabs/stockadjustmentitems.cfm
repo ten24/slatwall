@@ -49,7 +49,7 @@ Notes:
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="fromstock.sku.skucode" />
 		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.product.brand.brandName" />
 		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.optionsDisplay" sort="false" />
+		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.skuDefinition" sort="false" />
 		
 		<cf_HibachiListingColumn propertyIdentifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
@@ -59,7 +59,7 @@ Notes:
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="tostock.sku.skucode" />
 		<cf_HibachiListingColumn propertyIdentifier="tostock.sku.product.brand.brandName" />
 		<cf_HibachiListingColumn propertyIdentifier="tostock.sku.product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="tostock.sku.optionsDisplay" sort="false" />
+		<cf_HibachiListingColumn propertyIdentifier="tostock.sku.skuDefinition" sort="false" />
 		<cf_HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
 	</cfif>
 	

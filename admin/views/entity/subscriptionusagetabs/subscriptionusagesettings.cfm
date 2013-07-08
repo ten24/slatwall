@@ -20,7 +20,7 @@
     making a combined work based on this library.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
+ 
     As a special exception, the copyright holders of this library give you
     permission to link this library with independent modules to produce an
     executable, regardless of the license terms of these independent
@@ -36,15 +36,12 @@
 Notes:
 
 --->
-<cfparam name="rc.stockReceiver" type="any" />
-<cfparam name="rc.edit" type="boolean" /> 
+<cfparam name="rc.subscriptionUsage" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.stockReceiver.getStockReceiverItemsSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuDefinition" sort="false" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.location.locationName" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-	</cf_HibachiListingDisplay>
+	<cf_SlatwallSettingTable>
+		<cf_SlatwallSetting settingName="subscriptionUsageAutoRetryPaymentDays" settingObject="#rc.subscriptionUsage#" />
+		<cf_SlatwallSetting settingName="subscriptionUsageRenewalReminderDays" settingObject="#rc.subscriptionUsage#" />
+		<cf_SlatwallSetting settingName="subscriptionUsageRenewalReminderEmailTemplate" settingObject="#rc.subscriptionUsage#" />
+	</cf_SlatwallSettingTable>
 </cfoutput>

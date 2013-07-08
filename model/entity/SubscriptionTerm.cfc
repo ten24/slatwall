@@ -44,8 +44,6 @@ component entityname="SlatwallSubscriptionTerm" table="SlatwallSubscriptionTerm"
 	property name="allowProrateFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="autoRenewFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="autoPayFlag" ormtype="boolean" hb_formatType="yesno";
-	property name="autoRetryPaymentDays" ormtype="string";
-	property name="renewalReminderDays" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="initialTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="initialTermID";

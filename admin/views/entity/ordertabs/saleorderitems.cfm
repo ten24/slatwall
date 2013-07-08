@@ -46,8 +46,8 @@ Notes:
 							    
 		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.calculatedTitle" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.optionsDisplay" sort="false" />
-		<cf_HibachiListingColumn propertyIdentifier="orderItemStatusType.type" filter="true" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
+		<cf_HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
 		<cf_HibachiListingColumn propertyIdentifier="quantity" />
 		<cf_HibachiListingColumn propertyIdentifier="price" />
 		<cf_HibachiListingColumn propertyIdentifier="discountAmount" />
@@ -56,8 +56,9 @@ Notes:
 	</cf_HibachiListingDisplay>
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->
-		
 	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
+		<cfset rc.addSkuAddStockType = "oitReturn" />
+		
 		<cf_HibachiTabGroup tabLocation="top">
 			<cf_HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
 			<cf_HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />

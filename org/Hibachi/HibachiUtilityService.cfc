@@ -5,10 +5,14 @@
 	<cfscript>
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
-			if(listFindNoCase("yesno,truefalse,currency,datetime,date,time,weight,pixels,percentage,url", arguments.formatType)) {
+			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});	
 			}
 			return arguments.value;
+		}
+		
+		public any function formatValue_second( required string value, struct formatDetails={} ) {
+			return arguments.value & ' ' & rbKey('define.sec');
 		}
 		
 		public any function formatValue_yesno( required string value, struct formatDetails={} ) {

@@ -38,46 +38,9 @@ Notes:
 */
 component extends="HibachiService" output="false" accessors="true"{
 
-	property name="taskDAO" type="any";
+	property name="emailService" type="any";
+	property name="subscriptionService" type="any";
 	
-	
-	  
-	// ================== Start: Task Methods ============================
-	
-	// Subscription - Renew
-	public any function renewSubscriptionUsage() {
-		var response = '';
-		
-		//   Do Logic
-		var subscriptionUsages = getService("subscriptionService").getTaskDAO().getSubscriptionUsageForRenewal();
-		
-		for(var subscriptionUsage in subscriptionUsages) {
-			getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, {}, 'autoRenew');
-		}
-		
-		return response;
-	}
-	
-	// Subscription - Renewal Reminder
-	public any function subscriptionUsageRenewalReminder() {
-		var response = '';
-		// Do Logic
-		var subscriptionUsages = getService("subscriptionService").getTaskDAO().getSubscriptionUsageForRenewalReminder();
-		for(var subscriptionUsage in subscriptionUsages) {
-			if(!isNull(subscriptionUsage.getAutoPayFlag()) && subscriptionUsage.getAutoPayFlag()) {
-				getService("subscriptionService").processSubscriptionUsageRenewalReminder(subscriptionUsage, {eventName = 'subscriptionUsageAutoRenewalReminder'}, 'auto');
-			} else {
-				getService("subscriptionService").processSubscriptionUsageRenewalReminder(subscriptionUsage, {eventName = 'subscriptionUsageManualRenewalReminder'}, 'auto');
-			}
-		}
-		
-		return response;
-	}
-	
-	// Calculated Update
-	
-	// Clear Old Sessions & Carts
-
 	// ===================== START: Logical Methods ===========================
 	
 	public void function updateEntityCalculatedProperties(required any entityName, struct smartListData={}) {
@@ -207,6 +170,9 @@ component extends="HibachiService" output="false" accessors="true"{
 			// Call save on the task history
 			taskHistory = this.saveTaskHistory( taskHistory );
 			
+			// Send out any emails in the queue
+			getEmailService().sendEmailQueue();
+			
 			// Flush the DB again to persist all updates
 			getHibachiDAO().flushORMSession();
 		}
@@ -215,28 +181,24 @@ component extends="HibachiService" output="false" accessors="true"{
 	}
 	
 	public any function processTask_customURL(required any task, required any processObject) {
-		
+		return arguments.task;
 	}
 	
 	public any function processTask_subscriptionUsageRenew(required any task) {
-		var subscriptionUsages = getService("subscriptionService").getTaskDAO().getSubscriptionUsageForRenewal();
+		var subscriptionUsages = getSubscriptionService().getSubscriptionUsageForRenewal();
 		
 		for(var subscriptionUsage in subscriptionUsages) {
-			subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, {}, 'autoRenew');
+			subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, {}, 'renew');
 		}
 		
 		return arguments.task;
 	}
 	
-	public any function processTask_subscriptionUsageSendRenewalReminder(required any task, required any processObject) {
-		var subscriptionUsages = getTaskDAO().getSubscriptionUsageForRenewalReminder();
+	public any function processTask_subscriptionUsageRenewalReminder(required any task) {
+		var subscriptionUsages = getSubscriptionService().getSubscriptionUsageForRenewalReminder();
 		
 		for(var subscriptionUsage in subscriptionUsages) {
-			if(!isNull(subscriptionUsage.getAutoPayFlag()) && subscriptionUsage.getAutoPayFlag()) {
-				getService("subscriptionService").processSubscriptionUsageRenewalReminder(subscriptionUsage, {eventName = 'subscriptionUsageAutoRenewalReminder'}, 'auto');
-			} else {
-				getService("subscriptionService").processSubscriptionUsageRenewalReminder(subscriptionUsage, {eventName = 'subscriptionUsageManualRenewalReminder'}, 'auto');
-			}
+			subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, {}, 'sendRenewalReminder');
 		}
 		
 		return arguments.task;

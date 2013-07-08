@@ -40,6 +40,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Logical Methods ===========================
 	
+	public string function getAllActiveFulfillmentMethodIDList() {
+		var returnList = "";
+		var apmSL = this.getFulfillmentMethodSmartList();
+		apmSL.addFilter('activeFlag', 1);
+		apmSL.addSelect('fulfillmentMethodID', 'fulfillmentMethodID');
+		var records = apmSL.getRecords();
+		for(var i=1; i<=arrayLen(records); i++) {
+			returnList = listAppend(returnList, records[i]['fulfillmentMethodID']);
+		}
+		return returnList;
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================

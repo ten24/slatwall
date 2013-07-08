@@ -63,27 +63,85 @@ Notes:
 				<div class="control-group">
 					<label class="control-label">#$.slatwall.rbKey('define.amount')#</label>
 					<div class="controls">
-						<span class="dynamic-charge">
-							#$.slatwall.rbKey('admin.entity.detailOrderPayment.dynamicCharge')#: #rc.order.getFormattedValue('total')#<br />
-							<a href="##" id='changeAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
-						</span>
-						<span class="dynamic-credit">
-						</span>
+						<div id="dynamic-charge-amount" class="hide">
+							#$.slatwall.rbKey('admin.entity.detailOrderPayment.dynamicCharge')#: #rc.order.getFormattedValue('orderPaymentChargeAmountNeeded')#<br />
+							<a href="##" id='changeChargeAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
+						</div>
+						<div id="dynamic-credit-amount" class="hide">
+							#$.slatwall.rbKey('admin.entity.detailOrderPayment.dynamicCredit')#: <span class="negative">( #rc.order.getFormattedValue('orderPaymentCreditAmountNeeded')# )<span></span><br />
+							<a href="##" id='changeCreditAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
+						</div>
+						<div id="charge-amount" class="hide">
+							<input type="text" name="newOrderPayment.amountplaceholder" value="#rc.order.getOrderPaymentChargeAmountNeeded()#" class="required numeric" />
+						</div>
+						<div id="credit-amount" class="hide">
+							<input type="text" name="newOrderPayment.amountplaceholder" value="#rc.order.getOrderPaymentCreditAmountNeeded()#" class="required numeric" />
+						</div>
 					</div>
 					<script type="text/javascript">
 						(function($){
 							$(document).ready(function(e){
 								
-								// Bind to split button
-								$('body').on('click', '##changeAmount', function(e){
-									e.preventDefault();
-									$(this).closest('div').html('<input type="text" name="newOrderPayment.amount" value="#rc.order.getTotal()#" class="span3 required numeric" />');
+								var paymentDetails = {
+									dynamicChargeOK : '#UCASE(isNull(rc.order.getDynamicChargeOrderPayment()))#',
+									dynamicCreditOK : '#UCASE(isNull(rc.order.getDynamicCreditOrderPayment()))#'
+								};
+								
+								$('body').on('change', 'select[name="newOrderPayment.orderPaymentType.typeID"]', function(e) {
+									var value = $(this).val();
+									
+									$('input[name="newOrderPayment.amount"]').attr('name', 'newOrderPayment.amountplaceholder');
+									$('##dynamic-credit-amount').hide();
+									$('##dynamic-charge-amount').hide();
+									$('##credit-amount').hide();
+									$('##charge-amount').hide();
+									
+									if(value === '444df2f1cc40d0ea8a2de6f542ab4f1d' && paymentDetails.dynamicCreditOK === 'YES') {
+										$('##dynamic-credit-amount').show();
+										
+									} else if (value === '444df2f1cc40d0ea8a2de6f542ab4f1d') {
+										$('##credit-amount').show();
+										$('##credit-amount').find('input').attr('name', 'newOrderPayment.amount');
+										
+									} else if (paymentDetails.dynamicChargeOK === 'YES') {
+										$('##dynamic-charge-amount').show();
+										
+									} else {
+										$('##charge-amount').show();
+										$('##charge-amount').find('input').attr('name', 'newOrderPayment.amount');
+										
+									}
+									
 								});
+								
+								$('body').on('click', '##changeChargeAmount', function(e){
+									e.preventDefault();
+									$('input[name="newOrderPayment.amount"]').attr('name', 'newOrderPayment.amountplaceholder');
+									$('##dynamic-charge-amount').hide();
+									$('##charge-amount').show();
+									$('##charge-amount input').attr('name', 'newOrderPayment.amount');
+									paymentDetails.dynamicChargeOK = 'NO';
+									
+								});
+								
+								$('body').on('click', '##changeCreditAmount', function(e){
+									e.preventDefault();
+									$('input[name="newOrderPayment.amount"]').attr('name', 'newOrderPayment.amountplaceholder');
+									$('##dynamic-credit-amount').hide();
+									$('##credit-amount').show();
+									$('##credit-amount input').attr('name', 'newOrderPayment.amount');
+									paymentDetails.dynamicCreditOK = 'NO';
+									
+								});
+								
+								$('select[name="newOrderPayment.orderPaymentType.typeID"]').change();
 								
 							});
 						})( jQuery );
 					</script>
 				</div>
+				
+				<hr />
 				
 				<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
 				

@@ -49,60 +49,65 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var paymentMethodMaxAmount = {};
 		var eligiblePaymentMethodDetails = [];
 		
-		var paymentMethodSmartList = this.getPaymentMethodSmartList();
-		paymentMethodSmartList.addFilter('activeFlag', 1);
-		paymentMethodSmartList.addOrder('sortOrder|ASC');
-		if(!isNull(arguments.order.getAccount())) {
-			paymentMethodSmartList.addInFilter('paymentMethodID', arguments.order.getAccount().setting('accountEligiblePaymentMethods'));	
-		}
-		var activePaymentMethods = paymentMethodSmartList.getRecords();
-		
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-			var epmList = arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods");
-			for(var x=1; x<=listLen( epmList ); x++) {
-				var thisPaymentMethodID = listGetAt(epmList, x);
-				if(!structKeyExists(paymentMethodMaxAmount, thisPaymentMethodID)) {
-					paymentMethodMaxAmount[thisPaymentMethodID] = arguments.order.getFulfillmentChargeAfterDiscountTotal();
-				}
-				paymentMethodMaxAmount[thisPaymentMethodID] = precisionEvaluate(paymentMethodMaxAmount[thisPaymentMethodID] + precisionEvaluate(arguments.order.getOrderItems()[i].getExtendedPriceAfterDiscount() + arguments.order.getOrderItems()[i].getTaxAmount()));
+		// Verify that this account has eligiblePaymentMethods
+		if(len(arguments.order.getAccount().setting('accountEligiblePaymentMethods'))) {
+			
+			// Get the smartList for all the eligible payment methods for this account
+			var paymentMethodSmartList = this.getPaymentMethodSmartList();
+			paymentMethodSmartList.addFilter('activeFlag', 1);
+			paymentMethodSmartList.addOrder('sortOrder|ASC');
+			if(!isNull(arguments.order.getAccount())) {
+				paymentMethodSmartList.addInFilter('paymentMethodID', arguments.order.getAccount().setting('accountEligiblePaymentMethods'));	
 			}
-		}
-		
-		// Loop over and update the maxAmounts on these payment methods based on the skus for each
-		for(var i=1; i<=arrayLen(activePaymentMethods); i++) {
-			if( structKeyExists(paymentMethodMaxAmount, activePaymentMethods[i].getPaymentMethodID()) && paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ] gt 0 ) {
-				
-				// Define the maximum amount
-				var maximumAmount = paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ];
-				
-				var maxOrderPercentage = activePaymentMethods[i].setting('paymentMethodMaximumOrderTotalPercentageAmount');
-				var maxAmountViaOrderPercentage = arguments.order.getTotal() * (maxOrderPercentage / 100);
-				if(maxOrderPercentage lt 100 && maximumAmount > maxAmountViaOrderPercentage) {
-					maximumAmount = maxAmountViaOrderPercentage;
-				}
-				
-				// If this is a termPayment type, then we need to check the account on the order to verify the max that it can use.
-				if(activePaymentMethods[i].getPaymentMethodType() eq "termPayment") {
-					
-					// Make sure that we have enough credit limit on the account
-					if(!isNull(arguments.order.getAccount()) && arguments.order.getAccount().getTermAccountAvailableCredit() > 0) {
-						
-						var paymentTerm = this.getPaymentTerm(arguments.order.getAccount().setting('accountPaymentTerm'));
-						
-						if(!isNull(paymentTerm)) {
-							if(arguments.order.getAccount().getTermAccountAvailableCredit() < maximumAmount) {
-								maximumAmount = arguments.order.getAccount().getTermAccountAvailableCredit();
-							}
-							
-							arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount, paymentTerm=paymentTerm});	
-						}
+			var activePaymentMethods = paymentMethodSmartList.getRecords();
+			
+			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+				var epmList = arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods");
+				for(var x=1; x<=listLen( epmList ); x++) {
+					var thisPaymentMethodID = listGetAt(epmList, x);
+					if(!structKeyExists(paymentMethodMaxAmount, thisPaymentMethodID)) {
+						paymentMethodMaxAmount[thisPaymentMethodID] = arguments.order.getFulfillmentChargeAfterDiscountTotal();
 					}
-				} else {
-					arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount});
+					paymentMethodMaxAmount[thisPaymentMethodID] = precisionEvaluate(paymentMethodMaxAmount[thisPaymentMethodID] + precisionEvaluate(arguments.order.getOrderItems()[i].getExtendedPriceAfterDiscount() + arguments.order.getOrderItems()[i].getTaxAmount()));
+				}
+			}
+			
+			// Loop over and update the maxAmounts on these payment methods based on the skus for each
+			for(var i=1; i<=arrayLen(activePaymentMethods); i++) {
+				if( structKeyExists(paymentMethodMaxAmount, activePaymentMethods[i].getPaymentMethodID()) && paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ] gt 0 ) {
+					
+					// Define the maximum amount
+					var maximumAmount = paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ];
+					
+					var maxOrderPercentage = activePaymentMethods[i].setting('paymentMethodMaximumOrderTotalPercentageAmount');
+					var maxAmountViaOrderPercentage = arguments.order.getTotal() * (maxOrderPercentage / 100);
+					if(maxOrderPercentage lt 100 && maximumAmount > maxAmountViaOrderPercentage) {
+						maximumAmount = maxAmountViaOrderPercentage;
+					}
+					
+					// If this is a termPayment type, then we need to check the account on the order to verify the max that it can use.
+					if(activePaymentMethods[i].getPaymentMethodType() eq "termPayment") {
+						
+						// Make sure that we have enough credit limit on the account
+						if(!isNull(arguments.order.getAccount()) && arguments.order.getAccount().getTermAccountAvailableCredit() > 0) {
+							
+							var paymentTerm = this.getPaymentTerm(arguments.order.getAccount().setting('accountPaymentTerm'));
+							
+							if(!isNull(paymentTerm)) {
+								if(arguments.order.getAccount().getTermAccountAvailableCredit() < maximumAmount) {
+									maximumAmount = arguments.order.getAccount().getTermAccountAvailableCredit();
+								}
+								
+								arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount, paymentTerm=paymentTerm});	
+							}
+						}
+					} else {
+						arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount});
+					}
 				}
 			}
 		}
-
+		
 		return eligiblePaymentMethodDetails;
 	}
 	
@@ -140,6 +145,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var records = apmSL.getRecords();
 		for(var i=1; i<=arrayLen(records); i++) {
 			returnList = listAppend(returnList, records[i]['paymentMethodID']);
+		}
+		return returnList;
+	}
+	
+	public string function getAllActivePaymentTermIDList() {
+		var returnList = "";
+		var apmSL = this.getPaymentTermSmartList();
+		apmSL.addFilter('activeFlag', 1);
+		apmSL.addSelect('paymentTermID', 'paymentTermID');
+		var records = apmSL.getRecords();
+		for(var i=1; i<=arrayLen(records); i++) {
+			returnList = listAppend(returnList, records[i]['paymentTermID']);
 		}
 		return returnList;
 	}

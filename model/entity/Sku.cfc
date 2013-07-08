@@ -103,6 +103,7 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="salePriceDiscountType" type="string" persistent="false";
 	property name="salePriceDiscountAmount" type="string" persistent="false";
 	property name="salePriceExpirationDateTime" type="date" hb_formatType="datetime" persistent="false";
+	property name="skuDefinition" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	
 	
@@ -574,6 +575,24 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+	
+	public string function getSkuDefinition() {
+		if(!structKeyExists(variables, "skuDefinition")) {
+			variables.skuDefinition = "";
+			if(getBaseProductType() eq "contentAccess") {
+				
+			} else if (getBaseProductType() eq "merchandise") {
+				for(var option in getOptions()) {
+		    		variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
+		    	}
+		    	trim(variables.skuDefinition);
+			} else if (getBaseProductType() eq "subscription") {
+				variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+			}
+			
+		}
+		return variables.skuDefinition;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

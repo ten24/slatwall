@@ -51,6 +51,8 @@ Notes:
 							   selectTitle="#$.slatwall.rbKey('define.default')#">
 							      
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
+		<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
+		<!---
 		<cfif rc.product.getBaseProductType() eq "merchandise">
 			<cf_HibachiListingColumn propertyIdentifier="optionsDisplay" />
 		<cfelseif  rc.product.getProductType().getBaseProductType() eq "subscription">
@@ -58,6 +60,7 @@ Notes:
 		<cfelseif rc.product.getProductType().getBaseProductType() eq "contentAccess">
 			<!--- Sumit says nothing is ok --->
 		</cfif>
+		--->
 		<cf_HibachiListingColumn propertyIdentifier="imageFile" />
 		<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
 			<cf_HibachiListingColumn propertyIdentifier="listPrice" />

@@ -934,7 +934,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							
 							// Clear this order out of all sessions
-							getOrderDAO().removeOrderFromSessions(orderID=arguments.order.getOrderID());
+							getOrderDAO().removeOrderFromAllSessions(orderID=arguments.order.getOrderID());
 							
 							if(!isNull(getHibachiScope().getSession().getOrder()) && arguments.order.getOrderID() == getHibachiScope().getSession().getOrder().getOrderID()) {
 								getHibachiScope().getSession().setOrder(javaCast("null", ""));
@@ -1576,6 +1576,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 	
 	// ===================== START: Delete Overrides ==========================
+	
+	public any function deleteOrder( required any order ) {
+		
+		// Check delete validation
+		if(arguments.order.isDeletable()) {
+			
+			getOrderDAO().removeOrderFromAllSessions( orderID=arguments.order.getOrderID() );
+			
+			return delete( arguments.order );
+		}
+		
+		return delete( arguments.order );
+	}
 	
 	public any function deleteOrderItem( required any orderItem ) {
 		

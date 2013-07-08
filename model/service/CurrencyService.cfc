@@ -44,6 +44,18 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: Logical Methods ===========================
 	
+	public string function getAllActiveCurrencyIDList() {
+		var returnList = "";
+		var apmSL = this.getCurrencySmartList();
+		apmSL.addFilter('activeFlag', 1);
+		apmSL.addSelect('currencyCode', 'currencyCode');
+		var records = apmSL.getRecords();
+		for(var i=1; i<=arrayLen(records); i++) {
+			returnList = listAppend(returnList, records[i]['currencyCode']);
+		}
+		return returnList;
+	}
+	
 	public array function getCurrencyOptions() {
 		var csl = this.getCurrencySmartList();
 		

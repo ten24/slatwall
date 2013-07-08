@@ -60,11 +60,20 @@ component entityname="SlatwallTaskHistory" table="SlatwallTaskHistory" persisten
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	
 	// Non-Persistent Properties
-
-
-
+	property name="duration" persistent="false" hb_formatType="second";
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getDuration() {
+		if(!structKeyExists(variables, "duration")) {
+			variables.duration = 0;
+			if(!isNull(getStartTime()) && !isNull(getEndTime())) {
+				variables.duration = dateDiff("s", getStartTime(), getEndTime());
+			}
+		}	
+		return variables.duration;
+	}
+	
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		

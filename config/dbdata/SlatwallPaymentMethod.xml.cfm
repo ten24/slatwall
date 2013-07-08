@@ -7,11 +7,7 @@
 		<column name="activeFlag" update="false" datatype="bit" />
 	</Columns>
 	<Records>
-		<Record paymentMethodID="444df306e909d968aebce33e72289e89" paymentMethodName="Cash" paymentMethodType="cash" activeFlag="0" />
-		<Record paymentMethodID="444df3070c7f29e1217885b8804701c3" paymentMethodName="Check" paymentMethodType="check" activeFlag="0" />
 		<Record paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a" paymentMethodName="Credit Card" paymentMethodType="creditCard" activeFlag="1" />
-		<Record paymentMethodID="444df308af4550b5c3eea0f99f633644" paymentMethodName="Gift Card" paymentMethodType="giftCard" activeFlag="0" />
-		<Record paymentMethodID="444df309f956e010e9e4ac1b6c4a16fd" paymentMethodName="Term Payment" paymentMethodType="termPayment" activeFlag="0" />
 	</Records>
 </Table>
 

@@ -38,7 +38,7 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO">
 	
-	<cffunction name="removeOrderFromSessions" access="public" returntype="void">
+	<cffunction name="removeOrderFromAllSessions" access="public" returntype="void">
 		<cfargument name="orderID" type="string" required="true" />
 		
 		<cfset var rs = "" />

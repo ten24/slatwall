@@ -60,14 +60,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
 					var address = fulfillment.getAddress();
 					
-					for(var r=1; r<= arrayLen(taxCategory.getTaxCategoryRates()); r++) {
-						if(isNull(taxCategory.getTaxCategoryRates()[r].getAddressZone()) || (!isNull(address) && getAddressService().isAddressInZone(address=address, addressZone=taxCategory.getTaxCategoryRates()[r].getAddressZone()))) {
-							var newAppliedTax = this.newTaxApplied();
-							newAppliedTax.setAppliedType("orderItem");
-							newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxCategory.getTaxCategoryRates()[r].getTaxRate()) / 100);
-							newAppliedTax.setTaxRate(taxCategory.getTaxCategoryRates()[r].getTaxRate());
-							newAppliedTax.setTaxCategoryRate(taxCategory.getTaxCategoryRates()[r]);
-							newAppliedTax.setOrderItem(orderItem);
+					if(!isNull(taxCategory)) {
+						for(var r=1; r<= arrayLen(taxCategory.getTaxCategoryRates()); r++) {
+							if(isNull(taxCategory.getTaxCategoryRates()[r].getAddressZone()) || (!isNull(address) && getAddressService().isAddressInZone(address=address, addressZone=taxCategory.getTaxCategoryRates()[r].getAddressZone()))) {
+								var newAppliedTax = this.newTaxApplied();
+								newAppliedTax.setAppliedType("orderItem");
+								newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxCategory.getTaxCategoryRates()[r].getTaxRate()) / 100);
+								newAppliedTax.setTaxRate(taxCategory.getTaxCategoryRates()[r].getTaxRate());
+								newAppliedTax.setTaxCategoryRate(taxCategory.getTaxCategoryRates()[r]);
+								newAppliedTax.setOrderItem(orderItem);
+							}
 						}
 					}
 				}

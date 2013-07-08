@@ -50,18 +50,20 @@ component displayname="Setting" entityname="SlatwallSetting" table="SlatwallSett
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
 	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
-	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
-	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
-	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID"; 
-	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
-	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
-	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
-	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
-	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
-	property name="shippingMethodRate" cfc="ShippingMethodRate" fieldtype="many-to-one" fkcolumn="shippingMethodRateID";
-	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID";
 	property name="email" cfc="Email" fieldtype="many-to-one" fkcolumn="emailID";
 	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID";
+	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
+	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID"; 
+	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
+	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
+	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
+	property name="shippingMethodRate" cfc="ShippingMethodRate" fieldtype="many-to-one" fkcolumn="shippingMethodRateID";
+	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
+	property name="subscriptionUsage" cfc="SubscriptionUsage" fieldtype="many-to-one" fkcolumn="subscriptionUsageID";
 	
 	// Audit properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

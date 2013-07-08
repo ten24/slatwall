@@ -1144,7 +1144,59 @@ Notes:
 					</div>
 				</div>
 			</div>
-			
+		
+		<!--- RESET PASSWORD --->
+		<cfelseif structKeyExists(url, "swprid") and len(url.swprid) eq 64>
+			<div class="row">
+				<div class="span12">
+					<h2>My Account</h2>
+				</div>
+			</div>
+			<div class="row">
+				<!--- Reset Password --->
+				<div class="span6">
+					<h5>Reset Password</h5>
+					
+					<cfset resetPasswordObj = $.slatwall.getAccount().getProcessObject('resetPassword') />
+					
+					<form action="?s=1" method="post">
+						<input type="hidden" name="slatAction" value="public:account.resetPassword" />
+						<input type="hidden" name="swprid" value="#url.swprid#" />
+						<input type="hidden" name="accountID" value="#left(rc.swprid, 32)#" />
+						
+						
+						<!--- New Password --->
+						<div class="control-group">
+	    					<label class="control-label" for="rating">New Password</label>
+	    					<div class="controls">
+	    						
+								<sw:FormField type="text" valueObject="#resetPasswordObj#" valueObjectProperty="password" class="span6" />
+								<sw:ErrorDisplay object="#resetPasswordObj#" errorName="password" />
+								
+	    					</div>
+	  					</div>
+						
+						<!--- Confirm Password --->
+						<div class="control-group">
+	    					<label class="control-label" for="rating">Confirm Password</label>
+	    					<div class="controls">
+	    						
+								<sw:FormField type="text" valueObject="#resetPasswordObj#" valueObjectProperty="password" class="span6" />
+								<sw:ErrorDisplay object="#resetPasswordObj#" errorName="password" />
+								
+	    					</div>
+	  					</div>
+						
+						<!--- Reset Button --->
+						<div class="control-group">
+	    					<div class="controls">
+	      						<button type="submit" class="btn btn-primary">Reset Password</button>
+	    					</div>
+	  					</div>
+						
+					</form>
+				</div>
+			</div>
 		<!--- CREATE / LOGIN FORMS --->
 		<cfelse>
 			<div class="row">
@@ -1205,6 +1257,12 @@ Notes:
 					
 					<!--- Sets up the account login processObject --->
 					<cfset forgotPasswordObj = $.slatwall.getAccount().getProcessObject('forgotPassword') />
+					
+					<cfif $.slatwall.hasSuccessfulAction( "public:account.forgotPassword" )>
+						<div class="alert alert-success">
+							An email has been sent to the address you provided with a link to reset your password. 
+						</div>
+					</cfif>
 					
 					<!--- Start: Forgot Password Form --->
 					<form action="?s=1" method="post">
