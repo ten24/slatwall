@@ -116,6 +116,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 		arguments.locationAddress.removeLocation( this );
 	}
 	
+	
 	// Location Configurations (one-to-many)
 	public void function addLocationConfiguration(required any locationConfiguration) {
 		arguments.locationConfiguration.setLocation( this );
@@ -131,10 +132,31 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	public void function removePhysical(required any physical) {
 		arguments.physical.removeLocation( this );
 	}
+	
+	// Primary Location Address (many-to-one | circular)
+	public void function setPrimaryLocationAddress( any primaryLocationAddress) {    
+		if(structKeyExists(arguments, "primaryLocationAddress")) {
+			variables.primaryLocationAddress = arguments.primaryLocationAddress;
+			arguments.primaryLocationAddress.setLocation( this );	
+		} else {
+			structDelete(variables, "primaryLocationAddress");
+		}
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public any function getPrimaryLocationAddress() {
+		if(!isNull(variables.primaryLocationAddress)) {
+			return variables.primaryLocationAddress;
+		} else if (arrayLen(getLocationAddresses())) {
+			variables.primaryLocationAddress = getLocationAddresses()[1];
+			return variables.primaryLocationAddress;
+		} else {
+			return getService("locationService").newLocationAddress();
+		}
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 		

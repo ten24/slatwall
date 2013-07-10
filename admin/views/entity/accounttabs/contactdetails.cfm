@@ -112,7 +112,7 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createaccountaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
-	<hr />
+	<!---<hr />
 	<cf_HibachiPropertyRow>
 		<!--- Location Addresses --->
 		<cf_HibachiPropertyList divClass="span12">
@@ -139,5 +139,5 @@ Notes:
 			
 			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
 		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	</cf_HibachiPropertyRow>--->
 </cfoutput>

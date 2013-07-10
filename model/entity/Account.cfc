@@ -50,7 +50,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 	property name="primaryEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="primaryEmailAddressID";
 	property name="primaryPhoneNumber" hb_populateEnabled="public" cfc="AccountPhoneNumber" fieldtype="many-to-one" fkcolumn="primaryPhoneNumberID";
 	property name="primaryAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="primaryAddressID";
-	property name="primaryLocationAddress" hb_populateEnabled="public" cfc="LocationAddress" fieldtype="many-to-one" fkcolumn="primaryLocationAddressID";
 	property name="primaryPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="primaryPaymentMethodID";
 	 
 	// Related Object Properties (one-to-many)
@@ -62,7 +61,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 	property name="accountPayments" singularname="accountPayment" cfc="AccountPayment" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all" inverse="true";
 	property name="accountPhoneNumbers" hb_populateEnabled="public" singularname="accountPhoneNumber" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountPhoneNumber" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
-	property name="locationAddresses" hb_populateEnabled="public" singularname="locationAddress" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="LocationAddress" inverse="true" cascade="all-delete-orphan";
 	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
 	property name="productReviews" hb_populateEnabled="false" singularname="productReview" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="ProductReview" inverse="true";
 	property name="subscriptionUsageBenefitAccounts" singularname="subscriptionUsageBenefitAccount" cfc="SubscriptionUsageBenefitAccount" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
@@ -273,16 +271,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 		}
 	}
 	
-	// Primary Location Address (many-to-one | circular)
-	public void function setPrimaryLocationAddress( any primaryLocationAddress) {    
-		if(structKeyExists(arguments, "primaryLocationAddress")) {
-			variables.primaryLocationAddress = arguments.primaryLocationAddress;
-			arguments.primaryLocationAddress.setAccount( this );	
-		} else {
-			structDelete(variables, "primaryLocationAddress");
-		}
-	}
-	
 	// Primary AccountPayment Method (many-to-one | circular)
 	public void function setPrimaryAccountPaymentMethod(required any primaryPaymentMethod) {
 		if(structKeyExists(arguments, "primaryPaymentMethod")) {
@@ -299,14 +287,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 	}
 	public void function removeAccountAddress(required any accountAddress) {
 		arguments.accountAddress.removeAccount( this );
-	}
-	
-	// Account Addresses (one-to-many)
-	public void function addLocationAddress(required any locationAddress) {
-		arguments.locationAddress.setAccount( this );
-	}
-	public void function removeLocationAddress(required any locationAddress) {
-		arguments.locationAddress.removeAccount( this );
 	}
 	
 	// Account Authentications (one-to-many)    
@@ -514,17 +494,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SlatwallAcco
 			return variables.primaryAddress;
 		} else {
 			return getService("accountService").newAccountAddress();
-		}
-	}
-	
-	public any function getPrimaryLocationAddress() {
-		if(!isNull(variables.primaryLocationAddress)) {
-			return variables.primaryLocationAddress;
-		} else if (arrayLen(getAccountAddresses())) {
-			variables.primaryLocationAddress = getAccountAddresses()[1];
-			return variables.primaryLocationAddress;
-		} else {
-			return getService("accountService").newLocationAddress();
 		}
 	}
 	

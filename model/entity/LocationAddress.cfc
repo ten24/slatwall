@@ -40,7 +40,7 @@ component displayname="Location Address" entityname="SlatwallLocationAddress" ta
 	
 	// Persistent Properties
 	property name="locationAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="locationAddressName" hb_populateEnabled="public" ormtype="string" hint="Nickname for this location Address";
+	/*property name="locationAddressName" hb_populateEnabled="public" ormtype="string" hint="Nickname for this location Address";*/
 	
 	// Related Object Properties (many-to-one)
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";

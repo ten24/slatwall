@@ -39,19 +39,30 @@ Notes:
 <cfparam name="rc.location" default="any" >
 
 <cfoutput>
+	<cf_HibachiPropertyRow>
+		<cf_HibachiPropertyList divClass="span12">
+			<h5>#$.slatwall.rbKey('entity.locationAddress_plural')#</h5>
+			<cf_HibachiListingDisplay smartList="#rc.location.getLocationAddressesSmartList()#"
+									  recordEditAction="admin:entity.editlocationaddress"
+									  recordEditQueryString="locationID=#rc.location.getLocationID()#"
+									  recordEditModal=true
+									  recordDeleteAction="admin:entity.deletelocationaddress"
+									  recordDeleteQueryString="locationID=#rc.location.getLocationID()#&redirectAction=admin:entity.detaillocation"
+									  selectFieldName="primaryLocationAddress.locationAddressID"
+									  selectValue="#rc.location.getPrimaryLocationAddress().getLocationAddressID()#"
+									  selectTitle="#$.slatwall.rbKey('define.primary')#"
+									  edit="#rc.edit#">
+						
+				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="address.name" />
+				<cf_HibachiListingColumn propertyIdentifier="address.streetAddress" />
+				<cf_HibachiListingColumn propertyIdentifier="address.street2Address" />
+				<cf_HibachiListingColumn propertyIdentifier="address.city" />
+				<cf_HibachiListingColumn propertyIdentifier="address.stateCode" />
+				<cf_HibachiListingColumn propertyIdentifier="address.postalCode" />
+			</cf_HibachiListingDisplay>
+			
+			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" modal=true />
+		</cf_HibachiPropertyList>
+	</cf_HibachiPropertyRow>
 	
-	<cf_HibachiListingDisplay smartList="#rc.location.getLocationAddressesSmartList()#"
-							  recordEditAction="admin:entity.editlocationaddress"
-							  recordDetailAction="admin:entity.detaillocationaddress">
-							    
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="address.streetAddress" />
-		<cf_HibachiListingColumn propertyIdentifier="address.street2Address" />
-		<cf_HibachiListingColumn propertyIdentifier="address.city" />
-		<cf_HibachiListingColumn propertyIdentifier="address.stateCode" />
-		<cf_HibachiListingColumn propertyIdentifier="address.postalCode" />
-		<cf_HibachiListingColumn propertyIdentifier="address.countryCode" />
-		
-	</cf_HibachiListingDisplay>
-	
-	<cf_HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" modal=true />
 </cfoutput>
