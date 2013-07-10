@@ -112,4 +112,32 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createaccountaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
+	<hr />
+	<cf_HibachiPropertyRow>
+		<!--- Location Addresses --->
+		<cf_HibachiPropertyList divClass="span12">
+			<h5>#$.slatwall.rbKey('entity.locationAddress_plural')#</h5>
+			<cf_HibachiListingDisplay smartList="#rc.account.getLocationAddressesSmartList()#"
+									  recordEditAction="admin:entity.editlocationaddress"
+									  recordEditQueryString="accountID=#rc.account.getAccountID()#"
+									  recordEditModal=true
+									  recordDeleteAction="admin:entity.deletelocationaddress"
+									  recordDeleteQueryString="accountID=#rc.account.getAccountID()#&redirectAction=admin:entity.detailaccount"
+									  selectFieldName="primaryLocationAddress.locationAddressID"
+									  selectValue="#rc.account.getPrimaryLocationAddress().getLocationAddressID()#"
+									  selectTitle="#$.slatwall.rbKey('define.primary')#"
+									  edit="#rc.edit#">
+						
+				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationAddressName" />
+				<cf_HibachiListingColumn propertyIdentifier="address.name" />
+				<cf_HibachiListingColumn propertyIdentifier="address.streetAddress" />
+				<cf_HibachiListingColumn propertyIdentifier="address.street2Address" />
+				<cf_HibachiListingColumn propertyIdentifier="address.city" />
+				<cf_HibachiListingColumn propertyIdentifier="address.stateCode" />
+				<cf_HibachiListingColumn propertyIdentifier="address.postalCode" />
+			</cf_HibachiListingDisplay>
+			
+			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+		</cf_HibachiPropertyList>
+	</cf_HibachiPropertyRow>
 </cfoutput>

@@ -41,9 +41,9 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityActionBar type="listing" object="#rc.locationAddressSmartList#" createModal="true" />
 	
-	<!---<cf_HibachiListingDisplay smartList="#rc.locationAddressSmartList#"
+	<cf_HibachiListingDisplay smartList="#rc.locationAddressSmartList#"
 							  recordDetailAction="admin:entity.detaillocationaddress"
 							  recordEditAction="admin:entity.editlocationaddress">
 							    
-	</cf_HibachiListingDisplay>--->
+	</cf_HibachiListingDisplay>
 </cfoutput>

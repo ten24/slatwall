@@ -37,7 +37,7 @@ Notes:
 
 --->
 <cfparam name="rc.locationAddress" type="any">
-<cfparam name="rc.location" type="any">
+<cfparam name="rc.location" type="any" default="#rc.locationAddress.getLocation()#">
 <cfparam name="rc.edit" type="boolean">
 <!---<cfdump var="#rc.locationAddress#" top="3" >--->
 	
