@@ -108,6 +108,15 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	
+	// Attribute Values (one-to-many)    
+    	public void function addAttributeValue(required any attributeValue) {    
+    		arguments.attributeValue.setLocation( this );    
+    	}    
+    	public void function removeAttributeValue(required any attributeValue) {    
+    		arguments.attributeValue.removeLocation( this );    
+    	}
+	
 	// Location Addresses (one-to-many)
 	public void function addLocationAddress(required any locationAddress) {
 		arguments.locationAddress.setLocation( this );

@@ -37,6 +37,7 @@
 		<Record typeID="444df32b9730e4a50af0c0ecb9d77f3b" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32b9730e4a50af0c0ecb9d77f3b" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account Payment" systemCode="astAccountPayment" />
 		<Record typeID="444df325adea07a73014e74b449eb315" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df2a3ebb07d6280c339a09c0d90d3" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Brand" systemCode="astBrand" />
 		<Record typeID="5accbf56c330c01b3be2b8fef26094cc" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf56c330c01b3be2b8fef26094cc" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Location" systemCode="astLocation" />
+		<Record typeID="5accbf57dcf5bb3eb71614febe83a31d" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf57dcf5bb3eb71614febe83a31d" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Location Configuration" systemCode="astLocationConfiguration" />
 		<Record typeID="444df327c72a5bd51bb2f691aac17008" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df327c72a5bd51bb2f691aac17008" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order" systemCode="astOrder" />
 		<Record typeID="444df292eea355ddad72f5614726bc75" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df292eea355ddad72f5614726bc75" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Item" systemCode="astOrderItem" />
 		<Record typeID="444df32ac631b198a0f0319dd64e0e00" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32ac631b198a0f0319dd64e0e00" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Payment" systemCode="astOrderPayment" />
@@ -164,7 +165,6 @@
 <!--
 Below Are UUID's to use... delete after using
 
-5accbf57dcf5bb3eb71614febe83a31d
 5accbf58a94b61fe031f854ffb220f4b
 5accbf59ac1b1e30f86b1ab01812e932
 5accbf5a08b1fc0f12fa654ea0c0b683

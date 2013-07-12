@@ -45,9 +45,11 @@ component displayname="LocationConfiguration" entityname="SlatwallLocationConfig
 	
 	// Related Object Properties (Many-to-One)
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="parentLocationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="parentLocationConfigurationID";
 	
 	// Related Object Properties (One-to-Many)
 	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="one-to-many" fkcolumn="locationConfigurationID" cascade="all-delete-orphan" inverse="true";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="locationConfigurationID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (Many-to-Many - owner)
 	
@@ -69,6 +71,14 @@ component displayname="LocationConfiguration" entityname="SlatwallLocationConfig
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Attribute Values (one-to-many)    
+    	public void function addAttributeValue(required any attributeValue) {    
+    		arguments.attributeValue.setLocationConfiguration( this );    
+    	}    
+    	public void function removeAttributeValue(required any attributeValue) {    
+    		arguments.attributeValue.removeLocationConfiguration( this );    
+    	}
 	
 	// Location (many-to-one)    
 	public void function setLocation(required any location) {    
