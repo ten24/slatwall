@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"locationConfigurationName":		[{"contexts":"save","required":true}],
+		"location":		[{"contexts":"save","required":true}]
+	}
+}

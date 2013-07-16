@@ -68,6 +68,10 @@ Notes:
 		
 		<cf_HibachiTabGroup object="#rc.locationConfiguration#">
 			<cf_HibachiTab view="admin:entity/locationconfigurationtabs/locationconfigurationsettings" />
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.locationConfiguration.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.locationConfiguration#" attributeSet="#attributeSet#" />
+			</cfloop>
 		</cf_HibachiTabGroup>
 		
 
