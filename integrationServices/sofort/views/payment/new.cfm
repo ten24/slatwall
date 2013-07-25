@@ -1,0 +1,1 @@
+﻿<cfoutput>SOFORT Überweisung Error: #rc.result#</cfoutput>
