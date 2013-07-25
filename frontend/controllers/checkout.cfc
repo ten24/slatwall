@@ -15,12 +15,12 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this library statically or dynamically with other modules is
     making a combined work based on this library.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
+
     As a special exception, the copyright holders of this library give you
     permission to link this library with independent modules to produce an
     executable, regardless of the license terms of these independent
@@ -45,34 +45,34 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 	property name="settingService" type="any";
 	property name="sessionService" type="any";
 	property name="userUtility" type="any";
-	
+
 	public any function init(required any fw) {
 		setUserUtility( getCMSBean("userUtility") );
-		
+
 		return super.init(arguments.fw);
 	}
-	
+
 	public void function detail(required struct rc) {
 		param name="rc.edit" default="";
 		param name="rc.orderRequirementsList" default="";
 		param name="rc.guestAccountOK" default="false";
-		
+
 		// Insure that the cart is not new, and that it has order items in it.  otherwise redirect to the shopping cart
 		if(!arrayLen(getSlatwallScope().cart().getOrderItems())) {
 			getFW().redirectSetting( settingName='globalPageShoppingCart' );
 		}
-		
+
 		// Insure that all items in the cart are within their max constraint
 		if(!getSlatwallScope().cart().hasItemsQuantityWithinMaxOrderQuantity()) {
 			getFW().redirectSetting( settingName='globalPageShoppingCart', queryString='slatAction=frontend:cart.forceItemQuantityUpdate' );
 		}
-		
+
 		// Recaluclate Order Totals In Case something has changed
 		getOrderService().recalculateOrderAmounts(getSlatwallScope().cart());
-		
+
 		// get the list of requirements left for this order to be processed
 		rc.orderRequirementsList = getOrderService().getOrderRequirementsList(getSlatwallScope().cart());
-		
+
 		// Account Setup Logic
 		if ( isNull(getSlatwallScope().cart().getAccount()) ) {
 			// When no account is in the order then just set a new account in the rc so it works
@@ -89,96 +89,96 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 				rc.orderRequirementsList = listPrepend(rc.orderRequirementsList,"account");
 			}
 		}
-		
+
 		// Setup some elements to be used by different views
 		rc.eligiblePaymentMethodDetails = getPaymentService().getEligiblePaymentMethodDetailsForOrder(order=getSlatwallScope().cart());
-		
+
 		// This RC Key is deprecated
 		rc.activePaymentMethods = getPaymentService().listPaymentMethodFilterByActiveFlag(1);
 	}
-	
+
 	public void function confirmation(required struct rc) {
 		param name="rc.orderID" default="";
-		
+
 		rc.order = getOrderService().getOrder(rc.orderID, true);
-		
+
 	}
-	
+
 	public void function loginAccount(required struct rc) {
 		param name="rc.username" default="";
 		param name="rc.password" default="";
 		param name="rc.returnURL" default="";
 		param name="rc.forgotPasswordEmail" default="";
-		
+
 		if(rc.forgotPasswordEmail != "") {
 			rc.forgotPasswordResult = getUserUtility().sendLoginByEmail(email=rc.forgotPasswordEmail, siteid=rc.$.event('siteID'));
 		} else {
 			var loginSuccess = getAccountService().loginCmsUser(username=arguments.rc.username, password=arguments.rc.password, siteID=rc.$.event('siteid'));
-			
+
 			if(!loginSuccess) {
 				request.status = "failed";
 			}
 		}
-		
+
 		detail(rc);
 		getFW().setView("frontend:checkout.detail");
 	}
-	
+
 	public void function saveOrderAccount(required struct rc) {
 		rc.guestAccountOK = true;
-		
+
 		getOrderService().updateAndVerifyOrderAccount(order=$.slatwall.cart(), data=rc);
-		
+
 		detail(rc);
 		getFW().setView("frontend:checkout.detail");
 	}
-	
+
 	public void function saveOrderFulfillments(required struct rc) {
 		rc.guestAccountOK = true;
-		
+
 		getOrderService().updateAndVerifyOrderFulfillments(order=$.slatwall.cart(), data=rc);
-		
+
 		detail(rc);
 		getFW().setView("frontend:checkout.detail");
 	}
-	
+
 	public void function saveOrderPayments(required struct rc) {
 		rc.guestAccountOK = true;
-		
+
 		getOrderService().updateAndVerifyOrderPayments(order=$.slatwall.cart(), data=rc);
-		
+
 		detail(rc);
 		getFW().setView("frontend:checkout.detail");
 	}
-	
+
 	public void function processOrder(required struct rc) {
 		param name="rc.orderID" default="";
-		
+
 		rc.guestAccountOK = true;
-		
+
 		// Insure that all items in the cart are within their max constraint
 		if(!getSlatwallScope().cart().hasItemsQuantityWithinMaxOrderQuantity()) {
 			getFW().redirectExact(rc.$.createHREF(filename='shopping-cart',queryString='slatAction=frontend:cart.forceItemQuantityUpdate'));
 		}
-		
+
 		// Setup the order
 		var order = getOrderService().getOrder(rc.orderID);
-		
-		// Attemp to process the order 
+
+		// Attemp to process the order
 		order = getOrderService().processOrder(order, rc, "placeOrder");
-		
+
 		if(!order.hasErrors()) {
-			
+
 			// Save the order ID temporarily in the session for the confirmation page.  It will be removed by that controller
 			getSessionService().setValue("orderConfirmationID", rc.orderID);
-			
+
 			// Redirect to order Confirmation
 			getFW().redirectExact($.createHREF(filename='order-confirmation'), false);
-			
+
 		}
-			
+
 		detail(rc);
 		getFW().setView("frontend:checkout.detail");
 	}
-	
+
 }
