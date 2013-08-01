@@ -70,4 +70,8 @@ $(document).ready(function(e){
 			
 		}
 	});
+	
+		$(function () {
+	        $("[data-toggle='tooltip']").tooltip();
+	    });
 });
