@@ -1,37 +1,47 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
@@ -127,17 +137,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Set the Expiration & Next Bill Date
 		subscriptionUsage.setExpirationDate( arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getEndDate() );
 		subscriptionUsage.setNextBillDate( subscriptionUsage.getExpirationDate() );
-		
-		// Setup the next Reminder email 
-		if( len(subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
-			// Find the first reminder day
-			var firstReminder = listFirst(subscriptionUsage.setting('subscriptionUsageRenewalReminderDays'));
-			// Make sure it is numeric
-			if(isNumeric(firstReminder)) {
-				// Setup teh next reminder emailDate
-				subscriptionUsage.setNextReminderEmailDate( dateAdd("d", firstReminder, subscriptionUsage.getExpirationDate()) );	
-			}
-		}
+		subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
 		
 		// add active status to subscription usage
 		setSubscriptionUsageStatus(subscriptionUsage, 'sstActive');
@@ -220,9 +220,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arrayLen(arguments.subscriptionUsage.getSubscriptionOrderItems()) == 2 && arrayLen(arguments.subscriptionUsage.getRenewalSubscriptionUsageBenefits())) {
 			// expire all existing benefits
 			for(var subscriptionUsageBenefit in arguments.subscriptionUsage.getSubscriptionUsageBenefits()) {
-				var subscriptionUsageBenefitAccount = this.getSubscriptionUsageBenefitAccountBySubscriptionUsageBenefit(subscriptionUsageBenefit);
-				subscriptionUsageBenefitAccount.setEndDateTime(now());
-				this.saveSubscriptionUsageBenefitAccount(subscriptionUsageBenefitAccount);
+				for(var subscriptionUsageBenefitAccount in subscriptionUsageBenefit.getSubscriptionUsageBenefitAccounts()) {
+					subscriptionUsageBenefitAccount.setEndDateTime(now());
+					this.saveSubscriptionUsageBenefitAccount(subscriptionUsageBenefitAccount);		
+				}
 			}
 			
 			this.saveSubscriptionUsage(arguments.subscriptionUsage);
@@ -341,7 +342,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processObject.setEffectiveDateTime( now() );
 		}
 		
-		setSubscriptionUsageStatus(arguments.subscriptionUsage, 'sstCancelled', data.effectiveDateTime);
+		setSubscriptionUsageStatus(arguments.subscriptionUsage, 'sstCancelled', processObject.getEffectiveDateTime());
 		
 		return arguments.subscriptionUsage;
 	}
@@ -353,6 +354,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// New Renewal Order
 		if(order.getNewFlag()) {
 			
+			// First pull out the nextBillDate if sucessful to populate later
+			if(arguments.processObject.getRenewalStartType() == 'extend') {
+				// Extend
+				var nextBillDate = arguments.processObject.getExtendExpirationDate();
+			} else {
+				// Prorate
+				var nextBillDate = arguments.processObject.getProrateExpirationDate();
+			}
+			
 			// set the account for order
 			arguments.processObject.getOrder().setAccount( arguments.subscriptionUsage.getAccount() );
 			
@@ -363,55 +373,67 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			};
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			
-			// set the orderitem price to renewal price
-			if(arguments.processObject.getRenewalStartType() == 'extend') {
-				// Extend
-				order.getOrderItems()[1].setPrice( arguments.subscriptionUsage.getRenewalPrice() );	
-			} else {
-				// Prorate
-				order.getOrderItems()[1].setPrice( arguments.processObject.getProratedPrice() );
+			// Make sure that the orderItem was added to the order without issue
+			if(!order.hasErrors()) {
+				// set the orderitem price to renewal price
+				if(arguments.processObject.getRenewalStartType() == 'extend') {
+					// Extend
+					order.getOrderItems()[1].setPrice( arguments.subscriptionUsage.getRenewalPrice() );	
+				} else {
+					// Prorate
+					order.getOrderItems()[1].setPrice( arguments.processObject.getProratedPrice() );
+				}
+				
+				// create new subscription orderItem
+				var subscriptionOrderItem = this.newSubscriptionOrderItem();
+				subscriptionOrderItem.setOrderItem( order.getOrderItems()[1] );
+				subscriptionOrderItem.setSubscriptionOrderItemType( this.getTypeBySystemCode('soitRenewal') );
+				subscriptionOrderItem.setSubscriptionUsage( arguments.subscriptionUsage );
+				this.saveSubscriptionOrderItem( subscriptionOrderItem );
+				
+				// Setup the Order Payment
+				if(arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod') {
+					var orderPayment = getOrderService().newOrderPayment();
+					
+					orderPayment.copyFromAccountPaymentMethod( arguments.processObject.getAccountPaymentMethod() );
+					
+					orderPayment.setOrder( order );
+					
+				} else if (arguments.processObject.getRenewalPaymentType() eq 'orderPayment') {
+					var orderPayment = getOrderService().newOrderPayment();
+					
+					orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
+					
+					orderPayment.setOrder( order );
+					
+				} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
+					order = getOrderService().processOrder(order, arguments.data, 'addOrderPayment');
+					
+				}
+				
+				// save order for processing
+				getOrderService().getHibachiDAO().save( order );
+				
+				// Persist the order to the DB
+				getHibachiDAO().flushORMSession();
+				
+				// Place the Order
+				order = getOrderService().processOrder(order, {}, 'placeOrder');
+				
+				// set the subscription usage nextBillDate
+				arguments.subscriptionUsage.setNextBillDate( nextBillDate );
+				arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
+				
+				// As long as the order was placed, then we can update the nextBillDateTime & nextReminderDateTime
+				if(order.getStatusCode() == "ostNotPlaced") {
+					arguments.subscriptionUsage.addMessage("notPlaced", rbKey('validate.processSubscriptionUsage_renew.order.notPlaced') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('define.notPlaced')#</a>');
+				}
 			}
-			
-			// create new subscription orderItem
-			var subscriptionOrderItem = this.newSubscriptionOrderItem();
-			subscriptionOrderItem.setOrderItem( order.getOrderItems()[1] );
-			subscriptionOrderItem.setSubscriptionOrderItemType( this.getTypeBySystemCode('soitRenewal') );
-			subscriptionOrderItem.setSubscriptionUsage( arguments.subscriptionUsage );
-			this.saveSubscriptionOrderItem( subscriptionOrderItem );
-			
-			// Setup the Order Payment
-			if(arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod') {
-				var orderPayment = getOrderService().newOrderPayment();
-				
-				orderPayment.copyFromAccountPaymentMethod( arguments.processObject.getAccountPaymentMethod() );
-				
-				orderPayment.setOrder( order );
-				
-			} else if (arguments.processObject.getRenewalPaymentType() eq 'orderPayment') {
-				var orderPayment = getOrderService().newOrderPayment();
-				
-				orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
-				
-				orderPayment.setOrder( order );
-				
-			} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
-				order = getOrderService().addOrderPayment(order, arguments.data, 'addOrderPayment');
-				
-			}
-			
-			// save order for processing
-			getOrderService().getHibachiDAO().save( order );
-			
-			// Persist the order to the DB
-			getHibachiDAO().flushORMSession();
-			
-			// Place the Order
-			order = getOrderService().processOrder(order, {}, 'placeOrder');
-			
 		// Existing Renewal Order to be re-submitted
 		} else {
 			
 			// TODO: Add Retry Logic
+			arguments.subscriptionUsage.addError('renew', rbKey('validate.processSubscriptionUsage_renew.order.newFlag') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#"><cfif not isNull(order.getOrderNumber())>#order.getOrderNumber()#<cfelse>#getHibachiScope().rbKey('define.notPlaced')#</cfif></a>');
 		}
 
 		return arguments.subscriptionUsage;
@@ -430,6 +452,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			email = getEmailService().processEmail(email, emailData, 'createFromTemplate');
 			email = getEmailService().processEmail(email, {}, 'addToQueue');
 			
+			subscriptionUsage.setNextReminderEmailDate( javaCast("null", "") );
+			
 			// Setup the next Reminder email 
 			if( len(arguments.subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
 				
@@ -441,12 +465,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// If this option is > than now, then we can set the date and break out of loop
 					if(nextReminderDate > now()) {
+						
 						// Set the next date
 						subscriptionUsage.setNextReminderEmailDate( nextReminderDate );	
 						
 						break;
 					}
 				}
+				
 			}
 			
 			
@@ -500,3 +526,4 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 	
 }
+

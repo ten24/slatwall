@@ -4,6 +4,7 @@
 	<cfparam name="attributes.action" type="any" />
 	<cfparam name="attributes.entity" type="any" />
 	<cfparam name="attributes.processContext" type="string" />
+	<cfparam name="attributes.hideDisabled" type="boolean" default="true" />
 	
 	<cfparam name="attributes.type" type="string" default="link">
 	<cfparam name="attributes.querystring" type="string" default="" />
@@ -38,8 +39,15 @@
 		<cfset attributes.text = attributes.hibachiScope.rbKey('entity.#local.entityName#.process.#attributes.processContext#') />
 	</cfif>
 	
+	<!--- Setup the disabled attributes if this is an object --->
+	<cfif isObject(attributes.entity)>
+		<cfset local.processErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=attributes.entity, context=attributes.processContext, setErrors=false) />
+		<cfset attributes.disabled = local.processErrors.hasErrors() />
+		<cfset attributes.disabledText = local.processErrors.getAllErrorsHTML() />
+	</cfif>
+	
 	<!--- If either no entity object was passed in, or if the entity object that was passed in is in fact processable, then deligate to the action caller for the actual info --->
-	<cfif !isObject(attributes.entity) || (isObject(attributes.entity) && attributes.entity.isProcessable(attributes.processContext))>
-		<cf_HibachiActionCaller attributecollection="#attributes#" />	
+	<cfif !isObject(attributes.entity) || (isObject(attributes.entity) && ( !attributes.disabled || !attributes.hideDisabled ) )>
+		<cf_HibachiActionCaller attributecollection="#attributes#" />
 	</cfif>
 </cfif>

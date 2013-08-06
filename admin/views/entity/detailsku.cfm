@@ -73,7 +73,8 @@ Notes:
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
 			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
-			
+			<!---<cf_HibachiTab view="admin:entity/skutabs/pricegroups" />--->
+
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.sku.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.sku#" attributeSet="#attributeSet#" />

@@ -1,37 +1,47 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
@@ -195,6 +205,8 @@ component extends="HibachiService" accessors="true" {
 				fileDelete(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#');	
 			}
 		}
+		
+		return arguments.product;
 	}
 	
 	public any function processProduct_updateDefaultImageFileNames( required any product ) {
@@ -224,7 +236,7 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function processProduct_uploadDefaultImage(required any product, required any processObject) {
-		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
+		// Wrap in try/catch to add validation error based on fileAcceptMIMEType	
 		try {
 			
 			// Get the upload directory for the current property
@@ -260,6 +272,9 @@ component extends="HibachiService" accessors="true" {
 			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SlatwallProduct"));
 		}
 		
+		// validate the product
+		arguments.product.validate( context="save" );
+		
 		// If this is a new product and it doesn't have any errors... there are a few additional steps we need to take
 		if(arguments.product.isNew() && !arguments.product.hasErrors()) {
 			
@@ -269,9 +284,6 @@ component extends="HibachiService" accessors="true" {
 			// Generate Image Files
 			arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 		}
-		
-		// validate the product
-		arguments.product.validate( context="save" );
 		
 		// If the product passed validation then call save in the DAO, otherwise set the errors flag
         if(!arguments.product.hasErrors()) {
@@ -284,12 +296,11 @@ component extends="HibachiService" accessors="true" {
 	
 	public any function saveProductType(required any productType, required struct data) {
 		if( (isNull(arguments.productType.getURLTitle()) || !len(arguments.productType.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
-			if(!isNull(arguments.productType.getProductTypeName())) {
-				param name="arguments.data.productTypeName" default="#arguments.productType.getProductTypeName()#";
-			} else {
-				param name="arguments.data.productTypeName" default="";
+			if(structKeyExists(arguments.data, "productTypeName") && len(arguments.data.productTypeName)) {
+				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SlatwallProductType");	
+			} else if (!isNull(arguments.productType.getProductTypeName()) && len(arguments.productType.getProductTypeName())) {
+				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SlatwallProductType");
 			}
-			data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SlatwallProduct");
 		}
 		
 		arguments.productType = super.save(arguments.productType, arguments.data);
@@ -356,3 +367,4 @@ component extends="HibachiService" accessors="true" {
 	// ======================  END: Get Overrides =============================
 	
 }
+

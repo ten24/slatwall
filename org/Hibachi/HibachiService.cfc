@@ -100,6 +100,7 @@
 			
 			// If we pass preProcess validation then we can try to setup the processObject if the entity has one, and validate that
 			if(!arguments.entity.hasErrors() && arguments.entity.hasProcessObject(arguments.processContext)) {
+				
 				invokeArguments[ "processObject" ] = arguments.entity.getProcessObject(arguments.processContext);
 				
 				if(!invokeArguments[ "processObject" ].getPopulatedFlag()) {
@@ -108,6 +109,7 @@
 				}
 				
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );
+				
 			}
 			
 			// if the entity still has no errors then we call call the process method
@@ -748,7 +750,11 @@
 		
 		// @hint leverages the getEntityHasPropertyByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasPropertyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			return getEntityHasPropertyByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), propertyName=listLast(arguments.propertyIdentifier, "._") );
+			try {
+				return getEntityHasPropertyByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), propertyName=listLast(arguments.propertyIdentifier, "._") );	
+			} catch(any e) {
+				return false;	
+			}
 		}
 		
 		// @hint traverses a propertyIdentifier to find the last entityName in the list... this is then used by the hasProperty and hasAttribute methods()

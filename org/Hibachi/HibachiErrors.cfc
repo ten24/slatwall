@@ -30,6 +30,17 @@ component output="false" accessors="true" extends="HibachiObject" {
 		}
 	}
 	
+	public void function addErrors(required struct errors) {
+		for(var key in arguments.errors) {
+			if(!structKeyExists(variables.errors, key)) {
+				variables.errors[key] = [];
+			}
+			for(var message in arguments.errors[key]) {
+				arrayAppend(variables.errors[key], message);	
+			}
+		}
+	}
+	
 	// @hint Returns an array of error messages from the error structure.
 	public array function getError(required string errorName) {
 		if(hasError(errorName=arguments.errorName)){

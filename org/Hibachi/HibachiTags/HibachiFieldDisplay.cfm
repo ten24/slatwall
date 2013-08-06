@@ -35,7 +35,7 @@
 			<cfif attributes.edit>
 				<cfoutput>
 					<div class="control-group">
-						<label for="#attributes.fieldName#" class="control-label">#attributes.title#<cfif len(attributes.hint)> <a href="##" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
+						<label for="#attributes.fieldName#" class="control-label">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
 						<div class="controls">
 							<cf_HibachiFormField attributecollection="#attributes#" />
 							<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
@@ -44,7 +44,7 @@
 				</cfoutput>
 			<cfelse>
 				<cfoutput>
-					<dt class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></dt>
+					<dt class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></dt>
 					<cfif attributes.valueLink neq "">
 						<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></dd>
 					<cfelse>
@@ -58,7 +58,7 @@
 			<cfif attributes.edit>
 				<cfoutput>
 					<tr>
-						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></td>
+						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></td>
 						<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
 							<cf_HibachiFormField attributecollection="#attributes#" />
 							<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
@@ -68,7 +68,7 @@
 			<cfelse>
 				<cfoutput>
 					<tr>
-						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></td>
+						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></td>
 						<cfif attributes.valueLink neq "">
 							<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></td>
 						<cfelse>
@@ -82,7 +82,7 @@
 		<cfcase value="span">
 			<cfif attributes.edit>
 				<cfoutput>
-					<span class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></span>
+					<span class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></span>
 					<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
 						<cf_HibachiFormField attributecollection="#attributes#" />
 						<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
@@ -90,7 +90,7 @@
 				</cfoutput>
 			<cfelse>
 				<cfoutput>
-					<span class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif>: </span>
+					<span class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif>: </span>
 					<cfif attributes.valueLink neq "">
 						<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></span>
 					<cfelse>

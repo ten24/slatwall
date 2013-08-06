@@ -602,6 +602,7 @@ function setupEventHandlers() {
 				if(r.success) {
 					listingDisplayUpdate(updateTableID, {});
 				} else {
+					
 					if(("preProcessView" in r)) {
 						jQuery('#adminModal').html(r.preProcessView);
 						jQuery('#adminModal').modal();
@@ -611,6 +612,10 @@ function setupEventHandlers() {
 							'margin-left': function () {
 					            return -(jQuery('#adminModal').width() / 2);
 					        }
+						});
+					} else {
+						jQuery.each(r.messages, function(i, v){
+							jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');
 						});
 					}
 				}
@@ -934,7 +939,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 								
 						} else if ( jQuery(cv).hasClass('admin') ){
 							
-							newtd += '<td>' + jQuery.trim(rv[ 'admin' ]) + '</td>';
+							newtd += '<td class="admin">' + jQuery.trim(rv[ 'admin' ]) + '</td>';
 							
 						}
 						

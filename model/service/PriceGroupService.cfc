@@ -1,7 +1,7 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
+    Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,22 +16,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
 	
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
@@ -42,68 +52,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	property name="skuService" type="any";
 	property name="productService" type="any";
-	
-	public any function savePriceGroupRate(required any priceGroupRate, struct data) {
-		// Before we allow the automated entity population to work, clear out the percentageOff, amountOff and amount fields from the rate so that they null out in the DB.
-		if(arguments.data.priceGroupRateId == "new amount") {
-			arguments.priceGroupRate.clearAmounts();
-		}
-
-		// Populates entity based on RC contents and validates entity. 
-		arguments.priceGroupRate = super.save(entity=arguments.priceGroupRate, data=arguments.data);
-		
-		// As long as this price group rate didn't have errors, then we can update all of the other rates for this given price group
-		if(!arguments.priceGroupRate.hasErrors()) {
-			var priceGroup = arguments.priceGroupRate.getPriceGroup();
-			var rates = priceGroup.getPriceGroupRates();
-			
-			// Loop over all of the rates that aren't this one, and make sure that they don't have any of the productTypes, products, or skus of this one
-			for(var i=1; i<=arrayLen(rates); i++) {
-				// Don't check the rate in this loop interation if it had the same ID as the rate we just edited
-				if(rates[i].getPriceGroupRateID() != arguments.priceGroupRate.getPriceGroupRateID()) {
-					// Remove Product Types
-					for(var pt=1; pt<=arrayLen(arguments.priceGroupRate.getProductTypes()); pt++) {
-						rates[i].removeProductType(arguments.priceGroupRate.getProductTypes()[pt]);
-					}
-					// Remove Products
-					for(var p=1; p<=arrayLen(arguments.priceGroupRate.getProducts()); p++) {
-						rates[i].removeProduct(arguments.priceGroupRate.getProducts()[p]);
-					}
-					// Remove Skus
-					for(var s=1; s<=arrayLen(arguments.priceGroupRate.getSkus()); s++) {
-						rates[i].removeSku(arguments.priceGroupRate.getSkus()[s]);
-					}
-					
-					// If the rate that was just edited was set to global, make sure that no other rates are global
-					if(arguments.priceGroupRate.getGlobalFlag() && rates[i].getGlobalFlag()) {
-						rates[i].setGlobalFlag(false);	
-					}	
-				}
-			}
-			
-			// If this rate is set to global, remove all include/exclude filters
-			if(arguments.priceGroupRate.getGlobalFlag()) {
-				arguments.priceGroupRate.setProducts([]);
-				arguments.priceGroupRate.setProductTypes([]);
-				arguments.priceGroupRate.setSKUs([]);
-				arguments.priceGroupRate.setExcludedProducts([]);
-				arguments.priceGroupRate.setExcludedProductTypes([]);
-				arguments.priceGroupRate.setExcludedSKUs([]);
-			}
-		}
-		return arguments.priceGroupRate; 
-	}
-	
-	public boolean function deletePriceGroup(required any priceGroup){
-		// Any price groups that are inhering from this price group should have that inheritence disabled.
-		var inheritingPriceGroups = arguments.priceGroup.getChildPriceGroups();
-
-		while(arrayLen(inheritingPriceGroups) != 0) {
-			priceGroup.removeChildPriceGroup(inheritingPriceGroups[1]);
-		}
-	
-		return super.delete(priceGroup);
-	}
 	
 	// This method will return the rate that a given productType has based on a priceGroup, also this looks up to parent productTypes as well.
 	public any function getRateForProductTypeBasedOnPriceGroup(required any productType, required any priceGroup) {
@@ -308,6 +256,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return serializeJSON(priceGroupData);
 	}
 	
+	
+	
 	// Helper method the delegates
 	public numeric function calculateSkuPriceBasedOnCurrentAccount(required any sku) {
 		if(getSlatwallScope().getLoggedInFlag()) {
@@ -346,7 +296,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Return the lowest price
 		return prices[1];
 	}
-	
 	
 	// Simple method that gets the appopriate rate to use for this sku no matter where it comes from, and then calculates the correct value.  If no rate is found, it is just a passthough of sku.getPrice()
 	public numeric function calculateSkuPriceBasedOnPriceGroup(required any sku, required any priceGroup) {
@@ -415,14 +364,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
 		if( !isNull(arguments.order.getAccount()) && !arguments.order.getAccount().isGuestAccount() ) {
 			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++){
-				if(arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode() == "oitSale") {
-					var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(arguments.order.getOrderItems()[i].getSku(), arguments.order.getAccount());
-					
-					if(priceGroupDetails.price < arguments.order.getOrderItems()[i].getPrice() && isObject(priceGroupDetails.priceGroup)) {
-						arguments.order.getOrderItems()[i].setPrice( priceGroupDetails.price );
-						arguments.order.getOrderItems()[i].setAppliedPriceGroup( priceGroupDetails.priceGroup );
-					}
-				}	
+				var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(arguments.order.getOrderItems()[i].getSku(), arguments.order.getAccount());
+				
+				if(priceGroupDetails.price < arguments.order.getOrderItems()[i].getPrice() && isObject(priceGroupDetails.priceGroup)) {
+					arguments.order.getOrderItems()[i].setPrice( priceGroupDetails.price );
+					arguments.order.getOrderItems()[i].setAppliedPriceGroup( priceGroupDetails.priceGroup );
+				}
 			}	
 		}
 	}
@@ -446,6 +393,59 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ====================== START: Save Overrides ===========================
 	
+
+	public any function savePriceGroupRate(required any priceGroupRate, struct data) {
+		// Before we allow the automated entity population to work, clear out the percentageOff, amountOff and amount fields from the rate so that they null out in the DB.
+		if(arguments.data.priceGroupRateId == "new amount") {
+			arguments.priceGroupRate.clearAmounts();
+		}
+
+		// Populates entity based on RC contents and validates entity. 
+		arguments.priceGroupRate = super.save(entity=arguments.priceGroupRate, data=arguments.data);
+		
+		// As long as this price group rate didn't have errors, then we can update all of the other rates for this given price group
+		if(!arguments.priceGroupRate.hasErrors()) {
+			var priceGroup = arguments.priceGroupRate.getPriceGroup();
+			var rates = priceGroup.getPriceGroupRates();
+			
+			// Loop over all of the rates that aren't this one, and make sure that they don't have any of the productTypes, products, or skus of this one
+			for(var i=1; i<=arrayLen(rates); i++) {
+				// Don't check the rate in this loop interation if it had the same ID as the rate we just edited
+				if(rates[i].getPriceGroupRateID() != arguments.priceGroupRate.getPriceGroupRateID()) {
+					// Remove Product Types
+					for(var pt=1; pt<=arrayLen(arguments.priceGroupRate.getProductTypes()); pt++) {
+						rates[i].removeProductType(arguments.priceGroupRate.getProductTypes()[pt]);
+					}
+					// Remove Products
+					for(var p=1; p<=arrayLen(arguments.priceGroupRate.getProducts()); p++) {
+						rates[i].removeProduct(arguments.priceGroupRate.getProducts()[p]);
+					}
+					// Remove Skus
+					for(var s=1; s<=arrayLen(arguments.priceGroupRate.getSkus()); s++) {
+						rates[i].removeSku(arguments.priceGroupRate.getSkus()[s]);
+					}
+					
+					// If the rate that was just edited was set to global, make sure that no other rates are global
+					if(arguments.priceGroupRate.getGlobalFlag() && rates[i].getGlobalFlag()) {
+						rates[i].setGlobalFlag(false);	
+					}	
+				}
+			}
+			
+			// If this rate is set to global, remove all include/exclude filters
+			if(arguments.priceGroupRate.getGlobalFlag()) {
+				arguments.priceGroupRate.setProducts([]);
+				arguments.priceGroupRate.setProductTypes([]);
+				arguments.priceGroupRate.setSKUs([]);
+				arguments.priceGroupRate.setExcludedProducts([]);
+				arguments.priceGroupRate.setExcludedProductTypes([]);
+				arguments.priceGroupRate.setExcludedSKUs([]);
+			}
+		}
+		return arguments.priceGroupRate; 
+	}
+	
+	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
@@ -458,6 +458,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Delete Overrides ==========================
 	
+	public boolean function deletePriceGroup(required any priceGroup){
+		// Any price groups that are inhering from this price group should have that inheritence disabled.
+		var inheritingPriceGroups = arguments.priceGroup.getChildPriceGroups();
+
+		while(arrayLen(inheritingPriceGroups) != 0) {
+			priceGroup.removeChildPriceGroup(inheritingPriceGroups[1]);
+		}
+	
+		return super.delete(priceGroup);
+	}
+	
 	// =====================  END: Delete Overrides ===========================
 		
 }
+

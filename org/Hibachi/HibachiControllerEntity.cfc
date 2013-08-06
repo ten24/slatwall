@@ -399,7 +399,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			// Populate the processObject with any data that might have come into the RC
 			if(!rc.processObject.getPopulatedFlag()) {
 				rc.processObject.populate( rc );
-				rc.processObject.setPopulatedFlag( true );	
+				rc.processObject.setPopulatedFlag( true );
 			}
 		}
 		

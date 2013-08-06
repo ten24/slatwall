@@ -35,7 +35,7 @@
 		<Record typeID="444df2919d15d8ef5c9bc67857f19228" typeIDPath="444df2919d15d8ef5c9bc67857f19228" parentTypeID="NULL" type="Attribute Set Types" systemCode="attributeSetType" />
 		<Record typeID="444df2a3ebb07d6280c339a09c0d90d3" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df2a3ebb07d6280c339a09c0d90d3" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account" systemCode="astAccount" />
 		<Record typeID="444df32b9730e4a50af0c0ecb9d77f3b" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32b9730e4a50af0c0ecb9d77f3b" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account Payment" systemCode="astAccountPayment" />
-		<Record typeID="444df325adea07a73014e74b449eb315" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df2a3ebb07d6280c339a09c0d90d3" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Brand" systemCode="astBrand" />
+		<Record typeID="444df325adea07a73014e74b449eb315" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df325adea07a73014e74b449eb315" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Brand" systemCode="astBrand" />
 		<Record typeID="5accbf56c330c01b3be2b8fef26094cc" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf56c330c01b3be2b8fef26094cc" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Location" systemCode="astLocation" />
 		<Record typeID="5accbf57dcf5bb3eb71614febe83a31d" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf57dcf5bb3eb71614febe83a31d" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Location Configuration" systemCode="astLocationConfiguration" />
 		<Record typeID="444df327c72a5bd51bb2f691aac17008" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df327c72a5bd51bb2f691aac17008" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order" systemCode="astOrder" />
@@ -108,6 +108,11 @@
 		<Record typeID="444df2f0fed139ff94191de8fcd1f61b" typeIDPath="444df2ef9cb25116d6396b34d89c9312,444df2f0fed139ff94191de8fcd1f61b" parentTypeID="444df2ef9cb25116d6396b34d89c9312" type="Charge" systemCode="optCharge" />
 		<Record typeID="444df2f1cc40d0ea8a2de6f542ab4f1d" typeIDPath="444df2ef9cb25116d6396b34d89c9312,444df2f1cc40d0ea8a2de6f542ab4f1d" parentTypeID="444df2ef9cb25116d6396b34d89c9312" type="Credit" systemCode="optCredit" />
 
+		<Record typeID="5accbf56c330c01b3be2b8fef26094cc" typeIDPath="5accbf56c330c01b3be2b8fef26094cc" parentTypeID="NULL" type="Order Payment Status Types" systemCode="orderPaymentStatusType" />
+		<Record typeID="5accbf57dcf5bb3eb71614febe83a31d" typeIDPath="5accbf56c330c01b3be2b8fef26094cc,5accbf57dcf5bb3eb71614febe83a31d" parentTypeID="5accbf56c330c01b3be2b8fef26094cc" type="Active" systemCode="opstActive" />
+		<Record typeID="5accbf58a94b61fe031f854ffb220f4b" typeIDPath="5accbf56c330c01b3be2b8fef26094cc,5accbf58a94b61fe031f854ffb220f4b" parentTypeID="5accbf56c330c01b3be2b8fef26094cc" type="Invalid" systemCode="opstInvalid" />
+		<Record typeID="5accbf59ac1b1e30f86b1ab01812e932" typeIDPath="5accbf56c330c01b3be2b8fef26094cc,5accbf59ac1b1e30f86b1ab01812e932" parentTypeID="5accbf56c330c01b3be2b8fef26094cc" type="Removed" systemCode="opstRemoved" />
+
 		<Record typeID="5accbf4bc2f3ffcf702d75529a6692b6" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6" parentTypeID="NULL" type="Physical Status Types" systemCode="physicalStatusType" />
 		<Record typeID="5accbf4cb81693960a8cf9c6ada9d220" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4cb81693960a8cf9c6ada9d220" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" type="Open" systemCode="pstOpen" />
 		<Record typeID="5accbf4db8ff07fa9b37d3285919ecc3" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4db8ff07fa9b37d3285919ecc3" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" type="Closed" systemCode="pstClosed" />
@@ -165,8 +170,11 @@
 <!--
 Below Are UUID's to use... delete after using
 
+<<<<<<< HEAD
 5accbf58a94b61fe031f854ffb220f4b
 5accbf59ac1b1e30f86b1ab01812e932
+=======
+>>>>>>> refs/heads/develop
 5accbf5a08b1fc0f12fa654ea0c0b683
 5accbf5b07d71ab6b89545b79c7f2d31
 5accbf5c91278b287d91cd351088b091

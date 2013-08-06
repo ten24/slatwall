@@ -1,4 +1,9 @@
 {
+	"conditions":{
+	    "slatwallAuthenticatedAccount":{
+	        "slatwallAuthenticationExistsFlag":{"eq":true}
+	    }
+	},
 	"properties":{
 		"firstName":							[{"contexts":"save","required":true}],
 		"lastName":								[{"contexts":"save","required":true}],
@@ -6,6 +11,12 @@
 		"orders":								[{"contexts":"delete","maxCollection":0}],
 		"productReviews":						[{"contexts":"delete","maxCollection":0}],
 		"cmsAccountID":							[{"contexts":"save","uniqueOrNull":true}],
-		"slatwallAuthenticationExistsFlag":		[{"contexts":"createPassword","eq":false},{"contexts":"changePassword","eq":true}]
+		"emailAddress":							[{"contexts":"createPassword","required":true}],
+		"slatwallAuthenticationExistsFlag":		[
+											    	{"contexts":"createPassword","eq":false},
+											    	{"contexts":"changePassword","eq":true}
+												],
+		"accountEmailAddressesNotInUseFlag":	[{"contexts":"createPassword","eq":true}],
+		"primaryEmailAddress":					[{"contexts":"save","conditions":"slatwallAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}]
 	}
 }

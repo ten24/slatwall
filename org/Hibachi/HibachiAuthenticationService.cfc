@@ -17,7 +17,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var actionPermissions = getActionPermissionDetails();
 		
 		// Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
-		if(!structKeyExists(actionPermissions, subsystemName) || !structKeyExists(actionPermissions[ subsystemName ].sections, sectionName)) {
+		if(!structKeyExists(actionPermissions, subsystemName) || !actionPermissions[ subsystemName ].hasSecureMethods || !structKeyExists(actionPermissions[ subsystemName ].sections, sectionName)) {
 			return true;
 		}
 

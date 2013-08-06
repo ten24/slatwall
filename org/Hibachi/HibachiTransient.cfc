@@ -62,6 +62,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		getHibachiErrors().addError(argumentCollection=arguments);
 	}
 	
+	// @hint helper method to add an array of errors to the error bean
+	public void function addErrors( required struct errors ) {
+		getHibachiErrors().addErrors(argumentCollection=arguments);
+	}
+	
 	// @hint helper method that returns all error messages as <p> html tags
 	public string function getAllErrorsHTML( ) {
 		var returnString = "";
@@ -396,30 +401,34 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				var propertyContext = getService("hibachiValidationService").getPopulatedPropertyValidationContext( object=this, propertyName=propertyName, originalContext=arguments.context );
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( listLast(getPropertyMetaData(propertyName).cfc,'.') );
 				
-				// If this was a one-to-many than validate each
-				if(isArray(variables.populatedSubProperties[ propertyName ])) {
+				// Make sure that the context is a valid context
+				if( len(propertyContext) && (!isBoolean(propertyContext) || propertyContext) ) {
 					
-					// Loop over each one that was populated and call the validation
-					for(var i=1; i<=arrayLen(variables.populatedSubProperties[ propertyName ]); i++) {
+					// If this was a one-to-many than validate each
+					if(isArray(variables.populatedSubProperties[ propertyName ])) {
 						
-						// Validate this one
-						variables.populatedSubProperties[ propertyName ][i].validate( propertyContext );
+						// Loop over each one that was populated and call the validation
+						for(var i=1; i<=arrayLen(variables.populatedSubProperties[ propertyName ]); i++) {
+							
+							// Validate this one
+							variables.populatedSubProperties[ propertyName ][i].validate( propertyContext );
+							
+							// If it had errors, add an error to this entity
+							if(variables.populatedSubProperties[ propertyName ][i].hasErrors()) {
+								getHibachiErrors().addError('populate', propertyName);
+							}
+						}
+						
+					// If this was a many-to-one, then just validate it
+					} else if (!isNull(variables[ propertyName ])) {
+						
+						// Validate the property
+						variables[ propertyName ].validate( propertyContext );
 						
 						// If it had errors, add an error to this entity
-						if(variables.populatedSubProperties[ propertyName ][i].hasErrors()) {
+						if(variables[ propertyName ].hasErrors()) {
 							getHibachiErrors().addError('populate', propertyName);
 						}
-					}
-					
-				// If this was a many-to-one, then just validate it
-				} else {
-					
-					// Validate the property
-					variables.populatedSubProperties[ propertyName ].validate( propertyContext );
-					
-					// If it had errors, add an error to this entity
-					if(variables.populatedSubProperties[ propertyName ].hasErrors()) {
-						getHibachiErrors().addError('populate', propertyName);
 					}
 				}
 			}
@@ -795,7 +804,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	// ========================= START: DELIGATION HELPERS ==========================================
 	
 	// @hint helper function to pass this entity along with a template to the string replace function
-	public string function stringReplace( required string templateString, boolean formatValues=false ) {
-		return getService("hibachiUtilityService").replaceStringTemplate(arguments.templateString, this, arguments.formatValues);
+	public string function stringReplace( required string templateString, boolean formatValues=false, boolean removeMissingKeys=false ) {
+		return getService("hibachiUtilityService").replaceStringTemplate(arguments.templateString, this, arguments.formatValues, arguments.removeMissingKeys);
 	}
 }	

@@ -1,37 +1,47 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
@@ -59,6 +69,7 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
+	property name="orderPaymentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentStatusType" fetch="join";
 	property name="paymentMethod" hb_populateEnabled="public" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" fetch="join";
 	property name="referencedOrderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="referencedOrderPaymentID";
 	property name="termPaymentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="termPaymentAccountID";
@@ -100,6 +111,7 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	property name="paymentMethodType" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
 	property name="orderStatusCode" persistent="false";
+	property name="statusCode" persistent="false";
 	property name="securityCode" persistent="false" hb_populateEnabled="public";
 	property name="orderAmountNeeded" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
@@ -147,7 +159,7 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 		if(listFindNoCase("creditCard,giftCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setProviderToken( arguments.accountPaymentMethod.getProviderToken() );
 		}
-		
+			
 		// Credit Card & Term Payment
 		if(listFindNoCase("creditCard,termPayment", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setBillingAddress( arguments.accountPaymentMethod.getBillingAddress().copyAddress( true ) );
@@ -321,6 +333,10 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	
 	public any function getOrderStatusCode() {
 		return getOrder().getStatusCode();
+	}
+	
+	public any function getStatusCode() {
+		return getOrderPaymentStatusType().getSystemCode();
 	}
 	
 	public string function getExpirationDate() {
@@ -509,10 +525,12 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	public any function getAmount() {
 		// If an amount has not been explicity set, then we can return another value if needed
 		if( !structKeyExists(variables, "amount") ) {
-			if(!isNull(getOrder()) && getOrderPaymentType().getSystemCode() eq 'optCharge' && getOrder().getDynamicChargeOrderPayment().getOrderPaymentID() eq getOrderPaymentID()) {
+			if(!isNull(getOrder()) && !isNull(getOrder().getDynamicChargeOrderPayment()) && getOrderPaymentType().getSystemCode() eq 'optCharge' && getOrder().getDynamicChargeOrderPayment().getOrderPaymentID() eq getOrderPaymentID()) {
 				return getOrder().getDynamicChargeOrderPaymentAmount();
-			} else if (!isNull(getOrder()) && getOrderPaymentType().getSystemCode() eq 'optCredit' && getOrder().getDynamicCreditOrderPayment().getOrderPaymentID() eq getOrderPaymentID()) {
+			} else if (!isNull(getOrder()) && !isNull(getOrder().getDynamicCreditOrderPayment()) && getOrderPaymentType().getSystemCode() eq 'optCredit' && getOrder().getDynamicCreditOrderPayment().getOrderPaymentID() eq getOrderPaymentID()) {
 				return getOrder().getDynamicCreditOrderPaymentAmount(); 
+			} else if (!isNull(getOrder())) {
+				return 0;
 			}
 			
 			// Return null to describe that it hasn't been defined yet, but it will need to.
@@ -534,6 +552,13 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 			variables.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge");
 		}
 		return variables.orderPaymentType;
+	}
+	
+	public any function getOrderPaymentStatusType() {
+		if( !structKeyExists(variables, "orderPaymentStatusType") ) {
+			variables.orderPaymentStatusType = getService("settingService").getTypeBySystemCode("opstActive");
+		}
+		return variables.orderPaymentStatusType;
 	}
 	
 	// ==============  END: Overridden Implicet Getters ====================
@@ -581,3 +606,4 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
+

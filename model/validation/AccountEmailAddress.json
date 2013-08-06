@@ -1,5 +1,15 @@
 {
+	"conditions":{
+	    "requiresNotInUse":{
+	        "primaryFlag":{"eq":true},
+	        "account.slatwallAuthenticationExistsFlag":{"eq":true}
+	    }
+	},
 	"properties":{
-		"emailAddress":		[{"contexts":"save","required":true,"dataType":"email"}]
+		"emailAddress":		[
+		    					{"contexts":"save","required":true,"dataType":"email"},
+								{"contexts":"save","conditions":"requiresNotInUse","method":"getPrimaryEmailAddressNotInUseFlag"}
+							],
+		"primaryFlag":		[{"contexts":"delete","eq":false}]
 	}
 }

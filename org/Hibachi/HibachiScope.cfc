@@ -116,6 +116,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return entityService.invokeMethod("get#arguments.entityName#SmartList", {1=arguments.data});
 	}
 	
+	public void function flushORMSession(){
+		if(!getORMHasErrors()) {
+			getDAO( "hibachiDAO" ).flushORMSession();
+		}
+	}
+	
 	// ==================== SESSION / ACCOUNT SETUP ===========================
 	
 	public any function getSession() {
