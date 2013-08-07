@@ -144,6 +144,14 @@ function initUIElements( scopeSelector ) {
 	});
 	
 	// Validation
+	jQuery.validator.methods.date = function(value,element){
+		try{
+			value = $.datepicker.parseDateTime(convertedDateFormat,convertedTimeFormat,value);
+		} catch(e){}
+		
+		return this.optional(element) || !/Invalid|NaN/.test(new Date(value).toString());
+	};
+	
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value){
 		jQuery(value).validate({
 			invalidHandler: function() {
