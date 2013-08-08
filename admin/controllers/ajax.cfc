@@ -55,6 +55,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	property name="orderService" type="any";
 	property name="productService" type="any";
 	property name="promotionService" type="any";
+	property name="skuService" type="any";
 	property name="vendorService" type="any";
 	property name="vendorOrderService" type="any";
 	property name="hibachiService" type="any";
@@ -245,23 +246,39 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	
 	public function updateInventoryTable(required struct rc) {
 		param name="arguments.rc.locationID" default="";
-		arguments.rc.ajaxResponse["inventoryData"] = [];
+		param name="arguments.rc.skuID" default="";
 		
 		// Get all locations where parentID is rc.locationID, if rc.locationID is null then return null parents
+		var sku = getSkuService().getSku({skuID=arguments.rc.skuID});
+		//sku.addFilter('skuID', arguments.rc.skuID);	
 		var smartList = getLocationService().getLocationSmartList();
 		if(len(arguments.rc.locationID)) {
 			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);	
 		} else {
 			smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
 		}
-		
+		var thisDataArr = [];
 		for(var location in smartList.getRecords()) {
 			var thisData = {};
+			thisData["skuID"] = arguments.rc.skuID;
 			thisData["locationID"] = location.getLocationID();
 			thisData["locationName"] = location.getLocationName();
-			thisData["qats"] = 0;
+			thisData["QOH"] = sku.getQuantity('QOH',location.getLocationID());
+			thisData["QOSH"] = sku.getQuantity('QOSH',location.getLocationID());
+			thisData["QNDOO"] = sku.getQuantity('QNDOO',location.getLocationID());
+			thisData["QNDORVO"] = sku.getQuantity('QNDORVO',location.getLocationID());
+			thisData["QNDOSA"] = sku.getQuantity('QNDOSA',location.getLocationID());
+			thisData["QNRORO"] = sku.getQuantity('QNRORO',location.getLocationID());
+			thisData["QNROVO"] = sku.getQuantity('QNROVO',location.getLocationID());
+			thisData["QNROSA"] = sku.getQuantity('QNROSA',location.getLocationID());
+			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
+			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
+			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
+			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
+			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
+			ArrayAppend(thisDataArr,thisData);
 		}
-		
+		arguments.rc.ajaxResponse["inventoryData"] = thisDataArr;
 		
 	}
 	

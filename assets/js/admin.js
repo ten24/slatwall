@@ -75,14 +75,17 @@ $(document).ready(function(e){
         $("[data-toggle='tooltip']").tooltip();
     });
 	
-	jQuery('body').on('click', '.update-inventory-plus', function(e) {
+	/*
+jQuery('body').on('click', '.update-inventory-plus', function(e) {
 		
 		var data = {
 			slatAction: 'admin:ajax.updateInventoryTable',
-			locationID: jQuery(this).data('locationid')
+			locationID: jQuery(this).data('locationid'),
+			skuID: jQuery(this).data('skuid')
 		};
 		
 		console.log(data);
+		console.log(jQuery(this).attr('href'));
 		
 		jQuery.ajax({
 			url: jQuery(this).attr('href'),
@@ -90,13 +93,72 @@ $(document).ready(function(e){
 			data: data,
 			dataType: 'json',
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
-			error: function( r ) {
-				console.log(r);
-			},
 			success: function( r ) {
+				console.log("success");
 				console.log(r);
 				var newTR = '<tr>';
+			},
+			error: function( r ) {
+				console.log("failure");
+				console.log(r);
 			}
 		});
 	});
+*/
+	
+	 $( '.update-inventory-plus' ).click(function() {
+		var data = {
+			slatAction: 'admin:ajax.updateInventoryTable',
+			locationID: jQuery(this).data('locationid'),
+			skuID: jQuery(this).data('skuid')
+		};
+		
+		var currentDepth = jQuery(this).data('depth');
+		var newDepth = 0;
+		if(String(currentDepth).length) {
+			var newDepth = Number(currentDepth) + 1;
+		}
+		
+		var jqxhr = $.ajax({
+			"url": jQuery(this).attr('href'),
+			"data": data,
+			dataType: 'json',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) }
+		}).done(function(r){
+			console.log("success");
+			var invDataArr = r.inventoryData;
+			if (invDataArr) {
+				for(var i=0;i<invDataArr.length;i++) {
+					var invData = invDataArr[i];
+					var newTR = ["<tr class='stock'>", 
+						"<td><a href='' class='update-inventory-plus depth"+newDepth+"' data-depth='"+newDepth+"' data-locationid='"+invData.locationID+"' data-skuid='"+invData.skuID+"'><i class='icon-plus'></i></a> <strong>"+invData.locationName+"</strong></td>",
+						"<td>"+invData.QOH+"</td>",
+						"<td>"+invData.QOSH+"</td>",
+						"<td>"+invData.QNDOO+"</td>",
+						"<td>"+invData.QNDORVO+"</td>",
+						"<td>"+invData.QNDOSA+"</td>",
+						"<td>"+invData.QNRORO+"</td>",
+						"<td>"+invData.QNROVO+"</td>",
+						"<td>"+invData.QNROSA+"</td>",
+						"<td>"+invData.QC+"</td>",
+						"<td>"+invData.QE+"</td>",
+						"<td>"+invData.QNC+"</td>",
+						"<td>"+invData.QATS+"</td>",
+						"<td>"+invData.QIATS+"</td>",
+					"</tr>"].join('\n');
+					$('#inventory-table tr:last').after(newTR);
+				}
+			}
+			
+		}).fail(function(r){
+			console.log("failure");
+		});
+	});
+	
+	
+	
+	
+	
+	
+	
 });
