@@ -250,13 +250,14 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		
 		// Get all locations where parentID is rc.locationID, if rc.locationID is null then return null parents
 		var sku = getSkuService().getSku({skuID=arguments.rc.skuID});
-		//sku.addFilter('skuID', arguments.rc.skuID);	
 		var smartList = getLocationService().getLocationSmartList();
+		
 		if(len(arguments.rc.locationID)) {
 			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);	
 		} else {
 			smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
 		}
+		
 		var thisDataArr = [];
 		for(var location in smartList.getRecords()) {
 			var thisData = {};
