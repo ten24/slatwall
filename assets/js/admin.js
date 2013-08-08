@@ -71,7 +71,32 @@ $(document).ready(function(e){
 		}
 	});
 	
-		$(function () {
-	        $("[data-toggle='tooltip']").tooltip();
-	    });
+	$(function () {
+        $("[data-toggle='tooltip']").tooltip();
+    });
+	
+	jQuery('body').on('click', '.update-inventory-plus', function(e) {
+		
+		var data = {
+			slatAction: 'admin:ajax.updateInventoryTable',
+			locationID: jQuery(this).data('locationid')
+		};
+		
+		console.log(data);
+		
+		jQuery.ajax({
+			url: jQuery(this).attr('href'),
+			method: 'post',
+			data: data,
+			dataType: 'json',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+			error: function( r ) {
+				console.log(r);
+			},
+			success: function( r ) {
+				console.log(r);
+				var newTR = '<tr>';
+			}
+		});
+	});
 });

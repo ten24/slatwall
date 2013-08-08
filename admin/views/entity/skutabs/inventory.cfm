@@ -50,9 +50,67 @@ Notes:
 
 <cfparam name="rc.product" type="any">
 
-<cfset rc.locations = $.slatwall.getService("locationService").listLocation() />
+<!---<cfset rc.locations = $.slatwall.getService("locationService").listLocation() />--->
 
 <cfoutput>
+	<table class="table table-striped table-bordered table-condensed">
+		<tr>
+			<th>Location</th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qoh.full')#">#$.slatwall.rbKey('define.qoh')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qosh.full')#">#$.slatwall.rbKey('define.qosh')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qndoo.full')#">#$.slatwall.rbKey('define.qndoo')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qndorvo.full')#">#$.slatwall.rbKey('define.qndorvo')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qndosa.full')#">#$.slatwall.rbKey('define.qndosa')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnroro.full')#">#$.slatwall.rbKey('define.qnroro')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnrovo.full')#">#$.slatwall.rbKey('define.qnrovo')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnrosa.full')#">#$.slatwall.rbKey('define.qnrosa')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qc.full')#">#$.slatwall.rbKey('define.qc')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qe.full')#">#$.slatwall.rbKey('define.qe')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnc.full')#">#$.slatwall.rbKey('define.qnc')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qats.full')#">#$.slatwall.rbKey('define.qats')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qiats.full')#">#$.slatwall.rbKey('define.qiats')#</div></th>
+		</tr>
+		<tr class="sku">
+			<td><a href="##" class="update-inventory-plus depth0" data-depth="0" data-locationid=""><i class="icon-plus"></i></a> <strong>All Locations</strong></td>
+			<td>#rc.sku.getQuantity('QOH')#</td>
+			<td>#rc.sku.getQuantity('QOSH')#</td>
+			<td>#rc.sku.getQuantity('QNDOO')#</td>
+			<td>#rc.sku.getQuantity('QNDORVO')#</td>
+			<td>#rc.sku.getQuantity('QNDOSA')#</td>
+			<td>#rc.sku.getQuantity('QNRORO')#</td>
+			<td>#rc.sku.getQuantity('QNROVO')#</td>
+			<td>#rc.sku.getQuantity('QNROSA')#</td>
+			<td>#rc.sku.getQuantity('QC')#</td>
+			<td>#rc.sku.getQuantity('QE')#</td>
+			<td>#rc.sku.getQuantity('QNC')#</td>
+			<td>#rc.sku.getQuantity('QATS')#</td>
+			<td>#rc.sku.getQuantity('QIATS')#</td>
+		</tr>
+		<!---
+		<cfif arrayLen(rc.locations) gt 1>
+			<cfloop array="#rc.locations#" index="loc">
+				<cfset locationID = loc.getLocationID()/>
+				<tr class="stock">
+					<td>#loc.getLocationName()#</td>
+					<td>#rc.sku.getQuantity('QOH', locationID)#</td>
+					<td>#rc.sku.getQuantity('QOSH', locationID)#</td>
+					<td>#rc.sku.getQuantity('QNDOO', locationID)#</td>
+					<td>#rc.sku.getQuantity('QNDORVO', locationID)#</td>
+					<td>#rc.sku.getQuantity('QNDOSA', locationID)#</td>
+					<td>#rc.sku.getQuantity('QNRORO', locationID)#</td>
+					<td>#rc.sku.getQuantity('QNROVO', locationID)#</td>
+					<td>#rc.sku.getQuantity('QNROSA', locationID)#</td>
+					<td>#rc.sku.getQuantity('QC', locationID)#</td>
+					<td>#rc.sku.getQuantity('QE', locationID)#</td>
+					<td>#rc.sku.getQuantity('QNC', locationID)#</td>
+					<td>#rc.sku.getQuantity('QATS', locationID)#</td>
+					<td>#rc.sku.getQuantity('QIATS', locationID)#</td>
+				</tr>
+			</cfloop>
+		</cfif>
+		--->
+	</table>
+	
 	<!--- NOTE: I had to add divs to the table headers so the bootstrap tooltips would work properly - [GG] --->
 	<!---<table class="table table-striped table-bordered table-condensed">
 		<tr>
@@ -108,7 +166,7 @@ Notes:
 				</tr>
 			</cfloop>
 		</cfif>
-	</table>--->
+	</table>
 	
 	
 	
@@ -240,7 +298,7 @@ Notes:
 	
 	
 	
-	<!---<table >
+	<table >
 		<tr>
 			<th>Location</th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qoh.full')#">#$.slatwall.rbKey('define.qoh')#</div></th>
@@ -333,17 +391,7 @@ Notes:
 		</cfif>
 	</table>
 	
-	--->
-	
-	
-	
-	
-	
-		
-	
-	
-	
-<!---	<ul style="list-style:none;">
+	<ul style="list-style:none;">
 		<li>
 			<span class="collapsible"><i  class="icon-plus"></i> All Locations</span>
 			<table class="table table-striped table-bordered table-condensed">
@@ -429,9 +477,6 @@ Notes:
 		</li>
 	</ul>--->
 	
-	
-	
-
 	
 	
 	

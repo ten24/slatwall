@@ -51,6 +51,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	property name="accountService" type="any";
 	property name="brandService" type="any";
 	property name="dataService" type="any";
+	property name="locationService" type="any";
 	property name="orderService" type="any";
 	property name="productService" type="any";
 	property name="promotionService" type="any";
@@ -240,6 +241,28 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	
 	public function updateSortOrder(required struct rc) {
 		getHibachiService().updateRecordSortOrder(argumentCollection=rc);
+	}
+	
+	public function updateInventoryTable(required struct rc) {
+		param name="arguments.rc.locationID" default="";
+		arguments.rc.ajaxResponse["inventoryData"] = [];
+		
+		// Get all locations where parentID is rc.locationID, if rc.locationID is null then return null parents
+		var smartList = getLocationService().getLocationSmartList();
+		if(len(arguments.rc.locationID)) {
+			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);	
+		} else {
+			smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
+		}
+		
+		for(var location in smartList.getRecords()) {
+			var thisData = {};
+			thisData["locationID"] = location.getLocationID();
+			thisData["locationName"] = location.getLocationName();
+			thisData["qats"] = 0;
+		}
+		
+		
 	}
 	
 }
