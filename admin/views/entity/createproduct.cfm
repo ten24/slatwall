@@ -115,6 +115,9 @@ Notes:
 			<cf_HibachiListingDisplay smartList="#contentAccessList#" multiselectFieldName="accessContents" edit="true">
 				<cf_HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
 			</cf_HibachiListingDisplay>
+		<cfelseif rc.baseProductType eq "event">
+			<!--- TODO [glenn]: Want to select Event Date Start/End & LocationConfiguration --->
+			<!--- You may need to add eventStartDateTime & eventEndDateTime to the sku entity, check the spec --->
 		</cfif>
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

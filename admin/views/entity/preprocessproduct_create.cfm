@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,52 +45,28 @@
 
 Notes:
 
-*/
-component extends="HibachiService" persistent="false" accessors="true" output="false" {
+--->
+<cfparam name="rc.product" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
 	
-	property name="locationDAO" type="any";
-	
-	public boolean function isLocationBeingUsed(required any location) {
-		return getLocationDAO().isLocationBeingUsed(arguments.location);
-	}
-	
-	public numeric function getLocationCount() {
-		return getLocationDAO().getLocationCount();
-	}
-	
-	public array function getLocationOptions() {
-		var smartList = this.getLocationSmartList();
-		
-		smartList.addSelect('locationID', 'value');
-		smartList.addSelect('locationName', 'name');
-		
-		// TODO [glenn]: change this so that it shows the location hierarchy.  You can look at the productType options for product entity as example
-		
-		return smartList.getRecords(); 
-	}
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-}
+	<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
+	</cf_HibachiEntityActionBar>
+	<!---
+	<cf_HibachiPropertyRow>
+		<cf_HibachiPropertyList>
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="updatePriceFlag" fieldType="yesno" edit="#rc.edit#">
+			<cf_HibachiDisplayToggle selector="input[name='updatePriceFlag']">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+			</cf_HibachiDisplayToggle>
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="updateListPriceFlag" fieldType="yesno" edit="#rc.edit#">
+			<cf_HibachiDisplayToggle selector="input[name='updateListPriceFlag']">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="#rc.edit#">
+			</cf_HibachiDisplayToggle>
+		</cf_HibachiPropertyList>
+	</cf_HibachiPropertyRow>
+	--->
+</cf_HibachiEntityProcessForm>
 
