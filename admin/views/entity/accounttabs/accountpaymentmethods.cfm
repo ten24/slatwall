@@ -64,6 +64,16 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createaccountpaymentmethod" class="btn" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+	<cfset disabled = false />
+	<cfset disabledText = "" />
+	<cfset smartList = $.slatwall.getService("paymentService").getPaymentMethodSmartList() />
+	<cfset smartList.addFilter('activeFlag', 1) />
+	<cfset smartList.addFilter('allowSaveFlag', 1) />
+	<cfset smartList.addInFilter('paymentMethodType', 'creditCard,giftCard,external,termPayment') />
+	<cfif smartList.getRecordsCount() eq 0>
+		<cfset disabled = true />
+		<cfset disabledText = $.slatwall.rbKey('admin.entity.accounttabs.accountpaymentmethods.adddisabled') />	
+	</cfif>
+	<cf_HibachiActionCaller action="admin:entity.createaccountpaymentmethod" class="btn" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true disabled="#disabled#" disabledText="#disabledText#" />
 </cfoutput>
 

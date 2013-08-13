@@ -192,6 +192,35 @@ function initUIElements( scopeSelector ) {
 		}
 	});
 	
+	
+	// Report Sortable
+	jQuery( scopeSelector ).find(jQuery('#hibachi-report-dimension-sort')).sortable({
+		stop: function( event, ui ) {
+			var newDimensionsValue = '';
+			jQuery.each(jQuery('#hibachi-report-dimension-sort').children(), function(i, v){
+				if(i > 0) {
+					newDimensionsValue += ','
+				}
+				newDimensionsValue += jQuery(v).data('dimension'); 
+			});
+			jQuery('input[name="dimensions"]').val( newDimensionsValue );
+			updateReport();
+		}				
+	});
+	// Report Sortable
+	jQuery( scopeSelector ).find(jQuery('#hibachi-report-metric-sort')).sortable({
+		stop: function( event, ui ) {
+			var newMetricsValue = '';
+			jQuery.each(jQuery('#hibachi-report-metric-sort').children(), function(i, v){
+				if(i > 0) {
+					newMetricsValue += ','
+				}
+				newMetricsValue += jQuery(v).data('metric'); 
+			});
+			jQuery('input[name="metrics"]').val( newMetricsValue );
+			updateReport();
+		}				
+	});
 }
 
 function setupEventHandlers() {
@@ -639,6 +668,70 @@ function setupEventHandlers() {
 		updatePermissionCheckboxDisplay( this );
 	});
 	jQuery('.hibachi-permission-checkbox:checked').change();
+	
+	
+	// Report Hooks ============================================
+	
+	jQuery('body').on('change', '.hibachi-report-date', function(){
+		addLoadingDiv( 'hibachi-report' );
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '.hibachi-report-date-group', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('.hibachi-report-date-group').removeClass('active');
+		jQuery( this ).addClass('active');
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '#hibachi-report-enable-compare', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('input[name="reportCompareFlag"]').val(1);
+		jQuery('#hibachi-report-compare-date').removeClass('hide');
+		jQuery(this).addClass('hide');
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '#hibachi-report-disable-compare', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('input[name="reportCompareFlag"]').val(0);
+		jQuery('#hibachi-report-compare-date').addClass('hide');
+		jQuery('#hibachi-report-enable-compare').removeClass('hide');
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '.hibachi-report-add-dimension', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('input[name="dimensions"]').val( jQuery('input[name="dimensions"]').val() + ',' + jQuery(this).data('dimension') );
+		updateReport();
+	});
+	jQuery('body').on('click', '.hibachi-report-remove-dimension', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		var vArr =  jQuery('input[name="dimensions"]').val().split(',');
+		vArr.splice(vArr.indexOf(jQuery(this).data('dimension')),1);
+		jQuery('input[name="dimensions"]').val( vArr.join(',') );
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '.hibachi-report-add-metric', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('input[name="metrics"]').val( jQuery('input[name="metrics"]').val() + ',' + jQuery(this).data('metric') );
+		updateReport();
+	});
+	jQuery('body').on('click', '.hibachi-report-remove-metric', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		var vArr =  jQuery('input[name="metrics"]').val().split(',');
+		vArr.splice(vArr.indexOf(jQuery(this).data('metric')),1);
+		jQuery('input[name="metrics"]').val( vArr.join(',') );
+		updateReport();
+	});
 	
 }
 
@@ -1266,23 +1359,59 @@ function updateGlobalSearchResults() {
 	}
 }
 
-/*
-function getEntityAutocompleteTemplate( entityName, data ) {
-	var output = "";
-	if( entityName === 'Account') {
-		output += '<span class="image"><img src="';
-		output += data.gravatarURL;
-		output += '" /></span>';
-		output += '<span class="image">';
-		output += '</span>';
-		output += '<span class="image">';
-		output += '</span>';
-		output += '<span class="image">';
-		output += '</span>';
-	}
-	return output;
+function updateReport() {
+	
+	var data = {
+		slatAction: 'admin:report.default',
+		reportName: jQuery('#hibachi-report').data('reportname'),
+		reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
+		reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
+		reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
+		reportDateTime: jQuery('select[name="reportDateTime"]').val(),
+		reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
+		dimensions: jQuery('input[name="dimensions"]').val(),
+		metrics: jQuery('input[name="metrics"]').val()
+	};
+	
+	jQuery.ajax({
+		url: hibachiConfig.baseURL + '/',
+		method: 'post',
+		data: data,
+		dataType: 'json',
+		beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+		error: function( r ) {
+			// Error
+			removeLoadingDiv( 'hibachi-report' );
+		},
+		success: function( r ) {
+			jQuery('#hibachi-report-chart').highcharts(r.report.chartData);
+			jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);
+			jQuery('#hibachi-report-table').html(r.report.dataTable);
+			initUIElements('#hibachi-report');
+			removeLoadingDiv( 'hibachi-report' );
+		}
+	});
+	
+
+	/*
+	jQuery.each( $('input[name="metrics"]:checked'), function(i,v) {
+		if(i === 0) {
+			data.metrics = ''
+		} else {
+			data.metrics += ','
+		}
+		data.metrics += jQuery(v).val();
+	});
+	jQuery.each($('input[name="dimensions"]:checked'), function(i,v) {
+		if(i === 0) {
+			data.dimensions = ''
+		} else {
+			data.dimensions += ','
+		}
+		data.dimensions += jQuery(v).val();
+	});
+	*/
 }
-*/
 
 // ========================= START: HELPER METHODS ================================
 

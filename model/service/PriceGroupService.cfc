@@ -362,7 +362,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
-		if( !isNull(arguments.order.getAccount()) && !arguments.order.getAccount().isGuestAccount() ) {
+		if( !isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups()) ) {
 			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++){
 				var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(arguments.order.getOrderItems()[i].getSku(), arguments.order.getAccount());
 				

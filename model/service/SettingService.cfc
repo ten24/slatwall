@@ -129,9 +129,9 @@ globalEncryptionKeySize
 					
 					// Brand
 					brandDisplayTemplate = {fieldType="select"},
-					brandHTMLTitleString = {fieldType="text"},
-					brandMetaDescriptionString = {fieldType="textarea"},
-					brandMetaKeywordsString = {fieldType="textarea"},
+					brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
+					brandMetaDescriptionString = {fieldType="textarea", defaultValue="${brandName}"},
+					brandMetaKeywordsString = {fieldType="textarea", defaultValue="${brandName}"},
 					
 					// Content
 					contentRestrictAccessFlag = {fieldType="yesno",defaultValue=0},
@@ -198,17 +198,17 @@ globalEncryptionKeySize
 					productImageDefaultExtension = {fieldType="text",defaultValue="jpg"},
 					productImageOptionCodeDelimiter = {fieldType="select", defaultValue="-"},
 					productTitleString = {fieldType="text", defaultValue="${brand.brandName} ${productName}"},
-					productHTMLTitleString = {fieldType="text"},
-					productMetaDescriptionString = {fieldType="textarea"},
-					productMetaKeywordsString = {fieldType="textarea"},
+					productHTMLTitleString = {fieldType="text", defaultValue="${brand.brandName} ${productName} - ${productType.productTypeName}"},
+					productMetaDescriptionString = {fieldType="textarea", defaultValue="${productDescription}"},
+					productMetaKeywordsString = {fieldType="textarea", defaultValue="${productName}, ${productType.productTypeName}, ${brand.brandName}"},
 					productShowDetailWhenNotPublishedFlag = {fieldType="yesno", defaultValue=0},
 					productAutoApproveReviewsFlag = {fieldType="yesno", defaultValue=0},
 					
 					// Product Type
 					productTypeDisplayTemplate = {fieldType="select"},
-					productTypeHTMLTitleString = {fieldType="text"},
-					productTypeMetaDescriptionString = {fieldType="textarea"},
-					productTypeMetaKeywordsString = {fieldType="textarea"},
+					productTypeHTMLTitleString = {fieldType="text", defaultValue="${productTypeName}"},
+					productTypeMetaDescriptionString = {fieldType="textarea", defaultValue="${productTypeDescription}"},
+					productTypeMetaKeywordsString = {fieldType="textarea", defaultValue="${productTypeName}, ${parentProductType.productTypeName}"},
 					
 					// Site
 					siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},

@@ -131,6 +131,7 @@ Notes:
 					<cfif !isNull(rc.order.getOrderCloseDateTime())>
 						<cf_HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" displayType="table">
 					</cfif>
+					<cf_HibachiPropertyDisplay object="#rc.order#" property="currencyCode" edit="false" displayType="table">
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="subtotal" edit="false" displayType="table">
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="taxtotal" edit="false" displayType="table">
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="fulfillmenttotal" edit="false" displayType="table">

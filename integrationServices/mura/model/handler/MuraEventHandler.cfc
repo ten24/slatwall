@@ -126,10 +126,17 @@
 						
 						// Override the contentBean for the request
 						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
 						
-						// Change Title & HTMLTitle of page
+						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProduct().getTitle() );
-						$.content().setHTMLTitle( $.slatwall.getProduct().getTitle() );
+						if(len($.slatwall.getProduct().setting('productHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getProduct().getTitle() );
+						}
+						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaKeywordsString') ) );
 						
 						// DEPRECATED*** If LegacyInjectFlag is set to true then add the body
 						if($.slatwall.setting('integrationMuraLegacyInjectFlag')) {
@@ -167,10 +174,17 @@
 						
 						// Override the contentBean for the request
 						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
 						
-						// Change Title & HTMLTitle of page
+						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProductType().getProductTypeName() );
-						$.content().setHTMLTitle( $.slatwall.getProductType().getProductTypeName() );
+						if(len($.slatwall.getProductType().setting('productTypeHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getProductType().getProductTypeName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -191,10 +205,17 @@
 						
 						// Override the contentBean for the request
 						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
 						
-						// Change Title & HTMLTitle of page
+						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getBrand().getBrandName() );
-						$.content().setHTMLTitle( $.slatwall.getBrand().getBrandName() );
+						if(len($.slatwall.getBrand().setting('brandHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getBrand().getBrandName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandMetaKeywordsString') ) );
 						
 					} else {
 						

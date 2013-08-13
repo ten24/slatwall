@@ -63,6 +63,8 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">
 
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
+		
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
 				var printWindow = window.open('#request.slatwallScope.getBaseURL()#?slatAction=admin:print.default', '_blank');
@@ -165,12 +167,13 @@ Notes:
 						</cf_HibachiActionCallerDropdown>
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 							<cf_HibachiDividerHider>
-								<cf_HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true" />
+								<cf_HibachiActionCaller action="admin:report" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listeventtrigger" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listschedule" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listsession" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listtask" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
+								<cf_HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true" />
 								<cf_HibachiActionCaller action="admin:main.log" type="list">
 								<cf_HibachiActionCaller action="admin:main.update" type="list">
 								<cfif $.slatwall.getAccount().getSuperUserFlag()>
@@ -312,7 +315,6 @@ Notes:
 			</div>
 		</div>
 
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></script>

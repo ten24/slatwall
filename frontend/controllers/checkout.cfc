@@ -152,6 +152,11 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 			if(structKeyExists(accountData, "emailAddress") && !structKeyExists(accountData, "emailAddressConfirm")) {
 				accountData.emailAddressConfirm = accountData.emailAddress;
 			}
+			if(structKeyExists(accountData, "guestAccount")) {
+				accountData.createAuthenticationFlag = !accountData.guestAccount;
+			} else {
+				accountData.createAuthenticationFlag = 0;
+			}
 		}
 		
 		// Call the new processing methods

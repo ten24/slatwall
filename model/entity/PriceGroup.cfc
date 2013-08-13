@@ -59,6 +59,7 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="Slatw
 	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" hb_optionsNullRBKey="define.none";
 	
 	// Related Object Properties (One-To-Many)
+	property name="appliedOrderItems" singularname="appliedOrderItem" cfc="OrderItem" type="array" fieldtype="one-to-many" fkcolumn="appliedPriceGroupID" inverse="true";
 	property name="childPriceGroups" singularname="ChildPriceGroup" cfc="PriceGroup" fieldtype="one-to-many" fkcolumn="parentPriceGroupID" inverse="true";
 	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";    
 	
@@ -121,6 +122,14 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="Slatw
 			arrayDeleteAt(arguments.parentPriceGroup.getChildPriceGroups(), index);
 		}
 		structDelete(variables, "parentPriceGroup");
+	}
+	
+	// Applied Order Items (one-to-many)    
+	public void function addAppliedOrderItem(required any appliedOrderItem) {    
+		arguments.appliedOrderItem.setAppliedPriceGroup( this );    
+	}    
+	public void function removeAppliedOrderItem(required any appliedOrderItem) {    
+		arguments.appliedOrderItem.removeAppliedPriceGroup( this );    
 	}
 	
 	// Child Price Groups (one-to-many)    
