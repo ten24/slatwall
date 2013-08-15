@@ -79,7 +79,7 @@ Notes:
 		public array function getQNDOO(required string productID, string productRemoteID) {
 			
 			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, orderItem.sku.skuID as skuID, stock.stockID as stockID, stock.location.locationID as locationID)
+			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, orderItem.sku.skuID as skuID, stock.stockID as stockID, stock.location.locationID as locationID, stock.location.locationIDPath as locationIDPath)
 					FROM
 						SlatwallOrderItem orderItem
 					  LEFT JOIN
@@ -97,7 +97,8 @@ Notes:
 					GROUP BY
 						orderItem.sku.skuID,
 						stock.stockID,
-						stock.location.locationID";
+						stock.location.locationID,
+						stock.location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
 			
@@ -113,7 +114,7 @@ Notes:
 		public array function getQNDOSA(required string productID, string productRemoteID) {
 			
 			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(stockAdjustmentItem.quantity), 0 ) - coalesce( sum(stockAdjustmentDeliveryItem.quantity), 0 ) as QNDOSA, stockAdjustmentItem.fromStock.sku.skuID as skuID, stockAdjustmentItem.fromStock.stockID as stockID, stockAdjustmentItem.fromStock.location.locationID as locationID)
+			var hql = "SELECT NEW MAP(coalesce( sum(stockAdjustmentItem.quantity), 0 ) - coalesce( sum(stockAdjustmentDeliveryItem.quantity), 0 ) as QNDOSA, stockAdjustmentItem.fromStock.sku.skuID as skuID, stockAdjustmentItem.fromStock.stockID as stockID, stockAdjustmentItem.fromStock.location.locationID as locationID, stockAdjustmentItem.fromStock.location.locationIDPath as locationIDPath)
 				FROM
 					SlatwallStockAdjustmentItem stockAdjustmentItem
 				  LEFT JOIN
@@ -125,7 +126,8 @@ Notes:
 				GROUP BY
 					stockAdjustmentItem.fromStock.sku.skuID,
 					stockAdjustmentItem.fromStock.stockID,
-					stockAdjustmentItem.fromStock.location.locationID";
+					stockAdjustmentItem.fromStock.location.locationID,
+					stockAdjustmentItem.fromStock.location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
 		}
@@ -134,7 +136,7 @@ Notes:
 		public array function getQNRORO(required string productID, string productRemoteID) {
 			
 			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, orderItem.sku.skuID as skuID, stock.stockID as stockID, stock.location.locationID as locationID)
+			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, orderItem.sku.skuID as skuID, stock.stockID as stockID, stock.location.locationID as locationID, stock.location.locationIDPath)
 					FROM
 						SlatwallOrderItem orderItem
 					  LEFT JOIN
@@ -152,7 +154,8 @@ Notes:
 					GROUP BY
 						orderItem.sku.skuID,
 						stock.stockID,
-						stock.location.locationID";
+						stock.location.locationID,
+						stock.location.locationIDPath";
 				
 			return ormExecuteQuery(hql, params);
 		}
@@ -161,7 +164,7 @@ Notes:
 		public array function getQNROVO(required string productID, string productRemoteID) {
 			
 			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(vendorOrderItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROVO, vendorOrderItem.stock.sku.skuID as skuID, vendorOrderItem.stock.stockID as stockID, vendorOrderItem.stock.location.locationID as locationID)
+			var hql = "SELECT NEW MAP(coalesce( sum(vendorOrderItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROVO, vendorOrderItem.stock.sku.skuID as skuID, vendorOrderItem.stock.stockID as stockID, vendorOrderItem.stock.location.locationID as locationID, vendorOrderItem.stock.location.locationIDPath as locationIDPath)
 					FROM
 						SlatwallVendorOrderItem vendorOrderItem
 					  LEFT JOIN
@@ -175,7 +178,8 @@ Notes:
 					GROUP BY
 						vendorOrderItem.stock.sku.skuID,
 						vendorOrderItem.stock.stockID,
-						vendorOrderItem.stock.location.locationID";
+						vendorOrderItem.stock.location.locationID,
+						vendorOrderItem.stock.location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
 		}
@@ -184,7 +188,7 @@ Notes:
 		public array function getQNROSA(required string productID, string productRemoteID) {
 			
 			var params = [ arguments.productID ];
-			var hql = "SELECT NEW MAP(coalesce( sum(stockAdjustmentItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROSA, stockAdjustmentItem.toStock.sku.skuID as skuID, stockAdjustmentItem.toStock.stockID as stockID, stockAdjustmentItem.toStock.location.locationID as locationID)
+			var hql = "SELECT NEW MAP(coalesce( sum(stockAdjustmentItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNROSA, stockAdjustmentItem.toStock.sku.skuID as skuID, stockAdjustmentItem.toStock.stockID as stockID, stockAdjustmentItem.toStock.location.locationID as locationID, stockAdjustmentItem.toStock.location.locationIDPath as locationIDPath)
 				FROM
 					SlatwallStockAdjustmentItem stockAdjustmentItem
 				  LEFT JOIN
@@ -196,7 +200,8 @@ Notes:
 				GROUP BY
 					stockAdjustmentItem.toStock.sku.skuID,
 					stockAdjustmentItem.toStock.stockID,
-					stockAdjustmentItem.toStock.location.locationID";
+					stockAdjustmentItem.toStock.location.locationID,
+					stockAdjustmentItem.toStock.location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
 		}
