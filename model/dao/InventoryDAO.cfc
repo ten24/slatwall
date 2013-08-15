@@ -54,7 +54,7 @@ Notes:
 		public array function getQOH(required string productID, string productRemoteID) {
 			var params = [arguments.productID];
 			
-			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, inventory.stock.sku.skuID as skuID, inventory.stock.stockID as stockID, inventory.stock.location.locationID as locationID)
+			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, inventory.stock.sku.skuID as skuID, inventory.stock.stockID as stockID, inventory.stock.location.locationID as locationID, inventory.stock.location.locationIDPath as locationIDPath)
 					FROM
 						SlatwallInventory inventory
 					WHERE
@@ -62,7 +62,8 @@ Notes:
 					GROUP BY
 						inventory.stock.sku.skuID,
 						inventory.stock.stockID,
-						inventory.stock.location.locationID";
+						inventory.stock.location.locationID,
+						inventory.stock.location.locationIDPath";
 						
 			
 			return ormExecuteQuery(hql, params);

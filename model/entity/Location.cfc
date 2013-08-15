@@ -185,6 +185,16 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 		
 	// =================== START: ORM Event Hooks  =========================
 	
+	public void function preInsert(){
+		setLocationIDPath( buildIDPathList( "parentLocation" ) );
+		super.preInsert();
+	}
+	
+	public void function preUpdate(struct oldData){
+		setLocationIDPath( buildIDPathList( "parentLocation" ) );;
+		super.preUpdate(argumentcollection=arguments);
+	}
+	
 	// ===================  END:  ORM Event Hooks  =========================
 }
 
