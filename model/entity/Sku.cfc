@@ -374,6 +374,18 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		}
 		return variables[ arguments.quantityType ];
 	}
+	
+	public numeric function getQuantityTotalsByLocation(required string quantityType, string locationID, string stockID) {
+		
+		// If this is a calculated quantity and locationID exists, then delegate
+		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) && structKeyExists(arguments, "locationID") ) {
+			var parentQuantity = getQuantity(arguments.quantityType,arguments.locationID);
+		}
+		return variables[ arguments.quantityType ];
+	}
+	
+	
+	
 	// END: Quantity Helper Methods
 	
 	// ============ START: Non-Persistent Property Methods =================

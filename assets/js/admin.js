@@ -113,6 +113,8 @@ $(document).ready(function(e){
 			dataType: 'json',
 			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) }
 		}).done(function(r){
+			console.log("success");
+			console.log(r.inventoryData);
 			var invDataArr = r.inventoryData;
 			if (invDataArr.length) {
 				for(var i=0;i<invDataArr.length;i++) {

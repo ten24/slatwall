@@ -244,22 +244,166 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		getHibachiService().updateRecordSortOrder(argumentCollection=rc);
 	}
 	
+	/* Called from Sku Inventory to assist in building hierarchical
+	location inventory table */ 
 	public function updateInventoryTable(required struct rc) {
 		param name="arguments.rc.locationID" default="";
 		param name="arguments.rc.skuID" default="";
-		
-		// Get all locations where parentID is rc.locationID, if rc.locationID is null then return null parents
+		//var dumpService = createObject("component","/slatwall.custom.model.service.FileOutputService" );
 		var sku = getSkuService().getSku({skuID=arguments.rc.skuID});
 		var smartList = getLocationService().getLocationSmartList();
 		
+		// Get all locations where parentID is rc.locationID, 
+		// if rc.locationID is null then return null parents
 		if(len(arguments.rc.locationID)) {
-			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);	
+			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);
 		} else {
 			smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
 		}
 		
+		var	locationChildren = [];
+		var thisData = {};
 		var thisDataArr = [];
+		var childsmartList = getLocationService().getLocationSmartList();
+		
 		for(var location in smartList.getRecords()) {
+			locationChildren = [];
+			
+			// start with the top level inventory counts
+			thisData = {};
+			thisData["skuID"] = arguments.rc.skuID;
+			thisData["locationID"] = location.getLocationID();
+			thisData["locationName"] = location.getLocationName();
+			thisData["QOH"] = sku.getQuantity('QOH',location.getLocationID());
+			thisData["QOSH"] = sku.getQuantity('QOSH',location.getLocationID());
+			thisData["QNDOO"] = sku.getQuantity('QNDOO',location.getLocationID());
+			thisData["QNDORVO"] = sku.getQuantity('QNDORVO',location.getLocationID());
+			thisData["QNDOSA"] = sku.getQuantity('QNDOSA',location.getLocationID());
+			thisData["QNRORO"] = sku.getQuantity('QNRORO',location.getLocationID());
+			thisData["QNROVO"] = sku.getQuantity('QNROVO',location.getLocationID());
+			thisData["QNROSA"] = sku.getQuantity('QNROSA',location.getLocationID());
+			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
+			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
+			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
+			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
+			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
+			
+			childsmartList.addFilter('parentLocation.locationID', location.getlocationID());
+			
+			// Get current location's immediate children
+			if(arraylen(childsmartList.getRecords())) {
+				
+				// Add location's immediate children to array
+				for(var i=1;i<=arraylen(location.getChildLocations());i++) {
+					var childLocation = location.getChildLocations()[i];
+					var childID = childLocation.getLocationID();
+					arrayAppend(locationChildren,childID);
+				}
+				
+				// Loop through all location's children adding their
+				// quantities to the location total
+				do {
+					var childID = locationChildren[1];
+					thisData["QOH"] += sku.getQuantity('QOH',childID);
+					thisData["QOSH"] += sku.getQuantity('QOSH',childID);
+					thisData["QNDOO"] += sku.getQuantity('QNDOO',childID);
+					thisData["QNDORVO"] += sku.getQuantity('QNDORVO',childID);
+					thisData["QNDOSA"] += sku.getQuantity('QNDOSA',childID);
+					thisData["QNRORO"] += sku.getQuantity('QNRORO',childID);
+					thisData["QNROVO"] += sku.getQuantity('QNROVO',childID);
+					thisData["QNROSA"] += sku.getQuantity('QNROSA',childID);
+					thisData["QC"] += sku.getQuantity('QC',childID);
+					thisData["QE"] += sku.getQuantity('QE',childID);
+					thisData["QNC"] += sku.getQuantity('QNC',childID);
+					thisData["QATS"] += sku.getQuantity('QATS',childID);
+					thisData["QIATS"] += sku.getQuantity('QIATS',childID);
+						
+					// Add children of child to locationChildren array so
+					// their quantities will be included
+					if(childLocation.hasChildren()) {
+						var grandChildren = location.getChildLocations();
+						for(var i=1;i<=arraylen(childLocation.getChildLocations());i++) {
+							var grandchildLocation = childLocation.getChildLocations()[i];
+							var grandchildID = grandchildLocation.getLocationID();
+							arrayAppend(locationChildren,grandchildID);
+						}
+					}
+					
+					// Delete the current child location from the 
+					// array now that we've included its quantities
+					arrayDeleteAt(locationChildren,1);
+					
+				} while(arraylen(locationChildren));
+				
+			}
+
+			childsmartList.removeFilter('parentLocation.locationID');
+			
+			ArrayAppend(thisDataArr,thisData);
+		
+		}
+			
+		
+		arguments.rc.ajaxResponse["inventoryData"] = thisDataArr;
+		
+	}
+
+	
+	private any function getLocationChildren(required string locationID) {
+		var locationSmartList = getLocationService().getLocationSmartList();
+		locationSmartList.addFilter('parentLocation.locationID', arguments.locationID);
+		return locationSmartList;
+	}
+	
+	
+		/*public function updateInventoryTable(required struct rc) {
+		param name="arguments.rc.locationID" default="";
+		param name="arguments.rc.skuID" default="";
+		
+		var sku = getSkuService().getSku({skuID=arguments.rc.skuID});
+		var locationSmartList = getLocationService().getLocationSmartList();
+		
+		// Get all locations where parentID is rc.locationID, 
+		// if rc.locationID is null then return null parents
+		if(len(arguments.rc.locationID)) {
+			locationSmartList.addFilter('parentLocation.locationID', arguments.rc.locationID);
+		} else {
+			locationSmartList.addWhereCondition('aslatwalllocation.parentLocation is null');
+		}
+		
+		var locationTree = [];
+		var locationHasChildren = true;
+		var	locationChildren = [];
+		var locationChildrenSmartList = [];
+		
+		// To get the total inventory for a location
+		// we have to include the inventory for all
+		// of its children.
+		while(locationHasChildren) {
+			var treeLength = arraylen(locationTree);
+			// Get children of locations in filtered smartlist
+			for(var location in locationSmartList.getRecords()) {
+				locationChildren = [];
+				locationChildrenSmartList = getLocationChildren(location.getLocationID());
+				locationChildren = locationChildrenSmartList.getRecords();
+				// Add child locations to tree
+				for(var locationChild in locationChildren) {
+					arrayAppend(locationTree,locationChild);
+				}
+			}
+			// If array length is still the same then there
+			// are no more child locations
+			if(arraylen(locationTree) == treeLength) {
+				locationHasChildren = false;
+			}
+		}
+		
+		if(!arrayIsEmpty(locationTree)) {
+			
+		}
+		
+		var thisDataArr = [];
+		for(var location in locationSmartList.getRecords()) {
 			var thisData = {};
 			thisData["skuID"] = arguments.rc.skuID;
 			thisData["locationID"] = location.getLocationID();
@@ -281,6 +425,8 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		}
 		arguments.rc.ajaxResponse["inventoryData"] = thisDataArr;
 		
-	}
+	}*/
+	
+	
 	
 }
