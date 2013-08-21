@@ -45,6 +45,11 @@
 
 Notes:
 
+	Resize Methods
+	scaleBest
+	scale
+	scaleAndCrop
+	crop
 */
 component persistent="false" extends="HibachiService" output="false" accessors="true" {
 
@@ -58,7 +63,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 		
 		// Loop over all arguments and add as attributes if they aren't the resizing keys
 		for(var key in arguments) {
-			if(!listFindNoCase("imagePath,size,resizeMethod,cropLocation,cropXStart,cropYStart,scaleWidth,scaleHeight,missingImagePath", key) && isSimpleValue(arguments[key])) {
+			if(!listFindNoCase("imagePath,size,resizeMethod,cropLocation,cropXStart,cropYStart,scaleWidth,scaleHeight,missingImagePath", key) && isSimpleValue(arguments[key]) && (!structKeyExists(arguments, "resizeMethod") || !listFindNoCase("scaleBest", arguments.resizeMethod) || !listFindNoCase("width,height", key)) ) {
 				returnHTML = listAppend(returnHTML, '#key#="#arguments[key]#"', ' ');
 			}
 		}
@@ -68,7 +73,6 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 		
 		return returnHTML;
 	}
-	
 	
 	// Image File Methods
 	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
@@ -109,7 +113,9 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			}
 			
 			// Setup the crop or scaleAndCrop indicator
-			if(listFindNoCase("scaleAndCrop,Crop", arguments.resizeMethod)) {
+			if(listFindNoCase("scaleBest", arguments.resizeMethod)){
+				imageNameSuffix &= "_sb";
+			} else if(listFindNoCase("crop,scaleAndCrop", arguments.resizeMethod)) {
 				
 				// If this is scale and crop, then we need to look for scaleWidth & scaleHeight, as well as define the resizeMode
 				if(lcase(arguments.resizeMethod) eq "scaleandcrop") {
@@ -173,8 +179,8 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 					var img = imageRead(expandPath(arguments.imagePath));
 					
 					// If the method is scale
-					if(lcase(arguments.resizeMethod) eq "scale") {
-						
+					if(listFindNoCase("scale", arguments.resizeMethod)) {
+						logHibachi('3');
 						if(structKeyExists(arguments, "width") && structKeyExists(arguments,"height")) {
 							img = scaleImage(image=img, width=arguments.width, height=arguments.height, canvasColor=arguments.canvasColor);
 						} else if (structKeyExists(arguments, "width")) {
@@ -182,11 +188,33 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 						} else if (structKeyExists(arguments, "height")) {
 							img = scaleImage(image=img, height=arguments.height, canvasColor=arguments.canvasColor);
 						}
-						
-					}
 					
-					// If the method is scaleAndCrop, then do the scale first based on scaleHeight
-					if(lcase(arguments.resizeMethod) eq "scaleandcrop") {
+					// If the method is scaleBest, then check the proportions and scaleToFit
+					} else if (listFindNoCase("scaleBest", arguments.resizeMethod)) {
+						
+						// If width and hight passed in, then figure out which is better to use
+						if(structKeyExists(arguments, "width") && structKeyExists(arguments,"height")) {
+							
+							// Resize based on width
+							if((arguments.height / img.height) > (arguments.width / img.width)) {
+								imageScaleToFit(img, arguments.width, "");
+								
+							// Resize based on
+							} else {
+								imageScaleToFit(img, "", arguments.height);
+								
+							}
+							
+						} else if (structKeyExists(arguments, "width")) {
+							imageScaleToFit(img, arguments.width, "");
+							
+						} else if (structKeyExists(arguments, "height")) {
+							imageScaleToFit(img, "", arguments.height);
+							
+						}
+						
+					// If the method is scaleAndCrop, then do the scale first based on scaleHeight	
+					} else if (listFindNoCase("scaleAndCrop", arguments.resizeMethod)) {
 						
 						if(structKeyExists(arguments, "scaleWidth") && structKeyExists(arguments,"scaleHeight")) {
 							img = scaleImage(image=img, width=arguments.scaleWidth, height=arguments.scaleHeight, canvasColor=arguments.canvasColor);
@@ -197,6 +225,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 						}
 						
 					}
+					
 					
 					// If the method is crop or scaleAndCrop, then we need to do the crop next
 					if(listFindNoCase("crop,scaleAndCrop", arguments.resizeMethod)) {

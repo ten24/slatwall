@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallEventTrigger" table="SlatwallEventTrigger" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="eventTriggerService" hb_permission="this" {
+component entityname="SlatwallEventTrigger" table="SwEventTrigger" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="eventTriggerService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="eventTriggerID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

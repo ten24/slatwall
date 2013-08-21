@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallPaymentMethod" >
+<Table tableName="SwPaymentMethod" >
 	<Columns>
 		<column name="paymentMethodID" fieldtype="id" />
 		<column name="paymentMethodName" update="false" />

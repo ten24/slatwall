@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSubscriptionStatus" table="SlatwallSubscriptionStatus" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" {
+component entityname="SlatwallSubscriptionStatus" table="SwSubscriptionStatus" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" {
 	
 	// Persistent Properties
 	property name="subscriptionStatusID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -56,7 +56,7 @@ component entityname="SlatwallSubscriptionStatus" table="SlatwallSubscriptionSta
 	// Related Object Properties (many-to-one)
 	property name="subscriptionUsage" cfc="SubscriptionUsage" fieldtype="many-to-one" fkcolumn="subscriptionUsageID";
 	property name="subscriptionStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="subscriptionStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=subscriptionStatusType";
-	property name="subscriptionStatusChangeReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="subscriptionStatusChangeReasonTypeID" hb_optionsSmartListData="f:parentType.systemCode=subscriptionStatusChangeReasonType";
+	property name="subscriptionStatusChangeReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="subsStatusChangeReasonTypeID" hb_optionsSmartListData="f:parentType.systemCode=subscriptionStatusChangeReasonType";
 	
 	// Related Object Properties (one-to-many)
 	

@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account Content Access" entityname="SlatwallAccountContentAccess" table="SlatwallAccountContentAccess" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" {
+component displayname="Account Content Access" entityname="SlatwallAccountContentAccess" table="SwAccountContentAccess" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" {
 	
 	// Persistent Properties
 	property name="accountContentAccessID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -58,7 +58,7 @@ component displayname="Account Content Access" entityname="SlatwallAccountConten
 	// Related Object Properties (One-to-Many)
 	
 	// Related Object Properties (Many-to-Many)
-	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="many-to-many" linktable="SlatwallAccountContentAccessContent" fkcolumn="accountContentAccessID" inversejoincolumn="contentID";
+	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwAccountContentAccessContent" fkcolumn="accountContentAccessID" inversejoincolumn="contentID";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -72,7 +72,7 @@ component displayname="Account Content Access" entityname="SlatwallAccountConten
 	// Non-Persistent Properties
 
 	// DEPRECATED Properties
-	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SlatwallAccountContentAccessContent" fkcolumn="accountContentAccessID" inversejoincolumn="contentID"; // USE: contents
+	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwAccountContentAccessContent" fkcolumn="accountContentAccessID" inversejoincolumn="contentID"; // USE: contents
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

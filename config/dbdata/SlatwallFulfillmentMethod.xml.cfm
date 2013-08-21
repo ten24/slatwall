@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallFulfillmentMethod">
+<Table tableName="SwFulfillmentMethod">
 	<Columns>
 		<column name="fulfillmentMethodID" fieldtype="id" />
 		<column name="fulfillmentMethodName" update="false" />

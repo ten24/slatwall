@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction" {
+component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction" {
 	
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -153,6 +153,11 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 		// Gift Card
 		if(listFindNoCase("giftCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setGiftCardNumber( arguments.accountPaymentMethod.getGiftCardNumber() );
+		}
+		
+		// Term Payment
+		if(listFindNoCase("termPayment", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
+			setTermPaymentAccount( arguments.accountPaymentMethod.getAccount() );
 		}
 		
 		// Credit Card & Gift Card

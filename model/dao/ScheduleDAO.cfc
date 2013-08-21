@@ -52,20 +52,20 @@ Notes:
 		
 		<cfquery name="tasks">
 			SELECT
-				SlatwallTask.taskID,
-				SlatwallTaskSchedule.taskScheduleID
+				SwTask.taskID,
+				SwTaskSchedule.taskScheduleID
 			FROM
-				SlatwallTaskSchedule
+				SwTaskSchedule
 			INNER JOIN 
-				SlatwallTask ON SlatwallTask.taskID = SlatwallTaskSchedule.taskid 
+				SwTask ON SwTask.taskID = SwTaskSchedule.taskid 
 			WHERE 
-				SlatwallTask.runningflag=0  
+				SwTask.runningflag=0  
 			AND	
-				SlatwallTask.activeflag= 1 
+				SwTask.activeflag= 1 
 			AND 
 				(
-				slatwallTaskSchedule.nextRunDateTime IS NULL
-					OR slatwallTaskSchedule.nextRunDateTime <=	<cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" >
+				SwTaskSchedule.nextRunDateTime IS NULL
+					OR SwTaskSchedule.nextRunDateTime <=	<cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" >
 				)
 		</cfquery>	
 		

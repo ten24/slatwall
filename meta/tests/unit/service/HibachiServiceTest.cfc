@@ -84,10 +84,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(variables.service.getHasPropertyByEntityNameAndPropertyIdentifier("SlatwallSku", "product.brand.notRealProperty"));
 	}
 	
-	/**
-	* @mxunit:expectedException Application
-	*/
-	public void function getHasPropertyByEntityNameAndPropertyIdentifier_returns_exception_when_entity_chain_is_invalid() {
+	public void function getHasPropertyByEntityNameAndPropertyIdentifier_returns_false_when_entity_chain_is_invalid() {
 		assertFalse(variables.service.getHasPropertyByEntityNameAndPropertyIdentifier("SlatwallSku", "product.brokenChain.notRealProperty"));
 	}
 }

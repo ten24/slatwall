@@ -67,9 +67,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function saveBrand(required any brand, required struct data) {
 		if( (isNull(arguments.brand.getURLTitle()) || !len(arguments.brand.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "brandName") && len(arguments.data.brandName)) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.brandName, tableName="SlatwallBrand");	
+				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.brandName, tableName="SwBrand");	
 			} else if (!isNull(arguments.brand.getBrandName()) && len(arguments.brand.getBrandName())) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.brand.getBrandName(), tableName="SlatwallBrand");
+				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.brand.getBrandName(), tableName="SwBrand");
 			}
 		}
 		

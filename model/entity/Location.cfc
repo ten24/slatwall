@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Location" entityname="SlatwallLocation" table="SlatwallLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation" {
+component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation" {
 	
 	// Persistent Properties
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -67,7 +67,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SlatwallLo
 	// Related Object Properties (Many-to-Many - owner)
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SlatwallPhysicalLocation" fkcolumn="locationID" inversejoincolumn="physicalID" inverse="true";
+	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalLocation" fkcolumn="locationID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";

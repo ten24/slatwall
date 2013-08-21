@@ -40,8 +40,8 @@ Notes:
 	
 	<cffunction name="getReportDateTimeDefinitions">
 		<cfreturn [
-			{alias='orderOpenDateTime', dataColumn='SlatwallOrder.orderOpenDateTime', title=rbKey('entity.order.orderOpenDateTime')},
-			{alias='orderCloseDateTime', dataColumn='SlatwallOrder.orderCloseDateTime', title=rbKey('entity.order.orderCloseDateTime')}
+			{alias='orderOpenDateTime', dataColumn='SwOrder.orderOpenDateTime', title=rbKey('entity.order.orderOpenDateTime')},
+			{alias='orderCloseDateTime', dataColumn='SwOrder.orderCloseDateTime', title=rbKey('entity.order.orderCloseDateTime')}
 		] />
 	</cffunction>
 	
@@ -72,54 +72,54 @@ Notes:
 		<cfif not structKeyExists(variables, "data")>
 			<cfquery name="variables.data">
 				SELECT
-					SlatwallSku.skuID,
-					SlatwallSku.skuCode,
-					SlatwallProduct.productID,
-					SlatwallProduct.productName,
-					SlatwallProductType.productTypeID,
-					SlatwallProductType.productTypeName,
-					SlatwallBrand.brandID,
-					SlatwallBrand.brandName,
-					SlatwallOrder.orderID,
-					SlatwallAddress.countryCode,
-					SlatwallAddress.stateCode,
-					SlatwallAddress.city,
-					SlatwallOrderItem.quantity,
-					SlatwallOrderItem.price,
+					SwSku.skuID,
+					SwSku.skuCode,
+					SwProduct.productID,
+					SwProduct.productName,
+					SwProductType.productTypeID,
+					SwProductType.productTypeName,
+					SwBrand.brandID,
+					SwBrand.brandName,
+					SwOrder.orderID,
+					SwAddress.countryCode,
+					SwAddress.stateCode,
+					SwAddress.city,
+					SwOrderItem.quantity,
+					SwOrderItem.price,
 					CASE
-    					WHEN SlatwallOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' THEN
-    						(SlatwallOrderItem.price * SlatwallOrderItem.quantity)
+    					WHEN SwOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' THEN
+    						(SwOrderItem.price * SwOrderItem.quantity)
 						ELSE
 							0
 					END as salePreDiscount,
 					CASE
-    					WHEN SlatwallOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' THEN
-    						(SlatwallOrderItem.price * SlatwallOrderItem.quantity)
+    					WHEN SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' THEN
+    						(SwOrderItem.price * SwOrderItem.quantity)
     					ELSE
     						0
 					END as returnPreDiscount,
-					(SELECT coalesce(SUM(pa.discountAmount), 0) FROM SlatwallPromotionApplied pa WHERE pa.orderItemID = SlatwallOrderItem.orderItemID) as 'itemDiscount',
+					(SELECT coalesce(SUM(pa.discountAmount), 0) FROM SwPromotionApplied pa WHERE pa.orderItemID = SwOrderItem.orderItemID) as 'itemDiscount',
 					#getReportDateTimeSelect()#
 				FROM
-					SlatwallOrderItem
+					SwOrderItem
 				  INNER JOIN
-				  	SlatwallOrderFulfillment on SlatwallOrderItem.orderFulfillmentID = SlatwallOrderFulfillment.orderFulfillmentID
+				  	SwOrderFulfillment on SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
 				  INNER JOIN
-				  	SlatwallOrder on SlatwallOrderFulfillment.orderID = SlatwallOrder.orderID
+				  	SwOrder on SwOrderFulfillment.orderID = SwOrder.orderID
 				  INNER JOIN
-				  	SlatwallAccount on SlatwallOrder.accountID = SlatwallAccount.accountID
+				  	SwAccount on SwOrder.accountID = SwAccount.accountID
 				  INNER JOIN
-				  	SlatwallSku on SlatwallOrderItem.skuID = SlatwallSku.skuID
+				  	SwSku on SwOrderItem.skuID = SwSku.skuID
 				  INNER JOIN
-				  	SlatwallProduct on SlatwallSku.productID = SlatwallProduct.productID
+				  	SwProduct on SwSku.productID = SwProduct.productID
 				  INNER JOIN
-				  	SlatwallProductType on SlatwallProduct.productTypeID = SlatwallProductType.productTypeID
+				  	SwProductType on SwProduct.productTypeID = SwProductType.productTypeID
 				  LEFT JOIN
-				  	SlatwallBrand on SlatwallProduct.brandID = SlatwallBrand.brandID
+				  	SwBrand on SwProduct.brandID = SwBrand.brandID
 				  LEFT JOIN
-				  	SlatwallAddress on SlatwallOrderFulfillment.shippingAddressID = SlatwallAddress.addressID
+				  	SwAddress on SwOrderFulfillment.shippingAddressID = SwAddress.addressID
 				WHERE
-					SlatwallOrder.orderOpenDateTime is not null
+					SwOrder.orderOpenDateTime is not null
 				  AND
 					#getReportDateTimeWhere()#
 			</cfquery>

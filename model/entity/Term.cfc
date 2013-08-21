@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallTerm" table="SlatwallTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" hb_permission="this" {
+component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="termID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallTaskSchedule" table="SlatwallTaskSchedule" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="scheduleService" hb_permission="task.taskSchedules" {
+component entityname="SlatwallTaskSchedule" table="SwTaskSchedule" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="scheduleService" hb_permission="task.taskSchedules" {
 	
 	// Persistent Properties
 	property name="taskScheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

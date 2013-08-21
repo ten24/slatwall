@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Promotion" entityname="SlatwallPromotion" table="SlatwallPromotion" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" hb_permission="this" {
+component displayname="Promotion" entityname="SlatwallPromotion" table="SwPromotion" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="promotionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

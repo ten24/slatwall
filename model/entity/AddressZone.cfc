@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Address Zone" entityname="SlatwallAddressZone" table="SlatwallAddressZone" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" hb_permission="this" {
+component displayname="Address Zone" entityname="SlatwallAddressZone" table="SwAddressZone" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="addressZoneID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -58,8 +58,8 @@ component displayname="Address Zone" entityname="SlatwallAddressZone" table="Sla
 	property name="taxCategoryRates" singularname="taxCategoryRate" cfc="TaxCategoryRate" fieldtype="one-to-many" fkcolumn="addressZoneID" inverse="true";
 	
 	// Related Object Properties (Many-To-Many)
-	property name="addressZoneLocations" singularname="addressZoneLocation" cfc="Address" fieldtype="many-to-many" linktable="SlatwallAddressZoneLocation" fkcolumn="addressZoneID" inversejoincolumn="addressID" cascade="all-delete-orphan";
-	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierShippingAddressZone" fkcolumn="addressZoneID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="addressZoneLocations" singularname="addressZoneLocation" cfc="Address" fieldtype="many-to-many" linktable="SwAddressZoneLocation" fkcolumn="addressZoneID" inversejoincolumn="addressID" cascade="all-delete-orphan";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualShipAddressZone" fkcolumn="addressZoneID" inversejoincolumn="promotionQualifierID" inverse="true";
 	
 	// Audit properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

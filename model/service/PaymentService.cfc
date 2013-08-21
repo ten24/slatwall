@@ -286,7 +286,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							// avsCode
 							if(!isNull(response.getAVSCode())) {
-								arguments.paymentTransaction.setAuthorizationCode(response.getAVSCode());
+								arguments.paymentTransaction.setAVSCode(response.getAVSCode());
 							}
 							
 							// add the providerToken to the orderPayment & accountPayment
@@ -324,7 +324,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// NO INTEGRATION
 					} else {
 						
-						// TODO: Future this is where internal giftCard logic would go
+						// TODO [issue #36]: Add Gift Card Logic Here
 						
 						// Setup amountReceived
 						if( listFindNoCase("receive", arguments.data.transactionType) ) {

@@ -55,7 +55,7 @@ Notes:
 			SELECT
 				*
 			FROM
-				SlatwallSetting
+				SwSetting
 		</cfquery>
 		
 		<cfreturn rs />
@@ -69,7 +69,7 @@ Notes:
 		<cfset var rsResult = "" />
 		
 		<cfquery name="rs" result="rsResult">
-			DELETE FROM SlatwallSetting WHERE #columnName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.columnID#">
+			DELETE FROM SwSetting WHERE #columnName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.columnID#">
 		</cfquery>
 		
 		<cfreturn rsResult.recordCount />
@@ -84,7 +84,7 @@ Notes:
 		<cfset var updatedSettings = 0 />
 		
 		<cfquery name="rs">
-			SELECT settingID, settingValue FROM SlatwallSetting WHERE settingValue LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.primaryIDValue#%">
+			SELECT settingID, settingValue FROM SwSetting WHERE settingValue LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.primaryIDValue#%">
 		</cfquery>
 		
 		<cfloop query="rs">
@@ -96,7 +96,7 @@ Notes:
 				<cfset var newValue = listDeleteAt(rs.settingValue, oldListIndex) />
 				
 				<cfquery name="rs2">
-					UPDATE SlatwallSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#newValue#"> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#">
+					UPDATE SwSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#newValue#"> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#">
 				</cfquery>
 			</cfif>
 		</cfloop>

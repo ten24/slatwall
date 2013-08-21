@@ -51,7 +51,7 @@ Notes:
 	orderItem
 	account
 */
-component displayname="Attribute Value" entityname="SlatwallAttributeValue" table="SlatwallAttributeValue" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" {
+component displayname="Attribute Value" entityname="SlatwallAttributeValue" table="SwAttributeValue" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" {
 	
 	// Persistent Properties
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

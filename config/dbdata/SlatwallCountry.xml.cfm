@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallCountry">
+<Table tableName="SwCountry">
 	<Columns>
 		<column name="countryCode" fieldtype="id" />
 		<column name="countryName" update="false" />

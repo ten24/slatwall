@@ -52,7 +52,7 @@ Notes:
 	
 	
 */
-component displayname="Measurement Unit" entityname="SlatwallMeasurementUnit" table="SlatwallMeasurementUnit" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="measurementService" hb_permission="this" {
+component displayname="Measurement Unit" entityname="SlatwallMeasurementUnit" table="SwMeasurementUnit" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="measurementService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="unitCode" ormtype="string" fieldtype="id" unique="true" generated="never";

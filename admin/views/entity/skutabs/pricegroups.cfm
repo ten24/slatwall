@@ -51,10 +51,10 @@ Notes:
 
 <!---
 
-TODO: NEED TO ADD A TABLE HERE TO DISPLAY ALL PRICE GROUPS
+	TODO [issue #612]: Add table here to display pricing by price group, and allow for single editing.
 
-<cfset det = rc.$.slatwall.getService('priceGroupService').getBestPriceGroupDetailsBasedOnSkuAndAccount(rc.sku, rc.$.slatwall.getAccount()) />
-<cfdump var="#det#" top="3" />
+	<cfset det = rc.$.slatwall.getService('priceGroupService').getBestPriceGroupDetailsBasedOnSkuAndAccount(rc.sku, rc.$.slatwall.getAccount()) />
+	<cfdump var="#det#" top="3" />
 
-<cf_HibachiPropertyDisplay object="#rc.sku#" property="priceGroupRates" edit="#rc.edit#" displayType="plain" />
+	<cf_HibachiPropertyDisplay object="#rc.sku#" property="priceGroupRates" edit="#rc.edit#" displayType="plain" />
 --->

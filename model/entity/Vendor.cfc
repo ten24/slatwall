@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallVendor" table="SlatwallVendor" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="vendorService" hb_permission="this" {
+component entityname="SlatwallVendor" table="SwVendor" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="vendorService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="vendorID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -67,8 +67,8 @@ component entityname="SlatwallVendor" table="SlatwallVendor" persistent="true" a
 	property name="vendorEmailAddresses" singularname="vendorEmailAddress" type="array" cfc="VendorEmailAddress" fieldtype="one-to-many" fkcolumn="vendorID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
-	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SlatwallVendorBrand" fkcolumn="vendorID" inversejoincolumn="brandID";
-	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SlatwallVendorProduct" fkcolumn="vendorID" inversejoincolumn="productID";
+	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwVendorBrand" fkcolumn="vendorID" inversejoincolumn="brandID";
+	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwVendorProduct" fkcolumn="vendorID" inversejoincolumn="productID";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";

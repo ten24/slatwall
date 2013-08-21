@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Option Group" entityname="SlatwallOptionGroup" table="SlatwallOptionGroup" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="optionService" hb_permission="this" {
+component displayname="Option Group" entityname="SlatwallOptionGroup" table="SwOptionGroup" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="optionService" hb_permission="this" {
 
 	// Persistent Properties
 	property name="optionGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

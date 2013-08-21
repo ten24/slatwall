@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallUpdateScript">
+<Table tableName="SwUpdateScript">
 	<Columns>
 		<column name="updateScriptID" fieldtype="id" />
 		<column name="scriptPath" />
@@ -9,8 +9,6 @@
 	<Records>
 		<Record updateScriptID="d7f98d33950797c468bd52f28968b1f1" scriptPath="database/indexes.cfm" loadOrder="1" maxExecutionCount="NULL" />
 		<Record updateScriptID="d7f98d36fffa2a2af72f94aaaa3bca52" scriptPath="database/activeFlags.cfm" loadOrder="2" maxExecutionCount="NULL" />
-		<Record updateScriptID="d7f98d32a446859f1be70bd05255a1c8" scriptPath="database/v1_3.cfm" loadOrder="3" maxExecutionCount="1" />
-		<Record updateScriptID="d7f98d34e79a53bf4f13e1b3ad9fda23" scriptPath="database/v1_4.cfm" loadOrder="4" maxExecutionCount="1" />
 		<Record updateScriptID="d7f98d35f8b584a031146b3e236e01d5" scriptPath="database/v2_0.cfm" loadOrder="5" maxExecutionCount="1" />
 		<Record updateScriptID="d7f98d37bfadcdf6de92d6de3ea5da55" scriptPath="database/v2_2.cfm" loadOrder="6" maxExecutionCount="1" />
 		<Record updateScriptID="d7f98d38dd25d3a8dd622a0230120dff" scriptPath="database/v2_3.cfm" loadOrder="7" maxExecutionCount="1" />
@@ -21,7 +19,6 @@
 <!--
 
 
-d7f98d3ae8690ce0a5d392da35b8a68c
 d7f98d3bb59b0169d2a47677981db86d
 d7f98d3cf759c885cee8b6e4da106224
 d7f98d3daebc6b5c370189009a89434b

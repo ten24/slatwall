@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallRoundingRule">
+<Table tableName="SwRoundingRule">
 	<Columns>
 		<column name="roundingRuleID" fieldtype="id" />
 		<column name="roundingRuleName" update="false" />

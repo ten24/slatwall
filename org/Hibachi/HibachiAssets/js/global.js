@@ -729,7 +729,7 @@ function setupEventHandlers() {
 		addLoadingDiv( 'hibachi-report' );
 		var vArr =  jQuery('input[name="metrics"]').val().split(',');
 		vArr.splice(vArr.indexOf(jQuery(this).data('metric')),1);
-		jQuery('input[name="metrics"]').val( vArr.join(',') );
+		jQuery('input[name="metrics"]').val( vArr.join(',').trim() );
 		updateReport();
 	});
 	
@@ -1366,6 +1366,8 @@ function updateReport() {
 		reportName: jQuery('#hibachi-report').data('reportname'),
 		reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
 		reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
+		reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
+		reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
 		reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
 		reportDateTime: jQuery('select[name="reportDateTime"]').val(),
 		reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
@@ -1392,25 +1394,6 @@ function updateReport() {
 		}
 	});
 	
-
-	/*
-	jQuery.each( $('input[name="metrics"]:checked'), function(i,v) {
-		if(i === 0) {
-			data.metrics = ''
-		} else {
-			data.metrics += ','
-		}
-		data.metrics += jQuery(v).val();
-	});
-	jQuery.each($('input[name="dimensions"]:checked'), function(i,v) {
-		if(i === 0) {
-			data.dimensions = ''
-		} else {
-			data.dimensions += ','
-		}
-		data.dimensions += jQuery(v).val();
-	});
-	*/
 }
 
 // ========================= START: HELPER METHODS ================================

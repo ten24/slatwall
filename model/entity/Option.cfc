@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Option" entityname="SlatwallOption" table="SlatwallOption" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="optionService" hb_permission="optionGroup.options" {
+component displayname="Option" entityname="SlatwallOption" table="SwOption" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="optionService" hb_permission="optionGroup.options" {
 	
 	// Persistent Properties
 	property name="optionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -63,11 +63,11 @@ component displayname="Option" entityname="SlatwallOption" table="SlatwallOption
 	property name="images" singularname="image" cfc="Image" type="array" fieldtype="one-to-many" fkcolumn="optionID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SlatwallSkuOption" fkcolumn="optionID" inversejoincolumn="skuID" inverse="true"; 
-	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SlatwallPromotionRewardOption" fkcolumn="optionID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedOption" fkcolumn="optionID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierOption" fkcolumn="optionID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierExcludedOption" fkcolumn="optionID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="optionID" inversejoincolumn="skuID" inverse="true"; 
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardOption" fkcolumn="optionID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclOption" fkcolumn="optionID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualOption" fkcolumn="optionID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclOption" fkcolumn="optionID" inversejoincolumn="promotionQualifierID" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
