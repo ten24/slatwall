@@ -57,6 +57,8 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="imageFile" ormtype="string" length="50";
 	property name="userDefinedPriceFlag" ormtype="boolean" default="0";
+	property name="eventStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="eventEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";

@@ -230,6 +230,14 @@ component extends="HibachiService" accessors="true" {
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());	
 				}
+				// Update Event Start Date
+				if(arguments.processObject.geteventStartDateTime()) {
+					skus[i].seteventStartDateTime(arguments.processObject.geteventStartDateTime());	
+				}
+				// Update Event End Date
+				if(arguments.processObject.geteventEndDateTime()) {
+					skus[i].seteventEndDateTime(arguments.processObject.geteventEndDateTime());	
+				}
 			}
 		}		
 	

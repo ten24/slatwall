@@ -200,6 +200,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
+		} else if (arguments.product.getProductType().getBaseProductType() == "event") {
+			writeDump(var=data,top=3);
 		} else {
 			throw("There was an unexpected error when creating this product");
 		}
