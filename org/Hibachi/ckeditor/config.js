@@ -8,8 +8,8 @@ CKEDITOR.editorConfig = function( config )
 	// Define changes to default configuration here. For example:
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
-	config.filebrowserBrowseUrl = $.slatwall.getConfig()['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html';
-	config.filebrowserImageBrowseUrl = $.slatwall.getConfig()['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images';
-	config.filebrowserUploadUrl = $.slatwall.getConfig()['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files';
-	config.filebrowserImageUploadUrl = $.slatwall.getConfig()['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images';
+	config.filebrowserBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html';
+	config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images';
+	config.filebrowserUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files';
+	config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images';
 };

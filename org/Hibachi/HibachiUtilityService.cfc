@@ -5,10 +5,14 @@
 	<cfscript>
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
-			if(listFindNoCase("yesno,truefalse,currency,datetime,date,time,weight,pixels,percentage,url", arguments.formatType)) {
+			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});	
 			}
 			return arguments.value;
+		}
+		
+		public any function formatValue_second( required string value, struct formatDetails={} ) {
+			return arguments.value & ' ' & rbKey('define.sec');
 		}
 		
 		public any function formatValue_yesno( required string value, struct formatDetails={} ) {
@@ -63,7 +67,7 @@
 			return '<a href="#arguments.value#" target="_blank">' & arguments.value & '</a>';
 		}
 		
-		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false) {
+		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
@@ -76,8 +80,14 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object)) {
-					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);	
+				} else if (isObject(arguments.object) && (
+					(arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						||
+					(!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey))	
+					)) {
+						replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);	
+				} else if (arguments.removeMissingKeys) {
+					replaceDetails.value = '';
 				}
 				
 				arrayAppend(replacementArray, replaceDetails);

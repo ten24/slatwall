@@ -7,7 +7,7 @@
 	"properties":{
 		"firstName":			[{"required":true}],
 		"lastName":				[{"required":true}],
-		"emailAddress":			[{"conditions":"savePasswordSelected","required":true},{"dataType":"email","eqProperty":"emailAddressConfirm"}],
+		"emailAddress":			[{"conditions":"savePasswordSelected","required":true,"method":"getPrimaryEmailAddressNotInUseFlag"},{"dataType":"email","eqProperty":"emailAddressConfirm"}],
 		"emailAddressConfirm":	[{"conditions":"savePasswordSelected","required":true}],
 		"password":				[{"conditions":"savePasswordSelected","required":true,"minLength":6,"eqProperty":"passwordConfirm"}],
 		"passwordConfirm":		[{"conditions":"savePasswordSelected","required":true}]

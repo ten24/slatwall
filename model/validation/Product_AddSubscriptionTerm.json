@@ -2,6 +2,7 @@
 
 	"properties":{
 		"price":				[{"dataType":"numeric","required":true}],
-		"listPrice":			[{"dataType":"numeric","required":true}]
+		"listPrice":			[{"dataType":"numeric"}],
+		"renewalPrice":			[{"dataType":"numeric","required":true}]
 	}
 }

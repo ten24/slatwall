@@ -1,7 +1,7 @@
 <!---
 	
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
+    Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,57 +16,121 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
 	
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 	
 Notes: 
 	
 --->
-<cfinclude template="slatwall-inc/slatwall-header.cfm" />
-<div class="row">
-	<div class="span12">
-		<h2>#$.slatwall.productType().getProductTypeName()#</h2>
-	</div>
-</div>
-<div class="row">
-	<div class="span3">Test</div>
-	<div class="span9">
+
+<!--- This header include should be changed to the header of your site.  Make sure that you review the header to include necessary JS elements for slatwall templates to work ---> 
+<cfinclude template="_slatwall-header.cfm" />
+
+<!--- This import allows for the custom tags required by this page to work --->
+<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+
+<!---[DEVELOPER NOTES]															
+																				
+	If you would like to customize any of the public tags used by this			
+	template, the recommended method is to uncomment the below import,			
+	copy the tag you'd like to customize into the directory defined by			
+	this import, and then reference with swc:tagname instead of sw:tagname.		
+	Technically you can define the prefix as whatever you would like and use	
+	whatever directory you would like but we recommend using this for			
+	the sake of convention.														
+																				
+	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
+																				
+--->
+
+<cfoutput>
+	<div class="container">
+		
 		<div class="row">
-			<div class="12">
-				<p>#$.slatwall.productType().getProductTypeDescription()#</p>
+			<div class="span12">
+				<h2>#$.slatwall.getProductType().getProductTypeName()#</h2>
+				
+				<!--- If there is a description for this product type then display it --->
+				<cfif len($.slatwall.getProductType().getProductTypeDescription())>
+					<p>#$.slatwall.getProductType().getProductTypeDescription()#</p>
+				</cfif>
+				
+				<!--- If there are 'child' product types, then we can display a list of those child product types --->
+				<cfif arrayLen($.slatwall.getProductType().getChildProductTypes())>
+					<ul>
+						<cfloop array="#$.slatwall.getProductType().getChildProductTypes()#" index="childProductType" >
+							<li>#childProductType.getProductTypeName()#</li>
+						</cfloop>
+					</ul>
+				</cfif>
 			</div>
 		</div>
-		<ul class="thumbnails">
-			<cfloop array="#$.slatwall.productList().getPageRecords()#" index="product">
-				<li class="span3">
-					<div class="thumbnail">
-						<img src="#product.getProductListingURL()#" alt="#product.getCalculatedTitle()#" />
-						<h4>#product.getCalculatedTitle()#</h4>
-							<p>#product.getDescription()#</p>
-						<cfif product.getPrice() gt product.getCalculatedSalePrice()>
-							<h5><span style="text-decoration:line-through;">#product.getPrice()#</span> <span class="text-error">#product.getFormattedValue('calculatedSalePrice')#</span></h5>
-						<cfelse>
-							<h5>#product.getFormattedValue('calculatedSalePrice')#</h5>	
-						</cfif>
-						<a href="#product.getListingProductURL()#">Details / Buy</a>
-					</div>
-				</li>
-			</cfloop>
-		</ul>
+		
+		<div class="row">
+			
+			<div class="span12">
+				
+				<ul class="thumbnails">
+					
+					<!--- Primary Loop that displays all of the products for this brand in the grid format --->
+					<cfloop array="#$.slatwall.getProductType().getProductsSmartList().getPageRecords()#" index="product">
+						
+						<!--- Individual Product --->
+						<li class="span3">
+							
+							<div class="thumbnail">
+								
+								<!--- Product Image --->
+								<img src="#product.getResizedImagePath(size='m')#" alt="#product.getCalculatedTitle()#" />
+								
+								<!--- The Calculated Title allows you to setup a title string as a dynamic setting.  When you call getTitle() it generates the title based on that title string setting. To be more perfomant this value is cached as getCalculatedTitle() ---> 
+								<h5>#product.getCalculatedTitle()#</h5>
+	      						
+								<!--- Check to see if the products price is > the sale price.  If so, then display the original price with a line through it --->
+								<cfif product.getPrice() gt product.getCalculatedSalePrice()>
+									<p><span style="text-decoration:line-through;">#product.getPrice()#</span> <span class="text-error">#product.getFormattedValue('calculatedSalePrice')#</span></p>
+								<cfelse>
+									<p>#product.getFormattedValue('calculatedSalePrice')#</p>	
+								</cfif>
+								
+								<!--- This is the link to the product detail page.  By using the getListingProductURL() instead of getProductURL() it will append to the end of the URL string so that the breadcrumbs on the detail page can know what listing page you came from.  This is also good for SEO purposes as long as you remember to add a canonical url meta information to the detail page --->
+								<a href="#product.getListingProductURL()#">Details / Buy</a>
+								
+							</div>
+							
+						</li>
+						
+					</cfloop> 
+					<!--- END: Primary loop --->
+						
+				</ul>
+			</div>
+		</div>
 	</div>
-</div>
-<cfinclude template="slatwall-inc/slatwall-footer.cfm" />
+</cfoutput>
+
+<cfinclude template="_slatwall-footer.cfm" />

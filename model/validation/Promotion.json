@@ -2,6 +2,6 @@
 	"properties":{
 		"promotionName":			[{"contexts":"save","required":true}],
 		"appliedPromotions":		[{"contexts":"delete","maxCollection":0}],
-		"promotionCodes":			[{"contexts":"save","method":"hasUniquePromotionCodes"}]
+		"promotionCodes":			[{"contexts":"delete","method":"getPromotionCodesDeletableFlag"}]
 	}
 }

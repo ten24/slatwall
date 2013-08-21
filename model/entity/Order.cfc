@@ -1,42 +1,52 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,addSaleOrderItem,placeOrder,createReturn,placeOnHold,takeOffHold,cancelOrder,addPromotionCode" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,addSaleOrderItem,placeOrder,createReturn,placeOnHold,takeOffHold,cancelOrder,addPromotionCode" {
 	
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -58,17 +68,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	
 	// Related Object Properties (one-To-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
-	property name="orderItems" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderItems" hb_populateEnabled="public" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="orderDeliveries" singularname="orderDelivery" cfc="OrderDelivery" fieldtype="one-to-many" fkcolumn="orderID" cascade="delete-orphan" inverse="true";
-	property name="orderFulfillments" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
-	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
-	property name="orderReturns" singularname="orderReturn" cfc="OrderReturn" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderFulfillments" hb_populateEnabled="public" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderPayments" hb_populateEnabled="public" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="orderReturns" hb_populateEnabled="public" singularname="orderReturn" cfc="OrderReturn" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="referencingOrders" singularname="referencingOrder" cfc="Order" fieldtype="one-to-many" fkcolumn="referencedOrderID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-To-many - owner)
-	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SlatwallOrderPromotionCode" fkcolumn="orderID" inversejoincolumn="promotionCodeID";
+	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderPromotionCode" fkcolumn="orderID" inversejoincolumn="promotionCodeID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	
@@ -87,6 +97,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	property name="addPaymentRequirementDetails" persistent="false";
 	property name="deliveredItemsAmountTotal" persistent="false";
 	property name="discountTotal" persistent="false" hb_formatType="currency";
+	property name="dynamicChargeOrderPayment" persistent="false";
+	property name="dynamicCreditOrderPayment" persistent="false";
+	property name="dynamicChargeOrderPaymentAmount" persistent="false" hb_formatType="currency";
+	property name="dynamicCreditOrderPaymentAmount" persistent="false" hb_formatType="currency";
 	property name="eligiblePaymentMethodDetails" persistent="false";
 	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
@@ -94,20 +108,23 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
 	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
-	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
-	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
-	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
-	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
-	property name="paymentMethodOptionsSmartList" persistent="false";
+	property name="orderPaymentAmountNeeded" persistent="false" hb_formatType="currency";
+	property name="orderPaymentChargeAmountNeeded" persistent="false" hb_formatType="currency";
+	property name="orderPaymentCreditAmountNeeded" persistent="false" hb_formatType="currency";
 	property name="orderPaymentRefundOptions" persistent="false";
 	property name="orderRequirementsList" persistent="false";
 	property name="orderTypeOptions" persistent="false";
+	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
+	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
+	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="paymentMethodOptionsSmartList" persistent="false";
 	property name="promotionCodeList" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
 	property name="returnItemSmartList" persistent="false";
+	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
 	property name="saleItemSmartList" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
@@ -118,7 +135,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
-	
 	
 	public string function getStatus() {
 		return getOrderStatusType().getType();
@@ -200,16 +216,21 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 			
 			setOrderOpenDateTime( now() );
 			setOrderOpenIPAddress( CGI.REMOTE_ADDR );
+			
+			// Loop over the order payments to setAmount = getAmount so that any null payments get explicitly defined
+			for(var orderPayment in getOrderPayments()) {
+				orderPayment.setAmount( orderPayment.getAmount() );
+			}
+			
+			// Loop over the order fulfillments to remove and accountAddresses
+			for(var orderFulfillment in getOrderFulfillments()) {
+				orderFulfillment.setAccountAddress( javaCast("null", "") );
+			}
 		}
 		
 		// If the order is closed, and has no close dateTime
 		if(!isNull(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() == "ostClosed" && isNull(getOrderCloseDateTime())) {
 			setOrderCloseDateTime( now() );
-			
-			// Loop over the order payments to setAmount = getAmount so that any null payments get explicitly defined
-			for(var i = 1; i <= arrayLen(getOrderPayments()); i++) {
-				getOrderPayments()[i].setAmount( getOrderPayments()[i].getAmount() );
-			}
 		}
 	}
 	
@@ -239,8 +260,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 			variables.addOrderItemSkuOptionsSmartList = getService("skuService").getSkuSmartList();
 			variables.addOrderItemSkuOptionsSmartList.addFilter('activeFlag', 1);
 			variables.addOrderItemSkuOptionsSmartList.addFilter('product.activeFlag', 1);
-			variables.addOrderItemSkuOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType');
-			variables.addOrderItemSkuOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand');
+			variables.addOrderItemSkuOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
+			variables.addOrderItemSkuOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
 		}
 		return variables.addOrderItemSkuOptionsSmartList;
 	}
@@ -250,8 +271,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 			variables.addOrderItemStockOptionsSmartList = getService("stockService").getStockSmartList();
 			variables.addOrderItemStockOptionsSmartList.addFilter('sku.activeFlag', 1);
 			variables.addOrderItemStockOptionsSmartList.addFilter('sku.product.activeFlag', 1);
-			variables.addOrderItemStockOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType');
-			variables.addOrderItemStockOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand');
+			variables.addOrderItemStockOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
+			variables.addOrderItemStockOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
 		}
 		return variables.addOrderItemStockOptionsSmartList;
 	}
@@ -262,17 +283,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 			variables.deliveredItemsAmountTotal = 0;
 			var fulfillmentChargeAddedList = "";
 			
-			for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+			for(var orderItem in getOrderItems()) {
 				
-				if(getOrderItems()[i].getQuantityDelivered()) {
+				if(orderItem.getQuantityDelivered()) {
 					
-					variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + ((getOrderItems()[i].getQuantityDelivered() / thisQuantity) * getOrderItems()[i].getExtendedPriceAfterDiscount()));
+					variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getExtendedPriceAfterDiscount()));
 					
-					if(!listFindNoCase(fulfillmentChargeAddedList, getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID())) {
+					if(!listFindNoCase(fulfillmentChargeAddedList, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
 						
-						listAppend(fulfillmentChargeAddedList, getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID());
+						listAppend(fulfillmentChargeAddedList, orderItem.getOrderFulfillment().getOrderFulfillmentID());
 						
-						variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + getOrderItems()[i].getOrderFulfillment().getChargeAfterDiscount());
+						variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + orderItem.getOrderFulfillment().getChargeAfterDiscount());
 					}
 				}
 			}
@@ -354,14 +375,97 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 		return getService("orderService").getOrderRequirementsList(order=this);
 	}
 	
+	public numeric function getOrderPaymentAmountNeeded() {
+		
+		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var orderPaymentAmountNeeded = precisionEvaluate( getTotal() - nonNullPayments );
+		
+		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
+			return orderPaymentAmountNeeded;
+		} else if (orderPaymentAmountNeeded lt 0 && isNull(getDynamicCreditOrderPayment())) {
+			return orderPaymentAmountNeeded;
+		}
+		
+		return 0;
+		
+	}
+	
+	public numeric function getOrderPaymentChargeAmountNeeded() {
+		var orderPaymentAmountNeeded = getOrderPaymentAmountNeeded();
+		if(orderPaymentAmountNeeded lt 0) {
+			return 0;
+		}
+		return orderPaymentAmountNeeded;
+	}
+	
+	public numeric function getOrderPaymentCreditAmountNeeded() {
+		var orderPaymentAmountNeeded = getOrderPaymentAmountNeeded();
+		if(orderPaymentAmountNeeded gt 0) {
+			return 0;
+		}
+		return orderPaymentAmountNeeded * -1;
+	}
+	
+	public any function getDynamicChargeOrderPayment() {
+		var returnOrderPayment = javaCast("null", "");
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge' && orderPayment.getDynamicAmountFlag()) {
+				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
+					returnOrderPayment = orderPayment;
+				}
+			}
+		}
+		if(!isNull(returnOrderPayment)) {
+			return returnOrderPayment;
+		}
+	}
+	
+	public any function getDynamicCreditOrderPayment() {
+		var returnOrderPayment = javaCast("null", "");
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCredit' && orderPayment.getDynamicAmountFlag()) {
+				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
+					returnOrderPayment = orderPayment;
+				}
+			}
+		}
+		if(!isNull(returnOrderPayment)) {
+			return returnOrderPayment;
+		}
+	}
+	
+	public any function getDynamicChargeOrderPaymentAmount() {
+		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var orderPaymentAmountNeeded = precisionEvaluate( getTotal() - nonNullPayments );
+		
+		if(orderPaymentAmountNeeded gt 0) {
+			return orderPaymentAmountNeeded;
+		}
+		
+		return 0;
+	}
+	
+	public any function getDynamicCreditOrderPaymentAmount() {
+		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
+		var orderPaymentAmountNeeded = precisionEvaluate( getTotal() - nonNullPayments );
+		
+		if(orderPaymentAmountNeeded lt 0) {
+			return orderPaymentAmountNeeded * -1;
+		}
+		
+		return 0;
+	}
+	
 	public numeric function getPaymentAmountTotal() {
 		var totalPayments = 0;
 		
-		for(var i=1; i<=arrayLen(getOrderPayments()); i++) {
-			if(getOrderPayments()[i].getOrderPaymentType().getSystemCode() == "optCharge") {
-				totalPayments = precisionEvaluate(totalPayments + getOrderPayments()[i].getAmount());
-			} else {
-				totalPayments = precisionEvaluate(totalPayments - getOrderPayments()[i].getAmount());	
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive" && !orderPayment.hasErrors()) {
+				if(orderPayment.getOrderPaymentType().getSystemCode() == "optCharge") {
+					totalPayments = precisionEvaluate(totalPayments + orderPayment.getAmount());
+				} else {
+					totalPayments = precisionEvaluate(totalPayments - orderPayment.getAmount());	
+				}	
 			}
 		}
 		
@@ -371,8 +475,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	public numeric function getPaymentAmountAuthorizedTotal() {
 		var totalPaymentsAuthorized = 0;
 		
-		for(var i=1; i<=arrayLen(getOrderPayments()); i++) {
-			totalPaymentsAuthorized = precisionEvaluate(totalPaymentsAuthorized + getOrderPayments()[i].getAmountAuthorized());
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive") {
+				totalPaymentsAuthorized = precisionEvaluate(totalPaymentsAuthorized + orderPayment.getAmountAuthorized());	
+			}
 		}
 		
 		return totalPaymentsAuthorized;
@@ -381,8 +487,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	public numeric function getPaymentAmountReceivedTotal() {
 		var totalPaymentsReceived = 0;
 		
-		for(var i=1; i<=arrayLen(getOrderPayments()); i++) {
-			totalPaymentsReceived = precisionEvaluate(totalPaymentsReceived + getOrderPayments()[i].getAmountReceived());
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive") {
+				totalPaymentsReceived = precisionEvaluate(totalPaymentsReceived + orderPayment.getAmountReceived());
+			}
 		}
 		
 		return totalPaymentsReceived;
@@ -391,8 +499,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	public numeric function getPaymentAmountCreditedTotal() {
 		var totalPaymentsCredited = 0;
 		
-		for(var i=1; i<=arrayLen(getOrderPayments()); i++) {
-			totalPaymentsCredited = precisionEvaluate(totalPaymentsCredited + getOrderPayments()[i].getAmountCredited());
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive") {
+				totalPaymentsCredited = precisionEvaluate(totalPaymentsCredited + orderPayment.getAmountCredited());
+			}
 		}
 		
 		return totalPaymentsCredited;
@@ -401,9 +511,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	public numeric function getReferencingPaymentAmountCreditedTotal() {
 		var totalReferencingPaymentsCredited = 0;
 		
-		for(var i=1; i<=arrayLen(getOrderPayments()); i++) {
-			for(var r=1; r<=arrayLen(getOrderPayments()[i].getReferencingOrderPayments()); r++) {
-				totalReferencingPaymentsCredited = precisionEvaluate(totalReferencingPaymentsCredited + getOrderPayments()[i].getReferencingOrderPayments()[r].getAmountCredited());
+		for(var orderPayment in getOrderPayments()) {
+			for(var referencingOrderPayment in orderPayment.getReferencingOrderPayments()) {
+				if(referencingOrderPayment.getStatusCode() eq "opstActive") {
+					totalReferencingPaymentsCredited = precisionEvaluate(totalReferencingPaymentsCredited + referencingOrderPayment.getAmountCredited());	
+				}
 			}
 		}
 		
@@ -421,8 +533,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	public array function getOrderPaymentRefundOptions() {
 		if(!structKeyExists(variables, "orderPaymentRefundOptions")) {
 			variables.orderPaymentRefundOptions = [];
-			for(var i=1; i<=arrayLen(getOrderPayments()); i++) {
-				arrayAppend(variables.orderPaymentRefundOptions, {name=getOrderPayments()[i].getSimpleRepresentation(), value=getOrderPayments()[i].getOrderPaymentID()});
+			for(var orderPayment in getOrderPayments()) {
+				if(orderPayment.getStatusCode() eq 'opstActive') {
+					arrayAppend(variables.orderPaymentRefundOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});	
+				}
 			}
 			arrayAppend(variables.orderPaymentRefundOptions, {name=rbKey('define.none'), value=''});
 		}
@@ -806,3 +920,4 @@ component displayname="Order" entityname="SlatwallOrder" table="SlatwallOrder" p
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
+

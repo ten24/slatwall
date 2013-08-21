@@ -7,6 +7,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return true;
 	}
 	
+	public void function setupDefaults() {
+		// Left Blank To Be Done By Each Process Object
+	}
+	
 	public boolean function getPreProcessDisplayedFlag() {
 		if(!structKeyExists(variables, "preProcessDisplayedFlag")) {
 			variables.preProcessDisplayedFlag = 0;

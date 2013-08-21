@@ -4,10 +4,11 @@
 	<cfparam name="attributes.selector" type="string" />
 	<cfparam name="attributes.showValues" type="string" default="1">
 	<cfparam name="attributes.valueAttribute" type="string" default="" />
+	<cfparam name="attributes.loadVisable" type="string" default="false" />
 	
 	<cfset id = createUUID() />
 	
-	<cfoutput><div id="#id#" class="hibachi-display-toggle hide" data-hibachi-selector="#attributes.selector#" data-hibachi-show-values="#attributes.showValues#" data-hibachi-value-attribute="#attributes.valueAttribute#"></cfoutput>
+	<cfoutput><div id="#id#" class="hibachi-display-toggle#iif(attributes.loadVisable, de(''), de(' hide'))#" data-hibachi-selector="#attributes.selector#" data-hibachi-show-values="#attributes.showValues#" data-hibachi-value-attribute="#attributes.valueAttribute#"></cfoutput>
 <cfelse>
 	</div>
 </cfif>

@@ -1,5 +1,5 @@
 {
 	"properties":{
-		"alternateSkuCode":		[{"contexts":"save","required":true}]
+		"alternateSkuCode":		[{"contexts":"save","required":true,"unique":true}]
 	}
 }

@@ -1,1 +1,1 @@
-<cfset this.customtagpaths = listAppend(this.customtagpaths, this.mappings[ "/Slatwall" ] & "/tags") />
+<cfset arrayAppend(this.customTagPathsArray, "#replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/config/", "/tags")#") />

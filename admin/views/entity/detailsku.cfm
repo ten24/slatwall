@@ -41,26 +41,25 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.sku#" edit="#rc.edit#" enctype="multipart/form-data">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.sku#" edit="#rc.edit#" 
-					backAction="admin:entity.detailproduct" 
-					backQueryString="productID=#rc.product.getProductID()#" 
-					cancelAction="admin:entity.detailsku" 
-					deleteQueryString="redirectAction=admin:entity.detailProduct&productID=#rc.product.getProductID()#" />
+	<cf_HibachiEntityDetailForm object="#rc.sku#" edit="#rc.edit#" saveActionQueryString="skuID=#rc.sku.getSkuID()#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.sku#" edit="#rc.edit#"
+					backAction="admin:entity.detailproduct"
+					backQueryString="productID=#rc.product.getProductID()#">
+			<cf_HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
+		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
 				<cfif rc.product.getBaseProductType() EQ "subscription">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="renewalPrice" edit="#rc.edit#">
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
-		
 		
 		<cf_HibachiTabGroup object="#rc.sku#">
 			<cfif rc.product.getBaseProductType() EQ "subscription">
@@ -74,7 +73,8 @@ Notes:
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
 			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
-			
+			<!---<cf_HibachiTab view="admin:entity/skutabs/pricegroups" />--->
+
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.sku.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.sku#" attributeSet="#attributeSet#" />

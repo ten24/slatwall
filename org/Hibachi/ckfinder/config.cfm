@@ -24,10 +24,6 @@ function CheckAuthentication()
 	//... where session.IsAuthorized is set to "true" as soon as the
 	//user logs in your system.
 	
-	/*
-	request.slatwallScope = new Slatwall.model.utility.SlatwallScope();
-	request.slatwallScope.getService("permissionService").authenticateAction('admin:main.ckfinder');
-	*/
 	var currentArray = listToArray(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"),"/");
 	var applicationKey = currentArray[arrayLen(currentArray)-7];
 	

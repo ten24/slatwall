@@ -1,37 +1,47 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
@@ -49,60 +59,70 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var paymentMethodMaxAmount = {};
 		var eligiblePaymentMethodDetails = [];
 		
-		var paymentMethodSmartList = this.getPaymentMethodSmartList();
-		paymentMethodSmartList.addFilter('activeFlag', 1);
-		paymentMethodSmartList.addOrder('sortOrder|ASC');
-		if(!isNull(arguments.order.getAccount())) {
-			paymentMethodSmartList.addInFilter('paymentMethodID', arguments.order.getAccount().setting('accountEligiblePaymentMethods'));	
-		}
-		var activePaymentMethods = paymentMethodSmartList.getRecords();
-		
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-			var epmList = arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods");
-			for(var x=1; x<=listLen( epmList ); x++) {
-				var thisPaymentMethodID = listGetAt(epmList, x);
-				if(!structKeyExists(paymentMethodMaxAmount, thisPaymentMethodID)) {
-					paymentMethodMaxAmount[thisPaymentMethodID] = arguments.order.getFulfillmentChargeAfterDiscountTotal();
-				}
-				paymentMethodMaxAmount[thisPaymentMethodID] = precisionEvaluate(paymentMethodMaxAmount[thisPaymentMethodID] + precisionEvaluate(arguments.order.getOrderItems()[i].getExtendedPriceAfterDiscount() + arguments.order.getOrderItems()[i].getTaxAmount()));
+		// Verify that this account has eligiblePaymentMethods
+		if(!isNull(arguments.order.getAccount()) && len(arguments.order.getAccount().setting('accountEligiblePaymentMethods'))) {
+			
+			// Get the smartList for all the eligible payment methods for this account
+			var paymentMethodSmartList = this.getPaymentMethodSmartList();
+			paymentMethodSmartList.addFilter('activeFlag', 1);
+			paymentMethodSmartList.addOrder('sortOrder|ASC');
+			if(!isNull(arguments.order.getAccount())) {
+				paymentMethodSmartList.addInFilter('paymentMethodID', arguments.order.getAccount().setting('accountEligiblePaymentMethods'));	
 			}
-		}
-		
-		// Loop over and update the maxAmounts on these payment methods based on the skus for each
-		for(var i=1; i<=arrayLen(activePaymentMethods); i++) {
-			if( structKeyExists(paymentMethodMaxAmount, activePaymentMethods[i].getPaymentMethodID()) && paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ] gt 0 ) {
-				
-				// Define the maximum amount
-				var maximumAmount = paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ];
-				
-				var maxOrderPercentage = activePaymentMethods[i].setting('paymentMethodMaximumOrderTotalPercentageAmount');
-				var maxAmountViaOrderPercentage = arguments.order.getTotal() * (maxOrderPercentage / 100);
-				if(maxOrderPercentage lt 100 && maximumAmount > maxAmountViaOrderPercentage) {
-					maximumAmount = maxAmountViaOrderPercentage;
-				}
-				
-				// If this is a termPayment type, then we need to check the account on the order to verify the max that it can use.
-				if(activePaymentMethods[i].getPaymentMethodType() eq "termPayment") {
-					
-					// Make sure that we have enough credit limit on the account
-					if(!isNull(arguments.order.getAccount()) && arguments.order.getAccount().getTermAccountAvailableCredit() > 0) {
-						
-						var paymentTerm = this.getPaymentTerm(arguments.order.getAccount().setting('accountPaymentTerm'));
-						
-						if(!isNull(paymentTerm)) {
-							if(arguments.order.getAccount().getTermAccountAvailableCredit() < maximumAmount) {
-								maximumAmount = arguments.order.getAccount().getTermAccountAvailableCredit();
-							}
-							
-							arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount, paymentTerm=paymentTerm});	
-						}
+			var activePaymentMethods = paymentMethodSmartList.getRecords();
+			
+			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+				var epmList = arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods");
+				for(var x=1; x<=listLen( epmList ); x++) {
+					var thisPaymentMethodID = listGetAt(epmList, x);
+					if(!structKeyExists(paymentMethodMaxAmount, thisPaymentMethodID)) {
+						paymentMethodMaxAmount[thisPaymentMethodID] = arguments.order.getFulfillmentChargeAfterDiscountTotal();
 					}
-				} else {
-					arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount});
+					paymentMethodMaxAmount[thisPaymentMethodID] = precisionEvaluate(paymentMethodMaxAmount[thisPaymentMethodID] + precisionEvaluate(arguments.order.getOrderItems()[i].getExtendedPriceAfterDiscount() + arguments.order.getOrderItems()[i].getTaxAmount()));
+				}
+			}
+			
+			// Loop over and update the maxAmounts on these payment methods based on the skus for each
+			for(var i=1; i<=arrayLen(activePaymentMethods); i++) {
+				if( structKeyExists(paymentMethodMaxAmount, activePaymentMethods[i].getPaymentMethodID()) && paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ] gt 0 ) {
+					
+					// Define the maximum amount
+					var maximumAmount = paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ];
+					
+					var maxOrderPercentage = activePaymentMethods[i].setting('paymentMethodMaximumOrderTotalPercentageAmount');
+					var maxAmountViaOrderPercentage = arguments.order.getTotal() * (maxOrderPercentage / 100);
+					if(maxOrderPercentage lt 100 && maximumAmount > maxAmountViaOrderPercentage) {
+						maximumAmount = maxAmountViaOrderPercentage;
+					}
+					
+					// If the maximumAmount is more than we need for this order, then just set it to the amount needed
+					if(maximumAmount > arguments.order.getOrderPaymentChargeAmountNeeded()) {
+						maximumAmount = arguments.order.getOrderPaymentChargeAmountNeeded();
+					}
+					
+					// If this is a termPayment type, then we need to check the account on the order to verify the max that it can use.
+					if(activePaymentMethods[i].getPaymentMethodType() eq "termPayment") {
+						
+						// Make sure that we have enough credit limit on the account
+						if(!isNull(arguments.order.getAccount()) && arguments.order.getAccount().getTermAccountAvailableCredit() > 0) {
+							
+							var paymentTerm = this.getPaymentTerm(arguments.order.getAccount().setting('accountPaymentTerm'));
+							
+							if(!isNull(paymentTerm)) {
+								if(arguments.order.getAccount().getTermAccountAvailableCredit() < maximumAmount) {
+									maximumAmount = arguments.order.getAccount().getTermAccountAvailableCredit();
+								}
+								
+								arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount, paymentTerm=paymentTerm});	
+							}
+						}
+					} else {
+						arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount});
+					}
 				}
 			}
 		}
-
+		
 		return eligiblePaymentMethodDetails;
 	}
 	
@@ -144,6 +164,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return returnList;
 	}
 	
+	public string function getAllActivePaymentTermIDList() {
+		var returnList = "";
+		var apmSL = this.getPaymentTermSmartList();
+		apmSL.addFilter('activeFlag', 1);
+		apmSL.addSelect('paymentTermID', 'paymentTermID');
+		var records = apmSL.getRecords();
+		for(var i=1; i<=arrayLen(records); i++) {
+			returnList = listAppend(returnList, records[i]['paymentTermID']);
+		}
+		return returnList;
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
@@ -169,7 +201,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Add the duplicate error to the payment, if this was
 				if(isDuplicateTransaction) {
 					
-					arguments.paymentTransaction.getPayment().addError('processing', "This transaction is duplicate of an already processed transaction.", true);
+					arguments.paymentTransaction.addError('runTransaction', "This transaction is duplicate of an already processed transaction.", true);
 					
 				// Otherwise continue with processing
 				} else {
@@ -200,13 +232,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						requestBean.setTransactionID( arguments.paymentTransaction.getPaymentTransactionID() );
 						requestBean.setTransactionType( arguments.data.transactionType );
 						requestBean.setTransactionAmount( arguments.data.amount );
-						requestBean.setTransactionCurrency( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+						if(listFindNoCase("OrderPayment,AccountPayment", arguments.paymentTransaction.getPayment().getClassName())) {
+							requestBean.setTransactionCurrency( arguments.paymentTransaction.getPayment().getCurrencyCode() );	
+						}
 						
 						// Move all of the info into the new request bean
 						if(arguments.paymentTransaction.getPayment().getClassName() eq "OrderPayment") {
 							requestBean.populatePaymentInfoWithOrderPayment( arguments.paymentTransaction.getPayment() );	
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPayment") {
 							requestBean.populatePaymentInfoWithAccountPayment( arguments.paymentTransaction.getPayment() );
+						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPaymentMethod") {
+							requestBean.populatePaymentInfoWithAccountPaymentMethod( arguments.paymentTransaction.getPayment() );
 						}
 						
 						// Wrap in a try / catch so that the transaction will still get saved to the DB even in error
@@ -250,7 +286,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							// avsCode
 							if(!isNull(response.getAVSCode())) {
-								arguments.paymentTransaction.setAuthorizationCode(response.getAVSCode());
+								arguments.paymentTransaction.setAVSCode(response.getAVSCode());
 							}
 							
 							// add the providerToken to the orderPayment & accountPayment
@@ -271,13 +307,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							// If the response had errors then add them to the payment
 							if(response.hasErrors()) {
-								arguments.paymentTransaction.getPayment().addError('processing', response.getAllErrorsHTML(), true);
+								arguments.paymentTransaction.addError('runTransaction', response.getErrors(), true);
 							}
 							
 						} catch (any e) {
 							
 							// Populate the orderPayment with the processing error and make it persistable
-							arguments.paymentTransaction.getPayment().addError('processing', rbKey('error.unexpected.checklog'), true);
+							arguments.paymentTransaction.addError('runTransaction', rbKey('error.unexpected.checklog'), true);
 							
 							// Log the exception
 							logHibachiException(e);
@@ -288,7 +324,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// NO INTEGRATION
 					} else {
 						
-						// TODO: Future this is where internal giftCard logic would go
+						// TODO [issue #36]: Add Gift Card Logic Here
 						
 						// Setup amountReceived
 						if( listFindNoCase("receive", arguments.data.transactionType) ) {

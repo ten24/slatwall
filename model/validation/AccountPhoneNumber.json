@@ -1,5 +1,5 @@
 {
 	"properties":{
-		"phoneNumber":		[{"contexts":"save","required":true,"dataType":"telephone"}]
+		"phoneNumber":		[{"contexts":"save","required":true}]
 	}
 }

@@ -100,7 +100,9 @@
 									<div class="btn-group">
 										<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
-											#thistag.generatedcontent#
+											<cf_HibachiDividerHider>
+												#thistag.generatedcontent#
+											</cf_HibachiDividerHider>
 										</ul>
 									</div>
 								</cfif>

@@ -443,10 +443,12 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public void function addRange(required string propertyIdentifier, required string value, numeric whereGroup=1) {
-		confirmWhereGroup(arguments.whereGroup);
-		var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
-		if(len(aliasedProperty)) {
-			variables.whereGroups[arguments.whereGroup].ranges[aliasedProperty] = arguments.value;
+		if( (left( arguments.value, 1) == variables.rangeDelimiter || isNumeric(listFirst(arguments.value, variables.rangeDelimiter)) || isDate(listLast(arguments.value, variables.rangeDelimiter)) ) && (right( arguments.value, 1) == variables.rangeDelimiter || isNumeric(listLast(arguments.value, variables.rangeDelimiter)) || isDate(listLast(arguments.value, variables.rangeDelimiter)) ) ) {
+			confirmWhereGroup(arguments.whereGroup);
+			var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
+			if(len(aliasedProperty)) {
+				variables.whereGroups[arguments.whereGroup].ranges[aliasedProperty] = arguments.value;
+			}
 		}
 	}
 	public void function removeRange(required string propertyIdentifier, whereGroup=1) {
@@ -535,7 +537,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			if(i != getBaseEntityName()) {
 				var joinType = variables.entities[i].joinType;
 				if(!len(joinType)) {
-					joinType = "inner";
+					joinType = "left";
 				}
 				
 				var fetch = "";
@@ -730,10 +732,10 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			
 			if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
 				var obProperty = getAliasedProperty( baseEntityObject.getThisMetaData().hb_defaultOrderProperty );
-			} else if (baseEntityObject.hasProperty("createdDateTime")) {
+			} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
 				var obProperty = getAliasedProperty( "createdDateTime" );
 			} else {
-				var obProperty = getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() );
+				var obProperty = getAliasedProperty( getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() ) );
 			}
 			
 			hqlOrder &= " ORDER BY #obProperty# ASC";
@@ -755,7 +757,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		if( !structKeyExists(variables, "pageRecords")) {
+		if( !structKeyExists(variables, "pageRecords") || arguments.refresh == true) {
 			saveState();
 			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 		}

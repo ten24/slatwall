@@ -40,7 +40,7 @@ component extends="FW1.framework" {
   	variables.framework.password = 'true';
   	variables.framework.reloadApplicationOnEveryRequest = false;
   	variables.framework.generateSES = false;
-  	variables.framework.SESOmitIndex = true;
+  	variables.framework.SESOmitIndex = false;
   	variables.framework.suppressImplicitService = true;
 	variables.framework.unhandledExtensions = 'cfc';
 	variables.framework.unhandledPaths = '/flex2gateway';
@@ -83,14 +83,15 @@ component extends="FW1.framework" {
 	
 	
 	// =============== configCustomTags
-	
-	// Defaults
-	this.customtagpaths = this.mappings[ "/#variables.framework.applicationKey#" ] & "/org/Hibachi/HibachiTags";
+	this.customTagPathsArray = ['#replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all")#HibachiTags'];
 	
 	// Allow For Application Config 
 	try{include "../../config/configCustomTags.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configCustomTags.cfm";}catch(any e){}
+	
+	// set the custom tag mapping 
+	this.customTagPaths = arrayToList(this.customTagPathsArray);
 	
 	// =============== configORM
 	
@@ -113,11 +114,33 @@ component extends="FW1.framework" {
 	// Allow For Instance Config
 	try{include "../../custom/config/configORM.cfm";}catch(any e){}
 	
-	if(!fileExists(expandPath('/#variables.framework.applicationKey#/config/lastFullUpdate.txt.cfm')) || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)) {
+	// ==================== START: PRE UPDATE SCRIPTS ======================
+	if(!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/lastFullUpdate.txt.cfm") || !fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm") || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
+		
 		this.ormSettings.secondaryCacheEnabled = false;
+		
+		variables.preupdate = {};
+		
+		if(!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm")) {
+			fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", "");
+		}
+		
+		variables.preupdate.preUpdatesRun = fileRead("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm");
+		
+		// Loop over and run any pre-update files
+		variables.preupdate.preUpdateFiles = directoryList("#this.mappings[ '/#variables.framework.applicationKey#' ]#/config/scripts/preupdate");
+		
+		for(variables.preupdate.preUpdateFullFilename in variables.preupdate.preUpdateFiles) {
+			variables.preupdate.thisFilename = listLast(variables.preupdate.preUpdateFullFilename, "/\");
+			if(!listFindNoCase(variables.preupdate.preUpdatesRun, variables.preupdate.thisFilename)) {
+				include "../../config/scripts/preupdate/#variables.preupdate.thisFilename#";
+				variables.preupdate.preUpdatesRun = listAppend(variables.preupdate.preUpdatesRun, variables.preupdate.thisFilename);
+			}
+		}
+		
+		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", variables.preupdate.preUpdatesRun);
 	}
-	
-	// Make Sure that the required values end up in the application scope so that we can get them from somewhere else
+	// ==================== END: PRE UPDATE SCRIPTS ======================
 	
 	// =======  END: ENVIORNMENT CONFIGURATION  =======
 	
@@ -167,11 +190,14 @@ component extends="FW1.framework" {
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 			
+			// setup the success redirect URL as this current page
+			request.context.sRedirectURL = getHibachiScope().getURL();
+			
 			// If the current subsytem is a 'login' subsystem, then we can use the current subsystem
 			if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
-				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
 			} else {
-				redirect(action="#hibachiConfig.loginDefaultSubsystem#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+				redirect(action="#hibachiConfig.loginDefaultSubsystem#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
 			}
 		}
 		
@@ -261,7 +287,7 @@ component extends="FW1.framework" {
 					//========================= IOC SETUP ====================================
 					
 					var coreBF = new DI1.ioc("/#variables.framework.applicationKey#/model", {
-						transients=["entity", "process", "transient"],
+						transients=["entity", "process", "transient", "report"],
 						transientPattern="Bean$"
 					});
 					
@@ -286,6 +312,9 @@ component extends="FW1.framework" {
 					}
 					if(!coreBF.containsBean("hibachiRBService")) {
 						coreBF.declareBean("hibachiRBService", "#variables.framework.applicationKey#.org.Hibachi.HibachiRBService", true);	
+					}
+					if(!coreBF.containsBean("hibachiReportService")) {
+						coreBF.declareBean("hibachiReportService", "#variables.framework.applicationKey#.org.Hibachi.HibachiReportService", true);	
 					}
 					if(!coreBF.containsBean("hibachiSessionService")) {
 						coreBF.declareBean("hibachiSessionService", "#variables.framework.applicationKey#.org.Hibachi.HibachiSessionService", true);	
@@ -317,7 +346,7 @@ component extends="FW1.framework" {
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
 						var customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
-							transients=["entity", "process", "transient"]
+							transients=["entity", "process", "transient", "report"]
 						});
 						
 						customBF.setParent( coreBF );
@@ -333,15 +362,12 @@ component extends="FW1.framework" {
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
 					
-					// Announce the applicationSetup event
-					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-					
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-					if(!fileExists(expandPath('/#variables.framework.applicationKey#/config/lastFullUpdate.txt.cfm')) || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
+					if(!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') || (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)){
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - Full Update Initiated");
 						
 						// Set the request timeout to 360
-						getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=360);
+						getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=600);
 						
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
@@ -351,16 +377,23 @@ component extends="FW1.framework" {
 						onUpdateRequest();
 						
 						// Write File
-						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/config/lastFullUpdate.txt.cfm', now());				
+						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/config/lastFullUpdate.txt.cfm', now());				
 						
 						// Announce the applicationFullUpdate event
 						getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationFullUpdate");
 					}
 					// ========================== END: FULL UPDATE ==============================
 					
+					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
+					onFirstRequestPostUpdate();
+					
 					// Application Setup Ended
 					getHibachiScope().setApplicationValue("initialized", true);
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Setup Complete");
+					
+					// Announce the applicationSetup event
+					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
+					
 				}
 			}
 		}
@@ -414,7 +447,7 @@ component extends="FW1.framework" {
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
 		if(!getHibachiScope().getORMHasErrors()) {
-			getHibachiScope().getService("hibachiDAO").flushORMSession();
+			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}
 	}
 	
@@ -553,5 +586,7 @@ component extends="FW1.framework" {
 	public void function onFirstRequest() {}
 	
 	public void function onUpdateRequest() {}
+	
+	public void function onFirstRequestPostUpdate() {}
 	
 }

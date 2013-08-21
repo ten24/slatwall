@@ -1,7 +1,7 @@
 <!---
 	
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
+    Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,22 +16,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
 	
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 	
 Notes:
 																								
@@ -127,7 +137,27 @@ Notes:
 	http://docs.getslatwall.com/#developers-reference-smart-list								
 																								
 --->
+
+<!--- This header include should be changed to the header of your site.  Make sure that you review the header to include necessary JS elements for slatwall templates to work --->
 <cfinclude template="_slatwall-header.cfm" />
+
+<!--- This import allows for the custom tags required by this page to work --->
+<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+
+<!---[DEVELOPER NOTES]															
+																				
+	If you would like to customize any of the public tags used by this			
+	template, the recommended method is to uncomment the below import,			
+	copy the tag you'd like to customize into the directory defined by			
+	this import, and then reference with swc:tagname instead of sw:tagname.		
+	Technically you can define the prefix as whatever you would like and use	
+	whatever directory you would like but we recommend using this for			
+	the sake of convention.														
+																				
+	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
+																				
+--->
+
 <cfoutput>
 	
 
@@ -149,7 +179,7 @@ Notes:
 			
 			<!--- Filter Brand --->
 			<cfset brandFilterOptions = $.slatwall.getProductSmartList().getFilterOptions('brand.brandID', 'brand.brandName') />
-			<h4>Filter By Brand</h4>
+			<h5>Filter By Brand</h5>
 			<ul class="nav">
 				<cfloop array="#brandFilterOptions#" index="brandOption">
 					<li><a href="#$.slatwall.getProductSmartList().buildURL( 'f:brand.brandID=#brandOption["value"]#' )#">#brandOption["name"]#</a></li>
@@ -157,7 +187,7 @@ Notes:
 			</ul>
 			
 			<!--- Price Range Filter --->
-			<h4>Price Range Filter</h4>
+			<h5>Price Range Filter</h5>
 			<ul class="nav">
 				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'r:calculatedSalePrice=^20' )#">less than $20.00</a></li>
 				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'r:calculatedSalePrice=20^50' )#">$20.00 - $50.00</a></li>
@@ -167,7 +197,7 @@ Notes:
 			</ul>
 			
 			<!--- Sorting --->
-			<h4>Sorting</h4>
+			<h5>Sorting</h5>
 			<ul class="nav">
 				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'orderBy=calculatedSalePrice|ASC' )#">Price Low To High</a></li>
 				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'orderBy=calculatedSalePrice|DESC' )#">Price High To Low</a></li>
@@ -218,7 +248,7 @@ Notes:
 						
 				</ul>
 
-				<sw:smartListPager smartList="#$.slatwall.getProductSmartList()#" />
+				<sw:SmartListPager smartList="#$.slatwall.getProductSmartList()#">
 
 			<!--- If there are no products for this current listing page, then tell the customer --->
 			<cfelse>

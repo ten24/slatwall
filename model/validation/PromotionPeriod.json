@@ -1,6 +1,12 @@
 {
+	"conditions":{
+	    "needsEndAfterStart":{
+	        "startDateTime":{"required":true},
+	        "endDateTime":{"required":true}
+	    }
+	},
 	"properties":{
-		"startDateTime":			[{"contexts":"save","required":true,"dataType":"date"}],
-		"endDateTime":				[{"contexts":"save","required":true,"dataType":"date","gtProperty":"startDateTime"}]
+		"startDateTime":			[{"contexts":"save","dataType":"date"}],
+		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtProperty":"startDateTime"}]
 	}
 }

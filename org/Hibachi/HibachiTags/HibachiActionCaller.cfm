@@ -10,6 +10,7 @@
 	<cfparam name="attributes.iconOnly" type="boolean" default="false">
 	<cfparam name="attributes.submit" type="boolean" default="false">
 	<cfparam name="attributes.confirm" type="boolean" default="false" />
+	<cfparam name="attributes.confirmtext" type="string" default="" />
 	<cfparam name="attributes.disabled" type="boolean" default="false" />
 	<cfparam name="attributes.disabledtext" type="string" default="" />
 	<cfparam name="attributes.modal" type="boolean" default="false" />
@@ -81,9 +82,11 @@
 		<cfset attributes.class &= " disabled alert-disabled" />
 		<cfset attributes.confirm = false />
 	<cfelseif attributes.confirm>
-		<cfset attributes.confirmtext = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#_confirm") />
-		<cfif right(attributes.confirmtext, "8") eq "_missing">
-			<cfset attributes.confirmtext = replace(attributes.hibachiScope.rbKey("admin.define.delete_confirm"),'${itemEntityName}', attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
+		<cfif not len(attributes.confirmtext)>
+			<cfset attributes.confirmtext = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#_confirm") />
+			<cfif right(attributes.confirmtext, "8") eq "_missing">
+				<cfset attributes.confirmtext = replace(attributes.hibachiScope.rbKey("admin.define.delete_confirm"),'${itemEntityName}', attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
+			</cfif>
 		</cfif>
 		<cfset attributes.class &= " alert-confirm" />
 	</cfif>

@@ -210,17 +210,17 @@
 					<cfset thisPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( thisEntityName, thisPropertyName ) />
 					
 					<!--- Setup automatic search, sort, filter & range --->
-					<cfif not len(column.search) && (!structKeyExists(thisPropertyMeta, "persistent") || !thisPropertyMeta.persistent) && (!structKeyExists(thisPropertyMeta, "ormType") || thisPropertyMeta.ormType eq 'string')>
+					<cfif not len(column.search) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && (!structKeyExists(thisPropertyMeta, "ormType") || thisPropertyMeta.ormType eq 'string')>
 						<cfset column.search = true />
 					<cfelseif !isBoolean(column.search)>
 						<cfset column.search = false />
 					</cfif>
-					<cfif not len(column.sort) && (!structKeyExists(thisPropertyMeta, "persistent") || !thisPropertyMeta.persistent)>
+					<cfif not len(column.sort) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
 						<cfset column.sort = true />
 					<cfelseif !isBoolean(column.sort)>
 						<cfset column.sort = false />
 					</cfif>
-					<cfif not len(column.filter) && (!structKeyExists(thisPropertyMeta, "persistent") || !thisPropertyMeta.persistent)>
+					<cfif not len(column.filter) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
 						<cfset column.filter = false />
 						
 						<cfif structKeyExists(thisPropertyMeta, "ormtype") && thisPropertyMeta.ormtype eq 'boolean'>
@@ -230,12 +230,11 @@
 						<cfif !column.filter && listLen(column.propertyIdentifier, '._') gt 1>
 							
 							<cfset oneUpPropertyIdentifier = column.propertyIdentifier />
-							<cfset listDeleteAt(oneUpPropertyIdentifier, listLen(oneUpPropertyIdentifier, '._'), '._') />
+							<cfset oneUpPropertyIdentifier = listDeleteAt(oneUpPropertyIdentifier, listLen(oneUpPropertyIdentifier, '._'), '._') />
 							<cfset oneUpPropertyName = listLast(oneUpPropertyIdentifier, '.') />
 							<cfset twoUpEntityName = attributes.hibachiScope.getService("hibachiService").getLastEntityNameInPropertyIdentifier( attributes.smartList.getBaseEntityName(), oneUpPropertyIdentifier ) />
 							<cfset oneUpPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( twoUpEntityName, oneUpPropertyName ) />
-							
-							<cfif structKeyExists(oneUpPropertyMeta, "fieldtype") && oneUpPropertyMeta.fieldtype eq 'many-to-one'>
+							<cfif structKeyExists(oneUpPropertyMeta, "fieldtype") && oneUpPropertyMeta.fieldtype eq 'many-to-one' && (!structKeyExists(thisPropertyMeta, "ormtype") || listFindNoCase("boolean,string", thisPropertyMeta.ormtype))>
 								<cfset column.filter = true />
 							</cfif>
 						</cfif>
@@ -243,7 +242,7 @@
 					<cfelseif !isBoolean(column.filter)>
 						<cfset column.filter = false />
 					</cfif>
-					<cfif not len(column.range) && (!structKeyExists(thisPropertyMeta, "persistent") || !thisPropertyMeta.persistent) && structKeyExists(thisPropertyMeta, "ormType") && (thisPropertyMeta.ormType eq 'integer' || thisPropertyMeta.ormType eq 'big_decimal' || thisPropertyMeta.ormType eq 'timestamp')>
+					<cfif not len(column.range) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && structKeyExists(thisPropertyMeta, "ormType") && (thisPropertyMeta.ormType eq 'integer' || thisPropertyMeta.ormType eq 'big_decimal' || thisPropertyMeta.ormType eq 'timestamp')>
 						<cfset column.range = true />
 					<cfelseif !isBoolean(column.range)>
 						<cfset column.range = false />
@@ -338,25 +337,25 @@
 							</cfif>
 						</cfsilent>
 						<th class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif>>
-							<cfif not column.search and not column.sort and not column.filter and not column.range>
+							<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
 								#column.title#
 							<cfelse>
 								<div class="dropdown">
-									<a href="##" class="dropdown-toggle" data-toggle="dropdown">#column.title# <span class="caret"></span> </a>
-									<ul class="dropdown-menu nav">
+									<a href="##" class="dropdown-toggle" data-toggle="dropdown">#column.title#</a>
+									<ul class="dropdown-menu nav scrollable">
 										<cf_HibachiDividerHider>
-											<cfif column.sort>
+											<cfif column.sort and not thistag.expandable>
 												<li class="nav-header">#attributes.hibachiScope.rbKey('define.sort')#</li>
 												<li><a href="##" class="listing-sort" data-sortdirection="ASC"><i class="icon-arrow-down"></i> Sort Ascending</a></li>
 												<li><a href="##" class="listing-sort" data-sortdirection="DESC"><i class="icon-arrow-up"></i> Sort Decending</a></li>
 												<li class="divider"></li>
 											</cfif>
-											<cfif column.search>
+											<cfif column.search and not thistag.expandable>
 												<li class="nav-header">#attributes.hibachiScope.rbKey('define.search')#</li>
-												<li class="search-filter"><input type="text" class="listing-search span2" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
+												<li class="search-filter"><input type="text" class="listing-search" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
 												<li class="divider"></li>
 											</cfif>
-											<cfif column.range>
+											<cfif column.range and not thistag.expandable>
 												<cfsilent>
 													<cfset local.rangeClass = "text" />
 													<cfset local.fieldType = thistag.exampleEntity.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) />
@@ -365,19 +364,17 @@
 													</cfif>
 												</cfsilent>
 												<li class="nav-header">#attributes.hibachiScope.rbKey('define.range')#</li>
-												<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# range-filter-lower span2" name="R:#column.propertyIdentifier#" value="" /></li>
-												<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# range-filter-upper span2" name="R:#column.propertyIdentifier#" value="" /></li>
+												<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# range-filter-lower" name="R:#column.propertyIdentifier#" value="" /></li>
+												<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# range-filter-upper" name="R:#column.propertyIdentifier#" value="" /></li>
 												<li class="divider"></li>
 											</cfif>
-											<cfif column.filter>
+											<cfif column.filter and not thistag.expandable>
 												<li class="nav-header">#attributes.hibachiScope.rbKey('define.filter')#</li>
 												<cfset filterOptions = attributes.smartList.getFilterOptions(valuePropertyIdentifier=column.propertyIdentifier, namePropertyIdentifier=column.propertyIdentifier) />
-												<div class="filter-scroll">
-													<input type="hidden" name="F:#column.propertyIdentifier#" value="#attributes.smartList.getFilters(column.propertyIdentifier)#" />
-													<cfloop array="#filterOptions#" index="filter">
-														<li><a href="##" class="listing-filter" data-filtervalue="#filter['value']#"><i class="hibachi-ui-checkbox"></i> #filter['name']#</a></li>
-													</cfloop>
-												</div>
+												<input type="hidden" name="F:#column.propertyIdentifier#" value="#attributes.smartList.getFilters(column.propertyIdentifier)#" />
+												<cfloop array="#filterOptions#" index="filter">
+													<li><a href="##" class="listing-filter" data-filtervalue="#filter['value']#"><i class="hibachi-ui-checkbox"></i> #filter['name']#</a></li>
+												</cfloop>
 											</cfif>
 										</cf_HibachiDividerHider>
 									</ul>
@@ -454,7 +451,10 @@
 								
 								<!--- Edit --->
 								<cfif len(attributes.recordEditAction)>
-									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="pencil" iconOnly="true" disabled="#record.isNotEditable()#" modal="#attributes.recordEditModal#" />
+									<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
+									<cfset local.disabled = local.editErrors.hasErrors() />
+									<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
+									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" />
 								</cfif>
 								
 								<!--- Delete --->

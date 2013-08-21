@@ -1,42 +1,52 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
 */
-component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
+component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -62,18 +72,18 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	
 	// Related Object Properties (many-to-many - owner)
-	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SlatwallSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
-	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SlatwallSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID"; 
-	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SlatwallSkuSubscriptionBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
-	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SlatwallSkuRenewalSubscriptionBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
+	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
+	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID"; 
+	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
+	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SlatwallPromotionRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierExcludedSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateSku" fkcolumn="skuID" inversejoincolumn="priceGroupRateID" inverse="true";
-	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SlatwallPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateSku" fkcolumn="skuID" inversejoincolumn="priceGroupRateID" inverse="true";
+	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -87,6 +97,7 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	// Non-Persistent Properties
 	property name="adminIcon" persistent="false";
 	property name="assignedOrderItemAttributeSetSmartList" persistent="false";
+	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyCode" type="string" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
@@ -95,6 +106,7 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="nextEstimatedAvailableDate" type="string" persistent="false";
+	property name="optionsIDList" persistent="false";
 	property name="optionsDisplay" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetails" type="struct" persistent="false";
@@ -102,6 +114,7 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="salePriceDiscountType" type="string" persistent="false";
 	property name="salePriceDiscountAmount" type="string" persistent="false";
 	property name="salePriceExpirationDateTime" type="date" hb_formatType="datetime" persistent="false";
+	property name="skuDefinition" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	
 	
@@ -120,6 +133,18 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
     public any function getPriceByCurrencyCode( required string currencyCode ) {
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
     		return getCurrencyDetails()[ arguments.currencyCode ].price;
+    	}
+    }
+    
+    public any function getListPriceByCurrencyCode( required string currencyCode ) {
+    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "listPrice")) {
+    		return getCurrencyDetails()[ arguments.currencyCode ].listPrice;
+    	}
+    }
+    
+    public any function getRenewalPriceByCurrencyCode( required string currencyCode ) {
+    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "renewalPrice")) {
+    		return getCurrencyDetails()[ arguments.currencyCode ].renewalPrice;
     	}
     }
     
@@ -162,8 +187,19 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 				optionString &= getProduct().setting('productImageOptionCodeDelimiter') & reReplaceNoCase(option.getOptionCode(), "[^a-z0-9\-\_]","","all");
 			}
 		}
-		return reReplaceNoCase(getProduct().getProductCode(), "[^a-z0-9\-\_]","","all") & optionString & ".#setting('globalImageExtension')#";
+		return reReplaceNoCase(getProduct().getProductCode(), "[^a-z0-9\-\_]","","all") & optionString & ".#getProduct().setting('productImageDefaultExtension')#";
 	}
+	
+	public string function getOptionsIDList() {
+    	if(!structKeyExists(variables, "optionsIDList")) {
+    		variables.optionsIDList = "";
+    		for(var option in getOptions()) {
+	    		variables.optionsIDList = listAppend(variables.optionsIDList, option.getOptionID());
+	    	}	
+    	}
+    	
+		return variables.optionsIDList;
+    }
 	
 	public string function getOptionsDisplay(delimiter=" ") {
     	var dspOptions = "";
@@ -237,18 +273,24 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		}
 		
 		// DEPRECATED SIZE LOGIC
-		if(structKeyExists(arguments, "size") && !isNull(getProduct()) && !structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")) {
-			arguments.size = lcase(arguments.size);
-			if(arguments.size eq "l") {
-				arguments.size = "Large";
-			} else if (arguments.size eq "m") {
-				arguments.size = "Medium";
-			} else {
-				arguments.size = "Small";
+		if((structKeyExists(arguments, 1) || structKeyExists(arguments, "size")) && !isNull(getProduct()) && !structKeyExists(arguments, "width") && !structKeyExists(arguments, "height")) {
+			if(structKeyExists(arguments, "size")) {
+				var thisSize = lcase(arguments.size);
+				structDelete(arguments, "size");	
+			} else if (structKeyExists(arguments, 1)) {
+				var thisSize = lcase(arguments[1]);
+				structDelete(arguments, 1);
 			}
-			arguments.width = getProduct().setting("productImage#arguments.size#Width");
-			arguments.height = getProduct().setting("productImage#arguments.size#Height");
-			structDelete(arguments, "size");
+			if(thisSize eq "l") {
+				thisSize = "Large";
+			} else if (thisSize eq "m") {
+				thisSize = "Medium";
+			} else if (thisSize eq "s") {
+				thisSize = "Small";
+			}
+			arguments.width = getProduct().setting("productImage#thisSize#Width");
+			arguments.height = getProduct().setting("productImage#thisSize#Height");
+			arguments.resizeMethod = "scaleBest";
 		}
 		
 		return getService("imageService").getResizedImage(argumentCollection=arguments);
@@ -276,6 +318,7 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 			}
 			arguments.width = getProduct().setting("productImage#arguments.size#Width");
 			arguments.height = getProduct().setting("productImage#arguments.size#Height");
+			arguments.resizeMethod = "scaleBest";
 			structDelete(arguments, "size");
 		}
 		
@@ -291,11 +334,6 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	}
 	
 	// END: Image Methods
-	
-	//get BaseProductType 
-	public any function getBaseProductType() {
-		return getProduct().getBaseProductType();
-	}
 	
 	// START: Price Methods
 	public numeric function getPriceByPromotion( required any promotion) {
@@ -375,6 +413,10 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		return variables.assignedOrderItemAttributeSetSmartList;
 	}
 	
+	public any function getBaseProductType() {
+		return getProduct().getBaseProductType();
+	}
+	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
 			variables.currencyCode = this.setting('skuCurrency');
@@ -387,47 +429,63 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 			variables.currencyDetails = {};
 			
 			var eligibleCurrencySL = getService("currencyService").getCurrencySmartList();
-			eligibleCurrencySL.addInFilter('currencyCode', setting('skuEligibleCurrencies') );
 			
-			for(var i = 1; i<=arrayLen(eligibleCurrencySL.getRecords()); i++) {
+			if(len(setting('skuEligibleCurrencies'))) {
 				
-				var thisCurrency = eligibleCurrencySL.getRecords()[i];
+				eligibleCurrencySL.addInFilter('currencyCode', setting('skuEligibleCurrencies') );
 				
-				variables.currencyDetails[ thisCurrency.getCurrencyCode() ] = {};
-				variables.currencyDetails[ thisCurrency.getCurrencyCode() ].skuCurrencyID = "";
-				
-				// Check to see if thisCurrency is the same as the default currency
-				if(thisCurrency.getCurrencyCode() eq this.setting('skuCurrency')) {
-					if(!isNull(getListPrice())) {
-						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice = getListPrice();
-						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPriceFormatted = getFormattedValue("listPrice");
-					}
-					variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price = getPrice();
-					variables.currencyDetails[ thisCurrency.getCurrencyCode() ].priceFormatted = getFormattedValue("price");
-					variables.currencyDetails[ thisCurrency.getCurrencyCode() ].converted = false;
-				}
-				// Look through the definitions to see if this currency is defined for this sku
-				for(var c=1; c<=arrayLen(getSkuCurrencies()); c++) {
-					if(getSkuCurrencies()[c].getCurrencyCode() eq thisCurrency.getCurrencyCode()) {
-						if(!isNull(getSkuCurrencies()[c].getListPrice())) {
-							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice = getSkuCurrencies()[c].getListPrice();
-							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPriceFormatted = getSkuCurrencies()[c].getFormattedValue("listPrice");	
+				for(var i = 1; i<=arrayLen(eligibleCurrencySL.getRecords()); i++) {
+					
+					var thisCurrency = eligibleCurrencySL.getRecords()[i];
+					
+					variables.currencyDetails[ thisCurrency.getCurrencyCode() ] = {};
+					variables.currencyDetails[ thisCurrency.getCurrencyCode() ].skuCurrencyID = "";
+					
+					// Check to see if thisCurrency is the same as the default currency
+					if(thisCurrency.getCurrencyCode() eq this.setting('skuCurrency')) {
+						if(!isNull(getRenewalPrice())) {
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPrice = getRenewalPrice();
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPriceFormatted = getFormattedValue("renewalPrice");
 						}
-						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price = getSkuCurrencies()[c].getPrice();
-						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].priceFormatted = getSkuCurrencies()[c].getFormattedValue("price");
+						if(!isNull(getListPrice())) {
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice = getListPrice();
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPriceFormatted = getFormattedValue("listPrice");
+						}
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price = getPrice();
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].priceFormatted = getFormattedValue("price");
 						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].converted = false;
-						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].skuCurrencyID = getSkuCurrencies()[c].getSkuCurrencyID();
 					}
-				}
-				// Use a conversion mechinism
-				if(!structKeyExists(variables.currencyDetails[ thisCurrency.getCurrencyCode() ], "price")) {
-					if(!isNull(getListPrice())) {
-						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice = getService("currencyService").convertCurrency(getListPrice(), this.setting('skuCurrency'), thisCurrency.getCurrencyCode());
-						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPriceFormatted = thisCurrency.formatValue( variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice, "currency");
+					// Look through the definitions to see if this currency is defined for this sku
+					for(var c=1; c<=arrayLen(getSkuCurrencies()); c++) {
+						if(getSkuCurrencies()[c].getCurrencyCode() eq thisCurrency.getCurrencyCode()) {
+							if(!isNull(getSkuCurrencies()[c].getRenewalPrice())) {
+								variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPrice = getSkuCurrencies()[c].getRenewalPrice();
+								variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPriceFormatted = getSkuCurrencies()[c].getFormattedValue("renewalPrice");
+							}
+							if(!isNull(getSkuCurrencies()[c].getListPrice())) {
+								variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice = getSkuCurrencies()[c].getListPrice();
+								variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPriceFormatted = getSkuCurrencies()[c].getFormattedValue("listPrice");
+							}
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price = getSkuCurrencies()[c].getPrice();
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].priceFormatted = getSkuCurrencies()[c].getFormattedValue("price");
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].converted = false;
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].skuCurrencyID = getSkuCurrencies()[c].getSkuCurrencyID();
+						}
 					}
-					variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price = getService("currencyService").convertCurrency(getPrice(), this.setting('skuCurrency'), thisCurrency.getCurrencyCode());
-					variables.currencyDetails[ thisCurrency.getCurrencyCode() ].priceFormatted = thisCurrency.formatValue( variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price, "currency");
-					variables.currencyDetails[ thisCurrency.getCurrencyCode() ].converted = true;
+					// Use a conversion mechinism
+					if(!structKeyExists(variables.currencyDetails[ thisCurrency.getCurrencyCode() ], "price")) {
+						if(!isNull(getRenewalPrice())) {
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPrice = getService("currencyService").convertCurrency(getRenewalPrice(), this.setting('skuCurrency'), thisCurrency.getCurrencyCode());
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPriceFormatted = formatValue( variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPrice, "currency", {currencyCode=thisCurrency.getCurrencyCode()});
+						}
+						if(!isNull(getListPrice())) {
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice = getService("currencyService").convertCurrency(getListPrice(), this.setting('skuCurrency'), thisCurrency.getCurrencyCode());
+							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPriceFormatted = formatValue( variables.currencyDetails[ thisCurrency.getCurrencyCode() ].listPrice, "currency", {currencyCode=thisCurrency.getCurrencyCode()});
+						}
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price = getService("currencyService").convertCurrency(getPrice(), this.setting('skuCurrency'), thisCurrency.getCurrencyCode());
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].priceFormatted = formatValue( variables.currencyDetails[ thisCurrency.getCurrencyCode() ].price, "currency", {currencyCode=thisCurrency.getCurrencyCode()});
+						variables.currencyDetails[ thisCurrency.getCurrencyCode() ].converted = true;
+					}
 				}
 			}
 		}
@@ -529,6 +587,24 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+	
+	public string function getSkuDefinition() {
+		if(!structKeyExists(variables, "skuDefinition")) {
+			variables.skuDefinition = "";
+			if(getBaseProductType() eq "contentAccess") {
+				
+			} else if (getBaseProductType() eq "merchandise") {
+				for(var option in getOptions()) {
+		    		variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
+		    	}
+		    	trim(variables.skuDefinition);
+			} else if (getBaseProductType() eq "subscription") {
+				variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+			}
+			
+		}
+		return variables.skuDefinition;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -687,6 +763,13 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	
 	// ================== START: Overridden Methods ========================
 	
+	public string function getImageName() {
+		if(!structKeyExists(variables, "imageName")) {
+			variables.imageName = generateImageFileName();
+		}
+		return variables.imageName;
+	}
+	
 	public string function getSimpleRepresentationPropertyName() {
     	return "skuCode";
     }
@@ -760,3 +843,4 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
+
