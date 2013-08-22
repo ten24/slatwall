@@ -55,6 +55,7 @@ component extends="HibachiService" accessors="true" {
 	
 	property name="dataService" type="any";  
 	property name="contentService" type="any";
+	property name="locationService" type="any";
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
 	property name="optionService" type="any";
@@ -199,6 +200,183 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
+	public any function processProduct_create(required any product, required any processObject) {
+		if(isNull(arguments.product.getURLTitle())) {
+			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
+		}
+		
+		// Create Merchandise Product Skus Based On Options
+		if(arguments.processObject.getBaseProductType() == "merchandise") {
+			
+			// If options were passed in create multiple skus
+			if(!isNull(arguments.processObject.getOptions()) && len(arguments.processObject.getOptions())) {
+				
+				var optionGroups = {};
+				var totalCombos = 1;
+				var indexedKeys = [];
+				var currentIndexesByKey = {};
+				var keyToChange = "";
+				
+				// Loop over all the options to put them into a struct by groupID
+				for(var i=1; i<=listLen(arguments.processObject.getOptions()); i++) {
+					var option = getOptionService().getOption( listGetAt(arguments.processObject.getOptions(), i) );
+					if(!structKeyExists(optionGroups, option.getOptionGroup().getOptionGroupID())) {
+						optionGroups[ option.getOptionGroup().getOptionGroupID() ] = [];
+					}
+					arrayAppend(optionGroups[ option.getOptionGroup().getOptionGroupID() ], option);
+				}
+				
+				// Loop over the groups to see how many we will be creating and to setup the option indexes to use
+				for(var key in optionGroups) {
+					arrayAppend(indexedKeys, key);
+					currentIndexesByKey[ key ] = 1;
+					totalCombos = totalCombos * arrayLen(optionGroups[key]);
+				}
+								
+				// Create a sku with 1 option from each group, and then update the indexes properly for the next loop
+				for(var i = 1; i<=totalCombos; i++) {
+					
+					// Setup the New Sku
+					var newSku = this.newSku();
+					newSku.setPrice(arguments.data.price);
+					if(structKeyExists(arguments.data, "listPrice") && isNumeric(arguments.data.listPrice) && arguments.data.listPrice > 0) {
+						newSku.setListPrice(arguments.data.listPrice);	
+					}
+					newSku.setSkuCode(arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+					
+					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
+					arguments.product.addSku(newSku);
+					if(isNull(arguments.product.getDefaultSku())) {
+						arguments.product.setDefaultSku(newSku);
+					}
+					
+					// Add each of the options
+					for(var key in optionGroups) {
+						newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);	
+					}
+					if(i < totalCombos) {
+						var indexesUpdated = false;
+						var changeKeyIndex = 1;
+						while(indexesUpdated == false) {
+							if(currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] < arrayLen(optionGroups[ indexedKeys[ changeKeyIndex ] ])) {
+								currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ]++;
+								indexesUpdated = true;
+							} else {
+								currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] = 1;
+								changeKeyIndex++;
+							}
+						}
+					}
+				}
+				
+			// If no options were passed in we will just create a single sku
+			} else {
+				
+				var thisSku = this.newSku();
+				thisSku.setProduct(arguments.product);
+				thisSku.setPrice(arguments.data.price);
+				if(structKeyExists(arguments.data, "listPrice") && isNumeric(arguments.data.listPrice) && arguments.data.listPrice > 0) {
+					thisSku.setListPrice(arguments.data.listPrice);	
+				}
+				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+				arguments.product.setDefaultSku( thisSku );
+				
+			}
+			
+		// Create Subscription Product Skus Based On SubscriptionTerm and SubscriptionBenifit
+		} else if (arguments.processObject.getBaseProductType() == "subscription") {
+			
+			for(var i=1; i <= listLen(arguments.processObject.getSubscriptionTerms()); i++){
+				var thisSku = this.newSku();
+				thisSku.setProduct(arguments.product);
+				thisSku.setPrice(arguments.data.price);
+				thisSku.setRenewalPrice(arguments.data.price);
+				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
+				thisSku.setSkuCode(arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+				for(var b=1; b <= listLen(arguments.data.subscriptionBenefits); b++) {
+					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.data.subscriptionBenefits, b) ) );
+				}
+				for(var b=1; b <= listLen(arguments.data.renewalSubscriptionBenefits); b++) {
+					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.data.renewalSubscriptionBenefits, b) ) );
+				}
+				if(i==1) {
+					arguments.product.setDefaultSku( thisSku );	
+				}
+			}
+			
+			
+		// Create Content Access Product Skus Based On Pages
+		} else if (arguments.processObject.getBaseProductType() == "contentAccess") {
+			
+			if(structKeyExists(arguments.data, "bundleContentAccess") && arguments.data.bundleContentAccess) {
+				var newSku = this.newSku();
+				newSku.setPrice(arguments.data.price);
+				newSku.setSkuCode(arguments.product.getProductCode() & "-1");
+				newSku.setProduct(arguments.product);
+				for(var c=1; c<=listLen(arguments.data.accessContents); c++) {
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.data.accessContents, c) ) );
+				}
+				arguments.product.setDefaultSku(newSku);
+			} else {
+				for(var c=1; c<=listLen(arguments.data.accessContents); c++) {
+					var newSku = this.newSku();
+					newSku.setPrice(arguments.data.price);
+					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
+					newSku.setProduct(arguments.product);
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.data.accessContents, c) ) );
+					if(c==1) {
+						arguments.product.setDefaultSku(newSku);	
+					}
+				}
+			}
+			
+		} else if (arguments.processObject.getBaseProductType() == "event") {
+			
+			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+				var newSku = this.newSku();
+				
+				newSku.setPrice( arguments.processObject.getPrice() );
+				newSku.setSkuCode( arguments.product.getProductCode() & "-1");
+				newSku.setProduct( arguments.product );
+				
+				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+				}
+				
+				arguments.product.setDefaultSku( newSku );	
+				
+			} else {
+				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+					var newSku = this.newSku();
+					
+					newSku.setPrice( arguments.processObject.getPrice() );
+					newSku.setSkuCode( arguments.product.getProductCode() & "-#lc#");
+					newSku.setProduct( arguments.product );
+					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+					if(lc==1) {
+						arguments.product.setDefaultSku( newSku );	
+					}
+				}
+			}
+			
+			
+			// For Every locationConfiguration, create a sku with the eventStartDateTime
+			
+		} else {
+			throw("There was an unexpected error when creating this product");
+		}
+		
+			
+		// Generate Image Files
+		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		
+		arguments.product = this.saveProduct(arguments.product);
+        
+        // Return the product
+		return arguments.product;
+	}
+	
+	
 	public any function processProduct_deleteDefaultImage(required any product, required struct data) {
 		if(structKeyExists(arguments.data, "imageFile")) {
 			if(fileExists(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#')) {
@@ -283,16 +461,6 @@ component extends="HibachiService" accessors="true" {
 		
 		// validate the product
 		arguments.product.validate( context="save" );
-		
-		// If this is a new product and it doesn't have any errors... there are a few additional steps we need to take
-		if(arguments.product.isNew() && !arguments.product.hasErrors()) {
-			
-			// Create Skus
-			getSkuService().createSkus(arguments.product, arguments.data);
-			
-			// Generate Image Files
-			arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-		}
 		
 		// If the product passed validation then call save in the DAO, otherwise set the errors flag
         if(!arguments.product.hasErrors()) {
