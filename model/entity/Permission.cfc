@@ -49,7 +49,7 @@ Notes:
 	entity
 	action
 */
-component entityname="SlatwallPermission" table="SlatwallPermission" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="permissionGroup.permissions" {
+component entityname="SlatwallPermission" table="SwPermission" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="permissionGroup.permissions" {
 	
 	// Persistent Properties
 	property name="permissionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

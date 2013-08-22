@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Stock" entityname="SlatwallStock" table="SlatwallStock" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component displayname="Stock" entityname="SlatwallStock" table="SwStock" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
 	
 	// Persistent Properties
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

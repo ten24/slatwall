@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Access" entityname="SlatwallAccess" table="SlatwallAccess" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accessService" {
+component displayname="Access" entityname="SlatwallAccess" table="SwAccess" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accessService" {
 	
 	// Persistent Properties
 	property name="accessID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -55,7 +55,7 @@ component displayname="Access" entityname="SlatwallAccess" table="SlatwallAccess
 	// Related Object Properties (many-to-one)
 	property name="subscriptionUsage" cfc="SubscriptionUsage" fieldtype="many-to-one" fkcolumn="subscriptionUsageID" hb_optionsNullRBKey="define.select";
 	property name="subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit" fieldtype="many-to-one" fkcolumn="subscriptionUsageBenefitID" hb_optionsNullRBKey="define.select";
-	property name="subscriptionUsageBenefitAccount" cfc="SubscriptionUsageBenefitAccount" fieldtype="many-to-one" fkcolumn="subscriptionUsageBenefitAccountID" hb_optionsNullRBKey="define.select";
+	property name="subscriptionUsageBenefitAccount" cfc="SubscriptionUsageBenefitAccount" fieldtype="many-to-one" fkcolumn="subsUsageBenefitAccountID" hb_optionsNullRBKey="define.select";
 		
 	// Related Object Properties (one-to-many)
 	

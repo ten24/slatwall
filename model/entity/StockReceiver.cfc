@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallStockReceiver" table="SlatwallStockReceiver" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component entityname="SlatwallStockReceiver" table="SwStockReceiver" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
 	
 	
 	// Persistent Properties
@@ -74,7 +74,7 @@ component entityname="SlatwallStockReceiver" table="SlatwallStockReceiver" persi
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
-	
+
 	// Order (many-to-one)
 	public void function setOrder(required any order) {
 		variables.order = arguments.order;

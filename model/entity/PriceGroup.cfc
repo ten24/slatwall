@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Price Group" entityname="SlatwallPriceGroup" table="SlatwallPriceGroup" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="priceGroupService" hb_permission="this" {
+component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPriceGroup" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="priceGroupService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="priceGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -64,10 +64,10 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="Slatw
 	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";    
 	
 	// Related Object Properties (many-to-many - invers)
-	property name="accounts" singularname="account" cfc="Account" fieldtype="many-to-many" linktable="SlatwallAccountPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="accountID" inverse="true";
-	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SlatwallSubscriptionBenefitPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="subscriptionBenefitID" inverse="true";
-	property name="subscriptionUsageBenefits" singularname="subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit" type="array" fieldtype="many-to-many" linktable="SlatwallSubscriptionUsageBenefitPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="subscriptionUsageBenefitID" inverse="true";
-	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardEligiblePriceGroup" fkcolumn="priceGroupID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="accounts" singularname="account" cfc="Account" fieldtype="many-to-many" linktable="SwAccountPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="accountID" inverse="true";
+	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSubsBenefitPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="subscriptionBenefitID" inverse="true";
+	property name="subscriptionUsageBenefits" singularname="subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit" type="array" fieldtype="many-to-many" linktable="SwSubsUsageBenefitPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="subscriptionUsageBenefitID" inverse="true";
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="priceGroupID" inversejoincolumn="promotionRewardID" inverse="true";
 
 	// Audit properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

@@ -74,15 +74,18 @@ component extends="SlatwallUnitTestBase" {
 		
 		var smartList = request.slatwallScope.getService("productService").getProductSmartList();
 		
-		smartList.setPageRecordsShow(1);
+		// This test can only run if there are products in the database
+		if(smartList.getRecordsCount() >= 2) {
+			smartList.setPageRecordsShow(1);
 		
-		var productOne = smartList.getPageRecords( true )[1];
-		
-		smartList.setCurrentPageDeclaration( 2 );
-		
-		var productTwo = smartList.getPageRecords( true )[1];
-		
-		assert(productOne.getProductID() neq productTwo.getProductID());
+			var productOne = smartList.getPageRecords( true )[1];
+			
+			smartList.setCurrentPageDeclaration( 2 );
+			
+			var productTwo = smartList.getPageRecords( true )[1];
+			
+			assert(productOne.getProductID() neq productTwo.getProductID());	
+		}
 	}
 	
 	public void function issue_1329() {

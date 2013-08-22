@@ -5,9 +5,7 @@
 	
 	<cfoutput>
 		<table class="table table-condensed table-bordered">
-			
 			<!--- Headers --->
-			<cfset totalsQuery = attributes.report.getTotalsQuery() />
 			<tr>
 				<cfloop from="1" to="#listLen(attributes.report.getDimensions())#" step="1" index="d">
 					<cfset dimensionDefinition = attributes.report.getDimensionDefinition( listGetAt(attributes.report.getDimensions(), d) ) />
@@ -15,16 +13,30 @@
 				</cfloop>
 				<cfloop from="1" to="#listLen(attributes.report.getMetrics())#" step="1" index="m">
 					<cfset metricDefinition = attributes.report.getMetricDefinition( listGetAt(attributes.report.getMetrics(), m) ) />
-					<th style="background-color:##e3e3e3;">#attributes.report.getMetricTitle( metricDefinition.alias )#</th>
+					<th style="background-color:##e3e3e3;" <cfif attributes.report.getReportCompareFlag()>colspan="2"</cfif>><span style="color:#attributes.report.getMetricColorDetails()[m].color#;">&bull;</span> #attributes.report.getMetricTitle( metricDefinition.alias )#</th>
 				</cfloop>
 			</tr>
+			<!--- Totals --->
 			<tr>
+				<!--- Totals Query --->
+				<cfset totalsQuery = attributes.report.getTotalsQuery() />
+				<!--- Compare Totals Query --->
+				<cfif attributes.report.getReportCompareFlag()>
+					<cfset compareTotalsQuery = attributes.report.getCompareTotalsQuery() />
+				</cfif>
 				<cfloop from="1" to="#listLen(attributes.report.getDimensions())#" step="1" index="d">
 					<td style="background-color:##f5f5f5;"></td>
 				</cfloop>
 				<cfloop from="1" to="#listLen(attributes.report.getMetrics())#" step="1" index="m">
 					<cfset metricDefinition = attributes.report.getMetricDefinition( listGetAt(attributes.report.getMetrics(), m) ) />
-					<td style="background-color:##f5f5f5;font-size:16px;font-weight:bold;">#attributes.hibachiScope.formatValue(totalsQuery[metricDefinition.alias][1], attributes.report.getAliasFormatType(metricDefinition.alias))#</td>
+					<td style="background-color:##f5f5f5;font-size:16px;font-weight:bold;">
+						#attributes.hibachiScope.formatValue(totalsQuery[metricDefinition.alias][1], attributes.report.getAliasFormatType(metricDefinition.alias))#
+					</td>
+					<cfif attributes.report.getReportCompareFlag()>
+						<td style="background-color:##f5f5f5;font-size:16px;font-weight:bold;">
+							#attributes.hibachiScope.formatValue(compareTotalsQuery[metricDefinition.alias][1], attributes.report.getAliasFormatType(metricDefinition.alias))#
+						</td>
+					</cfif>
 				</cfloop>
 			</tr>
 			
@@ -49,6 +61,9 @@
 					<cfloop from="1" to="#listLen(attributes.report.getMetrics())#" step="1" index="m">
 						<cfset metricDefinition = attributes.report.getMetricDefinition( listGetAt(attributes.report.getMetrics(), m) ) />
 						<td>#attributes.hibachiScope.formatValue( tableData[metricDefinition.alias][ tableData.currentRow ], attributes.report.getAliasFormatType(metricDefinition.alias))#</td>
+						<cfif attributes.report.getReportCompareFlag()>
+							<td>#attributes.hibachiScope.formatValue( tableData[ "#metricDefinition.alias#Compare" ][ tableData.currentRow ], attributes.report.getAliasFormatType(metricDefinition.alias))#</td>
+						</cfif>
 					</cfloop>
 				</tr>
 			</cfloop>

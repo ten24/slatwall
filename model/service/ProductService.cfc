@@ -240,7 +240,8 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 		}		
-	
+		
+		return arguments.product;
 	}
 	
 	public any function processProduct_uploadDefaultImage(required any product, required any processObject) {
@@ -277,7 +278,7 @@ component extends="HibachiService" accessors="true" {
 		arguments.product.populate(arguments.data);
 		
 		if(isNull(arguments.product.getURLTitle())) {
-			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SlatwallProduct"));
+			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
 		}
 		
 		// validate the product
@@ -305,9 +306,9 @@ component extends="HibachiService" accessors="true" {
 	public any function saveProductType(required any productType, required struct data) {
 		if( (isNull(arguments.productType.getURLTitle()) || !len(arguments.productType.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productTypeName") && len(arguments.data.productTypeName)) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SlatwallProductType");	
+				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SwProductType");	
 			} else if (!isNull(arguments.productType.getProductTypeName()) && len(arguments.productType.getProductTypeName())) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SlatwallProductType");
+				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
 			}
 		}
 		

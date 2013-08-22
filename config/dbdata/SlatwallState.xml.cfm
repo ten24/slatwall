@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallState">
+<Table tableName="SwState">
 	<Columns>
 		<column name="stateCode" fieldtype="id" />
 		<column name="stateName" update="false" />

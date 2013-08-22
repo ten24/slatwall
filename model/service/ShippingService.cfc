@@ -122,7 +122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							arrayAppend(qualifiedRateOptions, {
 								shippingMethodRate=shippingMethodRates[r],
-								totalCharge=shippingMethodRates[r].getDefaultAmount(),
+								totalCharge=nullReplace(shippingMethodRates[r].getDefaultAmount(), 0),
 								integrationFailed=false}
 							);
 							
@@ -149,7 +149,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							arrayAppend(qualifiedRateOptions, {
 								shippingMethodRate=shippingMethodRates[r],
-								totalCharge=shippingMethodRates[r].getDefaultAmount(),
+								totalCharge=nullReplace(shippingMethodRates[r].getDefaultAmount(), 0),
 								integrationFailed=true}
 							);
 							

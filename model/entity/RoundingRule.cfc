@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Rounding Rule" entityname="SlatwallRoundingRule" table="SlatwallRoundingRule" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="roundingRuleService" hb_permission="this" {
+component displayname="Rounding Rule" entityname="SlatwallRoundingRule" table="SwRoundingRule" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="roundingRuleService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="roundingRuleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

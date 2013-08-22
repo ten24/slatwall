@@ -219,12 +219,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										// Check the reward settings to see if this orderItem applies
 										if( getOrderItemInReward(reward, orderItem) ) {
 											
-											// setup the discountQuantity based on the qualification quantity.  If there were no qualification constrints than this will just be the orderItem quantity
 											var qualificationQuantity = promotionPeriodQualifications[reward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ];
-											if(qualificationQuantity lt promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder) {
-												promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder = qualificationQuantity;
+											if((qualificationQuantity * promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification) lt promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder) {
+												promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder = (qualificationQuantity * promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification);
 											}
 											
+											// setup the discountQuantity based on the qualification quantity.  If there were no qualification constrints than this will just be the orderItem quantity
 											var discountQuantity = qualificationQuantity * promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification;
 											
 											// If the discountQuantity is > the orderItem quantity then just set it to the orderItem quantity
@@ -264,7 +264,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												
 												// If there are already values in the array then figure out where to insert
 												var discountAdded = false;
-													
+												
 												// loop over any discounts that might be already in assigned and pick an index where the discount amount is best
 												for(var d=1; d<=arrayLen(orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ]) ; d++) {
 													
@@ -540,7 +540,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Return & Exchange Orders
 		if( listFindNoCase("otReturnOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
-			// TODO: In the future allow for return Items to have negative promotions applied.  This isn't import right now because you can determine how much you would like to refund ordersItems
+			// TODO [issue #1766]: In the future allow for return Items to have negative promotions applied.  This isn't import right now because you can determine how much you would like to refund ordersItems
 		}
 
 	}

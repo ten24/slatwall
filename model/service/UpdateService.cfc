@@ -74,6 +74,9 @@ Notes:
 			<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
 			<cfset var sourcePath = getTempDirectory() & "#listFirst(dirList.name[1],'/')#" />
 			<cfset var updateCopyStarted = true />
+			<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
+				<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
+			</cfif> 
 			<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
 			
 			<!--- if there is any error during update, restore the old files and throw the error --->

@@ -54,31 +54,31 @@ Notes:
 		
 		<cfquery name="rs">
 			SELECT
-				SlatwallStock.stockID,
-				SlatwallSku.skuID,
-				SlatwallSku.skuCode,
-				SlatwallLocation.locationID,
-				SlatwallLocation.locationName,
-				SlatwallProduct.productName,
-				SlatwallProduct.productID,
+				SwStock.stockID,
+				SwSku.skuID,
+				SwSku.skuCode,
+				SwLocation.locationID,
+				SwLocation.locationName,
+				SwProduct.productName,
+				SwProduct.productID,
 				(SELECT
 					COALESCE(SUM(i.quantityIn),0) - COALESCE(SUM(i.quantityOut),0)
 				FROM
-				  	SlatwallStock as a
+				  	SwStock as a
 				  LEFT JOIN
-				    SlatwallInventory i on a.stockID = i.stockID
+				    SwInventory i on a.stockID = i.stockID
 				WHERE
-				  	a.stockID = SlatwallStock.stockID
-				) as 'Qoh',
+				  	a.stockID = SwStock.stockID
+				) as Qoh,
 				(SELECT
 					(SELECT
 						COALESCE(SUM(i.quantityIn),0) - COALESCE(SUM(i.quantityOut),0)
 					FROM
-				  		SlatwallStock as a
+				  		SwStock as a
 					  LEFT JOIN
-					    SlatwallInventory i on a.stockID = i.stockID
+					    SwInventory i on a.stockID = i.stockID
 					WHERE
-					  	a.stockID = SlatwallStock.stockID
+					  	a.stockID = SwStock.stockID
 					  AND (
 					  	  (max(pci.countPostDateTime) is not null and i.createdDateTime < max(pci.countPostDateTime)) 
 						OR
@@ -89,49 +89,49 @@ Notes:
 					) -
 					COALESCE(SUM(pci.quantity),0)
 				FROM
-					SlatwallPhysicalCountItem pci
+					SwPhysicalCountItem pci
 				  INNER JOIN
-				  	SlatwallPhysicalCount pc on pci.physicalCountID = pc.physicalCountID
+				  	SwPhysicalCount pc on pci.physicalCountID = pc.physicalCountID
 				WHERE
-					pci.stockID = SlatwallStock.stockID
+					pci.stockID = SwStock.stockID
 				  AND
 				  	pc.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />
-				) * -1 as 'discrepancy'
+				) * -1 as discrepancy
 			FROM
-				SlatwallStock
+				SwStock
 			  INNER JOIN
-			  	SlatwallLocation on SlatwallStock.locationID = SlatwallLocation.locationID
+			  	SwLocation on SwStock.locationID = SwLocation.locationID
 			  INNER JOIN
-				SlatwallSku on SlatwallStock.skuID = SlatwallSku.skuID
+				SwSku on SwStock.skuID = SwSku.skuID
 			  INNER JOIN
-			  	SlatwallProduct on SlatwallSku.productID = SlatwallProduct.productID
+			  	SwProduct on SwSku.productID = SwProduct.productID
 			  INNER JOIN
-			  	SlatwallProductType on SlatwallProduct.productTypeID = SlatwallProductType.productTypeID
+			  	SwProductType on SwProduct.productTypeID = SwProductType.productTypeID
 			  LEFT JOIN
-			  	SlatwallBrand on SlatwallProduct.brandID = SlatwallBrand.brandID
+			  	SwBrand on SwProduct.brandID = SwBrand.brandID
 			WHERE
 			  <!--- Only get Stock that is supposed to be counted --->
 			  (
-			  		EXISTS(SELECT SlatwallPhysicalLocation.locationID FROM SlatwallPhysicalLocation WHERE SlatwallPhysicalLocation.locationID = SlatwallLocation.locationID AND SlatwallPhysicalLocation.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" /> )
+			  		EXISTS(SELECT SwPhysicalLocation.locationID FROM SwPhysicalLocation WHERE SwPhysicalLocation.locationID = SwLocation.locationID AND SwPhysicalLocation.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" /> )
 			  ) AND (
-			    	EXISTS(SELECT SlatwallPhysicalSku.skuID FROM SlatwallPhysicalSku WHERE SlatwallPhysicalSku.skuID=SlatwallSku.skuID AND SlatwallPhysicalSku.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />)
+			    	EXISTS(SELECT SwPhysicalSku.skuID FROM SwPhysicalSku WHERE SwPhysicalSku.skuID=SwSku.skuID AND SwPhysicalSku.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />)
 				  OR
-				  	EXISTS(SELECT SlatwallPhysicalProduct.productID FROM SlatwallPhysicalProduct WHERE SlatwallPhysicalProduct.productID=SlatwallProduct.productID AND SlatwallPhysicalProduct.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />)
+				  	EXISTS(SELECT SwPhysicalProduct.productID FROM SwPhysicalProduct WHERE SwPhysicalProduct.productID=SwProduct.productID AND SwPhysicalProduct.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />)
 				  OR
-				  	EXISTS(SELECT SlatwallPhysicalProductType.productTypeID FROM SlatwallPhysicalProductType WHERE SlatwallProductType.productTypeIDPath LIKE <cfif getApplicationValue("databaseType") eq "MySQL">concat('%', SlatwallPhysicalProductType.productTypeID, '%')<cfelse>('%' + SlatwallPhysicalProductType.productTypeID + '%')</cfif> AND SlatwallPhysicalProductType.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />)
+				  	EXISTS(SELECT SwPhysicalProductType.productTypeID FROM SwPhysicalProductType WHERE SwProductType.productTypeIDPath LIKE <cfif getApplicationValue("databaseType") eq "MySQL">concat('%', SwPhysicalProductType.productTypeID, '%')<cfelseif getApplicationValue("databaseType") eq "Oracle10g">('%' || SwPhysicalProductType.productTypeID || '%')<cfelse>('%' + SwPhysicalProductType.productTypeID + '%')</cfif> AND SwPhysicalProductType.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />)
 				  OR
-				  	EXISTS(SELECT SlatwallPhysicalBrand.brandID FROM SlatwallPhysicalBrand WHERE SlatwallPhysicalBrand.brandID=SlatwallBrand.brandID AND SlatwallPhysicalBrand.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />)
+				  	EXISTS(SELECT SwPhysicalBrand.brandID FROM SwPhysicalBrand WHERE SwPhysicalBrand.brandID=SwBrand.brandID AND SwPhysicalBrand.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />)
 			
 			  <!--- Verify Discrepancy <> 0 --->		  
 			  ) AND (SELECT
 						(SELECT
 							COALESCE(SUM(i.quantityIn),0) - COALESCE(SUM(i.quantityOut),0)
 						FROM
-					  		SlatwallStock as a
+					  		SwStock as a
 						  LEFT JOIN
-						    SlatwallInventory i on a.stockID = i.stockID
+						    SwInventory i on a.stockID = i.stockID
 						WHERE
-						  	a.stockID = SlatwallStock.stockID
+						  	a.stockID = SwStock.stockID
 						  AND (
 						  	  (max(pci.countPostDateTime) is not null and i.createdDateTime < max(pci.countPostDateTime)) 
 							OR
@@ -142,18 +142,18 @@ Notes:
 						) -
 						COALESCE(SUM(pci.quantity),0)
 					FROM
-						SlatwallPhysicalCountItem pci
+						SwPhysicalCountItem pci
 					  INNER JOIN
-					  	SlatwallPhysicalCount pc on pci.physicalCountID = pc.physicalCountID
+					  	SwPhysicalCount pc on pci.physicalCountID = pc.physicalCountID
 					WHERE
-						pci.stockID = SlatwallStock.stockID
+						pci.stockID = SwStock.stockID
 					  AND
 					  	pc.physicalID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.physicalID#" />
 					) <> 0
 			ORDER BY
-				SlatwallProductType.productTypeName,
-				SlatwallProduct.productName,
-				SlatwallSku.skuCode
+				SwProductType.productTypeName,
+				SwProduct.productName,
+				SwSku.skuCode
 		</cfquery>
 		
 		<cfreturn rs />

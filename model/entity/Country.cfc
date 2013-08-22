@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Country" entityname="SlatwallCountry" table="SlatwallCountry" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" hb_permission="this" {
+component displayname="Country" entityname="SlatwallCountry" table="SwCountry" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="countryCode" length="2" ormtype="string" fieldtype="id";

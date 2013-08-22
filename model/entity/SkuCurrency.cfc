@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSkuCurrency" table="SlatwallSkuCurrency" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="sku.skuCurrencies" {
+component entityname="SlatwallSkuCurrency" table="SwSkuCurrency" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="sku.skuCurrencies" {
 	
 	// Persistent Properties
 	property name="skuCurrencyID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

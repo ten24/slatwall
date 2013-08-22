@@ -58,7 +58,7 @@ Notes:
 				roundingRuleExpression,
 				roundingRuleDirection
 			FROM
-				SlatwallRoundingRule
+				SwRoundingRule
 			WHERE
 				roundingRuleID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.roundingRuleID#" /> 
 		</cfquery>

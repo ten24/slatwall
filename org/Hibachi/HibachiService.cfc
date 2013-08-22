@@ -10,9 +10,6 @@
 	<cfproperty name="hibachiUtilityService" type="any">
 	<cfproperty name="hibachiValidationService" type="any">
 	
-	<!--- TODO: FIX THIS --->
-	<cfproperty name="attributeService" type="any">
-	
 	<!--- Variables Scope Used For Caching --->
 	<cfset variables.entitiesMetaData = {} />
 	<cfset variables.entitiesProcessContexts = {} />
@@ -739,7 +736,9 @@
 			var idColumnNames = getIdentifierColumnNamesByEntityName( arguments.entityName );
 			
 			if( arrayLen(idColumnNames)) {
-				return idColumnNames[1];
+				var shortEntityName = getProperlyCasedShortEntityName(arguments.entityName);
+				shortEntityName = lcase(shortEntityName.charAt(0)) & shortEntityName.subString(1);
+				return replaceNoCase(replaceNoCase(idColumnNames[1],shortEntityName,shortEntityName),"code","Code");
 			}
 		}
 		

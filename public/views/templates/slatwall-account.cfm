@@ -970,7 +970,7 @@ Notes:
 								
 								<!--- Setup an accordian view for existing orders --->
 								<div class="accordion" id="order-history-acc">
-									<!---
+									
 									<!--- Loop over all of the orders that this account has placed --->
 									<cfloop array="#$.slatwall.account().getOrdersPlacedSmartList().getRecords()#" index="order">
 								  	
@@ -1198,7 +1198,7 @@ Notes:
 										</div> <!--- END: accordion-group --->
 											
 									</cfloop>
-									--->
+									
 								</div>
 								
 							</div>
@@ -1208,7 +1208,7 @@ Notes:
 								<h5>Shopping Carts & Quotes</h5>
 								
 								<div class="accordion" id="cart-and-quotes-acc">
-									<!---
+									
 									<cfset $.slatwall.account().getOrdersNotPlacedSmartList().addOrder('createdDateTime|DESC') />
 									
 									<!--- Loop over all of the 'notPlaced' orders --->
@@ -1373,7 +1373,7 @@ Notes:
 										</div> <!--- END: accordion-group --->
 											
 									</cfloop>
-									--->
+									
 			 					</div>
 							</div>
 							

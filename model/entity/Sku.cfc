@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
+component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -78,18 +78,18 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	
 	// Related Object Properties (many-to-many - owner)
-	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SlatwallSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
-	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SlatwallSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID"; 
-	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SlatwallSkuSubscriptionBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
-	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SlatwallSkuRenewalSubscriptionBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
+	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
+	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID"; 
+	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
+	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SlatwallPromotionRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierExcludedSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateSku" fkcolumn="skuID" inversejoincolumn="priceGroupRateID" inverse="true";
-	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SlatwallPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateSku" fkcolumn="skuID" inversejoincolumn="priceGroupRateID" inverse="true";
+	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -296,6 +296,7 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 			}
 			arguments.width = getProduct().setting("productImage#thisSize#Width");
 			arguments.height = getProduct().setting("productImage#thisSize#Height");
+			arguments.resizeMethod = "scaleBest";
 		}
 		
 		return getService("imageService").getResizedImage(argumentCollection=arguments);
@@ -323,6 +324,7 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 			}
 			arguments.width = getProduct().setting("productImage#arguments.size#Width");
 			arguments.height = getProduct().setting("productImage#arguments.size#Height");
+			arguments.resizeMethod = "scaleBest";
 			structDelete(arguments, "size");
 		}
 		

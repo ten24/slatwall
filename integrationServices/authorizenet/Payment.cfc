@@ -161,7 +161,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		// Parse The Raw Response Data Into a Struct
 		var responseDataArray = listToArray(rawResponse.fileContent,variables.responseDelimiter,true);
 		
-		var responseDate = {};
+		var responseData = {};
 		responseData.responseCode = responseDataArray[1];
 		responseData.responseSubCode = responseDataArray[2];
 		responseData.responseReasonCode = responseDataArray[3];

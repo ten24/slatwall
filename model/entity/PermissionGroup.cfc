@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallPermissionGroup" table="SlatwallPermissionGroup" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" {
+component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="permissionGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -60,7 +60,7 @@ component entityname="SlatwallPermissionGroup" table="SlatwallPermissionGroup" p
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
-	property name="accounts" singularname="account" cfc="Account" fieldtype="many-to-many" linktable="SlatwallAccountPermissionGroup" fkcolumn="permissionGroupID" inversejoincolumn="accountID" inverse="true";
+	property name="accounts" singularname="account" cfc="Account" fieldtype="many-to-many" linktable="SwAccountPermissionGroup" fkcolumn="permissionGroupID" inversejoincolumn="accountID" inverse="true";
 	
 	// Remote Properties
 	

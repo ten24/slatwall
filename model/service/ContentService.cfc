@@ -121,7 +121,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			product.setProductType( productType );
 			product.setProductName( arguments.content.getTitle() );
 			product.setProductCode( arguments.processObject.getProductCode() );
-			product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.content.getTitle(), tableName="SlatwallProduct") );
+			product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.content.getTitle(), tableName="SwProduct") );
 		}
 		
 		// Find the sku

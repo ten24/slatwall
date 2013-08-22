@@ -54,21 +54,21 @@
 		
 		<cfquery name="rs">
 			SELECT
-				SlatwallSku.skuCode,
-				SlatwallProduct.calculatedTitle,
+				SwSku.skuCode,
+				SwProduct.calculatedTitle,
 				
 			FROM
-				SlatwallSku
+				SwSku
 			  INNER JOIN
-			  	SlatwallProduct
+			  	SwProduct
 			WHERE
-				SlatwallSku.activeFlag = 1
+				SwSku.activeFlag = 1
 			  AND
-			  	SlatwallProduct.activeFlag = 1
+			  	SwProduct.activeFlag = 1
 			  AND
-			  	SlatwallProduct.publishedFlag = 1
+			  	SwProduct.publishedFlag = 1
 			  AND
-			  	SlatwallProduct.calculatedQATS > 0
+			  	SwProduct.calculatedQATS > 0
 		</cfquery>
 		
 		<cfreturn rs />

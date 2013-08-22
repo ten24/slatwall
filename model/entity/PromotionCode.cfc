@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Promotion Code" entityname="SlatwallPromotionCode" table="SlatwallPromotionCode" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" hb_permission="promotion.promotionCodes" {
+component displayname="Promotion Code" entityname="SlatwallPromotionCode" table="SwPromotionCode" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" hb_permission="promotion.promotionCodes" {
 	
 	// Persistent Properties
 	property name="promotionCodeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -62,10 +62,10 @@ component displayname="Promotion Code" entityname="SlatwallPromotionCode" table=
 	// Related Object Properties (one-to-many)
 	
 	// Related Object Properties (many-to-many - owner)
-	property name="accounts" singularname="account" cfc="Account" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionCodeAccount" fkcolumn="promotionCodeID" inversejoincolumn="accountID";
+	property name="accounts" singularname="account" cfc="Account" type="array" fieldtype="many-to-many" linktable="SwPromotionCodeAccount" fkcolumn="promotionCodeID" inversejoincolumn="accountID";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="orders" singularname="order" cfc="Order" type="array" fieldtype="many-to-many" linktable="SlatwallOrderPromotionCode" fkcolumn="promotionCodeID" inversejoincolumn="orderID" inverse="true" lazy="extra";
+	property name="orders" singularname="order" cfc="Order" type="array" fieldtype="many-to-many" linktable="SwOrderPromotionCode" fkcolumn="promotionCodeID" inversejoincolumn="orderID" inverse="true" lazy="extra";
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -105,7 +105,7 @@ component displayname="Promotion Code" entityname="SlatwallPromotionCode" table=
 			arrayAppend(arguments.Promotion.getPromotionCodes(),this);
 		}
 	}
-	
+
 	public void function removePromotion(any promotion) {
 		if(!structKeyExists(arguments, 'promotion')) {
 			arguments.promotion = variables.promotion;

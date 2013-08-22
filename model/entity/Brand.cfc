@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Brand" entityname="SlatwallBrand" table="SlatwallBrand" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="brandService" hb_permission="this" {
+component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="brandService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="brandID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -63,12 +63,12 @@ component displayname="Brand" entityname="SlatwallBrand" table="SlatwallBrand" p
 	// Related Object Properties (many-to-many - owner)
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="promotionRewards" hb_populateEnabled="false" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SlatwallPromotionRewardBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionRewardExclusions" hb_populateEnabled="false" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionQualifiers" hb_populateEnabled="false" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierBrand" fkcolumn="brandID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="promotionQualifierExclusions" hb_populateEnabled="false" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierExcludedBrand" fkcolumn="brandID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="vendors" singularname="vendor" cfc="Vendor" fieldtype="many-to-many" linktable="SlatwallVendorBrand" fkcolumn="brandID" inversejoincolumn="vendorID" inverse="true";
-	property name="physicals" hb_populateEnabled="false" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SlatwallPhysicalBrand" fkcolumn="brandID" inversejoincolumn="physicalID" inverse="true";
+	property name="promotionRewards" hb_populateEnabled="false" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionRewardExclusions" hb_populateEnabled="false" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionQualifiers" hb_populateEnabled="false" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualBrand" fkcolumn="brandID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifierExclusions" hb_populateEnabled="false" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclBrand" fkcolumn="brandID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="vendors" singularname="vendor" cfc="Vendor" fieldtype="many-to-many" linktable="SwVendorBrand" fkcolumn="brandID" inversejoincolumn="vendorID" inverse="true";
+	property name="physicals" hb_populateEnabled="false" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalBrand" fkcolumn="brandID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";

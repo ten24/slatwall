@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" table="SlatwallPriceGroupRate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="priceGroupService" hb_permission="priceGroup.priceGroupRates" {
+component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" table="SwPriceGroupRate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="priceGroupService" hb_permission="priceGroup.priceGroupRates" {
 	
 	// Persistent Properties
 	property name="priceGroupRateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -68,13 +68,13 @@ component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" tab
 	property name="roundingRule" cfc="RoundingRule" fieldtype="many-to-one" fkcolumn="roundingRuleID" hb_optionsNullRBKey="define.none";
 	
 	// Related Object Properties (many-to-many)
-	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateProductType" fkcolumn="priceGroupRateID" inversejoincolumn="productTypeID";
-	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateProduct" fkcolumn="priceGroupRateID" inversejoincolumn="productID";
-	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateSku" fkcolumn="priceGroupRateID" inversejoincolumn="skuID";
+	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPriceGroupRateProductType" fkcolumn="priceGroupRateID" inversejoincolumn="productTypeID";
+	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwPriceGroupRateProduct" fkcolumn="priceGroupRateID" inversejoincolumn="productID";
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwPriceGroupRateSku" fkcolumn="priceGroupRateID" inversejoincolumn="skuID";
 	
-	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateExcludedProductType" fkcolumn="priceGroupRateID" inversejoincolumn="productTypeID";
-	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateExcludedProduct" fkcolumn="priceGroupRateID" inversejoincolumn="productID";
-	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateExcludedSku" fkcolumn="priceGroupRateID" inversejoincolumn="skuID";
+	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPriceGrpRateExclProductType" fkcolumn="priceGroupRateID" inversejoincolumn="productTypeID";
+	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwPriceGroupRateExclProduct" fkcolumn="priceGroupRateID" inversejoincolumn="productID";
+	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwPriceGroupRateExclSku" fkcolumn="priceGroupRateID" inversejoincolumn="skuID";
 	
 	// Non-persistent entities
 	property name="amountTypeOptions" persistent="false";
@@ -176,7 +176,7 @@ component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" tab
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
-	
+
 	// Price Group (many-to-one)
 	public void function setPriceGroup(required any priceGroup) {
 		variables.priceGroup = arguments.priceGroup;

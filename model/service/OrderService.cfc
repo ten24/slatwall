@@ -121,7 +121,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 	
-		// TODO: Loop over payments and remove any account specific details
+		// TODO [issue #1767]: Loop over payments and remove any account specific details
+		
 		// Recalculate the order amounts for tax and promotions
 		recalculateOrderAmounts(arguments.order);
 	}

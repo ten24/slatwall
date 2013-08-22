@@ -108,7 +108,10 @@ Notes:
 		</cf_HibachiDisplayToggle>
 		
 		<!--- Save Order Payment as Account Payment Method --->
-		<cfset loadVisable = rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethodOptions()[1]['allowsave'] />
+		<cfset loadVisable = 0 />
+		<cfif structKeyExists(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethodOptions()[1], 'allowsave') and rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethodOptions()[1]['allowsave']> 
+			<cfset loadVisable = 1 />
+		</cfif>
 		<cfif !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod())>
 			<cfset loadVisable = rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod().getAllowSaveFlag() />
 		</cfif>

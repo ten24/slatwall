@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="LocationConfiguration" entityname="SlatwallLocationConfiguration" table="SlatwallLocationConfiguration" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" {
+component entityname="SlatwallLocationConfiguration" table="SwLocationConfiguration" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="locationConfigurationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

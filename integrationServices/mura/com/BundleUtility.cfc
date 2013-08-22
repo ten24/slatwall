@@ -60,7 +60,7 @@ Notes:
 		
 		<cfloop list="#tableList#" index="tableName">
 			
-			<cfif not listFind("SlatwallLog,SlatwallSession", tableName)>
+			<cfif not listFind("SwLog,SwSession", tableName)>
 				<cfquery name="rs">
 					SELECT
 						*
@@ -88,7 +88,7 @@ Notes:
 			<cfset var importQuery = arguments.pluginConfig.getCustomSetting('#tableName#') />
 			
 			<cfif isQuery(importQuery)>
-				<cfif not listFind("SlatwallLog,SlatwallSession", tableName)>
+				<cfif not listFind("SwLog,SwSession", tableName)>
 					
 					<cfif application.configBean.getDBType() eq "mssql">
 						<cfquery name="rs">

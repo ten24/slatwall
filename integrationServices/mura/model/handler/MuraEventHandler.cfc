@@ -360,15 +360,6 @@
 		
 		// ========================== ADMIN EVENT HOOKS =================================
 		
-		public void function onGlobalRequestStart( required any $ ) {
-			verifySlatwallRequest( $=$ );
-			
-			// Update Login / Logout if needed
-			autoLoginLogoutFromSlatwall( $=$ );
-			
-			endSlatwallRequest();
-		}
-		
 		// LOGIN / LOGOUT EVENTS
 		public void function onGlobalLoginSuccess( required any $ ) {
 			verifySlatwallRequest( $=$ );
@@ -816,7 +807,7 @@
 			  AND
     			tcontent.path LIKE '00000000000000000000000000000000001%'
 			  AND
-				NOT EXISTS( SELECT contentID FROM SlatwallContent WHERE SlatwallContent.cmsContentID = tcontent.contentID AND SlatwallContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" /> )
+				NOT EXISTS( SELECT contentID FROM SwContent WHERE SwContent.cmsContentID = tcontent.contentID AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" /> )
 			ORDER BY
 				<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL">
 					LENGTH( tcontent.path )
@@ -834,7 +825,7 @@
 			<cfif missingContentQuery.parentID eq "00000000000000000000000000000000END">
 				<cfset var newContentID = $.slatwall.createHibachiUUID() />
 				<cfquery name="rs">
-					INSERT INTO SlatwallContent (
+					INSERT INTO SwContent (
 						contentID,
 						contentIDPath,
 						activeFlag,
@@ -860,7 +851,7 @@
 				<cfif not structKeyExists(parentMappingCache, missingContentQuery.parentID)>
 					<cfset var parentContentQuery = "" />
 					<cfquery name="parentContentQuery">
-						SELECT contentID, contentIDPath FROM SlatwallContent WHERE SlatwallContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingContentQuery.parentID#" /> AND SlatwallContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" />  
+						SELECT contentID, contentIDPath FROM SwContent WHERE SwContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingContentQuery.parentID#" /> AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" />  
 					</cfquery>
 					<cfif parentContentQuery.recordCount>
 						<cfset parentMappingCache[ missingContentQuery.parentID ] = {} />
@@ -872,7 +863,7 @@
 				<cfif structKeyExists(parentMappingCache,  missingContentQuery.parentID)>
 					<cfset var newContentID = $.slatwall.createHibachiUUID() />
 					<cfquery name="rs">
-						INSERT INTO SlatwallContent (
+						INSERT INTO SwContent (
 							contentID,
 							contentIDPath,
 							parentContentID,
@@ -919,7 +910,7 @@
 				contentID,
 				contentIDPath
 			FROM
-				SlatwallContent
+				SwContent
 			WHERE
 				contentIDPath <> <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldContentIDPath#" />
 			  AND
@@ -929,7 +920,7 @@
 		<cfloop query="rs">
 			<cfquery name="rs2">
 				UPDATE
-					SlatwallContent
+					SwContent
 				SET
 					contentIDPath = <cfqueryparam cfsqltype="cf_sql_varchar" value="#replace(rs.contentIDPath, arguments.oldContentIDPath, arguments.newContentIDPath)#">
 				WHERE
@@ -956,7 +947,7 @@
 				FROM
 					tcontentcategories
 				WHERE
-					NOT EXISTS( SELECT categoryID FROM SlatwallCategory WHERE SlatwallCategory.cmsCategoryID = tcontentcategories.categoryID )
+					NOT EXISTS( SELECT categoryID FROM SwCategory WHERE SwCategory.cmsCategoryID = tcontentcategories.categoryID )
 				ORDER BY
 					LENGTH(tcontentcategories.path)
 			</cfquery>
@@ -969,7 +960,7 @@
 				FROM
 					tcontentcategories
 				WHERE
-					NOT EXISTS( SELECT categoryID FROM SlatwallCategory WHERE SlatwallCategory.cmsCategoryID = tcontentcategories.categoryID )
+					NOT EXISTS( SELECT categoryID FROM SwCategory WHERE SwCategory.cmsCategoryID = tcontentcategories.categoryID )
 				ORDER BY
 					LEN(tcontentcategories.path)
 			</cfquery>
@@ -984,7 +975,7 @@
 			<cfif !len(missingCategoryQuery.parentID)>
 				<cfset var newCategoryID = $.slatwall.createHibachiUUID() />
 				<cfquery name="rs">
-					INSERT INTO SlatwallCategory (
+					INSERT INTO SwCategory (
 						categoryID,
 						categoryIDPath,
 						siteID,
@@ -1004,7 +995,7 @@
 				<cfif not structKeyExists(parentMappingCache, missingCategoryQuery.parentID)>
 					<cfset var parentCategoryQuery = "" />
 					<cfquery name="parentCategoryQuery">
-						SELECT categoryID, categoryIDPath FROM SlatwallCategory WHERE cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.parentID#" /> 
+						SELECT categoryID, categoryIDPath FROM SwCategory WHERE cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.parentID#" /> 
 					</cfquery>
 					<cfif parentCategoryQuery.recordCount>
 						<cfset parentMappingCache[ missingCategoryQuery.parentID ] = {} />
@@ -1016,7 +1007,7 @@
 				<cfif structKeyExists(parentMappingCache,  missingCategoryQuery.parentID)>
 					<cfset var newCategoryID = $.slatwall.createHibachiUUID() />
 					<cfquery name="rs">
-						INSERT INTO SlatwallCategory (
+						INSERT INTO SwCategory (
 							categoryID,
 							categoryIDPath,
 							parentCategoryID,
@@ -1053,37 +1044,37 @@
 		<!--- Get the missing assingments --->
 		<cfquery name="allMissingAssignments">
 			SELECT
-				SlatwallContent.contentID,
-				SlatwallCategory.categoryID
+				SwContent.contentID,
+				SwCategory.categoryID
 			FROM
 				tcontentcategoryassign
 			  INNER JOIN
-			  	SlatwallContent on tcontentcategoryassign.contentID = SlatwallContent.cmsContentID
+			  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
 			  INNER JOIN
-			  	SlatwallCategory on tcontentcategoryassign.categoryID = SlatwallCategory.cmsCategoryID
+			  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
 			WHERE
 				tcontentcategoryassign.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#muraSiteID#" />
 			  AND
 			  	NOT EXISTS(
 				  	SELECT
-				  		SlatwallContentCategory.contentID
+				  		SwContentCategory.contentID
 				  	FROM
-				  		SlatwallContentCategory
+				  		SwContentCategory
 				  	  INNER JOIN
-				  	  	SlatwallContent on SlatwallContentCategory.contentID = SlatwallContent.contentID
+				  	  	SwContent on SwContentCategory.contentID = SwContent.contentID
 				  	  INNER JOIN
-				  	  	SlatwallCategory on SlatwallContentCategory.categoryID = SlatwallCategory.categoryID
+				  	  	SwCategory on SwContentCategory.categoryID = SwCategory.categoryID
 				  	WHERE
-				  		SlatwallContent.cmsContentID = tcontentcategoryassign.contentID
+				  		SwContent.cmsContentID = tcontentcategoryassign.contentID
 				  	  AND
-				  	  	SlatwallCategory.cmsCategoryID = tcontentcategoryassign.categoryID
+				  	  	SwCategory.cmsCategoryID = tcontentcategoryassign.categoryID
 			  	)
 		</cfquery>
 		
 		<!--- Loop over missing assignments --->
 		<cfloop query="allMissingAssignments">
 			<cfquery name="rs">
-				INSERT INTO SlatwallContentCategory (
+				INSERT INTO SwContentCategory (
 					contentID,
 					categoryID
 				) VALUES (
@@ -1096,7 +1087,7 @@
 		<!--- Delete unneeded assignments --->
 		<cfquery name="rs">
 			DELETE FROM
-				SlatwallContentCategory
+				SwContentCategory
 			WHERE
 				NOT EXISTS(
 					SELECT
@@ -1104,13 +1095,13 @@
 					FROM
 						tcontentcategoryassign
 					  INNER JOIN
-					  	SlatwallContent on tcontentcategoryassign.contentID = SlatwallContent.cmsContentID
+					  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
 					  INNER JOIN
-					  	SlatwallCategory on tcontentcategoryassign.categoryID = SlatwallCategory.cmsCategoryID
+					  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
 					WHERE
-						SlatwallContentCategory.contentID = SlatwallContent.contentID
+						SwContentCategory.contentID = SwContent.contentID
 					  AND
-					  	SlatwallContentCategory.categoryID = SlatwallCategory.categoryID
+					  	SwContentCategory.categoryID = SwCategory.categoryID
 			  	)
 		</cfquery>
 	</cffunction>
@@ -1148,7 +1139,7 @@
 				<cfif structKeyExists(arguments, "muraUserID") and len(arguments.muraUserID)>
 					AND tusers.userID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraUserID#" />
 				<cfelse>
-					AND NOT EXISTS( SELECT cmsAccountID FROM SlatwallAccount WHERE SlatwallAccount.cmsAccountID = tusers.userID )
+					AND NOT EXISTS( SELECT cmsAccountID FROM SwAccount WHERE SwAccount.cmsAccountID = tusers.userID )
 				</cfif>
 			</cfquery>
 			
@@ -1164,12 +1155,12 @@
 				
 				<cfquery name="rs">
 					SELECT
-						SlatwallAccount.accountID,
-						(SELECT SlatwallAccountAuthentication.accountAuthenticationID FROM SlatwallAccountAuthentication WHERE SlatwallAccountAuthentication.accountID = SlatwallAccount.accountID AND SlatwallAccountAuthentication.integrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#getMuraIntegrationID()#" />) as 'accountAuthenticationID'
+						SwAccount.accountID,
+						(SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccount.accountID AND SwAccountAuthentication.integrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#getMuraIntegrationID()#" />) as accountAuthenticationID
 					FROM
-						SlatwallAccount
+						SwAccount
 					WHERE
-						SlatwallAccount.cmsAccountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />
+						SwAccount.cmsAccountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />
 				</cfquery>
 				
 				<cfif rs.recordCount>
@@ -1180,7 +1171,7 @@
 					
 					<!--- Create Account --->
 					<cfquery name="rs2">
-						INSERT INTO SlatwallAccount (
+						INSERT INTO SwAccount (
 							accountID,
 							firstName,
 							lastName,
@@ -1208,7 +1199,7 @@
 					
 					<!--- Create Authentication --->
 					<cfquery name="rs2">
-						INSERT INTO SlatwallAccountAuthentication (
+						INSERT INTO SwAccountAuthentication (
 							accountAuthenticationID,
 							accountID,
 							integrationID,
@@ -1232,11 +1223,11 @@
 							accountEmailAddressID,
 							accountID
 						FROM
-							SlatwallAccountEmailAddress
+							SwAccountEmailAddress
 						WHERE
 							emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Email#" />
 						  AND
-						  	EXISTS ( SELECT SlatwallAccountAuthentication.accountAuthenticationID FROM SlatwallAccountAuthentication WHERE SlatwallAccountAuthentication.accountID = SlatwallAccountEmailAddress.accountID)
+						  	EXISTS ( SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccountEmailAddress.accountID)
 					</cfquery>
 					
 					<cfif rs.recordCount and rs.accountID eq slatwallAccountID>
@@ -1248,7 +1239,7 @@
 						<cfset primaryEmailAddressID = $.slatwall.createHibachiUUID() />
 						
 						<cfquery name="rs2">
-							INSERT INTO SlatwallAccountEmailAddress (
+							INSERT INTO SwAccountEmailAddress (
 								accountEmailAddressID,
 								accountID,
 								emailAddress
@@ -1269,11 +1260,11 @@
 							accountPhoneNumberID,
 							accountID
 						FROM
-							SlatwallAccountPhoneNumber
+							SwAccountPhoneNumber
 						WHERE
 							phoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.MobilePhone#" />
 						  AND
-						  	EXISTS ( SELECT SlatwallAccountAuthentication.accountAuthenticationID FROM SlatwallAccountAuthentication WHERE SlatwallAccountAuthentication.accountID = SlatwallAccountPhoneNumber.accountID)
+						  	EXISTS ( SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccountPhoneNumber.accountID)
 					</cfquery>
 					
 					<cfif rs.recordCount and rs.accountID eq slatwallAccountID>
@@ -1285,7 +1276,7 @@
 						<cfset primaryPhoneNumberID = $.slatwall.createHibachiUUID() />
 						
 						<cfquery name="rs2">
-							INSERT INTO SlatwallAccountPhoneNumber (
+							INSERT INTO SwAccountPhoneNumber (
 								accountPhoneNumberID,
 								accountID,
 								phoneNumber
@@ -1302,7 +1293,7 @@
 				<!--- Update Account --->
 				<cfquery name="rs2">
 					UPDATE
-						SlatwallAccount
+						SwAccount
 					SET
 						firstName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Fname#" />
 						,lastName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Lname#" />
@@ -1338,7 +1329,7 @@
 		<cfif len(arguments.settingValue)>
 			<cfquery name="rs" result="rsResult">
 				UPDATE
-					SlatwallSetting
+					SwSetting
 				SET
 					settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
 				WHERE
@@ -1346,7 +1337,7 @@
 			</cfquery>
 			<cfif not rsResult.recordCount>
 				<cfquery name="rs">
-					INSERT INTO SlatwallSetting (
+					INSERT INTO SwSetting (
 						settingID,
 						settingValue,
 						settingName,
@@ -1361,7 +1352,7 @@
 			</cfif>
 		<cfelse>
 			<cfquery name="rs">
-				DELETE FROM SlatwallSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#" />
+				DELETE FROM SwSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#" />
 			</cfquery>
 		</cfif> 
 	</cffunction>
@@ -1375,16 +1366,16 @@
 		<cfset var rs2 = "" />
 		
 		<cfquery name="rs">
-			SELECT settingID, settingValue FROM SlatwallSetting WHERE settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="integrationMura#arguments.settingName#" />
+			SELECT settingID, settingValue FROM SwSetting WHERE settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="integrationMura#arguments.settingName#" />
 		</cfquery>
 		
 		<cfif rs.recordCount>
 			<cfquery name="rs2">
-				UPDATE SlatwallSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" /> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" /> 
+				UPDATE SwSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" /> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" /> 
 			</cfquery>
 		<cfelse>
 			<cfquery name="rs2">
-				INSERT INTO SlatwallSetting (
+				INSERT INTO SwSetting (
 					settingID,
 					settingName,
 					settingValue
