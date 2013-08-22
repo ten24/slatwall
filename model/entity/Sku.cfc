@@ -51,6 +51,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
+	property name="skuBundleFlag" ormtype="boolean" default="0";
+	property name="publishedFlag" ormtype="boolean" default="0";
 	property name="skuCode" ormtype="string" unique="true" length="50";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
@@ -59,6 +61,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="userDefinedPriceFlag" ormtype="boolean" default="0";
 	property name="eventStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="eventEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="startReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="endReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
