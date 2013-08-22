@@ -1,37 +1,47 @@
 <!---
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
@@ -150,6 +160,133 @@ Notes:
 	</cfquery>
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Allowing nulls in Order Payments">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
+
+<!--- Move the listing flags from SlatwallSetting to the content --->
+<cftry>
+	<cfquery name="local.listingpagesettings">
+		SELECT cmsContentID FROM SlatwallSetting WHERE settingName = 'contentProductListingFlag' and cmsContentID is not null and settingValue = 1
+	</cfquery>
+	
+	<cfloop query="local.listingpagesettings">
+		<cfquery name="local.listingflagupdate">
+			UPDATE
+				SlatwallContent
+			SET
+				productListingPageFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1">
+			WHERE
+				SlatwallContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.listingpagesettings.cmsContentID#">
+		</cfquery>
+	</cfloop>
+	
+	<cfquery name="local.deletelistingpagesettings">
+		DELETE FROM SlatwallSetting WHERE settingName = 'contentProductListingFlag' and cmsContentID is not null
+	</cfquery>
+	
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Updating the listing page flags out of settings and into content nodes">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
+
+<!--- Update the content that has null for siteID --->
+<cftry>
+	<cfquery name="local.uniqueCMSSiteID">
+		SELECT DISTINCT
+			cmsSiteID
+		FROM
+			SlatwallContent
+		WHERE
+			siteID is null
+	</cfquery>
+	
+	<cfloop query="local.uniqueCMSSiteID">
+		
+		<cfquery name="local.findSite">
+			SELECT
+				siteID
+			FROM
+				SlatwallSite
+			WHERE
+				cmsSiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.uniqueCMSSiteID.cmsSiteID#" />
+		</cfquery>
+		
+		<cfif not local.findSite.recordCount>
+			
+			<cfset local.slatwallSiteID = replace(lcase(createUUID()), '-', '', 'all') />
+			
+			<cfquery name="local.addSite">
+				INSERT INTO SlatwallSite(
+					siteID,
+					siteName,
+					cmsSiteID
+				) VALUES (
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.slatwallSiteID#" />,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.uniqueCMSSiteID.cmsSiteID#" />,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.uniqueCMSSiteID.cmsSiteID#" />
+				)
+			</cfquery>
+			
+		<cfelse>
+			<cfset local.slatwallSiteID = local.findSite.siteID />
+		</cfif>
+		
+		<cfquery name="local.findSite">
+			UPDATE
+				SlatwallContent
+			SET
+				siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.slatwallSiteID#" />
+			WHERE
+				siteID is null and cmsSiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.uniqueCMSSiteID.cmsSiteID#" />
+		</cfquery>
+	</cfloop>
+		
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Updating the listing page flags out of settings and into content nodes">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
+
+<!--- Update old email templates --->
+<cftry>
+	<cfquery name="local.updateTemplate">
+		UPDATE
+			SlatwallEmailTemplate
+		SET
+			emailTemplateObject = 'Order',
+			emailTemplateFile = 'confirmation.cfm'
+		WHERE
+			emailTemplateID = 'dbb327e506090fde08cc4855fa14448d'
+	</cfquery>
+	<cfquery name="local.updateTemplate">
+		UPDATE
+			SlatwallEmailTemplate
+		SET
+			emailTemplateObject = 'OrderDelivery',
+			emailTemplateFile = 'confirmation.cfm'
+		WHERE
+			emailTemplateID = 'dbb327e694534908c60ea354766bf0a8'
+	</cfquery>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Deleting old emails and email templates">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
+
+<!--- Add an orderPaymentStatusType to all missing it --->
+<cftry>
+	<cfquery name="local.updateOrderPaymentStatus">
+		UPDATE
+			SlatwallOrderPayment
+		SET
+			orderPaymentStatusTypeID = '5accbf57dcf5bb3eb71614febe83a31d'
+		WHERE
+			orderPaymentStatusTypeID is null
+	</cfquery>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Updating the orderPaymentStatusType has issues">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>

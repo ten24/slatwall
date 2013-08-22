@@ -158,11 +158,13 @@
 					</cfloop>
 					<cfset attributes.value = trim(thisValueList) />
 				<cfelse>
-					<cfif not attributes.edit or attributes.object.getPropertyFormatType( attributes.property ) eq "datetime">
+					<cfif not attributes.edit or (attributes.edit and listFindNoCase("datetime,time,date", attributes.object.getPropertyFormatType( attributes.property )) and not isNull(attributes.object.invokeMethod( "get#attributes.property#" )))>
 						<cfif isNumeric(attributes.value) and attributes.value lt 0>
 							<cfset attributes.valueClass &= " negative" />
 						</cfif>
+						
 						<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						
 					</cfif>
 				</cfif>
 				
@@ -196,8 +198,12 @@
 			<cfif structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_fileAcceptExtension")>
 				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'accept="#attributes.object.getPropertyMetaData(attributes.property).hb_fileAcceptExtension#"', " ") />
 			</cfif>
+			
+			<!--- Setup null value --->
+			<cfif structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")>
+				 <cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'placeholder="#attributes.hibachiScope.rbKey( attributes.object.getPropertyMetaData(attributes.property).hb_nullRBKey )#"', " ") />
+			</cfif>
 		</cfsilent>
-		
 		
 		<cf_HibachiFieldDisplay attributecollection="#attributes#" />
 	</cfif>

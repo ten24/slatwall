@@ -11,6 +11,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="sucessfulActions" type="array";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
+	property name="url" type="string";
 	
 	public any function init() {
 		setCalledActions( [] );
@@ -50,6 +51,16 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return false;
 	}
 	
+	public string function getURL() {
+		if(!structKeyExists(variables, "url")) {
+			variables.url = getPageContext().getRequest().GetRequestUrl().toString();
+			if( len( CGI.QUERY_STRING ) ) {
+				variables.url &= "?#QUERY_STRING#";
+			}
+		}
+		return variables.url;
+	}
+	
 	// ==================== GENERAL API METHODS ===============================
 	
 	// Action Methods ===
@@ -75,16 +86,40 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	// Simple API Methods ===
+	public any function newEntity(required string entityName) {
+		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
+		
+		return entityService.invokeMethod("new#arguments.entityName#");
+	}
+	
 	public any function getEntity(required string entityName, string entityID="", boolean isReturnNewOnNotFound=false) {
-		var entityService = getService( "hibachiService" ).getServiceNameByEntityName( arguments.entityName );
+		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
 		
 		return entityService.invokeMethod("get#arguments.entityName#", {1=arguments.entityID, 2=arguments.isReturnNewOnNotFound});
+	}
+	
+	public any function saveEntity(required any entity, struct data={}) {
+		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entity.getClassName() );
+		
+		return entityService.invokeMethod("save#arguments.entity.getClassName()#", {1=arguments.entity, 2=arguments.data});
+	}
+	
+	public any function deleteEntity(required any entity) {
+		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entity.getClassName() );
+		
+		return entityService.invokeMethod("delete#arguments.entity.getClassName()#", {1=arguments.entity});
 	}
 	
 	public any function getSmartList(required string entityName, struct data={}) {
 		var entityService = getService( "hibachiService" ).getServiceNameByEntityName( arguments.entityName );
 		
 		return entityService.invokeMethod("get#arguments.entityName#SmartList", {1=arguments.data});
+	}
+	
+	public void function flushORMSession(){
+		if(!getORMHasErrors()) {
+			getDAO( "hibachiDAO" ).flushORMSession();
+		}
 	}
 	
 	// ==================== SESSION / ACCOUNT SETUP ===========================

@@ -1,3 +1,51 @@
+<!---
+
+    Slatwall - An Open Source eCommerce Platform
+    Copyright (C) ten24, LLC
+	
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+	
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+	
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
+    conditions of the GNU General Public License cover the whole
+    combination.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
+
+	Notes:
+	
+--->
 <cfcomponent output="false" extends="Slatwall.model.dao.HibachiDAO">
 	
 	<cffunction name="updateProducts">
@@ -41,13 +89,13 @@
 			<cfset var sizeOptionGroupID = createSlatwallUUID() />
 			
 			<cfquery name="rs">
-				SELECT optionGroupID FROM SlatwallOptionGroup WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="S">
+				SELECT optionGroupID FROM SwOptionGroup WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="S">
 			</cfquery>
 			<cfif rs.recordCount>
 				<cfset sizeOptionGroupID = rs.optionGroupID />
 			<cfelse>
 				<cfquery name="rs">
-					INSERT INTO SlatwallOptionGroup (
+					INSERT INTO SwOptionGroup (
 						optionGroupID,
 						optionGroupName,
 						optionGroupCode,
@@ -66,13 +114,13 @@
 			<!--- Verify Color Option Groups Exist --->
 			<cfset var colorOptionGroupID = createSlatwallUUID() />
 			<cfquery name="rs">
-				SELECT optionGroupID FROM SlatwallOptionGroup WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="C">
+				SELECT optionGroupID FROM SwOptionGroup WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="C">
 			</cfquery>
 			<cfif rs.recordCount>
 				<cfset colorOptionGroupID = rs.optionGroupID />
 			<cfelse>
 				<cfquery name="rs">
-					INSERT INTO SlatwallOptionGroup (
+					INSERT INTO SwOptionGroup (
 						optionGroupID,
 						optionGroupName,
 						optionGroupCode,
@@ -96,7 +144,7 @@
 				
 				<cfquery name="rs" result="rsResult">
 					UPDATE
-						SlatwallSku
+						SwSku
 					SET
 						price = <cfqueryparam cfsqltype="cf_sql_money" value="#productData.Price#">,
 						listPrice = <cfqueryparam cfsqltype="cf_sql_money" value="#productData.Price#">
@@ -111,7 +159,7 @@
 					
 					<!--- Check if Product Exist --->
 					<cfquery name="rs">
-						SELECT productID FROM SlatwallProduct WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#productData.ProductCode#">
+						SELECT productID FROM SwProduct WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#productData.ProductCode#">
 					</cfquery>
 					<!--- It Does --->
 					<cfif rs.recordCount>
@@ -125,7 +173,7 @@
 						<cfif not structKeyExists(brandMappings, productData.DivisionCode)>
 					
 							<cfquery name="rs">
-								SELECT brandID FROM SlatwallBrand WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#productData.DivisionCode#">
+								SELECT brandID FROM SwBrand WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#productData.DivisionCode#">
 							</cfquery>
 							
 							<cfif rs.recordCount>
@@ -135,7 +183,7 @@
 								<cfset brandMappings[ productData.DivisionCode ] = createSlatwallUUID() />
 								
 								<cfquery name="rs">
-									INSERT INTO SlatwallBrand (
+									INSERT INTO SwBrand (
 										brandID,
 										activeFlag,
 										brandName,
@@ -154,7 +202,7 @@
 						
 						<!--- Insert Product --->
 						<cfquery name="rs">
-							INSERT INTO SlatwallProduct (
+							INSERT INTO SwProduct (
 								productID,
 								activeFlag,
 								brandID,
@@ -177,7 +225,7 @@
 					
 					<!--- Insert Sku --->
 					<cfquery name="rs">
-						INSERT INTO SlatwallSku (
+						INSERT INTO SwSku (
 							skuID,
 							skuCode,
 							activeFlag,
@@ -202,7 +250,7 @@
 					<cfif not structKeyExists(sizeMappings, productData.Size)>
 					
 						<cfquery name="rs">
-							SELECT optionID FROM SlatwallOption WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="S_#productData.Size#">
+							SELECT optionID FROM SwOption WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="S_#productData.Size#">
 						</cfquery>
 						
 						<cfif rs.recordCount>
@@ -212,7 +260,7 @@
 							<cfset sizeMappings[ productData.Size ] = createSlatwallUUID() />
 							
 							<cfquery name="rs">
-								INSERT INTO SlatwallOption (
+								INSERT INTO SwOption (
 									optionID,
 									optionGroupID,
 									optionName,
@@ -235,7 +283,7 @@
 					<cfif not structKeyExists(colorMappings, productData.ColorCode)>
 					
 						<cfquery name="rs">
-							SELECT optionID FROM SlatwallOption WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="C_#productData.ColorCode#">
+							SELECT optionID FROM SwOption WHERE remoteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="C_#productData.ColorCode#">
 						</cfquery>
 						
 						<cfif rs.recordCount>
@@ -245,7 +293,7 @@
 							<cfset colorMappings[ productData.ColorCode ] = createSlatwallUUID() />
 							
 							<cfquery name="rs">
-								INSERT INTO SlatwallOption (
+								INSERT INTO SwOption (
 									optionID,
 									optionGroupID,
 									optionName,
@@ -266,16 +314,16 @@
 					
 					<!--- Insert Sku Size --->
 					<cfquery name="rs">
-						INSERT INTO SlatwallSkuOption (skuID, optionID) VALUES (<cfqueryparam cfsqltype="cf_sql_varchar" value="#skuID#">, <cfqueryparam cfsqltype="cf_sql_varchar" value="#sizeMappings[ productData.Size ]#">)
+						INSERT INTO SwSkuOption (skuID, optionID) VALUES (<cfqueryparam cfsqltype="cf_sql_varchar" value="#skuID#">, <cfqueryparam cfsqltype="cf_sql_varchar" value="#sizeMappings[ productData.Size ]#">)
 					</cfquery>
 					<!--- Insert Sku Color --->
 					<cfquery name="rs">
-						INSERT INTO SlatwallSkuOption (skuID, optionID) VALUES (<cfqueryparam cfsqltype="cf_sql_varchar" value="#skuID#">, <cfqueryparam cfsqltype="cf_sql_varchar" value="#colorMappings[ productData.ColorCode ]#">)
+						INSERT INTO SwSkuOption (skuID, optionID) VALUES (<cfqueryparam cfsqltype="cf_sql_varchar" value="#skuID#">, <cfqueryparam cfsqltype="cf_sql_varchar" value="#colorMappings[ productData.ColorCode ]#">)
 					</cfquery>
 					
 					<!--- Update Products where defaultSkuID is null and productID is this productID --->
 					<cfquery name="rs">
-						UPDATE SlatwallProduct SET defaultSkuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#skuID#"> WHERE productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#"> AND defaultSkuID IS NULL
+						UPDATE SwProduct SET defaultSkuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#skuID#"> WHERE productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#"> AND defaultSkuID IS NULL
 					</cfquery>
 					
 				</cfif>

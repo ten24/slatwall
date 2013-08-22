@@ -1,3 +1,51 @@
+<!---
+
+    Slatwall - An Open Source eCommerce Platform
+    Copyright (C) ten24, LLC
+	
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+	
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+	
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
+    conditions of the GNU General Public License cover the whole
+    combination.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
+
+	Notes:
+	
+--->
 <cfcomponent extends="Handler" output="false" accessors="true">
 	
 	<cfscript>
@@ -78,10 +126,22 @@
 						
 						// Override the contentBean for the request
 						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
 						
-						// Change Title & HTMLTitle of page
+						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProduct().getTitle() );
-						$.content().setHTMLTitle( $.slatwall.getProduct().getTitle() );
+						if(len($.slatwall.getProduct().setting('productHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getProduct().getTitle() );
+						}
+						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaKeywordsString') ) );
+						
+						// DEPRECATED*** If LegacyInjectFlag is set to true then add the body
+						if($.slatwall.setting('integrationMuraLegacyInjectFlag')) {
+							$.content('body', $.content('body') & $.slatwall.doAction('frontend:product.detail'));
+						}
 						
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
@@ -114,10 +174,17 @@
 						
 						// Override the contentBean for the request
 						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
 						
-						// Change Title & HTMLTitle of page
+						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProductType().getProductTypeName() );
-						$.content().setHTMLTitle( $.slatwall.getProductType().getProductTypeName() );
+						if(len($.slatwall.getProductType().setting('productTypeHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getProductType().getProductTypeName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -138,10 +205,17 @@
 						
 						// Override the contentBean for the request
 						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
 						
-						// Change Title & HTMLTitle of page
+						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getBrand().getBrandName() );
-						$.content().setHTMLTitle( $.slatwall.getBrand().getBrandName() );
+						if(len($.slatwall.getBrand().setting('brandHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getBrand().getBrandName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandMetaKeywordsString') ) );
 						
 					} else {
 						
@@ -154,6 +228,23 @@
 		}
 		
 		public void function onRenderStart( required any $ ) {
+			
+			// Now that there is a mura contentBean in the muraScope for sure, we can setup our content Variable, but only if the current content node is new
+			if($.slatwall.getContent().getNewFlag()) {
+				var slatwallContent = $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.content('contentID'), $.event('siteID') );
+				
+				if( !isNull(slatwallContent.getContentTemplateType()) && ((slatwallContent.getContentTemplateType().getSystemCode() eq "cttProduct" && $.slatwall.getProduct().getNewFlag()) ||
+					(slatwallContent.getContentTemplateType().getSystemCode() eq "cttProductType" && $.slatwall.getProductType().getNewFlag()) ||
+					(slatwallContent.getContentTemplateType().getSystemCode() eq "cttBrand" && $.slatwall.getBrand().getNewFlag())
+					)) {
+						
+					$.event('contentBean', $.getBean("content"));
+					$.event().getHandler('standard404').handle($.event());
+					
+				} else {
+					$.slatwall.setContent( slatwallContent );
+				}
+			}
 			
 			// Check for any slatActions that might have been passed in and render that page as the first
 			if(len($.event('slatAction')) && listFirst($.event('slatAction'), ":") == "frontend") {
@@ -190,10 +281,6 @@
 				}
 			}
 			
-			// Now that there is a mura contentBean in the muraScope for sure, we can setup our content Variable, but only if the current content node is new
-			if($.slatwall.getContent().getNewFlag()) {
-				$.slatwall.setContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.content('contentID'), $.event('siteID') ) );
-			}
 			
 			var accessToContentDetails = $.slatwall.getService("accessService").getAccessToContentDetails( $.slatwall.getAccount(), $.slatwall.getContent() );
 			
@@ -321,6 +408,8 @@
 			var slatwallSite = $.slatwall.getService("siteService").getSiteByCMSSiteID($.event('siteID'));
 			syncMuraCategories($=$, slatwallSite=slatwallSite, muraSiteID=$.event('siteID'));
 			
+			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID') );
+			
 			endSlatwallRequest();
 		}
 		
@@ -330,16 +419,21 @@
 			var slatwallCategory = $.slatwall.getService("contentService").getCategoryByCMSCategoryID($.event('categoryID'));
 			if(!isNull(slatwallCategory)) {
 				if(slatwallCategory.isDeletable()) {
-					$.slatwall.getService("contentService").deleteCategory(slatwallCategory);
+					$.slatwall.getService("contentService").deleteCategory( slatwallCategory );
+					ormFlush();
 				} else {
 					slatwallCategory.setActiveFlag(0);
 				}	
 			}
 			
+			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID') );
+			
 			endSlatwallRequest();
 		}
 		
+
 		// SAVE / DELETE EVENTS ===== CONTENT
+		
 		public void function onAfterContentSave( required any $ ) {
 			verifySlatwallRequest( $=$ );
 			
@@ -360,7 +454,7 @@
 					var parentContent = $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( muraContent.getParentID(), muraContent.getSiteID() );
 					
 					// If the parent has changed, we need to update all nested
-					if(parentContent.getContentID() != slatwallContent.getParentContent().getContentID()) {
+					if(isNull(slatwallContent.getParentContent()) || parentContent.getContentID() != slatwallContent.getParentContent().getContentID()) {
 						
 						// Pull out the old IDPath so that we can update all nested nodes
 						var oldContentIDPath = slatwallContent.getContentIDPath();
@@ -387,7 +481,7 @@
 				}
 				
 				// Populate Template Type if it Exists
-				if(structKeyExists(contentData, "contentTemplateType") && structKeyExists(contentData.contentTemplateType, "typeID") && len(slatwallData.content.contentTemplateType.typeID)) {
+				if(structKeyExists(contentData, "contentTemplateType") && structKeyExists(contentData.contentTemplateType, "typeID") && len(contentData.contentTemplateType.typeID)) {
 					var type = $.slatwall.getService("settingService").getType( contentData.contentTemplateType.typeID );
 					slatwallContent.setContentTemplateType( type );
 				} else {
@@ -418,6 +512,8 @@
 				}
 			}
 			
+			// Sync all content category assignments
+			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID') );
 			
 			endSlatwallRequest();
 		}
@@ -434,11 +530,14 @@
 				}
 			}
 			
+			// Sync all content category assignments
+			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID') );
+			
 			endSlatwallRequest();
 		}
 		
 		
-		// SAVE / DELETE EVENTS ===== EVENT
+		// SAVE / DELETE EVENTS ===== USER
 		public void function onAfterUserSave( required any $ ) {
 			verifySlatwallRequest( $=$ );
 			
@@ -450,12 +549,19 @@
 		public void function onAfterUserDelete( required any $ ) {
 			verifySlatwallRequest( $=$ );
 			
-			// TODO: Delete Slatwall User
 			var slatwallAccount = $.slatwall.getService("accountService").getAccountByCMSAccountID( $.event('userID') );
+			
 			if(!isNull(slatwallAccount)) {
+				
+				// Delete account if we can
 				if(slatwallAccount.isDeletable()) {
 					$.slatwall.getService("accountService").deleteAccount( slatwallAccount );
+					
+				// Otherwise just remove the cmsAccountID & account authentication
 				} else {
+					
+					slatwallAccount.setCMSAccountID( javaCase("null", "") );
+					
 					for(var i=arrayLen(account.getAccountAuthentications()); i>=1; i--) {
 						if(!isNull(account.getAccountAuthentications()[i].getIntegration()) && account.getAccountAuthentications()[i].getIntegration().getIntegrationPackage() eq "mura") {
 							$.slatwall.getService("accountService").deleteAccountAuthentication(account.getAccountAuthentications()[i]);
@@ -466,7 +572,6 @@
 			
 			endSlatwallRequest();
 		}
-		
 		
 		// ========================== MANUALLY CALLED MURA =================================
 		
@@ -547,7 +652,7 @@
 					
 					var assetSetting = $.slatwall.getService("settingService").getSettingBySettingName("globalAssetsImageFolderPath", true);
 					if(assetSetting.isNew()) {
-						assetSetting.setSettingValue( expandPath('/muraWRM') & '/default/assets/Image/Slatwall' );
+						assetSetting.setSettingValue( replace(expandPath('/muraWRM'), '\', '/', 'all') & '/default/assets/Image/Slatwall' );
 						assetSetting.setSettingName('globalAssetsImageFolderPath');
 						$.slatwall.getService("settingService").saveSetting( assetSetting );
 					}
@@ -634,6 +739,9 @@
 				// Sync all missing categories
 				syncMuraCategories( $=$, slatwallSite=slatwallSite, muraSiteID=cmsSiteID );
 				
+				// Sync all content category assignments
+				syncMuraContentCategoryAssignment( muraSiteID=cmsSiteID );
+				
 				// Sync all missing accounts
 				syncMuraAccounts( $=$, accountSyncType=getMuraPluginConfig().getSetting("accountSyncType"), superUserSyncFlag=getMuraPluginConfig().getSetting("superUserSyncFlag") );
 				
@@ -699,7 +807,7 @@
 			  AND
     			tcontent.path LIKE '00000000000000000000000000000000001%'
 			  AND
-				NOT EXISTS( SELECT contentID FROM SlatwallContent WHERE SlatwallContent.cmsContentID = tcontent.contentID AND SlatwallContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" /> )
+				NOT EXISTS( SELECT contentID FROM SwContent WHERE SwContent.cmsContentID = tcontent.contentID AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" /> )
 			ORDER BY
 				<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL">
 					LENGTH( tcontent.path )
@@ -717,7 +825,7 @@
 			<cfif missingContentQuery.parentID eq "00000000000000000000000000000000END">
 				<cfset var newContentID = $.slatwall.createHibachiUUID() />
 				<cfquery name="rs">
-					INSERT INTO SlatwallContent (
+					INSERT INTO SwContent (
 						contentID,
 						contentIDPath,
 						activeFlag,
@@ -743,7 +851,7 @@
 				<cfif not structKeyExists(parentMappingCache, missingContentQuery.parentID)>
 					<cfset var parentContentQuery = "" />
 					<cfquery name="parentContentQuery">
-						SELECT contentID, contentIDPath FROM SlatwallContent WHERE SlatwallContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingContentQuery.parentID#" /> AND SlatwallContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" />  
+						SELECT contentID, contentIDPath FROM SwContent WHERE SwContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingContentQuery.parentID#" /> AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" />  
 					</cfquery>
 					<cfif parentContentQuery.recordCount>
 						<cfset parentMappingCache[ missingContentQuery.parentID ] = {} />
@@ -755,7 +863,7 @@
 				<cfif structKeyExists(parentMappingCache,  missingContentQuery.parentID)>
 					<cfset var newContentID = $.slatwall.createHibachiUUID() />
 					<cfquery name="rs">
-						INSERT INTO SlatwallContent (
+						INSERT INTO SwContent (
 							contentID,
 							contentIDPath,
 							parentContentID,
@@ -802,7 +910,7 @@
 				contentID,
 				contentIDPath
 			FROM
-				SlatwallContent
+				SwContent
 			WHERE
 				contentIDPath <> <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldContentIDPath#" />
 			  AND
@@ -812,7 +920,7 @@
 		<cfloop query="rs">
 			<cfquery name="rs2">
 				UPDATE
-					SlatwallContent
+					SwContent
 				SET
 					contentIDPath = <cfqueryparam cfsqltype="cf_sql_varchar" value="#replace(rs.contentIDPath, arguments.oldContentIDPath, arguments.newContentIDPath)#">
 				WHERE
@@ -839,7 +947,7 @@
 				FROM
 					tcontentcategories
 				WHERE
-					NOT EXISTS( SELECT categoryID FROM SlatwallCategory WHERE SlatwallCategory.cmsCategoryID = tcontentcategories.categoryID )
+					NOT EXISTS( SELECT categoryID FROM SwCategory WHERE SwCategory.cmsCategoryID = tcontentcategories.categoryID )
 				ORDER BY
 					LENGTH(tcontentcategories.path)
 			</cfquery>
@@ -852,7 +960,7 @@
 				FROM
 					tcontentcategories
 				WHERE
-					NOT EXISTS( SELECT categoryID FROM SlatwallCategory WHERE SlatwallCategory.cmsCategoryID = tcontentcategories.categoryID )
+					NOT EXISTS( SELECT categoryID FROM SwCategory WHERE SwCategory.cmsCategoryID = tcontentcategories.categoryID )
 				ORDER BY
 					LEN(tcontentcategories.path)
 			</cfquery>
@@ -867,7 +975,7 @@
 			<cfif !len(missingCategoryQuery.parentID)>
 				<cfset var newCategoryID = $.slatwall.createHibachiUUID() />
 				<cfquery name="rs">
-					INSERT INTO SlatwallCategory (
+					INSERT INTO SwCategory (
 						categoryID,
 						categoryIDPath,
 						siteID,
@@ -887,7 +995,7 @@
 				<cfif not structKeyExists(parentMappingCache, missingCategoryQuery.parentID)>
 					<cfset var parentCategoryQuery = "" />
 					<cfquery name="parentCategoryQuery">
-						SELECT categoryID, categoryIDPath FROM SlatwallCategory WHERE cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.parentID#" /> 
+						SELECT categoryID, categoryIDPath FROM SwCategory WHERE cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.parentID#" /> 
 					</cfquery>
 					<cfif parentCategoryQuery.recordCount>
 						<cfset parentMappingCache[ missingCategoryQuery.parentID ] = {} />
@@ -899,7 +1007,7 @@
 				<cfif structKeyExists(parentMappingCache,  missingCategoryQuery.parentID)>
 					<cfset var newCategoryID = $.slatwall.createHibachiUUID() />
 					<cfquery name="rs">
-						INSERT INTO SlatwallCategory (
+						INSERT INTO SwCategory (
 							categoryID,
 							categoryIDPath,
 							parentCategoryID,
@@ -927,6 +1035,77 @@
 		</cfif>
 	</cffunction>
 	
+	<cffunction name="syncMuraContentCategoryAssignment">
+		<cfargument name="muraSiteID" type="string" required="true" />
+		
+		<cfset var allMissingAssignments = "" />
+		<cfset var rs = "" />
+		
+		<!--- Get the missing assingments --->
+		<cfquery name="allMissingAssignments">
+			SELECT
+				SwContent.contentID,
+				SwCategory.categoryID
+			FROM
+				tcontentcategoryassign
+			  INNER JOIN
+			  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
+			  INNER JOIN
+			  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
+			WHERE
+				tcontentcategoryassign.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#muraSiteID#" />
+			  AND
+			  	NOT EXISTS(
+				  	SELECT
+				  		SwContentCategory.contentID
+				  	FROM
+				  		SwContentCategory
+				  	  INNER JOIN
+				  	  	SwContent on SwContentCategory.contentID = SwContent.contentID
+				  	  INNER JOIN
+				  	  	SwCategory on SwContentCategory.categoryID = SwCategory.categoryID
+				  	WHERE
+				  		SwContent.cmsContentID = tcontentcategoryassign.contentID
+				  	  AND
+				  	  	SwCategory.cmsCategoryID = tcontentcategoryassign.categoryID
+			  	)
+		</cfquery>
+		
+		<!--- Loop over missing assignments --->
+		<cfloop query="allMissingAssignments">
+			<cfquery name="rs">
+				INSERT INTO SwContentCategory (
+					contentID,
+					categoryID
+				) VALUES (
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.contentID#" />,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.categoryID#" />
+				)
+			</cfquery>
+		</cfloop>
+			
+		<!--- Delete unneeded assignments --->
+		<cfquery name="rs">
+			DELETE FROM
+				SwContentCategory
+			WHERE
+				NOT EXISTS(
+					SELECT
+						tcontentcategoryassign.contentID
+					FROM
+						tcontentcategoryassign
+					  INNER JOIN
+					  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
+					  INNER JOIN
+					  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
+					WHERE
+						SwContentCategory.contentID = SwContent.contentID
+					  AND
+					  	SwContentCategory.categoryID = SwCategory.categoryID
+			  	)
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="syncMuraAccounts">
 		<cfargument name="$" />
 		<cfargument name="accountSyncType" type="string" required="true" />
@@ -934,7 +1113,9 @@
 		<cfargument name="muraUserID" type="string" />
 		
 		<cfif arguments.accountSyncType neq "none">
+			
 			<cfset var missingUsersQuery = "" />
+			
 			<cfquery name="missingUsersQuery">
 				SELECT
 					UserID,
@@ -955,92 +1136,183 @@
 					AND tusers.isPublic = <cfqueryparam cfsqltype="cf_sql_integer" value="1" />
 				</cfif>
 				
-				<cfif structKeyExists(arguments, "userID") and len(arguments.muraUserID)>
+				<cfif structKeyExists(arguments, "muraUserID") and len(arguments.muraUserID)>
 					AND tusers.userID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraUserID#" />
 				<cfelse>
-					AND NOT EXISTS( SELECT cmsAccountID FROM SlatwallAccount WHERE SlatwallAccount.cmsAccountID = tusers.userID )
+					AND NOT EXISTS( SELECT cmsAccountID FROM SwAccount WHERE SwAccount.cmsAccountID = tusers.userID )
 				</cfif>
 			</cfquery>
 			
-			<cfset var muraIntegrationQuery = "" />
-			<cfquery name="muraIntegrationQuery">
-				SELECT integrationID FROM SlatwallIntegration WHERE integrationPackage = <cfqueryparam cfsqltype="cf_sql_varchar" value="mura" />
-			</cfquery>
-			
+			<!--- Loop over all accounts to sync --->
 			<cfloop query="missingUsersQuery">
 				
-				<cfset var rs = "" />
-				<cfset var newAccountID = $.slatwall.createHibachiUUID() />
+				<cfset var slatwallAccountID = "" />
+				<cfset var primaryEmailAddressID = "" />
+				<cfset var primaryPhoneNumberID = "" />
 				
-				<!--- Create Account --->
+				<cfset var rs = "" />
+				<cfset var rs2 = "" />
+				
 				<cfquery name="rs">
-					INSERT INTO SlatwallAccount (
-						accountID,
-						firstName,
-						lastName,
-						company,
-						cmsAccountID,
-						superUserFlag
-					) VALUES (
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#newAccountID#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Fname#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Lname#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Company#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />,
-						<cfif arguments.superUserSyncFlag and missingUsersQuery.s2>
-							<cfqueryparam cfsqltype="cf_sql_bit" value="1" />	
-						<cfelse>
-							<cfqueryparam cfsqltype="cf_sql_bit" value="0" />
-						</cfif>
-					)
+					SELECT
+						SwAccount.accountID,
+						(SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccount.accountID AND SwAccountAuthentication.integrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#getMuraIntegrationID()#" />) as accountAuthenticationID
+					FROM
+						SwAccount
+					WHERE
+						SwAccount.cmsAccountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />
 				</cfquery>
 				
-				<!--- Create Email --->
+				<cfif rs.recordCount>
+					<cfset slatwallAccountID = rs.accountID />
+				<cfelse>
+					
+					<cfset slatwallAccountID = $.slatwall.createHibachiUUID() />
+					
+					<!--- Create Account --->
+					<cfquery name="rs2">
+						INSERT INTO SwAccount (
+							accountID,
+							firstName,
+							lastName,
+							company,
+							cmsAccountID,
+							superUserFlag
+						) VALUES (
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Fname#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Lname#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Company#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />,
+							<cfif arguments.superUserSyncFlag and missingUsersQuery.s2>
+								<cfqueryparam cfsqltype="cf_sql_bit" value="1" />	
+							<cfelse>
+								<cfqueryparam cfsqltype="cf_sql_bit" value="0" />
+							</cfif>
+						)
+					</cfquery>
+					
+				</cfif>
+				
+				<!--- Insert Account Auth if Needed --->
+				<cfif not rs.recordCount or (rs.recordCount and not len(rs.accountAuthenticationID))>
+					
+					<!--- Create Authentication --->
+					<cfquery name="rs2">
+						INSERT INTO SwAccountAuthentication (
+							accountAuthenticationID,
+							accountID,
+							integrationID,
+							integrationAccessToken,
+							integrationAccountID
+						) VALUES (
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#$.slatwall.createHibachiUUID()#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#getMuraIntegrationID()#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />
+						)
+					</cfquery>
+					
+				</cfif> 
+				
+				<!--- Check / Create Email --->
 				<cfif len(missingUsersQuery.Email)>
 					<cfquery name="rs">
-						INSERT INTO SlatwallAccountEmailAddress (
+						SELECT
 							accountEmailAddressID,
-							accountID,
-							emailAddress
-						) VALUES (
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#$.slatwall.createHibachiUUID()#" />,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#newAccountID#" />,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Email#" />
-						)
+							accountID
+						FROM
+							SwAccountEmailAddress
+						WHERE
+							emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Email#" />
+						  AND
+						  	EXISTS ( SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccountEmailAddress.accountID)
 					</cfquery>
+					
+					<cfif rs.recordCount and rs.accountID eq slatwallAccountID>
+						
+						<cfset primaryEmailAddressID = rs.accountEmailAddressID />
+						
+					<cfelseif not rs.recordCount>
+						
+						<cfset primaryEmailAddressID = $.slatwall.createHibachiUUID() />
+						
+						<cfquery name="rs2">
+							INSERT INTO SwAccountEmailAddress (
+								accountEmailAddressID,
+								accountID,
+								emailAddress
+							) VALUES (
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#primaryEmailAddressID#" />,
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />,
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Email#" />
+							)
+						</cfquery>
+						
+					</cfif>
 				</cfif>
 				
-				<!--- Create Phone --->
+				<!--- Check / Create Phone --->
 				<cfif len(missingUsersQuery.MobilePhone)>
 					<cfquery name="rs">
-						INSERT INTO SlatwallAccountPhoneNumber (
+						SELECT
 							accountPhoneNumberID,
-							accountID,
-							phoneNumber
-						) VALUES (
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#$.slatwall.createHibachiUUID()#" />,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#newAccountID#" />,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.MobilePhone#" />
-						)
+							accountID
+						FROM
+							SwAccountPhoneNumber
+						WHERE
+							phoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.MobilePhone#" />
+						  AND
+						  	EXISTS ( SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccountPhoneNumber.accountID)
 					</cfquery>
+					
+					<cfif rs.recordCount and rs.accountID eq slatwallAccountID>
+						
+						<cfset primaryPhoneNumberID = rs.accountPhoneNumberID />
+						
+					<cfelseif not rs.recordCount>
+						
+						<cfset primaryPhoneNumberID = $.slatwall.createHibachiUUID() />
+						
+						<cfquery name="rs2">
+							INSERT INTO SwAccountPhoneNumber (
+								accountPhoneNumberID,
+								accountID,
+								phoneNumber
+							) VALUES (
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#primaryPhoneNumberID#" />,
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />,
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.MobilePhone#" />
+							)
+						</cfquery>
+						
+					</cfif>
 				</cfif>
 				
-				<!--- Create Authentication --->
-				<cfquery name="rs">
-					INSERT INTO SlatwallAccountAuthentication (
-						accountAuthenticationID,
-						accountID,
-						integrationID,
-						integrationAccessToken,
-						integrationAccountID
-					) VALUES (
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#$.slatwall.createHibachiUUID()#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#newAccountID#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#getMuraIntegrationID()#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.UserID#" />
-					)
+				<!--- Update Account --->
+				<cfquery name="rs2">
+					UPDATE
+						SwAccount
+					SET
+						firstName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Fname#" />
+						,lastName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Lname#" />
+						,company = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Company#" />
+						<cfif len(primaryEmailAddressID)>
+							,primaryEmailAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#primaryEmailAddressID#" />
+						</cfif>
+						<cfif len(primaryPhoneNumberID)>
+							,primaryPhoneNumberID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#primaryPhoneNumberID#" />
+						</cfif>
+						<cfif arguments.superUserSyncFlag and missingUsersQuery.s2>
+							,superUserFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1" />	
+						<cfelse>
+							,superUserFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="0" />
+						</cfif>
+					WHERE
+						accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />
 				</cfquery>
+				
 			</cfloop>
 		</cfif>
 	</cffunction>
@@ -1057,7 +1329,7 @@
 		<cfif len(arguments.settingValue)>
 			<cfquery name="rs" result="rsResult">
 				UPDATE
-					SlatwallSetting
+					SwSetting
 				SET
 					settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
 				WHERE
@@ -1065,7 +1337,7 @@
 			</cfquery>
 			<cfif not rsResult.recordCount>
 				<cfquery name="rs">
-					INSERT INTO SlatwallSetting (
+					INSERT INTO SwSetting (
 						settingID,
 						settingValue,
 						settingName,
@@ -1080,7 +1352,7 @@
 			</cfif>
 		<cfelse>
 			<cfquery name="rs">
-				DELETE FROM SlatwallSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#" />
+				DELETE FROM SwSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#" />
 			</cfquery>
 		</cfif> 
 	</cffunction>
@@ -1094,16 +1366,16 @@
 		<cfset var rs2 = "" />
 		
 		<cfquery name="rs">
-			SELECT settingID, settingValue FROM SlatwallSetting WHERE settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="integrationMura#arguments.settingName#" />
+			SELECT settingID, settingValue FROM SwSetting WHERE settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="integrationMura#arguments.settingName#" />
 		</cfquery>
 		
 		<cfif rs.recordCount>
 			<cfquery name="rs2">
-				UPDATE SlatwallSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" /> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" /> 
+				UPDATE SwSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" /> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" /> 
 			</cfquery>
 		<cfelse>
 			<cfquery name="rs2">
-				INSERT INTO SlatwallSetting (
+				INSERT INTO SwSetting (
 					settingID,
 					settingName,
 					settingValue

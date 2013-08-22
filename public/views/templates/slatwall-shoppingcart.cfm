@@ -1,7 +1,7 @@
 <!---
 	
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
+    Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,22 +16,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
 	
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 	
 Notes:
 	
@@ -101,7 +111,7 @@ Notes:
 								
 								<tr>
 									<!--- Display Product Name --->
-									<td>#orderItem.getSku().getProduct().getTitle()#</td>
+									<td><a href="#orderItem.getSku().getProduct().getProductURL()#">#orderItem.getSku().getProduct().getTitle()#</a></td>
 									
 									<!--- This is a list of whatever options are there for this product --->
 									<td>#orderItem.getSku().displayOptions()#</td>
@@ -110,7 +120,10 @@ Notes:
 									<td>#orderItem.getFormattedValue('price')#</td>
 									
 									<!--- Allows for quantity to be updated.  Note if this gets set to 0 the quantity will automatically be removed --->
-									<td><input type="text" class="span1" name="orderItems[#loopIndex#].quantity" value="#orderItem.getQuantity()#" /></td>
+									<td>
+										<input type="text" class="span1" name="orderItems[#loopIndex#].quantity" value="#orderItem.getQuantity()#" />
+										<sw:ErrorDisplay object="#orderItem#" errorName="quantity" />
+									</td>
 									
 									<!--- Display the Price X Quantity --->
 									<td>#orderItem.getFormattedValue('extendedPrice')#</td>
@@ -154,8 +167,8 @@ Notes:
 				    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
 				    					<div class="controls">
 				    						
-											<sw:formField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#attributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#attributeValueObject.getAttributeValueOptions()#" />
-											<sw:errorDisplay object="#attributeValueObject#" errorName="password" />
+											<sw:FormField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#attributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#attributeValueObject.getAttributeValueOptions()#" />
+											<sw:ErrorDisplay object="#attributeValueObject#" errorName="password" />
 											
 				    					</div>
 				  					</div>
@@ -198,20 +211,58 @@ Notes:
 							<td>Subtotal</td>
 							<td>#$.slatwall.cart().getFormattedValue('subtotal')#</td>
 						</tr>
+						
+						<!--- Item Discounts --->
+						<cfif $.slatwall.cart().getItemDiscountAmountTotal() gt 0>
+							<tr>
+								<td>Item Discounts</td>
+								<td>#$.slatwall.cart().getFormattedValue('itemDiscountAmountTotal')#</td>
+							</tr>
+							<!--- Subtotal After Discounts --->
+							<tr>
+								<td>Subtotal After Discounts</td>
+								<td>#$.slatwall.cart().getFormattedValue('subTotalAfterItemDiscounts')#</td>
+							</tr>
+						</cfif>
+						
 						<!--- This displays a delivery cost, some times it might make sense to do a conditional here and check if the amount is > 0, then display otherwise show something like TBD --->
 						<tr>
-							<td>Delivery</td>
+							<td>Delivery Costs</td>
 							<td>#$.slatwall.cart().getFormattedValue('fulfillmentTotal')#</td>
 						</tr>
+						
+						<!--- Delivery Discounts --->
+						<cfif $.slatwall.cart().getFulfillmentDiscountAmountTotal() gt 0>
+							
+							<tr>
+								<td>Delivery Discounts</td>
+								<td>#$.slatwall.cart().getFormattedValue('fulfillmentDiscountAmountTotal')#</td>
+							</tr>
+							<!--- Delivery after Discounts --->
+							<tr>
+								<td>Delivery After Discounts</td>
+								<td>#$.slatwall.cart().getFormattedValue('fulfillmentChargeAfterDiscountTotal')#</td>
+							</tr>
+						</cfif>
+						
 						<!--- Displays the total tax that was calculated for this order --->
 						<tr>
 							<td>Tax</td>
 							<td>#$.slatwall.cart().getFormattedValue('taxTotal')#</td>
 						</tr>
+						
+						<!--- Displays any order discounts --->
+						<cfif $.slatwall.cart().getOrderDiscountAmountTotal() gt 0>
+							<tr>
+								<td>Additional Order Discounts</td>
+								<td>#$.slatwall.cart().getFormattedValue('orderDiscountAmountTotal')#</td>
+							</tr>
+						</cfif>
+						
 						<!--- If there were discounts they would be displayed here --->
 						<cfif $.slatwall.cart().getDiscountTotal() gt 0>
 							<tr>
-								<td>Discounts</td>
+								<td>Total Discounts</td>
 								<td>#$.slatwall.cart().getFormattedValue('discountTotal')#</td>
 							</tr>
 						</cfif>
@@ -269,8 +320,8 @@ Notes:
 							<div class="control-group">
 								<div class="controls">
 									
-									<sw:formField type="text" name="promotionCode" valueObject="#addPromotionCodeObj#" valueObjectProperty="promotionCode" fieldAttributes=' placeholder="Enter Promo Code Here."' />
-									<sw:errorDisplay object="#addPromotionCodeObj#" errorName="promotionCode" />
+									<sw:FormField type="text" name="promotionCode" valueObject="#addPromotionCodeObj#" valueObjectProperty="promotionCode" fieldAttributes=' placeholder="Enter Promo Code Here."' />
+									<sw:ErrorDisplay object="#addPromotionCodeObj#" errorName="promotionCode" />
 									
 								</div>
 							</div>

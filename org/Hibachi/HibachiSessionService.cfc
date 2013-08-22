@@ -12,11 +12,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
 		if(!hasSessionValue("sessionID")) {
+			setSessionValue('sessionID', '');
 			if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID")) {
 				setSessionValue('sessionID', cookie["#getApplicationValue('applicationKey')#SessionID"]);
 				sessionFoundWithCookie = true;
-			} else {
-				setSessionValue('sessionID', '');
 			}
 		}
 		
@@ -38,7 +37,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// If the session has an account but no authentication, then remove the account
 		// Check to see if this session has an accountAuthentication, if it does then we need to verify that the authentication shouldn't be auto logged out
 		// If there was an integration, then check the verify method for any custom auto-logout logic
-		if(sessionFoundWithCookie || (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) || (isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getLoggedInFlag())) {
+		if((sessionFoundWithCookie && getHibachiScope().getLoggedInFlag()) || (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) || (isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getLoggedInFlag())) {
 			logoutAccount();
 		}
 	}
@@ -51,6 +50,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Make sure that this login is persisted
 		getHibachiDAO().flushORMSession();
+		
 		getHibachiEventService().announceEvent("onSessionAccountLogin");
 	}
 	
@@ -59,6 +59,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		currentSession.removeAccount();
 		currentSession.removeAccountAuthentication();
+		
+		// Make sure that this logout is persisted
+		getHibachiDAO().flushORMSession();
+		
 		getHibachiEventService().announceEvent("onSessionAccountLogout");
 	}
 	

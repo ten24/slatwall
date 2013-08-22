@@ -1,7 +1,14 @@
 {
+	"conditions":{
+	    "frequencyEndTimeExists":{
+	        "frequencyEndTime":{"required":true}
+	    }
+	},
 	"properties":{
 		"scheduleName":			[{"contexts":"save","required":true}],
 		"recuringType":			[{"contexts":"save","required":true}],
-		"frequencyStartTime":	[{"contexts":"save","required":true}]
+		"frequencyInterval":	[{"contexts":"save","conditions":"frequencyEndTimeExists","required":true}],
+		"frequencyStartTime":	[{"contexts":"save","required":true}],
+		"frequencyEndTime":		[{"contexts":"save","conditions":"frequencyEndTimeExists","gtProperty":"frequencyStartTime"}]
 	}
 }

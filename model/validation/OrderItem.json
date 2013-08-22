@@ -2,7 +2,8 @@
 	"properties":{
 		"orderItemType":			[{"contexts":"save","required":true}],
 		"orderItemStatusType":		[{"contexts":"save","required":true}],
+		"orderStatusCode":			[{"contexts":"edit,delete","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}],
 		"sku":						[{"contexts":"save","required":true}],
-		"quantity":					[{"contexts":"save","dataType":"numeric"}]
+		"quantity":					[{"contexts":"save","dataType":"numeric","method":"hasQuantityWithinMaxOrderQuantity"},{"contexts":"save","method":"hasQuantityWithinMinOrderQuantity"}]
 	}
 }

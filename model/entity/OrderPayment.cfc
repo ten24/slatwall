@@ -1,42 +1,52 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
 */
-component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction" {
+component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction" {
 	
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -59,6 +69,7 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
+	property name="orderPaymentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentStatusType" fetch="join";
 	property name="paymentMethod" hb_populateEnabled="public" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" fetch="join";
 	property name="referencedOrderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="referencedOrderPaymentID";
 	property name="termPaymentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="termPaymentAccountID";
@@ -89,21 +100,22 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	property name="amountUncredited" persistent="false" hb_formatType="currency";
 	property name="amountUncaptured" persistent="false" hb_formatType="currency";
 	property name="amountUnreceived" persistent="false" hb_formatType="currency";
-	property name="bankRoutingNumber" persistent="false";
-	property name="bankAccountNumber" persistent="false";
-	property name="checkNumber" persistent="false";
-	property name="creditCardNumber" persistent="false";
+	property name="bankRoutingNumber" persistent="false" hb_populateEnabled="public";
+	property name="bankAccountNumber" persistent="false" hb_populateEnabled="public";
+	property name="checkNumber" persistent="false" hb_populateEnabled="public";
+	property name="creditCardNumber" persistent="false" hb_populateEnabled="public";
 	property name="expirationDate" persistent="false";
 	property name="experationMonthOptions" persistent="false";
 	property name="expirationYearOptions" persistent="false";
-	property name="giftCardNumber" persistent="false";
+	property name="giftCardNumber" persistent="false" hb_populateEnabled="public";
 	property name="paymentMethodType" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
 	property name="orderStatusCode" persistent="false";
-	property name="securityCode" persistent="false";
-	property name="peerOrderPaymentNullAmountExistsFlag" persistent="false";
+	property name="statusCode" persistent="false";
+	property name="securityCode" persistent="false" hb_populateEnabled="public";
 	property name="orderAmountNeeded" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
+	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
 	
 	public string function getMostRecentChargeProviderTransactionID() {
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
@@ -128,10 +140,14 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
+			if(!isNull(arguments.accountPaymentMethod.getCreditCardNumber())) {
+				setCreditCardNumber( arguments.accountPaymentMethod.getCreditCardNumber() );
+			}
 			setNameOnCreditCard( arguments.accountPaymentMethod.getNameOnCreditCard() );
-			setCreditCardNumber( arguments.accountPaymentMethod.getCreditCardNumber() );
 			setExpirationMonth( arguments.accountPaymentMethod.getExpirationMonth() );
 			setExpirationYear( arguments.accountPaymentMethod.getExpirationYear() );
+			setCreditCardLastFour( arguments.accountPaymentMethod.getCreditCardLastFour() );
+			setCreditCardType( arguments.accountPaymentMethod.getCreditCardType() );
 		}
 		
 		// Gift Card
@@ -139,19 +155,70 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 			setGiftCardNumber( arguments.accountPaymentMethod.getGiftCardNumber() );
 		}
 		
+		// Term Payment
+		if(listFindNoCase("termPayment", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
+			setTermPaymentAccount( arguments.accountPaymentMethod.getAccount() );
+		}
+		
 		// Credit Card & Gift Card
 		if(listFindNoCase("creditCard,giftCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setProviderToken( arguments.accountPaymentMethod.getProviderToken() );
 		}
-		
+			
 		// Credit Card & Term Payment
 		if(listFindNoCase("creditCard,termPayment", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setBillingAddress( arguments.accountPaymentMethod.getBillingAddress().copyAddress( true ) );
 		}
 		
-	}	
+	}
+	
+	public void function copyFromOrderPayment(required any orderPayment) {
+		
+		// Make sure the payment method matches
+		setPaymentMethod( arguments.orderPayment.getPaymentMethod() );
+		
+		// Check for a relational Account Payment Method
+		if(!isNull(arguments.orderPayment.getAccountPaymentMethod())) {
+			setAccountPaymentMethod(arguments.orderPayment.getAccountPaymentMethod());
+		}
+		
+		// Credit Card
+		if(listFindNoCase("creditCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
+				setCreditCardNumber( arguments.orderPayment.getCreditCardNumber() );
+			}
+			setNameOnCreditCard( arguments.orderPayment.getNameOnCreditCard() );
+			setExpirationMonth( arguments.orderPayment.getExpirationMonth() );
+			setExpirationYear( arguments.orderPayment.getExpirationYear() );
+			setCreditCardLastFour( arguments.orderPayment.getCreditCardLastFour() );
+			setCreditCardType( arguments.orderPayment.getCreditCardType() );
+		}
+		
+		// Gift Card
+		if(listFindNoCase("giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
+		}
+		
+		// Credit Card & Gift Card
+		if(listFindNoCase("creditCard,giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setProviderToken( arguments.orderPayment.getProviderToken() );
+		}
+		
+		// Credit Card & Term Payment
+		if(listFindNoCase("creditCard,termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setBillingAddress( arguments.orderPayment.getBillingAddress().copyAddress( true ) );
+		}
+		
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public boolean function getDynamicAmountFlag() {
+		if(isNull(variables.amount)) {
+			return true;
+		}
+		return false;
+	}
 	
 	public numeric function getAmountReceived() {
 		var amountReceived = 0;
@@ -273,6 +340,10 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 		return getOrder().getStatusCode();
 	}
 	
+	public any function getStatusCode() {
+		return getOrderPaymentStatusType().getSystemCode();
+	}
+	
 	public string function getExpirationDate() {
 		if(!structKeyExists(variables,"expirationDate")) {
 			variables.expirationDate = nullReplace(getExpirationMonth(),"") & "/" & nullReplace(getExpirationYear(), "");
@@ -293,20 +364,6 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 			variables.paymentMethodOptions = sl.getRecords();
 		}
 		return variables.paymentMethodOptions;
-	}
-	
-	public any function getPeerOrderPaymentNullAmountExistsFlag() {
-		if(!structKeyExists(variables, "peerOrderPaymentNullAmountExistsFlag")) {
-			variables.peerOrderPaymentNullAmountExistsFlag = false;
-			if(!isNull(getOrder())) {
-				if(!isNull(getOrderPaymentID())) {
-					variables.peerOrderPaymentNullAmountExistsFlag = getService("orderService").getPeerOrderPaymentNullAmountExistsFlag(orderID=getOrder().getOrderID(), orderPaymentID=getOrderPaymentID());	
-				} else {
-					variables.peerOrderPaymentNullAmountExistsFlag = getService("orderService").getPeerOrderPaymentNullAmountExistsFlag(orderID=getOrder().getOrderID());
-				}	
-			}
-		}
-		return variables.peerOrderPaymentNullAmountExistsFlag;
 	}
 	
 	// Important this can be a negative number
@@ -470,24 +527,19 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	
 	// ============== START: Overridden Implicet Getters ===================
 	
-	public numeric function getAmount() {
+	public any function getAmount() {
 		// If an amount has not been explicity set, then we can return another value if needed
 		if( !structKeyExists(variables, "amount") ) {
-			
-			// If there is an order, it has not been placed and there is only 1 order payment with no explicit value set... then we can return the order total.
-			if(!isNull(getOrder()) && listFindNoCase("ostNotPlaced,ostNew,ostOnHold,ostProcessing", getOrder().getOrderStatusType().getSystemCode()) && !getPeerOrderPaymentNullAmountExistsFlag()) {
-				var orderAmountNeeded = getOrderAmountNeeded();
-				if(orderAmountNeeded gt 0 && getOrderPaymentType().getSystemCode() eq "optCharge") {
-					return orderAmountNeeded;
-				} else if (orderAmountNeeded gt 0 && getOrderPaymentType().getSystemCode() eq "optCredit") {
-					return orderAmountNeeded * -1;
-				}
+			if(!isNull(getOrder()) && !isNull(getOrder().getDynamicChargeOrderPayment()) && getOrderPaymentType().getSystemCode() eq 'optCharge' && getOrder().getDynamicChargeOrderPayment().getOrderPaymentID() eq getOrderPaymentID()) {
+				return getOrder().getDynamicChargeOrderPaymentAmount();
+			} else if (!isNull(getOrder()) && !isNull(getOrder().getDynamicCreditOrderPayment()) && getOrderPaymentType().getSystemCode() eq 'optCredit' && getOrder().getDynamicCreditOrderPayment().getOrderPaymentID() eq getOrderPaymentID()) {
+				return getOrder().getDynamicCreditOrderPaymentAmount(); 
+			} else if (!isNull(getOrder())) {
 				return 0;
 			}
 			
-			// If for some reson the above logic did not fire then just set the amount to 0
-			variables.amount = 0;
-			
+			// Return null to describe that it hasn't been defined yet, but it will need to.
+			return ;
 		}
 		
 		return variables.amount;
@@ -505,6 +557,13 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 			variables.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge");
 		}
 		return variables.orderPaymentType;
+	}
+	
+	public any function getOrderPaymentStatusType() {
+		if( !structKeyExists(variables, "orderPaymentStatusType") ) {
+			variables.orderPaymentStatusType = getService("settingService").getTypeBySystemCode("opstActive");
+		}
+		return variables.orderPaymentStatusType;
 	}
 	
 	// ==============  END: Overridden Implicet Getters ====================
@@ -552,3 +611,4 @@ component entityname="SlatwallOrderPayment" table="SlatwallOrderPayment" persist
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
+

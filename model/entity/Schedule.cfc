@@ -1,55 +1,65 @@
-﻿/*
+/*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
 */
-component displayname="Schedule" entityname="SlatwallSchedule" table="SlatwallSchedule" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="scheduleService" hb_permission="this" {
+component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="scheduleService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="scheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="scheduleName" ormtype="string";
 	
-	property name="recuringType" ormtype="string" hb_formFieldtype="select";										// Daily, Weekly, Monthly										Daily	
-	property name="daysOfWeekToRun" ormtype="string" hb_formfieldType="checkboxgroup";		// 1, 2, 3, 4, 5, 6, 7											NULL	(required if recuringType is weekly)
-	property name="daysOfMonthToRun" ormtype="string" hb_formfieldType="checkboxgroup";	// 1 - 31			[1,10,20]									NULL	(required if recuringType is monthly)
+	property name="recuringType" ormtype="string" hb_formFieldtype="select" hb_formatType="rbKey";																							// Daily, Weekly, Monthly										Daily
+	property name="daysOfWeekToRun" ormtype="string" hb_formfieldType="checkboxgroup";																					// 1, 2, 3, 4, 5, 6, 7											NULL	(required if recuringType is weekly)
+	property name="daysOfMonthToRun" ormtype="string" hb_formfieldType="checkboxgroup";																					// 1 - 31			[1,10,20]									NULL	(required if recuringType is monthly)
 	
 	// During an individual Day
-	property name="frequencyInterval" ormtype="integer";								// 1 - x (minutes)
-	property name="frequencyStartTime" ormtype="timestamp" hb_formfieldType="time" hb_formatType="time";		// 4 PM	
-	property name="frequencyEndTime" ormtype="timestamp" hb_formfieldType="time" hb_formatType="time";			// 12 PM	
+	property name="frequencyInterval" ormtype="integer";																												// 1 - x (minutes)
+	property name="frequencyStartTime" ormtype="timestamp" hb_formfieldType="time" hb_formatType="time";																// 4 PM
+	property name="frequencyEndTime" ormtype="timestamp" hb_formfieldType="time" hb_formatType="time" hb_nullRBKey="entity.schedule.frequencyEndTime.runOnce";			// 12 PM
 	
 	
 	// Related Object Properties (many-to-one)
@@ -68,8 +78,6 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SlatwallSc
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-	
-	
 	
 	public array function getRecuringTypeOptions() {
 		var options = [
@@ -104,38 +112,48 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SlatwallSc
 	public string function getNextRunDateTime(startDateTime, endDateTime){
 		var nextRun='';
 		
-		if(endDateTime > now()){
-			switch(getrecuringType()){
+		if( endDateTime > now() ){
+			
+			switch(getRecuringType()){
+				
+				
 				case 'Daily':
-					//task is daily
 					
+					// Is the start time in the future?
 					if(startDateTime > now()){
-						//is the start time in the future?
+						
 						nextRun= createDateTime(year(startDateTime),month(startDateTime),day(startDateTime),hour(getFrequencyStartTime()),minute(getFrequencyStartTime()),second(getFrequencyStartTime()));
-					}else if(!len(getfrequencyEndTime())){
+						
+					// If there is a Frequency End
+					} else if ( !len(getFrequencyEndTime()) ){
+						
 						var updatedStart = createDateTime(year(now()),month(now()),day(now()),hour(getFrequencyStartTime()),minute(getFrequencyStartTime()),second(getFrequencyStartTime()));
 						if(updatedStart > now()){
-							//hasn't run today
+							// hasn't run today
 							nextRun=updatedStart;
 						}else{
-							//has already run for today
+							// has already run for today
 							tomorrow = dateadd("d",1,now());
 							nextRun= createDateTime(year(tomorrow),month(tomorrow),day(tomorrow),hour(getFrequencyStartTime()),minute(getFrequencyStartTime()),second(getFrequencyStartTime()));
 						}
-					}else if(isBetweenHours(getFrequencyStartTime(),getFrequencyEndTime(),now())){
-					//is the next time today?
-						//currently in the run period. work out next interval
-						nextRun=getNextTimeSlot(getFrequencyStartTime(),getFrequencyInterval(),now());
-					}else{
+						
+					// Is the next time today?
+					} else if( isBetweenHours(getFrequencyStartTime(),getFrequencyEndTime(),now()) ){
+					
+						// currently in the run period. work out next interval
+						nextRun=getNextTimeSlot( getFrequencyStartTime(), getFrequencyInterval(), now() );
+						
+					} else {
 						//next time is tomorrow and start time
 						tomorrow = dateadd("d",1,now());
 						nextRun= createDateTime(year(tomorrow),month(tomorrow),day(tomorrow),hour(getFrequencyStartTime()),minute(getFrequencyStartTime()),second(getFrequencyStartTime()));
 					}
 					
-				break;
+					break;
 				
 				case 'Weekly':
 					var todayNumber = dayofweek(now());
+					
 					
 					if(startDateTime > now()){
 						var futureDayNumber=dayofweek(startDateTime);
@@ -161,8 +179,8 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SlatwallSc
 						nextDay = dateadd("d",nextRunDay,startDateTime);
 						nextRun= createDateTime(year(nextDay),month(nextDay),day(nextDay),hour(getFrequencyStartTime()),minute(getFrequencyStartTime()),second(getFrequencyStartTime()));
 						
-					} else if(listfind(getdaysOfWeekToRun(),dayofweek(now())) && !len(getFrequencyEndTime())){
-						//only runs once 
+					// Only Runs Once 
+					} else if( listFindNoCase(getDaysOfWeekToRun(), dayofweek(now()) ) && !len(getFrequencyEndTime()) ){
 						
 						var updatedStart = createDateTime(year(now()),month(now()),day(now()),hour(getFrequencyStartTime()),minute(getFrequencyStartTime()),second(getFrequencyStartTime()));
 						if(updatedStart > now()){
@@ -188,9 +206,11 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SlatwallSc
 						
 						nextDay = dateadd("d",nextRunDay,now());
 						nextRun= createDateTime(year(nextDay),month(nextDay),day(nextDay),hour(getFrequencyStartTime()),minute(getFrequencyStartTime()),second(getFrequencyStartTime()));
-						}	
-					}else if(listfind(getdaysOfWeekToRun(),dayofweek(now())) && isBetweenHours(getFrequencyStartTime(),getFrequencyEndTime(),now())){	
-					//is the next time today?
+						}
+						
+					// Is the next time today?	
+					} else if ( listFindNoCase(getDaysOfWeekToRun(), dayOfWeek(now()) ) && isBetweenHours(getFrequencyStartTime(),getFrequencyEndTime(),now())){	
+					
 					
 						//it runs today. are we in the window?
 						//currently in the run period. work out next interval
@@ -272,10 +292,11 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SlatwallSc
 			}
 		}
 		
-		//if next run is after the end time then it will not be run again
+		// If next run is after the end time then it will not be run again
 		if(nextRun > endDateTime){
 			nextRun='';
 		}
+		
 		return nextRun;
 	}
 	

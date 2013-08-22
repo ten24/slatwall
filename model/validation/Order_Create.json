@@ -3,6 +3,9 @@
 	    "newAccountSelected":{
 	        "newAccountFlag":{"eq":1}
 	    },
+	    "existingAccountSelected":{
+	        "newAccountFlag":{"eq":0}
+	    },
 	    "savePasswordSelected":{
 	        "newAccountFlag":{"eq":1},
 	        "createAuthenticationFlag":{"eq":1}
@@ -11,6 +14,7 @@
 	"properties":{
 		"firstName":			[{"conditions":"newAccountSelected","required":true}],
 		"lastName":				[{"conditions":"newAccountSelected","required":true}],
+		"accountID":			[{"conditions":"existingAccountSelected","required":true}],
 		"emailAddress":			[{"conditions":"savePasswordSelected","required":true},{"dataType":"email","eqProperty":"emailAddressConfirm"}],
 		"emailAddressConfirm":	[{"conditions":"savePasswordSelected","required":true}],
 		"password":				[{"conditions":"savePasswordSelected","required":true,"minLength":6,"eqProperty":"passwordConfirm"}],

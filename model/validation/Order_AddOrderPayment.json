@@ -1,17 +1,5 @@
 {
-    "conditions":{
-        "existingAccountPaymentMethod":{
-	        "accountPaymentMethodID":{"minLength":1}
-	    },
-        "newAccountPaymentMethod":{
-	        "accountPaymentMethodID":{"maxLength":0}
-	    }
-	},
-	"properties":{},
 	"populatedPropertyValidation":{
-	    "newOrderPayment":[
-	        {"conditions":"existingAccountPaymentMethod","validate":false},
-	        {"conditions":"newAccountPaymentMethod","validate":"save"}
-	    ]
+		"newOrderPayment":		[{"validate":false}]
 	}
 }

@@ -90,13 +90,23 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint checks a one-to-many property for the first entity with errors, if one isn't found then it returns a new one
 	public any function getNewPropertyEntity( required string propertyName ) {
 		if(!structKeyExists(variables, "requestNewPropertyEntity#arguments.propertyName#")) {
-			var entities = this.invokeMethod("get#arguments.propertyName#");
-			for(var e=1; e<=arrayLen(entities); e++) {
-				if(entities[e].hasErrors()) {
-					variables[ "requestNewPropertyEntity#arguments.propertyName#" ] = entities[e];
-					break;
+			
+			// Get Property Value
+			var propertyValue = this.invokeMethod("get#arguments.propertyName#");
+			
+			// Find in an array
+			if(isArray(propertyValue)) {
+				for(var entity in propertyValue) {
+					if(entity.hasErrors() && entity.getNewFlag()) {
+						variables[ "requestNewPropertyEntity#arguments.propertyName#" ] = entity;
+						break;
+					}
 				}
+			// Property is Object
+			} else if (isObject(propertyValue) && propertyValue.hasErrors() && propertyValue.getNewFlag()) {
+				variables[ "requestNewPropertyEntity#arguments.propertyName#" ] = entity;
 			}
+			
 			if(!structKeyExists(variables, "requestNewPropertyEntity#arguments.propertyName#")) {
 				var entityName =  getPropertyMetaData(arguments.propertyName).cfc;
 				variables[ "requestNewPropertyEntity#arguments.propertyName#" ] = getService("hibachiService").getServiceByEntityName( entityName ).invokeMethod("new#entityName#");
@@ -138,7 +148,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 		
 	// @hint overriding the addError method to allow for saying that the error doesn't effect persistance
-	public void function addError( required string errorName, required string errorMessage, boolean persistableError=false ) {
+	public void function addError( required string errorName, required any errorMessage, boolean persistableError=false ) {
 		if(persistableError) {
 			addPersistableError(arguments.errorName);
 		}
@@ -163,6 +173,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(!structKeyExists(variables.processObjects, arguments.context)) {
 			variables.processObjects[ arguments.context ] = getTransient("#getClassName()#_#arguments.context#");
 			variables.processObjects[ arguments.context ].invokeMethod("set#getClassName()#", {1=this});
+			variables.processObjects[ arguments.context ].setupDefaults();
 		}
 		return variables.processObjects[ arguments.context ];
 	}
@@ -348,6 +359,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	public string function getPropertyPrimaryID( required string propertyName ) {
+		var propertyValue = invokeMethod("get#arguments.propertyName#");
+		if(!isNull(propertyValue) && isObject(propertyValue) && propertyValue.isPersistent()) {
+			return propertyValue.getPrimaryIDValue();
+		}
+		
+		return "";
+	}
+	
 	// @hint returns an array of name/value pairs that can function as options for a many-to-one property
 	public array function getPropertyOptions( required string propertyName ) {
 		
@@ -398,13 +418,17 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(!structKeyExists(variables, cacheKey)) {
 			
 			var propertyMeta = getPropertyMetaData( arguments.propertyName );
-			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
+			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMeta.cfc,'.') );
 			
-			variables[ cacheKey ] = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#SmartList");
+			variables[ cacheKey ] = entityService.invokeMethod("get#listLast(propertyMeta.cfc,'.')#SmartList");
 			
 			// If there was an hb_optionsSmartListData defined, then we can now apply that data to this smart list
 			if(structKeyExists(propertyMeta, "hb_optionsSmartListData")) {
 				variables[ cacheKey ].applyData( propertyMeta.hb_optionsSmartListData );
+			}
+			
+			if( getService("hibachiService").getEntityHasPropertyByEntityName(listLast(propertyMeta.cfc,'.'), 'activeFlag') ) {
+				variables[ cacheKey ].addFilter( 'activeFlag', 1 );
 			}
 		}
 		
@@ -497,6 +521,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 14) == "AssignedIDList") {
 			
 			return getPropertyAssignedIDList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17) );
+		
+		// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property 		
+		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 2) == "ID") {
+			
+			return getPropertyPrimaryID( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5) );
 			
 		// getXXXOptions()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned 		
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 7) == "Options") {
@@ -607,9 +636,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				var metaData = getPropertyMetaData("sortOrder");
 				var topSortOrder = 0;
 				if(structKeyExists(metaData, "sortContext") && structKeyExists(variables, metaData.sortContext)) {
-					topSortOrder =  getService("dataService").getTableTopSortOrder( tableName=getMetaData(this).table, contextIDColumn=variables[ metaData.sortContext ].getPrimaryIDPropertyName(), contextIDValue=variables[ metaData.sortContext ].getPrimaryIDValue() );
+					topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table, contextIDColumn=variables[ metaData.sortContext ].getPrimaryIDPropertyName(), contextIDValue=variables[ metaData.sortContext ].getPrimaryIDValue() );
 				} else {
-					topSortOrder =  getService("dataService").getTableTopSortOrder( tableName=getMetaData(this).table );
+					topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table );
 				}
 				setSortOrder( topSortOrder + 1 );
 			}

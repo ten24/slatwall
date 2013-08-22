@@ -41,11 +41,18 @@ jQuery(document).ready(function() {
 
 function initUIElements( scopeSelector ) {
 	
+	var convertedDateFormat = convertCFMLDateFormat( hibachiConfig.dateFormat );
+	var convertedTimeFormat = convertCFMLTimeFormat( hibachiConfig.timeFormat );
+	var ampm = true;
+	if(convertedTimeFormat.slice(-2) != 'TT') {
+		ampm = false;
+	}
+	
 	// Datetime Picker
 	jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker({
-		dateFormat: convertCFMLDateFormat( hibachiConfig.dateFormat ),
-		timeFormat: convertCFMLTimeFormat( hibachiConfig.timeFormat ),
-		ampm: true,
+		dateFormat: convertedDateFormat,
+		timeFormat: convertedTimeFormat,
+		ampm: ampm,
 		onSelect: function(dateText, inst) {
 			
 			// Listing Display Updates
@@ -68,11 +75,14 @@ function initUIElements( scopeSelector ) {
 	
 	// Date Picker
 	jQuery( scopeSelector ).find(jQuery('.datepicker')).datepicker({
-		dateFormat: convertCFMLDateFormat( hibachiConfig.dateFormat )
+		dateFormat: convertedDateFormat
 	});
 	
 	// Time Picker
-	jQuery( scopeSelector ).find(jQuery('.timepicker')).timepicker({});
+	jQuery( scopeSelector ).find(jQuery('.timepicker')).timepicker({
+		timeFormat: convertedTimeFormat,
+		ampm: ampm
+	});
 	
 	// Dragable
 	jQuery( scopeSelector ).find(jQuery('.draggable')).draggable();
@@ -99,23 +109,27 @@ function initUIElements( scopeSelector ) {
 			id : jQuery(this).attr('id')
 		}
 		
+		/*
 		// Open the correct sections
-		var loadValue = jQuery( jQuery(this).data('hibachi-selector') + ':checked' ).val() || jQuery( jQuery(this).data('hibachi-selector') ).children(":selected").val();
+		var loadValue = jQuery( jQuery(this).data('hibachi-selector') + ':checked' ).val() || jQuery( jQuery(this).data('hibachi-selector') ).children(":selected").val() || '';
 		if(bindData.valueAttribute.length) {
 			var loadValue = jQuery( jQuery(this).data('hibachi-selector') ).children(":selected").data(bindData.valueAttribute);
 		}
-		if( jQuery( this ).hasClass('hide') && bindData.showValues.toString().indexOf( loadValue ) > -1 ) {
+		if( jQuery( this ).hasClass('hide') && (bindData.showValues.toString().indexOf( loadValue ) > -1 || bindData.showValues === '*' && loadValue.length) ) {
 			jQuery( this ).removeClass('hide');
 		}
+		*/
 		
 		jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
-			var selectedValue = jQuery(this).val();
+			
+			var selectedValue = jQuery(this).val() || '';
 			if(bindData.valueAttribute.length) {
-				var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute);
+				var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute) || '';
 			}
-			if( jQuery( '#' + bindData.id ).hasClass('hide') && bindData.showValues.toString().indexOf( selectedValue ) > -1 ) {
+			
+			if( jQuery( '#' + bindData.id ).hasClass('hide') && (bindData.showValues.toString().indexOf( selectedValue ) > -1 || bindData.showValues === '*' && selectedValue.length) ) {
 				jQuery( '#' + bindData.id ).removeClass('hide');
-			} else if ( !jQuery( '#' + bindData.id ).hasClass('hide') && bindData.showValues.toString().indexOf( selectedValue ) === -1 ) {
+			} else if ( !jQuery( '#' + bindData.id ).hasClass('hide') && ((bindData.showValues !== '*' && bindData.showValues.toString().indexOf( selectedValue ) === -1) || (bindData.showValues === '*' && !selectedValue.length)) ) {
 				jQuery( '#' + bindData.id ).addClass('hide');
 			}
 		});
@@ -136,6 +150,14 @@ function initUIElements( scopeSelector ) {
 	});
 	
 	// Validation
+	jQuery.validator.methods.date = function(value,element){
+		try{
+			value = $.datepicker.parseDateTime(convertedDateFormat,convertedTimeFormat,value);
+		} catch(e){}
+		
+		return this.optional(element) || !/Invalid|NaN/.test(new Date(value).toString());
+	};
+	
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value){
 		jQuery(value).validate({
 			invalidHandler: function() {
@@ -176,12 +198,41 @@ function initUIElements( scopeSelector ) {
 		}
 	});
 	
+	
+	// Report Sortable
+	jQuery( scopeSelector ).find(jQuery('#hibachi-report-dimension-sort')).sortable({
+		stop: function( event, ui ) {
+			var newDimensionsValue = '';
+			jQuery.each(jQuery('#hibachi-report-dimension-sort').children(), function(i, v){
+				if(i > 0) {
+					newDimensionsValue += ','
+				}
+				newDimensionsValue += jQuery(v).data('dimension'); 
+			});
+			jQuery('input[name="dimensions"]').val( newDimensionsValue );
+			updateReport();
+		}				
+	});
+	// Report Sortable
+	jQuery( scopeSelector ).find(jQuery('#hibachi-report-metric-sort')).sortable({
+		stop: function( event, ui ) {
+			var newMetricsValue = '';
+			jQuery.each(jQuery('#hibachi-report-metric-sort').children(), function(i, v){
+				if(i > 0) {
+					newMetricsValue += ','
+				}
+				newMetricsValue += jQuery(v).data('metric'); 
+			});
+			jQuery('input[name="metrics"]').val( newMetricsValue );
+			updateReport();
+		}				
+	});
 }
 
 function setupEventHandlers() {
 	
 	// Hide Alerts
-	jQuery('.alert-success').delay(2000).fadeOut(500);
+	jQuery('.alert-success').delay(3000).fadeOut(500);
 	
 	// Global Search
 	jQuery('body').on('keyup', '#global-search', function(e){
@@ -199,7 +250,6 @@ function setupEventHandlers() {
 			jQuery('#search-results').animate({
 				'margin-top': '-500px'
 			}, 150);
-			jQuery('#search-results .result-bucket .nav').html('');
 		}
 	});
 	jQuery('body').on('click', '.search-close', function(e){
@@ -637,6 +687,7 @@ function setupEventHandlers() {
 				if(r.success) {
 					listingDisplayUpdate(updateTableID, {});
 				} else {
+					
 					if(("preProcessView" in r)) {
 						jQuery('#adminModal').html(r.preProcessView);
 						jQuery('#adminModal').modal();
@@ -646,6 +697,10 @@ function setupEventHandlers() {
 							'margin-left': function () {
 					            return -(jQuery('#adminModal').width() / 2);
 					        }
+						});
+					} else {
+						jQuery.each(r.messages, function(i, v){
+							jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');
 						});
 					}
 				}
@@ -661,6 +716,70 @@ function setupEventHandlers() {
 		updatePermissionCheckboxDisplay( this );
 	});
 	jQuery('.hibachi-permission-checkbox:checked').change();
+	
+	
+	// Report Hooks ============================================
+	
+	jQuery('body').on('change', '.hibachi-report-date', function(){
+		addLoadingDiv( 'hibachi-report' );
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '.hibachi-report-date-group', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('.hibachi-report-date-group').removeClass('active');
+		jQuery( this ).addClass('active');
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '#hibachi-report-enable-compare', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('input[name="reportCompareFlag"]').val(1);
+		jQuery('#hibachi-report-compare-date').removeClass('hide');
+		jQuery(this).addClass('hide');
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '#hibachi-report-disable-compare', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('input[name="reportCompareFlag"]').val(0);
+		jQuery('#hibachi-report-compare-date').addClass('hide');
+		jQuery('#hibachi-report-enable-compare').removeClass('hide');
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '.hibachi-report-add-dimension', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('input[name="dimensions"]').val( jQuery('input[name="dimensions"]').val() + ',' + jQuery(this).data('dimension') );
+		updateReport();
+	});
+	jQuery('body').on('click', '.hibachi-report-remove-dimension', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		var vArr =  jQuery('input[name="dimensions"]').val().split(',');
+		vArr.splice(vArr.indexOf(jQuery(this).data('dimension')),1);
+		jQuery('input[name="dimensions"]').val( vArr.join(',') );
+		updateReport();
+	});
+	
+	jQuery('body').on('click', '.hibachi-report-add-metric', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		jQuery('input[name="metrics"]').val( jQuery('input[name="metrics"]').val() + ',' + jQuery(this).data('metric') );
+		updateReport();
+	});
+	jQuery('body').on('click', '.hibachi-report-remove-metric', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		var vArr =  jQuery('input[name="metrics"]').val().split(',');
+		vArr.splice(vArr.indexOf(jQuery(this).data('metric')),1);
+		jQuery('input[name="metrics"]').val( vArr.join(',').trim() );
+		updateReport();
+	});
 	
 }
 
@@ -969,7 +1088,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 								
 						} else if ( jQuery(cv).hasClass('admin') ){
 							
-							newtd += '<td>' + jQuery.trim(rv[ 'admin' ]) + '</td>';
+							newtd += '<td class="admin">' + jQuery.trim(rv[ 'admin' ]) + '</td>';
 							
 						}
 						
@@ -1247,6 +1366,17 @@ function updateGlobalSearchResults() {
 		};
 		data[ hibachiConfig.action ] = 'admin:ajax.updateGlobalSearchResults';
 		
+		var buckets = {
+			product: {primaryIDProperty:'productID', listAction:'admin:entity.listproduct', detailAction:'admin:entity.detailproduct'},
+			productType: {primaryIDProperty:'productTypeID', listAction:'admin:entity.listproducttype', detailAction:'admin:entity.detailproducttype'},
+			brand: {primaryIDProperty:'brandID', listAction:'admin:entity.listbrand', detailAction:'admin:entity.detailbrand'},
+			promotion: {primaryIDProperty:'promotionID', listAction:'admin:entity.listpromotion', detailAction:'admin:entity.detailpromotion'},
+			order: {primaryIDProperty:'orderID', listAction:'admin:entity.listorder', detailAction:'admin:entity.detailorder'},
+			account: {primaryIDProperty:'accountID', listAction:'admin:entity.listaccount', detailAction:'admin:entity.detailaccount'},
+			vendorOrder: {primaryIDProperty:'vendorOrderID', listAction:'admin:entity.listvendororder', detailAction:'admin:entity.detailvendororder'},
+			vendor: {primaryIDProperty:'vendorID', listAction:'admin:entity.listvendor', detailAction:'admin:entity.detailvendor'}
+		};
+		
 		jQuery.ajax({
 			url: hibachiConfig.baseURL + '/',
 			method: 'post',
@@ -1260,27 +1390,23 @@ function updateGlobalSearchResults() {
 			},
 			success: function(result) {
 				
-				var buckets = {
-					product: {primaryIDProperty:'productID', listAction:'admin:product.listproduct', detailAction:'admin:product.detailproduct'},
-					productType: {primaryIDProperty:'productTypeID', listAction:'admin:product.listproducttype', detailAction:'admin:product.detailproducttype'},
-					brand: {primaryIDProperty:'brandID', listAction:'admin:product.listbrand', detailAction:'admin:product.detailbrand'},
-					promotion: {primaryIDProperty:'promotionID', listAction:'admin:pricing.listpromotion', detailAction:'admin:pricing.detailpromotion'},
-					order: {primaryIDProperty:'orderID', listAction:'admin:order.listorder', detailAction:'admin:order.detailorder'},
-					account: {primaryIDProperty:'accountID', listAction:'admin:account.listaccount', detailAction:'admin:account.detailaccount'},
-					vendorOrder: {primaryIDProperty:'vendorOrderID', listAction:'admin:order.listvendororder', detailAction:'admin:order.detailvendororder'},
-					vendor: {primaryIDProperty:'vendorID', listAction:'admin:vendor.listvendor', detailAction:'admin:vendor.detailvendor'}
-				};
 				for (var key in buckets) {
-					jQuery('#golbalsr-' + key).html('');
-					var records = result[key]['records'];
-				    for(var r=0; r < records.length; r++) {
-				    	jQuery('#golbalsr-' + key).append('<li><a href="' + hibachiConfig.baseURL + '/?' + hibachiConfig.action + '=' + buckets[key]['detailAction'] + '&' + buckets[key]['primaryIDProperty'] + '=' + records[r]['value'] + '">' + records[r]['name'] + '</a></li>');
-				    }
-				    if(result[key]['recordCount'] > 10) {
-				    	jQuery('#golbalsr-' + key).append('<li><a href="' + hibachiConfig.baseURL + '/?' + hibachiConfig.action + '=' + buckets[key]['listAction'] + '&keywords=' + jQuery('#global-search').val() + '">...</a></li>');
-				    } else if (result[key]['recordCount'] == 0) {
-				    	jQuery('#golbalsr-' + key).append('<li><em>none</em></li>');
-				    }
+					if(result.hasOwnProperty(key)) {
+						
+						jQuery('#golbalsr-' + key).html('');
+						
+						var records = result[key]['records'];
+						
+					    for(var r=0; r < records.length; r++) {
+					    	jQuery('#golbalsr-' + key).append('<li><a href="' + hibachiConfig.baseURL + '/?' + hibachiConfig.action + '=' + buckets[key]['detailAction'] + '&' + buckets[key]['primaryIDProperty'] + '=' + records[r]['value'] + '">' + records[r]['name'] + '</a></li>');
+					    }
+					    
+					    if(result[key]['recordCount'] > 10) {
+					    	jQuery('#golbalsr-' + key).append('<li><a href="' + hibachiConfig.baseURL + '/?' + hibachiConfig.action + '=' + buckets[key]['listAction'] + '&keywords=' + jQuery('#global-search').val() + '">...</a></li>');
+					    } else if (result[key]['recordCount'] == 0) {
+					    	jQuery('#golbalsr-' + key).append('<li><em>none</em></li>');
+					    }
+					}
 				}
 				
 				removeLoadingDiv( 'search-results' );
@@ -1291,23 +1417,42 @@ function updateGlobalSearchResults() {
 	}
 }
 
-/*
-function getEntityAutocompleteTemplate( entityName, data ) {
-	var output = "";
-	if( entityName === 'Account') {
-		output += '<span class="image"><img src="';
-		output += data.gravatarURL;
-		output += '" /></span>';
-		output += '<span class="image">';
-		output += '</span>';
-		output += '<span class="image">';
-		output += '</span>';
-		output += '<span class="image">';
-		output += '</span>';
-	}
-	return output;
+function updateReport() {
+	
+	var data = {
+		slatAction: 'admin:report.default',
+		reportName: jQuery('#hibachi-report').data('reportname'),
+		reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
+		reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
+		reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
+		reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
+		reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
+		reportDateTime: jQuery('select[name="reportDateTime"]').val(),
+		reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
+		dimensions: jQuery('input[name="dimensions"]').val(),
+		metrics: jQuery('input[name="metrics"]').val()
+	};
+	
+	jQuery.ajax({
+		url: hibachiConfig.baseURL + '/',
+		method: 'post',
+		data: data,
+		dataType: 'json',
+		beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+		error: function( r ) {
+			// Error
+			removeLoadingDiv( 'hibachi-report' );
+		},
+		success: function( r ) {
+			jQuery('#hibachi-report-chart').highcharts(r.report.chartData);
+			jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);
+			jQuery('#hibachi-report-table').html(r.report.dataTable);
+			initUIElements('#hibachi-report');
+			removeLoadingDiv( 'hibachi-report' );
+		}
+	});
+	
 }
-*/
 
 // ========================= START: HELPER METHODS ================================
 

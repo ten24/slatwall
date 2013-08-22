@@ -1,37 +1,47 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
-
+    Copyright (C) ten24, LLC
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+	
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
-    Linking this library statically or dynamically with other modules is
-    making a combined work based on this library.  Thus, the terms and
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
- 
-    As a special exception, the copyright holders of this library give you
-    permission to link this library with independent modules to produce an
-    executable, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting executable under
-    terms of your choice, provided that you also meet, for each linked
-    independent module, the terms and conditions of the license of that
-    module.  An independent module is a module which is not derived from
-    or based on this library.  If you modify this library, you may extend
-    this exception to your version of the library, but you are not
-    obligated to do so.  If you do not wish to do so, delete this
-    exception statement from your version.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
 
 Notes:
 
@@ -44,40 +54,40 @@ Notes:
 	order
 
 */
-component displayname="Promotion Reward" entityname="SlatwallPromotionReward" table="SlatwallPromotionReward" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" hb_permission="promotionPeriod.promtionRewards" {
+component displayname="Promotion Reward" entityname="SlatwallPromotionReward" table="SwPromoReward" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" hb_permission="promotionPeriod.promtionRewards" {
 	
 	// Persistent Properties
 	property name="promotionRewardID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="amount" ormType="big_decimal" hb_formatType="custom";
-	property name="amountType" ormType="string" hb_formFieldType="select" hb_formatType="custom";
-	property name="rewardType" ormType="string" hb_formFieldType="select" hb_formatType="custom";
-	property name="applicableTerm" ormType="string" hb_formFieldType="select" hb_formatType="custom";
-	property name="maximumUsePerOrder" ormType="integer" hb_formatType="custom";
-	property name="maximumUsePerItem" ormtype="integer" hb_formatType="custom";
-	property name="maximumUsePerQualification" ormtype="integer" hb_formatType="custom";
+	property name="amountType" ormType="string" hb_formatType="rbKey";
+	property name="rewardType" ormType="string" hb_formatType="rbKey";
+	property name="applicableTerm" ormType="string" hb_formatType="rbKey";
+	property name="maximumUsePerOrder" ormType="integer" hb_nullRBKey="define.unlimited";
+	property name="maximumUsePerItem" ormtype="integer" hb_nullRBKey="define.unlimited";
+	property name="maximumUsePerQualification" ormtype="integer" hb_nullRBKey="define.unlimited";
 
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	property name="roundingRule" cfc="RoundingRule" fieldtype="many-to-one" fkcolumn="roundingRuleID" hb_optionsNullRBKey="define.none";
 	
 	// Related Object Properties (many-to-many - owner)
-	property name="eligiblePriceGroups" singularname="eligiblePriceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardEligiblePriceGroup" fkcolumn="promotionRewardID" inversejoincolumn="priceGroupID";
+	property name="eligiblePriceGroups" singularname="eligiblePriceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="promotionRewardID" inversejoincolumn="priceGroupID";
 	
-	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SlatwallPromotionRewardFulfillmentMethod" fkcolumn="promotionRewardID" inversejoincolumn="fulfillmentMethodID";
-	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SlatwallPromotionRewardShippingAddressZone" fkcolumn="promotionRewardID" inversejoincolumn="addressZoneID";
-	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SlatwallPromotionRewardShippingMethod" fkcolumn="promotionRewardID" inversejoincolumn="shippingMethodID";
+	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoRewardFulfillmentMethod" fkcolumn="promotionRewardID" inversejoincolumn="fulfillmentMethodID";
+	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SwPromoRewardShipAddressZone" fkcolumn="promotionRewardID" inversejoincolumn="addressZoneID";
+	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SwPromoRewardShippingMethod" fkcolumn="promotionRewardID" inversejoincolumn="shippingMethodID";
 	
-	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SlatwallPromotionRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
-	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SlatwallPromotionRewardOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
-	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SlatwallPromotionRewardSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
-	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SlatwallPromotionRewardProduct" fkcolumn="promotionRewardID" inversejoincolumn="productID";
-	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SlatwallPromotionRewardProductType" fkcolumn="promotionRewardID" inversejoincolumn="productTypeID";
+	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
+	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwPromoRewardOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
+	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
+	property name="products" singularname="product" cfc="Product" fieldtype="many-to-many" linktable="SwPromoRewardProduct" fkcolumn="promotionRewardID" inversejoincolumn="productID";
+	property name="productTypes" singularname="productType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoRewardProductType" fkcolumn="promotionRewardID" inversejoincolumn="productTypeID";
 	
-	property name="excludedBrands" singularname="excludedBrand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
-	property name="excludedOptions" singularname="excludedOption" cfc="Option" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
-	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
-	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedProduct" fkcolumn="promotionRewardID" inversejoincolumn="productID";
-	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedProductType" fkcolumn="promotionRewardID" inversejoincolumn="productTypeID";
+	property name="excludedBrands" singularname="excludedBrand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
+	property name="excludedOptions" singularname="excludedOption" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
+	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoRewardExclSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
+	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwPromoRewardExclProduct" fkcolumn="promotionRewardID" inversejoincolumn="productID";
+	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoRewardExclProductType" fkcolumn="promotionRewardID" inversejoincolumn="productTypeID";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -92,7 +102,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="amountTypeOptions" persistent="false";
 	property name="applicableTermOptions" persistent="false";
 	property name="rewards" type="string" persistent="false";
-
+	
+	public string function getSimpleRepresentation() {
+		return "#rbKey('entity.promotionReward')# - #getFormattedValue('rewardType')#";
+	}
 
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -391,39 +404,6 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 		
 		return formatValue(getAmount(), "currency");
-	}
-	
-	public string function getAmountTypeFormatted() {
-		return rbKey('define.#getAmountType()#');
-	}
-	
-	public string function getRewardTypeFormatted() {
-		return rbKey('define.#getRewardType()#');
-	}
-	
-	public string function getApplicableTermFormatted() {
-		return rbKey('define.#getApplicableTerm()#');
-	}
-	
-	public any function getMaximumUsePerOrderFormatted() {
-		if(isNull(getMaximumUsePerOrder()) || !isNumeric(getMaximumUsePerOrder()) || getMaximumUsePerOrder() == 0) {
-			return rbKey('define.unlimited');
-		}
-		return getMaximumUsePerOrder();
-	}
-	
-	public any function getMaximumUsePerItemFormatted() {
-		if(isNull(getMaximumUsePerItem()) || !isNumeric(getMaximumUsePerItem()) || getMaximumUsePerItem() == 0) {
-			return rbKey('define.unlimited');
-		}
-		return getMaximumUsePerItem();
-	}
-	
-	public any function getMaximumUsePerQualificationFormatted() {
-		if(isNull(getMaximumUsePerQualification()) || !isNumeric(getMaximumUsePerQualification()) || getMaximumUsePerQualification() == 0) {
-			return rbKey('define.unlimited');
-		}
-		return getMaximumUsePerQualification();
 	}
 	
 	// ===============  END: Custom Formatting Methods =====================

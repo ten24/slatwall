@@ -73,20 +73,20 @@
 	hint="Build URL to CKFinder"
 >
 	<cfset var qs = "">
-	<cfset var url = this.basePath>
+	<cfset var burl = this.basePath>
 
 	<cfparam name="_url" type="string" default="" />
 
 	<cfif Len(_url)>
-		<cfset url = _url >
-	<cfelseif not Len(url)>
-		<cfset url = this.defaultPath >
+		<cfset burl = _url >
+	<cfelseif not Len(burl)>
+		<cfset burl = this.defaultPath >
 	</cfif>
 
-	<cfif Right(url, 1) neq "/">
-		<cfset url = url & "/" >
+	<cfif Right(burl, 1) neq "/">
+		<cfset burl = burl & "/" >
 	</cfif>
-	<cfset url = url & "ckfinder.html">
+	<cfset burl = burl & "ckfinder.html">
 	<cfif Len(this.selectFunction)>
 		<cfset qs = qs & '?action=js&amp;func=' & this.selectFunction>
 	</cfif>
@@ -126,7 +126,7 @@
 		<cfset qs = qs & iif(Len(qs), De("&amp;"), De("?"))>
 		<cfset qs = qs & 'id=' & urlencodedformat(this.id)>
 	</cfif>
-	<cfreturn url & qs>
+	<cfreturn burl & qs>
 </cffunction>
 
 <cffunction
@@ -153,11 +153,11 @@
 		<cfset this.basePath = mid(CGI.SCRIPT_NAME, 1, Len(CGI.SCRIPT_NAME) - Find("/", Reverse(CGI.SCRIPT_NAME))) & this.basePath>
 	</cfif>
 
-	<cfset url = _BuildUrl(this.basePath)>
-	<cfset qs = iif(find("?", url), De("&"), De("?"))>
-	<cfset url = replace(url, "&", "%26", "all")>
-	<cfset url = replace(url, "=", "%3D", "all")>
-	<cfset url = replace(url, """", "%22", "all")>
+	<cfset burl = _BuildUrl(this.basePath)>
+	<cfset qs = iif(find("?", burl), De("&"), De("?"))>
+	<cfset burl = replace(burl, "&", "%26", "all")>
+	<cfset burl = replace(burl, "=", "%3D", "all")>
+	<cfset burl = replace(burl, """", "%22", "all")>
 	<cfset _width = replacenocase(this.width, "px", "", "all")>
 	<cfif _width neq "100%" and lsisnumeric(_width)>
 		<cfset _width = lsparsenumber(_width)>
@@ -177,10 +177,10 @@
 			<cfset this.editorObj.config['FlashBrowserWindowHeight'] = tostring(_height & "px")>
 		</cfif>
 	</cfif>
-	<cfset this.editorObj.config['LinkBrowserURL'] = url>
-	<cfset this.editorObj.config['ImageBrowserURL'] = url & urlencodedformat(qs & 'type=' & iif( Len( this.imageType ), this.imageType, De('Images')))>
-	<cfset this.editorObj.config['FlashBrowserURL'] = url & urlencodedformat(qs & 'type=' & iif( Len( this.flashType ), this.flashType, De('Flash')))>
-	<cfset dir = GetDirectoryFromPath(url) >
+	<cfset this.editorObj.config['LinkBrowserURL'] = burl>
+	<cfset this.editorObj.config['ImageBrowserURL'] = burl & urlencodedformat(qs & 'type=' & iif( Len( this.imageType ), this.imageType, De('Images')))>
+	<cfset this.editorObj.config['FlashBrowserURL'] = burl & urlencodedformat(qs & 'type=' & iif( Len( this.flashType ), this.flashType, De('Flash')))>
+	<cfset dir = GetDirectoryFromPath(burl) >
 	<cfset this.editorObj.config['LinkUploadURL'] = urlencodedformat(dir & 'core/connector/cfm/connector.cfm?command=QuickUpload&type=Files')>
 	<cfset this.editorObj.config['ImageUploadURL'] = urlencodedformat(dir & 'core/connector/cfm/connector.cfm?command=QuickUpload&type=' & iif( Len( this.imageType ), this.imageType, De('Images')))>
 	<cfset this.editorObj.config['FlashUploadURL'] = urlencodedformat(dir & 'core/connector/cfm/connector.cfm?command=QuickUpload&type=' & iif( Len( this.flashType ), this.flashType, De('Flash')))>

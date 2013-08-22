@@ -1,6 +1,9 @@
 {
 	"properties":{
-		"amountType":			[{"contexts":"save","required":true}],
-		"amount":				[{"contexts":"save","required":true,"dataType":"numeric"}]
+		"amountType":					[{"contexts":"save","required":true}],
+		"amount":						[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"maximumUsePerOrder":			[{"contexts":"save","dataType":"numeric"}],
+		"maximumUsePerItem":			[{"contexts":"save","dataType":"numeric"}],
+		"maximumUsePerQualification":	[{"contexts":"save","dataType":"numeric"}]
 	}
 }

@@ -17,7 +17,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var actionPermissions = getActionPermissionDetails();
 		
 		// Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
-		if(!structKeyExists(actionPermissions, subsystemName) || !structKeyExists(actionPermissions[ subsystemName ].sections, sectionName)) {
+		if(!structKeyExists(actionPermissions, subsystemName) || !actionPermissions[ subsystemName ].hasSecureMethods || !structKeyExists(actionPermissions[ subsystemName ].sections, sectionName)) {
 			return true;
 		}
 
@@ -166,7 +166,7 @@ component output="false" accessors="true" extends="HibachiService" {
 							// Make sure that this property should be added as a property that can have permissions
 							if( (!structKeyExists(entityMetaData.properties[p], "fieldtype") || entityMetaData.properties[p].fieldtype neq "ID")
 								&& (!structKeyExists(entityMetaData.properties[p], "persistent") || entityMetaData.properties[p].persistent)
-								&& (!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") || entityMetaData.properties[p].hb_populateEnabled)) {
+								&& (!structKeyExists(entityMetaData.properties[p], "hb_populateEnabled") || entityMetaData.properties[p].hb_populateEnabled neq "false")) {
 								
 								// Add to ManyToMany Properties
 								if(structKeyExists(entityMetaData.properties[p], "fieldtype") && entityMetaData.properties[p].fieldType eq "many-to-one") {

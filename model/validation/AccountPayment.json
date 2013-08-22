@@ -1,6 +1,6 @@
 {
 	"properties":{
-		"amount":					[{"contexts":"save","required":true}],
+		"amount":					[{"contexts":"save","required":true,"dataType":"numeric","minValue":0}],
 		"paymentMethod":			[{"contexts":"save","required":true}],
 		"accountPaymentType":		[{"contexts":"save","required":true}]
 	}

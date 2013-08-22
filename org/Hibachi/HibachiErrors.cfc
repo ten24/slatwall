@@ -11,11 +11,34 @@ component output="false" accessors="true" extends="HibachiObject" {
 	}
 	
 	// @hint Adds a new error to the error structure.
-	public void function addError(required string errorName, required string errorMessage) {
+	public void function addError(required string errorName, required any errorMessage) {
 		if(!structKeyExists(variables.errors, arguments.errorName)) {
 			variables.errors[arguments.errorName] = [];
 		}
-		arrayAppend(variables.errors[arguments.errorName], arguments.errorMessage);
+		if(isSimpleValue(arguments.errorMessage)) {
+			arrayAppend(variables.errors[arguments.errorName], arguments.errorMessage);	
+		} else if (isArray(arguments.errorMessage)) {
+			for(var message in arguments.errorMessage) {
+				arrayAppend(variables.errors[arguments.errorName], message);
+			}
+		} else if (isStruct(arguments.errorMessage)) {
+			for(var key in arguments.errorMessage) {
+				for(var message in arguments.errorMessage[key]) {
+					arrayAppend(variables.errors[arguments.errorName], message);	
+				}
+			}
+		}
+	}
+	
+	public void function addErrors(required struct errors) {
+		for(var key in arguments.errors) {
+			if(!structKeyExists(variables.errors, key)) {
+				variables.errors[key] = [];
+			}
+			for(var message in arguments.errors[key]) {
+				arrayAppend(variables.errors[key], message);	
+			}
+		}
 	}
 	
 	// @hint Returns an array of error messages from the error structure.

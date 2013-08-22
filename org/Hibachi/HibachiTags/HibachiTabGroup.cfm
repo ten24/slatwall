@@ -1,9 +1,8 @@
 <cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 <cfparam name="attributes.object" type="any" default="" />
-<cfparam name="attributes.allowComments" type="boolean" default="false">
-<cfparam name="attributes.allowCustomAttributes" type="boolean" default="false">
 <cfparam name="attributes.subsystem" type="string" default="#request.context.fw.getSubsystem( request.context[ request.context.fw.getAction() ])#">
 <cfparam name="attributes.section" type="string" default="#request.context.fw.getSection( request.context[ request.context.fw.getAction() ])#">
+<cfparam name="attributes.tabLocation" type="string" default="left" />
 
 <cfif (not isObject(attributes.object) || not attributes.object.isNew()) and (not structKeyExists(request.context, "modal") or not request.context.modal)>
 	<cfif thisTag.executionMode is "end">
@@ -53,18 +52,16 @@
 			<cfset activeTab = thistag.tabs[1].tabid />
 		</cfif>
 		
-		<div class="tabbable tabs-left row-fluid">
-			<div class="tabsLeft">
+		<cfoutput>
+			<div class="tabbable tabs-#attributes.tabLocation# row-fluid">
 				<ul class="nav nav-tabs">
 					<cfloop array="#thistag.tabs#" index="tab">
-						<cfoutput><li <cfif activeTab eq tab.tabid>class="active"</cfif>><a href="###tab.tabid#" data-toggle="tab">#tab.text#<cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif></a></li></cfoutput>
+						<li <cfif activeTab eq tab.tabid>class="active"</cfif>><a href="###tab.tabid#" data-toggle="tab">#tab.text#<cfif len(tab.count) and tab.count gt 0> <span class="badge pull-right" style="padding-left:10px;">#tab.count#</span></cfif></a></li>
 					</cfloop>
 					<cfif isObject(attributes.object)>
-						<cfoutput><li><a href="##tabSystem" data-toggle="tab">#attributes.hibachiScope.rbKey('define.system')#</a></li></cfoutput>
+						<li><a href="##tabSystem" data-toggle="tab">#attributes.hibachiScope.rbKey('define.system')#</a></li>
 					</cfif>
 				</ul>
-			</div>
-			<div class="tabsRight">
 				<div class="tab-content">
 					<cfloop array="#thistag.tabs#" index="tab">
 						<cfoutput>
@@ -101,6 +98,6 @@
 					</cfif>
 				</div>
 			</div>
-		</div>
+		</cfoutput>
 	</cfif>
 </cfif>
