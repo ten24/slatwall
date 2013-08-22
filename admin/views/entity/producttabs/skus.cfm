@@ -71,6 +71,10 @@ Notes:
 			<!--- Sumit says nothing is ok --->
 		</cfif>
 		--->
+		<cfif rc.product.getBaseProductType() eq "event">
+			<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
+		</cfif>
 		<cf_HibachiListingColumn propertyIdentifier="imageFile" />
 		<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
 			<cf_HibachiListingColumn propertyIdentifier="listPrice" />
