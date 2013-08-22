@@ -360,6 +360,15 @@
 		
 		// ========================== ADMIN EVENT HOOKS =================================
 		
+		public void function onGlobalRequestStart( required any $ ) {
+			verifySlatwallRequest( $=$ );
+			
+			// Update Login / Logout if needed
+			autoLoginLogoutFromSlatwall( $=$ );
+			
+			endSlatwallRequest();
+		}
+		
 		// LOGIN / LOGOUT EVENTS
 		public void function onGlobalLoginSuccess( required any $ ) {
 			verifySlatwallRequest( $=$ );
