@@ -73,8 +73,8 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 				</cfif>
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="productName" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="productCode" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 			</cf_HibachiPropertyList>
 			

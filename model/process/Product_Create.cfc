@@ -64,5 +64,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="contents";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="locationConfigurations";
+	property name="productName";
 	
 }

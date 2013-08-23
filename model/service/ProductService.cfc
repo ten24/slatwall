@@ -201,6 +201,10 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function processProduct_create(required any product, required any processObject) {
+		var dumps = createObject("component","/slatwall.custom.model.service.FileOutputService");
+		dumps.dumpToPDF(product,"product1");
+		dumps.dumpToPDF(processObject,"processObject");
+			
 		if(isNull(arguments.product.getURLTitle())) {
 			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
 		}
@@ -338,6 +342,7 @@ component extends="HibachiService" accessors="true" {
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setSkuCode( arguments.product.getProductCode() & "-1");
 				newSku.setProduct( arguments.product );
+				//newSku.setProductName( arguments.product.getproductName() );
 				
 				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
@@ -352,6 +357,7 @@ component extends="HibachiService" accessors="true" {
 					newSku.setPrice( arguments.processObject.getPrice() );
 					newSku.setSkuCode( arguments.product.getProductCode() & "-#lc#");
 					newSku.setProduct( arguments.product );
+					//newSku.setProductName( arguments.product.getproductName() );
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
 					if(lc==1) {
 						arguments.product.setDefaultSku( newSku );	
@@ -365,12 +371,12 @@ component extends="HibachiService" accessors="true" {
 		} else {
 			throw("There was an unexpected error when creating this product");
 		}
-		
+		dumps.dumpToPDF(arguments.processObject,"processObject2");
 			
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 		
-		arguments.product = this.saveProduct(arguments.product);
+		arguments.product = this.saveProduct(arguments.product, arguments.processObject.getProduct());
         
         // Return the product
 		return arguments.product;
@@ -452,6 +458,9 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveProduct(required any product, required struct data) {
+		var dumps = createObject("component","/slatwall.custom.model.service.FileOutputService");
+		dumps.dumpToPDF(data,"data");
+		
 		// populate bean from values in the data Struct
 		arguments.product.populate(arguments.data);
 		
