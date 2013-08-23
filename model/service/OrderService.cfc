@@ -438,7 +438,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Get the populated newOrderPayment out of the processObject
 		var newOrderPayment = processObject.getNewOrderPayment();
-		
+
 		// If this is an existing account payment method, then we can pull the data from there
 		if( len(arguments.processObject.getAccountPaymentMethodID()) ) {
 			
@@ -455,44 +455,60 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		// Make sure that the payment gets attached to the order 
-		if(isNull(newOrderPayment.getOrder())) {
-			newOrderPayment.setOrder( arguments.order );
-		}
-		
 		// Make sure that the currencyCode matches the order
 		newOrderPayment.setCurrencyCode( arguments.order.getCurrencyCode() );
-		
-		
-		// Save the newOrderPayment
-		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-		
-		// Attach 'createTransaction' errors to the order 
-		if(newOrderPayment.hasError('createTransaction')) {
-			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'));
-			
-		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
-		} else if (!newOrderPayment.hasErrors() && arguments.processObject.getSaveAccountPaymentMethodFlag() && isNull(newOrderPayment.getAccountPaymentMethod())) {
-				
-			// Create a new Account Payment Method
-			var newAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
-			
-			// Attach to Account
-			newAccountPaymentMethod.setAccount( arguments.order.getAccount() );
-			
-			// Setup name if exists
-			if(!isNull(arguments.processObject.getSaveAccountPaymentMethodName())) {
-				newAccountPaymentMethod.setAccountPaymentMethodName( arguments.processObject.getSaveAccountPaymentMethodName() );	
+
+		//Do extra validation for term payments
+		if(newOrderPayment.getPaymentMethod().getPaymentMethodType() eq "termPayment" && newOrderPayment.getOrderPaymentType().getType() eq "Charge"){
+			//Check that a term payment doesn't exceede available account credit
+			if(arguments.order.getAccount().getTermAccountAvailableCredit()  lt newOrderPayment.getAmount()){
+					arguments.order.addError('addOrderPayment',rbKey('validate.processOrder_addOrderpayment.exceedsAccountCredit',{paymentAmount=formatValue(newOrderPayment.getAmount(),'currency',{currencycode=arguments.order.getCurrencyCode()}),availableCredit=formatvalue(arguments.order.getAccount().getTermAccountAvailableCredit()+newOrderPayment.getAmount(),'currency',{currencycode=arguments.order.getCurrencyCode()})}));
 			}
-			
-			// Copy over details
-			newAccountPaymentMethod.copyFromOrderPayment( newOrderPayment );
-			
-			// Save it
-			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod );
-			
 		}
-		
+
+		//Check that payment method maximum order total percentage isn't being exceeded
+		if((newOrderPayment.getAmount()/arguments.order.getTotal())*100 gt newOrderPayment.getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount')){
+			arguments.order.addError('addOrderPayment',rbKey('validate.processOrder_addOrderpayment.exceedsMaximumOrderTotalPercentage',{paymentAmount=formatValue(newOrderPayment.getAmount(),'currency',{currencycode=arguments.order.getCurrencyCode()}),maximumOrderTotalPercentage=newOrderPayment.getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount')&'%'}));	
+		}
+
+
+		if(!arguments.order.hasError('addOrderPayment')){
+
+			// Make sure that the payment gets attached to the order 
+			if(isNull(newOrderPayment.getOrder())) {
+				newOrderPayment.setOrder( arguments.order );
+			}
+
+			// Save the newOrderPayment
+			newOrderPayment = this.saveOrderPayment( newOrderPayment );
+
+			// Attach 'createTransaction' errors to the order 
+			if(newOrderPayment.hasError('createTransaction')) {
+				arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'));
+				
+			// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
+			} else if (!newOrderPayment.hasErrors() && arguments.processObject.getSaveAccountPaymentMethodFlag() && isNull(newOrderPayment.getAccountPaymentMethod())) {
+					
+				// Create a new Account Payment Method
+				var newAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
+				
+				// Attach to Account
+				newAccountPaymentMethod.setAccount( arguments.order.getAccount() );
+				
+				// Setup name if exists
+				if(!isNull(arguments.processObject.getSaveAccountPaymentMethodName())) {
+					newAccountPaymentMethod.setAccountPaymentMethodName( arguments.processObject.getSaveAccountPaymentMethodName() );	
+				}
+				
+				// Copy over details
+				newAccountPaymentMethod.copyFromOrderPayment( newOrderPayment );
+				
+				// Save it
+				newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod );
+				
+			}
+		}
+		arguments.order = this.saveOrder( arguments.order );
 		return arguments.order;
 	}
 	

@@ -175,8 +175,8 @@ component accessors="true" output="false" persistent="false" {
 		getService("hibachiUtilityService").logException(exception=arguments.exception);		
 	}
 	
-	public string function rbKey(required string key) {
-		return getHibachiScope().rbKey(arguments.key);
+	public string function rbKey(required string key, struct replaceStringData) {
+		return getHibachiScope().rbKey(argumentCollection=arguments);
 	}
 	
 	public string function buildURL() {
