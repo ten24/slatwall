@@ -48,15 +48,17 @@ Notes:
 					</cfloop> 
 				</cfif>
 				<cfif listLen(rc.customReportsList)>
+				<hr />
 					<li><strong>#$.slatwall.rbKey('admin.report.default.customReports')#</strong></li>
 					<cfloop list="#rc.customReportsList#" index="reportName">
-						<li><a href="###reportName#" class="hibachi-report-link">#$.slatwall.rbKey('report.#reportName#')#</a></li>
+						<cf_HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
 					</cfloop> 
 				</cfif>
 				<cfif listLen(rc.integrationReportsList)>
+				<hr />
 					<li><strong>#$.slatwall.rbKey('admin.report.default.integrationReports')#</strong></li>
-					<cfloop list="#rc.builtInReportsList#" index="reportName">
-						<li><a href="###reportName#" class="hibachi-report-link">#$.slatwall.rbKey('report.#reportName#')#</a></li>
+					<cfloop list="#rc.integrationReportsList#" index="reportName">
+						<cf_HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
 					</cfloop> 
 				</cfif>
 			</ul>

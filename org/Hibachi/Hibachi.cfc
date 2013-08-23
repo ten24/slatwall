@@ -105,7 +105,7 @@ component extends="FW1.framework" {
 	this.ormSettings.automanageSession = false;
 	this.ormSettings.savemapping = false;
 	this.ormSettings.skipCFCwitherror = false;
-	this.ormSettings.useDBforMapping = true;
+	this.ormSettings.useDBforMapping = false;
 	this.ormSettings.autogenmap = true;
 	this.ormSettings.logsql = false;
 	

@@ -58,6 +58,13 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.orderDelivery#" property="createdDateTime">
 				<cf_HibachiPropertyDisplay object="#rc.orderDelivery#" property="fulfillmentMethod">
 				<cf_HibachiPropertyDisplay object="#rc.orderDelivery#" property="trackingNumber">
+				<cfif !isNull(rc.orderDelivery.getShippingMethod())>	
+					<cf_HibachiPropertyDisplay object="#rc.orderDelivery.getShippingMethod()#" property="shippingMethodName">
+				</cfif>
+				<cfif !isNull(rc.orderDelivery.getLocation())>
+					<cf_HibachiPropertyDisplay object="#rc.orderDelivery.getLocation()#" property="locationName">
+				</cfif>
+				<cf_HibachiPropertyDisplay object="#rc.orderDelivery.getOrder()#" property="orderNumber"  valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.orderDelivery.getOrder().getOrderID()#">			
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		

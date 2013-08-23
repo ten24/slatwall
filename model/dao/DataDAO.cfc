@@ -91,13 +91,14 @@ Notes:
 		<cfargument name="insertData" required="true" type="struct" />
 		
 		<cfset var keyList = structKeyList(arguments.insertData) />
+		<cfset var keyListOracle = keyList />
 		<cfset var rs = "" />
 		<cfset var sqlResult = "" />
 		<cfset var i = 0 />
 		
 		<cfquery name="rs" result="sqlResult"> 
 			INSERT INTO	#arguments.tableName# (
-				#keyList#
+				<cfif getApplicationValue("databaseType") eq "Oracle10g" AND listFindNoCase(keyListOracle,'type')>#listSetAt(keyListOracle,listFindNoCase(keyListOracle,'type'),'"type"')#<cfelse>#keyList#</cfif>
 			) VALUES (
 				<cfloop from="1" to="#listLen(keyList)#" index="i">
 					<cfif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL">
