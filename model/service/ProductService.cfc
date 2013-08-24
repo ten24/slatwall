@@ -206,11 +206,7 @@ component extends="HibachiService" accessors="true" {
 	* created by values submitted from product creation page.
 	*/ 
 	public any function processProduct_create(required any product, required any processObject) {
-		var dumps = createObject("component","/slatwall.custom.model.service.FileOutputService");
-		//dumps.dumpToPDF(product,"product1");
-		dumps.dumpToPDF(processObject.getProduct(),"product_create_product");
-		
-		//var product = arguments.processObject.getProduct();
+		//var dumps = createObject("component","/slatwall.custom.model.service.FileOutputService");
 		
 		if(isNull(product.getURLTitle())) {
 			product.setURLTitle(getDataService().createUniqueURLTitle(titleString=product.getTitle(), tableName="SwProduct"));
@@ -378,7 +374,6 @@ component extends="HibachiService" accessors="true" {
 		} else {
 			throw("There was an unexpected error when creating this product");
 		}
-		dumps.dumpToPDF(arguments.processObject.getProductProperties(),"productProperties");
 		
 		// Generate Image Files
 		product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
