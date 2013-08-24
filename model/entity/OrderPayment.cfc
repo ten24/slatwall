@@ -419,24 +419,6 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Account Payment Method (many-to-one)    
-	public void function setAccountPaymentMethod(required any accountPaymentMethod) {    
-		variables.accountPaymentMethod = arguments.accountPaymentMethod;    
-		if(isNew() or !arguments.accountPaymentMethod.hasOrderPayment( this )) {    
-			arrayAppend(arguments.accountPaymentMethod.getOrderPayments(), this);    
-		}    
-	}    
-	public void function removeAccountPaymentMethod(any accountPaymentMethod) {    
-		if(!structKeyExists(arguments, "accountPaymentMethod")) {    
-			arguments.accountPaymentMethod = variables.accountPaymentMethod;    
-		}    
-		var index = arrayFind(arguments.accountPaymentMethod.getOrderPayments(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.accountPaymentMethod.getOrderPayments(), index);    
-		}    
-		structDelete(variables, "accountPaymentMethod");    
-	}
-	
 	// Order (many-to-one)
 	public void function setOrder(required any order) {
 		variables.order = arguments.order;
@@ -471,24 +453,6 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			arrayDeleteAt(arguments.referencedOrderPayment.getReferencingOrderPayments(), index);    
 		}    
 		structDelete(variables, "referencedOrderPayment");    
-	}
-	
-	// Payment Method (many-to-one)
-	public void function setPaymentMethod(required any paymentMethod) {
-		variables.paymentMethod = arguments.paymentMethod;
-		if(isNew() or !arguments.paymentMethod.hasOrderPayment( this )) {
-			arrayAppend(arguments.paymentMethod.getOrderPayments(), this);
-		}
-	}
-	public void function removePaymentMethod(any paymentMethod) {
-		if(!structKeyExists(arguments, "paymentMethod")) {
-			arguments.paymentMethod = variables.paymentMethod;
-		}
-		var index = arrayFind(arguments.paymentMethod.getOrderPayments(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.paymentMethod.getOrderPayments(), index);
-		}
-		structDelete(variables, "paymentMethod");
 	}
 	
 	// Term Payment Account (many-to-one)    

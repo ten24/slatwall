@@ -133,24 +133,6 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		structDelete(variables, "parentContent");
 	}
 	
-	// Site (many-to-one)    
-	public void function setSite(required any site) {    
-		variables.site = arguments.site;    
-		if(isNew() or !arguments.site.hasContent( this )) {    
-			arrayAppend(arguments.site.getContents(), this);    
-		}    
-	}    
-	public void function removeSite(any site) {    
-		if(!structKeyExists(arguments, "site")) {    
-			arguments.site = variables.site;    
-		}    
-		var index = arrayFind(arguments.site.getContents(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.site.getContents(), index);    
-		}    
-		structDelete(variables, "site");    
-	}
-	
 	// Child Contents (one-to-many)    
 	public void function addChildContent(required any childContent) {    
 		arguments.childContent.setParentContent( this );    

@@ -57,9 +57,13 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			liveSecretKey = {fieldType="text"},
 			livePublicKey = {fieldType="text"},
 			testMode = {fieldType="yesno", defaultValue="1"},
+			generateTokenBehavior = {fieldType="select", defaultValue="deferred", valueOptions=[
+				{name="Create Stripe customer and attach default card (Stripe retains CC info)", value="deferred"},
+				{name="Create Stripe temporary single use card token (Stripe loses CC info)", value="immediate"}
+			]},
 			apiUrl = {fieldType="text", defaultValue="https://api.stripe.com"},
 			apiVersion = {fieldType="select", defaultValue="v1", valueOptions=[
-				{name="v1",value="v1"}
+				{name="v1", value="v1"}
 			]}
 		};
 		

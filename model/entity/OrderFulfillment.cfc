@@ -347,24 +347,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		structDelete(variables, "order");    
 	}
 	
-	// Fulfillment Method (many-to-one)
-	public void function setFulfillmentMethod(required any fulfillmentMethod) {
-		variables.fulfillmentMethod = arguments.fulfillmentMethod;
-		if(isNew() or !arguments.fulfillmentMethod.hasOrderFulfillment( this )) {
-			arrayAppend(arguments.fulfillmentMethod.getOrderFulfillments(), this);
-		}
-	}
-	public void function removeFulfillmentMethod(any fulfillmentMethod) {
-		if(!structKeyExists(arguments, "fulfillmentMethod")) {
-			arguments.fulfillmentMethod = variables.fulfillmentMethod;
-		}
-		var index = arrayFind(arguments.fulfillmentMethod.getOrderFulfillments(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.fulfillmentMethod.getOrderFulfillments(), index);
-		}
-		structDelete(variables, "fulfillmentMethod");
-	}
-	
 	// Fulfillment Shipping Method Options (one-to-many)    
 	public void function addFulfillmentShippingMethodOption(required any fulfillmentShippingMethodOption) {    
 		arguments.fulfillmentShippingMethodOption.setOrderFulfillment( this );    

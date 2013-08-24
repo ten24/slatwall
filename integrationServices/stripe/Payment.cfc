@@ -50,21 +50,8 @@ Notes:
 component accessors="true" output="false" displayname="Stripe" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {
 	
 	//Global variables
-	variables.version = "v1";
-	variables.timeout = "45";
-	variables.responseDelimiter = "|";
-	variables.transactionCodes = {};
 
 	public any function init(){
-		variables.transactionCodes = {
-			authorize="AUTH_ONLY",
-			authorizeAndCharge="AUTH_CAPTURE",
-			chargePreAuthorization="PRIOR_AUTH_CAPTURE",
-			credit="CREDIT",
-			void="VOID",
-			inquiry="INQUIRY"
-		};
-		
 		return this;
 	}
 	
@@ -73,13 +60,10 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 	}
 	
 	public any function processCreditCard(required any requestBean){
-		writeLog(text="we're processing credit card", type="Information", application="true");
-		
 		var responseBean = new Slatwall.model.transient.payment.CreditCardTransactionResponseBean();
 		
 		// Notes for future reference
 		// inquiry, void, credit, receive, authorize, authorizeAndCharge, chargePreAuthorization, generateToken
-		// Refund URL "#setting(apiUrl)#/#setting(apiVersion)#/charges/${chargeId}/refund"
 		// Retrieve URL "#setting(apiUrl)#/#setting(apiVersion)#/charges/${chargeId}"
 		// Retrieve Card Token URL "#setting(apiUrl)#/#setting(apiVersion)#/tokens/${cardTokenId}"
 		
@@ -95,36 +79,71 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			activeSecretKey = setting("liveSecretKey");
 		}
 		
-		if (requestBean.getTransactionType() == "generateToken")
-		{			
-			// create charge token
-			
-			var createCardTokenRequest = new http();
-			createCardTokenRequest.setMethod("post");
-			createCardTokenRequest.setCharset("utf-8");
-			createCardTokenRequest.setUrl("#setting('apiUrl')#/#setting('apiVersion')#/tokens");
-			
-			createCardTokenRequest.addParam(type="header", name="authorization", value="bearer #activePublicKey#");
-			createCardTokenRequest.addParam(type="formfield", name="card[number]", value="#requestBean.getCreditCardNumber()#");
-			createCardTokenRequest.addParam(type="formfield", name="card[cvc]", value="#requestBean.getSecurityCode()#");
-			createCardTokenRequest.addParam(type="formfield", name="card[exp_month]", value="#requestBean.getExpirationMonth()#");
-			createCardTokenRequest.addParam(type="formfield", name="card[exp_year]", value="#requestBean.getExpirationYear()#");
-			createCardTokenRequest.addParam(type="formfield", name="card[name]", value="#requestBean.getNameOnCreditCard()#");
-			createCardTokenRequest.addParam(type="formfield", name="card[address_line1]", value="#requestBean.getBillingStreetAddress()#");	
-			if(!isNull(requestBean.getBillingStreet2Address())) {
-				createCardTokenRequest.addParam(type="formfield", name="card[address_line2]", value="#requestBean.getBillingStreet2Address()#");
+		var props = requestBean.getPropertiesStruct();
+		var pairs = structNew();
+		for (var p in props)
+		{
+			try
+			{
+				var getterMethod = requestBean["get" & props[p].name];
+				structInsert(pairs, props[p].name, getterMethod());
 			}
-			createCardTokenRequest.addParam(type="formfield", name="card[address_city]", value="#requestBean.getBillingCity()#");
-			createCardTokenRequest.addParam(type="formfield", name="card[address_state]", value="#requestBean.getBillingStateCode()#");
-			createCardTokenRequest.addParam(type="formfield", name="card[address_zip]", value="#requestBean.getBillingPostalCode()#");
-			createCardTokenRequest.addParam(type="formfield", name="card[address_country]", value="#requestBean.getBillingCountryCode()#");
+			catch (any e)
+			{
+				
+			}
+		}
+				
+		if (requestBean.getTransactionType() == "generateToken")
+		{
+			// create charge token for future authorization or authorization and charge
+			// two methods using Stripe can achieve functionality
+			// either create a persistent Stripe customer with default card information attached or use a short-lived one-time single use token to represent the card
 			
-			responseData = deserializeResponse(createCardTokenRequest.send().getPrefix());
+			var createTokenRequest = new http();
+			createTokenRequest.setMethod("post");
+			createTokenRequest.setCharset("utf-8");
+			
+			if (setting("generateTokenBehavior") == "deferred")
+			{
+				// automatically creates a Stripe customer and stores default credit card
+				// allows card to be authorized at any time (deferred long term)
+				createTokenRequest.setUrl("#setting('apiUrl')#/#setting('apiVersion')#/customers");
+				createTokenRequest.addParam(type="header", name="authorization", value="bearer #activeSecretKey#");
+				createTokenRequest.addParam(type="formfield", name="email", value="#requestBean.getAccountPrimaryEmailAddress()#");
+				createTokenRequest.addParam(type="formfield", name="description", value="#generateDescription(requestBean)#");
+				
+				// attach card data to request
+				populateRequestParamsWithCardInfo(requestBean, createTokenRequest);
+			}
+			else if (setting("generateTokenBehavior") == "immediate")
+			{
+				// creates a temporary short-lived "one-time use" token to be used for authorization (immediate near term)
+				createTokenRequest.setUrl("#setting('apiUrl')#/#setting('apiVersion')#/tokens");
+				createTokenRequest.addParam(type="header", name="authorization", value="bearer #activePublicKey#");
+				
+				// attach card data to request
+				populateRequestParamsWithCardInfo(requestBean, createTokenRequest);
+			}
+			
+			responseData = deserializeResponse(createTokenRequest.send().getPrefix());
 			
 			// populate response
 			if (responseData.success)
 			{
-				responseBean.setProviderToken(responseData.result.id);
+				responseBean.setProviderToken(responseData.result.id); // will be either tokenId or customerId depending on generateTokenBehavior
+				responseBean.addMessage(messageName="stripe.id", message="#responseData.result.id#");
+				responseBean.addMessage(messageName="stripe.object", message="#responseData.result.object#");
+				responseBean.addMessage(messageName="stripe.livemode", message="#responseData.result.livemode#");
+				if (responseData.result.object == "customer")
+				{
+					responseBean.addMessage(messageName="stripe.defaultcard", message="#responseData.result.default_card#");
+				}
+			}
+			else
+			{
+				// error occurred
+				handleResponseErrors(responseBean, responseData);
 			}
 		}
 		else if (requestBean.getTransactionType() == "authorize" || requestBean.getTransactionType() == "authorizeAndCharge")
@@ -135,27 +154,42 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			authorizeChargeRequest.setMethod("post");
 			authorizeChargeRequest.setCharset("utf-8");
 			authorizeChargeRequest.setUrl("#setting('apiUrl')#/#setting('apiVersion')#/charges");
-			authorizeChargeRequest.addParam(type="header", name="authorization", value="bearer #activeSecretKey#");
+			
+			
 			if(!isNull(requestBean.getProviderToken())) {
-				authorizeChargeRequest.addParam(type="formfield", name="card", value="#requestBean.getProviderToken()#");	
-			} else {
-				createCardTokenRequest.addParam(type="formfield", name="card[number]", value="#requestBean.getCreditCardNumber()#");
-				createCardTokenRequest.addParam(type="formfield", name="card[cvc]", value="#requestBean.getSecurityCode()#");
-				createCardTokenRequest.addParam(type="formfield", name="card[exp_month]", value="#requestBean.getExpirationMonth()#");
-				createCardTokenRequest.addParam(type="formfield", name="card[exp_year]", value="#requestBean.getExpirationYear()#");
-				createCardTokenRequest.addParam(type="formfield", name="card[name]", value="#requestBean.getNameOnCreditCard()#");
-				createCardTokenRequest.addParam(type="formfield", name="card[address_line1]", value="#requestBean.getBillingStreetAddress()#");	
-				if(!isNull(requestBean.getBillingStreet2Address())) {
-					createCardTokenRequest.addParam(type="formfield", name="card[address_line2]", value="#requestBean.getBillingStreet2Address()#");
+				
+				var generateTokenMethodUsed = "";
+				
+				// need to determine which method the provider token was generated with using either Stripe customer or single-use card token
+				// inspect the token id format 
+				if(refindNoCase("^cus_\S+", requestBean.getProviderToken()))
+				{
+					// deferred must populate customer field (default attached card will be used automatically during Stripe processing)
+					generateTokenMethodUsed = "deferred";
+					authorizeChargeRequest.addParam(type="formfield", name="customer", value="#requestBean.getProviderToken()#");
 				}
-				createCardTokenRequest.addParam(type="formfield", name="card[address_city]", value="#requestBean.getBillingCity()#");
-				createCardTokenRequest.addParam(type="formfield", name="card[address_state]", value="#requestBean.getBillingStateCode()#");
-				createCardTokenRequest.addParam(type="formfield", name="card[address_zip]", value="#requestBean.getBillingPostalCode()#");
-				createCardTokenRequest.addParam(type="formfield", name="card[address_country]", value="#requestBean.getBillingCountryCode()#");
+				else if (refindNoCase("^tok_\S+", requestBean.getProviderToken()))
+				{
+					// immediate must populate card field
+					generateTokenMethodUsed = "immediate";
+					authorizeChargeRequest.addParam(type="formfield", name="card", value="#requestBean.getProviderToken()#");
+				}
+				else
+				{
+					responseBean.addError(errorName="stripe.error", errorMessage="Using invalid token");
+				}	
 			}
+			else if (!isNull(requestBean.getCreditCardNumber()))
+			{
+				// attach card data to request
+				populateRequestParamsWithCardInfo(requestBean, authorizeChargeRequest);
+			}
+			
+			authorizeChargeRequest.addParam(type="header", name="authorization", value="bearer #activeSecretKey#");
+			authorizeChargeRequest.addParam(type="formfield", name="description", value="#generateDescription(requestBean)#");
 			authorizeChargeRequest.addParam(type="formfield", name="currency", value="#requestBean.getTransactionCurrency()#");
 			authorizeChargeRequest.addParam(type="formfield", name="amount", value="#int(requestBean.getTransactionAmount() * 100)#"); // amount as integer (eg. eliminate cents)
-			authorizeChargeRequest.addParam(type="formfield", name="description", value="TODO description");
+			
 			if (requestBean.getTransactionType() == "authorizeAndCharge")
 			{
 				// authorize and charge
@@ -172,20 +206,40 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			// populate response
 			if (responseData.success)
 			{
-				responseBean.setTransactionID(responseData.result.id); // we can't retrieve the chargeID value during a subsequent capture
-				responseBean.setProviderToken(listAppend(requestBean.getProviderToken(), responseData.result.id, "|" )); // but we are hacking by appending our chargeID to the initial cardTokenID
+				responseBean.setProviderToken(requestBean.getProviderToken()); // manually persist
+				responseBean.setAuthorizationCode(responseData.result.id);
 				responseBean.setAmountAuthorized(responseData.result.amount / 100); // need to convert back to decimal from integer
+				
+				// additional capture information
 				if (requestBean.getTransactionType() == "authorizeAndCharge")
 				{
 					responseBean.setAmountCharged(responseData.result.amount / 100); // need to convert back to decimal from integer
+					responseBean.setAuthorizationCodeInvalidFlag(false);
 				}
+				
+				// add messages to response
+				responseBean.addMessage(messageName="stripe.id", message="#responseData.result.id#");
+				responseBean.addMessage(messageName="stripe.captured", message="#responseData.result.captured#");
+				responseBean.addMessage(messageName="stripe.card", message="#responseData.result.card.id#");
+				responseBean.addMessage(messageName="stripe.last4", message="#responseData.result.card.last4#");
+				responseBean.addMessage(messageName="stripe.expiration", message="#responseData.result.card.exp_month#-#responseData.result.card.exp_year#");
+				responseBean.addMessage(messageName="stripe.fee", message="#responseData.result.fee/100#");
+				if (!isNull(responseData.result.customer))
+				{
+					responseBean.addMessage(messageName="stripe.customer", message="#responseData.result.customer#");
+				}
+			}
+			else
+			{
+				// error occurred
+				handleResponseErrors(responseBean, responseData);
 			}
 		}
 		else if (requestBean.getTransactionType() == "chargePreAuthorization")
 		{
 			// capture prior authorized charge
 			
-			var chargeID = listLast(requestBean.getProviderToken(), "|");
+			var chargeID = requestBean.getPreAuthorizationCode();
 			
 			var chargeRequest = new http();
 			chargeRequest.setMethod("post");
@@ -196,49 +250,43 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			chargeRequest.addParam(type="formfield", name="amount", value="#int(requestBean.getTransactionAmount() * 100)#"); // amount as integer (eg. eliminate cents)
 			responseData = deserializeResponse(chargeRequest.send().getPrefix());
 			
-			responseBean.setProviderToken(requestBean.getProviderToken());
+			responseBean.setProviderToken(requestBean.getProviderToken()); // manually persist
 			
 			// populate response
 			if (responseData.success)
 			{
 				responseBean.setAmountCharged(responseData.result.amount / 100); // need to convert back to decimal from integer
+				responseBean.setAuthorizationCodeInvalidFlag(false);
+				
+				// add messages to response
+				responseBean.addMessage(messageName="stripe.id", message="#responseData.result.id#");
+				responseBean.addMessage(messageName="stripe.card", message="#responseData.result.card.id#");
+				responseBean.addMessage(messageName="stripe.last4", message="#responseData.result.card.last4#");
+				responseBean.addMessage(messageName="stripe.expiration", message="#responseData.result.card.exp_month#-#responseData.result.card.exp_year#");
+				responseBean.addMessage(messageName="stripe.fee", message="#responseData.result.fee / 100#");
+				if (!isNull(responseData.result.customer))
+				{
+					responseBean.addMessage(messageName="stripe.customer", message="#responseData.result.customer#");
+				}
+			}
+			else
+			{
+				// error occurred
+				handleResponseErrors(responseBean, responseData);
 			}
 		}
 		else if (requestBean.getTransactionType() == "credit")
 		{
+			// refund charge
+			
+			var refundRequest = new http();
+			refundRequest.setMethod("post");
+			refundRequest.setCharset("utf-8");
+			//refundRequest.setUrl("#setting('apiUrl')#/#setting('apiVersion')#/charges/#chargeID#/refund");
+			refundRequest.addParam(type="header", name="authorization", value="bearer #activeSecretKey#");
 			// response.setAmountCredited();
 		}
-		else
-		{
-			writeLog(text="Stripe Payment Integration: no action implemented for transaction type '#requestBean.getTransactionType()#'", type="Information", application="true");
-		}
 		
-		var props = requestBean.getPropertiesStruct();
-		var pairs = structNew();
-		for (var p in props)
-		{
-			try
-			{
-			var getterMethod = requestBean["get" & props[p].name];
-			structInsert(pairs, props[p].name, getterMethod());
-			}
-			catch (any e)
-			{
-				
-			}
-		}
-		
-		writeDump(var=[pairs, responseData],output="c:\dump.html", format="html");
-		
-		//writeDump(arguments);
-		//throw(message="We throw this error to halt", type="StripeIntegration.HaltError");
-		
-		/*
-		var rawResponse = "";
-		var requestData = getRequestData(requestBean);
-		rawResponse = postRequest(requestData);
-		return getResponseBean(rawResponse, requestData, requestBean);
-		*/
 		return responseBean;
 	}
 	
@@ -250,9 +298,11 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			success = arguments.httpResponse.responseheader.status_code eq 200
 		};
 		
+		// filecontent may be of type java.io.ByteArrayOutputStream
 		if(isSimpleValue(arguments.httpResponse.filecontent)) {
 			response.rawResponse = arguments.httpResponse.filecontent;
-		} else {
+		}
+		else {
 			response.rawResponse = arguments.httpResponse.filecontent.toString("UTF-8");
 		}
 		
@@ -262,10 +312,52 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 		}
 		else
 		{
+			// appending because "error" key is only child struct of the raw response)
 			structAppend(response, deserializeJSON(response.rawResponse));
 		}
 		
 		return response;
+	}
+	
+	private void function populateRequestParamsWithCardInfo(required any requestBean, required struct httpRequest)
+	{
+		httpRequest.addParam(type="formfield", name="card[number]", value="#requestBean.getCreditCardNumber()#");
+		httpRequest.addParam(type="formfield", name="card[cvc]", value="#requestBean.getSecurityCode()#");
+		httpRequest.addParam(type="formfield", name="card[exp_month]", value="#requestBean.getExpirationMonth()#");
+		httpRequest.addParam(type="formfield", name="card[exp_year]", value="#requestBean.getExpirationYear()#");
+		httpRequest.addParam(type="formfield", name="card[name]", value="#requestBean.getNameOnCreditCard()#");
+		httpRequest.addParam(type="formfield", name="card[address_line1]", value="#requestBean.getBillingStreetAddress()#");	
+		if(!isNull(requestBean.getBillingStreet2Address())) {
+			httpRequest.addParam(type="formfield", name="card[address_line2]", value="#requestBean.getBillingStreet2Address()#");
+		}
+		httpRequest.addParam(type="formfield", name="card[address_city]", value="#requestBean.getBillingCity()#");
+		httpRequest.addParam(type="formfield", name="card[address_state]", value="#requestBean.getBillingStateCode()#");
+		httpRequest.addParam(type="formfield", name="card[address_zip]", value="#requestBean.getBillingPostalCode()#");
+		httpRequest.addParam(type="formfield", name="card[address_country]", value="#requestBean.getBillingCountryCode()#");
+	}
+	
+	private string function generateDescription(required any requestBean)
+	{
+		return "Created by Slatwall. AccountID: #requestBean.getAccountID()#, OrderID: #requestBean.getOrderID()#, OrderPaymentID: #requestBean.getOrderPaymentID()#, TransactionID: #requestBean.getTransactionID()#, Account Name: #requestBean.getAccountFirstName()# #requestBean.getAccountLastName()#, Primary Phone: #requestBean.getAccountPrimaryPhoneNumber()#, Primary Email #requestBean.getAccountPrimaryEmailAddress()#, Billing Name: #requestBean.getBillingName()#";
+	}
+	
+	private void function handleResponseErrors(required any responseBean, required any responseData)
+	{
+		// display error and store error details
+		responseBean.addError(errorName="stripe.error", errorMessage="#responseData.error.message#");
+		responseBean.addMessage(messageName="stripe.error.message", message="#responseData.error.message#");
+		if (!isNull(responseData.error.type))
+		{
+			responseBean.addMessage(messageName="stripe.error.type", message="#responseData.error.type#");
+		}
+		if (!isNull(responseData.error.code))
+		{
+			responseBean.addMessage(messageName="stripe.error.code", message="#responseData.error.code#");
+		}
+		if(!isNull(responseData.error.param))
+		{
+			responseBean.addMessage(messageName="stripe.error.param", message="#responseData.error.param#");
+		}
 	}
 	
 }
