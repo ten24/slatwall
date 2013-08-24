@@ -377,27 +377,74 @@ component extends="HibachiService" accessors="true" output="false" {
 	// Account Payment
 	public any function processAccountPayment_createTransaction(required any accountPayment, required any processObject) {
 		
-		// Create a new payment transaction
-		var paymentTransaction = getPaymentService().newPaymentTransaction();
+		var uncapturedAuthorizations = getPaymentService().getUncapturedPreAuthorizations( arguments.accountPayment );
 		
-		// Setup the accountPayment in the transaction to be used by the 'runTransaction'
-		paymentTransaction.setAccountPayment( arguments.accountPayment );
-		
-		// Setup the transaction data
-		transactionData = {
-			transactionType = processObject.getTransactionType(),
-			amount = processObject.getAmount()
-		};
-		
-		// Run the transaction
-		paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
-		
-		// If the paymentTransaction has errors, then add those errors to the orderPayment itself
-		if(paymentTransaction.hasError('runTransaction')) {
-			arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+		// If we are trying to charge multiple pre-authorizations at once we may need to run multiple transacitons
+		if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations) gt 1 && arguments.processObject.getAmount() gt uncapturedAuthorizations[1].chargeableAmount) {
+			var totalAmountCharged = 0;
+			
+			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
+				
+				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
+				
+				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
+					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
+				}
+				
+				// Create a new payment transaction
+				var paymentTransaction = getPaymentService().newPaymentTransaction();
+				
+				// Setup the accountPayment in the transaction to be used by the 'runTransaction'
+				paymentTransaction.setAccountPayment( arguments.accountPayment );
+				
+				// Setup the transaction data
+				transactionData = {
+					transactionType = arguments.processObject.getTransactionType(),
+					amount = thisToCharge,
+					preAuthorizationCode = uncapturedAuthorizations[a].authorizationCode,
+					preAuthorizationProviderTransactionID = uncapturedAuthorizations[a].providerTransactionID
+				};
+				
+				// Run the transaction
+				paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
+				
+				// If the paymentTransaction has errors, then add those errors to the accountPayment itself
+				if(paymentTransaction.hasError('runTransaction')) {
+					arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+				} else {
+					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
+				}
+				
+			}
+		} else {
+			// Create a new payment transaction
+			var paymentTransaction = getPaymentService().newPaymentTransaction();
+			
+			// Setup the accountPayment in the transaction to be used by the 'runTransaction'
+			paymentTransaction.setAccountPayment( arguments.accountPayment );
+			
+			// Setup the transaction data
+			transactionData = {
+				transactionType = arguments.processObject.getTransactionType(),
+				amount = arguments.processObject.getAmount()
+			};
+			
+			if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations)) {
+				transactionData.preAuthorizationCode = uncapturedAuthorizations[1].authorizationCode;
+				preAuthorizationProviderTransactionID = uncapturedAuthorizations[1].providerTransactionID;
+			}
+			
+			// Run the transaction
+			paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
+			
+			// If the paymentTransaction has errors, then add those errors to the accountPayment itself
+			if(paymentTransaction.hasError('runTransaction')) {
+				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+			}
 		}
 		
-		return arguments.accountPayment;	
+		return arguments.accountPayment;
+		
 	}
 	
 	// Account Payment Method
@@ -418,7 +465,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Run the transaction
 		paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 		
-		// If the paymentTransaction has errors, then add those errors to the orderPayment itself
+		// If the paymentTransaction has errors, then add those errors to the accountPayment itself
 		if(paymentTransaction.hasError('runTransaction')) {
 			arguments.accountPaymentMethod.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 		}

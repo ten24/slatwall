@@ -51,11 +51,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.accountService = request.slatwallScope.getBean("accountService");
+		variables.service = request.slatwallScope.getBean("accountService");
 	}
 	
 	public void function defaults_are_correct() {
-		assertTrue( isObject(variables.accountService.getEmailService()) );
+		assertTrue( isObject(variables.service.getEmailService()) );
 	}
 	
 }

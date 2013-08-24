@@ -1184,34 +1184,79 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Process: Order Payment
 	public any function processOrderPayment_createTransaction(required any orderPayment, required any processObject) {
 		
-		// Create a new payment transaction
-		var paymentTransaction = getPaymentService().newPaymentTransaction();
+		var uncapturedAuthorizations = getPaymentService().getUncapturedPreAuthorizations( arguments.orderPayment );
 		
-		// Setup the orderPayment in the transaction to be used by the 'runTransaction'
-		paymentTransaction.setOrderPayment( arguments.orderPayment );
-		
-		// Setup the transaction data
-		transactionData = {
-			transactionType = arguments.processObject.getTransactionType(),
-			amount = arguments.processObject.getAmount()
-		};
-		
-		// Run the transaction
-		paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
-		
-		// If the paymentTransaction has errors, then add those errors to the orderPayment itself
-		if(paymentTransaction.hasError('runTransaction')) {
+		// If we are trying to charge multiple pre-authorizations at once we may need to run multiple transacitons
+		if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations) gt 1 && arguments.processObject.getAmount() gt uncapturedAuthorizations[1].chargeableAmount) {
+			var totalAmountCharged = 0;
 			
-			arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
-			
-			// If this order payment has never had and amount Authorize, Received or Credited... then we can set it as invalid
-			if(arguments.orderPayment.getAmountAuthorized() == 0 && arguments.orderPayment.getAmountReceived() == 0 && arguments.orderPayment.getAmountCredited() == 0 ) {
+			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 				
-				arguments.orderPayment.setOrderPaymentStatusType( getSettingService().getTypeBySystemCode('opstInvalid') );
+				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
+				
+				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
+					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
+				}
+				
+				// Create a new payment transaction
+				var paymentTransaction = getPaymentService().newPaymentTransaction();
+				
+				// Setup the orderPayment in the transaction to be used by the 'runTransaction'
+				paymentTransaction.setOrderPayment( arguments.orderPayment );
+				
+				// Setup the transaction data
+				transactionData = {
+					transactionType = arguments.processObject.getTransactionType(),
+					amount = thisToCharge,
+					preAuthorizationCode = uncapturedAuthorizations[a].authorizationCode,
+					preAuthorizationProviderTransactionID = uncapturedAuthorizations[a].providerTransactionID
+				};
+				
+				// Run the transaction
+				paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
+				
+				// If the paymentTransaction has errors, then add those errors to the orderPayment itself
+				if(paymentTransaction.hasError('runTransaction')) {
+					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+				} else {
+					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
+				}
+				
 			}
 		} else {
-			this.processOrder(arguments.orderPayment.getOrder(), {}, 'updateStatus');
+			// Create a new payment transaction
+			var paymentTransaction = getPaymentService().newPaymentTransaction();
+			
+			// Setup the orderPayment in the transaction to be used by the 'runTransaction'
+			paymentTransaction.setOrderPayment( arguments.orderPayment );
+			
+			// Setup the transaction data
+			transactionData = {
+				transactionType = arguments.processObject.getTransactionType(),
+				amount = arguments.processObject.getAmount()
+			};
+			
+			if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations)) {
+				transactionData.preAuthorizationCode = uncapturedAuthorizations[1].authorizationCode;
+				preAuthorizationProviderTransactionID = uncapturedAuthorizations[1].providerTransactionID;
+			}
+			
+			// Run the transaction
+			paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
+			
+			// If the paymentTransaction has errors, then add those errors to the orderPayment itself
+			if(paymentTransaction.hasError('runTransaction')) {
+				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+			}
 		}
+			
+		// If this order payment has errors & has never had and amount Authorized, Received or Credited... then we can set it as invalid
+		if(arguments.orderPayment.hasErrors() && arguments.orderPayment.getAmountAuthorized() == 0 && arguments.orderPayment.getAmountReceived() == 0 && arguments.orderPayment.getAmountCredited() == 0 ) {
+			arguments.orderPayment.setOrderPaymentStatusType( getSettingService().getTypeBySystemCode('opstInvalid') );
+		}
+		
+		// Attempt To Update The Order Status
+		this.processOrder(arguments.orderPayment.getOrder(), {}, 'updateStatus');
 		
 		return arguments.orderPayment;
 		

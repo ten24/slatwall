@@ -48,16 +48,71 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-
 	public void function setUp() {
 		super.setup();
 		
-		variables.dao = request.slatwallScope.getDAO("accountDAO");
+		variables.service = request.slatwallScope.getService("paymentService");
 	}
 	
-	public void function inst_ok() {
-		assert(isObject(variables.dao));
+	// getUncapturedPreAuthorizations()
+	public void function getUncapturedPreAuthorizations_returns_empty_array_with_no_history() {
+		var payment = entityNew('SlatwallOrderPayment');
+		
+		var result = variables.service.getUncapturedPreAuthorizations( payment );
+		
+		assert(arrayLen(result) eq 0); 
 	}
+	
+	// getUncapturedPreAuthorizations()
+	public void function getUncapturedPreAuthorizations_returns_correctly_sorted_auth_amounts() {
+		var payment = entityNew('SlatwallOrderPayment');
+		
+		var pt1 = entityNew('SlatwallPaymentTransaction');
+		pt1.setCreatedDateTime('3/1/2012');
+		pt1.setAmountAuthorized( 100 );
+		pt1.setTransactionType( 'authorize' );
+		pt1.setAuthorizationCode( 'AUTH-ONE' );
+		pt1.setOrderPayment( payment );
+		
+		var pt2 = entityNew('SlatwallPaymentTransaction');
+		pt2.setCreatedDateTime('3/5/2012');
+		pt2.setAmountReceived( 30 );
+		pt2.setTransactionType( 'chargePreAuthorization' );
+		pt2.setAuthorizationCodeUsed( 'AUTH-ONE' );
+		pt2.setOrderPayment( payment );
+		
+		var pt3 = entityNew('SlatwallPaymentTransaction');
+		pt3.setCreatedDateTime('2/20/2012');
+		pt3.setAmountAuthorized( 200 );
+		pt3.setTransactionType( 'authorize' );
+		pt3.setAuthorizationCode( 'AUTH-TWO' );
+		pt3.setOrderPayment( payment );
+		
+		var pt4 = entityNew('SlatwallPaymentTransaction');
+		pt4.setCreatedDateTime('2/25/2012');
+		pt4.setAmountAuthorized( 50 );
+		pt4.setTransactionType( 'authorize' );
+		pt4.setAuthorizationCode( 'AUTH-THREE' );
+		pt4.setOrderPayment( payment );
+		
+		var pt5 = entityNew('SlatwallPaymentTransaction');
+		pt5.setCreatedDateTime('2/26/2012');
+		pt5.setAmountReceived( 50 );
+		pt5.setTransactionType( 'chargePreAuthorization' );
+		pt5.setAuthorizationCodeUsed( 'AUTH-THREE' );
+		pt5.setOrderPayment( payment );
+		
+		assert(arrayLen(payment.getPaymentTransactions()) eq 5);
+		
+		var result = variables.service.getUncapturedPreAuthorizations( payment );
+		
+		assert(arrayLen(result) eq 2);
+		assert(result[1].createdDateTime eq '2/20/2012');
+		assert(result[2].createdDateTime eq '3/1/2012');
+		assert(result[1].chargeableAmount eq 200);
+		assert(result[2].chargeableAmount eq 70);
+	}
+	
 }
 
 
