@@ -48,6 +48,7 @@ Notes:
 */
 component output="false" accessors="true" extends="HibachiProcess" {
 
+	property name="productService" type="any";
 	// Injected Entity
 	property name="product";
 
@@ -64,6 +65,66 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="contents";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="locationConfigurations";
-	property name="productName";
+	property name="product__productName";
+	property name="product__productCode";
+	property name="product__productTypeID";
+	property name="product__urlTitle";
+	property name="productType";
+
+
+	/*
+	*  PRODUCT SETTERS
+	*  Properties with a 'product__' prefix neeed to be assigned
+	*  to this object's product.
+	*/
+	
+	//productName setter
+	public function setproduct__productName(string productName) {
+		product.setproductName(arguments.productName);
+	}
+	
+	//productCode setter
+	public function setproduct__productCode(string productCode) {
+		product.setproductCode(arguments.productCode);
+	}
+	
+	//productType setter
+	public function setproduct__productTypeID(string productTypeID) {
+		product.setproductType( getProductService().getProductType( arguments.productTypeID ) );
+	}
+	
+	//urlTitle setter
+	public function setproduct__urlTitle(string urlTitle) {
+		product.seturlTitle(arguments.urlTitle);
+	}
+	
+	// Creates a unique url title from a combination of properties
+	public function createUniqueURLTitle(titleString=this.product.getTitle(), tableName="SwProduct") {
+		product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.titleString, tableName=arguments.tableName));
+	}
+	
+	// Returns a structure of properties associated with the product objecrt
+	public struct function getProductProperties() {
+		var productProperties = structNew();
+		var properties = getMetaData(this).properties;
+		var PRODUCT_PREFIX = "product__";
+		var productPrefixLength = len(PRODUCT_PREFIX);
+		for(var i=1;i<=arraylen(properties);i++) {
+			if(left(properties[i].name,productPrefixLength) == PRODUCT_PREFIX) {
+				var productPropertyName = right(properties[i].name,len(properties[i].name)-productPrefixLength);
+				productProperties[productPropertyName] = getPropertyValue(properties[i].name);
+			}
+		}
+
+		return productProperties;
+	}
+
+	// Returns the value of a property within this object
+	private any function getPropertyValue(String key){
+		var method = this["get#key#"];
+		return method();
+	}
+
+	
 	
 }
