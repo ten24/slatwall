@@ -62,7 +62,7 @@ Notes:
 			<cf_HibachiPropertyList>
 				
 				<!--- Select Product Type --->
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product.productType.productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product__productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
 				
 				<cfif rc.processObject.getBaseProductType() eq "merchandise">
 					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
@@ -73,8 +73,8 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 				</cfif>
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="productName" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="productCode" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product__productName" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product__productCode" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 			</cf_HibachiPropertyList>
 			

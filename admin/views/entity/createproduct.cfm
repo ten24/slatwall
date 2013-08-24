@@ -66,8 +66,6 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="true">
 				</cfif>
 				<cfif rc.baseProductType eq "event">
-					<!---<cf_HibachiPropertyDisplay object="#rc.product.getdefaultSku()#" property="eventStartDateTime" edit="true">
-					<cf_HibachiPropertyDisplay object="#rc.product.getdefaultSku()#" property="eventStartDateTime" edit="true">--->
 					<input type="text" name="eventStartDateTime" value=""  />
 					<input type="text" name="eventEndDateTime" value="" />
 				</cfif>
