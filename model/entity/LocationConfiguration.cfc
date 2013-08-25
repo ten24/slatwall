@@ -54,7 +54,7 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 	// Related Object Properties (Many-to-Many - owner)
 	
 	// Related Object Properties (many-to-many - inverse)
-	
+	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwSkuLocationConfiguration" fkcolumn="locationConfigurationID" inversejoincolumn="skuID";
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	

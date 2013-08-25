@@ -56,6 +56,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="baseProductType";
 	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
+	property name="startReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
+	property name="endReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
 	property name="price";
 	property name="options";
 	property name="subscriptionBenefits";
@@ -65,11 +67,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="contents";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="locationConfigurations";
+	property name="productType";
 	property name="product__productName";
 	property name="product__productCode";
 	property name="product__productTypeID";
 	property name="product__urlTitle";
-	property name="productType";
 
 
 	/*

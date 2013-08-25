@@ -340,12 +340,16 @@ component extends="HibachiService" accessors="true" {
 		} else if (arguments.processObject.getBaseProductType() == "event") {
 			
 			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+				// Create a default sku with the eventStartDateTime
 				var newSku = this.newSku();
-				
-				newSku.setPrice( arguments.processObject.getPrice() );
-				newSku.setSkuCode( product.getProductCode() & "-1");
 				newSku.setProduct( product );
-				//newSku.setProductName( arguments.product.getproductName() );
+				newSku.setSkuCode( product.getProductCode() & "-1");
+				newSku.setPrice( arguments.processObject.getPrice() );
+				newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
+				newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+				newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
+				newSku.setstartReservationDateTime( arguments.processObject.getendReservationDateTime() );
+				newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
 				
 				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
@@ -354,13 +358,16 @@ component extends="HibachiService" accessors="true" {
 				product.setDefaultSku( newSku );	
 				
 			} else {
+				// For Every locationConfiguration, create a sku with the eventStartDateTime
 				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 					var newSku = this.newSku();
-					
+					newSku.setProduct( arguments.product );
+					newSku.setSkuCode( arguments.product.getProductCode() & "-#lc#");
 					newSku.setPrice( arguments.processObject.getPrice() );
-					newSku.setSkuCode( product.getProductCode() & "-#lc#");
-					newSku.setProduct( product );
-					//newSku.setProductName( arguments.product.getproductName() );
+					newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
+					newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+					newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
+					newSku.setstartReservationDateTime( arguments.processObject.getendReservationDateTime() );
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
 					if(lc==1) {
 						product.setDefaultSku( newSku );	
@@ -369,7 +376,6 @@ component extends="HibachiService" accessors="true" {
 			}
 			
 			
-			// For Every locationConfiguration, create a sku with the eventStartDateTime
 			
 		} else {
 			throw("There was an unexpected error when creating this product");
