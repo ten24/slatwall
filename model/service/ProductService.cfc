@@ -203,13 +203,13 @@ component extends="HibachiService" accessors="true" {
 	/*
 	* Create product and default sku from processObject values. 
 	* processObject contains properties from Product_Create.cfc 
-	* created by values submitted from product creation page.
+	* created by values submitted from preprocessproduct_create.
 	*/ 
 	public any function processProduct_create(required any product, required any processObject) {
 		//var dumps = createObject("component","/slatwall.custom.model.service.FileOutputService");
 		
-		if(isNull(product.getURLTitle())) {
-			product.setURLTitle(getDataService().createUniqueURLTitle(titleString=product.getTitle(), tableName="SwProduct"));
+		if(isNull(arguments.product.getURLTitle())) {
+			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
 		}
 		
 		// Create Merchandise Product Skus Based On Options
@@ -246,15 +246,15 @@ component extends="HibachiService" accessors="true" {
 					// Setup the New Sku
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.processObject.getPrice());
-					if(isNumeric(product.getlistPrice()) && product.getlistPrice() > 0) {
-						newSku.setListPrice(product.getlistPrice());	
+					if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+						newSku.setListPrice(arguments.product.getlistPrice());	
 					}
 					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
 					
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
-					product.addSku(newSku);
-					if(isNull(product.getDefaultSku())) {
-						product.setDefaultSku(newSku);
+					arguments.product.addSku(newSku);
+					if(isNull(arguments.product.getDefaultSku())) {
+						arguments.product.setDefaultSku(newSku);
 					}
 					
 					// Add each of the options
@@ -280,13 +280,13 @@ component extends="HibachiService" accessors="true" {
 			} else {
 				
 				var thisSku = this.newSku();
-				thisSku.setProduct(product);
-				thisSku.setPrice(arguments.processObject.getPrice()); //is this right?
-				if(isNumeric(product.getlistPrice()) && product.getlistPrice() > 0) {
-					thisSku.setListPrice(product.getlistPrice());	
+				thisSku.setProduct(arguments.product);
+				thisSku.setPrice(arguments.processObject.getPrice()); 
+				if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+					thisSku.setListPrice(arguments.product.getlistPrice());	
 				}
-				thisSku.setSkuCode(product.getProductCode() & "-1");
-				product.setDefaultSku( thisSku );
+				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+				arguments.product.setDefaultSku( thisSku );
 				
 			}
 			
@@ -295,7 +295,7 @@ component extends="HibachiService" accessors="true" {
 			
 			for(var i=1; i <= listLen(arguments.processObject.getSubscriptionTerms()); i++){
 				var thisSku = this.newSku();
-				thisSku.setProduct(product);
+				thisSku.setProduct(arguments.product);
 				thisSku.setPrice(arguments.processObject.getPrice());
 				thisSku.setRenewalPrice(arguments.processObject.getPrice());
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
@@ -303,7 +303,7 @@ component extends="HibachiService" accessors="true" {
 				for(var b=1; b <= listLen(arguments.processObject.subscriptionBenefits); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.subscriptionBenefits, b) ) );
 				}
-				for(var b=1; b <= listLen(arguments.data.renewalSubscriptionBenefits); b++) {
+				for(var b=1; b <= listLen(arguments.processObject.renewalSubscriptionBenefits); b++) {
 					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.renewalSubscriptionBenefits, b) ) );
 				}
 				if(i==1) {
@@ -315,11 +315,11 @@ component extends="HibachiService" accessors="true" {
 		// Create Content Access Product Skus Based On Pages
 		} else if (arguments.processObject.getBaseProductType() == "contentAccess") {
 			
-			if(structKeyExists(arguments.data, "bundleContentAccess") && arguments.data.bundleContentAccess) {
+			if(structKeyExists(arguments.processObject, "bundleContentAccess") && arguments.processObject.bundleContentAccess) {
 				var newSku = this.newSku();
 				newSku.setPrice(arguments.processObject.getPrice());
-				newSku.setSkuCode(product.getProductCode() & "-1");
-				newSku.setProduct(product);
+				newSku.setSkuCode(arguments.product.getProductCode() & "-1");
+				newSku.setProduct(arguments.product);
 				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
 				}
@@ -327,12 +327,12 @@ component extends="HibachiService" accessors="true" {
 			} else {
 				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
 					var newSku = this.newSku();
-					newSku.setPrice(product.getPrice());
-					newSku.setSkuCode(product.getProductCode() & "-#c#");
-					newSku.setProduct(product);
+					newSku.setPrice(arguments.product.getPrice());
+					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
+					newSku.setProduct(arguments.product);
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
 					if(c==1) {
-						product.setDefaultSku(newSku);	
+						arguments.product.setDefaultSku(newSku);	
 					}
 				}
 			}
@@ -342,14 +342,13 @@ component extends="HibachiService" accessors="true" {
 			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
 				// Create a default sku with the eventStartDateTime
 				var newSku = this.newSku();
-				newSku.setProduct( product );
-				newSku.setSkuCode( product.getProductCode() & "-1");
+				newSku.setProduct( arguments.product );
+				newSku.setSkuCode( arguments.product.getProductCode() & "-1");
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
 				newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
 				newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
-				newSku.setstartReservationDateTime( arguments.processObject.getendReservationDateTime() );
-				newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+				newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
 				
 				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
@@ -367,10 +366,10 @@ component extends="HibachiService" accessors="true" {
 					newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
 					newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
 					newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
-					newSku.setstartReservationDateTime( arguments.processObject.getendReservationDateTime() );
+					newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
 					if(lc==1) {
-						product.setDefaultSku( newSku );	
+						arguments.product.setDefaultSku( newSku );	
 					}
 				}
 			}
@@ -382,15 +381,15 @@ component extends="HibachiService" accessors="true" {
 		}
 		
 		// Generate Image Files
-		product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 		//arguments.product = this.saveProduct(arguments.product,arguments.processObject.getProductProperties());
         
         // validate the product
-		product.validate( context="save" );
+		arguments.product.validate( context="save" );
 		
 		// If the product passed validation then call save in the DAO, otherwise set the errors flag
         if(!product.hasErrors()) {
-        		product = getHibachiDAO().save(target=product);
+        		arguments.product = getHibachiDAO().save(target=arguments.product);
         }
         
         // Return the product

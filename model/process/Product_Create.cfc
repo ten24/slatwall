@@ -57,7 +57,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
 	property name="startReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
-	property name="endReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
+	property name="endReservationDateTime" hb_rbKey="entity.sku.endReservationDateTime" hb_formFieldType="datetime";
 	property name="price";
 	property name="options";
 	property name="subscriptionBenefits";
@@ -72,6 +72,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="product__productCode";
 	property name="product__productTypeID";
 	property name="product__urlTitle";
+	property name="product__brandID";
 
 
 	/*
@@ -79,6 +80,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	*  Properties with a 'product__' prefix neeed to be assigned
 	*  to this object's product.
 	*/
+	
+	//productBrand setter
+	public function setproduct__productBrandID(string productBrandID) {
+		product.setproductBrandID(arguments.productBrandID);
+	}
 	
 	//productName setter
 	public function setproduct__productName(string productName) {

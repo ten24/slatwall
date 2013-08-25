@@ -65,12 +65,15 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product__productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
 				
 				<cfif rc.processObject.getBaseProductType() eq "merchandise">
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
+					<!---<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">--->
+					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product__brandID" edit="true">
 				</cfif>
 				
 				<cfif rc.processObject.getBaseProductType() eq "event">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="startReservationDateTime" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="endReservationDateTime" edit="true">
 				</cfif>
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product__productName" edit="true">
