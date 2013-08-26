@@ -78,21 +78,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			activePublicKey = setting("livePublicKey");
 			activeSecretKey = setting("liveSecretKey");
 		}
-		
-		var props = requestBean.getPropertiesStruct();
-		var pairs = structNew();
-		for (var p in props)
-		{
-			try
-			{
-				var getterMethod = requestBean["get" & props[p].name];
-				structInsert(pairs, props[p].name, getterMethod());
-			}
-			catch (any e)
-			{
-				
-			}
-		}
 				
 		if (requestBean.getTransactionType() == "generateToken")
 		{
@@ -112,19 +97,16 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				createTokenRequest.addParam(type="header", name="authorization", value="bearer #activeSecretKey#");
 				createTokenRequest.addParam(type="formfield", name="email", value="#requestBean.getAccountPrimaryEmailAddress()#");
 				createTokenRequest.addParam(type="formfield", name="description", value="#generateDescription(requestBean)#");
-				
-				// attach card data to request
-				populateRequestParamsWithCardInfo(requestBean, createTokenRequest);
 			}
 			else if (setting("generateTokenBehavior") == "immediate")
 			{
 				// creates a temporary short-lived "one-time use" token to be used for authorization (immediate near term)
 				createTokenRequest.setUrl("#setting('apiUrl')#/#setting('apiVersion')#/tokens");
 				createTokenRequest.addParam(type="header", name="authorization", value="bearer #activePublicKey#");
-				
-				// attach card data to request
-				populateRequestParamsWithCardInfo(requestBean, createTokenRequest);
 			}
+			
+			// attach card data to request
+			populateRequestParamsWithCardInfo(requestBean, createTokenRequest);
 			
 			responseData = deserializeResponse(createTokenRequest.send().getPrefix());
 			
@@ -319,7 +301,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 		return response;
 	}
 	
-	private void function populateRequestParamsWithCardInfo(required any requestBean, required struct httpRequest)
+	private void function populateRequestParamsWithCardInfo(required any requestBean, required any httpRequest)
 	{
 		httpRequest.addParam(type="formfield", name="card[number]", value="#requestBean.getCreditCardNumber()#");
 		httpRequest.addParam(type="formfield", name="card[cvc]", value="#requestBean.getSecurityCode()#");
