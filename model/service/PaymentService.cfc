@@ -89,7 +89,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				paymentTransaction.getAmountReceived() gt 0) {
 				
 					thisData.createdDateTime = paymentTransaction.getCreatedDateTime();
-					thisData.providerTransactionID = paymentTransaction.providerTransactionID();
+					thisData.providerTransactionID = paymentTransaction.getProviderTransactionID();
 					thisData.authorizationCode = paymentTransaction.getAuthorizationCodeUsed();
 					thisData.amountAuthorized = 0;
 					thisData.amountReceived = paymentTransaction.getAmountReceived();
