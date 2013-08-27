@@ -46,11 +46,11 @@
 Notes:
 
 --->
-<cfparam name="rc.addresszoneSmartList" type="any" />
+<cfparam name="rc.addressZoneSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.addresszoneSmartList#" />
+<cf_HibachiEntityActionBar type="listing" object="#rc.addressZoneSmartList#" />
 
-<cf_HibachiListingDisplay smartList="#rc.addresszoneSmartList#"
+<cf_HibachiListingDisplay smartList="#rc.addressZoneSmartList#"
 						   recordDetailAction="admin:entity.detailaddresszone"
 						   recordEditAction="admin:entity.editaddresszone"
 						   recordDeleteAction="admin:entity.deleteaddresszone">
