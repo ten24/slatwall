@@ -50,7 +50,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	public void function beforeTests(){
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		variables.slatwallFW1Application.reloadApplication();
+		//variables.slatwallFW1Application.reloadApplication();
 		
 		variables.helper = createObject("component", "Helper");
 	}

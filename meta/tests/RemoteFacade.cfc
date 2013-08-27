@@ -48,4 +48,11 @@
 --->
 <cfcomponent extends="mxunit.framework.RemoteFacade">
 	<!--- Intentionally left empty.  This works by extending the mxunit framework that should have a mapping in your CFIDE --->
+		
+	<cffunction name="startTestRun" access="remote" returntype="string">
+		<cfset createObject("component", "Slatwall.Application").reloadApplication() />
+		
+		<cfreturn super.startTestRun()>
+	</cffunction>
+	
 </cfcomponent>
