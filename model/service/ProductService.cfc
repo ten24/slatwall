@@ -206,8 +206,6 @@ component extends="HibachiService" accessors="true" {
 	* created by values submitted from preprocessproduct_create.
 	*/ 
 	public any function processProduct_create(required any product, required any processObject) {
-		//var dumps = createObject("component","/slatwall.custom.model.service.FileOutputService");
-		
 		if(isNull(arguments.product.getURLTitle())) {
 			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
 		}

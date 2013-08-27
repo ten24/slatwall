@@ -65,7 +65,6 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product__productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
 				
 				<cfif rc.processObject.getBaseProductType() eq "merchandise">
-					<!---<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">--->
 					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product__brandID" edit="true">
 				</cfif>
 				

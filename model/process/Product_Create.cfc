@@ -67,7 +67,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="contents";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="locationConfigurations";
-	property name="productType";
+	//property name="productType";
 	property name="product__productName";
 	property name="product__productCode";
 	property name="product__productTypeID";
@@ -81,9 +81,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	*  to this object's product.
 	*/
 	
+	
 	//productBrand setter
-	public function setproduct__productBrandID(string productBrandID) {
-		product.setproductBrandID(arguments.productBrandID);
+	public function setproduct__brandID(string productBrandID) {
+		product.setBrand( getProductService().getBrand( arguments.productBrandID ) );
 	}
 	
 	//productName setter
