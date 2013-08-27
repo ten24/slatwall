@@ -54,5 +54,5 @@ Notes:
 						   recordDetailAction="admin:entity.detailaddresszone"
 						   recordEditAction="admin:entity.editaddresszone"
 						   recordDeleteAction="admin:entity.deleteaddresszone">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="addresszoneName" search="true" />
+	<cf_HibachiListingColumn propertyIdentifier="addresszoneName" />
 </cf_HibachiListingDisplay>
