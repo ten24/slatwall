@@ -41,7 +41,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
-	
+	property name="collectionCode" ormtype="string";
+	property name="collectionObject" ormtype="string";
+	property name="collectionData" ormtype="string" length="4000";
 	
 	// Calculated Properties
 

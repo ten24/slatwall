@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,25 +45,26 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+--->
+<cfparam name="rc.collection" type="any">
+<cfparam name="rc.edit" type="boolean">
 
-	public void function all_entity_properties_have_keys() {
-		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
-		var passes = true;
-		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
-			for(var property in properties) {
-				var keyValue = request.slatwallScope.rbKey('entity.#entityName#.#property.name#');
-				if(right(keyValue,8) == '_missing') {
-					passes = false;
-					arrayAppend(variables.debugArray, keyValue);
-				}
-			}
-		}
-		assert(passes);
-	}
-	
-}
-
+<cfoutput>
+	<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.collection#" property="activeFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+		<cf_HibachiTabGroup object="#rc.collection#">
+			
+		</cf_HibachiTabGroup>
+		
+	</cf_HibachiEntityDetailForm>
+</cfoutput>
 

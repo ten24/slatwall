@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,25 +45,15 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+--->
+<cfparam name="rc.collectionSmartList" type="any" />
 
-	public void function all_entity_properties_have_keys() {
-		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
-		var passes = true;
-		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
-			for(var property in properties) {
-				var keyValue = request.slatwallScope.rbKey('entity.#entityName#.#property.name#');
-				if(right(keyValue,8) == '_missing') {
-					passes = false;
-					arrayAppend(variables.debugArray, keyValue);
-				}
-			}
-		}
-		assert(passes);
-	}
-	
-}
+<cf_HibachiEntityActionBar type="listing" object="#rc.collectionSmartList#" />
 
-
+<cf_HibachiListingDisplay smartList="#rc.collectionSmartList#"
+						   recordDetailAction="admin:entity.detailcollection"
+						   recordEditAction="admin:entity.editcollection">
+	<cf_HibachiListingColumn propertyIdentifier="collectionName" />
+	<cf_HibachiListingColumn propertyIdentifier="collectionCode" />
+	<cf_HibachiListingColumn propertyIdentifier="collectionObject" />
+</cf_HibachiListingDisplay>
