@@ -2,6 +2,6 @@
 <snippet filetemplate="false" extension="">
 <name>Property Column - Wysiwyg</name>
 <help></help>
-<starttext><![CDATA[property name="$${propertyName}" ormtype="string" fieldtype="wysiwyg" length="4000"; ]]></starttext>
+<starttext><![CDATA[property name="$${propertyName}" ormtype="string" hb_fieldtype="wysiwyg" length="4000"; ]]></starttext>
 <endtext><![CDATA[]]></endtext>
 </snippet>

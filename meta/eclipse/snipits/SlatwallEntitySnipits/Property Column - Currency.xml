@@ -2,6 +2,6 @@
 <snippet filetemplate="false" extension="">
 <name>Property Column - Currency</name>
 <help></help>
-<starttext><![CDATA[property name="$${propertyName}" ormtype="big_decimal" formatType="currency";]]></starttext>
+<starttext><![CDATA[property name="$${propertyName}" ormtype="big_decimal" hb_formatType="currency";]]></starttext>
 <endtext><![CDATA[]]></endtext>
 </snippet>
