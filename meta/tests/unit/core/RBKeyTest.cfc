@@ -55,6 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var ignoreEntities = "AttributeValue,CommentRelationship,UpdateScript,ShippingMethodOption";
 		var ignoreProperties = "newFlag,printTemplate";
 		var ignoreEntityProperties = "";
+		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "PaymentTransaction.transactionStartTickCount");
+		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "PaymentTransaction.transactionEndTickCount");
 		
 		for(var entityName in allEntities) {
 			var shortEntityName = replace(entityName,"Slatwall","");
