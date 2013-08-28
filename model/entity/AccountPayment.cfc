@@ -312,7 +312,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	public any function getOriginalProviderTransactionID() {
 		if(!structKeyExists(variables,"originalProviderTransactionID")) {
-			variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( orderPaymentID=getOrderPaymentID() );
+			variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( accountPaymentID=getAccountPaymentID() );
 		}
 		return variables.originalProviderTransactionID;
 	}

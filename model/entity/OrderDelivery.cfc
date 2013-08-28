@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table="SwOrderDelivery" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderDelivery" {
+component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table="SwOrderDelivery" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderDelivery" hb_processContexts="create" {
 	
 	// Persistent Properties
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

@@ -357,6 +357,12 @@ component extends="FW1.framework" {
 					}
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 					
+					//==================== START: EVENT HANDLER SETUP ========================
+					
+					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
+					
+					//===================== END: EVENT HANDLER SETUP =========================
+					
 					//========================= END: IOC SETUP ===============================
 					
 					// Call the onFirstRequest() Method for the parent Application.cfc

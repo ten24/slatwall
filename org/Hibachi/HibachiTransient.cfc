@@ -18,7 +18,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	// @hint Returns the messageBean object, if one hasn't been setup yet it returns a new one
 	public any function getHibachiMessages() {
 		if(!structKeyExists(variables, "hibachiMessages")) {
-			variables.hibachiMessages = getTransient("hibachiMessages");;
+			variables.hibachiMessages = getTransient("hibachiMessages");
 		}
 		return variables.hibachiMessages;
 	}
@@ -198,10 +198,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 					// If the value isn't blank, or we can't set to null... then we just set the value.
 					} else {
+						/*
 						if( !structKeyExists(currentProperty,'hb_formatType') ){
 							currentProperty.hb_formatType = '';
 						}
 						_setProperty(currentProperty.name, trim(arguments.data[ currentProperty.name ]), currentProperty.hb_formatType);
+						*/
+						_setProperty(currentProperty.name, trim(arguments.data[ currentProperty.name ]));
 
 						// if this property has a sessionDefault defined for it, then we should update that value with what was used
 						if(structKeyExists(currentProperty, "hb_sessionDefault")) {

@@ -277,7 +277,7 @@
 				return onMissingProcessMethod( missingMethodName, missingMethodArguments );
 			}
 
-			return super.onMissingMethod(argumentsCollection=arguments);
+			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
 		}
 		
 	

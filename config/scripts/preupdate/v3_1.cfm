@@ -84,9 +84,12 @@ Notes:
 	<cfset local.newValues = ['Sw','PromoReward','PromoQual','SubsUsage','SubsBenefit','Excl','Excl','PriceGrpRateExclProductType','PromoRewardEligiblePriceGrp','PromoRewardShipAddressZone','PromoQualShipAddressZone'] />
 	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="local.tables" />
 	
+	<cfset local.allTables = "" />
+	
 	<!--- loop through all the table --->
 	<cfloop query="local.tables">
-		<cfset local.newTableName = local.tables.table_name /> 
+		<cfset local.newTableName = local.tables.table_name />
+		
 		<!--- loop through all the string in name that needs to get replaced --->
 		<cfloop from="1" to="#arrayLen(local.lookupvalues)#" index="i">
 			<cfif findNoCase(local.lookupvalues[i],local.newTableName)>
@@ -104,6 +107,8 @@ Notes:
 				</cfquery>
 			</cfif>
 		</cfif>
+		
+		<cfset local.allTables = listAppend(local.allTables, local.newTableName) />
 	</cfloop>
 	
 	<!--- change the long field names --->
@@ -111,35 +116,37 @@ Notes:
 	<cfset local.newValues = ['SwAccountAuthentication.integrationAccessTokenExp','SwPaymentMethod.saveAccountPaymentMethodTxType','SwPaymentMethod.saveAccPaymentMethodEncFlag','SwPaymentMethod.saveOrderPaymentTxType','SwPaymentMethod.placeOrderChargeTxType','SwPaymentMethod.placeOrderCreditTxType','SwAccess.subsUsageBenefitAccountID','SwSubscriptionStatus.subsStatusChangeReasonTypeID','SwSubsUsageBenefitAccount.subsUsageBenefitAccountID'] />
 	
 	<cfloop from="1" to="#arrayLen(local.lookupValues)#" index="i">
-		<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="columns" table="#listFirst(local.lookupValues[i],'.')#" name="local.columns" />
-		
-		<cfloop query="local.columns">
-			<cfif local.columns.column_name EQ listLast(local.lookupValues[i],'.')>
-				<!--- for mysql first drop the primary key constraints --->
-				<cfif local.columns.IS_PRIMARYKEY AND this.ormSettings.dialect eq "MySQL">
-					<cfquery name="dropConstraint" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
-						ALTER TABLE #listFirst(local.lookupValues[i],'.')#
-						DROP PRIMARY KEY
-					</cfquery>
+		<cfif listFindNoCase(local.allTables, listFirst(local.lookupValues[i],'.'))>
+			<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="columns" table="#listFirst(local.lookupValues[i],'.')#" name="local.columns" />
+			
+			<cfloop query="local.columns">
+				<cfif local.columns.column_name EQ listLast(local.lookupValues[i],'.')>
+					<!--- for mysql first drop the primary key constraints --->
+					<cfif local.columns.IS_PRIMARYKEY AND this.ormSettings.dialect eq "MySQL">
+						<cfquery name="dropConstraint" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
+							ALTER TABLE #listFirst(local.lookupValues[i],'.')#
+							DROP PRIMARY KEY
+						</cfquery>
+					</cfif>
+					<!--- update column names --->
+					<cfif this.ormSettings.dialect eq "MySQL">
+						<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
+							ALTER TABLE #listFirst(local.lookupValues[i],'.')# CHANGE #listLast(local.lookupValues[i],'.')# #listLast(local.newValues[i],'.')# <cfif local.columns.TYPE_NAME EQ "varchar">varchar(#local.columns.COLUMN_SIZE#)<cfelse>#local.columns.TYPE_NAME#</cfif>
+						</cfquery>
+					<cfelse>
+						<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
+							EXEC sp_rename '#listFirst(local.lookupValues[i],'.')#.#listLast(local.lookupValues[i],'.')#','#listLast(local.newValues[i],'.')#','COLUMN'
+						</cfquery>
+					</cfif>
+					<!--- for mysql create primary key --->
+					<cfif local.columns.IS_PRIMARYKEY AND this.ormSettings.dialect eq "MySQL">
+						<cfquery name="addConstraint" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
+							ALTER TABLE #listFirst(local.lookupValues[i],'.')# ADD PRIMARY KEY(#listLast(local.newValues[i],'.')#)
+						</cfquery>
+					</cfif>
 				</cfif>
-				<!--- update column names --->
-				<cfif this.ormSettings.dialect eq "MySQL">
-					<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
-						ALTER TABLE #listFirst(local.lookupValues[i],'.')# CHANGE #listLast(local.lookupValues[i],'.')# #listLast(local.newValues[i],'.')# <cfif local.columns.TYPE_NAME EQ "varchar">varchar(#local.columns.COLUMN_SIZE#)<cfelse>#local.columns.TYPE_NAME#</cfif>
-					</cfquery>
-				<cfelse>
-					<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
-						EXEC sp_rename '#listFirst(local.lookupValues[i],'.')#.#listLast(local.lookupValues[i],'.')#','#listLast(local.newValues[i],'.')#','COLUMN'
-					</cfquery>
-				</cfif>
-				<!--- for mysql create primary key --->
-				<cfif local.columns.IS_PRIMARYKEY AND this.ormSettings.dialect eq "MySQL">
-					<cfquery name="addConstraint" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
-						ALTER TABLE #listFirst(local.lookupValues[i],'.')# ADD PRIMARY KEY(#listLast(local.newValues[i],'.')#)
-					</cfquery>
-				</cfif>
-			</cfif>
-		</cfloop>
+			</cfloop>
+		</cfif>
 	</cfloop>
 
 </cfif>

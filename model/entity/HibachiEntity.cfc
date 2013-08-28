@@ -96,8 +96,11 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return this;
 	}
 
+	/*
+
 	// @help overwrite parents _setProperty to enable formatType parsing
 	private void function _setProperty( required any name, any value, any formatType='' ){
+		
 		if( arguments.formatType EQ 'dateTime' ){
 			local.convertedJavaDateFormat = trim('#reReplace(reReplace(reReplace(setting("globalDateFormat"),"y\{1,4}","y"),"d\{1,2}","d"),"\m{1,2}","M")# #reReplace(reReplace(replace(setting("globalTimeFormat"),"tt","a"),"h\{2}","H"),"\m{1,2}","m")#');
 
@@ -105,9 +108,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 				arguments.value = createObject('java','java.text.SimpleDateFormat').init(local.convertedJavaDateFormat).parse(arguments.value,createObject('java','java.text.ParsePosition').init(0));
 			}catch(any e){}
 		}
+		
 
 		super._setProperty(argumentCollection=arguments);
 	}
+	
+	*/
 
 	// @hint Returns an array of comments related to this entity
 	public array function getComments() {

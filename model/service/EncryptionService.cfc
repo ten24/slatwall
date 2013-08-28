@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="HibachiService" {
+component output="false" accessors="true" extends="HibachiService" {
 	
 	public any function init() {
 		if(!encryptionKeyExists()){
