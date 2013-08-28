@@ -57,6 +57,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var ignoreEntityProperties = "";
 		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "PaymentTransaction.transactionStartTickCount");
 		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "PaymentTransaction.transactionEndTickCount");
+		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.bankRoutingNumberEncrypted");
+		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.bankAccountNumberEncrypted");
+		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.checkNumberEncrypted");
+		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.creditCardNumberEncrypted");
+		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.giftCardNumberEncrypted");
+		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "PromotionApplied.appliedType");
 		
 		for(var entityName in allEntities) {
 			var shortEntityName = replace(entityName,"Slatwall","");
