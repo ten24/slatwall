@@ -120,6 +120,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		//set physical status to closed
 		arguments.physical.setPhysicalStatusType( getSettingService().getTypeBySystemCode('pstClosed') );
+
+		return arguments.physical;
 	}
 	
 	public any function processPhysical_addPhysicalCount(required any physical, required any processObject) {

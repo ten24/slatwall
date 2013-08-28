@@ -336,6 +336,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processStockAdjustment_processAdjustment(required any stockAdjustment) {
 		
+		//Keep a simple list of stocks adjusted 
+		var adjustedStocks='';
+
 		// Incoming (Transfer or ManualIn)
 		if( listFindNoCase("satLocationTransfer,satManualIn", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 			
@@ -351,6 +354,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockReceiverItem.setQuantity(stockAdjustmentItem.getQuantity());
 				stockReceiverItem.setCost(0);
 				stockReceiverItem.setStock(stockAdjustmentItem.getToStock());
+				adjustedStocks=listAppend(adjustedStocks, stockAdjustmentItem.getToStock().getStockID());
 			}
 			
 			this.saveStockReceiver( stockReceiver );
@@ -368,6 +372,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockAdjustmentDeliveryItem.setStockAdjustmentItem(stockAdjustmentItem);
 				stockAdjustmentDeliveryItem.setQuantity(stockAdjustmentItem.getQuantity());
 				stockAdjustmentDeliveryItem.setStock(stockAdjustmentItem.getFromStock());
+				adjustedStocks=listAppend(adjustedStocks, stockAdjustmentItem.getFromStock().getStockID());
 			}
 			
 			this.saveStockAdjustmentDelivery(stockAdjustmentDelivery);
@@ -378,6 +383,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		if( listFindNoCase("satPhysicalCount", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 			
 			var headObjects = {};
+			
 			
 			for(var i=1; i <= arrayLen(arguments.stockAdjustment.getStockAdjustmentItems()); i++) {
 				
@@ -401,7 +407,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockReceiverItem.setQuantity( stockAdjustmentItem.getQuantity() );
 					stockReceiverItem.setCost( 0 );
 					stockReceiverItem.setStock( stockAdjustmentItem.getToStock() );
-			
+					adjustedStocks=listAppend(adjustedStocks, stockAdjustmentItem.getToStock().getStockID());
 				
 				// If this is Out, create delivery
 				} else if (!isNull(stockAdjustmentItem.getFromStock())) {
@@ -419,12 +425,20 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockAdjustmentDeliveryItem.setStockAdjustmentItem( stockAdjustmentItem );
 					stockAdjustmentDeliveryItem.setQuantity( stockAdjustmentItem.getQuantity() );
 					stockAdjustmentDeliveryItem.setStock( stockAdjustmentItem.getFromStock() );
+					adjustedStocks=listAppend(adjustedStocks, stockAdjustmentItem.getFromStock().getStockID());
 				}
 			}
 		}
 		
 		// Set the status to closed
 		arguments.stockAdjustment.setStockAdjustmentStatusType( getSettingService().getTypeBySystemCode("sastClosed") );	
+
+		//Update calculated properties for only those stocks changed
+		var smartListData = {};
+			smartListData["p:show"] = 200;
+			smartListData["f:stockID"]=adjustedStocks;
+		updateEntityCalculatedProperties("stock",smartListData,true);
+
 
 	return arguments.stockAdjustment;
 
