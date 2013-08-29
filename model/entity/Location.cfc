@@ -79,6 +79,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
+	property name="baseLocation" type="string" persistent="false";
 	property name="parentLocationOptions" persistent="false";
 	
 	
@@ -98,24 +99,26 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		}
 	}
 	
+	//get top level locations 
+	public any function getBaseLocation() {
+		return getService("locationService").getLocation(listFirst(getlocationIDPath())).getLocationName();
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public any function getParentLocationOptions() {
+	public any function getLocationOptions(string baseLocation="") {
 		if(!structKeyExists(variables, "parentLocationOptions")) {
-			var smartList = getPropertyOptionsSmartList( "parentLocation" );
-			var records = smartList.getRecords();
 			
-			variables.parentLocationOptions = [
-				{name=rbKey('define.none'), value=''}
-			];
+			var locationOptions = [];
 			
-			for(var i=1; i<=arrayLen(records); i++) {
-				if(records[i].getLocationID() != getLocationID()) {
-					arrayAppend(variables.parentLocationOptions, {name=records[i].getSimpleRepresentation(), value=records[i].getLocationID()});	
-				}
+			// If no base location defined return all
+			if( !len(arguments.baseLocation) ) {
+				locationOptions = getService("locationService").getLocationOptions();
+			} else {
+				locationOptions = getService("locationService").getLocationOptions(arguments.baseLocation);
 			}
 		}
-		return variables.parentLocationOptions;
+		return locationOptions;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -170,6 +173,14 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// ================== START: Overridden Methods ========================
 	
+	// If locationPathID is null returns all otherwise returns current locationIDPath 
+	public string function getLocationIDPath() {
+		if(isNull(variables.locationIDPath)) {
+			variables.locationIDPath = buildIDPathList( "parentLocation" );
+		}
+		return variables.locationIDPath;
+	}
+	
 	public any function getPrimaryLocationAddress() {
 		if(!isNull(variables.primaryLocationAddress)) {
 			return variables.primaryLocationAddress;
@@ -179,6 +190,13 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		} else {
 			return getService("locationService").newLocationAddress();
 		}
+	}
+	
+	public string function getSimpleRepresentation() {
+		if(!isNull(getParentLocation())) {
+			return getParentLocation().getSimpleRepresentation() & " &raquo; " & getLocationName();
+		}
+		return getLocationName();
 	}
 	
 	// ==================  END:  Overridden Methods ========================

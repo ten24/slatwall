@@ -103,6 +103,10 @@
 				if(!invokeArguments[ "processObject" ].getPopulatedFlag()) {
 					invokeArguments[ "processObject" ].populate( arguments.data );
 					invokeArguments[ "processObject" ].setPopulatedFlag( true );
+					if(structKeyExists(arguments.data, arguments.entity.getClassName()) && isStruct(arguments.data[arguments.entity.getClassName()])) {
+						arguments.entity.populate(arguments.data[arguments.entity.getClassName()]);
+						invokeArguments[ "processObject" ].addPopulatedSubProperty( arguments.entity.getClassName(), arguments.entity );
+					}
 				}
 				
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );

@@ -58,15 +58,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getLocationDAO().getLocationCount();
 	}
 	
-	public array function getLocationOptions() {
-		var smartList = this.getLocationSmartList();
+	public array function getLocationOptions( string baseLocation="" ) {
+		if(!structKeyExists(variables,"locationOptions")) {
+			arguments.entityName = "SlatwallLocation";
+			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+			smartList.addOrder("locationIDPath");
+			var locations = smartList.getRecords();
+			
+			variables.locationOptions = [];
+			
+			for(var i=1;i<=arrayLen(locations);i++) {
+				arrayAppend(variables.locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+			}
+		}
+		return variables.locationOptions;
 		
-		smartList.addSelect('locationID', 'value');
-		smartList.addSelect('locationName', 'name');
-		
-		// TODO [glenn]: change this so that it shows the location hierarchy.  You can look at the productType options for product entity as example
-		
-		return smartList.getRecords(); 
 	}
 	
 	// ===================== START: Logical Methods ===========================

@@ -50,22 +50,21 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
+	<cf_HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#"></cf_HibachiEntityActionBar>
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></cf_HibachiEntityActionBar>
 		
 		<!--- Submit the baseProductType as well in case of a validation error --->
 		<input type="hidden" name="baseProductType" value="#rc.processObject.getBaseProductType()#" />
-		
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				
 				<!--- Select Product Type --->
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product__productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product.productType.productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
 				
 				<cfif rc.processObject.getBaseProductType() eq "merchandise">
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product__brandID" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
 				</cfif>
 				
 				<cfif rc.processObject.getBaseProductType() eq "event">
@@ -75,8 +74,8 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="endReservationDateTime" edit="true">
 				</cfif>
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product__productName" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product__productCode" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 			</cf_HibachiPropertyList>
 			

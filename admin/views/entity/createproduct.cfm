@@ -122,17 +122,6 @@ Notes:
 		<cfelseif rc.baseProductType eq "event">
 			<cfset skuList = $.slatwall.getService("SkuService").getSkuSmartList() />
 			<cf_SlatwallErrorDisplay object="#rc.product#" errorName="eventsku" />
-			<!---<cf_HibachiPropertyDisplay object="#skuList#" fieldName="eventStartDateTime" property="eventStartDateTime" edit="#rc.edit#">--->
-				<!---<cfdump var="#skuList#" top="3"/>--->
-			<!---<cf_HibachiListingDisplay smartList="Sku" selectFieldName="skuCode" edit="true">
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-				<cf_HibachiListingColumn propertyIdentifier="product.productName" />
-				<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime"  />
-				<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime"  />
-			</cf_HibachiListingDisplay>--->
-			<!---<cfdump var="#rc.product#" top="3">--->
-			<!--- TODO [glenn]: Want to select Event Date Start/End & LocationConfiguration --->
-			<!--- You may need to add eventStartDateTime & eventEndDateTime to the sku entity, check the spec --->
 		</cfif>
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

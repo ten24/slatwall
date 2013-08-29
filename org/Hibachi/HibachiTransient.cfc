@@ -232,8 +232,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							thisEntity.populate(manyToOneStructData);
 
 							// Tell the variables scope that we populated this sub-property
-							variables.populatedSubProperties[ currentProperty.name ] = thisEntity;
-
+							addPopulatedSubProperty(currentProperty.name, thisEntity);
 
 						// If there were no additional values in the strucuture then we just try to get the entity and set it... in this way a null is a valid option
 						} else {
@@ -285,11 +284,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 								// Populate the sub property
 								thisEntity.populate(oneToManyArrayData[a]);
-
-								if(!structKeyExists(variables, "populatedSubProperties") || !structKeyExists(variables.populatedSubProperties, currentProperty.name)) {
-									variables.populatedSubProperties[ currentProperty.name ] = [];
-								}
-								arrayAppend(variables.populatedSubProperties[ currentProperty.name ], thisEntity);
+								
+								addPopulatedSubProperty(currentProperty.name, thisEntity);
 							}
 						}
 					}
@@ -382,6 +378,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		// Return this object
 		return this;
 	}
+	
+	public void function addPopulatedSubProperty( required string propertyName, required any entity ) {
+		var propertyMeta = getPropertyMetaData( arguments.propertyName );
+		if(structKeyExists(propertyMeta, "fieldtype") && propertyMeta.fieldType == "many-to-one") {
+			variables.populatedSubProperties[ arguments.propertyName ] = arguments.entity;
+		} else if (structKeyExists(propertyMeta, "fieldtype") && propertyMeta.fieldType == "one-to-many") {
+			if(!structKeyExists(variables.populatedSubProperties, arguments.propertyName)) {
+				variables.populatedSubProperties[ arguments.propertyName ] = [];			
+			}
+			arrayAppend(variables.populatedSubProperties[ arguments.propertyName ], arguments.entity);
+		}
+	}
+	
 
 	// @hind public method to see all of the validations for a particular context
 	public struct function getValidations( string context="" ) {

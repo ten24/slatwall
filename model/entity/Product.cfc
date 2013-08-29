@@ -139,6 +139,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				arrayAppend(variables.productTypeOptions, {name=records[i].getSimpleRepresentation(), value=records[i].getProductTypeID()});
 			}
 		}
+		
 		return variables.productTypeOptions;
 	}
     
