@@ -57,7 +57,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productListingPageFlag" ormtype="boolean";
 	
 	// CMS Properties
-	property name="cmsContentID" ormtype="string";
+	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
 	
 	// Related Object Properties (many-to-one)
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";

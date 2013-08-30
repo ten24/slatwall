@@ -51,7 +51,9 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// Persistent Properties
 	property name="siteID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="siteName" ormtype="string";
-	property name="cmsSiteID" ormtype="string";
+	
+	// CMS Properties
+	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 	
 	// Related Object Properties (many-to-one)
 	
