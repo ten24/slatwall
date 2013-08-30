@@ -69,14 +69,33 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var entityName in allEntities) {
 			var shortEntityName = replace(entityName,"Slatwall","");
 			if(!listFindNoCase(ignoreEntities, shortEntityName)) {
+				
+				// Test Entity Name
+				var entityKeyValue = request.slatwallScope.rbKey('entity.#shortEntityName#');
+				if(right(entityKeyValue,8) == '_missing') {
+					passes = false;
+					arrayAppend(variables.debugArray, entityKeyValue);
+				}
+				
+				// Test Plural Entity Name
+				/*
+				var entityKeyValuePlural = request.slatwallScope.rbKey('entity.#shortEntityName#_plural');
+				if(right(entityKeyValuePlural,8) == '_missing') {
+					passes = false;
+					arrayAppend(variables.debugArray, entityKeyValuePlural);
+				}
+				*/
+				
 				var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
 				for(var property in properties) {
 					if(!listFindNoCase(ignoreEntityProperties, "#shortEntityName#.#property.name#") && !listFindNoCase(ignoreProperties, property.name) && (!structKeyExists(property, "fieldtype") || property.fieldType eq "column") && (!structKeyExists(property, "persistent") || property.persistent) ) {
-						var keyValue = request.slatwallScope.rbKey('entity.#shortEntityName#.#property.name#');
-						if(right(keyValue,8) == '_missing') {
+						
+						// Test Property
+						var propertyKeyValue = request.slatwallScope.rbKey('entity.#shortEntityName#.#property.name#');
+						if(right(propertyKeyValue,8) == '_missing') {
 							passes = false;
-							arrayAppend(variables.debugArray, keyValue);
-						}	
+							arrayAppend(variables.debugArray, propertyKeyValue);
+						}
 					}
 				}
 			}
