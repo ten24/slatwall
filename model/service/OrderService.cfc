@@ -613,9 +613,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.deleteOrder( arguments.order );
 			
 		// Otherwise we can just remove the account so that it isn't remember as an open cart for this account
-		} else {
+		} else if(!isNull(order.getAccount())) {
 			
-			order.setAccount( javaCast("null", "") );
+			order.removeAccount();
 		}
 		
 		return this.newOrder();
