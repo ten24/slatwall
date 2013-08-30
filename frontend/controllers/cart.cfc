@@ -129,9 +129,7 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 	public void function removePromotionCode(required struct rc) {
 		param name="rc.promotionCodeID" default="";
 		
-		var pc = getPromotionService().getPromotionCode(rc.promotionCodeID, true);
-		
-		getOrderService().removePromotionCode(order=rc.$.slatwall.cart(), promotionCode=pc);
+		getOrderService().processOrder( rc.$.slatwall.cart(), rc, 'removePromotionCode');
 		
 		getFW().setView("frontend:cart.detail");
 	}

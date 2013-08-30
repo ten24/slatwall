@@ -12,6 +12,10 @@
 	    "fulfillmentTypeShippingNoAccountAddress":{
 	        "fulfillmentMethodType":	{"eq":"shipping"},
 	        "accountAddress":			{"null":true}
+	    },
+	    "fulfillmentTypeShippingWithoutRateOverride":{
+	        "fulfillmentMethodType":	{"eq":"shipping"},
+	        "accountAddress":			{"null":true}
 	    }
 	},
 	"properties":{
@@ -23,7 +27,8 @@
 		"pickupLocation":			[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],
 		"shippingAddress":			[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","required":true}],
 		"shippingMethod":			[
-			{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","required":true,"method":"hasValidShippingMethodRate"}
+			{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","required":true},
+			{"contexts":"placeOrder","conditions":"fulfillmentTypeShippingWithoutRateOverride","method":"hasValidShippingMethodRate"}
 		],
 		"orderStatusCode":			[
 			{"contexts":"edit,manualFulfillmentCharge","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
