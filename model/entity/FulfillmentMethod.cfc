@@ -102,14 +102,6 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 		arguments.shippingMethod.removeFulfillmentMethod( this );    
 	}
 	
-	// Order Fulfillments (one-to-many)
-	public void function addOrderFulfillment(required any orderFulfillment) {
-		arguments.orderFulfillment.setFulfillmentMethod( this );
-	}
-	public void function removeOrderFulfillment(required any orderFulfillment) {
-		arguments.orderFulfillment.removeFulfillmentMethod( this );
-	}
-	
 	// Promotion Qualifiers (many-to-many - inverse)
 	public void function addPromotionQualifier(required any promotionQualifier) {
 		arguments.promotionQualifier.addFulfillmentMethods( this );

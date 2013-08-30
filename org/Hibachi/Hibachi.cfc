@@ -387,6 +387,12 @@ component extends="FW1.framework" {
 					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
 					onFirstRequestPostUpdate();
 					
+					//==================== START: EVENT HANDLER SETUP ========================
+					
+					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
+					
+					//===================== END: EVENT HANDLER SETUP =========================
+					
 					// Application Setup Ended
 					getHibachiScope().setApplicationValue("initialized", true);
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Setup Complete");

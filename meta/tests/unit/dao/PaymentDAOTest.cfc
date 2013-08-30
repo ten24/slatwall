@@ -48,15 +48,43 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-
 	public void function setUp() {
 		super.setup();
 		
-		variables.dao = request.slatwallScope.getDAO("accountDAO");
+		variables.dao = request.slatwallScope.getDAO("paymentDAO");
 	}
-	
+
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
+	}
+	
+	public void function getOriginalAuthorizationCode_returns_empty_string_using_orderPaymentID() {
+		assert(variables.dao.getOriginalAuthorizationCode( orderPaymentID="this-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalAuthorizationCode_returns_empty_string_using_accountPaymentID() {
+		assert(variables.dao.getOriginalAuthorizationCode( accountPaymentID="this-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalProviderTransactionID_returns_empty_string_using_orderPaymentID() {
+		assert(variables.dao.getOriginalProviderTransactionID( orderPaymentID="this-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalProviderTransactionID_returns_empty_string_using_accountPaymentID() {
+		assert(variables.dao.getOriginalProviderTransactionID( accountPaymentID="this-is-fake" ) eq "");
+	}
+	
+	public void function updateInvalidAuthorizationCode_fails_if_only_authorization_code_is_passed() {
+		expectException("org.hibernate.hql.ast.QuerySyntaxException");
+		variables.dao.updateInvalidAuthorizationCode( authorizationCode="this-is-fake" );
+	}
+	
+	public void function updateInvalidAuthorizationCode_runs_if_orderPaymentID_is_passed() {
+		variables.dao.updateInvalidAuthorizationCode( authorizationCode="this-is-fake", orderPaymentID="this-is-fake" );
+	}
+	
+	public void function updateInvalidAuthorizationCode_runs_if_accountPaymentID_is_passed() {
+		variables.dao.updateInvalidAuthorizationCode( authorizationCode="this-is-fake", accountPaymentID="this-is-fake" );
 	}
 }
 

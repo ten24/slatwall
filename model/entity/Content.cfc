@@ -57,7 +57,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productListingPageFlag" ormtype="boolean";
 	
 	// CMS Properties
-	property name="cmsContentID" ormtype="string";
+	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
 	
 	// Related Object Properties (many-to-one)
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
@@ -131,24 +131,6 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			arrayDeleteAt(arguments.parentContent.getChildContents(), index);
 		}
 		structDelete(variables, "parentContent");
-	}
-	
-	// Site (many-to-one)    
-	public void function setSite(required any site) {    
-		variables.site = arguments.site;    
-		if(isNew() or !arguments.site.hasContent( this )) {    
-			arrayAppend(arguments.site.getContents(), this);    
-		}    
-	}    
-	public void function removeSite(any site) {    
-		if(!structKeyExists(arguments, "site")) {    
-			arguments.site = variables.site;    
-		}    
-		var index = arrayFind(arguments.site.getContents(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.site.getContents(), index);    
-		}    
-		structDelete(variables, "site");    
 	}
 	
 	// Child Contents (one-to-many)    

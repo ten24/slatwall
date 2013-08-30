@@ -69,10 +69,22 @@ Notes:
 					<cfloop array="#rc.order.getOrderFulfillments()#" index="orderFulfillment">
 						<cfset thisErrorBean = $.slatwall.getService("HibachiValidationService").validate(object=orderFulfillment, context='placeOrder', setErrors=false) />
 						<cfif thisErrorBean.hasErrors()>
+							
 							<cfset ofIndex++ />
+							
 							<h5>#orderFulfillment.getSimpleRepresentation()#</h5>
-							<input type="hidden" name="orderFulfillments[#ofIndex#].orderFulfillmentID" value="#orderFulfillment.getOrderFulfillmentID()#" />						
-							<cfif orderFulfillment.getFulfillmentMethodType() eq "shipping">
+							<input type="hidden" name="orderFulfillments[#ofIndex#].orderFulfillmentID" value="#orderFulfillment.getOrderFulfillmentID()#" />
+							
+							<!--- Email --->
+							<cfif orderFulfillment.getFulfillmentMethodType() eq "email">
+								<cf_HibachiPropertyDisplay object="#orderFulfillment#" property="emailAddress" fieldName="orderFulfillments[#ofIndex#].emailAddress" fieldClass="required" edit="#rc.edit#" />
+								
+							<!--- Pickup --->
+							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "pickup">
+								<cf_HibachiPropertyDisplay object="#orderFulfillment#" property="pickupLocation" fieldName="orderFulfillments[#ofIndex#].pickupLocation.locationID" fieldClass="required" edit="#rc.edit#" />
+								
+							<!--- Shippint --->
+							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "shipping">
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingMethod")>
 									<cfset rc.placeOrderNeedsFulifllmentCharge = true />
 									<cf_HibachiPropertyDisplay object="#orderFulfillment#" property="shippingMethod" fieldName="orderFulfillments[#ofIndex#].shippingMethod.shippingMethodID" fieldClass="required" edit="#rc.edit#" />
@@ -80,8 +92,8 @@ Notes:
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingAddress")>
 									<cf_SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#" fieldNamePrefix="orderFulfillments[#ofIndex#].shippingAddress" edit="#rc.edit#" />
 								</cfif>
-								<hr />
 							</cfif>
+							<hr />
 						</cfif>
 					</cfloop>
 				</cfif>

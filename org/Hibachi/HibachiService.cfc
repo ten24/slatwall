@@ -281,7 +281,7 @@
 				return onMissingProcessMethod( missingMethodName, missingMethodArguments );
 			}
 
-			return super.onMissingMethod(argumentsCollection=arguments);
+			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
 		}
 		
 	
@@ -579,8 +579,8 @@
 		 * ...in which XXX is an ORM entity name.
 		 */
 		private function onMissingExportMethod( required string missingMethodName, required struct missingMethodArguments ){
-			var entityName = getProperlyCasedFullEntityName(missingMethodName.substring( 6 ));
-			var exportQry = getHibachiDAO().getExportQuery(entityName = entityName);
+			var entityMeta = getMetaData(getEntityObject( missingMethodName.substring( 6 ) ));
+			var exportQry = getHibachiDAO().getExportQuery(tableName = entityMeta.table);
 			
 			export(data=exportQry);
 		}

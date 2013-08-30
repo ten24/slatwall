@@ -809,14 +809,20 @@
 				tcontent.menuTitle
 			FROM
 				tcontent
+			  LEFT JOIN
+			  	SwContent on tcontent.contentID = SwContent.cmsContentID AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" />
 			WHERE
 				tcontent.active = <cfqueryparam cfsqltype="cf_sql_bit" value="1" />
 			  AND
 			  	tcontent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraSiteID#" />
 			  AND
-    			tcontent.path LIKE '00000000000000000000000000000000001%'
+			  	<cfif $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">
+			  		SUBSTR(TO_CHAR(tcontent.path),1,35) = '00000000000000000000000000000000001'
+				<cfelse>
+					LEFT(tcontent.path, 35) = '00000000000000000000000000000000001'
+				</cfif>
 			  AND
-				NOT EXISTS( SELECT contentID FROM SwContent WHERE SwContent.cmsContentID = tcontent.contentID AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSite.getSiteID()#" /> )
+			  	SwContent.contentID is null
 			ORDER BY
 				<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL" OR  $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">
 					LENGTH( tcontent.path )
@@ -825,7 +831,6 @@
 				</cfif>
 		</cfquery>
 		
-		<cfset var allParentsFound = true />
 		<cfloop query="missingContentQuery">
 			
 			<cfset var rs = "" />
@@ -894,16 +899,9 @@
 							<cfqueryparam cfsqltype="cf_sql_bit" value="0" />
 						)
 					</cfquery>
-				<cfelse>
-					<cfset allParentsFound = false />
 				</cfif>
 			</cfif>
 		</cfloop>
-		
-		<!--- Move Recursively through the entire site tree --->
-		<cfif !allParentsFound>
-			<cfset syncMuraContent(argumentcollection=arguments) />
-		</cfif>
 	</cffunction>
 	
 	<cffunction name="updateOldSlatwallContentIDPath">
@@ -947,35 +945,25 @@
 		<cfset var parentMappingCache = {} />
 		<cfset var missingCategoryQuery = "" />
 		
-		<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL" OR  $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">
-			<cfquery name="missingCategoryQuery">
-				SELECT
-					tcontentcategories.categoryID,
-					tcontentcategories.parentID,
-					tcontentcategories.name
-				FROM
-					tcontentcategories
-				WHERE
-					NOT EXISTS( SELECT categoryID FROM SwCategory WHERE SwCategory.cmsCategoryID = tcontentcategories.categoryID )
-				ORDER BY
+		<cfquery name="missingCategoryQuery">
+			SELECT
+				tcontentcategories.categoryID,
+				tcontentcategories.parentID,
+				tcontentcategories.name
+			FROM
+				tcontentcategories
+			  LEFT JOIN
+			  	SwCategory on tcontentcategories.categoryID = SwCategory.cmsCategoryID
+			WHERE
+				SwCategory.categoryID is null
+			ORDER BY
+				<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL" OR  $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">
 					LENGTH(tcontentcategories.path)
-			</cfquery>
-		<cfelse>
-			<cfquery name="missingCategoryQuery">
-				SELECT
-					tcontentcategories.categoryID,
-					tcontentcategories.parentID,
-					tcontentcategories.name
-				FROM
-					tcontentcategories
-				WHERE
-					NOT EXISTS( SELECT categoryID FROM SwCategory WHERE SwCategory.cmsCategoryID = tcontentcategories.categoryID )
-				ORDER BY
+				<cfelse>
 					LEN(tcontentcategories.path)
-			</cfquery>
-		</cfif>
+				</cfif>
+		</cfquery>
 		
-		<cfset var allParentsFound = true />
 		<cfloop query="missingCategoryQuery">
 			
 			<cfset var rs = "" />
@@ -1032,16 +1020,9 @@
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />
 						)
 					</cfquery>
-				<cfelse>
-					<cfset allParentsFound = false />
 				</cfif>
 			</cfif>
 		</cfloop>
-		
-		<!--- Move Recursively through the entire site tree --->
-		<cfif !allParentsFound>
-			<cfset syncMuraCategories(argumentcollection=arguments) />
-		</cfif>
 	</cffunction>
 	
 	<cffunction name="syncMuraContentCategoryAssignment">
@@ -1061,23 +1042,10 @@
 			  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
 			  INNER JOIN
 			  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
+			  LEFT JOIN
+			  	SwContentCategory on SwContentCategory.contentID = SwContent.contentID AND SwContentCategory.categoryID = SwCategory.categoryID
 			WHERE
-				tcontentcategoryassign.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#muraSiteID#" />
-			  AND
-			  	NOT EXISTS(
-				  	SELECT
-				  		SwContentCategory.contentID
-				  	FROM
-				  		SwContentCategory
-				  	  INNER JOIN
-				  	  	SwContent on SwContentCategory.contentID = SwContent.contentID
-				  	  INNER JOIN
-				  	  	SwCategory on SwContentCategory.categoryID = SwCategory.categoryID
-				  	WHERE
-				  		SwContent.cmsContentID = tcontentcategoryassign.contentID
-				  	  AND
-				  	  	SwCategory.cmsCategoryID = tcontentcategoryassign.categoryID
-			  	)
+				SwContentCategory.contentID is null AND SwContentCategory.categoryID is null
 		</cfquery>
 		
 		<!--- Loop over missing assignments --->

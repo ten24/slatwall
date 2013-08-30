@@ -651,24 +651,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Product Type (many-to-one)
-	public void function setProductType(required any productType) {
-		variables.productType = arguments.productType;
-		if(isNew() or !arguments.productType.hasProduct( this )) {
-			arrayAppend(arguments.productType.getProducts(), this);
-		}
-	}
-	public void function removeProductType(any productType) {
-		if(!structKeyExists(arguments, "productType")) {
-			arguments.productType = variables.productType;
-		}
-		var index = arrayFind(arguments.productType.getProducts(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.productType.getProducts(), index);
-		}
-		structDelete(variables, "productType");
-	}
-	
 	// Brand (many-to-one)
 	public void function setBrand(required any brand) {
 		variables.brand = arguments.brand;

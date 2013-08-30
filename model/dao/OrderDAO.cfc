@@ -46,9 +46,9 @@
 Notes:
 
 --->
-<cfcomponent extends="HibachiDAO">
+<cfcomponent extends="HibachiDAO" output="false">
 	
-	<cffunction name="removeOrderFromAllSessions" access="public" returntype="void">
+	<cffunction name="removeOrderFromAllSessions" access="public" returntype="void" output="false">
 		<cfargument name="orderID" type="string" required="true" />
 		
 		<cfset var rs = "" />
@@ -103,7 +103,7 @@ Notes:
 		}
 	</cfscript>
 	
-	<cffunction name="getOrderPaymentNonNullAmountTotal" access="public" returntype="Numeric">
+	<cffunction name="getOrderPaymentNonNullAmountTotal" access="public" returntype="numeric" output="false">
 		<cfargument name="orderID" type="string" required="true" />
 		
 		<cfset var rs = "" />

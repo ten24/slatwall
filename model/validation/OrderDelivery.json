@@ -1,5 +1,6 @@
 {
 	"properties":{
+	 	"orderDeliveryID":			[{"contexts":"delete","maxLength":0}],
 	    "order":					[{"contexts":"save","required":true}],
 	    "location":					[{"contexts":"save","required":true}],
 		"orderDeliveryItems":		[{"contexts":"save","required":true,"minCollection":1}]

@@ -51,10 +51,12 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="superUserFlag" ormtype="boolean";
-	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false";
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
 	property name="company" hb_populateEnabled="public" ormtype="string";
+	
+	// CMS Properties
+	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 	
 	// Related Object Properties (many-to-one)
 	property name="primaryEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="primaryEmailAddressID";

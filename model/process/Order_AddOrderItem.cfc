@@ -72,6 +72,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderReturnID" hb_formFieldType="select" hb_rbKey="entity.orderReturn";
 	property name="fulfillmentMethodID" hb_formFieldType="select";
 	property name="shippingAccountAddressID" hb_formFieldType="select";
+	property name="pickupLocationID" hb_formFieldType="select" hb_rbKey="entity.orderFulfillment.pickupLocation";
 	
 	// Data Properties (Inputs)
 	property name="price";
@@ -81,6 +82,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";
 	property name="saveShippingAccountAddressName";
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
+	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
 	
 	// Data Properties (Related Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
@@ -244,6 +246,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.locationIDOptions = getService("locationService").getLocationOptions(); 
 		}
 		return variables.locationIDOptions;
+	}
+	
+	public array function getPickupLocationIDOptions() {
+		if(!structKeyExists(variables, "pickupLocationIDOptions")) {
+			variables.pickupLocationIDOptions = getService("locationService").getLocationOptions(); 
+		}
+		return variables.pickupLocationIDOptions;
 	}
 	
 	public array function getReturnLocationIDOptions() {

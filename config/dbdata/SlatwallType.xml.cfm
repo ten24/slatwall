@@ -44,6 +44,7 @@
 		<Record typeID="444df293fcc530434949d63e408cac2b" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df293fcc530434949d63e408cac2b" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Product" systemCode="astProduct" />
 		<Record typeID="5accbf52063a5b4e2a73f19f4151cc40" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf52063a5b4e2a73f19f4151cc40" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Product Type" systemCode="astProductType" />
 		<Record typeID="444df328fa718364a389a4495f386a27" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df328fa718364a389a4495f386a27" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="SKU" systemCode="astSku" />
+		<Record typeID="5accbf5a08b1fc0f12fa654ea0c0b683" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf5a08b1fc0f12fa654ea0c0b683" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Subscription Benefit" systemCode="astSubscriptionBenefit" />
 		<Record typeID="444df326c87e098e420297b5a1691e69" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df326c87e098e420297b5a1691e69" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Vendor" systemCode="astVendor" />
 		<Record typeID="444df329d293eeec641b805b68cca95f" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df329d293eeec641b805b68cca95f" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Vendor Order" systemCode="astVendorOrder" />
 				
@@ -170,13 +171,6 @@
 <!--
 Below Are UUID's to use... delete after using
 
-<<<<<<< HEAD
-5accbf58a94b61fe031f854ffb220f4b
-5accbf59ac1b1e30f86b1ab01812e932
-=======
->>>>>>> refs/heads/develop
-5accbf5a08b1fc0f12fa654ea0c0b683
-5accbf5b07d71ab6b89545b79c7f2d31
 5accbf5c91278b287d91cd351088b091
 5accbf5de1a3f195b3b99aa930045702
 5accbf5ebc490745659e698536e7ad9e

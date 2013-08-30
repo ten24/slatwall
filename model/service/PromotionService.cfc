@@ -1046,7 +1046,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Setup the boolean for if the promotionPeriod is okToApply based on general use count
 			if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
-				promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order);
+				promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.shippingMethodOption.getOrderFulfillment().getOrder());
 			}
 			
 			// If this promotion period is ok to apply based on general useCount

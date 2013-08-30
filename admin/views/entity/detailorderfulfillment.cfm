@@ -59,10 +59,21 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divClass="span6">
 				
-				<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+				<!--- Email --->
+				<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
+					<cf_HibachiPropertyDisplay object="#rc.orderFulfillment#" property="emailAddress" edit="#rc.edit#">
+				
+				<!--- Pickup --->
+				<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
+					<cf_HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" edit="#rc.edit#">
+					
+				<!--- Shipping --->
+				<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+					
 					<cf_HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
 					<hr />
 					<cf_SlatwallAdminAddressDisplay address="#rc.orderFulfillment.getAddress()#" fieldnameprefix="shippingAddress." edit="#rc.edit#">
+				
 				</cfif>
 				
 				<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "auto">

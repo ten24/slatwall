@@ -65,6 +65,11 @@ Notes:
 			<cf_HibachiTab view="admin:entity/subscriptionbenefittabs/categories" />
 			<cf_HibachiTab view="admin:entity/subscriptionbenefittabs/contents" />
 			<cf_HibachiTab view="admin:entity/subscriptionbenefittabs/pricegroups" />
+			
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.subscriptionBenefit.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.subscriptionBenefit#" attributeSet="#attributeSet#" />
+			</cfloop>
 		</cf_HibachiTabGroup>
 
 		

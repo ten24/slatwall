@@ -58,7 +58,7 @@ Notes:
 			<cfset var updateCopyStarted = false />
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
-			<cfset var downloadFileName = "slatwall.zip" />
+			<cfset var downloadFileName = "slatwall#createUUID()#.zip" />
 			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/config/custom" />
 			<cfset var copyContentExclusionList = "" />
 			
@@ -66,17 +66,17 @@ Notes:
 			<cfzip action="zip" file="#getTempDirectory()#slatwall_bak.zip" source="#slatwallRootPath#" recurse="yes" overwrite="yes" />
 			
 			<!--- start download --->
-			<cfhttp url="#downloadURL#" method="get" path="#getTempDirectory()#" file="#downloadFileName#" />
+			<cfhttp url="#downloadURL#" method="get" path="#getTempDirectory()#" file="#downloadFileName#" throwonerror="true" />
 			
 			<!--- now read and unzip the downloaded file --->
 			<cfset var dirList = "" />
 			<cfzip action="unzip" destination="#getTempDirectory()#" file="#getTempDirectory()##downloadFileName#" >
 			<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
 			<cfset var sourcePath = getTempDirectory() & "#listFirst(dirList.name[1],'/')#" />
-			<cfset var updateCopyStarted = true />
 			<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
 				<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
-			</cfif> 
+			</cfif>
+			<cfset updateCopyStarted = true /> 
 			<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
 			
 			<!--- if there is any error during update, restore the old files and throw the error --->

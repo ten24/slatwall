@@ -52,9 +52,11 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	property name="categoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="categoryIDPath" ormtype="string";
 	property name="categoryName" ormtype="string";
-	property name="cmsCategoryID" ormtype="string";
 	property name="restrictAccessFlag" ormtype="boolean";
 	property name="allowProductAssignmentFlag" ormtype="boolean";
+	
+	// CMS Properties
+	property name="cmsCategoryID" ormtype="string" index="RI_CMSCATEGORYID";
 	
 	// Related Object Properties (many-to-one)
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";

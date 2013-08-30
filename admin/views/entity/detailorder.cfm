@@ -123,7 +123,7 @@ Notes:
 				
 				<!--- Totals --->
 				<cf_HibachiPropertyTable>
-					<cf_HibachiPropertyTableBreak header="Overview" />
+					<cf_HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.overview')#" />
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="orderStatusType" edit="false" displayType="table">
 					<cfif !isNull(rc.order.getOrderOpenDateTime())>
 						<cf_HibachiPropertyDisplay object="#rc.order#" property="orderOpenDateTime" edit="false" displayType="table">
@@ -136,14 +136,14 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="taxtotal" edit="false" displayType="table">
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="fulfillmenttotal" edit="false" displayType="table">
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="discounttotal" edit="false" displayType="table">
-					<cf_HibachiPropertyTableBreak header="Payments" />
+					<cf_HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
+					<cf_HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.payments')#" />
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="paymentAmountReceivedTotal" edit="false" displayType="table">
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="paymentAmountCreditedTotal" edit="false" displayType="table">
 					<cfif arrayLen(rc.order.getReferencingOrders())>
 						<cf_HibachiPropertyDisplay object="#rc.order#" property="referencingPaymentAmountCreditedTotal" edit="false" displayType="table">
 					</cfif>
-					<cf_HibachiPropertyTableBreak header="" />
-					<cf_HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
+					<cf_HibachiPropertyDisplay object="#rc.order#" property="paymentAmountDue" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
 				</cf_HibachiPropertyTable>
 				
 			</cf_HibachiPropertyList>

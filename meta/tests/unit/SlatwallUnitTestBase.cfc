@@ -48,19 +48,28 @@ Notes:
 */
 component extends="mxunit.framework.TestCase" output="false" {
 
-	// @hint put things in here that you want to run befor EACH test
-	public void function setUp() {
+	public void function beforeTests(){
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		variables.slatwallFW1Application.bootstrap();
+		//variables.slatwallFW1Application.reloadApplication();
 		
 		variables.helper = createObject("component", "Helper");
+	}
+
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		variables.slatwallFW1Application.bootstrap();
 		
 		request.slatwallScope.getAccount().setSuperUserFlag(1);
+		
+		// Setup a debugging output array
+		variables.debugArray = [];
 	}
 	
 	// @hint put things in here that you want to run after EACH test
 	public void function tearDown() {
 		//variables.slatwallFW1Application.endSlatwallLifecycle();
+		debug("Debug Messages: #arrayLen(variables.debugArray)#");
+		debug(variables.debugArray);
 	}
 	
 }

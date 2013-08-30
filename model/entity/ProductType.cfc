@@ -171,14 +171,6 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		arguments.ChildProductType.removeParentProductType( this );
 	}
 	
-	// Products (one-to-many)
-	public void function addProduct(required any product) {
-		arguments.product.setProductType( this );
-	}
-	public void function removeProduct(required any product) {
-		arguments.product.removeProductType( this );
-	}
-	
 	// Promotion Rewards (many-to-many - inverse)
 	public void function addPromotionReward(required any promotionReward) {
 		arguments.promotionReward.addProductType( this );

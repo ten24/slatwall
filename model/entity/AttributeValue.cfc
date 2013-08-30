@@ -72,6 +72,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="subscriptionBenefit" cfc="SubscriptionBenefit" fieldtype="many-to-one" fkcolumn="subscriptionBenefitID";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
 	property name="vendorOrder" cfc="VendorOrder" fieldtype="many-to-one" fkcolumn="vendorOrderID";
 	
@@ -324,6 +325,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.sku.getAttributeValues(), index);    
 		}    
 		structDelete(variables, "sku");    
+	}
+	
+	// Subscription Benefit (many-to-one)
+	public void function setSubscriptionBenefit(required any subscriptionBenefit) {
+		variables.subscriptionBenefit = arguments.subscriptionBenefit;
+		if(isNew() or !arguments.subscriptionBenefit.hasAttributeValue( this )) {
+			arrayAppend(arguments.subscriptionBenefit.getAttributeValues(), this);
+		}
+	}
+	public void function removeSubscriptionBenefit(any subscriptionBenefit) {
+		if(!structKeyExists(arguments, "subscriptionBenefit")) {
+			arguments.subscriptionBenefit = variables.subscriptionBenefit;
+		}
+		var index = arrayFind(arguments.subscriptionBenefit.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.subscriptionBenefit.getAttributeValues(), index);
+		}
+		structDelete(variables, "subscriptionBenefit");
 	}
 	
 	// Vendor (many-to-one)
