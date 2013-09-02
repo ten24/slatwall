@@ -82,9 +82,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID"; 
 	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
+	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="many-to-many" linktable="SwSkuLocationConfiguration" fkcolumn="skuID" inversejoincolumn="locationConfigurationID";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="many-to-many" linktable="SwSkuLocationConfiguration" fkcolumn="skuID" inversejoincolumn="locationConfigurationID" inverse="true";
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
 	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
 	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
@@ -611,19 +611,32 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public string function getSkuDefinition() {
 		if(!structKeyExists(variables, "skuDefinition")) {
 			variables.skuDefinition = "";
-			if(getBaseProductType() eq "contentAccess") {
-				
-			} else if (getBaseProductType() eq "merchandise") {
-				for(var option in getOptions()) {
-		    		variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
-		    	}
-		    	trim(variables.skuDefinition);
-			} else if (getBaseProductType() eq "subscription") {
-				variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+			var baseProductType = getBaseProductType();
+			switch (baseProductType) 
+			{
+				case "merchandise":
+					for(var option in getOptions()) {
+			    			variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
+			    			}
+			    		break;
+			    		
+			    	case "subscription":
+					variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+					break;
+					
+				case "event":
+					var configs = getLocationConfigurations();
+					for(config in configs){
+			    			variables.skuDefinition = listAppend(variables.skuDefinition, config.getlocation().getlocationName() & ">" & config.getlocationConfigurationName(), ",");
+					}
+					break;
+					
+				default: 
+					variables.skuDefinition = "";
 			}
 			
 		}
-		return variables.skuDefinition;
+		return trim(variables.skuDefinition);
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
