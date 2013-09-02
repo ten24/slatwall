@@ -60,7 +60,6 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.product.brand.brandName" />
 		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.product.productName" />
 		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.skuDefinition" sort="false" />
-		<!--- TODO [Glenn]: Location name should reflect full location path ---> 
 		<cf_HibachiListingColumn propertyIdentifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
 			<cf_HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />

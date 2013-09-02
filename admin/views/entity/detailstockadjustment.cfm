@@ -47,7 +47,6 @@ Notes:
 
 --->
 <cfparam name="rc.stockAdjustment" type="any">
-<cfparam name="rc.location" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
@@ -65,10 +64,10 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentType" edit="false">
 				<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentStatusType" edit="false">
 				<cfif listFindNoCase("satLocationTransfer,satManualOut", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-					<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="fromLocation" edit="#rc.stockAdjustment.isNew()#" valueOptions="#rc.location.getlocationOptions()#">
+					<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="fromLocation" edit="#rc.stockAdjustment.isNew()#" valueOptions="#rc.stockAdjustment.getService("LocationService").getLocationOptions()#">
 				</cfif>
 				<cfif listFindNoCase("satLocationTransfer,satManualIn", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-					<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="toLocation" edit="#rc.stockAdjustment.isNew()#" valueOptions="#rc.location.getlocationOptions()#">
+					<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="toLocation" edit="#rc.stockAdjustment.isNew()#" valueOptions="#rc.stockAdjustment.getService("LocationService").getLocationOptions()#">
 				</cfif>
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
