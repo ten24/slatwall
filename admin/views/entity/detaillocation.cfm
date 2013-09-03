@@ -48,7 +48,6 @@ Notes:
 --->
 <cfparam name="rc.location" type="any">
 <cfparam name="rc.edit" type="boolean">
-
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.location#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.location#">
