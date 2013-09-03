@@ -88,7 +88,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				
 				var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
 				for(var property in properties) {
-					if(!listFindNoCase(ignoreEntityProperties, "#shortEntityName#.#property.name#") && !listFindNoCase(ignoreProperties, property.name) && (!structKeyExists(property, "fieldtype") || property.fieldType eq "column") && (!structKeyExists(property, "persistent") || property.persistent) ) {
+					if(!listFindNoCase(ignoreEntityProperties, "#shortEntityName#.#property.name#") && !listFindNoCase(ignoreProperties, property.name) && (!structKeyExists(property, "fieldtype") || property.fieldType eq "column" || property.fieldType eq "id") && (!structKeyExists(property, "persistent") || property.persistent) ) {
 						
 						// Test Property
 						var propertyKeyValue = request.slatwallScope.rbKey('entity.#shortEntityName#.#property.name#');
