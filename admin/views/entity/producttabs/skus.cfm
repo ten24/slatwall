@@ -61,8 +61,6 @@ Notes:
 							   selectTitle="#$.slatwall.rbKey('define.default')#">
 							      
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-		<!--- TODO [Glenn]: SKU Definition in Edit Event Product should show locations 
-				- On Merchandise this currently shows option groups....possible to show locations for events? --->
 		<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
 		<!---
 		<cfif rc.product.getBaseProductType() eq "merchandise">
