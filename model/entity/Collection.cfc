@@ -42,7 +42,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string";
-	property name="collectionObject" ormtype="string";
+	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionData" ormtype="string" length="4000";
 	
 	// Calculated Properties
@@ -65,11 +65,23 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-
+	property name="collectionObjectOptions" persistent="false";
 
 
 	
 	// ============ START: Non-Persistent Property Methods =================
+	public array function getCollectionObjectOptions() {
+		if(!structKeyExists(variables, "collectionObjectOptions")) {
+			var emd = getService("hibachiService").getEntitiesMetaData();
+			var enArr = listToArray(structKeyList(emd));
+			arraySort(enArr,"text");
+			variables.collectionObjectOptions = [{name=getHibachiScope().rbKey('define.select'), value=''}];
+			for(var i=1; i<=arrayLen(enArr); i++) {
+				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
+			}
+		}
+		return variables.collectionObjectOptions;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		

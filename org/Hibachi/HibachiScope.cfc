@@ -111,7 +111,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public any function getSmartList(required string entityName, struct data={}) {
-		var entityService = getService( "hibachiService" ).getServiceNameByEntityName( arguments.entityName );
+		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
 		
 		return entityService.invokeMethod("get#arguments.entityName#SmartList", {1=arguments.data});
 	}

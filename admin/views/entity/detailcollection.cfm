@@ -55,15 +55,19 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.collection#">
-			
-		</cf_HibachiTabGroup>
+		<table class="table" sw-collection-display="{collectionID: '#rc.collection.getCollectionID()#'}">
+			<tr>
+				<th ng-repeat="pi in collection.propertyIdentifiers">{{pi}}</th>
+			</tr>
+			<tr ng-repeat="r in collection.pageRecords">
+				<td ng-repeat="pi in collection.propertyIdentifiers"><a ng-click="addFilter( pi )">{{r[pi]}}</a></td>
+			</tr>
+		</table>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
