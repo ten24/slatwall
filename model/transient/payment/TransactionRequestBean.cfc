@@ -97,6 +97,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	
 	// Always there if this Account Payment or Order Payment has previously had an authorization done
 	property name="originalAuthorizationCode" type="string";
+	property name="originalAuthorizationProviderTransactionID" type="string";
+	property name="originalChargeProviderTransactionID" type="string";
 	property name="originalProviderTransactionID" type="string";
 	
 	// Only Used for 'chargePreAuthorization'
@@ -182,11 +184,16 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			setBillingCountryCode(arguments.accountPayment.getBillingAddress().getCountryCode());
 		}
 		
-		// If this account payment has an original authorizationCode then we can use it.
+		// Setup all original transaction details
 		if(len(arguments.accountPayment.getOriginalAuthorizationCode())) {
 			setOriginalAuthorizationCode(arguments.accountPayment.getOriginalAuthorizationCode());
 		}
-		// If this account payment has an original providerTransactionID then we can use it.
+		if(len(arguments.accountPayment.getOriginalAuthorizationProviderTransactionID())) {
+			setOriginalAuthorizationProviderTransactionID(arguments.accountPayment.getOriginalAuthorizationProviderTransactionID());
+		}
+		if(len(arguments.accountPayment.getOriginalChargeProviderTransactionID())) {
+			setOriginalChargeProviderTransactionID(arguments.accountPayment.getOriginalChargeProviderTransactionID());
+		}
 		if(len(arguments.accountPayment.getOriginalProviderTransactionID())) {
 			setOriginalProviderTransactionID(arguments.accountPayment.getOriginalProviderTransactionID());
 		}
@@ -263,11 +270,16 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			}
 		}
 		
-		// If this order payment has an original authorizationCode then we can use it.
+		// Setup all original transaction details
 		if(len(arguments.orderPayment.getOriginalAuthorizationCode())) {
 			setOriginalAuthorizationCode(arguments.orderPayment.getOriginalAuthorizationCode());
 		}
-		// If this account payment has an original providerTransactionID then we can use it.
+		if(len(arguments.orderPayment.getOriginalAuthorizationProviderTransactionID())) {
+			setOriginalAuthorizationProviderTransactionID(arguments.orderPayment.getOriginalAuthorizationProviderTransactionID());
+		}
+		if(len(arguments.orderPayment.getOriginalChargeProviderTransactionID())) {
+			setOriginalChargeProviderTransactionID(arguments.orderPayment.getOriginalChargeProviderTransactionID());
+		}
 		if(len(arguments.orderPayment.getOriginalProviderTransactionID())) {
 			setOriginalProviderTransactionID(arguments.orderPayment.getOriginalProviderTransactionID());
 		}

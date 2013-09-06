@@ -69,7 +69,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
-	property name="orderPaymentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentStatusType" fetch="join";
+	property name="orderPaymentStatusType" hb_populateEnabled="false" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentStatusType" fetch="join";
 	property name="paymentMethod" hb_populateEnabled="public" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" fetch="join";
 	property name="referencedOrderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="referencedOrderPaymentID";
 	property name="termPaymentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="termPaymentAccountID";
@@ -112,9 +112,12 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="paymentMethodOptions" persistent="false";
 	property name="orderStatusCode" persistent="false";
 	property name="originalAuthorizationCode" persistent="false";
+	property name="originalAuthorizationProviderTransactionID" persistent="false";
+	property name="originalChargeProviderTransactionID" persistent="false";
 	property name="originalProviderTransactionID" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="securityCode" persistent="false" hb_populateEnabled="public";
+	property name="sucessfulPaymentTransactionExistsFlag" persistent="false";
 	property name="orderAmountNeeded" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
@@ -225,13 +228,10 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	public numeric function getAmountReceived() {
 		var amountReceived = 0;
 		
-		// We only show 'received' for charged payments
-		if( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			
-			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountReceived = precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived());
+		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
+			if(!isNull(getPaymentTransactions()[i].getAmountReceived())) {
+				amountReceived = precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived());	
 			}
-			
 		}
 				
 		return amountReceived;
@@ -240,13 +240,10 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	public numeric function getAmountCredited() {
 		var amountCredited = 0;
 		
-		// We only show 'credited' for credited payments
-		if( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			
-			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountCredited = precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited());
+		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
+			if(!isNull(getPaymentTransactions()[i].getAmountCredited())) {
+				amountCredited = precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited());	
 			}
-			
 		}
 			
 		return amountCredited;
@@ -299,7 +296,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncredited = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = precisionEvaluate(getAmount() - getAmountCredited());
+			uncredited = precisionEvaluate(getAmount() + getAmountCredited());
 		}
 		
 		return uncredited;
@@ -346,20 +343,59 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public any function getOriginalAuthorizationCode() {
 		if(!structKeyExists(variables,"originalAuthorizationCode")) {
-			variables.originalAuthorizationCode = getService( "paymentService" ).getOriginalAuthorizationCode( orderPaymentID=getOrderPaymentID() );
+			if(!isNull(getReferencedOrderPayment())) {
+				variables.originalAuthorizationCode = getService( "paymentService" ).getOriginalAuthorizationCode( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
+			} else {
+				variables.originalAuthorizationCode = getService( "paymentService" ).getOriginalAuthorizationCode( orderPaymentID=getOrderPaymentID() );
+			}
 		}
 		return variables.originalAuthorizationCode;
 	}
 	
+	public any function getOriginalAuthorizationProviderTransactionID() {
+		if(!structKeyExists(variables,"originalAuthorizationProviderTransactionID")) {
+			if(!isNull(getReferencedOrderPayment())) {
+				variables.originalAuthorizationProviderTransactionID = getService( "paymentService" ).getOriginalAuthorizationProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
+			} else {
+				variables.originalAuthorizationProviderTransactionID = getService( "paymentService" ).getOriginalAuthorizationProviderTransactionID( orderPaymentID=getOrderPaymentID() );
+			}
+		}
+		return variables.originalAuthorizationProviderTransactionID;
+	}
+	
+	public any function getOriginalChargeProviderTransactionID() {
+		if(!structKeyExists(variables,"originalChargeProviderTransactionID")) {
+			if(!isNull(getReferencedOrderPayment())) {
+				variables.originalChargeProviderTransactionID = getService( "paymentService" ).getOriginalChargeProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
+			} else {
+				variables.originalChargeProviderTransactionID = getService( "paymentService" ).getOriginalChargeProviderTransactionID( orderPaymentID=getOrderPaymentID() );
+			}
+		}
+		return variables.originalChargeProviderTransactionID;
+	}
+	
 	public any function getOriginalProviderTransactionID() {
 		if(!structKeyExists(variables,"originalProviderTransactionID")) {
-			variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( orderPaymentID=getOrderPaymentID() );
+			if(!isNull(getReferencedOrderPayment())) {
+				variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );	
+			} else {
+				variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( orderPaymentID=getOrderPaymentID() );	
+			}
 		}
 		return variables.originalProviderTransactionID;
 	}
 	
 	public any function getStatusCode() {
 		return getOrderPaymentStatusType().getSystemCode();
+	}
+	
+	public boolean function getSucessfulPaymentTransactionExistsFlag() {
+		for(var paymentTransaction in getPaymentTransactions()) {
+			if(!isNull(paymentTransaction.getTransactionSuccessFlag()) && paymentTransaction.getTransactionSuccessFlag()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public string function getExpirationDate() {

@@ -60,17 +60,20 @@ Notes:
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />
 				
 				<hr />
 				
 				<!--- Items Selector --->
 				<table class="table table-striped table-bordered table-condensed">
 					<tr>
-						<th>Sku Code</th>
-						<th class="primary">Product Title</th>
-						<th>Options</th>
-						<th>Price</th>
-						<th>Quantity</th>
+						<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
+						<th>#$.slatwall.rbKey('entity.product.title')#</th>
+						<th>#$.slatwall.rbKey('entity.sku.skuDefinition')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantity')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantityDelivered')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.price')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantity')#</th>
 					</tr>
 					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.order.getOrderItems()#" index="orderItem">
@@ -82,12 +85,24 @@ Notes:
 							
 							<td>#orderItem.getSku().getSkuCode()#</td>
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
-							<td>#orderItem.getSku().displayOptions()#</td>
-							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#orderItem.getExtendedPriceAfterDiscount()#" class="span1 number" /></td>
+							<td>#orderItem.getSku().getSkuDefinition()#</td>
+							<td>#orderItem.getQuantity()#</td>
+							<td>#orderItem.getQuantityDelivered()#</td>
+							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#precisionEvaluate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity())#" class="span1 number" /></td>
 							<td><input type="text" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number" /></td>
 						</tr>
 					</cfloop>
 				</table>
+				
+				<hr />
+				
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="refundOrderPaymentID" edit="true" />
+				
+				<cf_HibachiDisplayToggle selector="select[name='refundOrderPaymentID']" showValues="" loadVisable="#!len(rc.processObject.getRefundOrderPaymentID())#">
+					<cfset rc.addOrderPaymentProcessObject = rc.order.getProcessObject("addOrderPayment") />
+					<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
+				</cf_HibachiDisplayToggle>
+				
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		

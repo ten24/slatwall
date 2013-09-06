@@ -1184,7 +1184,7 @@ function tableApplySort(event, ui) {
 	var data = {
 		recordID : jQuery(ui.item).attr('ID'),
 		recordIDColumn : jQuery(ui.item).closest('table').data('idproperty'), 
-		tableName : jQuery(ui.item).closest('table').data('entityname'),
+		entityName : jQuery(ui.item).closest('table').data('entityname'),
 		contextIDColumn : jQuery(ui.item).closest('table').data('sortcontextidcolumn'),
 		contextIDValue : jQuery(ui.item).closest('table').data('sortcontextidvalue'),
 		newSortOrder : 0

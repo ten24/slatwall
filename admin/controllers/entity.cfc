@@ -106,7 +106,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.country = getAddressService().getCountry(rc.countryCode);
 	}
 	
-	
 	// Currency
 	public void function editCurrency(required struct rc) {
 		rc.currency = getCurrencyService().getCurrency(rc.currencyCode);
@@ -237,6 +236,111 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function editSkuCurrency(required struct rc) {
 		super.genericEditMethod('SkuCurrency', rc);
 		rc.pageTitle = rc.$.slatwall.rbKey('admin.entity.editSkuCurrency', {currencyCode=rc.currencyCode});
+	}
+	
+	// State
+	public void function createState(required struct rc) {
+		param name="rc.countryCode" default="";
+		
+		rc.country = getAddressService().getCountry( rc.countryCode );
+		rc.state = getAddressService().newState();
+		rc.state.setCountryCode( rc.countryCode );
+		rc.edit = true;
+	}
+	
+	public void function editState(required struct rc) {
+		param name="rc.countryCode" default="";
+		param name="rc.stateCode" default="";
+		
+		rc.country = getAddressService().getCountry( rc.countryCode );
+		var arr = getAddressService().listState({stateCode=rc.stateCode, countryCode=rc.countryCode});
+		rc.state =  arr[1];
+		rc.edit = true;
+	}
+	
+	public void function detailState(required struct rc) {
+		param name="rc.countryCode" default="";
+		param name="rc.stateCode" default="";
+		
+		rc.country = getAddressService().getCountry(rc.countryCode);
+		var arr = getAddressService().listState({stateCode=rc.stateCode, countryCode=rc.countryCode});
+		rc.state =  arr[1];
+	}
+	
+	public void function deleteState(required struct rc) {
+		param name="rc.countryCode" default="";
+		param name="rc.stateCode" default="";
+		
+		rc.country = getAddressService().getCountry(rc.countryCode);
+		var arr = getAddressService().listState({stateCode=rc.stateCode, countryCode=rc.countryCode});
+		rc.state =  arr[1];
+		
+		// Check how the delete went
+		var deleteOK = getAddressService().deleteState(rc.state);
+		
+		// Place the id in the URL for redirects in case this was a new entity before
+		url['stateCode'] = rc.state.getStateCode();
+		url['countryCode'] = rc.countryCode;
+		
+		// SUCCESS
+		if (deleteOK) {
+			// Show the Generica Action Success Message
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.entity.delete_success" ), "${itemEntityName}", rbKey('entity.state'), "all" ), "success");
+			
+			// Render or Redirect a Success
+			renderOrRedirectSuccess( defaultAction="admin:entity.liststate", maintainQueryString=true, rc=arguments.rc);
+			
+		// FAILURE
+		} else {
+				
+			// Show all of the specific messages & error messages for the entity
+			entity.showErrorsAndMessages();
+			
+			// Render or Redirect a faluire
+			renderOrRedirectFailure( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);	
+		}
+	}
+	
+	public void function saveState(required struct rc) {
+		param name="rc.countryCode" default="";
+		param name="rc.stateCode" default="";
+		
+		rc.country = getAddressService().getCountry(rc.countryCode);
+		var arr = getAddressService().listState({stateCode=rc.stateCode, countryCode=rc.countryCode});
+		if(arrayLen(arr)) {
+			rc.state = arr[1];
+		} else {
+			rc.state = getAddressService().newState();
+		}
+		rc.state.setCountryCode( rc.countryCode );
+		rc.state.setStateCode( rc.stateCode );
+		
+		rc.state = getAddressService().saveState(rc.state, rc);
+		
+		// Place the id in the URL for redirects in case this was a new entity before
+		url['stateCode'] = rc.state.getStateCode();
+		url['countryCode'] = rc.countryCode;
+			
+		// SUCCESS
+		if(!rc.state.hasErrors()) {
+			// Show the Generica Action Success Message
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.entity.save_success" ), "${itemEntityName}", rbKey('entity.state'), "all" ) , "success");
+			
+			// Show all of the specific messages & error messages for the entity
+			rc.state.showErrorsAndMessages();
+				
+			// Render or Redirect a Success
+			renderOrRedirectSuccess( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);	
+			
+		// FAILURE
+		} else {
+			
+			// Show all of the specific messages & error messages for the entity
+			rc.state.showErrorsAndMessages();
+			
+			// Render or Redirect a faluire
+			renderOrRedirectFailure( defaultAction="editstate", maintainQueryString=true, rc=arguments.rc);
+		}
 	}
 	
 	// Stock Adjustment
