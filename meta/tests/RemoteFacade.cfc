@@ -46,7 +46,7 @@
 	Notes:
 	
 --->
-<cfcomponent extends="mxunit.framework.RemoteFacade">
+<cfcomponent extends="mxunit.framework.RemoteFacade" wsversion="1">
 	<!--- Intentionally left empty.  This works by extending the mxunit framework that should have a mapping in your CFIDE --->
 		
 	<cffunction name="startTestRun" access="remote" returntype="string">

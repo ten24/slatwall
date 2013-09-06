@@ -51,9 +51,12 @@ Notes:
 	<cffunction name="getRelatedCommentsForEntity" returntype="Array" access="public">
 		<cfargument name="primaryIDPropertyName" type="string" required="true" />
 		<cfargument name="primaryIDValue" type="string" required="true" />
-		
+		<cfargument name="publicFlag" type="boolean" required="false" />
+
 		<cftry>
-			<cfset var results = ormExecuteQuery("SELECT NEW MAP(
+			<cfset hqlPrarms = [arguments.primaryIDValue] />
+			
+			<cfset var hql="SELECT NEW MAP(
 				scr.commentRelationshipID as commentRelationshipID,
 				scr.referencedRelationshipFlag as referencedRelationshipFlag,
 				scr.referencedExpressionStart as referencedExpressionStart,
@@ -64,7 +67,14 @@ Notes:
 				c as comment
 			)
 			FROM
-				SlatwallCommentRelationship scr INNER JOIN scr.comment c WHERE scr.#left(arguments.primaryIDPropertyName,len(arguments.primaryIDPropertyName)-2)#.#arguments.primaryIDPropertyName# = ?", [arguments.primaryIDValue]) />
+				SlatwallCommentRelationship scr INNER JOIN scr.comment c WHERE scr.#left(arguments.primaryIDPropertyName,len(arguments.primaryIDPropertyName)-2)#.#arguments.primaryIDPropertyName# = ?">
+
+			<cfif structKeyExists(arguments, "publicFlag")>
+				<cfset hql =hql & " and c.publicFlag=?">
+				<cfset arrayAppend(hqlParams, arguments.publicFlag) />
+			</cfif>
+
+			<cfset var results = ormExecuteQuery(hql, hqlPrarms) />
 			<cfcatch>
 				<cfthrow message="You have tried to get comments for an entity that does not have a comment relationship setup.  The primaryID column for the entity requesting is #arguments.primaryIDPropertyName# and you may just need to add a Many-To-One property for this entity to CommentRelationship.cfc" />
 			</cfcatch>

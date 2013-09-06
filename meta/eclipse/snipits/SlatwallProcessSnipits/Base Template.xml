@@ -1,4 +1,8 @@
-/*
+<?xml version="1.0" encoding="utf-8"?>
+<snippet filetemplate="false" extension="">
+<name>Base Template</name>
+<help></help>
+<starttext><![CDATA[/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -49,64 +53,45 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
-	property name="order";
+	property name="$${objectName}";
 	
-	// Data Properties
-	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
-	property name="orderItems" type="array" hb_populateArray="true";
+	// Lazy / Injected Objects
 	
-	property name="fulfillmentRefundAmount";
-	property name="refundOrderPaymentID" hb_formFieldType="select";
-	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
+	// New Properties
+
+	// Data Properties (ID's)
 	
-	variables.orderItems = [];
+	// Data Properties (Inputs)
 	
-	public any function setupDefaults() {
-		variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
-	}
+	// Data Properties (Related Entity Populate)
 	
-	public array function getLocationOptions() {
-		if(!structKeyExists(variables, "locationOptions")) {
-			variables.locationOptions = getService('locationService').getLocationOptions(); 
-		}
-		return variables.locationOptions;
-	}
+	// Data Properties (Object / Array Populate)
 	
-	public array function getRefundOrderPaymentIDOptions() {
-		if(!structKeyExists(variables, "refundOrderPaymentIDOptions")) {
-			variables.refundOrderPaymentIDOptions = [];
-			for(var orderPayment in getOrder().getOrderPayments()) {
-				arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});
-			}
-			arrayAppend(variables.refundOrderPaymentIDOptions, {name=rbKey('define.new'), value=""});
-		}
-		return variables.refundOrderPaymentIDOptions;
-	}
+	// Option Properties
 	
-	public numeric function getFulfillmentRefundAmount() {
-		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
-			variables.fulfillmentRefundAmount = 0;
-			if(!getPreProcessDisplayedFlag()) {
-				variables.fulfillmentRefundAmount = getOrder().getFulfillmentChargeAfterDiscountTotal();	
-			}
-		}
-		return variables.fulfillmentRefundAmount;
-	}
+	// Helper Properties
 	
-	public boolean function getReceiveItemsFlag() {
-		if(!structKeyExists(variables, "receiveItemsFlag")) {
-			variables.receiveItemsFlag = getPropertySessionDefault("receiveItemsFlag");
-		}
-		return variables.receiveItemsFlag;
-	}
+	// ======================== START: Defaults ============================
 	
-	public boolean function hasPositiveOrderItemQuantity() {
-		for(var orderItemStruct in getOrderItems()) {
-			if(structKeyExists(orderItemStruct, "quantity") && isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity >= 1) {
-				return true;
-			}
-		}
-		return false;
-	}
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
 	
-}
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
+	
+	
+}]]></starttext>
+<endtext><![CDATA[]]></endtext>
+</snippet>

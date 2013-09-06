@@ -58,22 +58,59 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(isObject(variables.dao));
 	}
 	
+	// getOriginalAuthorizationCode()
 	public void function getOriginalAuthorizationCode_returns_empty_string_using_orderPaymentID() {
 		assert(variables.dao.getOriginalAuthorizationCode( orderPaymentID="this-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalAuthorizationCode_returns_empty_string_using_orderPaymentID_and_referencedOrderPaymentID() {
+		assert(variables.dao.getOriginalAuthorizationCode( orderPaymentID="this-is-fake", referencedOrderPaymentID="this-too-is-fake" ) eq "");
 	}
 	
 	public void function getOriginalAuthorizationCode_returns_empty_string_using_accountPaymentID() {
 		assert(variables.dao.getOriginalAuthorizationCode( accountPaymentID="this-is-fake" ) eq "");
 	}
 	
+	// getOriginalAuthorizationProviderTransactionID()
+	public void function getOriginalAuthorizationProviderTransactionID_returns_empty_string_using_orderPaymentID() {
+		assert(variables.dao.getOriginalAuthorizationProviderTransactionID( orderPaymentID="this-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalAuthorizationProviderTransactionID_returns_empty_string_using_orderPaymentID_and_referencedOrderPaymentID() {
+		assert(variables.dao.getOriginalAuthorizationProviderTransactionID( orderPaymentID="this-is-fake", referencedOrderPaymentID="this-too-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalAuthorizationProviderTransactionID_returns_empty_string_using_accountPaymentID() {
+		assert(variables.dao.getOriginalAuthorizationProviderTransactionID( accountPaymentID="this-is-fake" ) eq "");
+	}
+	
+	// getOriginalChargeProviderTransactionID()
+	public void function getOriginalChargeProviderTransactionID_returns_empty_string_using_orderPaymentID() {
+		assert(variables.dao.getOriginalChargeProviderTransactionID( orderPaymentID="this-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalChargeProviderTransactionID_returns_empty_string_using_orderPaymentID_and_referencedOrderPaymentID() {
+		assert(variables.dao.getOriginalChargeProviderTransactionID( orderPaymentID="this-is-fake", referencedOrderPaymentID="this-too-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalChargeProviderTransactionID_returns_empty_string_using_accountPaymentID() {
+		assert(variables.dao.getOriginalChargeProviderTransactionID( accountPaymentID="this-is-fake" ) eq "");
+	}
+	
+	// getOriginalProviderTransactionID()
 	public void function getOriginalProviderTransactionID_returns_empty_string_using_orderPaymentID() {
 		assert(variables.dao.getOriginalProviderTransactionID( orderPaymentID="this-is-fake" ) eq "");
+	}
+	
+	public void function getOriginalProviderTransactionID_returns_empty_string_using_orderPaymentID_and_referencedOrderPaymentID() {
+		assert(variables.dao.getOriginalProviderTransactionID( orderPaymentID="this-is-fake", referencedOrderPaymentID="this-too-is-fake" ) eq "");
 	}
 	
 	public void function getOriginalProviderTransactionID_returns_empty_string_using_accountPaymentID() {
 		assert(variables.dao.getOriginalProviderTransactionID( accountPaymentID="this-is-fake" ) eq "");
 	}
 	
+	// updateInvalidAuthorizationCode()
 	public void function updateInvalidAuthorizationCode_fails_if_only_authorization_code_is_passed() {
 		expectException("org.hibernate.hql.ast.QuerySyntaxException");
 		variables.dao.updateInvalidAuthorizationCode( authorizationCode="this-is-fake" );

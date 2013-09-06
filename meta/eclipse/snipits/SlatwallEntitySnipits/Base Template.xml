@@ -65,6 +65,8 @@ component entityname="$${EntityName}" table="$${EntityName}" persistent="true" a
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
+	
+	// Deprecated Properties
 
 
 

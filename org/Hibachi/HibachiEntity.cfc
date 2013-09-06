@@ -169,10 +169,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 	
 	// @hint this method is defined so that it can be overriden in entities and a different validation context can be applied based on what this entity knows about itself
-	public any function getProcessObject(required string context) {
+	public any function getProcessObject(required string context, struct injectValues={}) {
 		if(!structKeyExists(variables.processObjects, arguments.context)) {
 			variables.processObjects[ arguments.context ] = getTransient("#getClassName()#_#arguments.context#");
 			variables.processObjects[ arguments.context ].invokeMethod("set#getClassName()#", {1=this});
+			for(var key in arguments.injectValues) {
+				variables.processObjects[ arguments.context ].invokeMethod("set#key#", {1=arguments.injectValues[key]});	
+			}
 			variables.processObjects[ arguments.context ].setupDefaults();
 		}
 		return variables.processObjects[ arguments.context ];

@@ -51,7 +51,6 @@ component entityname="SlatwallState" table="SwState" persistent="true" extends="
 	// Persistent Properties
 	property name="stateCode" length="40" ormtype="string" fieldtype="id";
 	property name="countryCode" length="2" ormtype="string" fieldtype="id";
-	
 	property name="stateName" ormtype="string";
 	
 	// Related Object Properties

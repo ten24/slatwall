@@ -1282,9 +1282,7 @@
 							,primaryPhoneNumberID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#primaryPhoneNumberID#" />
 						</cfif>
 						<cfif arguments.superUserSyncFlag and missingUsersQuery.s2>
-							,superUserFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1" />	
-						<cfelse>
-							,superUserFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="0" />
+							,superUserFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#missingUsersQuery.s2#" />	
 						</cfif>
 					WHERE
 						accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />
