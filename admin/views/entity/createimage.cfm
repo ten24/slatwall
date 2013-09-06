@@ -61,6 +61,7 @@ Notes:
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageFile" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 

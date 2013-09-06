@@ -462,11 +462,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive" && !orderPayment.hasErrors()) {
-				if(orderPayment.getOrderPaymentType().getSystemCode() == "optCharge") {
-					totalPayments = precisionEvaluate(totalPayments + orderPayment.getAmount());
+				if(orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
+					totalPayments = precisionEvaluate(totalPayments + orderPayment.getAmount());	
 				} else {
-					totalPayments = precisionEvaluate(totalPayments - orderPayment.getAmount());	
-				}	
+					totalPayments = precisionEvaluate(totalPayments - orderPayment.getAmount());
+				}
 			}
 		}
 		

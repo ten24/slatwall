@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,40 +45,35 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+--->
+<cfparam name="rc.state" type="any">
+<cfparam name="rc.country" type="any" default="#rc.state.getCountry()#">
+<cfparam name="rc.edit" type="boolean">
 
-	public void function setUp() {
-		super.setup();
+<cfoutput>
+	<cf_HibachiEntityDetailForm object="#rc.state#" edit="#rc.edit#"
+								saveActionQueryString="countryCode=#rc.country.getCountryCode()#&sRedirectAction=admin:entity.detailCountry"
+								saveActionHash="tabstates">
+								
+		<cf_HibachiEntityActionBar type="detail" object="#rc.state#" edit="#rc.edit#" 
+									backAction="admin:entity.detailCountry" 
+								    backQueryString="countryCode=#rc.country.getCountryCode()#"
+								    deleteQueryString="redirectAction=admin:entity.detailCountry&countryCode=#rc.country.getCountryCode()#"
+									cancelAction="admin:entity.detailState"
+									cancelQueryString="stateCode=#rc.state.getStateCode()#&countryCode=#rc.country.getCountryCode()#">
+									
+		</cf_HibachiEntityActionBar>
 		
-		variables.smartList = request.slatwallScope.getSmartList("Product");
-	}
-
-	// buildURL()
-	public void function buildURL_1() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?p:current=2");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?p:current=3');
-	}
-	
-	public void function buildURL_2() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?f:productName=hello&p:current=2");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?f:productname=hello&p:current=3');
-	}
-	
-	public void function buildURL_3() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="?f:productName=hello");
-		addToDebug(urlResponse);	
-		assert(urlResponse eq '?c=1');
-	}
-	
-	public void function buildURL_4() {	
-		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="/");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?f:productName=hello');
-	}
-	
-}
-
+		
+		<input type="hidden" name="countryCode" value="#rc.country.getCountryCode()#" />
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.state#" property="stateCode" edit="#rc.state.getNewFlag()#" />
+				<cf_HibachiPropertyDisplay object="#rc.state#" property="stateName" edit="#rc.edit#" />
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityDetailForm>
+</cfoutput>
 

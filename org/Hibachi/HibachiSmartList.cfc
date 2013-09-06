@@ -815,25 +815,21 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL=variables.currentURL) {
 		// Generate full URL if one wasn't passed in
-		if(arguments.currentURL == "") {
-			//arguments.currentURL &= CGI.SCRIPT_NAME;
-			if(CGI.PATH_INFO != "" && CGI.PATH_INFO neq CGI.SCRIPT_NAME) {
-				arguments.currentURL &= CGI.PATH_INFO;	
-			}
+		if(!len(arguments.currentURL)) {
 			if(len(cgi.query_string)) {
 				arguments.currentURL &= "?" & CGI.QUERY_STRING;	
 			}
 		}
 
-		// Setup the base of the new URL
-		var modifiedURL = listFirst(arguments.currentURL, "?") & "?";
+		var modifiedURL = "?";
 		
 		// Turn the old query string into a struct
 		var oldQueryKeys = {};
 		
-		if(listLen(arguments.currentURL, "?") == 2) {
-			for(var i=1; i<=listLen(listLast(arguments.currentURL, "?"), "&"); i++) {
-				var keyValuePair = listGetAt(listLast(arguments.currentURL, "?"), i, "&");
+		if(findNoCase("?", arguments.currentURL)) {
+			var oldQueryString = right(arguments.currentURL, len(arguments.currentURL) - findNoCase("?", arguments.currentURL));
+			for(var i=1; i<=listLen(oldQueryString, "&"); i++) {
+				var keyValuePair = listGetAt(oldQueryString, i, "&");
 				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
 			}
 		}
@@ -903,8 +899,10 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#oldQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
 		}
 		
-		if(right(modifiedURL, 1) eq "&" || right(modifiedURL, 1) eq "?") {
+		if(right(modifiedURL, 1) eq "&") {
 			modifiedURL = left(modifiedURL, len(modifiedURL)-1);
+		} else if (right(modifiedURL, 1) eq "?") {
+			modifiedURL = "?c=1";
 		}
 		
 		// Always return lower case

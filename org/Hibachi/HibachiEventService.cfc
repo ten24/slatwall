@@ -137,7 +137,7 @@ component output="false" update="true" extends="HibachiService" {
 			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/model/handler');
 			for(var h=1; h<=arrayLen(dirList); h++) {
 				if(listLast(dirList[h], '.') eq 'cfc') {
-					registerEventHandler( "#getApplicationValue('applicationKey')#.model.handler.#listFirst(listLast(dirList[h], '/'), '.')#" );
+					registerEventHandler( "#getApplicationValue('applicationKey')#.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
 				}
 			}
 		}
@@ -145,7 +145,7 @@ component output="false" update="true" extends="HibachiService" {
 			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/custom/model/handler');
 			for(var h=1; h<=arrayLen(dirList); h++) {
 				if(listLast(dirList[h], '.') eq 'cfc') {
-					registerEventHandler( "#getApplicationValue('applicationKey')#.custom.model.handler.#listFirst(listLast(dirList[h], '/'), '.')#" );
+					registerEventHandler( "#getApplicationValue('applicationKey')#.custom.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
 				}
 			}
 		}

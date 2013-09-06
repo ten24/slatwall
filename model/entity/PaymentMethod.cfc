@@ -224,6 +224,17 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 	
 	// ================== START: Deprecated Methods ========================
 	
+	// The setting method is overridden so that any old frontend templates that are based on this will still work.
+	public any function setting( string settingName ) {
+		if(arguments.settingName eq "paymentMethodCheckoutTransactionType") {
+			if( !isNull(getPlaceOrderChargeTransactionType()) ){
+				return getPlaceOrderChargeTransactionType();
+			}
+			return 'none';
+		}
+		return super.setting(argumentcollection=arguments);
+	}
+	
 	public any function getIntegration() {
 		return getPaymentIntegration();
 	}

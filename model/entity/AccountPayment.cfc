@@ -106,6 +106,8 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	property name="expirationYearOptions" persistent="false";
 	property name="giftCardNumber" persistent="false";
 	property name="originalAuthorizationCode" persistent="false";
+	property name="originalAuthorizationProviderTransactionID" persistent="false";
+	property name="originalChargeProviderTransactionID" persistent="false";
 	property name="originalProviderTransactionID" persistent="false";
 	property name="paymentMethodType" persistent="false";
 	property name="securityCode" persistent="false";
@@ -308,6 +310,21 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 			variables.originalAuthorizationCode = getService( "paymentService" ).getOriginalAuthorizationCode( accountPaymentID=getAccountPaymentID() );
 		}
 		return variables.originalAuthorizationCode;
+	}
+	
+	
+	public any function getOriginalAuthorizationProviderTransactionID() {
+		if(!structKeyExists(variables,"originalAuthorizationProviderTransactionID")) {
+			variables.originalAuthorizationProviderTransactionID = getService( "paymentService" ).getOriginalAuthorizationProviderTransactionID( accountPaymentID=getAccountPaymentID() );
+		}
+		return variables.originalAuthorizationProviderTransactionID;
+	}
+	
+	public any function getOriginalChargeProviderTransactionID() {
+		if(!structKeyExists(variables,"originalChargeProviderTransactionID")) {
+			variables.originalChargeProviderTransactionID = getService( "paymentService" ).getOriginalChargeProviderTransactionID( accountPaymentID=getAccountPaymentID() );
+		}
+		return variables.originalChargeProviderTransactionID;
 	}
 	
 	public any function getOriginalProviderTransactionID() {
