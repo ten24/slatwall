@@ -71,8 +71,20 @@ component accessors="true" output="false" displayname="UPS" extends="Slatwall.in
 			shipFromStateCode = {fieldType="text"},
 			shipFromPostalCode = {fieldType="text"},
 			shipFromCountryCode = {fieldType="text"},
-			pickupTypeCode = {fieldType="text", defaultValue="03"},
-			customerClassificationCode = {fieldType="text", defaultValue="04"}
+			pickupTypeCode = {fieldType="select", defaultValue="03", valueOptions=[
+				{name="(01) Daily Pickup", value="01"},
+				{name="(03) Customer Counter", value="03"},
+				{name="(06) One Time Pickup", value="06"},
+				{name="(07) On Call Air", value="07"},
+				{name="(11) Suggested Retail Rates", value="11"},
+				{name="(19) Letter Center", value="19"},
+				{name="(20) Air Service Center", value="20"}
+			]},
+			customerClassificationCode = {fieldType="select", defaultValue="04", valueOptions=[
+				{name="(01) Wholesale (default for daily pickups)", value="01"},
+				{name="(03) Occasional (default for other pickups)", value="03"},
+				{name="(04) Retail (default for customer counter pickups)", value="04"}
+			]}
 		};
 		
 		return settings;
