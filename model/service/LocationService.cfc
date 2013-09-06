@@ -96,6 +96,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if( locationHasStock(arguments.location.getParentLocation())) {
 				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(),toLocationID=arguments.location.getlocationID());
 			}
+		} else {
+			writeDump(var="#location.hasErrors()#" top="3");
 		}
 		return arguments.location;
 	}
@@ -106,7 +108,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	public boolean function locationHasStock(required any location) {
-		return (arraylen(arguments.location.getStocks()) > 0);
+		return (!arrayIsEmpty(arguments.location.getStocks()) > 0);
 	}
 	
 	// ======================  END: Save Overrides ============================
