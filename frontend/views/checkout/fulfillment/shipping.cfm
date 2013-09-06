@@ -66,7 +66,7 @@ Notes:
 	</cfif>
 <!--- If the fulfillment has nothing, But this account has addresses the set the current as an account address --->
 <cfelseif arrayLen($.slatwall.account().getAccountAddresses())>
-	<cfset local.selectedAccountAddressID = $.slatwall.account().getAccountAddresses()[1].getAccountAddressID() /> <!--- Todo: change to primary address --->
+	<cfset local.selectedAccountAddressID = $.slatwall.account().getAccountAddresses()[1].getAccountAddressID() />
 <!--- Defualt case for new customers with nothing setup --->
 <cfelse>
 	<cfset local.selectedAccountAddressID = "" />

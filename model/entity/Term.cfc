@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallTerm" table="SlatwallTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" hb_permission="this" {
+component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="termID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -60,10 +60,10 @@ component entityname="SlatwallTerm" table="SlatwallTerm" persistent="true" acces
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
-	property name="paymentTerms" hb_populateEnabled="false" singularname="paymentTerm" cfc="PaymentTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all" inverse="true" lazy="extra"; 															// Extra Lazy because it is only used for validation
-	property name="initialSubscriptionTerms" hb_populateEnabled="false" singularname="initialSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra"; 						// Extra Lazy because it is only used for validation
-	property name="renewalSubscriptionTerms" hb_populateEnabled="false" singularname="renewalSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra"; 						// Extra Lazy because it is only used for validation
-	property name="gracePeriodSubscriptionTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra"; 			// Extra Lazy because it is only used for validation
+	property name="paymentTerms" hb_populateEnabled="false" singularname="paymentTerm" cfc="PaymentTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all" inverse="true" lazy="extra"; 																// Extra Lazy because it is only used for validation
+	property name="initialSubscriptionTerms" hb_populateEnabled="false" singularname="initialSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra"; 							// Extra Lazy because it is only used for validation
+	property name="renewalSubscriptionTerms" hb_populateEnabled="false" singularname="renewalSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra"; 							// Extra Lazy because it is only used for validation
+	property name="gracePeriodSubscriptionTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra"; 				// Extra Lazy because it is only used for validation
 	property name="initialSubscriptionUsageTerms" hb_populateEnabled="false" singularname="initialSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra";				// Extra Lazy because it is only used for validation
 	property name="renewalSubscriptionUsageTerms" hb_populateEnabled="false" singularname="renewalSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra";				// Extra Lazy because it is only used for validation
 	property name="gracePeriodSubscriptionUsageTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra";	// Extra Lazy because it is only used for validation
@@ -97,62 +97,6 @@ component entityname="SlatwallTerm" table="SlatwallTerm" persistent="true" acces
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Payment Terms (one-to-many)    
-	public void function addPaymentTerm(required any paymentTerm) {    
-		arguments.paymentTerm.setTerm( this );    
-	}    
-	public void function removePaymentTerm(required any paymentTerm) {    
-		arguments.paymentTerm.removeTerm( this );    
-	}
-	
-	// Initial Subscription Terms (one-to-many)
-	public void function addInitialSubscriptionTerm(required any initialSubscriptionTerm) {
-		arguments.initialSubscriptionTerm.setInitialTerm( this );
-	}
-	public void function removeInitialSubscriptionTerm(required any initialSubscriptionTerm) {
-		arguments.initialSubscriptionTerm.removeInitialTerm( this );
-	}
-	
-	// Renewal Subscription Terms (one-to-many)
-	public void function addRenewalSubscriptionTerm(required any renewalSubscriptionTerm) {
-		arguments.renewalSubscriptionTerm.setRenewalTerm( this );
-	}
-	public void function removeRenewalSubscriptionTerm(required any renewalSubscriptionTerm) {
-		arguments.renewalSubscriptionTerm.removeRenewalTerm( this );
-	}
-
-	// Grace Period Subscription Terms (one-to-many)
-	public void function addGracePeriodSubscriptionTerm(required any gracePeriodSubscriptionTerm) {
-		arguments.gracePeriodSubscriptionTerm.setGracePeriodTerm( this );
-	}
-	public void function removeGracePeriodSubscriptionTerm(required any gracePeriodSubscriptionTerm) {
-		arguments.gracePeriodSubscriptionTerm.removeGracePeriodTerm( this );
-	}
-	
-	// Initial Subscription Usage Terms (one-to-many)
-	public void function addInitialSubscriptionUsageTerm(required any initialSubscriptionUsageTerm) {
-		arguments.initialSubscriptionUsageTerm.setInitialTerm( this );
-	}
-	public void function removeInitialSubscriptionUsageTerm(required any initialSubscriptionUsageTerm) {
-		arguments.initialSubscriptionUsageTerm.removeInitialTerm( this );
-	}
-	
-	// Renewal Subscription Terms (one-to-many)
-	public void function addRenewalSubscriptionUsageTerm(required any renewalSubscriptionUsageTerm) {
-		arguments.renewalSubscriptionUsageTerm.setRenewalTerm( this );
-	}
-	public void function removeRenewalSubscriptionUsageTerm(required any renewalSubscriptionUsageTerm) {
-		arguments.renewalSubscriptionUsageTerm.removeRenewalTerm( this );
-	}
-
-	// Grace Period Subscription Terms (one-to-many)
-	public void function addGracePeriodSubscriptionUsageTerm(required any gracePeriodSubscriptionUsageTerm) {
-		arguments.gracePeriodSubscriptionUsageTerm.setGracePeriodTerm( this );
-	}
-	public void function removeGracePeriodSubscriptionUsageTerm(required any gracePeriodSubscriptionUsageTerm) {
-		arguments.gracePeriodSubscriptionUsageTerm.removeGracePeriodTerm( this );
-	}
-
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================

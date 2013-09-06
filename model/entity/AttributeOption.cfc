@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Attribute Option" entityname="SlatwallAttributeOption" table="SlatwallAttributeOption" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" hb_property="attribute.attributeOptions" {
+component displayname="Attribute Option" entityname="SlatwallAttributeOption" table="SwAttributeOption" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" hb_property="attribute.attributeOptions" {
 	
 	// Persistent Properties
 	property name="attributeOptionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

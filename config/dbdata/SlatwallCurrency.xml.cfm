@@ -3,7 +3,7 @@
 	Most of the currency symbols for this were found here: http://www.xe.com/symbols.php#section2
 	The currency codes were puller from here: http://www.xe.com/iso4217.php
 -->
-<Table tableName="SlatwallCurrency">
+<Table tableName="SwCurrency">
 	<Columns>
 		<column name="currencyCode" fieldtype="id" />
 		<column name="activeFlag" datatype="bit" update="false" />

@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Setting" entityname="SlatwallSetting" table="SlatwallSetting" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" {
+component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" {
 	
 	// Persistent Properties
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

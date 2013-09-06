@@ -161,7 +161,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.availableMasterVersion = versions.master;
 
 		rc.currentVersion = getApplicationValue('version');
-		if(find("-", rc.currentVersion)) {
+		if(listLen(rc.currentVersion, '.') > 2) {
 			rc.currentBranch = "develop";
 		} else {
 			rc.currentBranch = "master";

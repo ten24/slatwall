@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallTerm">
+<Table tableName="SwTerm">
 	<Columns>
 		<column name="termID" fieldtype="id" />
 		<column name="termName" update="false" />

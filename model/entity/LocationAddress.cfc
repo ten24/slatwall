@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Location Address" entityname="SlatwallLocationAddress" table="SlatwallLocationAddress" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="location.locationAddresses" {
+component displayname="Location Address" entityname="SlatwallLocationAddress" table="SwLocationAddress" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="location.locationAddresses" {
 	
 	// Persistent Properties
 	property name="locationAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

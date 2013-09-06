@@ -591,17 +591,17 @@ Notes:
 											</div>
 											<!--- END: Shipping Method Selection --->
 											
-											<!--- Action Buttons --->
-											<div class="span8">
-												<div class="control-group pull-right">
-													<div class="controls">
-														<!--- Continue, just submits the form --->
-														<button type="submit" class="btn btn-primary">Save & Continue</button>
-													</div>
+										</cfif>
+										
+										<!--- Action Buttons --->
+										<div class="span8">
+											<div class="control-group pull-right">
+												<div class="controls">
+													<!--- Continue, just submits the form --->
+													<button type="submit" class="btn btn-primary">Save & Continue</button>
 												</div>
 											</div>
-											
-										</cfif>
+										</div>
 										
 									</div>
 									

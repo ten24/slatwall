@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Country" entityname="SlatwallCountry" table="SlatwallCountry" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" hb_permission="this" {
+component displayname="Country" entityname="SlatwallCountry" table="SwCountry" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="countryCode" length="2" ormtype="string" fieldtype="id";
@@ -78,10 +78,26 @@ component displayname="Country" entityname="SlatwallCountry" table="SlatwallCoun
 	property name="postalCodeRequiredFlag" ormtype="boolean";
 	
 	// Non-Persistent Properties
+	property name="states" persistent="false" type="array" hb_rbKey="entity.state_plural";
 	property name="stateCodeOptions" persistent="false" type="array";
 
 
 	// ============ START: Non-Persistent Property Methods =================
+	public array function getStates() {
+		if(!structKeyExists(variables, "states")) {
+			var smartList = getStatesSmartList();
+			variables.states = smartList.getRecords();
+		}
+		return variables.states;
+	}
+	
+	public any function getStatesSmartList() {
+		if(!structKeyExists(variables, "statesSmartList")) {
+			variables.statesSmartList = getService("addressService").getStateSmartList();
+			variables.statesSmartList.addFilter("countryCode", getCountryCode()); 
+		}
+		return variables.statesSmartList;
+	}
 	
 	public array function getStateCodeOptions() {
 		if(!structKeyExists(variables, "stateCodeOptions")) {

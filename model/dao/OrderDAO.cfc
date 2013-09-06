@@ -46,15 +46,15 @@
 Notes:
 
 --->
-<cfcomponent extends="HibachiDAO">
+<cfcomponent extends="HibachiDAO" output="false">
 	
-	<cffunction name="removeOrderFromAllSessions" access="public" returntype="void">
+	<cffunction name="removeOrderFromAllSessions" access="public" returntype="void" output="false">
 		<cfargument name="orderID" type="string" required="true" />
 		
 		<cfset var rs = "" />
 		
 		<cfquery name="rs">
-			UPDATE SlatwallSession SET orderID = null WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />	
+			UPDATE SwSession SET orderID = null WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />	
 		</cfquery>
 	</cffunction>
 	
@@ -103,7 +103,7 @@ Notes:
 		}
 	</cfscript>
 	
-	<cffunction name="getOrderPaymentNonNullAmountTotal" access="public" returntype="Numeric">
+	<cffunction name="getOrderPaymentNonNullAmountTotal" access="public" returntype="numeric" output="false">
 		<cfargument name="orderID" type="string" required="true" />
 		
 		<cfset var rs = "" />
@@ -111,18 +111,18 @@ Notes:
 		
 		<cfquery name="rs">
 			SELECT
-				SlatwallOrderPayment.amount,
-				SlatwallType.systemCode
+				SwOrderPayment.amount,
+				SwType.systemCode
 			FROM
-				SlatwallOrderPayment
+				SwOrderPayment
 			  LEFT JOIN
-			  	SlatwallType on SlatwallOrderPayment.orderPaymentTypeID = SlatwallType.typeID	
+			  	SwType on SwOrderPayment.orderPaymentTypeID = SwType.typeID	
 			WHERE
-				SlatwallOrderPayment.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+				SwOrderPayment.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 			  AND
-			  	SlatwallOrderPayment.amount is not null
+			  	SwOrderPayment.amount is not null
 			  AND
-			  	(SlatwallOrderPayment.orderPaymentStatusTypeID is null or SlatwallOrderPayment.orderPaymentStatusTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="5accbf57dcf5bb3eb71614febe83a31d" />)
+			  	(SwOrderPayment.orderPaymentStatusTypeID is null or SwOrderPayment.orderPaymentStatusTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="5accbf57dcf5bb3eb71614febe83a31d" />)
 		</cfquery>
 		
 		<cfloop query="rs">

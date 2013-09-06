@@ -56,14 +56,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderItems" type="array" hb_populateArray="true";
 	
 	property name="fulfillmentRefundAmount";
+	property name="refundOrderPaymentID" hb_formFieldType="select";
+	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
 	
 	variables.orderItems = [];
+	
+	public any function setupDefaults() {
+		variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
+	}
 	
 	public array function getLocationOptions() {
 		if(!structKeyExists(variables, "locationOptions")) {
 			variables.locationOptions = getService('locationService').getLocationOptions(); 
 		}
 		return variables.locationOptions;
+	}
+	
+	public array function getRefundOrderPaymentIDOptions() {
+		if(!structKeyExists(variables, "refundOrderPaymentIDOptions")) {
+			variables.refundOrderPaymentIDOptions = [];
+			for(var orderPayment in getOrder().getOrderPayments()) {
+				arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});
+			}
+			arrayAppend(variables.refundOrderPaymentIDOptions, {name=rbKey('define.new'), value=""});
+		}
+		return variables.refundOrderPaymentIDOptions;
 	}
 	
 	public numeric function getFulfillmentRefundAmount() {
@@ -74,6 +91,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 		}
 		return variables.fulfillmentRefundAmount;
+	}
+	
+	public boolean function getReceiveItemsFlag() {
+		if(!structKeyExists(variables, "receiveItemsFlag")) {
+			variables.receiveItemsFlag = getPropertySessionDefault("receiveItemsFlag");
+		}
+		return variables.receiveItemsFlag;
+	}
+	
+	public boolean function hasPositiveOrderItemQuantity() {
+		for(var orderItemStruct in getOrderItems()) {
+			if(structKeyExists(orderItemStruct, "quantity") && isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity >= 1) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

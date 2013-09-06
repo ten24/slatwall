@@ -110,15 +110,10 @@
 			return smartList;
 		}
 		
-		public any function getExportQuery(required string entityName) {
-			// Adds the Applicatoin Prefix to the entityName when needed.
-			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
-				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
-			}
-			
+		public any function getExportQuery(required string tableName) {
 			var qry = new query();
 			qry.setName("exportQry");
-			var result = qry.execute(sql="SELECT * FROM #arguments.entityName#"); 
+			var result = qry.execute(sql="SELECT * FROM #arguments.tableName#"); 
 	    	exportQry = result.getResult(); 
 			return exportQry;
 		}

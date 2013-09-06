@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod" table="SlatwallFulfillmentMethod" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
+component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod" table="SwFulfillmentMethod" persistent=true output=false accessors=true extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="fulfillmentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -64,7 +64,7 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
-	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierFulfillmentMethod" fkcolumn="fulfillmentMethodID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualFulfillmentMethod" fkcolumn="fulfillmentMethodID" inversejoincolumn="promotionQualifierID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -84,6 +84,7 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 			{name="Auto", value="auto"},
 			{name="Download", value="download"}
 		];
+
 		return options;
 	}
 	
@@ -99,14 +100,6 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 	}    
 	public void function removeShippingMethod(required any shippingMethod) {    
 		arguments.shippingMethod.removeFulfillmentMethod( this );    
-	}
-	
-	// Order Fulfillments (one-to-many)
-	public void function addOrderFulfillment(required any orderFulfillment) {
-		arguments.orderFulfillment.setFulfillmentMethod( this );
-	}
-	public void function removeOrderFulfillment(required any orderFulfillment) {
-		arguments.orderFulfillment.removeFulfillmentMethod( this );
 	}
 	
 	// Promotion Qualifiers (many-to-many - inverse)

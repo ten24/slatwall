@@ -46,17 +46,19 @@
 Notes:
 
 */
-component entityname="SlatwallSite" table="SlatwallSite" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="siteService" hb_permission="this" {
+component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="siteService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="siteID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="siteName" ormtype="string";
-	property name="cmsSiteID" ormtype="string";
+	
+	// CMS Properties
+	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 	
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
-	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="siteID" cascade="all" inverse="true" lazy="true";
+	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="siteID" cascade="all" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -73,22 +75,12 @@ component entityname="SlatwallSite" table="SlatwallSite" persistent="true" acces
 	
 	// Non-Persistent Properties
 
-
-
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
-	
-	// Contents (one-to-many)    
-	public void function addContent(required any content) {    
-		arguments.content.setSite( this );    
-	}    
-	public void function removeContent(required any content) {    
-		arguments.content.removeSite( this );    
-	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

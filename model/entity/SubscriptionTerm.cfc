@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSubscriptionTerm" table="SlatwallSubscriptionTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" hb_permission="this" {
+component entityname="SlatwallSubscriptionTerm" table="SwSubscriptionTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="subscriptionTermID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -84,60 +84,6 @@ component entityname="SlatwallSubscriptionTerm" table="SlatwallSubscriptionTerm"
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Initial Term (many-to-one)
-	public void function setInitialTerm(required any initialTerm) {
-		variables.initialTerm = arguments.initialTerm;
-		if(isNew() or !arguments.initialTerm.hasInitialSubscriptionTerm( this )) {
-			arrayAppend(arguments.initialTerm.getInitialSubscriptionTerms(), this);
-		}
-	}
-	public void function removeInitialTerm(any initialTerm) {
-		if(!structKeyExists(arguments, "initialTerm")) {
-			arguments.initialTerm = variables.initialTerm;
-		}
-		var index = arrayFind(arguments.initialTerm.getInitialSubscriptionTerms(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.initialTerm.getInitialSubscriptionTerms(), index);
-		}
-		structDelete(variables, "initialTerm");
-	}
-
-	// Renewal Term (many-to-one)
-	public void function setRenewalTerm(required any renewalTerm) {
-		variables.renewalTerm = arguments.renewalTerm;
-		if(isNew() or !arguments.renewalTerm.hasRenewalSubscriptionTerm( this )) {
-			arrayAppend(arguments.renewalTerm.getRenewalSubscriptionTerms(), this);
-		}
-	}
-	public void function removeRenewalTerm(any renewalTerm) {
-		if(!structKeyExists(arguments, "renewalTerm")) {
-			arguments.renewalTerm = variables.renewalTerm;
-		}
-		var index = arrayFind(arguments.renewalTerm.getRenewalSubscriptionTerms(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.renewalTerm.getRenewalSubscriptionTerms(), index);
-		}
-		structDelete(variables, "renewalTerm");
-	}
-	
-	// Grace Period Term (many-to-one)
-	public void function setGracePeriodTerm(required any gracePeriodTerm) {
-		variables.gracePeriodTerm = arguments.gracePeriodTerm;
-		if(isNew() or !arguments.gracePeriodTerm.hasGracePeriodSubscriptionTerm( this )) {
-			arrayAppend(arguments.gracePeriodTerm.getGracePeriodSubscriptionTerms(), this);
-		}
-	}
-	public void function removeGracePeriodTerm(any gracePeriodTerm) {
-		if(!structKeyExists(arguments, "gracePeriodTerm")) {
-			arguments.gracePeriodTerm = variables.gracePeriodTerm;
-		}
-		var index = arrayFind(arguments.gracePeriodTerm.getGracePeriodSubscriptionTerms(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.gracePeriodTerm.getGracePeriodSubscriptionTerms(), index);
-		}
-		structDelete(variables, "gracePeriodTerm");
-	}
-
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
 		arguments.sku.setSubscriptionTerm( this );

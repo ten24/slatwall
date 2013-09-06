@@ -57,31 +57,31 @@ Notes:
 		
 		<cfquery name="rs">
 			SELECT
-				SlatwallOption.optionID,
-				SlatwallOption.optionName,
-				SlatwallOptionGroup.optionGroupName
+				SwOption.optionID,
+				SwOption.optionName,
+				SwOptionGroup.optionGroupName
 			FROM
-				SlatwallOption
+				SwOption
 			  INNER JOIN
-			  	SlatwallOptionGroup on SlatwallOptionGroup.optionGroupID = SlatwallOption.optionGroupID
+			  	SwOptionGroup on SwOptionGroup.optionGroupID = SwOption.optionGroupID
 			WHERE
-				SlatwallOption.optionGroupID IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
+				SwOption.optionGroupID IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
 			  AND
 			  	NOT EXISTS(
 			  		SELECT DISTINCT
 						a.optionID
 					FROM
-					  	SlatwallSkuOption a
+					  	SwSkuOption a
 					  INNER JOIN
-					  	SlatwallSku b on a.skuID = b.skuID
+					  	SwSku b on a.skuID = b.skuID
 					WHERE
 					  	b.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">
 					  AND
-					  	a.optionID = SlatwallOption.optionID 
+					  	a.optionID = SwOption.optionID 
 			  	)
 			ORDER BY
-				SlatwallOptionGroup.optionGroupName,
-				SlatwallOption.optionName
+				SwOptionGroup.optionGroupName,
+				SwOption.optionName
 		</cfquery>
 		
 		<cfloop query="rs">
@@ -99,14 +99,14 @@ Notes:
 		
 		<cfquery name="rs">
 			SELECT
-				SlatwallOptionGroup.optionGroupID,
-				SlatwallOptionGroup.optionGroupName
+				SwOptionGroup.optionGroupID,
+				SwOptionGroup.optionGroupName
 			FROM
-				SlatwallOptionGroup
+				SwOptionGroup
 			WHERE
-				SlatwallOptionGroup.optionGroupID NOT IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
+				SwOptionGroup.optionGroupID NOT IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
 			ORDER BY 
-				SlatwallOptionGroup.optionGroupName
+				SwOptionGroup.optionGroupName
 		</cfquery>
 		
 		<cfloop query="rs">

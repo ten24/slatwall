@@ -170,24 +170,24 @@ Notes:
 		<!--- TODO: test to see if this query works with DB's other than MSSQL and MySQL --->
 		<cfquery name="sorted">
 			SELECT
-				SlatwallSku.skuID
+				SwSku.skuID
 			FROM
-				SlatwallSku
+				SwSku
 			  INNER JOIN
-				SlatwallSkuOption on SlatwallSku.skuID = SlatwallSkuOption.skuID
+				SwSkuOption on SwSku.skuID = SwSkuOption.skuID
 			  INNER JOIN
-				SlatwallOption on SlatwallSkuOption.optionID = SlatwallOption.optionID
+				SwOption on SwSkuOption.optionID = SwOption.optionID
 			  INNER JOIN
-				SlatwallOptionGroup on SlatwallOption.optionGroupID = SlatwallOptionGroup.optionGroupID
+				SwOptionGroup on SwOption.optionGroupID = SwOptionGroup.optionGroupID
 			WHERE
-				SlatwallSku.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />
+				SwSku.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />
 			GROUP BY
-				SlatwallSku.skuID
+				SwSku.skuID
 			ORDER BY
 				<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
-					SUM(SlatwallOption.sortOrder * POWER(CAST(10 as bigint), CAST((#getNextOptionGroupSortOrder()# - SlatwallOptionGroup.sortOrder) as bigint))) ASC
+					SUM(SwOption.sortOrder * POWER(CAST(10 as bigint), CAST((#getNextOptionGroupSortOrder()# - SwOptionGroup.sortOrder) as bigint))) ASC
 				<cfelse>
-					SUM(SlatwallOption.sortOrder * POWER(10, #getNextOptionGroupSortOrder()# - SlatwallOptionGroup.sortOrder)) ASC
+					SUM(SwOption.sortOrder * POWER(10, #getNextOptionGroupSortOrder()# - SwOptionGroup.sortOrder)) ASC
 				</cfif>
 		</cfquery>
 		
@@ -201,7 +201,7 @@ Notes:
 			<cfset var rs = "" />
 			
 			<cfquery name="rs">
-				SELECT max(SlatwallOptionGroup.sortOrder) as 'max' FROM SlatwallOptionGroup
+				SELECT max(SwOptionGroup.sortOrder) as max FROM SwOptionGroup
 			</cfquery>
 			<cfif rs.recordCount>
 				<cfset variables.nextOptionGroupSortOrder = rs.max + 1 />

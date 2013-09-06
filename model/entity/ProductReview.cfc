@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Product Review" entityname="SlatwallProductReview" table="SlatwallProductReview" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="product.productReviews" {
+component displayname="Product Review" entityname="SlatwallProductReview" table="SwProductReview" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="product.productReviews" {
 
 	// Persistent Properties
 	property name="productReviewID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

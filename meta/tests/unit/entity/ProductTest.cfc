@@ -58,7 +58,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function productUrlIsCorrectlyFormatted() {
 		variables.entity.setURLTitle("nike-air-jorden");
 		
-		assertEquals("/sp/nike-air-jorden/", variables.entity.getProductURL());
+		assertEquals("/#request.slatwallScope.setting('globalURLKeyProduct')#/nike-air-jorden/", variables.entity.getProductURL());
 	}
 }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallOrderOrigin">
+<Table tableName="SwOrderOrigin">
 	<Columns>
 		<column name="orderOriginID" fieldtype="id" />
 		<column name="activeFlag" update="false" datatype="bit" />

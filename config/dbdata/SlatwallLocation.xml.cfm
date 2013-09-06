@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallLocation">
+<Table tableName="SwLocation">
 	<Columns>
 		<column name="locationID" fieldtype="id" />
 		<column name="locationName" update="false" />

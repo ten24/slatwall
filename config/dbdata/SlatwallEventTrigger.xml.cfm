@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallEventTrigger">
+<Table tableName="SwEventTrigger">
 	<Columns>
 		<column name="eventTriggerID" fieldtype="id" />
 		<column name="eventTriggerName" update="false" />

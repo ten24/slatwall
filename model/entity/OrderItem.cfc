@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallOrderItem" table="SlatwallOrderItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderItems" {
+component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderItems" {
 	
 	// Persistent Properties
 	property name="orderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -115,11 +115,17 @@ component entityname="SlatwallOrderItem" table="SlatwallOrderItem" persistent="t
 	}
 	
 	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		return getQuantity() <= getMaximumOrderQuantity();
+		if(getOrderItemType().getSystemCode() == 'oitSale') {
+			return getQuantity() <= getMaximumOrderQuantity();	
+		}
+		return true;
 	}
 	
 	public boolean function hasQuantityWithinMinOrderQuantity() {
-		return getQuantity() >= getSku().setting('skuOrderMinimumQuantity');
+		if(getOrderItemType().getSystemCode() == 'oitSale') {
+			return getQuantity() >= getSku().setting('skuOrderMinimumQuantity');
+		}
+		return true;
 	}
 	
 	public string function getOrderStatusCode(){

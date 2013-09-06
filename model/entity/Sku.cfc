@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
+component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -72,18 +72,18 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	
 	// Related Object Properties (many-to-many - owner)
-	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SlatwallSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
-	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SlatwallSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID"; 
-	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SlatwallSkuSubscriptionBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
-	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SlatwallSkuRenewalSubscriptionBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
+	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
+	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID"; 
+	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
+	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SlatwallPromotionRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionRewardExcludedSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
-	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SlatwallPromotionQualifierExcludedSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
-	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SlatwallPriceGroupRateSku" fkcolumn="skuID" inversejoincolumn="priceGroupRateID" inverse="true";
-	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SlatwallPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
+	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclSku" fkcolumn="skuID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateSku" fkcolumn="skuID" inversejoincolumn="priceGroupRateID" inverse="true";
+	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalSku" fkcolumn="skuID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -106,8 +106,9 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="nextEstimatedAvailableDate" type="string" persistent="false";
+	property name="optionsByOptionGroupCodeStruct" persistent="false";
+	property name="optionsByOptionGroupIDStruct" persistent="false";
 	property name="optionsIDList" persistent="false";
-	property name="optionsDisplay" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetails" type="struct" persistent="false";
 	property name="salePrice" type="numeric" hb_formatType="currency" persistent="false";
@@ -117,67 +118,12 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	property name="skuDefinition" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	
+	// Deprecated Properties
 	
-    public boolean function getDefaultFlag() {
-    	if(getProduct().getDefaultSku().getSkuID() == getSkuID()) {
-    		return true;
-    	}
-    	return false; 
-    }
-    
-    // used by validate this
-    public boolean function isNotDefaultSku() {
-		return !getDefaultFlag();
-    }
-    
-    public any function getPriceByCurrencyCode( required string currencyCode ) {
-    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
-    		return getCurrencyDetails()[ arguments.currencyCode ].price;
-    	}
-    }
-    
-    public any function getListPriceByCurrencyCode( required string currencyCode ) {
-    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "listPrice")) {
-    		return getCurrencyDetails()[ arguments.currencyCode ].listPrice;
-    	}
-    }
-    
-    public any function getRenewalPriceByCurrencyCode( required string currencyCode ) {
-    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "renewalPrice")) {
-    		return getCurrencyDetails()[ arguments.currencyCode ].renewalPrice;
-    	}
-    }
-    
-    // @hint this method validates that this skus has a unique option combination that no other sku has
-	public any function hasUniqueOptions() {
-		var optionsList = "";
-		
-		for(var i=1; i<=arrayLen(getOptions()); i++){
-			optionsList = listAppend(optionsList, getOptions()[i].getOptionID());
-		}
-		
-		var skus = getProduct().getSkusBySelectedOptions(selectedOptions=optionsList);
-		if(!arrayLen(skus) || (arrayLen(skus) == 1 && skus[1].getSkuID() == getSkuID() )) {
-			return true;
-		}
-		
-		return false;
-	}
 	
-	// @hint this method validates that this skus has a unique option combination that no other sku has
-	public any function hasOneOptionPerOptionGroup() {
-		var optionGroupList = "";
-		
-		for(var i=1; i<=arrayLen(getOptions()); i++){
-			if(listFind(optionGroupList, getOptions()[i].getOptionGroup().getOptionGroupID())) {
-				return false;
-			} else {
-				optionGroupList = listAppend(optionGroupList, getOptions()[i].getOptionGroup().getOptionGroupID());	
-			}
-		}
-		
-		return true;
-	}
+	// ==================== START: Logical Methods =========================
+	
+	// START: Image Methods
 	
 	//@hint Generates the image path based upon product code, and image options for this sku
 	public string function generateImageFileName() {
@@ -190,61 +136,6 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		return reReplaceNoCase(getProduct().getProductCode(), "[^a-z0-9\-\_]","","all") & optionString & ".#getProduct().setting('productImageDefaultExtension')#";
 	}
 	
-	public string function getOptionsIDList() {
-    	if(!structKeyExists(variables, "optionsIDList")) {
-    		variables.optionsIDList = "";
-    		for(var option in getOptions()) {
-	    		variables.optionsIDList = listAppend(variables.optionsIDList, option.getOptionID());
-	    	}	
-    	}
-    	
-		return variables.optionsIDList;
-    }
-	
-	public string function getOptionsDisplay(delimiter=" ") {
-    	var dspOptions = "";
-    	for(var i=1;i<=arrayLen(getOptions());i++) {
-    		dspOptions = listAppend(dspOptions, getOptions()[i].getOptionName(), arguments.delimiter);
-    	}
-		return dspOptions;
-    }
-    
-     public struct function getOptionsValueStruct() {
-	    	var options = {};
-	    	for(var i=1;i<=arrayLen(getOptions());i++) {
-	    		options[getOptions()[i].getOptionGroup().getOptionGroupName()] = getOptions()[i].getOptionID();
-	    	}
-		return options;
-    }
-    
-    public string function displayOptions(delimiter=" ") {
-    	var dspOptions = "";
-    	for(var i=1;i<=arrayLen(getOptions());i++) {
-    		dspOptions = listAppend(dspOptions, getOptions()[i].getOptionName(), arguments.delimiter);
-    	}
-		return dspOptions;
-    }
-    
-    // Start: Option Helper Methods
-    public any function getOptionsByGroupIDStruct() {
-		if(!structKeyExists(variables, "OptionsByGroupIDStruct")) {
-			variables.OptionsByGroupIDStruct = structNew();
-			var options = getOptions();
-			for(var i=1; i<=arrayLen(options); i++) {
-				if( !structKeyExists(variables.OptionsByGroupIDStruct, options[i].getOptionGroup().getOptionGroupID())){
-					variables.OptionsByGroupIDStruct[options[i].getOptionGroup().getOptionGroupID()] = options[i];
-				}
-			}
-		}
-		return variables.OptionsByGroupIDStruct;
-	}
-	
-	public any function getOptionByOptionGroupID(required string optionGroupID) {
-		var optionsStruct = getOptionsByGroupIDStruct();
-		return optionsStruct[arguments.optionGroupID];
-	}
-    
-    // START: Image Methods
     public string function getImageExtension() {
 		return listLast(getImageFile(), ".");
 	}
@@ -335,7 +226,32 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	
 	// END: Image Methods
 	
-	// START: Price Methods
+	// START: Option Methods
+	
+	public string function getOptionsDisplay(delimiter=" ") {
+    	var dspOptions = "";
+    	for(var i=1;i<=arrayLen(getOptions());i++) {
+    		dspOptions = listAppend(dspOptions, getOptions()[i].getOptionName(), arguments.delimiter);
+    	}
+		return dspOptions;
+    }
+    
+	public any function getOptionByOptionGroupID(required string optionGroupID) {
+		if(structKeyExists(getOptionsByOptionGroupIDStruct(), arguments.optionGroupID)) {
+			return getOptionsByOptionGroupIDStruct()[ arguments.optionGroupID ];	
+		}
+	}
+	
+	public any function getOptionByOptionGroupCode(required string optionGroupCode) {
+		if(structKeyExists(getOptionsByOptionGroupCodeStruct(), arguments.optionGroupCode)) {
+			return getOptionsByOptionGroupIDStruct()[ arguments.optionGroupCode ];	
+		}
+	}
+	
+	// END: Option Methods
+	
+	// START: Price / Currency Methods
+	
 	public numeric function getPriceByPromotion( required any promotion) {
 		return getService("promotionService").calculateSkuPriceBasedOnPromotion(sku=this, promotion=arguments.promotion);
 	}
@@ -347,9 +263,29 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	public any function getAppliedPriceGroupRateByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
-	// END: Price Methods
 	
-	// Start: Quantity Helper Methods
+	public any function getPriceByCurrencyCode( required string currencyCode ) {
+    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
+    		return getCurrencyDetails()[ arguments.currencyCode ].price;
+    	}
+    }
+    
+    public any function getListPriceByCurrencyCode( required string currencyCode ) {
+    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "listPrice")) {
+    		return getCurrencyDetails()[ arguments.currencyCode ].listPrice;
+    	}
+    }
+    
+    public any function getRenewalPriceByCurrencyCode( required string currencyCode ) {
+    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "renewalPrice")) {
+    		return getCurrencyDetails()[ arguments.currencyCode ].renewalPrice;
+    	}
+    }
+    
+	// END: Price / Currency Methods
+	
+	// START: Quantity Helper Methods
+	
 	public numeric function getQuantity(required string quantityType, string locationID, string stockID) {
 		
 		// If this is a calculated quantity and locationID exists, then delegate
@@ -378,8 +314,10 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	}
 	// END: Quantity Helper Methods
 	
-	// ============ START: Non-Persistent Property Methods =================
+	// ====================  END: Logical Methods ==========================
 	
+	// ============ START: Non-Persistent Property Methods =================
+
 	public string function getAdminIcon() {
 		return getImage(width=55, height=55);
 	}
@@ -499,6 +437,23 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		return variables.currentAccountPrice;
 	}
 	
+	public boolean function getDefaultFlag() {
+    	if(getProduct().getDefaultSku().getSkuID() == getSkuID()) {
+    		return true;
+    	}
+    	return false; 
+    }
+    
+	public array function getEligibleFulfillmentMethods() {
+		if(!structKeyExists(variables, "eligibleFulfillmentMethods")) {
+			var sl = getService("fulfillmentService").getFulfillmentMethodSmartList();
+			sl.addInFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'));
+			sl.addOrder('sortOrder|ASC');
+			variables.eligibleFulfillmentMethods = sl.getRecords();
+		}
+		return variables.eligibleFulfillmentMethods;
+	}
+	
 	public string function getNextEstimatedAvailableDate() {
 		if(!structKeyExists(variables, "nextEstimatedAvailableDate")) {
 			if(getQuantity("QIATS")) {
@@ -540,6 +495,41 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		return variables.livePrice;
 	}
 	
+	public any function getOptionsByOptionGroupCodeStruct() {
+		if(!structKeyExists(variables, "optionsByOptionGroupCodeStruct")) {
+			variables.optionsByOptionGroupIDStruct = {};
+			for(var option in getOptions()) {
+				if( !structKeyExists(variables.optionsByOptionGroupCodeStruct, option.getOptionGroup().getOptionGroupCode())){
+					variables.optionsByOptionGroupCodeStruct[ option.getOptionGroup().getOptionGroupCode() ] = option;
+				}
+			}
+		}
+		return variables.optionsByOptionGroupCodeStruct;
+	}
+	
+	public any function getOptionsByOptionGroupIDStruct() {
+		if(!structKeyExists(variables, "optionsByOptionGroupIDStruct")) {
+			variables.optionsByOptionGroupIDStruct = {};
+			for(var option in getOptions()) {
+				if( !structKeyExists(variables.optionsByOptionGroupIDStruct, option.getOptionGroup().getOptionGroupID())){
+					variables.OptionsByGroupIDStruct[ option.getOptionGroup().getOptionGroupID() ] = option;
+				}
+			}
+		}
+		return variables.optionsByOptionGroupIDStruct;
+	}
+	
+	public string function getOptionsIDList() {
+    	if(!structKeyExists(variables, "optionsIDList")) {
+    		variables.optionsIDList = "";
+    		for(var option in getOptions()) {
+	    		variables.optionsIDList = listAppend(variables.optionsIDList, option.getOptionID());
+	    	}	
+    	}
+    	
+		return variables.optionsIDList;
+    }
+	
 	public any function getQATS() {
 		return getQuantity("QATS");
 	}
@@ -577,16 +567,6 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 			variables.stocksDeletableFlag = getService("skuService").getSkuStocksDeletableFlag( skuID=this.getSkuID() );
 		}
 		return variables.stocksDeletableFlag;
-	}
-	
-	public array function getEligibleFulfillmentMethods() {
-		if(!structKeyExists(variables, "eligibleFulfillmentMethods")) {
-			var sl = getService("fulfillmentService").getFulfillmentMethodSmartList();
-			sl.addInFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'));
-			sl.addOrder('sortOrder|ASC');
-			variables.eligibleFulfillmentMethods = sl.getRecords();
-		}
-		return variables.eligibleFulfillmentMethods;
 	}
 	
 	public string function getSkuDefinition() {
@@ -760,8 +740,47 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
-	// ================== START: Overridden Methods ========================
+	// @hint this method validates that this skus has a unique option combination that no other sku has
+	public any function hasUniqueOptions() {
+		var optionsList = "";
+		
+		for(var i=1; i<=arrayLen(getOptions()); i++){
+			optionsList = listAppend(optionsList, getOptions()[i].getOptionID());
+		}
+		
+		var skus = getProduct().getSkusBySelectedOptions(selectedOptions=optionsList);
+		if(!arrayLen(skus) || (arrayLen(skus) == 1 && skus[1].getSkuID() == getSkuID() )) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	// @hint this method validates that this skus has a unique option combination that no other sku has
+	public any function hasOneOptionPerOptionGroup() {
+		var optionGroupList = "";
+		
+		for(var i=1; i<=arrayLen(getOptions()); i++){
+			if(listFind(optionGroupList, getOptions()[i].getOptionGroup().getOptionGroupID())) {
+				return false;
+			} else {
+				optionGroupList = listAppend(optionGroupList, getOptions()[i].getOptionGroup().getOptionGroupID());	
+			}
+		}
+		
+		return true;
+	}
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
 	
 	public string function getImageName() {
 		if(!structKeyExists(variables, "imageName")) {
@@ -769,6 +788,14 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		}
 		return variables.imageName;
 	}
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
+	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentationPropertyName() {
     	return "skuCode";
@@ -802,8 +829,8 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		
 		return variables.assignedAttributeSetSmartList;
 	}
-    
-    // @help we override this so that the onMM below will work
+	
+	// @help we override this so that the onMM below will work
 	public struct function getPropertyMetaData(string propertyName) {
 		
 		// if the len is 32 them this propertyName is probably an optionGroupID
@@ -818,8 +845,7 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		return super.getPropertyMetaData(argumentCollection=arguments);
 	}
 	
-    
-    // @hint we override the oMM to look for options by optionGroupID
+	 // @hint we override the oMM to look for options by optionGroupID
  	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
  		
 		// getXXX() 			Where XXX is a optionGroupID
@@ -837,10 +863,45 @@ component entityname="SlatwallSku" table="SlatwallSku" persistent=true accessors
 		return super.onMissingMethod(argumentCollection=arguments);
 	}
 	
+	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// @hint: USE skuDefinition()
+	public string function displayOptions(delimiter=" ") {
+    	var dspOptions = "";
+    	for(var i=1;i<=arrayLen(getOptions());i++) {
+    		dspOptions = listAppend(dspOptions, getOptions()[i].getOptionName(), arguments.delimiter);
+    	}
+		return dspOptions;
+    }
+    
+    // @hint: USE getOptionsByOptionGroupIDStruct()
+    public any function getOptionsByGroupIDStruct() {
+    	return getOptionsByOptionGroupIDStruct();
+    }
+    
+    // @hint: NEVER USE
+    public struct function getOptionsValueStruct() {
+    	var options = {};
+    	for(var i=1;i<=arrayLen(getOptions());i++) {
+    		options[getOptions()[i].getOptionGroup().getOptionGroupName()] = getOptions()[i].getOptionID();
+    	}
+		return options;
+    }
+    
+    // @hint: USE getDefaultFlag()
+    public boolean function isNotDefaultSku() {
+		return !getDefaultFlag();
+    }
+    
+	// ==================  END:  Deprecated Methods ========================
+	
+	
 }
 

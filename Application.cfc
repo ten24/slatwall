@@ -85,10 +85,6 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		
 		// SET Database Type
 		request.slatwallScope.setApplicationValue("databaseType", this.ormSettings.dialect);
-		
-		// Reload All Integrations
-		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
-		writeLog(file="Slatwall", text="General Log - Integrations have been updated");
 	}
 	
 	public void function onUpdateRequest() {
@@ -103,6 +99,12 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		// Run Scripts
 		getBeanFactory().getBean("updateService").runScripts();
 		writeLog(file="Slatwall", text="General Log - Update Service Scripts Have been Run");
+	}
+	
+	public void function onFirstRequestPostUpdate() {
+		// Reload All Integrations
+		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
+		writeLog(file="Slatwall", text="General Log - Integrations have been updated");
 	}
 	
 	// ===================================== END: HIBACHI HOOKS

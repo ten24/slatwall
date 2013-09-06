@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Content" entityname="SlatwallContent" table="SlatwallContent" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentContent" hb_processContexts="createSku" {
+component displayname="Content" entityname="SlatwallContent" table="SwContent" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentContent" hb_processContexts="createSku" {
 	
 	// Persistent Properties
 	property name="contentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -57,7 +57,7 @@ component displayname="Content" entityname="SlatwallContent" table="SlatwallCont
 	property name="productListingPageFlag" ormtype="boolean";
 	
 	// CMS Properties
-	property name="cmsContentID" ormtype="string";
+	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
 	
 	// Related Object Properties (many-to-one)
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
@@ -68,11 +68,11 @@ component displayname="Content" entityname="SlatwallContent" table="SlatwallCont
 	property name="childContents" singularname="childContent" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="parentContentID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
-	property name="categories" singularname="category" cfc="Category" type="array" fieldtype="many-to-many" linktable="SlatwallContentCategory" fkcolumn="contentID" inversejoincolumn="categoryID";
+	property name="categories" singularname="category" cfc="Category" type="array" fieldtype="many-to-many" linktable="SwContentCategory" fkcolumn="contentID" inversejoincolumn="categoryID";
 	
 	// Related Object Properties (many-to-many - inverse)
-	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SlatwallSkuAccessContent" fkcolumn="contentID" inversejoincolumn="skuID" inverse="true";
-	property name="listingProducts" singularname="listingProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SlatwallProductListingPage" fkcolumn="contentID" inversejoincolumn="productID" inverse="true";
+	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="contentID" inversejoincolumn="skuID" inverse="true";
+	property name="listingProducts" singularname="listingProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="contentID" inversejoincolumn="productID" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string" hint="Only used when integrated with a remote system";
@@ -131,24 +131,6 @@ component displayname="Content" entityname="SlatwallContent" table="SlatwallCont
 			arrayDeleteAt(arguments.parentContent.getChildContents(), index);
 		}
 		structDelete(variables, "parentContent");
-	}
-	
-	// Site (many-to-one)    
-	public void function setSite(required any site) {    
-		variables.site = arguments.site;    
-		if(isNew() or !arguments.site.hasContent( this )) {    
-			arrayAppend(arguments.site.getContents(), this);    
-		}    
-	}    
-	public void function removeSite(any site) {    
-		if(!structKeyExists(arguments, "site")) {    
-			arguments.site = variables.site;    
-		}    
-		var index = arrayFind(arguments.site.getContents(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.site.getContents(), index);    
-		}    
-		structDelete(variables, "site");    
 	}
 	
 	// Child Contents (one-to-many)    

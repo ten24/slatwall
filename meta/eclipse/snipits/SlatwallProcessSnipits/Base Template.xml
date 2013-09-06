@@ -1,4 +1,8 @@
-<!---
+<?xml version="1.0" encoding="utf-8"?>
+<snippet filetemplate="false" extension="">
+<name>Base Template</name>
+<help></help>
+<starttext><![CDATA[/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,50 +49,49 @@
 
 Notes:
 
---->
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<!--- Move qunatityDelivered to quantity for order items. --->
-<cftry>
-	<cfquery name="updateQuantity">
-		UPDATE SlatwallOrderDeliveryItem
-		SET quantity = quantityDelivered
-	</cfquery>
-	<!--- Remove the quantityDelivered field --->
-	<cfquery name="dropQuantityDelivered">
-		ALTER TABLE SlatwallOrderDeliveryItem
-		DROP COLUMN quantityDelivered
-	</cfquery>
-	<cfcatch />
-</cftry>
+	// Injected Entity
+	property name="$${objectName}";
+	
+	// Lazy / Injected Objects
+	
+	// New Properties
 
-<!--- Remove the old format of the vendorBrand table--->
-<cftry>
-	<cfquery name="vendorBrandRecords">
-		Select count(*) as 'count' from SlatwallVendorBrand
-	</cfquery>
-	<cfif not vendorBrandRecords.count>
-		<cfquery name="dropVendorBrandTable">
-			DROP TABLE SlatwallVendorBrand
-		</cfquery>
-		<cfset ormReload() />
-	</cfif>
-	<cfcatch />
-</cftry>
+	// Data Properties (ID's)
+	
+	// Data Properties (Inputs)
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
 
-<cfquery name="updateOrder">
-	UPDATE SlatwallOrder
-	SET orderTypeID = (SELECT typeID FROM SlatwallType WHERE systemCode = 'otSalesOrder')
-	WHERE orderTypeID IS NULL
-</cfquery>
-
-<cfquery name="updateOrderItem">
-	UPDATE SlatwallOrderItem
-	SET orderItemTypeID = (SELECT typeID FROM SlatwallType WHERE systemCode = 'oitSale')
-	WHERE orderItemTypeID IS NULL
-</cfquery>
-
-<cfquery name="updateOrderPayment">
-	UPDATE SlatwallOrderPayment
-	SET orderPaymentTypeID = (SELECT typeID FROM SlatwallType WHERE systemCode = 'optCharge')
-	WHERE orderPaymentTypeID IS NULL
-</cfquery>
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
+	
+	
+}]]></starttext>
+<endtext><![CDATA[]]></endtext>
+</snippet>

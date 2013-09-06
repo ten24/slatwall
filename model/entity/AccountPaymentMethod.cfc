@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account Payment Method" entityname="SlatwallAccountPaymentMethod" table="SlatwallAccountPaymentMethod" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPaymentMethods" {
+component displayname="Account Payment Method" entityname="SlatwallAccountPaymentMethod" table="SwAccountPaymentMethod" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPaymentMethods" {
 	
 	// Persistent Properties
 	property name="accountPaymentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -202,33 +202,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 		structDelete(variables, "account");
 	}
-	
-	// Payment Method (many-to-one)
-	public void function setPaymentMethod(required any paymentMethod) {
-		variables.paymentMethod = arguments.paymentMethod;
-		if(isNew() or !arguments.paymentMethod.hasAccountPaymentMethod( this )) {
-			arrayAppend(arguments.paymentMethod.getAccountPaymentMethods(), this);
-		}
-	}
-	public void function removePaymentMethod(any paymentMethod) {
-		if(!structKeyExists(arguments, "paymentMethod")) {
-			arguments.paymentMethod = variables.paymentMethod;
-		}
-		var index = arrayFind(arguments.paymentMethod.getAccountPaymentMethods(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.paymentMethod.getAccountPaymentMethods(), index);
-		}
-		structDelete(variables, "paymentMethod");
-	}
-	
-	// Order Payments (one-to-many)    
-	public void function addOrderPayment(required any orderPayment) {    
-		arguments.orderPayment.setAccountPaymentMethod( this );    
-	}    
-	public void function removeOrderPayment(required any orderPayment) {    
-		arguments.orderPayment.removeAccountPaymentMethod( this );    
-	}
-	
+
 	// Payment Transactions (one-to-many)    
 	public void function addPaymentTransaction(required any paymentTransaction) {    
 		arguments.paymentTransaction.setAccountPaymentMethod( this );    

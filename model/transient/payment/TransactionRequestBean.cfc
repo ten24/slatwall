@@ -52,8 +52,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	// Process Info
 	property name="transactionID" type="string" ;
 	property name="transactionType" type="string" ;
-	property name="transactionAmount" ormtype="float";
-	property name="transactionCurrency" ormtype="float";
+	property name="transactionAmount" type="numeric";
+	property name="transactionCurrencyCode" type="string";
 	property name="isDuplicateFlag" type="boolean";
 	
 	// Credit Card Info
@@ -82,14 +82,31 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="billingPostalCode" type="string";   
 	property name="billingCountryCode" type="string";   
 	
-	// Pertinent Reference Information
+	// Pertinent Reference Information (used for accountPayments)
 	property name="accountPaymentID" type="string";
+	
+	// Pertinent Reference Information (used for accountPaymentMethods)
 	property name="accountPaymentMethodID" type="string";
+	
+	// Pertinent Reference Information (used for orderPayments)
 	property name="orderPaymentID" type="string";
 	property name="orderID" type="string";
+	
+	// Pertinent Reference Information (used for all above)
 	property name="accountID" type="string";
-	property name="providerTransactionID" type="string";
-	property name="referencedPaymentTransactionID" type="string";
+	
+	// Always there if this Account Payment or Order Payment has previously had an authorization done
+	property name="originalAuthorizationCode" type="string";
+	property name="originalAuthorizationProviderTransactionID" type="string";
+	property name="originalChargeProviderTransactionID" type="string";
+	property name="originalProviderTransactionID" type="string";
+	
+	// Only Used for 'chargePreAuthorization'
+	property name="preAuthorizationCode" type="string";
+	property name="preAuthorizationProviderTransactionID" type="string";
+	
+	// Deprecated
+	property name="transactionCurrency" ormtype="string";
 	
 	/*
 	Process Types
@@ -115,11 +132,18 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		if(!isNull(arguments.accountPayment.getProviderToken())) {
 			setProviderToken(arguments.accountPayment.getProviderToken());	
 		}
-		setNameOnCreditCard(arguments.accountPayment.getNameOnCreditCard());
-		setCreditCardType(arguments.accountPayment.getCreditCardType());
-		setExpirationMonth(arguments.accountPayment.getExpirationMonth());
-		setExpirationYear(arguments.accountPayment.getExpirationYear());
-		
+		if(!isNull(arguments.accountPayment.getNameOnCreditCard())) {
+			setNameOnCreditCard(arguments.accountPayment.getNameOnCreditCard());	
+		}
+		if(!isNull(arguments.accountPayment.getCreditCardType())) {
+			setCreditCardType(arguments.accountPayment.getCreditCardType());
+		}
+		if(!isNull(arguments.accountPayment.getExpirationMonth())) {
+			setExpirationMonth(arguments.accountPayment.getExpirationMonth());	
+		}
+		if(!isNull(arguments.accountPayment.getExpirationYear())) {
+			setExpirationYear(arguments.accountPayment.getExpirationYear());	
+		}
 		
 		// Populate Account Info
 		setAccountFirstName(arguments.accountPayment.getAccount().getFirstName());
@@ -160,9 +184,24 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			setBillingCountryCode(arguments.accountPayment.getBillingAddress().getCountryCode());
 		}
 		
+		// Setup all original transaction details
+		if(len(arguments.accountPayment.getOriginalAuthorizationCode())) {
+			setOriginalAuthorizationCode(arguments.accountPayment.getOriginalAuthorizationCode());
+		}
+		if(len(arguments.accountPayment.getOriginalAuthorizationProviderTransactionID())) {
+			setOriginalAuthorizationProviderTransactionID(arguments.accountPayment.getOriginalAuthorizationProviderTransactionID());
+		}
+		if(len(arguments.accountPayment.getOriginalChargeProviderTransactionID())) {
+			setOriginalChargeProviderTransactionID(arguments.accountPayment.getOriginalChargeProviderTransactionID());
+		}
+		if(len(arguments.accountPayment.getOriginalProviderTransactionID())) {
+			setOriginalProviderTransactionID(arguments.accountPayment.getOriginalProviderTransactionID());
+		}
+		
 		// Populate relavent Misc Info
-		setAccountPaymentID(arguments.accountPayment.getAccountPaymentID());
-		setAccountID(arguments.accountPayment.getAccount().getAccountID());
+		setAccountPaymentID( arguments.accountPayment.getAccountPaymentID() );
+		setAccountID( arguments.accountPayment.getAccount().getAccountID() );
+		
 	}
 	
 	public void function populatePaymentInfoWithOrderPayment(required any orderPayment) {
@@ -177,11 +216,18 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		if(!isNull(arguments.orderPayment.getProviderToken())) {
 			setProviderToken(arguments.orderPayment.getProviderToken());	
 		}
-		setNameOnCreditCard(arguments.orderPayment.getNameOnCreditCard());
-		setCreditCardType(arguments.orderPayment.getCreditCardType());
-		setExpirationMonth(arguments.orderPayment.getExpirationMonth());
-		setExpirationYear(arguments.orderPayment.getExpirationYear());
-		
+		if(!isNull(arguments.orderPayment.getNameOnCreditCard())) {
+			setNameOnCreditCard(arguments.orderPayment.getNameOnCreditCard());	
+		}
+		if(!isNull(arguments.orderPayment.getCreditCardType())) {
+			setCreditCardType(arguments.orderPayment.getCreditCardType());	
+		}
+		if(!isNull(arguments.orderPayment.getExpirationMonth())) {
+			setExpirationMonth(arguments.orderPayment.getExpirationMonth());	
+		}
+		if(!isNull(arguments.orderPayment.getExpirationYear())) {
+			setExpirationYear(arguments.orderPayment.getExpirationYear());	
+		}
 		
 		// Populate Account Info
 		setAccountFirstName(arguments.orderPayment.getOrder().getAccount().getFirstName());
@@ -224,11 +270,25 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			}
 		}
 		
+		// Setup all original transaction details
+		if(len(arguments.orderPayment.getOriginalAuthorizationCode())) {
+			setOriginalAuthorizationCode(arguments.orderPayment.getOriginalAuthorizationCode());
+		}
+		if(len(arguments.orderPayment.getOriginalAuthorizationProviderTransactionID())) {
+			setOriginalAuthorizationProviderTransactionID(arguments.orderPayment.getOriginalAuthorizationProviderTransactionID());
+		}
+		if(len(arguments.orderPayment.getOriginalChargeProviderTransactionID())) {
+			setOriginalChargeProviderTransactionID(arguments.orderPayment.getOriginalChargeProviderTransactionID());
+		}
+		if(len(arguments.orderPayment.getOriginalProviderTransactionID())) {
+			setOriginalProviderTransactionID(arguments.orderPayment.getOriginalProviderTransactionID());
+		}
 		
 		// Populate relavent Misc Info
 		setOrderPaymentID(arguments.orderPayment.getOrderPaymentID());
 		setOrderID(arguments.orderPayment.getOrder().getOrderID());
 		setAccountID(arguments.orderPayment.getOrder().getAccount().getAccountID());
+		
 	}
 	
 	public void function populatePaymentInfoWithAccountPaymentMethod(required any accountPaymentMethod) {
@@ -292,5 +352,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		setAccountPaymentMethodID( arguments.accountPaymentMethod.getAccountPaymentMethodID() );
 		setAccountID( arguments.accountPaymentMethod.getAccount().getAccountID() );
 	}
-
+	
+	// Deprecated
+	public string function getTransactionCurrency() {
+		return getTransactionCurrencyCode();
+	}
 }

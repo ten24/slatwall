@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" table="SlatwallPromotionPeriod" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" hb_permission="promotion.promotionPeriods" {
+component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" table="SwPromotionPeriod" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" hb_permission="promotion.promotionPeriods" {
 	
 	// Persistent Properties
 	property name="promotionPeriodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -94,7 +94,7 @@ component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" ta
 
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Promotion (many-to-one)    
+	// Promotion (many-to-one)
 	public void function setPromotion(required any promotion) {    
 		variables.promotion = arguments.promotion;    
 		if(isNew() or !arguments.promotion.hasPromotionPeriod( this )) {    

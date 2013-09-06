@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SlatwallOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems" {
+component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems" {
 	
 	// Persistent Properties
 	property name="orderFulfillmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -345,24 +345,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			arrayDeleteAt(arguments.order.getOrderFulfillments(), index);    
 		}    
 		structDelete(variables, "order");    
-	}
-	
-	// Fulfillment Method (many-to-one)
-	public void function setFulfillmentMethod(required any fulfillmentMethod) {
-		variables.fulfillmentMethod = arguments.fulfillmentMethod;
-		if(isNew() or !arguments.fulfillmentMethod.hasOrderFulfillment( this )) {
-			arrayAppend(arguments.fulfillmentMethod.getOrderFulfillments(), this);
-		}
-	}
-	public void function removeFulfillmentMethod(any fulfillmentMethod) {
-		if(!structKeyExists(arguments, "fulfillmentMethod")) {
-			arguments.fulfillmentMethod = variables.fulfillmentMethod;
-		}
-		var index = arrayFind(arguments.fulfillmentMethod.getOrderFulfillments(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.fulfillmentMethod.getOrderFulfillments(), index);
-		}
-		structDelete(variables, "fulfillmentMethod");
 	}
 	
 	// Fulfillment Shipping Method Options (one-to-many)    

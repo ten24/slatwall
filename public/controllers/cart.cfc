@@ -133,7 +133,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if( !account.hasErrors() ) {
 			if( !isNull(rc.$.slatwall.getCart().getAccount())) {
-				var newCart = getOrderService().duplicateOrderWithNewAccount( getHibachiScope().getSession().getOrder(), getHibachiScope().getSession().getAccount() );
+				var newCart = getOrderService().duplicateOrderWithNewAccount( rc.$.slatwall.getCart(), account );
 				rc.$.slatwall.getSession().setOrder( newCart );
 			} else {
 				rc.$.slatwall.getCart().setAccount( account );	

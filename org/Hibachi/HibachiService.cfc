@@ -10,9 +10,6 @@
 	<cfproperty name="hibachiUtilityService" type="any">
 	<cfproperty name="hibachiValidationService" type="any">
 	
-	<!--- TODO: FIX THIS --->
-	<cfproperty name="attributeService" type="any">
-	
 	<!--- Variables Scope Used For Caching --->
 	<cfset variables.entitiesMetaData = {} />
 	<cfset variables.entitiesProcessContexts = {} />
@@ -280,7 +277,7 @@
 				return onMissingProcessMethod( missingMethodName, missingMethodArguments );
 			}
 
-			return super.onMissingMethod(argumentsCollection=arguments);
+			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
 		}
 		
 	
@@ -578,8 +575,8 @@
 		 * ...in which XXX is an ORM entity name.
 		 */
 		private function onMissingExportMethod( required string missingMethodName, required struct missingMethodArguments ){
-			var entityName = getProperlyCasedFullEntityName(missingMethodName.substring( 6 ));
-			var exportQry = getHibachiDAO().getExportQuery(entityName = entityName);
+			var entityMeta = getMetaData(getEntityObject( missingMethodName.substring( 6 ) ));
+			var exportQry = getHibachiDAO().getExportQuery(tableName = entityMeta.table);
 			
 			export(data=exportQry);
 		}
@@ -657,6 +654,10 @@
 			}
 			
 			return variables.entitiesMetaData;
+		}
+		
+		public any function getEntityMetaData( required string entityName ) {
+			return getEntitiesMetaData()[ getProperlyCasedShortEntityName( arguments.entityName ) ];
 		}
 		
 		// @hint returns the entity meta data object that is used by a lot of the helper methods below
@@ -739,7 +740,9 @@
 			var idColumnNames = getIdentifierColumnNamesByEntityName( arguments.entityName );
 			
 			if( arrayLen(idColumnNames)) {
-				return idColumnNames[1];
+				var shortEntityName = getProperlyCasedShortEntityName(arguments.entityName);
+				shortEntityName = lcase(shortEntityName.charAt(0)) & shortEntityName.subString(1);
+				return replaceNoCase(replaceNoCase(idColumnNames[1],shortEntityName,shortEntityName),"code","Code");
 			}
 		}
 		
@@ -775,7 +778,9 @@
 			return getHibachiDAO().getTableTopSortOrder(argumentcollection=arguments);
 		}
 	
-		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string tableName, required numeric newSortOrder) {
+		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {
+			var entityMetaData = getEntityMetaData( arguments.entityName );
+			arguments.tableName = entityMetaData.table;
 			getHibachiDAO().updateRecordSortOrder(argumentcollection=arguments);
 		}
 		

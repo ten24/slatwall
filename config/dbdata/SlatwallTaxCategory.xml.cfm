@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallTaxCategory">
+<Table tableName="SwTaxCategory">
 	<Columns>
 		<column name="taxCategoryID" fieldtype="id" />
 		<column name="taxCategoryName" update="false" />

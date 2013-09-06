@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account Authentication" entityname="SlatwallAccountAuthentication" table="SlatwallAccountAuthentication" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountAuthentications" {
+component displayname="Account Authentication" entityname="SlatwallAccountAuthentication" table="SwAccountAuthentication" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountAuthentications" {
 	
 	// Persistent Properties
 	property name="accountAuthenticationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -54,7 +54,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	property name="expirationDateTime" ormtype="timestamp";
 	property name="integrationAccountID" ormtype="string";
 	property name="integrationAccessToken" ormtype="string";
-	property name="integrationAccessTokenExpiration" ormtype="string";
+	property name="integrationAccessTokenExpiration" ormtype="string" column="integrationAccessTokenExp";
 	property name="integrationRefreshToken" ormtype="string";
 	
 	// Related Object Properties (many-to-one)

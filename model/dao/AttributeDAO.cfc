@@ -61,15 +61,15 @@ Notes:
 		<cfset var rs = "" />
 		<cfquery name="rs">
 			SELECT
-				SlatwallAttribute.attributeCode
+				SwAttribute.attributeCode
 			FROM
-				SlatwallAttribute
+				SwAttribute
 			  INNER JOIN
-			  	SlatwallAttributeSet on SlatwallAttribute.attributeSetID = SlatwallAttributeSet.attributeSetID
+			  	SwAttributeSet on SwAttribute.attributeSetID = SwAttributeSet.attributeSetID
 			  INNER JOIN
-			  	SlatwallType on SlatwallAttributeSet.attributeSetTypeID = SlatwallType.typeID
+			  	SwType on SwAttributeSet.attributeSetTypeID = SwType.typeID
 			WHERE
-				SlatwallType.systemCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetType#"/>
+				SwType.systemCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetType#"/>
 		</cfquery>
 		<cfreturn rs />
 	</cffunction> 

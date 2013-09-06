@@ -1,6 +1,6 @@
 component accessors="true" output="false" persistent="false" {
 
-	property name="hibachiInstanceApplicationScopeKey" type="string";
+	property name="hibachiInstanceApplicationScopeKey" type="string" persistent="false";
 
 	// Constructor Metod
 	public any function init( ) {

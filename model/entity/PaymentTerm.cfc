@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SlatwallPaymentTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" hb_permission="this" {
+component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwPaymentTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="paymentTermID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -73,9 +73,6 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="Sla
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-
-
-
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -83,24 +80,6 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="Sla
 		
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Term (many-to-one)
-	public void function setTerm(required any term) {
-		variables.term = arguments.term;
-		if(isNew() or !arguments.term.hasPaymentTerm( this )) {
-			arrayAppend(arguments.term.getPaymentTerms(), this);
-		}
-	}
-	public void function removeTerm(any term) {
-		if(!structKeyExists(arguments, "term")) {
-			arguments.term = variables.term;
-		}
-		var index = arrayFind(arguments.term.getPaymentTerms(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.term.getPaymentTerms(), index);
-		}
-		structDelete(variables, "term");
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

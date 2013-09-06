@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallProductType">
+<Table tableName="SwProductType">
 	<Columns>
 		<column name="productTypeID" fieldtype="id" />
 		<column name="parentProductTypeID" />

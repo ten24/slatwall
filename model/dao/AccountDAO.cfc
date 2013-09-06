@@ -133,7 +133,7 @@ Notes:
 		<cfargument name="accountID" required="true"  />
 		<cfset var rs = "" />
 		<cfquery name="rs">
-			UPDATE SlatwallSession SET accountID = null, accountAuthenticationID = null WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+			UPDATE SwSession SET accountID = null, accountAuthenticationID = null WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
 		</cfquery>
 	</cffunction>
 	
@@ -166,7 +166,7 @@ Notes:
 		</cfloop>
 		
 		<cfquery name="rs">
-			DELETE FROM SlatwallAccount WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.oldAccountID#" />
+			DELETE FROM SwAccount WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.oldAccountID#" />
 		</cfquery>
 	</cffunction>
 </cfcomponent>

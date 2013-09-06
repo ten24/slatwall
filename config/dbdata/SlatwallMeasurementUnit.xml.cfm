@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallMeasurementUnit">
+<Table tableName="SwMeasurementUnit">
 	<Columns>
 		<column name="unitCode" fieldtype="id" />
 		<column name="measurementType" />

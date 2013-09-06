@@ -87,7 +87,7 @@
 		<cfif not structKeyExists(variables, "muraIntegrationID")>
 			<cfset var muraIntegrationQuery = "" />
 			<cfquery name="muraIntegrationQuery">
-				SELECT integrationID FROM SlatwallIntegration WHERE integrationPackage = <cfqueryparam cfsqltype="cf_sql_varchar" value="mura" />
+				SELECT integrationID FROM SwIntegration WHERE integrationPackage = <cfqueryparam cfsqltype="cf_sql_varchar" value="mura" />
 			</cfquery>
 			<cfset variables.muraIntegrationID = muraIntegrationQuery.integrationID />
 		</cfif>

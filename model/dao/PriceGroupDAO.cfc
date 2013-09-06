@@ -57,33 +57,33 @@ Notes:
 		<cfif getApplicationValue("databaseType") eq "mySQL">
 				<cfquery name="getpg">
 					SELECT DISTINCT subpg.priceGroupID
-					FROM SlatwallSubscriptionUsageBenefitAccount suba
-					INNER JOIN SlatwallSubscriptionUsageBenefit sub ON suba.subscriptionUsageBenefitID = sub.subscriptionUsageBenefitID
-					INNER JOIN SlatwallSubscriptionUsageBenefitPriceGroup subpg ON sub.subscriptionUsageBenefitID = subpg.subscriptionUsageBenefitID
-					INNER JOIN SlatwallSubscriptionUsage su ON sub.subscriptionUsageID = su.subscriptionUsageID
+					FROM SwSubsUsageBenefitAccount suba
+					INNER JOIN SwSubsUsageBenefit sub ON suba.subscriptionUsageBenefitID = sub.subscriptionUsageBenefitID
+					INNER JOIN SwSubsUsageBenefitPriceGroup subpg ON sub.subscriptionUsageBenefitID = subpg.subscriptionUsageBenefitID
+					INNER JOIN SwSubsUsage su ON sub.subscriptionUsageID = su.subscriptionUsageID
 					WHERE (suba.endDateTime IS NULL
 							OR suba.endDateTime > <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />)
 						AND suba.accountID = <cfqueryparam value="#arguments.accountID#" cfsqltype="cf_sql_varchar" />
-						AND 'sstActive' = (SELECT systemCode FROM SlatwallSubscriptionStatus 
-									INNER JOIN SlatwallType ON SlatwallSubscriptionStatus.subscriptionStatusTypeID = SlatwallType.typeID
-									WHERE SlatwallSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
-									AND SlatwallSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+						AND 'sstActive' = (SELECT systemCode FROM SwSubscriptionStatus 
+									INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID
+									WHERE SwSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
+									AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 									ORDER BY changeDateTime DESC LIMIT 1)
 				</cfquery>
 		<cfelse>
 				<cfquery name="getpg">
 					SELECT DISTINCT subpg.priceGroupID
-					FROM SlatwallSubscriptionUsageBenefitAccount suba
-					INNER JOIN SlatwallSubscriptionUsageBenefit sub ON suba.subscriptionUsageBenefitID = sub.subscriptionUsageBenefitID
-					INNER JOIN SlatwallSubscriptionUsageBenefitPriceGroup subpg ON sub.subscriptionUsageBenefitID = subpg.subscriptionUsageBenefitID
-					INNER JOIN SlatwallSubscriptionUsage su ON sub.subscriptionUsageID = su.subscriptionUsageID
+					FROM SwSubsUsageBenefitAccount suba
+					INNER JOIN SwSubsUsageBenefit sub ON suba.subscriptionUsageBenefitID = sub.subscriptionUsageBenefitID
+					INNER JOIN SwSubsUsageBenefitPriceGroup subpg ON sub.subscriptionUsageBenefitID = subpg.subscriptionUsageBenefitID
+					INNER JOIN SwSubsUsage su ON sub.subscriptionUsageID = su.subscriptionUsageID
 					WHERE (suba.endDateTime IS NULL
 							OR suba.endDateTime > <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />)
 						AND suba.accountID = <cfqueryparam value="#arguments.accountID#" cfsqltype="cf_sql_varchar" />
-						AND 'sstActive' = (SELECT TOP 1 systemCode FROM SlatwallSubscriptionStatus 
-									INNER JOIN SlatwallType ON SlatwallSubscriptionStatus.subscriptionStatusTypeID = SlatwallType.typeID
-									WHERE SlatwallSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
-									AND SlatwallSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+						AND 'sstActive' = (SELECT TOP 1 systemCode FROM SwSubscriptionStatus 
+									INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID
+									WHERE SwSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
+									AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 									ORDER BY changeDateTime DESC)
 				</cfquery>
 		</cfif>

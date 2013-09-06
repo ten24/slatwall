@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SlatwallEmailTemplate">
+<Table tableName="SwEmailTemplate">
 	<Columns>
 		<column name="emailTemplateID" fieldtype="id" />
 		<column name="emailTemplateName" update="false" />
