@@ -116,9 +116,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	*/
 
 	// @hint Returns an array of comments related to this entity
-	public array function getComments() {
+	public array function getComments(any publicFlag="") {
 		if(!structKeyExists(variables, "comments")) {
-			variables.comments = getService("commentService").getRelatedCommentsForEntity(primaryIDPropertyName=getPrimaryIDPropertyName(), primaryIDValue=getPrimaryIDValue());
+			variables.comments = getService("commentService").getRelatedCommentsForEntity(primaryIDPropertyName=getPrimaryIDPropertyName(), primaryIDValue=getPrimaryIDValue(),publicFlag=arguments.publicFlag);
 		}
 		return variables.comments;
 	}

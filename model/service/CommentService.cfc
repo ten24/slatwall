@@ -129,7 +129,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: DAO Passthrough ===========================
 	
-	public array function getRelatedCommentsForEntity(required string primaryIDPropertyName, required string primaryIDValue) {
+	public array function getRelatedCommentsForEntity(required string primaryIDPropertyName, required string primaryIDValue,any publicflag="") {
 		return getCommentDAO().getRelatedCommentsForEntity(argumentCollection=arguments);
 	}
 	
