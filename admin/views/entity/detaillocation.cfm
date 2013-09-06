@@ -48,6 +48,7 @@ Notes:
 --->
 <cfparam name="rc.location" type="any">
 <cfparam name="rc.edit" type="boolean">
+
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.location#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.location#">
@@ -57,9 +58,10 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.location#" property="activeFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.location#" property="activeFlag" edit="#rc.edit#" >
 				<cf_HibachiPropertyDisplay object="#rc.location#" property="locationName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.edit#" valueOptions="#rc.location.getService("LocationService").getLocationOptions()#">
+				<!---<cf_HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.edit#">--->
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		

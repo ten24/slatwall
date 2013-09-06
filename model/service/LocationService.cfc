@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
 	property name="locationDAO" type="any";
+	property name="stockDAO" type="any";
 	
 	public boolean function isLocationBeingUsed(required any location) {
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
@@ -88,6 +89,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	public any function saveLocation(required any location, required struct data) {
+		arguments.location = super.save(arguments.location, arguments.data);
+		if(!location.hasErrors()){
+			getHibachiDAO().flushORMSession();
+			if( locationHasStock(arguments.location.getParentLocation())) {
+				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(),toLocationID=arguments.location.getlocationID());
+			}
+		}
+		return arguments.location;
+	}
+	
+	public any function updateStockLocation(required string fromLocationID, required string toLocationID) {
+		getStockDAO().updateStockLocation( arguments.fromLocationID, arguments.toLocationID);
+	}
+	
+	
+	public boolean function locationHasStock(required any location) {
+		return (arraylen(arguments.location.getStocks()) > 0);
+	}
 	
 	// ======================  END: Save Overrides ============================
 	
