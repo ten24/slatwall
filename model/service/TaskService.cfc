@@ -53,46 +53,6 @@ component extends="HibachiService" output="false" accessors="true"{
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public void function updateEntityCalculatedProperties(required any entityName, struct smartListData={}) {
-		
-		// Setup a smart list to figure out how many things to update
-		var smartList = getServiceByEntityName( arguments.entityName ).invokeMethod( "get#arguments.entityName#SmartList", {1=arguments.smartListData});
-		
-		// log the job started
-		logHibachi("updateEntityCalculatedProperties starting for #arguments.entityName# with #smartList.getRecordsCount()# records");
-		
-		// create a local variable for the totalPages
-		var totalPages = smartList.getTotalPages();
-		
-		for(var p=1; p <= totalPages; p++) {
-			
-			// Log to hibachi the current page
-			logHibachi("updateEntityCalculatedProperties starting page: #p#");
-			
-			// Clear the session, so that it doesn't hog primary cache
-			ormClearSession();
-			
-			// Set the correct page
-			smartList.setCurrentPageDeclaration( p );
-			
-			// Get the records for this page, make sure to pass true so that the old records get cleared out
-			var records = smartList.getPageRecords( true );
-			
-			// Figure out the recordCount we need to loop to
-			var rc = arrayLen(records);
-			
-			// Loop over each record in the page and call update / flush
-			for(var r=1; r<=rc; r++) {
-				records[r].updateCalculatedProperties();
-				ormFlush();
-			}
-		}
-		
-		// log the job finished
-		logHibachi("updateEntityCalculatedProperties starting for #arguments.entityName# finished");
-		
-	}
-	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================

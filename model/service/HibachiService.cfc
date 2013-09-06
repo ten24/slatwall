@@ -103,4 +103,65 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return arguments.entity;
 	}
 
+	public void function updateEntityCalculatedProperties(required any entityName, struct smartListData={}, boolean runInThread=false) {
+		
+		//Check to see if we need to run this in a new thread or not
+		if(arguments.runInThread){
+			thread action="run" name="updateEntityCalculatedPropertiesThread" threadData="#arguments#" {
+				
+				// Run inside a try/catch so we can log errors
+				try{
+					_updateEntityCalculatedProperties(argumentcollection=threadData);
+				} catch(any e){	
+					
+					// Log the error
+					logHibachi( "There was an error updating the calculated properties for the entity type: #threadData.entityName#" );
+					logHibachiException( e );
+				}
+				getHibachiDAO().flushORMSession();
+			}
+		}else{
+			_updateEntityCalculatedProperties(argumentcollection=arguments);
+		}
+		
+	}
+
+	private void function _updateEntityCalculatedProperties(required any entityName, struct smartListData={}){
+		// Setup a smart list to figure out how many things to update
+		var smartList = getServiceByEntityName( arguments.entityName ).invokeMethod( "get#arguments.entityName#SmartList", {1=arguments.smartListData});
+		
+		// log the job started
+		logHibachi("updateEntityCalculatedProperties starting for #arguments.entityName# with #smartList.getRecordsCount()# records");
+		
+		// create a local variable for the totalPages
+		var totalPages = smartList.getTotalPages();
+		
+		for(var p=1; p <= totalPages; p++) {
+			
+			// Log to hibachi the current page
+			logHibachi("updateEntityCalculatedProperties starting page: #p#");
+			
+			// Clear the session, so that it doesn't hog primary cache
+			ormClearSession();
+			
+			// Set the correct page
+			smartList.setCurrentPageDeclaration( p );
+			
+			// Get the records for this page, make sure to pass true so that the old records get cleared out
+			var records = smartList.getPageRecords( true );
+			
+			// Figure out the recordCount we need to loop to
+			var rc = arrayLen(records);
+			
+			// Loop over each record in the page and call update / flush
+			for(var r=1; r<=rc; r++) {
+				records[r].updateCalculatedProperties();
+				ormFlush();
+			}
+		}
+		
+		// log the job finished
+		logHibachi("updateEntityCalculatedProperties for #arguments.entityName# finished");
+	}
+
 }
