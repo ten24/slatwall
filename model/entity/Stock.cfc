@@ -51,6 +51,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// Persistent Properties
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	
+	// Calculated Properties
+	property name="calculatedQATS" ormtype="integer";
+
 	// Related Object Properties (many-to-one)
 	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";
 	property name="sku" fieldtype="many-to-one" fkcolumn="skuID" cfc="Sku" hb_cascadeCalculate="true"; // We always want sku when we get a stock
@@ -83,7 +86,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+	public any function getQATS() {
+		return getQuantity("QATS");
+	}
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Vendor Order Items (one-to-many)
