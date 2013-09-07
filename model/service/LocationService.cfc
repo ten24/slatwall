@@ -63,6 +63,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!structKeyExists(variables,"locationOptions")) {
 			arguments.entityName = "SlatwallLocation";
 			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+			smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
 			smartList.addOrder("locationIDPath");
 			var locations = smartList.getRecords();
 			
