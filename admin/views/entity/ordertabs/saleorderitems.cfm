@@ -55,7 +55,7 @@ Notes:
 							  recordEditAction="admin:entity.editorderitem">
 							    
 		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.calculatedTitle" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.product.calculatedTitle" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
 		<cf_HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
 		<cf_HibachiListingColumn propertyIdentifier="quantity" />

@@ -61,6 +61,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(variables.entity.getReferencingOrderPayments(), []);
 	}
 	
+	public void function getSucessfulPaymentTransactionExistsFlag_returns_false_by_default() {
+		assertFalse(variables.entity.getSucessfulPaymentTransactionExistsFlag());
+	}
+	
+	public void function getSucessfulPaymentTransactionExistsFlag_returns_true_when_should() {
+		var paymentTransaction = request.slatwallScope.newEntity('paymentTransaction');
+		paymentTransaction.setTransactionSuccessFlag(true);
+		paymentTransaction.setOrderPayment( variables.entity );
+		
+		assert(variables.entity.getSucessfulPaymentTransactionExistsFlag());
+	}
 }
 
 

@@ -88,6 +88,8 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 		
 		if(!len(arguments.rc.primaryPhoneNumber.phoneNumber) && structKeyExists(arguments.rc, "phoneNumber")) {
 			arguments.rc.primaryPhoneNumber.phoneNumber = arguments.rc.phoneNumber;
+		} else {
+			structDelete(arguments.rc, "primaryPhoneNumber");
 		}
 		
 		var wasNew = rc.$.slatwall.getCurrentAccount().isNew();
@@ -97,18 +99,75 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 		}
 		rc.account = getAccountService().saveAccount(rc.$.slatwall.getCurrentAccount(), rc);
 		
-		if(!rc.account.hasErrors() && wasNew) {
-			var newMuraUser = request.muraScope.getBean('userBean');
-			newMuraUser.setFName( nullReplace(rc.account.getFirstName(), '') );
-			newMuraUser.setLName( nullReplace(rc.account.getLastName(), '') );
-			newMuraUser.setCompany( nullReplace(rc.account.getCompany(), '') );
-			newMuraUser.setUsername( rc.account.getEmailAddress() );
-			newMuraUser.setEmail( rc.account.getEmailAddress() );
-			newMuraUser.setPassword( rc.password );
-			newMuraUser.setSiteID( request.muraScope.event('siteID') );
-			newMuraUser.save();
-			rc.account.setCMSAccountID( newMuraUser.getUserID() );
+		// Change Password Logic
+		if( !rc.account.hasErrors() && !wasNew && structKeyExists(rc, "password") && !isNull(rc.account.getCMSAccountID()) && len(rc.account.getCMSAccountID()) ) {
+			
+			// Change password on mura side
+			var muraUser = rc.$.getBean('userBean').loadby(userID=rc.account.getCMSAccountID(), siteID=arguments.rc.$.event('siteid'));
+			muraUser.setPassword( rc.password );
+			muraUser.save();
+			
+			// Change password on slatwall side
+			if(rc.account.getSlatwallAuthenticationExistsFlag()) {
+				var passwordChangeData = {};
+				passwordChangeData.password = rc.password;
+				passwordChangeData.passwordConfirm = rc.password;
+				
+				rc.account = getAccountService().processAccount(rc.account, passwordChangeData, 'changePassword');
+			}
+			
 		}
+		
+		if(!rc.account.hasErrors() && wasNew && structKeyExists(rc, "password")) {
+			
+			// Create the mura user
+			var newMuraUser = rc.$.getBean('userBean');
+			newMuraUser.setFName( nullReplace(arguments.rc.account.getFirstName(), '') );
+			newMuraUser.setLName( nullReplace(arguments.rc.account.getLastName(), '') );
+			newMuraUser.setCompany( nullReplace(arguments.rc.account.getCompany(), '') );
+			newMuraUser.setUsername( arguments.rc.account.getEmailAddress() );
+			newMuraUser.setEmail( arguments.rc.account.getEmailAddress() );
+			newMuraUser.setPassword( rc.password );
+			newMuraUser.setSiteID( rc.$.event('siteID') );
+			
+			// Set the CMSAccountID on the slatwall side
+			arguments.rc.account.setCMSAccountID( newMuraUser.getUserID() );
+			
+			// Persist this change
+			ormFlush();
+			
+			// Save the mura user (which will cascade and update the authentication on slatwall side)
+			newMuraUser = newMuraUser.save();
+			
+			// If the mura user had issues saving
+			if(!isNull(newMuraUser.getErrors()) && isStruct(newMuraUser.getErrors()) && structCount(newMuraUser.getErrors()) ) {
+				
+				// Remove the account entity from the database that we persisted
+				getAccountService().deleteAccount( arguments.rc.account );
+				
+				// Create a new version, and populate it with the stuff that was attempted
+				arguments.rc.account = getAccountService().newAccount();
+				arguments.rc.account.setFirstName( newMuraUser.getFName() );
+				arguments.rc.account.setLastName( newMuraUser.getLName() );
+				arguments.rc.account.setCompany( newMuraUser.getCompany() );
+				arguments.rc.account.setPrimaryEmailAddress( arguments.rc.account.getPrimaryEmailAddress() );
+				arguments.rc.account.getPrimaryEmailAddress().setEmailAddress( newMuraUser.getEmail() );
+				
+				// Loop over the errors in the newMuraUser and add those errors to this account entity
+				for(var key in newMuraUser.getErrors()) {
+					arguments.rc.account.addError(key, newMuraUser.getErrors()[key]);
+				}
+				
+			} else {
+				
+				// Loging the current user
+				var loginSuccess = rc.$.getBean('userUtility').login(username=arguments.rc.account.getEmailAddress(), password=accountData.password, siteID=rc.$.event('siteid'));
+				
+			}
+			
+			
+		}
+		
 		if(rc.account.hasErrors()) {
 			prepareEditData(rc);
 			getFW().setView(currentAction);
@@ -268,4 +327,3 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 	}
 	
 }
-

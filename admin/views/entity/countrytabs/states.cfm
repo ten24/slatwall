@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,40 +45,21 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+--->
+<cfparam name="rc.country" type="any" />
 
-	public void function setUp() {
-		super.setup();
-		
-		variables.smartList = request.slatwallScope.getSmartList("Product");
-	}
+<cfoutput>
+	<cf_HibachiListingDisplay smartList="#rc.country.getStatesSmartList()#"
+							  recordEditAction="admin:entity.editstate"
+							  recordEditQueryString="countryCode=#rc.country.getCountryCode()#"
+							  recordEditModal="true"
+							  recordDeleteAction="admin:entity.deletestate"
+							  recordDeleteQueryString="redirectAction=admin:entity.detailcountry&countryCode=#rc.country.getCountryCode()###tabstates">
 
-	// buildURL()
-	public void function buildURL_1() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?p:current=2");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?p:current=3');
-	}
+		<cf_HibachiListingColumn propertyIdentifier="stateCode" />
+		<cf_HibachiListingColumn propertyIdentifier="stateName" />
+	</cf_HibachiListingDisplay>
 	
-	public void function buildURL_2() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?f:productName=hello&p:current=2");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?f:productname=hello&p:current=3');
-	}
-	
-	public void function buildURL_3() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="?f:productName=hello");
-		addToDebug(urlResponse);	
-		assert(urlResponse eq '?c=1');
-	}
-	
-	public void function buildURL_4() {	
-		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="/");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?f:productName=hello');
-	}
-	
-}
-
+	<cf_HibachiActionCaller action="admin:entity.createstate" class="btn" icon="plus" querystring="countryCode=#rc.country.getCountryCode()#" modal=true />
+</cfoutput>
 

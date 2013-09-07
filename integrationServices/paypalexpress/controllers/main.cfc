@@ -53,6 +53,15 @@ component accessors="true" output="false" {
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
 	
+	this.publicMethods='';
+	this.publicMethods=listAppend(this.publicMethods, 'initiatePayment');
+	this.publicMethods=listAppend(this.publicMethods, 'processResponse');
+	
+	this.anyAdminMethods='';
+	
+	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'main');
+	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
 	}

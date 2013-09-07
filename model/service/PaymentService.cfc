@@ -265,11 +265,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: DAO Passthrough ===========================
 	
-	public string function getOriginalAuthorizationCode( string orderPaymentID, string accountPaymentID ) {
+	public string function getOriginalAuthorizationCode( string orderPaymentID, string referencedOrderPaymentID, string accountPaymentID ) {
 		return getPaymentDAO().getOriginalAuthorizationCode(argumentcollection=arguments);
 	}
 	
-	public string function getOriginalProviderTransactionID( string orderPaymentID, string accountPaymentID ) {
+	public string function getOriginalAuthorizationProviderTransactionID( string orderPaymentID, string referencedOrderPaymentID, string accountPaymentID ) {
+		return getPaymentDAO().getOriginalAuthorizationProviderTransactionID(argumentcollection=arguments);
+	}
+	
+	public string function getOriginalChargeProviderTransactionID( string orderPaymentID, string referencedOrderPaymentID, string accountPaymentID ) {
+		return getPaymentDAO().getOriginalChargeProviderTransactionID(argumentcollection=arguments);
+	}
+	
+	public string function getOriginalProviderTransactionID( string orderPaymentID, string referencedOrderPaymentID, string accountPaymentID ) {
 		return getPaymentDAO().getOriginalProviderTransactionID(argumentcollection=arguments);
 	}
 	

@@ -87,16 +87,15 @@ component accessors="true" output="false" displayname="VirtualMerchant" implemen
 		
 		// If this is a ccforce for capturing a pre-authorization, then we need to pass the auth code
 		if(arguments.requestBean.getTransactionType() eq "arguments.requestBean.getTransactionType()" && !isNull(requestBean.getProviderTransationID()) && len(requestBean.getProviderTransationID())) {
-			var originalCCTransaction = getService("paymentService").getPaymentTransactionByProviderTransactionID( requestBean.getProviderTransationID() );
-			if(!isNull(originalCCTransaction) && !isNull(originalCCTransaction.getAuthorizationCode()) && len(originalCCTransaction.getAuthorizationCode())) {
-				requestData = listAppend(requestData, "ssl_approval_code=#originalCCTransaction.getAuthorizationCode()#","&");		
+			if(!isNull(arguments.requestBean.getOriginalAuthorizationCode()) && len(arguments.requestBean.getOriginalAuthorizationCode())) {
+				requestData = listAppend(requestData, "ssl_approval_code=#arguments.requestBean.getOriginalAuthorizationCode()#","&");		
 			}
 		}
 		
 		requestData = listAppend(requestData, getLoginNVP(),"&");
 		requestData = listAppend(requestData, getPaymentNVP(requestBean),"&");
 		if(variables.transactionCodes[arguments.requestBean.getTransactionType()] == "C" || variables.transactionCodes[arguments.requestBean.getTransactionType()] == "D"){
-			requestData = listAppend(requestData,"ORIGID=#requestBean.getProviderTransactionID()#","&");
+			requestData = listAppend(requestData,"ORIGID=#requestBean.getOriginalProviderTransactionID()#","&");
 		}
 		
 		return requestData;

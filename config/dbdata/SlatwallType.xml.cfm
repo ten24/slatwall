@@ -68,9 +68,6 @@
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8b" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8b" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Product Type" systemCode="cttProductType" />
 		
 		<Record typeID="444df2ce9c74fa886435c08706d343db" typeIDPath="444df2ce9c74fa886435c08706d343db" parentTypeID="NULL" type="Image Types" systemCode="imageType" />
-		<Record typeID="444df2cfd2ed41d2bb36b98a714f1dc1" typeIDPath="444df2ce9c74fa886435c08706d343db,444df2cfd2ed41d2bb36b98a714f1dc1" parentTypeID="444df2ce9c74fa886435c08706d343db" type="Product" systemCode="itProduct" />
-		<Record typeID="444df2d1b8fcd2ad08d97e58d534a431" typeIDPath="444df2ce9c74fa886435c08706d343db,444df2d1b8fcd2ad08d97e58d534a431" parentTypeID="444df2ce9c74fa886435c08706d343db" type="Alternate" />
-		<Record typeID="444df2d0f5bac0123ad513b7c5c59bb2" typeIDPath="444df2ce9c74fa886435c08706d343db,444df2d0f5bac0123ad513b7c5c59bb2" parentTypeID="444df2ce9c74fa886435c08706d343db" type="Account" systemCode="itAccount" />
 		
 		<Record typeID="444df2deab6476cb2c429946d6538436" typeIDPath="444df2deab6476cb2c429946d6538436" parentTypeID="NULL" type="Order Types" systemCode="orderType" />
 		<Record typeID="444df2df9f923d6c6fd0942a466e84cc" typeIDPath="444df2deab6476cb2c429946d6538436,444df2df9f923d6c6fd0942a466e84cc" parentTypeID="444df2deab6476cb2c429946d6538436" type="Sales Order" systemCode="otSalesOrder" />

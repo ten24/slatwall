@@ -131,7 +131,7 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 		
 		// If this is a credit, then we want to use the originalAuthorizationID
 		if(arguments.requestBean.getTransactionType() eq "credit") {
-			arrayAppend(paymentData,"ORIGID=#requestBean.getOriginalProviderTransactionID()#");
+			arrayAppend(paymentData,"ORIGID=#requestBean.getOriginalChargeProviderTransactionID()#");
 			
 		// If this is a delayed capture we want to use the preAuthorizationTransactionID
 		} else if (arguments.requestBean.getTransactionType() eq "chargePreAuthorization") {
