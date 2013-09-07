@@ -295,15 +295,26 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public numeric function getQuantity(required string quantityType, string locationID, string stockID) {
 		
-		// If this is a calculated quantity and locationID exists, then delegate
-		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) && structKeyExists(arguments, "locationID") ) {
-			var location = getService("locationService").getLocation(arguments.locationID);
-			var stock = getService("stockService").getStockBySkuAndLocation(this, location);
-			return stock.getQuantity(arguments.quantityType);
-		// If this is a calculated quantity and stockID exists, then delegate
-		} else if ( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) && structKeyExists(arguments, "stockID") ) {
-			var stock = getService("stockService").getStock(arguments.stockID);
-			return stock.getQuantity(arguments.quantityType);
+		
+		// Request for calculated quantity
+		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
+			// If this is a calculated quantity and locationID exists, then delegate
+			if( structKeyExists(arguments, "locationID") ) {
+				//Need to get location and all children of location 
+				var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
+				var totalQuantity = 0;
+				for(var i=1;i<=arraylen(locations);i++) {
+					var location = getService("locationService").getLocation(locations[i].value);
+					var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+					totalQuantity += stock.getQuantity(arguments.quantityType);
+				}
+				return totalQuantity;
+			
+			// If this is a calculated quantity and stockID exists, then delegate
+			} else if ( structKeyExists(arguments, "stockID") ) {
+				var stock = getService("stockService").getStock(arguments.stockID);
+				return stock.getQuantity(arguments.quantityType);
+			}
 		}
 		
 		// Standard Logic

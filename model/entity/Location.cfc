@@ -107,19 +107,31 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public any function getLocationOptions(string baseLocation="") {
+	public any function getLocationOptions(string locationID="") {
 		if(!structKeyExists(variables, "parentLocationOptions")) {
 			
 			var locationOptions = [];
 			
 			// If no base location defined return all
-			if( !len(arguments.baseLocation) ) {
+			if( !len(arguments.locationID) ) {
 				locationOptions = getService("locationService").getLocationOptions();
 			} else {
-				locationOptions = getService("locationService").getLocationOptions(arguments.baseLocation);
+				locationOptions = getService("locationService").getLocationOptions(arguments.locationID);
 			}
 		}
 		return locationOptions;
+	}
+	
+	public array function getLocationAndChildren(string locationID) {
+		var locationAndChildren = [];
+		
+		// If no location defined return all
+		if( !len(arguments.locationID) ) {
+			locationAndChildren = getService("locationService").getLocationAndChildren();
+		} else {
+			locationAndChildren = getService("locationService").getLocationAndChildren(arguments.locationID);
+		}
+		return locationAndChildren;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

@@ -59,7 +59,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getLocationDAO().getLocationCount();
 	}
 	
-	public array function getLocationOptions( string baseLocation="" ) {
+	public array function getLocationOptions( string locationID ) {
 		if(!structKeyExists(variables,"locationOptions")) {
 			arguments.entityName = "SlatwallLocation";
 			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
@@ -74,8 +74,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		return variables.locationOptions;
-		
 	}
+	
+	public array function getLocationAndChildren( string locationID ) {
+		if(!structKeyExists(variables,"locationOptions")) {
+			arguments.entityName = "SlatwallLocation";
+			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+			smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
+			//smartList.addOrder("locationIDPath");
+			var locations = smartList.getRecords();
+			
+			variables.locationOptions = [];
+			
+			for(var i=1;i<=arrayLen(locations);i++) {
+				arrayAppend(variables.locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+			}
+		}
+		return variables.locationOptions;
+	}
+	
+	
 	
 	// ===================== START: Logical Methods ===========================
 	
