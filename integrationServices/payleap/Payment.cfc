@@ -88,7 +88,7 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 		requestData = listAppend(requestData,getCustomerNVP(requestBean),"&");
 		
 		if(variables.transactionCodes[arguments.requestBean.getTransactionType()] == "Return" || variables.transactionCodes[arguments.requestBean.getTransactionType()] == "Capture"){
-			requestData = listAppend(requestData,"PNRef=#requestBean.getProviderTransactionID()#","&");
+			requestData = listAppend(requestData,"PNRef=#requestBean.getOriginalProviderTransactionID()#","&");
 		}
 		
 		return requestData;
