@@ -424,7 +424,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
 			newOrderItem.setPrice( arguments.processObject.getPrice() );
 			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( newOrderItem.getCurrencyCode() ) );
-			
+			// If a stock was passed in, then assign it to this new item
+			if(!isNull(arguments.processObject.getStock())) {
+				newOrderItem.setStock(arguments.processObject.getStock());
+			}
+
 			// Set any customizations
 			newOrderItem.populate( arguments.data );
 			
