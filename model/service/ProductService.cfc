@@ -175,6 +175,43 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
+	/*
+	* Create sku from processObject values. 
+	* processObject contains properties from Product_AddSku.cfc 
+	* created by values submitted from preprocessproduct_addsku.
+	*/ 
+	public any function processProduct_addSku(required any product, required any processObject) {
+		//writeDump(var="#processObject#",top="3"); break;
+		// Create a new SKU for every locationConfiguration
+		var newSkuIdentifier = arguments.product.getMaxSkuIdentifier()+1;
+		for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+			var newSku = this.newSku();
+			newSku.setProduct( arguments.product );
+			newSku.setSkuCode( arguments.product.getProductCode() & "-#newSkuIdentifier#" );
+			newSku.setPrice( arguments.processObject.getPrice() );
+			newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
+			newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+			newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
+			newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
+			newSku.addLocationConfiguration( getService("LocationService").getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+			newSkuIdentifier++;
+		}
+		// Generate Image Files
+		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		//arguments.product = this.saveProduct(arguments.product,arguments.processObject.getProductProperties());
+        
+        // validate the product
+		arguments.product.validate( context="save" );
+		
+		// If the product passed validation then call save in the DAO, otherwise set the errors flag
+        if(!product.hasErrors()) {
+        		arguments.product = getHibachiDAO().save(target=arguments.product);
+        }
+		
+		// Return the product
+		return arguments.product;
+	}
+	
 	public any function processProduct_addSubscriptionTerm(required any product, required any processObject) {
 		
 		var newSubscriptionTerm = getSubscriptionService().getSubscriptionTerm(arguments.processObject.getSubscriptionTermID());
