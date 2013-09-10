@@ -81,7 +81,9 @@ Notes:
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
 			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
-			<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
+			<cfif rc.product.getBaseProductType() EQ "event">
+				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
+			</cfif>
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.sku.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
