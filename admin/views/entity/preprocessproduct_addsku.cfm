@@ -67,7 +67,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="endReservationDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 			</cf_HibachiPropertyList>
-			
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
 			<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
 			<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
 			<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" multiselectFieldName="locationConfigurations" edit="true">

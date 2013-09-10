@@ -184,18 +184,38 @@ component extends="HibachiService" accessors="true" {
 		//writeDump(var="#processObject#",top="3"); break;
 		// Create a new SKU for every locationConfiguration
 		var newSkuIdentifier = arguments.product.getMaxSkuIdentifier()+1;
-		for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+		
+		if(arguments.processObject.getBundleLocationConfigurationFlag()) {
 			var newSku = this.newSku();
 			newSku.setProduct( arguments.product );
-			newSku.setSkuCode( arguments.product.getProductCode() & "-#newSkuIdentifier#" );
+			newSku.setSkuCode( arguments.product.getProductCode() & "-#newSkuIdentifier#");
 			newSku.setPrice( arguments.processObject.getPrice() );
 			newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
 			newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
 			newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
 			newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
-			newSku.addLocationConfiguration( getService("LocationService").getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-			newSkuIdentifier++;
+			
+			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+				newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+			}
+				
+		} else {
+		
+			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+				var newSku = this.newSku();
+				newSku.setProduct( arguments.product );
+				newSku.setSkuCode( arguments.product.getProductCode() & "-#newSkuIdentifier#" );
+				newSku.setPrice( arguments.processObject.getPrice() );
+				newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
+				newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+				newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
+				newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
+				newSku.addLocationConfiguration( getService("LocationService").getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+				newSkuIdentifier++;
+			}
+		
 		}
+		
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 		//arguments.product = this.saveProduct(arguments.product,arguments.processObject.getProductProperties());
