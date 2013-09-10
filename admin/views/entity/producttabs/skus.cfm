@@ -87,7 +87,6 @@ Notes:
 	</cf_HibachiListingDisplay>
 	
 	<cfif rc.product.getBaseProductType() eq "event">
-		<!---<cf_HibachiProcessCaller querystring="productID=#rc.product.getProductID()#" text="Add SKU" entity="#rc.product.getService('SkuService').newSku()#" action="admin:entity.preprocesssku" processContext="create" class="btn" icon="plus icon" modal="false" />--->
 		<cf_HibachiProcessCaller text="Add SKU" entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addsku" class="btn" icon="plus icon" modal="false" />
 	</cfif>
 <!---	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />
