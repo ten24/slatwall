@@ -77,20 +77,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public array function getLocationAndChildren( string locationID ) {
-		if(!structKeyExists(variables,"locationOptions")) {
+			var locAndChildren = [];
 			arguments.entityName = "SlatwallLocation";
 			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
 			smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
-			//smartList.addOrder("locationIDPath");
 			var locations = smartList.getRecords();
-			
-			variables.locationOptions = [];
-			
 			for(var i=1;i<=arrayLen(locations);i++) {
-				arrayAppend(variables.locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+				arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
 			}
-		}
-		return variables.locationOptions;
+		return locAndChildren;
 	}
 	
 	
