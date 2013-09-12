@@ -55,9 +55,6 @@ Notes:
 		
 		<cf_HibachiEntityActionBar pageTitle="Create SKU" type="preprocess" object="#rc.product#"></cf_HibachiEntityActionBar>
 		
-		<!--- Submit the productID so we know which product to add the SKU to --->
-		<!---<input type="hidden" name="productID" value="#rc.productID#" />--->
-		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<!---<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuCode" fieldName="skuCode" edit="true">--->

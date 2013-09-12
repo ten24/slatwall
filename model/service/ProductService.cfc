@@ -181,8 +181,6 @@ component extends="HibachiService" accessors="true" {
 	* created by values submitted from preprocessproduct_addsku.
 	*/ 
 	public any function processProduct_addSku(required any product, required any processObject) {
-		//writeDump(var="#processObject#",top="3"); break;
-		// Create a new SKU for every locationConfiguration
 		var newSkuIdentifier = arguments.product.getMaxSkuIdentifier()+1;
 		
 		if(arguments.processObject.getBundleLocationConfigurationFlag()) {
@@ -218,7 +216,6 @@ component extends="HibachiService" accessors="true" {
 		
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-		//arguments.product = this.saveProduct(arguments.product,arguments.processObject.getProductProperties());
         
         // validate the product
 		arguments.product.validate( context="save" );
