@@ -50,7 +50,7 @@
 Notes:
 
 --->
-<cfcomponent extends="BaseDAO">
+<cfcomponent extends="HibachiDAO">
 	
 </cfcomponent>]]></starttext>
 <endtext><![CDATA[]]></endtext>
