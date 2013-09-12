@@ -51,7 +51,7 @@ Notes:
 
 */
 
-component  extends="Slatwall.com.service.BaseService" accessors="true" {
+component extends="HibachiService" accessors="true" {
 	
 	// ===================== START: Logical Methods ===========================
 	

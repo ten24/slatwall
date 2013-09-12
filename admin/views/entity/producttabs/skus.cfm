@@ -86,11 +86,10 @@ Notes:
 		</cfif>
 	</cf_HibachiListingDisplay>
 	
-	<cfif rc.product.getBaseProductType() eq "event">
-		<cf_HibachiProcessCaller text="Add SKU" entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addsku" class="btn" icon="plus icon" modal="false" />
-	</cfif>
-<!---	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />
+	<!--- TODO [glen]: Update title, validtion, processObject, service function --->
+	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn" icon="plus icon" modal="false" />
+	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />
 	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" class="btn" icon="plus icon" modal="true" />
-	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionTerm" class="btn" icon="plus icon" modal="true" />--->
+	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionTerm" class="btn" icon="plus icon" modal="true" />
 </cfoutput>
 

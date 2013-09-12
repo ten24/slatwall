@@ -396,9 +396,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 	
 	public void function addPopulatedSubProperty( required string propertyName, required any entity ) {
+		// Make sure the structure exists
+		if(!structKeyExists(variables, "populatedSubProperties")){
+			variables.populatedSubProperties = {};
+		}
+		
+		// Get the meta data from the objects property
 		var propertyMeta = getPropertyMetaData( arguments.propertyName );
+		
+		// If fieldtype = many-to-one
 		if(structKeyExists(propertyMeta, "fieldtype") && propertyMeta.fieldType == "many-to-one") {
 			variables.populatedSubProperties[ arguments.propertyName ] = arguments.entity;
+			
+		// If fieldtype = one-to-many
 		} else if (structKeyExists(propertyMeta, "fieldtype") && propertyMeta.fieldType == "one-to-many") {
 			if(!structKeyExists(variables.populatedSubProperties, arguments.propertyName)) {
 				variables.populatedSubProperties[ arguments.propertyName ] = [];			

@@ -392,6 +392,7 @@ component extends="HibachiService" accessors="true" {
 		} else if (arguments.processObject.getBaseProductType() == "event") {
 			
 			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+				
 				// Create a default sku with the eventStartDateTime
 				var newSku = this.newSku();
 				newSku.setProduct( arguments.product );
@@ -399,6 +400,10 @@ component extends="HibachiService" accessors="true" {
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
 				newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+				
+				// TODO [glen]: Change this so that it is not comming from the processobject
+				// but instead from the eventStartDateTime / endDateTime +/- the first localtionConfiguration.setting('')
+				// dateAdd("m",arguments.processObject.getEventStartDateTime(),  getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('')) 
 				newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
 				newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
 				
@@ -417,8 +422,12 @@ component extends="HibachiService" accessors="true" {
 					newSku.setPrice( arguments.processObject.getPrice() );
 					newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
 					newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+					
+					// TODO [glen]: Down here is same concept, but unique to each locationConfiguration.
 					newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
 					newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
+					
+					
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
 					if(lc==1) {
 						arguments.product.setDefaultSku( newSku );	
