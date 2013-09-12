@@ -182,6 +182,10 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	// ===================== START: DAO Passthrough ===========================
 	
+	public string function getShortReferenceID() {
+		return getDataDAO().getShortReferenceID(argumentcollection=arguments);
+	}
+	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================

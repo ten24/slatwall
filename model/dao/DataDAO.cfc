@@ -48,8 +48,57 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO">
 	
-	<cffunction name="eval" >
-		<cfargument name="recordIDCol" >
+	<cffunction name="getShortReferenceID" >
+		<cfargument name="referenceObjectID" type="string" required="true" />
+		<cfargument name="referenceObject" type="string" required="true" />
+		<cfargument name="createNewFlag" type="boolean" default="false" />
+		
+		<cfset var rs = "" />
+		<cfset var rsResult = "" />
+		
+		<cflock timeout="30" name="#arguments.referenceObject##arguments.referenceObjectID##arguments.createNewFlag#">
+			<cfquery name="rs">
+				SELECT
+					shortReferenceID
+				FROM
+					SwShortReference
+				WHERE
+					referenceObjectID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />
+				  AND
+					referenceObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />
+			</cfquery>
+			
+			<!--- If the ID Was found --->
+			<cfif rs.recordCount>
+				<cfreturn rs.shortReferenceID />
+				
+			<!--- If no record found but create new is set to yes --->
+			<cfelseif arguments.createNewFlag>
+				
+				<cfset var newShortReferenceID = 1 />
+				
+				<!--- Lock this again so that only 1 can be created at a time --->
+				<cflock timeout="30" name="SlatwallShortReferenceAdd">
+					
+					<cfquery name="rs">
+						SELECT MAX(shortReferenceID) as shortReferenceID FROM SwShortReference
+					</cfquery>
+					
+					<cfif rs.shortReferenceID neq "" and isNumeric(rs.shortReferenceID)>
+						<cfset newShortReferenceID = rs.shortReferenceID + 1 />
+					</cfif>
+					
+					<cfquery name="rs" result="rsResult">
+						INSERT INTO SwShortReference (shortReferenceID, referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_integer" value="#newShortReferenceID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
+					</cfquery>
+					
+				</cflock>
+				
+				<cfreturn newShortReferenceID />
+			</cfif>
+		</cflock>
+		
+		<cfreturn "" />
 	</cffunction>
 	
 	<cffunction name="recordUpdate" returntype="void">

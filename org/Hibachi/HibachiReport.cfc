@@ -75,6 +75,13 @@
 					WEEK( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeWeek,
 					DAY( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeDay,
 					HOUR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeHour
+				<cfelseif getApplicationValue('databaseType') eq "Oracle10g">
+					#getReportDateTimeDefinition(getReportDateTime())['dataColumn']# as reportDateTime,
+					TO_CHAR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']#, 'YYYY' ) as reportDateTimeYear,
+					TO_CHAR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']#, 'MM' ) as reportDateTimeMonth,
+					TO_CHAR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']#, 'WW' ) as reportDateTimeWeek,
+					TO_CHAR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']#, 'DD' ) as reportDateTimeDay,
+					TO_CHAR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']#, 'HH24' ) as reportDateTimeHour
 				<cfelse>
 					#getReportDateTimeDefinition(getReportDateTime())['dataColumn']# as reportDateTime,
 					DATEPART( year, #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeYear,
@@ -91,10 +98,18 @@
 	<cffunction name="getReportDateTimeWhere" access="public" output="false">
 		<cfset var reportDateTimeWhere="" />
 		
-		<cfset var startDateTime = replace(replace(createDateTime(dateFormat(getReportStartDateTime(), "yyyy"),datePart("m" , getReportStartDateTime()),datePart("d" , getReportStartDateTime()),0,0,0), '{ts', ''),'}','') />
-		<cfset var endDateTime = replace(replace(createDateTime(dateFormat(getReportEndDateTime(), "yyyy"),datePart("m" , getReportEndDateTime()),datePart("d" , getReportEndDateTime()),23,59,59), '{ts', ''),'}','') />
-		<cfset var compareStartDateTime = replace(replace(createDateTime(dateFormat(getReportCompareStartDateTime(), "yyyy"),datePart("m" , getReportCompareStartDateTime()),datePart("d" , getReportCompareStartDateTime()),0,0,0), '{ts', ''),'}','') />
-		<cfset var compareEndDateTime = replace(replace(createDateTime(dateFormat(getReportCompareEndDateTime(), "yyyy"),datePart("m" , getReportCompareEndDateTime()),datePart("d" , getReportCompareEndDateTime()),23,59,59), '{ts', ''),'}','') />
+		<cfset var startDateTime = createDateTime(dateFormat(getReportStartDateTime(), "yyyy"),datePart("m" , getReportStartDateTime()),datePart("d" , getReportStartDateTime()),0,0,0) />
+		<cfset var endDateTime = createDateTime(dateFormat(getReportEndDateTime(), "yyyy"),datePart("m" , getReportEndDateTime()),datePart("d" , getReportEndDateTime()),23,59,59) />
+		<cfset var compareStartDateTime = createDateTime(dateFormat(getReportCompareStartDateTime(), "yyyy"),datePart("m" , getReportCompareStartDateTime()),datePart("d" , getReportCompareStartDateTime()),0,0,0) />
+		<cfset var compareEndDateTime = createDateTime(dateFormat(getReportCompareEndDateTime(), "yyyy"),datePart("m" , getReportCompareEndDateTime()),datePart("d" , getReportCompareEndDateTime()),23,59,59) />
+		
+		<cfif getApplicationValue('databaseType') neq "Oracle10g">
+			<cfset startDateTime = replace(replace(startDateTime, '{ts', ''),'}','') />
+			<cfset endDateTime = replace(replace(endDateTime, '{ts', ''),'}','') />
+			<cfset compareStartDateTime = replace(replace(compareStartDateTime, '{ts', ''),'}','') />
+			<cfset compareEndDateTime = replace(replace(compareEndDateTime, '{ts', ''),'}','') />
+		</cfif>
+		
 		<cfsavecontent variable="reportDateTimeWhere">
 			<cfoutput>
 				(

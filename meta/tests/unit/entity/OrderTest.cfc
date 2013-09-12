@@ -46,29 +46,19 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
+		
+		variables.entity = request.slatwallScope.newEntity( 'Order' );
+	}
+	
+	// Orders are alowed to be saved with no data
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
 		variables.entity.validate(context="save");
-		assert(variables.entity.hasErrors());
-	}
-	
-	public void function has_primary_id_property_name() {
-		assert(len(variables.entity.getPrimaryIDPropertyName()));
-	}
-	
-	public void function defaults_are_correct() {
-		assert(variables.entity.getNewFlag());
-	}
-	
-	public void function getSimpleRepresentation_exists_and_is_simple() {
-		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
-	}
-	
-	public void function getShortRefernceID_returns_blank_by_default() {
-		assert(variables.entity.getShortReferenceID() eq "");
+		assertFalse( variables.entity.hasErrors() );
 	}
 	
 }
-
-

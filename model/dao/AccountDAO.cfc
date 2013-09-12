@@ -110,7 +110,7 @@ Notes:
 		<cfset var auditColumns = "" />
 		<cfset var rs = "" />
 		
-		<cfdbinfo type="Tables" name="allTables" pattern="Slatwall%" />
+		<cfdbinfo type="Tables" name="allTables" pattern="Sw%" />
 		
 		<cfloop query="allTables">
 			<cfdbinfo type="Columns" table="#allTables.TABLE_NAME#" name="auditColumns" pattern="%ByAccountID" />
@@ -143,7 +143,7 @@ Notes:
 		
 		<cfset var rs = "" />
 		<cfset var tableInfo = "" />
-		<cfdbinfo type="Tables" name="tableInfo">
+		<cfdbinfo type="Tables" name="tableInfo" pattern="Sw%">
 		
 		<cfloop query="#tableInfo#">
 			<cfset var tableName = tableInfo.tableName />

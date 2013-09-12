@@ -50,6 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="paymentDAO" type="any";
 	
+	property name="currencyService" type="any";
 	property name="integrationService" type="any";
 	property name="settingService" type="any";
 	
@@ -340,7 +341,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							requestBean.setPreAuthorizationProviderTransactionID( arguments.data.preAuthorizationProviderTransactionID );
 						}
 						if(listFindNoCase("OrderPayment,AccountPayment", arguments.paymentTransaction.getPayment().getClassName())) {
-							requestBean.setTransactionCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );	
+							requestBean.setTransactionCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+							var currency = getCurrencyService().getCurrency( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+							if(!isNull(currency) && !isNull(currency.getCurrencyISONumber())) {
+								requestBean.setTransactionCurrencyISONumber( currency.getCurrencyISONumber() );
+							}
 						}
 						
 						// Move all of the info into the new request bean

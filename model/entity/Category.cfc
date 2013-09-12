@@ -115,23 +115,6 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 		structDelete(variables, "parentCategory");
 	}
 	
-	// Products (many-to-many - inverse)
-	public void function addProduct(required any product) {
-	   arguments.product.addCategory(this);
-	}
-	
-	public void function removeProduct(required any product) {
-	   arguments.product.removeCategory(this);
-	}
-	
-	// Contents (many-to-many - inverse)    
-	public void function addContent(required any content) {    
-		arguments.content.addCategory( this );    
-	}    
-	public void function removeContent(required any content) {    
-		arguments.content.removeCategory( this );    
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================

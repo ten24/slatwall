@@ -46,63 +46,63 @@
 Notes:
 
 */
-component displayname="Stock" entityname="SlatwallStock" table="SwStock" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component entityname="SlatwallShortReference" table="SwShortReference" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiService" {
 	
 	// Persistent Properties
-	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	
+	property name="shortReferenceID" ormtype="integer" fieldtype="id" unsavedvalue="0";
+	property name="referenceObjectID" ormtype="string" unique="true" index="EI_REFERENCEOBJECTID";
+	property name="referenceObject" ormtype="string" index="EI_REFERENCEOBJECT";
+
+	// Calculated Properties
+
 	// Related Object Properties (many-to-one)
-	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";
-	property name="sku" fieldtype="many-to-one" fkcolumn="skuID" cfc="Sku" hb_cascadeCalculate="true"; // We always want sku when we get a stock
 	
-	// Related Object Properties (one-to-many). Including this property to allow HQL to do  stock -> vendorOrderItem lookups
-	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
+	// Related Object Properties (one-to-many)
 	
-	// Remote properties
-	property name="remoteID" ormtype="string";
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
 	
-	// Audit properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	// Remote Properties
+	
+	// Audit Properties
 	
 	// Non-Persistent Properties
-	property name="calculatedQATS" ormtype="integer";
-	
-	// Quantity
-	public numeric function getQuantity(required string quantityType) {
-		if( !structKeyExists(variables, arguments.quantityType) ) {
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
-				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
-				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
-			} else {
-				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
-			}	
-		}
-		return variables[ arguments.quantityType ];
-	}
-	
+	property name="referenceEntity" persistent="false";
+
+	// Deprecated Properties
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public any function getQATS() {
-		return getQuantity("QATS");
+	public any function getReferenceEntity() {
+		if(!structKeyExists(variables, "referenceEntity")) {
+			variables.referenceEntity = getHibachiScope().getEntity(getReferenceObject(), getReferenceObjectID());
+		}
+		return variables.referenceEntity;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Vendor Order Items (one-to-many)
-	public void function addVendorOrderItem(required any vendorOrderItem) {
-		arguments.vendorOrderItem.setStock( this );
-	}
-	public void function removeVendorOrderItem(required any vendorOrderItem) {
-		arguments.vendorOrderItem.removeStock( this );
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
@@ -110,5 +110,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
-

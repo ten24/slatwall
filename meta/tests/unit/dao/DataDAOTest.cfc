@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,30 +45,32 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+--->
+<cfcomponent extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase">
 
-	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
-		variables.entity.validate(context="save");
-		assert(variables.entity.hasErrors());
-	}
+	<cffunction name="setup">
+		<cfset super.setup() />
+		
+		<cfset variables.dao = request.slatwallScope.getDAO("dataDAO") />
+	</cffunction>
 	
-	public void function has_primary_id_property_name() {
-		assert(len(variables.entity.getPrimaryIDPropertyName()));
-	}
+	<cffunction name="getShortReferenceID_1">
+		
+		<cfset var result = variables.dao.getShortReferenceID( referenceObjectID="", referenceObject="fake-test-object" ) />
+		<cfset assert(result eq "") />
+		
+	</cffunction>
 	
-	public void function defaults_are_correct() {
-		assert(variables.entity.getNewFlag());
-	}
-	
-	public void function getSimpleRepresentation_exists_and_is_simple() {
-		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
-	}
-	
-	public void function getShortRefernceID_returns_blank_by_default() {
-		assert(variables.entity.getShortReferenceID() eq "");
-	}
-	
-}
+	<cffunction name="getShortReferenceID_2">
+		
+		<cfset var result = variables.dao.getShortReferenceID( referenceObjectID="fake-test-reference-id", referenceObject="fake-test-object", createNewFlag=true ) />
+		<cfset assert( isNumeric(result) ) />
+		<cfset assert( result gt 0 ) />
+		
+		<cfquery name="rs">
+			DELETE FROM SwShortReference WHERE referenceObjectID = 'fake-test-reference-id' AND referenceObject = 'fake-test-object'
+		</cfquery>
+	</cffunction>
 
-
+	
+</cfcomponent>

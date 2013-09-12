@@ -56,7 +56,7 @@ Notes:
 	<cfset local.infoColumns = "" />
 	<cfset local.infoIndexes = "" />
 	
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="infoTables" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="infoTables" pattern="Sw%" />
 	<cfloop query="infoTables">
 		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="#infoTables.table_name#" name="infoColumns" />
 		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Index" table="#infoTables.table_name#" name="infoIndexes" />
@@ -73,7 +73,7 @@ Notes:
 				</cfquery>
 				<cfif not qrs.recordCount>
 					<cfquery name="createIndex">
-						CREATE INDEX #left("IX_#UCASE(infoColumns.column_name)#",30)# ON #infoTables.table_name# ( #infoColumns.column_name# )
+						CREATE INDEX "FK_#UCASE(right(hash(infoTables.table_name & infoColumns.column_name), 27))#" ON #infoTables.table_name# ( #infoColumns.column_name# )
 					</cfquery>
 				</cfif>
 			</cfif>
