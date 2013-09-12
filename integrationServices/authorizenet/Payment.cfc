@@ -126,8 +126,8 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		}
 				
 		requestData["x_customer_ip"] = CGI.REMOTE_ADDR; 
-		if(!isNull(requestBean.getProviderTransactionID())) {
-			requestData["x_trans_id"] = requestBean.getProviderTransactionID();	
+		if(!isNull(requestBean.getOriginalProviderTransactionID()) && len(requestBean.getOriginalProviderTransactionID())) {
+			requestData["x_trans_id"] = requestBean.getOriginalProviderTransactionID();	
 		}
 		requestData["x_delim_data"] = "TRUE"; 
 		requestData["x_delim_char"] = variables.responseDelimiter; 

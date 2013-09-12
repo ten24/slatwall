@@ -734,26 +734,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 	
-	// Categories (many-to-many - owner)
-	public void function addCategory(required any category) {
-		if(isNew() or !hasCategory(arguments.category)) {
-			arrayAppend(variables.categories, arguments.category);
-		}
-		if(arguments.category.isNew() or !arguments.category.hasProduct( this )) {
-			arrayAppend(arguments.category.getProducts(), this);
-		}
-	}
-	public void function removeCategory(required any category) {
-		var thisIndex = arrayFind(variables.categories, arguments.category);
-		if(thisIndex > 0) {
-			arrayDeleteAt(variables.categories, thisIndex);
-		}
-		var thatIndex = arrayFind(arguments.category.getProducts(), this);
-		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.category.getProducts(), thatIndex);
-		}
-	}
-	
 	// Promotion Rewards (many-to-many - inverse)    
 	public void function addPromotionReward(required any promotionReward) {    
 		arguments.promotionReward.addProduct( this );    

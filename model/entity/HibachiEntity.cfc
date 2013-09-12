@@ -269,6 +269,10 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return variables.emailTemplates;
 	}
+	
+	public string function getShortReferenceID( boolean createNewFlag=false ) {
+		return getService("dataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);
+	}
 
 }
 

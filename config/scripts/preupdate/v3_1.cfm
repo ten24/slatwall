@@ -54,14 +54,10 @@ Notes:
 <cfif this.ormSettings.dialect neq "Oracle10g">
 	<cfsetting requesttimeout="1200" />
 	
-	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" />
-	
-	<cfquery name="local.oldtableexists" dbtype="query">
-		SELECT table_name FROM currenttables WHERE table_name LIKE 'Slatwall%'
-	</cfquery>
+	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="Slatwall%" />
 	
 	<!--- Make sure that tables exist with the name 'Slatwall' --->
-	<cfif local.oldtableexists.recordCount>
+	<cfif currenttables.recordCount>
 		
 		<cfif this.ormSettings.dialect eq "MySQL">
 			<!--- drop all constraints and index on mysql --->

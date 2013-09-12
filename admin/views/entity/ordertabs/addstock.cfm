@@ -65,7 +65,7 @@ Notes:
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.calculatedQATS" />
+		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
 		<cfif rc.addSkuAddStockType eq "oitSale">
 			<cf_HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
 		<cfelse>

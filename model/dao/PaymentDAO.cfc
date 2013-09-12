@@ -117,7 +117,7 @@ Notes:
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 		
-		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN (:transactionType) AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
 		<cfset hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["authorize","authorizeAndCharge"] />
 		
@@ -147,7 +147,7 @@ Notes:
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 		
-		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN (:transactionType) AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
 		<cfset hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["chargePreAuthorization","authorizeAndCharge"] />
 		
@@ -177,7 +177,7 @@ Notes:
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 		
-		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND " />
 		<cfset hqlParams = {} />
 		
 		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>

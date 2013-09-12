@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Integration" entityname="SlatwallIntegration" table="SwIntegration" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="integrationService" hb_permission="this" {
+component displayname="Integration" entityname="SlatwallIntegration" table="SwIntegration" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="integrationService" hb_permission="this" hb_defaultOrderProperty="integrationName" {
 	
 	// Persistent Properties
 	property name="integrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

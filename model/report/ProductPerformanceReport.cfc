@@ -98,7 +98,7 @@ Notes:
     					ELSE
     						0
 					END as returnPreDiscount,
-					(SELECT coalesce(SUM(pa.discountAmount), 0) FROM SwPromotionApplied pa WHERE pa.orderItemID = SwOrderItem.orderItemID) as 'itemDiscount',
+					( SELECT COALESCE(SUM(swpa.discountAmount), 0) FROM SwPromotionApplied swpa WHERE swpa.orderItemID = SwOrderItem.orderItemID ) as itemDiscount,
 					#getReportDateTimeSelect()#
 				FROM
 					SwOrderItem
