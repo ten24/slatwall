@@ -247,15 +247,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.processObject.getOrderItemTypeSystemCode() eq "oitSale") {
 			
 			// First See if we can use an existing order fulfillment
-			if(!isNull(processObject.getOrderFulfillmentID()) && len(processObject.getOrderFulfillmentID())) {
-				var orderFulfillment = this.getOrderFulfillment( processObject.getOrderFulfillmentID() );
-			}
+			var orderFulfillment = processObject.getOrderFulfillment();
 			
 			// Next if orderFulfillment is still null, then we can check the order to see if there is already an orderFulfillment
-			if(isNull(orderFulfillment) && arrayLen(arguments.order.getOrderFulfillments())) {
+			if(isNull(orderFulfillment) && ( isNull(processObject.getOrderFulfillmentID()) || processObject.getOrderFulfillmentID() != 'new' ) && arrayLen(arguments.order.getOrderFulfillments())) {
 				for(var f=1; f<=arrayLen(arguments.order.getOrderFulfillments()); f++) {
-					if(listFindNoCase(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods'),arguments.order.getOrderFulfillments()[f].getOrderFulfillmentID()) ) {
-						var orderFulfillment = this.getOrderFulfillment();
+					if(listFindNoCase(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods'), arguments.order.getOrderFulfillments()[f].getFulfillmentMethod().getFulfillmentMethodID()) ) {
+						var orderFulfillment = arguments.order.getOrderFulfillments()[f];
 						break;
 					}	
 				}
@@ -265,9 +263,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(isNull(orderFulfillment) || orderFulfillment.getOrder().getOrderID() != arguments.order.getOrderID()) {
 				
 				// get the correct fulfillment method for this new order fulfillment
-				if(len(arguments.processObject.getFulfillmentMethodID())) {
-					var fulfillmentMethod = getFulfillmentService().getFulfillmentMethod( arguments.processObject.getFulfillmentMethodID() );
-				}
+				var fulfillmentMethod = arguments.processObject.getFulfillmentMethod();
 				
 				// If the fulfillmentMethod is still null because the above didn't execute, then we can pull it in from the first ID in the sku settings
 				if(isNull(fulfillmentMethod) && listLen(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods'))) {
@@ -348,7 +344,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 				} else {
 					
-					arguments.processObject.addError('orderFulfillmentID', rbKey('validate.processOrder_addOrderitem.orderFulfillmentID.noValidFulfillmentMethod'));
+					arguments.processObject.addError('fulfillmentMethodID', rbKey('validate.processOrder_addOrderitem.orderFulfillmentID.noValidFulfillmentMethod'));
 					
 				}
 				
@@ -384,9 +380,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitReturn") {
 			
 			// First see if we can use an existing order return
-			if(!isNull(arguments.processObject.getOrderReturnID()) && len(arguments.processObject.getOrderReturnID())) {
-				var orderReturn = this.getOrderReturn( processObject.getOrderReturnID() );	
-			}
+			var orderReturn = processObject.getOrderReturnID();	
 			
 			// Next if we can't use an existing one, then we need to create a new one
 			if(isNull(orderReturn) || orderReturn.getOrder().getOrderID() neq arguments.order.getOrderID()) {
@@ -1580,6 +1574,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Check delete validation
 		if(arguments.order.isDeletable()) {
+			
+			// If the order is the order in this session, then set this sessions order to null
+			if(arguments.order.getOrderID() eq getHibachiScope().getSession().getOrder().getOrderID()) {
+				getHibachiScope().getSession().setOrder( javaCast("null", "") );
+			}
 			
 			getOrderDAO().removeOrderFromAllSessions( orderID=arguments.order.getOrderID() );
 			
