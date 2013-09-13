@@ -36,24 +36,12 @@
 Notes:
 
 --->
-<!---<cfparam name="rc.location" default="any" >--->
 <cfparam name="rc.sku" default="any" >
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	
-	<!---<cfif rc.edit>
-		<cf_HibachiListingDisplay smartList="#rc.sku.getLocationConfigurationsSmartList()#"
-								  recordEditAction="admin:entity.editlocationconfiguration"
-								  recordDetailAction="admin:entity.detaillocationconfiguration"
-								  edit="false">
-								    
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
-			<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-			
-		</cf_HibachiListingDisplay>
-	
-	<cfelse>--->
+
+	<cfif rc.edit>
 		<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
 		<cfset selectedLocationConfigurationIDs = "" />
 		<cfloop array="#rc.sku.getLocationConfigurations()#" index="lc">
@@ -63,10 +51,20 @@ Notes:
 								  multiselectFieldName="locationConfigurations"
 								  multiselectPropertyIdentifier="locationConfigurationID" 
 								  multiselectValues="#selectedLocationConfigurationIDs#"
-								  edit="#rc.edit AND rc.sku.getskuBundleFlag() EQ 1#">
+								  edit="#rc.edit#">
 			<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
 			<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
 		</cf_HibachiListingDisplay>
-	<!---</cfif>--->
+	<cfelse>
+		<cf_HibachiListingDisplay smartList="#rc.sku.getLocationConfigurationsSmartList()#"
+								  recordEditAction="admin:entity.editlocationconfiguration"
+								  recordDetailAction="admin:entity.detaillocationconfiguration"
+								  edit="false">
+								    
+			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
+			<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+			
+		</cf_HibachiListingDisplay>
+	</cfif>
 	
 </cfoutput>
