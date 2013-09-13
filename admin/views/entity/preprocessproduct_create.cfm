@@ -70,8 +70,8 @@ Notes:
 				<cfif rc.processObject.getBaseProductType() eq "event">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="startReservationDateTime" edit="true">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="endReservationDateTime" edit="true">
+					<!---<cf_HibachiPropertyDisplay object="#rc.processObject#" property="startReservationDateTime" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="endReservationDateTime" edit="true">--->
 				</cfif>
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">

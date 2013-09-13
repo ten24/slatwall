@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,35 +45,23 @@
 
 Notes:
 
---->
-<cfparam name="rc.product" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
-		
-		<cf_HibachiEntityActionBar pageTitle="Create SKU" type="preprocess" object="#rc.product#"></cf_HibachiEntityActionBar>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<!---<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuCode" fieldName="skuCode" edit="true">--->
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="startReservationDateTime" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="endReservationDateTime" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
-			<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
-			<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
-			<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" multiselectFieldName="locationConfigurations" edit="true">
-				<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-				<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
-			</cf_HibachiListingDisplay>
+	// Injected Entity
+	property name="product";
+
+	// Data Properties
+	property name="skuCode";
+	property name="publishedFlag";
+	property name="activeFlag";
+	property name="price";
+	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
+	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
+	property name="options";
+	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
+	property name="bundleContentAccessFlag" hb_formFieldType="yesno";
+	property name="contents";
+	property name="locationConfigurations";
 	
-		</cf_HibachiPropertyRow>
-		
-	</cf_HibachiEntityProcessForm>
-</cfoutput>
-
+}

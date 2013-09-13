@@ -175,45 +175,29 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	/*
-	* Create sku from processObject values. 
-	* processObject contains properties from Product_AddSku.cfc 
-	* created by values submitted from preprocessproduct_addsku.
-	*/ 
-	public any function processProduct_addSku(required any product, required any processObject) {
+	// Create event schedule sku from processObject values. 
+	// processObject contains properties from Product_AddEventSchedule.cfc 
+	// created by values submitted from preprocessproduct_addeventschedule.
+	public any function processProduct_addEventSchedule(required any product, required any processObject) {
 		var newSkuIdentifier = arguments.product.getMaxSkuIdentifier()+1;
+		var newSku = this.newSku();
+		newSku.setProduct( arguments.product );
+		newSku.setSkuCode( arguments.product.getProductCode() & "-#newSkuIdentifier#");
+		newSku.setPrice( arguments.processObject.getPrice() );
+		newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
+		newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
 		
-		if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-			var newSku = this.newSku();
-			newSku.setProduct( arguments.product );
-			newSku.setSkuCode( arguments.product.getProductCode() & "-#newSkuIdentifier#");
-			newSku.setPrice( arguments.processObject.getPrice() );
-			newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
-			newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
-			newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
-			newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
-			
-			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-				newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-			}
-				
-		} else {
+		// Calculate reservation times from start/end dates and location configuration pre/post reservation settings
+		var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('locationConfigurationAdditionalPreReservationTime');
+		var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('locationConfigurationAdditionalPostReservationTime');
+		newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.processObject.getEventStartDateTime()) );
+		newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.processObject.getEventEndDateTime()) );
 		
-			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-				var newSku = this.newSku();
-				newSku.setProduct( arguments.product );
-				newSku.setSkuCode( arguments.product.getProductCode() & "-#newSkuIdentifier#" );
-				newSku.setPrice( arguments.processObject.getPrice() );
-				newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
-				newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
-				newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
-				newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
-				newSku.addLocationConfiguration( getService("LocationService").getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-				newSkuIdentifier++;
-			}
-		
+		// Add location configurations
+		for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+			newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
 		}
-		
+				
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
         
@@ -254,11 +238,9 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	/*
-	* Create product and default sku from processObject values. 
-	* processObject contains properties from Product_Create.cfc 
-	* created by values submitted from preprocessproduct_create.
-	*/ 
+	// Create product and default sku from processObject values. 
+	// processObject contains properties from Product_Create.cfc 
+	// created by values submitted from preprocessproduct_create.
 	public any function processProduct_create(required any product, required any processObject) {
 		if(isNull(arguments.product.getURLTitle())) {
 			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
@@ -401,12 +383,13 @@ component extends="HibachiService" accessors="true" {
 				newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
 				newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
 				
-				// TODO [glen]: Change this so that it is not comming from the processobject
-				// but instead from the eventStartDateTime / endDateTime +/- the first localtionConfiguration.setting('')
-				// dateAdd("m",arguments.processObject.getEventStartDateTime(),  getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('')) 
-				newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
-				newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
-				
+				// Calculate reservation times from start/end dates and location configuration pre/post reservation settings
+				var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('locationConfigurationAdditionalPreReservationTime');
+				var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('locationConfigurationAdditionalPostReservationTime');
+				newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.processObject.getEventStartDateTime()) );
+				newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.processObject.getEventEndDateTime()) );				
+
+				// Add location configurations
 				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
 				}
@@ -423,12 +406,15 @@ component extends="HibachiService" accessors="true" {
 					newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
 					newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
 					
-					// TODO [glen]: Down here is same concept, but unique to each locationConfiguration.
-					newSku.setstartReservationDateTime( arguments.processObject.getstartReservationDateTime() );
-					newSku.setendReservationDateTime( arguments.processObject.getendReservationDateTime() );
-					
+					// Calculate reservation times from start/end dates and location configuration pre/post reservation settings
+					var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ).setting('locationConfigurationAdditionalPreReservationTime');
+					var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ).setting('locationConfigurationAdditionalPostReservationTime');
+					newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.processObject.getEventStartDateTime()) );
+					newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.processObject.getEventEndDateTime()) );				
 					
 					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+					
+					// Set first as default sku
 					if(lc==1) {
 						arguments.product.setDefaultSku( newSku );	
 					}
