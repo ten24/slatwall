@@ -60,6 +60,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyName">
 				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencySymbol" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.currency#" property="formattedExample">
+				<cf_HibachiPropertyDisplay object="#rc.currency#" property="exchangeRateOverride" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		

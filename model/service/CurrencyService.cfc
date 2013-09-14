@@ -49,6 +49,8 @@ Notes:
 
 component  extends="HibachiService" accessors="true" {
 
+	property name="settingService";
+
 	// Cached in Application Scope
 	property name="europeanCentralBankRates" type="struct";
 
@@ -75,12 +77,23 @@ component  extends="HibachiService" accessors="true" {
 		
 		return csl.getRecords(); 
 	}
-	
+
 	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode) {
 		// If an integration exists for currency conversion, then pass to that integration
 		// TODO: Add integration support
 		
 		
+		var convertToCurrency=getHibachiDAO().get('currency',arguments.convertToCurrencyCode);
+		var globalDefaultCurrency=getSettingService().getSettingDetails('skuCurrency').settingValue;
+
+		//Check to see if there is an override exchange rate defined
+		if(!isnull(convertToCurrency.getExchangeRateOverride()) && convertToCurrency.getExchangeRateOverride()!=0 ){
+			//First set up to convert to global sku currency
+			convertToCurrencyCode=globalDefaultCurrency;
+			//Let the conversion run and then use the override to convert to the target currency
+		}
+
+
 		// If both currencyCodes exist in the European Central Bank list then convert based on that info
 		var cbRates = getEuropeanCentralBankRates();
 		if( ( structKeyExists(cbRates, arguments.originalCurrencyCode) || arguments.originalCurrencyCode eq "EUR" ) && ( structKeyExists(cbRates, arguments.convertToCurrencyCode) || arguments.convertToCurrencyCode eq "EUR" ) ) {
@@ -90,13 +103,18 @@ component  extends="HibachiService" accessors="true" {
 				var amountInEUR = arguments.amount / cbRates[ arguments.originalCurrencyCode ];
 			}
 			
+			
 			if(arguments.convertToCurrencyCode eq "EUR") {
 				return round(amountInEUR * 100) / 100;
 			} else {
+				if(!isnull(convertToCurrency.getExchangeRateOverride()) && convertToCurrency.getExchangeRateOverride()!=0 ){
+					//In there is an override exchange rate defined, use it. 
+					return round(amountInEUR * cbRates[ arguments.convertToCurrencyCode ] * convertToCurrency.getExchangeRateOverride() * 100) / 100;	
+				}
 				return round(amountInEUR * cbRates[ arguments.convertToCurrencyCode ] * 100) / 100;
 			}
 		}
-		
+
 		// If no conversion could be done, just return the original amount
 		return arguments.amount;
 	}
@@ -145,7 +163,7 @@ component  extends="HibachiService" accessors="true" {
 	// ======================  END: Status Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
-	
+
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
