@@ -51,7 +51,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
-	property name="skuBundleFlag" ormtype="boolean" default="0";								// TODO [glen]: This needs to be removed because it's going to be used in the future for something else
 	property name="publishedFlag" ormtype="boolean" default="0";
 	property name="skuCode" ormtype="string" unique="true" length="50";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";

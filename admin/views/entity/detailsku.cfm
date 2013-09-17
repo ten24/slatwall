@@ -54,7 +54,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
 				<cfif rc.product.getBaseProductType() EQ "event">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuBundleFlag" edit="#rc.edit#">
+					<!---<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuBundleFlag" edit="#rc.edit#">--->
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">
