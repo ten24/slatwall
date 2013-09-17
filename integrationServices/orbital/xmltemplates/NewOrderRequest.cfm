@@ -48,7 +48,11 @@ Notes:
 		<MerchantID>#getMerchantIDByCurrencyCode( arguments.requestBean.getTransactionCurrencyCode() )#</MerchantID>
 		<TerminalID>#setting('terminalID')#</TerminalID>
 		<CardBrand></CardBrand>
-		<AccountNum>#arguments.requestBean.getCreditCardNumber()#</AccountNum>
+		<cfif !isNull(arguments.requestBean.getCreditCardNumber())>
+			<AccountNum>#arguments.requestBean.getCreditCardNumber()#</AccountNum>
+		<cfelse>
+			<AccountNum />
+		</cfif>
 		<cfif !isNull(arguments.requestBean.getExpirationMonth()) && !isNull(arguments.requestBean.getExpirationYear())>
 			<Exp>#left(arguments.requestBean.getExpirationMonth(),2)##right(arguments.requestBean.getExpirationYear(),2)#</Exp>
 		<cfelse>
@@ -68,7 +72,11 @@ Notes:
 		<AVSphoneNum>#arguments.requestBean.getAccountPrimaryPhoneNumber()#</AVSphoneNum>
 		<AVSname>#arguments.requestBean.getNameOnCreditCard()#</AVSname>
 		<AVScountryCode>#arguments.requestBean.getBillingCountryCode()#</AVScountryCode>
-		<CustomerRefNum>#arguments.requestBean.getAccount().getShortReferenceID( true )#</CustomerRefNum>
+		<cfif !isNull(arguments.requestBean.getCreditCardNumber())>
+			<CustomerRefNum>#arguments.requestBean.getAccount().getShortReferenceID( true )#</CustomerRefNum>
+		<cfelse>
+			<CustomerRefNum>#arguments.requestBean.getProviderToken()#</CustomerRefNum>
+		</cfif>
 		<OrderID>#arguments.requestBean.getOrder().getShortReferenceID( true )#</OrderID>
 		<Amount>#arguments.requestBean.getTransactionAmount()*100#</Amount>
 		<cfif arguments.requestBean.getTransactionType() EQ "credit">

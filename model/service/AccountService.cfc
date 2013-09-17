@@ -478,6 +478,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveAccountPaymentMethod(required any accountPaymentMethod, struct data={}, string context="save") {
+		param name="arguments.data.runSaveAccountPaymentMethodTransactionFlag" default="true"; 
+		
 		// See if the accountPaymentMethod was new
 		var wasNew = arguments.accountPaymentMethod.getNewFlag();
 		
@@ -485,7 +487,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.accountPaymentMethod = save(arguments.accountPaymentMethod, arguments.data, arguments.context);
 		
 		// If the order payment does not have errors, then we can check the payment method for a saveTransaction
-		if(wasNew && !arguments.accountPaymentMethod.hasErrors() && !isNull(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && len(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType() neq "none") {
+		if(wasNew && !arguments.accountPaymentMethod.hasErrors() && arguments.data.runSaveAccountPaymentMethodTransactionFlag && !isNull(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && len(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType() neq "none") {
 			
 			// Setup transaction data
 			var transactionData = {

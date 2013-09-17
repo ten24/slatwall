@@ -50,19 +50,38 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
-	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
-	</cf_HibachiEntityActionBar>
-	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="subscriptionTermID" fieldType="select" valueOptions="#rc.product.getUnusedProductSubscriptionTerms()#" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="renewalPrice" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-	
-</cf_HibachiEntityProcessForm>
-
+<cfoutput>
+	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
+		
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
+		</cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="renewalPrice" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="subscriptionTermID" fieldType="select" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+		<div class="row-fluid">
+			<div class="span6">
+				<h5>#$.slatwall.rbKey('admin.entity.sku.subscriptionBenefits')#</h5>
+				<br />
+				<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
+				<cf_HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
+					<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
+				</cf_HibachiListingDisplay>
+			</div>
+			<div class="span6">
+				<h5>#$.slatwall.rbKey('admin.entity.sku.renewalSubscriptionBenefits')#</h5>
+				<br />
+				<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
+				<cf_HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
+					<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
+				</cf_HibachiListingDisplay>
+			</div>
+		</div>
+		
+	</cf_HibachiEntityProcessForm>
+</cfoutput>

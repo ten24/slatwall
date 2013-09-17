@@ -421,7 +421,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							
 							// add the providerToken to the orderPayment & accountPayment
-							if(!isNull(response.getProviderToken())) {
+							if(!isNull(response.getProviderToken()) && len(response.getProviderToken())) {
 								
 								// Set the provider token if one was returned
 								arguments.paymentTransaction.getPayment().setProviderToken( response.getProviderToken() );

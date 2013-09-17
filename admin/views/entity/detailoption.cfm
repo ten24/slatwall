@@ -56,8 +56,9 @@ Notes:
 					backAction="admin:entity.detailoptiongroup" 
 					backQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#"
 					cancelAction="admin:entity.detailoptiongroup"
-					cancelQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#" />
-		
+					cancelQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#"
+					deleteQueryString="redirectAction=admin:entity.detailoptiongroup&optionGroupID=#rc.optionGroup.getOptionGroupID()#" />
+					
 		<input type="hidden" name="optionGroup.optionGroupID" value="#rc.optionGroup.getOptionGroupID()#" />
 		
 		<cf_HibachiPropertyRow>

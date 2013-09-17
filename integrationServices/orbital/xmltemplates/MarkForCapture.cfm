@@ -42,11 +42,11 @@ Notes:
 	<MarkForCapture>
 		<OrbitalConnectionUsername>#setting('username')#</OrbitalConnectionUsername>
 		<OrbitalConnectionPassword>#setting('password')#</OrbitalConnectionPassword>
+		<OrderID>#arguments.requestBean.getOrder().getShortReferenceID( true )#</OrderID>
+		<Amount>#arguments.requestBean.getTransactionAmount()*100#</Amount>
 		<BIN>#setting('bin')#</BIN>
 		<MerchantID>#getMerchantIDByCurrencyCode( arguments.requestBean.getTransactionCurrencyCode() )#</MerchantID>
 		<TerminalID>#setting('terminalID')#</TerminalID>
-		<OrderID>#arguments.requestBean.getOrder().getShortReferenceID( true )#</OrderID>
-		<Amount>#arguments.requestBean.getTransactionAmount()*100#</Amount>
 		<TxRefNum>#arguments.requestBean.getPreAuthorizationProviderTransactionID()#</TxRefNum>
 	</MarkForCapture>
 </Request>
