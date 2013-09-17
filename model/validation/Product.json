@@ -6,10 +6,9 @@
 		"productType":						[{"contexts":"save","required":true}],
 		"unusedProductOptions":				[{"contexts":"addOption","minCollection":1}],
 		"unusedProductOptionGroups":		[{"contexts":"addOptionGroup","minCollection":1}],
-		"unusedProductSubscriptionTerms":	[{"contexts":"addSubscriptionTerm","minCollection":1}],
 		"baseProductType":					[
 		    	{"contexts":"addOptionGroup,addOption","inList":"merchandise"},
-		    	{"contexts":"addSubscriptionTerm","inList":"subscription"},
+		    	{"contexts":"addSubscriptionSku","inList":"subscription"},
 		    	{"contexts":"addSku","inList":"event"}
 		 ],
 		"price":							[{"contexts":"save","required":true,"dataType":"numeric"}],

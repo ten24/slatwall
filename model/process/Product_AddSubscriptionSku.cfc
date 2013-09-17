@@ -50,12 +50,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="product";
+	
+	// Lazy / Injected Objects
+	
+	// New Properties
 
-	// Data Properties
+	// Data Properties (ID's)
 	property name="subscriptionTermID";
+	
+	// Data Properties (Inputs)
 	property name="price" hb_rbKey="entity.sku.price";
 	property name="listPrice" hb_rbKey="entity.sku.listPrice";
 	property name="renewalPrice" hb_rbKey="entity.sku.renewalPrice";
+	property name="subscriptionBenefits";
+	property name="renewalSubscriptionBenefits";
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	
+	// ======================== START: Defaults ============================
 	
 	public any function getPrice() {
 		if(!structKeyExists(variables, "price")) {
@@ -77,5 +96,34 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.renewalPrice;
 	}
+	
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	public any function getSubscriptionTermIDOptions() {
+		if(!structKeyExists(variables, "subscriptionTermIDOptions")) {
+			var sl = getService("subscriptionService").getSubscriptionTermSmartList();
+			sl.addSelect('subscriptionTermName', 'name');
+			sl.addSelect('subscriptionTermID', 'value');
+			
+			variables.subscriptionTermIDOptions = sl.getRecords();
+		}
+		return variables.subscriptionTermIDOptions;
+	}
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
 	
 }

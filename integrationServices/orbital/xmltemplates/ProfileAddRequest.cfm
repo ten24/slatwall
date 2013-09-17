@@ -45,7 +45,13 @@ Notes:
 		<CustomerBin>#setting('bin')#</CustomerBin>
 		<CustomerMerchantID>#getMerchantIDByCurrencyCode( arguments.requestBean.getTransactionCurrencyCode() )#</CustomerMerchantID>
 		<CustomerName>#arguments.requestBean.getNameOnCreditCard()#</CustomerName>
-		<CustomerRefNum>#arguments.requestBean.getAccount().getShortReferenceID( true )#</CustomerRefNum>
+		<cfif !isNull(arguments.requestBean.getOrderPayment())>
+			<CustomerRefNum>#arguments.requestBean.getOrderPayment().getShortReferenceID( true )#</CustomerRefNum>
+		<cfelseif !isNull(arguments.requestBean.getAccountPayment())>
+			<CustomerRefNum>#arguments.requestBean.getAccountPayment().getShortReferenceID( true )#</CustomerRefNum>
+		<cfelseif !isNull(arguments.requestBean.getAccountPaymentMethod())>
+			<CustomerRefNum>#arguments.requestBean.getAccountPaymentMethod().getShortReferenceID( true )#</CustomerRefNum>
+		</cfif>
 		<CustomerAddress1>#arguments.requestBean.getBillingStreetAddress()#</CustomerAddress1>
 		<CustomerAddress2>#arguments.requestBean.getBillingStreet2Address()#</CustomerAddress2>
 		<CustomerCity>#arguments.requestBean.getBillingCity()#</CustomerCity>

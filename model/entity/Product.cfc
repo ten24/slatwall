@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="updateSkus,addOptionGroup,addOption,addSubscriptionTerm" {
+component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus" {
 	
 	// Persistent Properties
 	property name="productID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

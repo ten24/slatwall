@@ -213,23 +213,23 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	public any function processProduct_addSubscriptionTerm(required any product, required any processObject) {
+	public any function processProduct_addSubscriptionSku(required any product, required any processObject) {
 		
-		var newSubscriptionTerm = getSubscriptionService().getSubscriptionTerm(arguments.processObject.getSubscriptionTermID());
+		var newSubscriptionTerm = getSubscriptionService().getSubscriptionTerm( arguments.processObject.getSubscriptionTermID() );
 		var newSku = getSkuService().newSku();
 		
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setRenewalPrice( arguments.processObject.getRenewalPrice() );
-		if( arguments.processObject.getListPrice() != "" && isNumeric(arguments.processObject.getListPrice() )) {
-			newSku.setListPrice( arguments.data.listPrice );	
+		if( !isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
+			newSku.setListPrice( arguments.processObject.getListPrice() );	
 		}
 		newSku.setSkuCode( arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
 		newSku.setSubscriptionTerm( newSubscriptionTerm );
-		for(var b=1; b <= arrayLen( arguments.product.getDefaultSku().getSubscriptionBenefits() ); b++) {
-			newSku.addSubscriptionBenefit( arguments.product.getDefaultSku().getSubscriptionBenefits()[b] );
+		for(var b=1; b <= listLen( arguments.processObject.getSubscriptionBenefits() ); b++) {
+			newSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 		}
-		for(var b=1; b <= arrayLen( arguments.product.getDefaultSku().getRenewalSubscriptionBenefits() ); b++) {
-			newSku.addRenewalSubscriptionBenefit( arguments.product.getDefaultSku().getRenewalSubscriptionBenefits()[b] );
+		for(var b=1; b <= listLen( arguments.processObject.getRenewalSubscriptionBenefits() ); b++) {
+			newSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getRenewalSubscriptionBenefits(), b) ) );
 		}
 		newSku.setProduct( arguments.product );
 		

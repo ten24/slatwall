@@ -55,9 +55,11 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="transactionSuccessFlag">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="transactionType">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="providerTransactionID">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="authorizationCode">
+				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="authorizationCodeUsed">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountAuthorized">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountReceived">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountCredited">

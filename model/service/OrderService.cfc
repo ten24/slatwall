@@ -500,7 +500,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newAccountPaymentMethod.copyFromOrderPayment( newOrderPayment );
 			
 			// Save it
-			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod );
+			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod, {runSaveAccountPaymentMethodTransactionFlag=false} );
 			
 		}
 		
@@ -652,7 +652,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Create a new return order
 		var returnOrder = this.newOrder();
 		returnOrder.setAccount( arguments.order.getAccount() );
-		returnOrder.setOrderType( getSettingService().getTypeBySystemCode("otReturnOrder") );
+		returnOrder.setOrderType( getSettingService().getTypeBySystemCode(arguments.processObject.getOrderTypeCode()));
 		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		returnOrder.setReferencedOrder( arguments.order );
 		
