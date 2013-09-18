@@ -17,13 +17,3 @@
 		<Record emailTemplateID="dbb327e89546f9916ed8316f4fcc70e1" emailTemplateName="Task Success Notification" emailTemplateObject="Task" emailBodyHTML="The task '${taskName}' completed successfully." />
 	</Records>
 </Table>
-
-<!--
-	Below Are UUID's to use... delete after using
-	
-	
-	dbb327ebd60b04948864fa1a5938b082
-	dbb327ec050c302990497f64ac50cb1a
-	dbb327eddddc1f11d1bfff9a1f3bc845
-	
--->

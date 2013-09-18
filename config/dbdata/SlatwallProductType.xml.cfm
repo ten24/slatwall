@@ -16,13 +16,3 @@
 		<Record productTypeID="444df315a963bea00867567110d47728" productTypeIDPath="444df315a963bea00867567110d47728" parentProductTypeID="NULL" productTypeName="Event" systemCode="event" urlTitle="event" activeFlag="1" />
 	</Records>
 </Table>
-		
-<!--
-Below Are UUID's to use... delete after using
-444df3169e87074c5666aff95cbc2741
-444df317b7556f56edc504ee59ecc9b9
-444df318b2821a8d4e36e3a29ec5c7a5
-444df319d9fcadffb1c4c46c47000a0f
-444df31a0bd8f5575edd5e0ce6810a31
-444df31bdfe1e02af4ff23cfe63edad0
--->

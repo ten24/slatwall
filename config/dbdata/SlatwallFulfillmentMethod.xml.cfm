@@ -12,12 +12,3 @@
 		<Record fulfillmentMethodID="444df300bf377327cd0e44f4b16be38e" fulfillmentMethodName="Attend Event" fulfillmentMethodType="attend" activeFlag="1" />
 	</Records>
 </Table>
-
-<!--
-Below Are UUID's to use... delete after using
-
-
-444df301ebd166fdcd392111e57adf34
-444df302b7254a880510a0063cf93d05
-
--->
