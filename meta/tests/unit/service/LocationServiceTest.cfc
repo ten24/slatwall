@@ -59,15 +59,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(arrayLen(variables.service.getLocationOptions()),"Ensure we get results from getLocationOptions without passing a location.");
 	}
 	
-	/*public any function getLocationAndChildren_returns_specific_options() {
-		var location = variables.service.getHibachiDAO().new("Location");
-		//var location = variables.service.getHibachiDAO().get("Location","402881ff40c9c4bc0140f531fd59013e");
-		var result = variables.service.getLocationAndChildren("402881ff40c9c4bc0140f52099530134");
-		
-		writeDump(var="#result#");
-		assertTrue( isObject(location) );
-	}*/
-	
 	
 }
 

@@ -55,12 +55,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("skuService").newSku();
 	}
 	
-	/*public void function getQuantity_returns_results() {
-		//getQuantity(required string quantityType, string locationID, string stockID) {
-		var sku = request.slatwallScope.getService("skuService").getSku("402881e63faf5213013fe4415bb9010f");
-		var q = sku.getQuantity(quantityType="QNC",locationID="402881e63faf5213013fb15dceb80029");
-		writeDump(var="#q#");
-	}*/
 	
 	
 }

@@ -54,7 +54,6 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
 				<cfif rc.product.getBaseProductType() EQ "event">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
-					<!---<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuBundleFlag" edit="#rc.edit#">--->
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">
@@ -82,8 +81,6 @@ Notes:
 			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
 			<cfif rc.product.getBaseProductType() EQ "event">
-				
-				<!---<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" text="#$.slatwall.rbKey('admin.entity.producttabs.images.defaultImages')#" />--->
 				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
 				<cf_HibachiTab view="admin:entity/skutabs/registrants" />
 			</cfif>

@@ -70,8 +70,6 @@ Notes:
 				<cfif rc.processObject.getBaseProductType() eq "event">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
-					<!---<cf_HibachiPropertyDisplay object="#rc.processObject#" property="startReservationDateTime" edit="true">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="endReservationDateTime" edit="true">--->
 				</cfif>
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
@@ -117,8 +115,6 @@ Notes:
 				</div>
 			<cfelseif rc.processObject.getBaseProductType() eq "contentAccess">
 				<cfset contentSmartList = $.slatwall.getSmartList("Content") />
-				
-				<!--- <cf_HibachiFieldDisplay fieldType="yesno" fieldName="bundleContentAccess" value="0" title="#$.slatwall.rbKey('admin.entity.createproduct.bundleContentAccess')#" hint="#$.slatwall.rbKey('admin.entity.createproduct.bundleContentAccess_hint')#" edit="true" /> --->
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleContentAccessFlag" />
 				
 				<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />

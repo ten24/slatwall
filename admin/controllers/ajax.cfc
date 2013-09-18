@@ -244,15 +244,13 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		getHibachiService().updateRecordSortOrder(argumentCollection=rc);
 	}
 	
-	/* Called from Sku Inventory to assist in building hierarchical
-	location inventory table */ 
+	// Called from Sku Inventory to assist in building hierarchical location inventory table  
 	public function updateInventoryTable(required struct rc) {
 		param name="arguments.rc.locationID" default="";
 		param name="arguments.rc.skuID" default="";
 		
 		// Get all locations where parentID is rc.locationID, if rc.locationID is null then return null parents
 		var sku = getSkuService().getSku({skuID=arguments.rc.skuID});
-		//sku.addFilter('skuID', arguments.rc.skuID);	
 		var smartList = getLocationService().getLocationSmartList();
 		if(len(arguments.rc.locationID)) {
 			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);	
@@ -276,7 +274,6 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
 			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
 			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
-			//thisData["QNC"] = thisData["QOH"] - thisData["QC"];
 			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
 			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
 			ArrayAppend(thisDataArr,thisData);

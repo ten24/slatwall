@@ -47,10 +47,7 @@ Notes:
 
 --->
 <cfparam name="rc.sku" type="any" />
-
 <cfparam name="rc.product" type="any">
-
-<!---<cfset rc.locations = $.slatwall.getService("locationService").listLocation() />--->
 
 <cfoutput>
 	<table id="inventory-table" class="table table-striped table-bordered table-condensed">
@@ -86,34 +83,7 @@ Notes:
 			<td>#rc.sku.getQuantity('QATS')#</td>
 			<td>#rc.sku.getQuantity('QIATS')#</td>
 		</tr>
-		<!---
-		<cfif arrayLen(rc.locations) gt 1>
-			<cfloop array="#rc.locations#" index="loc">
-				<cfset locationID = loc.getLocationID()/>
-				<tr class="stock">
-					<td>#loc.getLocationName()#</td>
-					<td>#rc.sku.getQuantity('QOH', locationID)#</td>
-					<td>#rc.sku.getQuantity('QOSH', locationID)#</td>
-					<td>#rc.sku.getQuantity('QNDOO', locationID)#</td>
-					<td>#rc.sku.getQuantity('QNDORVO', locationID)#</td>
-					<td>#rc.sku.getQuantity('QNDOSA', locationID)#</td>
-					<td>#rc.sku.getQuantity('QNRORO', locationID)#</td>
-					<td>#rc.sku.getQuantity('QNROVO', locationID)#</td>
-					<td>#rc.sku.getQuantity('QNROSA', locationID)#</td>
-					<td>#rc.sku.getQuantity('QC', locationID)#</td>
-					<td>#rc.sku.getQuantity('QE', locationID)#</td>
-					<td>#rc.sku.getQuantity('QNC', locationID)#</td>
-					<td>#rc.sku.getQuantity('QATS', locationID)#</td>
-					<td>#rc.sku.getQuantity('QIATS', locationID)#</td>
-				</tr>
-			</cfloop>
-		</cfif>
-		--->
 	</table>
-	
-	
-	
-	
 	
 	
 </cfoutput>

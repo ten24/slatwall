@@ -55,6 +55,5 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="account.emailAddress" />
 		<cf_HibachiListingColumn propertyIdentifier="account.phoneNumber" />
 		<cf_HibachiListingColumn propertyIdentifier="orderstatustype.type" />
-		<!---<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="firstname" />--->
 	</cf_HibachiListingDisplay>
 </cfoutput>
