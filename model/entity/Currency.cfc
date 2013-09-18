@@ -51,6 +51,7 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	// Persistent Properties
 	property name="currencyCode" ormtype="string" fieldtype="id" unique="true" generated="never";
 	property name="currencyISONumber" ormtype="integer";
+	property name="exchangeRateOverride" ormtype="big_decimal" default="0" hb_formatType="decimal";
 	property name="activeFlag" ormtype="boolean";
 	property name="currencyName" ormtype="string";
 	property name="currencySymbol" ormtype="string";
@@ -102,6 +103,8 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 
 	// ================== START: Overridden Methods ========================
 	
+
+
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================

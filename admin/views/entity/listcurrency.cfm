@@ -60,5 +60,7 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="currencyCode" />
 		<cf_HibachiListingColumn propertyIdentifier="formattedExample" />
+		<cf_HibachiListingColumn propertyIdentifier="exchangeRateOverride" format="decimal" />
 	</cf_HibachiListingDisplay>
 </cfoutput>
+
