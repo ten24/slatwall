@@ -36,8 +36,8 @@
 		<Record typeID="444df2a3ebb07d6280c339a09c0d90d3" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df2a3ebb07d6280c339a09c0d90d3" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account" systemCode="astAccount" />
 		<Record typeID="444df32b9730e4a50af0c0ecb9d77f3b" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32b9730e4a50af0c0ecb9d77f3b" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account Payment" systemCode="astAccountPayment" />
 		<Record typeID="444df325adea07a73014e74b449eb315" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df325adea07a73014e74b449eb315" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Brand" systemCode="astBrand" />
-		<Record typeID="5accbf56c330c01b3be2b8fef26094cc" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf56c330c01b3be2b8fef26094cc" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Location" systemCode="astLocation" />
-		<Record typeID="5accbf57dcf5bb3eb71614febe83a31d" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf57dcf5bb3eb71614febe83a31d" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Location Configuration" systemCode="astLocationConfiguration" />
+		<Record typeID="5accbfaceca4d70a228b27cc61b0986a" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbfaceca4d70a228b27cc61b0986a" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Location" systemCode="astLocation" />
+		<Record typeID="5accbfb1e1a2a2dfd8dc4136631d68f0" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbfb1e1a2a2dfd8dc4136631d68f0" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Location Configuration" systemCode="astLocationConfiguration" />
 		<Record typeID="444df327c72a5bd51bb2f691aac17008" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df327c72a5bd51bb2f691aac17008" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order" systemCode="astOrder" />
 		<Record typeID="444df292eea355ddad72f5614726bc75" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df292eea355ddad72f5614726bc75" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Item" systemCode="astOrderItem" />
 		<Record typeID="444df32ac631b198a0f0319dd64e0e00" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32ac631b198a0f0319dd64e0e00" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Payment" systemCode="astOrderPayment" />
@@ -248,12 +248,12 @@ Below Are UUID's to use... delete after using
 5accbfa9c709acf1887334be358dc3a3
 5accbfaaa8b2d1f321fe83a3f9f4b85d
 5accbfabd565b074573d1c8a38149e42
-5accbfaceca4d70a228b27cc61b0986a
+
 5accbfadd2f474789084ad05ae8c5a9f
 5accbfaefa6df22fcafe61992b1e7955
 5accbfaf945cb61c1e84411ab01a93d3
 5accbfb0c7ba49a164599cbfa87d95ed
-5accbfb1e1a2a2dfd8dc4136631d68f0
+
 5accbfb2c587e5e47f55781d4cf3ee71
 5accbfb3b259203d1b51c500cf3dd033
 5accbfb4b07b7281713c49f6ec88f68d
