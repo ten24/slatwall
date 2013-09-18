@@ -82,7 +82,7 @@ Notes:
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
 			<cfif rc.product.getBaseProductType() EQ "event">
 				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
-				<cf_HibachiTab view="admin:entity/skutabs/registrants" />
+				<!---<cf_HibachiTab view="admin:entity/skutabs/registrants" />--->
 			</cfif>
 
 			<!--- Custom Attributes --->
