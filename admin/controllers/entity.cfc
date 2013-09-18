@@ -52,6 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="currencyService" type="any";
 	property name="emailService" type="any";
 	property name="imageService" type="any";
+	property name="locationService" type="any";
 	property name="measurementService" type="any";
 	property name="optionService" type="any";
 	property name="orderService" type="any";
@@ -348,9 +349,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		// Call the generic logic
 		genericCreateMethod(entityName="StockAdjustment", rc=arguments.rc);
+		genericCreateMethod(entityName="Location", rc=arguments.rc);
 		
 		// Set the type correctly
 		rc.stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode(rc.stockAdjustmentType) );
+	}
+	public void function editStockAdjustment(required struct rc) {
+		genericCreateMethod(entityName="Location", rc=arguments.rc);
 	}
 	
 	// Task

@@ -57,7 +57,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public boolean function createSkus(required any product, required struct data ) {
 		
-		// Create Merchandise Propduct Skus Based On Options
+		// Create Merchandise Product Skus Based On Options
 		if(arguments.product.getProductType().getBaseProductType() == "merchandise") {
 			
 			// If options were passed in create multiple skus
@@ -200,6 +200,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
+		} else if (arguments.product.getProductType().getBaseProductType() == "event") {
+			// Event product-specific code here 
 		} else {
 			throw("There was an unexpected error when creating this product");
 		}

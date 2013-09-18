@@ -139,6 +139,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				arrayAppend(variables.productTypeOptions, {name=records[i].getSimpleRepresentation(), value=records[i].getProductTypeID()});
 			}
 		}
+		
 		return variables.productTypeOptions;
 	}
     
@@ -334,6 +335,19 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public boolean function getImageExistsFlag() {
 		return getDefaultSku().getImageExistsFlag();
+	}
+	
+	public numeric function getMaxSkuIdentifier() {
+		var maxSkuIdentifier = 0;
+		if(arraylen(this.getSkus())) {
+			for(var sku in this.getSkus()) {
+				var skuIdentifier = listLast( sku.getskuCode(),"-");
+				if(isNumeric(skuIdentifier) && skuIdentifier > maxSkuIdentifier) {
+					maxSkuIdentifier = skuIdentifier;
+				}
+			}
+		}
+		return maxSkuIdentifier;
 	}
 	
 	public array function getOptionsByOptionGroup(required string optionGroupID) {

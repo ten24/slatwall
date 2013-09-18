@@ -52,6 +52,13 @@ Notes:
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
+				<cfif rc.product.getBaseProductType() EQ "event">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="#rc.edit#">
+				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
 				<cfif rc.product.getBaseProductType() EQ "subscription">
@@ -62,18 +69,21 @@ Notes:
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.sku#">
-			<cfif rc.product.getBaseProductType() EQ "subscription">
+			<cfif rc.product.getBaseProductType() eq "contentAccess">
 				<cf_HibachiTab view="admin:entity/skutabs/subscription" />
-			<cfelseif rc.product.getBaseProductType() EQ "contentaccess">
+			<cfelseif rc.product.getBaseProductType() eq "event">
+				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
+				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
+			<cfelseif rc.product.getBaseProductType() eq "subscription">
 				<cf_HibachiTab property="accessContents" />
-			<cfelse>
+			<cfelseif rc.product.getBaseProductType() eq "merchandise">
 				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
 				<cf_HibachiTab view="admin:entity/skutabs/options" />
 			</cfif>
+			<!---<cf_HibachiTab view="admin:entity/skutabs/registrants" />--->
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
 			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
-			<!---<cf_HibachiTab view="admin:entity/skutabs/pricegroups" />--->
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.sku.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

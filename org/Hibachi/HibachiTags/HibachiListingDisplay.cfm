@@ -24,7 +24,7 @@
 	<cfparam name="attributes.recordProcessButtonDisplayFlag" type="any" default="true" />
 	
 	<!--- Hierarchy Expandable --->
-	<cfparam name="attributes.parentPropertyName" type="string" default="" />  <!--- Setting this value will turn on Expanable --->
+	<cfparam name="attributes.parentPropertyName" type="string" default="" />  <!--- Setting this value will turn on Expandable --->
 	
 	<!--- Sorting --->
 	<cfparam name="attributes.sortProperty" type="string" default="" />  			<!--- Setting this value will turn on Sorting --->

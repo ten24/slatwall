@@ -46,17 +46,24 @@
 Notes:
 
 */
-component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" {
+component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation" {
 	
 	// Persistent Properties
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="locationIDPath" ormtype="string";
 	property name="locationName" ormtype="string";
+	property name="activeFlag" ormtype="boolean" ;
 	
 	// Related Object Properties (Many-to-One)
 	property name="primaryAddress" cfc="LocationAddress" fieldtype="many-to-one" fkcolumn="locationAddressID";
+	property name="parentLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="parentLocationID";
 	
 	// Related Object Properties (One-to-Many)
+	property name="stocks" singularname="stock" cfc="Stock" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true" lazy="extra"   ;
 	property name="locationAddresses" singularname="locationAddress" cfc="LocationAddress" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
+	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
+	property name="childLocations" singularname="childLocation" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="parentLocationID" cascade="all" type="array";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (Many-to-Many - owner)
 	
@@ -72,8 +79,17 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
+	// Non-Persistent Properties
+	property name="baseLocation" type="string" persistent="false";
+	property name="parentLocationOptions" persistent="false";
+	
+	
 	public boolean function isDeletable() {
 		return !(getService("LocationService").isLocationBeingUsed(this) || getService("LocationService").getLocationCount() == 1);
+	}
+	
+	public boolean function hasChildren() {
+		return (arraylen(getchildLocations()) > 0);
 	}
 	
 	public any function getPrimaryAddress() {
@@ -84,11 +100,52 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		}
 	}
 	
+	//get top level locations 
+	public any function getBaseLocation() {
+		return getService("locationService").getLocation(listFirst(getlocationIDPath())).getLocationName();
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getLocationOptions(string locationID="") {
+		if(!structKeyExists(variables, "parentLocationOptions")) {
+			
+			var locationOptions = [];
+			
+			// If no base location defined return all
+			if( !len(arguments.locationID) ) {
+				locationOptions = getService("locationService").getLocationOptions();
+			} else {
+				locationOptions = getService("locationService").getLocationOptions(arguments.locationID);
+			}
+		}
+		return locationOptions;
+	}
+	
+	public array function getLocationAndChildren(string locationID) {
+		var locationAndChildren = [];
+		
+		// If no location defined return all
+		if( !len(arguments.locationID) ) {
+			locationAndChildren = getService("locationService").getLocationAndChildren();
+		} else {
+			locationAndChildren = getService("locationService").getLocationAndChildren(arguments.locationID);
+		}
+		return locationAndChildren;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	
+	// Attribute Values (one-to-many)    
+    	public void function addAttributeValue(required any attributeValue) {    
+    		arguments.attributeValue.setLocation( this );    
+    	}    
+    	public void function removeAttributeValue(required any attributeValue) {    
+    		arguments.attributeValue.removeLocation( this );    
+    	}
 	
 	// Location Addresses (one-to-many)
 	public void function addLocationAddress(required any locationAddress) {
@@ -98,6 +155,15 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		arguments.locationAddress.removeLocation( this );
 	}
 	
+	
+	// Location Configurations (one-to-many)
+	public void function addLocationConfiguration(required any locationConfiguration) {
+		arguments.locationConfiguration.setLocation( this );
+	}
+	public void function removeLocationConfiguration(required any locationConfiguration) {
+		arguments.locationConfiguration.removeLocation( this );
+	}
+	
 	// Physicals (many-to-many - inverse)
 	public void function addPhysical(required any physical) {
 		arguments.physical.addLocation( this );
@@ -105,14 +171,60 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	public void function removePhysical(required any physical) {
 		arguments.physical.removeLocation( this );
 	}
+	
+	// Primary Location Address (many-to-one | circular)
+	public void function setPrimaryLocationAddress( any primaryLocationAddress) {    
+		if(structKeyExists(arguments, "primaryLocationAddress")) {
+			variables.primaryLocationAddress = arguments.primaryLocationAddress;
+			arguments.primaryLocationAddress.setLocation( this );	
+		} else {
+			structDelete(variables, "primaryLocationAddress");
+		}
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
 	
+	// If locationPathID is null returns all otherwise returns current locationIDPath 
+	public string function getLocationIDPath() {
+		if(isNull(variables.locationIDPath)) {
+			variables.locationIDPath = buildIDPathList( "parentLocation" );
+		}
+		return variables.locationIDPath;
+	}
+	
+	public any function getPrimaryLocationAddress() {
+		if(!isNull(variables.primaryLocationAddress)) {
+			return variables.primaryLocationAddress;
+		} else if (arrayLen(getLocationAddresses())) {
+			variables.primaryLocationAddress = getLocationAddresses()[1];
+			return variables.primaryLocationAddress;
+		} else {
+			return getService("locationService").newLocationAddress();
+		}
+	}
+	
+	public string function getSimpleRepresentation() {
+		if(!isNull(getParentLocation())) {
+			return getParentLocation().getSimpleRepresentation() & " &raquo; " & getLocationName();
+		}
+		return getLocationName();
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================
+	
+	public void function preInsert(){
+		setLocationIDPath( buildIDPathList( "parentLocation" ) );
+		super.preInsert();
+	}
+	
+	public void function preUpdate(struct oldData){
+		setLocationIDPath( buildIDPathList( "parentLocation" ) );;
+		super.preUpdate(argumentcollection=arguments);
+	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }

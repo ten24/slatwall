@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
 	property name="locationDAO" type="any";
+	property name="stockDAO" type="any";
 	
 	public boolean function isLocationBeingUsed(required any location) {
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
@@ -58,14 +59,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getLocationDAO().getLocationCount();
 	}
 	
-	public array function getLocationOptions() {
-		var smartList = this.getLocationSmartList();
-		
-		smartList.addSelect('locationID', 'value');
-		smartList.addSelect('locationName', 'name');
-		
-		return smartList.getRecords(); 
+	public array function getLocationOptions( string locationID ) {
+		if(!structKeyExists(variables,"locationOptions")) {
+			arguments.entityName = "SlatwallLocation";
+			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+			smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
+			smartList.addOrder("locationIDPath");
+			var locations = smartList.getRecords();
+			
+			variables.locationOptions = [];
+			
+			for(var i=1;i<=arrayLen(locations);i++) {
+				arrayAppend(variables.locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+			}
+		}
+		return variables.locationOptions;
 	}
+	
+	public array function getLocationAndChildren( string locationID ) {
+			var locAndChildren = [];
+			arguments.entityName = "SlatwallLocation";
+			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+			smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
+			var locations = smartList.getRecords();
+			for(var i=1;i<=arrayLen(locations);i++) {
+				arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+			}
+		return locAndChildren;
+	}
+	
+	
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -80,6 +103,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	public any function saveLocation(required any location, required struct data) {
+		arguments.location = super.save(arguments.location, arguments.data);
+		if(!location.hasErrors()){
+			getHibachiDAO().flushORMSession();
+			if( locationHasStock(arguments.location.getParentLocation())) {
+				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(),toLocationID=arguments.location.getlocationID());
+			}
+		} 
+		return arguments.location;
+	}
+	
+	public any function updateStockLocation(required string fromLocationID, required string toLocationID) {
+		getStockDAO().updateStockLocation( arguments.fromLocationID, arguments.toLocationID);
+	}
+	
+	
+	public boolean function locationHasStock(required any location) {
+		return (!arrayIsEmpty(arguments.location.getStocks()) > 0);
+	}
 	
 	// ======================  END: Save Overrides ============================
 	

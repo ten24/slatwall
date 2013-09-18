@@ -65,6 +65,10 @@ Notes:
 				<cfif rc.baseProductType eq "merchandise">
 					<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="true">
 				</cfif>
+				<cfif rc.baseProductType eq "event">
+					<input type="text" name="eventStartDateTime" value=""  />
+					<input type="text" name="eventEndDateTime" value="" />
+				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="productName" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="price" edit="true">
@@ -115,6 +119,9 @@ Notes:
 			<cf_HibachiListingDisplay smartList="#contentAccessList#" multiselectFieldName="accessContents" edit="true">
 				<cf_HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
 			</cf_HibachiListingDisplay>
+		<cfelseif rc.baseProductType eq "event">
+			<cfset skuList = $.slatwall.getService("SkuService").getSkuSmartList() />
+			<cf_SlatwallErrorDisplay object="#rc.product#" errorName="eventsku" />
 		</cfif>
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

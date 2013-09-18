@@ -8,7 +8,8 @@
 		"unusedProductOptionGroups":		[{"contexts":"addOptionGroup","minCollection":1}],
 		"baseProductType":					[
 		    	{"contexts":"addOptionGroup,addOption","inList":"merchandise"},
-		    	{"contexts":"addSubscriptionSku","inList":"subscription"}
+		    	{"contexts":"addSubscriptionSku","inList":"subscription"},
+		    	{"contexts":"addSku","inList":"event"}
 		 ],
 		"price":							[{"contexts":"save","required":true,"dataType":"numeric"}],
 		"physicalCounts":					[{"contexts":"delete","maxCollection":0}]
