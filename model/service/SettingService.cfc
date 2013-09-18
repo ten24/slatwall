@@ -225,7 +225,6 @@ globalEncryptionKeySize
 					// Sku
 					skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 					skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
-					skuBundleInventory = {fieldType="select",defaultValue="On make up"},//'On make up','On purchase','On delivery'
 					skuCurrency = {fieldType="select", defaultValue="USD"},
 					skuEligibleCurrencies = {fieldType="listingMultiselect", listingMultiselectEntityName="Currency", defaultValue=getCurrencyService().getAllActiveCurrencyIDList()},
 					skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
@@ -234,8 +233,6 @@ globalEncryptionKeySize
 					skuHoldBackQuantity = {fieldType="text", defaultValue=0},
 					skuOrderMinimumQuantity = {fieldType="text", defaultValue=1},
 					skuOrderMaximumQuantity = {fieldType="text", defaultValue=1000},
-					skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
-					skuRegistrationAutoApprovalAccountCollection = {fieldType="listingMultiselect", listingMultiselectEntityName="Account"},
 					skuQATSIncludesQNROROFlag = {fieldType="yesno", defaultValue=0},
 					skuQATSIncludesQNROVOFlag = {fieldType="yesno", defaultValue=0},
 					skuQATSIncludesQNROSAFlag = {fieldType="yesno", defaultValue=0},
@@ -361,8 +358,6 @@ globalEncryptionKeySize
 					return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 				case "shippingMethodRateAdjustmentType" :
 					return [{name='Increase Percentage', value='increasePercentage'}, {name='Decrease Percentage', value='decreasePercentage'}, {name='Increase Amount', value='increaseAmount'}, {name='Decrease Amount', value='decreaseAmount'}];
-				case "skuBundleInventory" :
-					return [{name='On make up', value='onMakeUp'}, {name='On purchase', value='onPurchase'}, {name='On delivery', value='onDelivery'}];
 				case "skuCurrency" :
 					return getCurrencyService().getCurrencyOptions();
 				case "skuTaxCategory":

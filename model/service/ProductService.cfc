@@ -175,14 +175,11 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	// Create event schedule sku from processObject values. 
-	// processObject contains properties from Product_AddEventSchedule.cfc 
-	// created by values submitted from preprocessproduct_addeventschedule.
 	public any function processProduct_addEventSchedule(required any product, required any processObject) {
-		var newSkuIdentifier = arguments.product.getMaxSkuIdentifier()+1;
+		
 		var newSku = this.newSku();
 		newSku.setProduct( arguments.product );
-		newSku.setSkuCode( arguments.product.getProductCode() & "-#newSkuIdentifier#");
+		newSku.setSkuCode( arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
 		newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
@@ -238,9 +235,6 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	// Create product and default sku from processObject values. 
-	// processObject contains properties from Product_Create.cfc 
-	// created by values submitted from preprocessproduct_create.
 	public any function processProduct_create(required any product, required any processObject) {
 		if(isNull(arguments.product.getURLTitle())) {
 			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
@@ -443,7 +437,6 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	
 	public any function processProduct_deleteDefaultImage(required any product, required struct data) {
 		if(structKeyExists(arguments.data, "imageFile")) {
 			if(fileExists(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#')) {
@@ -474,14 +467,6 @@ component extends="HibachiService" accessors="true" {
 				// Update List Price
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());	
-				}
-				// Update Event Start Date
-				if(arguments.processObject.geteventStartDateTime()) {
-					skus[i].seteventStartDateTime(arguments.processObject.geteventStartDateTime());	
-				}
-				// Update Event End Date
-				if(arguments.processObject.geteventEndDateTime()) {
-					skus[i].seteventEndDateTime(arguments.processObject.geteventEndDateTime());	
 				}
 			}
 		}		

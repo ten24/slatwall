@@ -57,12 +57,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// Inject DAO's
 	property name="stockDAO" type="any";
 	
-	public any function getStockByLocation(required any location){
-		var stock = getStockDAO().getStockByLocation(argumentCollection=arguments);
-		stock = isNull(stock) ? [] : stock;
-		return stock;
-	}
-	
 	public any function getStockBySkuAndLocation(required any sku, required any location){
 		var stock = getStockDAO().getStockBySkuAndLocation(argumentCollection=arguments);
 		

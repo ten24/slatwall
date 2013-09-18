@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_processContexts="create" hb_permission="this" {
+component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -330,17 +330,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables[ arguments.quantityType ];
 	}
-	
-	public numeric function getQuantityTotalsByLocation(required string quantityType, string locationID, string stockID) {
-		
-		// If this is a calculated quantity and locationID exists, then delegate
-		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) && structKeyExists(arguments, "locationID") ) {
-			var parentQuantity = getQuantity(arguments.quantityType,arguments.locationID);
-		}
-		return variables[ arguments.quantityType ];
-	}
-	
-	
 	
 	// END: Quantity Helper Methods
 	
@@ -795,6 +784,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			optionsList = listAppend(optionsList, getOptions()[i].getOptionID());
 		}
 		
+		if(isNull(getProduct())) {
+			return true;
+		}
 		var skus = getProduct().getSkusBySelectedOptions(selectedOptions=optionsList);
 		if(!arrayLen(skus) || (arrayLen(skus) == 1 && skus[1].getSkuID() == getSkuID() )) {
 			return true;

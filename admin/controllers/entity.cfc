@@ -349,7 +349,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		// Call the generic logic
 		genericCreateMethod(entityName="StockAdjustment", rc=arguments.rc);
-		genericCreateMethod(entityName="Location", rc=arguments.rc);
 		
 		// Set the type correctly
 		rc.stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode(rc.stockAdjustmentType) );

@@ -53,7 +53,7 @@ Notes:
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
 									  edit="#rc.edit#">
 						
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="address.name" />
+				<cf_HibachiListingColumn propertyIdentifier="address.name" />
 				<cf_HibachiListingColumn propertyIdentifier="address.streetAddress" />
 				<cf_HibachiListingColumn propertyIdentifier="address.street2Address" />
 				<cf_HibachiListingColumn propertyIdentifier="address.city" />

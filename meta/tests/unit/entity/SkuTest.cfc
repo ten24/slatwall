@@ -52,10 +52,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.entity = request.slatwallScope.getService("skuService").newSku();
+		variables.entity = request.slatwallScope.newEntity('Sku');
 	}
-	
-	
 	
 }
 

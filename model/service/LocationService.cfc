@@ -76,25 +76,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return variables.locationOptions;
 	}
 	
-	public array function getLocationAndChildren( string locationID ) {
-			var locAndChildren = [];
-			arguments.entityName = "SlatwallLocation";
-			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-			smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
-			var locations = smartList.getRecords();
-			for(var i=1;i<=arrayLen(locations);i++) {
-				arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
-			}
+	public array function getLocationAndChildren( required string locationID ) {
+		var locAndChildren = [];
+		var smartList = this.getLocationSmartList();
+		smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
+		var locations = smartList.getRecords();
+		for(var i=1;i<=arrayLen(locations);i++) {
+			arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+		}
 		return locAndChildren;
 	}
-	
-	
 	
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
+	
+	public any function updateStockLocation(required string fromLocationID, required string toLocationID) {
+		getStockDAO().updateStockLocation( argumentCollection=arguments );
+	}
 	
 	// ===================== START: DAO Passthrough ===========================
 	
@@ -103,24 +104,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
 	public any function saveLocation(required any location, required struct data) {
+		
 		arguments.location = super.save(arguments.location, arguments.data);
+		
 		if(!location.hasErrors()){
+			
+			// We need to persist the state here, so that we can have the locationID in the database
 			getHibachiDAO().flushORMSession();
-			if( locationHasStock(arguments.location.getParentLocation())) {
-				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(),toLocationID=arguments.location.getlocationID());
+			
+			// If this location has any stocks then we need to update them
+			if( arrayLen(arguments.location.getStocks()) ) {
+				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(), toLocationID=arguments.location.getlocationID());
 			}
 		} 
+		
 		return arguments.location;
-	}
-	
-	public any function updateStockLocation(required string fromLocationID, required string toLocationID) {
-		getStockDAO().updateStockLocation( arguments.fromLocationID, arguments.toLocationID);
-	}
-	
-	
-	public boolean function locationHasStock(required any location) {
-		return (!arrayIsEmpty(arguments.location.getStocks()) > 0);
 	}
 	
 	// ======================  END: Save Overrides ============================

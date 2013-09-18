@@ -41,7 +41,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 	
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.locationAddress#" edit="#rc.edit#" sRenderItem="detaillocation">
+	<cf_HibachiEntityDetailForm object="#rc.locationAddress#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.locationAddress#" edit="#rc.edit#" 
 								   backAction="admin:entity.detailLocation" 
 								   backQueryString="locationID=#rc.location.getLocationID()#"

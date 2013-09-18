@@ -122,18 +122,6 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		return locationOptions;
 	}
 	
-	public array function getLocationAndChildren(string locationID) {
-		var locationAndChildren = [];
-		
-		// If no location defined return all
-		if( !len(arguments.locationID) ) {
-			locationAndChildren = getService("locationService").getLocationAndChildren();
-		} else {
-			locationAndChildren = getService("locationService").getLocationAndChildren(arguments.locationID);
-		}
-		return locationAndChildren;
-	}
-	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================

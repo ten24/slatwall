@@ -46,8 +46,6 @@
 Notes:
 
 --->
-
-<!--- Present Event Schedule (Event Product SKU) form. Submitted values will be collected in Product_addEventSchedule entity ---> 
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />

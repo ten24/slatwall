@@ -56,7 +56,5 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="price" hb_rbKey="entity.sku.price";
 	property name="updateListPriceFlag";
 	property name="listPrice" hb_rbKey="entity.sku.listPrice";
-	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime";
-	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime";
 	
 }

@@ -45,7 +45,6 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 	
 	// Related Object Properties (Many-to-One)
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
-	property name="parentLocationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="parentLocationConfigurationID";
 	
 	// Related Object Properties (One-to-Many)
 	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="one-to-many" fkcolumn="locationConfigurationID" cascade="all-delete-orphan" inverse="true";

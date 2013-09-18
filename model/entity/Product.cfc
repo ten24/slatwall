@@ -337,19 +337,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getDefaultSku().getImageExistsFlag();
 	}
 	
-	public numeric function getMaxSkuIdentifier() {
-		var maxSkuIdentifier = 0;
-		if(arraylen(this.getSkus())) {
-			for(var sku in this.getSkus()) {
-				var skuIdentifier = listLast( sku.getskuCode(),"-");
-				if(isNumeric(skuIdentifier) && skuIdentifier > maxSkuIdentifier) {
-					maxSkuIdentifier = skuIdentifier;
-				}
-			}
-		}
-		return maxSkuIdentifier;
-	}
-	
 	public array function getOptionsByOptionGroup(required string optionGroupID) {
 		var smartList = getService("optionService").getOptionSmartList();
 		smartList.setSelectDistinctFlag(1);
