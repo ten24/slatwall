@@ -69,21 +69,21 @@ Notes:
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.sku#">
-			<cfif rc.product.getBaseProductType() EQ "subscription">
+			<cfif rc.product.getBaseProductType() eq "contentAccess">
 				<cf_HibachiTab view="admin:entity/skutabs/subscription" />
-			<cfelseif rc.product.getBaseProductType() EQ "contentaccess">
+			<cfelseif rc.product.getBaseProductType() eq "event">
+				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
+				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
+			<cfelseif rc.product.getBaseProductType() eq "subscription">
 				<cf_HibachiTab property="accessContents" />
-			<cfelse>
+			<cfelseif rc.product.getBaseProductType() eq "merchandise">
 				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
 				<cf_HibachiTab view="admin:entity/skutabs/options" />
 			</cfif>
+			<!---<cf_HibachiTab view="admin:entity/skutabs/registrants" />--->
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
 			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
-			<cfif rc.product.getBaseProductType() EQ "event">
-				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
-				<!---<cf_HibachiTab view="admin:entity/skutabs/registrants" />--->
-			</cfif>
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.sku.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
