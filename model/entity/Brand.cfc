@@ -65,6 +65,10 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" hb_populateEnabled="false" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
 	property name="promotionRewardExclusions" hb_populateEnabled="false" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
+	property name="loyaltyAccruements" hb_populateEnabled="false" singularname="loyaltyAccruement" cfc="LoyaltyAccruement" fieldtype="many-to-many" linktable="SwLoyaltyAccruBrand" fkcolumn="brandID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyAccruementExclusions" hb_populateEnabled="false" singularname="loyaltyAccruementExclusion" cfc="LoyaltyAccruement" type="array" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclBrand" fkcolumn="brandID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyredemption" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionBrand" fkcolumn="brandID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
+	property name="loyaltyRedemptionExclusions" singularname="loyaltyRedemptionExclusion" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionExclBrand" fkcolumn="brandID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
 	property name="promotionQualifiers" hb_populateEnabled="false" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualBrand" fkcolumn="brandID" inversejoincolumn="promotionQualifierID" inverse="true";
 	property name="promotionQualifierExclusions" hb_populateEnabled="false" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclBrand" fkcolumn="brandID" inversejoincolumn="promotionQualifierID" inverse="true";
 	property name="vendors" singularname="vendor" cfc="Vendor" fieldtype="many-to-many" linktable="SwVendorBrand" fkcolumn="brandID" inversejoincolumn="vendorID" inverse="true";
@@ -150,6 +154,38 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	}
 	public void function removePhysical(required any physical) {
 		arguments.physical.removeBrand( this );
+	}
+	
+	// Loyalty Accruements (many-to-many - inverse)
+	public void function addLoyaltyAccruement(required any loyaltyAccruement) {
+		arguments.loyaltyAccruement.addBrand( this );
+	}
+	public void function removeloyaltyAccruement(required any loyaltyAccruement) {
+		arguments.loyaltyAccruement.removeBrand( this );
+	}
+	
+	// Loyalty Accruement Exclusions (many-to-many - inverse)
+	public void function addLoyaltyAccruementExclusion(required any loyaltyAccruementExclusion) {
+		arguments.loyaltyAccruementExclusion.addBrand( this );
+	}
+	public void function removeloyaltyAccruementExclusion(required any loyaltyAccruementExclusion) {
+		arguments.loyaltyAccruementExclusion.removeBrand( this );
+	}
+	
+	// Loyalty Redemptions (many-to-many - inverse)    
+	public void function addLoyaltyRedemption(required any loyaltyRedemption) {    
+		arguments.loyaltyRedemption.addBrand( this );    
+	}    
+	public void function removeLoyaltyRedemption(required any loyaltyRedemption) {    
+		arguments.loyaltyRedemption.removeBrand( this );    
+	}
+	
+	// Loyalty Redemption Exclusions (many-to-many - inverse)
+	public void function addLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
+		arguments.loyaltyRedemptionExclusion.addbrand( this );
+	}
+	public void function removeLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
+		arguments.loyaltyRedemptionExclusion.removebrand( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
