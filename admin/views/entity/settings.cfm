@@ -62,6 +62,7 @@ Notes:
 		<cf_HibachiTab view="admin:entity/settingstabs/email" />
 		<cf_HibachiTab view="admin:entity/settingstabs/fulfillmentmethod" />
 		<cf_HibachiTab view="admin:entity/settingstabs/image" />
+		<cf_HibachiTab view="admin:entity/settingstabs/locationConfiguration" />
 		<cf_HibachiTab view="admin:entity/settingstabs/paymentmethod" />
 		<cf_HibachiTab view="admin:entity/settingstabs/producttype" />
 		<cf_HibachiTab view="admin:entity/settingstabs/product" />

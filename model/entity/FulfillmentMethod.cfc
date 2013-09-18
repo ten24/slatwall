@@ -78,11 +78,12 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 		
 	public array function getFulfillmentMethodTypeOptions() {
 		var options = [
-			{name="Shipping", value="shipping"},
+			{name="Attend", value="attend"},
+			{name="Auto", value="auto"},
+			{name="Download", value="download"},
 			{name="Email", value="email"},
 			{name="Pickup", value="pickup"},
-			{name="Auto", value="auto"},
-			{name="Download", value="download"}
+			{name="Shipping", value="shipping"}
 		];
 
 		return options;

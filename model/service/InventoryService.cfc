@@ -249,15 +249,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			returnStruct[ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 			
 			// Setup the location
-			if( structKeyExists(arguments.inventoryArray[i], "locationID") ) {
-				var locationID = arguments.inventoryArray[i]["locationID"];
+			if( structKeyExists(arguments.inventoryArray[i], "locationIDPath") ) {
+				for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
+					locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
 					
-				if( !structKeyExists(returnStruct.locations, locationID) ) {
-					returnStruct.locations[ locationID ] = 0;
+					if( !structKeyExists(returnStruct.locations, locationID) ) {
+						returnStruct.locations[ locationID ] = 0;
+					}
+					
+					// Increment Location
+					returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
 				}
-				
-				// Increment Location
-				returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
 			}
 			
 			// Setup the stock
@@ -279,8 +281,13 @@ component extends="HibachiService" accessors="true" output="false" {
 				returnStruct.skus[ skuID ][ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 				
 				// Add location to sku if it exists
-				if(len(locationID)) {
-					returnStruct.skus[ skuID ].locations[ locationID ] = arguments.inventoryArray[i][ arguments.inventoryType ];
+				for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
+					locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
+				
+					if(!structKeyExists(returnStruct.skus[ skuID ].locations, locationID)) {
+						returnStruct.skus[ skuID ].locations[ locationID ] = 0;
+					}
+					returnStruct.skus[ skuID ].locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 				}
 
 			}

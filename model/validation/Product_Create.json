@@ -1,0 +1,23 @@
+{
+	"conditions":{
+	    "baseProductTypeSubscription":{
+	        "baseProductType":	{"eq":"subscription"}
+	    },
+	    "baseProductTypeMerchandise":{
+	        "baseProductType":	{"eq":"subscription"}
+	    },
+	    "baseProductTypeEvent":{
+	        "baseProductType":	{"eq":"event"}
+	    },
+	    "baseProductTypeContentAccess":{
+	        "baseProductType":	{"eq":"contentAccess"}
+	    }
+	},
+	"properties":{
+		"subscriptionBenefits":		[{"conditions":"baseProductTypeSubscription","required":true}],
+		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}],
+		"contents":					[{"conditions":"baseProductTypeContentAccess","required":true}],
+		"locationConfigurations":	[{"conditions":"baseProductTypeEvent","required":true}]
+	}
+}
+

@@ -304,7 +304,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}   
 	}
 	
-	// Primary Email Address (many-to-one | circular)
+	// Primary Address (many-to-one | circular)
 	public void function setPrimaryAddress( any primaryAddress) {    
 		if(structKeyExists(arguments, "primaryAddress")) {
 			variables.primaryAddress = arguments.primaryAddress;
@@ -314,7 +314,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 	}
 	
-	// Primary Email Address (many-to-one | circular)
+	// Primary AccountPayment Method (many-to-one | circular)
 	public void function setPrimaryAccountPaymentMethod(required any primaryPaymentMethod) {
 		if(structKeyExists(arguments, "primaryPaymentMethod")) {
 			variables.primaryPaymentMethod = arguments.primaryPaymentMethod;

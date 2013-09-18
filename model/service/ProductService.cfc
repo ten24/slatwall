@@ -55,6 +55,7 @@ component extends="HibachiService" accessors="true" {
 	
 	property name="dataService" type="any";  
 	property name="contentService" type="any";
+	property name="locationService" type="any";
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
 	property name="optionService" type="any";
@@ -174,6 +175,41 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
+	public any function processProduct_addEventSchedule(required any product, required any processObject) {
+		
+		var newSku = this.newSku();
+		newSku.setProduct( arguments.product );
+		newSku.setSkuCode( arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+		newSku.setPrice( arguments.processObject.getPrice() );
+		newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
+		newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+		
+		// Calculate reservation times from start/end dates and location configuration pre/post reservation settings
+		var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('locationConfigurationAdditionalPreReservationTime');
+		var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('locationConfigurationAdditionalPostReservationTime');
+		newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.processObject.getEventStartDateTime()) );
+		newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.processObject.getEventEndDateTime()) );
+		
+		// Add location configurations
+		for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+			newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+		}
+				
+		// Generate Image Files
+		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+        
+        // validate the product
+		arguments.product.validate( context="save" );
+		
+		// If the product passed validation then call save in the DAO, otherwise set the errors flag
+        if(!product.hasErrors()) {
+        		arguments.product = getHibachiDAO().save(target=arguments.product);
+        }
+		
+		// Return the product
+		return arguments.product;
+	}
+	
 	public any function processProduct_addSubscriptionSku(required any product, required any processObject) {
 		
 		var newSubscriptionTerm = getSubscriptionService().getSubscriptionTerm( arguments.processObject.getSubscriptionTermID() );
@@ -196,6 +232,208 @@ component extends="HibachiService" accessors="true" {
 		
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 		
+		return arguments.product;
+	}
+	
+	public any function processProduct_create(required any product, required any processObject) {
+		if(isNull(arguments.product.getURLTitle())) {
+			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
+		}
+		
+		// Create Merchandise Product Skus Based On Options
+		if(arguments.processObject.getBaseProductType() == "merchandise") {
+			
+			// If options were passed in create multiple skus
+			if(!isNull(arguments.processObject.getOptions()) && len(arguments.processObject.getOptions())) {
+				
+				var optionGroups = {};
+				var totalCombos = 1;
+				var indexedKeys = [];
+				var currentIndexesByKey = {};
+				var keyToChange = "";
+				
+				// Loop over all the options to put them into a struct by groupID
+				for(var i=1; i<=listLen(arguments.processObject.getOptions()); i++) {
+					var option = getOptionService().getOption( listGetAt(arguments.processObject.getOptions(), i) );
+					if(!structKeyExists(optionGroups, option.getOptionGroup().getOptionGroupID())) {
+						optionGroups[ option.getOptionGroup().getOptionGroupID() ] = [];
+					}
+					arrayAppend(optionGroups[ option.getOptionGroup().getOptionGroupID() ], option);
+				}
+				
+				// Loop over the groups to see how many we will be creating and to setup the option indexes to use
+				for(var key in optionGroups) {
+					arrayAppend(indexedKeys, key);
+					currentIndexesByKey[ key ] = 1;
+					totalCombos = totalCombos * arrayLen(optionGroups[key]);
+				}
+								
+				// Create a sku with 1 option from each group, and then update the indexes properly for the next loop
+				for(var i = 1; i<=totalCombos; i++) {
+					
+					// Setup the New Sku
+					var newSku = this.newSku();
+					newSku.setPrice(arguments.processObject.getPrice());
+					if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+						newSku.setListPrice(arguments.product.getlistPrice());	
+					}
+					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+					
+					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
+					arguments.product.addSku(newSku);
+					if(isNull(arguments.product.getDefaultSku())) {
+						arguments.product.setDefaultSku(newSku);
+					}
+					
+					// Add each of the options
+					for(var key in optionGroups) {
+						newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);	
+					}
+					if(i < totalCombos) {
+						var indexesUpdated = false;
+						var changeKeyIndex = 1;
+						while(indexesUpdated == false) {
+							if(currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] < arrayLen(optionGroups[ indexedKeys[ changeKeyIndex ] ])) {
+								currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ]++;
+								indexesUpdated = true;
+							} else {
+								currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] = 1;
+								changeKeyIndex++;
+							}
+						}
+					}
+				}
+				
+			// If no options were passed in we will just create a single sku
+			} else {
+				
+				var thisSku = this.newSku();
+				thisSku.setProduct(arguments.product);
+				thisSku.setPrice(arguments.processObject.getPrice()); 
+				if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+					thisSku.setListPrice(arguments.product.getlistPrice());	
+				}
+				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+				arguments.product.setDefaultSku( thisSku );
+				
+			}
+			
+		// Create Subscription Product Skus Based On SubscriptionTerm and SubscriptionBenifit
+		} else if (arguments.processObject.getBaseProductType() == "subscription") {
+			
+			for(var i=1; i <= listLen(arguments.processObject.getSubscriptionTerms()); i++){
+				var thisSku = this.newSku();
+				thisSku.setProduct(arguments.product);
+				thisSku.setPrice(arguments.processObject.getPrice());
+				thisSku.setRenewalPrice(arguments.processObject.getPrice());
+				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
+				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+				for(var b=1; b <= listLen(arguments.processObject.subscriptionBenefits); b++) {
+					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.subscriptionBenefits, b) ) );
+				}
+				for(var b=1; b <= listLen(arguments.processObject.renewalSubscriptionBenefits); b++) {
+					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.renewalSubscriptionBenefits, b) ) );
+				}
+				if(i==1) {
+					product.setDefaultSku( thisSku );	
+				}
+			}
+			
+			
+		// Create Content Access Product Skus Based On Pages
+		} else if (arguments.processObject.getBaseProductType() == "contentAccess") {
+			
+			if(structKeyExists(arguments.processObject, "bundleContentAccess") && arguments.processObject.bundleContentAccess) {
+				var newSku = this.newSku();
+				newSku.setPrice(arguments.processObject.getPrice());
+				newSku.setSkuCode(arguments.product.getProductCode() & "-1");
+				newSku.setProduct(arguments.product);
+				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
+				}
+				product.setDefaultSku(newSku);
+			} else {
+				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
+					var newSku = this.newSku();
+					newSku.setPrice(arguments.product.getPrice());
+					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
+					newSku.setProduct(arguments.product);
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
+					if(c==1) {
+						arguments.product.setDefaultSku(newSku);	
+					}
+				}
+			}
+			
+		} else if (arguments.processObject.getBaseProductType() == "event") {
+			
+			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+				
+				// Create a default sku with the eventStartDateTime
+				var newSku = this.newSku();
+				newSku.setProduct( arguments.product );
+				newSku.setSkuCode( arguments.product.getProductCode() & "-1");
+				newSku.setPrice( arguments.processObject.getPrice() );
+				newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
+				newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+				
+				// Calculate reservation times from start/end dates and location configuration pre/post reservation settings
+				var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('locationConfigurationAdditionalPreReservationTime');
+				var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), 1) ).setting('locationConfigurationAdditionalPostReservationTime');
+				newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.processObject.getEventStartDateTime()) );
+				newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.processObject.getEventEndDateTime()) );				
+
+				// Add location configurations
+				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+				}
+				
+				product.setDefaultSku( newSku );	
+				
+			} else {
+				// For Every locationConfiguration, create a sku with the eventStartDateTime
+				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+					var newSku = this.newSku();
+					newSku.setProduct( arguments.product );
+					newSku.setSkuCode( arguments.product.getProductCode() & "-#lc#");
+					newSku.setPrice( arguments.processObject.getPrice() );
+					newSku.setEventStartDateTime( arguments.processObject.getEventStartDateTime() );
+					newSku.setEventEndDateTime( arguments.processObject.getEventEndDateTime() );
+					
+					// Calculate reservation times from start/end dates and location configuration pre/post reservation settings
+					var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ).setting('locationConfigurationAdditionalPreReservationTime');
+					var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ).setting('locationConfigurationAdditionalPostReservationTime');
+					newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.processObject.getEventStartDateTime()) );
+					newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.processObject.getEventEndDateTime()) );				
+					
+					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+					
+					// Set first as default sku
+					if(lc==1) {
+						arguments.product.setDefaultSku( newSku );	
+					}
+				}
+			}
+			
+			
+			
+		} else {
+			throw("There was an unexpected error when creating this product");
+		}
+		
+		// Generate Image Files
+		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		//arguments.product = this.saveProduct(arguments.product,arguments.processObject.getProductProperties());
+        
+        // validate the product
+		arguments.product.validate( context="save" );
+		
+		// If the product passed validation then call save in the DAO, otherwise set the errors flag
+        if(!product.hasErrors()) {
+        		arguments.product = getHibachiDAO().save(target=arguments.product);
+        }
+        
+        // Return the product
 		return arguments.product;
 	}
 	
@@ -266,6 +504,7 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveProduct(required any product, required struct data) {
+		
 		// populate bean from values in the data Struct
 		arguments.product.populate(arguments.data);
 		
@@ -276,19 +515,9 @@ component extends="HibachiService" accessors="true" {
 		// validate the product
 		arguments.product.validate( context="save" );
 		
-		// If this is a new product and it doesn't have any errors... there are a few additional steps we need to take
-		if(arguments.product.isNew() && !arguments.product.hasErrors()) {
-			
-			// Create Skus
-			getSkuService().createSkus(arguments.product, arguments.data);
-			
-			// Generate Image Files
-			arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-		}
-		
 		// If the product passed validation then call save in the DAO, otherwise set the errors flag
         if(!arguments.product.hasErrors()) {
-        	arguments.product = getHibachiDAO().save(target=arguments.product);
+        		arguments.product = getHibachiDAO().save(target=arguments.product);
         }
         
         // Return the product

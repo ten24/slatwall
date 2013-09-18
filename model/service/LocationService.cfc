@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
 	property name="locationDAO" type="any";
+	property name="stockDAO" type="any";
 	
 	public boolean function isLocationBeingUsed(required any location) {
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
@@ -58,13 +59,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getLocationDAO().getLocationCount();
 	}
 	
-	public array function getLocationOptions() {
+	public array function getLocationOptions( string locationID ) {
+		if(!structKeyExists(variables,"locationOptions")) {
+			arguments.entityName = "SlatwallLocation";
+			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+			smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
+			smartList.addOrder("locationIDPath");
+			var locations = smartList.getRecords();
+			
+			variables.locationOptions = [];
+			
+			for(var i=1;i<=arrayLen(locations);i++) {
+				arrayAppend(variables.locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+			}
+		}
+		return variables.locationOptions;
+	}
+	
+	public array function getLocationAndChildren( required string locationID ) {
+		var locAndChildren = [];
 		var smartList = this.getLocationSmartList();
-		
-		smartList.addSelect('locationID', 'value');
-		smartList.addSelect('locationName', 'name');
-		
-		return smartList.getRecords(); 
+		smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
+		var locations = smartList.getRecords();
+		for(var i=1;i<=arrayLen(locations);i++) {
+			arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+		}
+		return locAndChildren;
 	}
 	
 	// ===================== START: Logical Methods ===========================
@@ -73,6 +93,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: DAO Passthrough ===========================
 	
+	public any function updateStockLocation(required string fromLocationID, required string toLocationID) {
+		getStockDAO().updateStockLocation( argumentCollection=arguments );
+	}
+	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
@@ -80,6 +104,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveLocation(required any location, required struct data) {
+		
+		arguments.location = super.save(arguments.location, arguments.data);
+		
+		if(!location.hasErrors()){
+			
+			// We need to persist the state here, so that we can have the locationID in the database
+			getHibachiDAO().flushORMSession();
+			
+			// If this location has any stocks then we need to update them
+			if( arrayLen(arguments.location.getStocks()) ) {
+				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(), toLocationID=arguments.location.getlocationID());
+			}
+		} 
+		
+		return arguments.location;
+	}
 	
 	// ======================  END: Save Overrides ============================
 	

@@ -71,6 +71,10 @@ Notes:
 			<!--- Sumit says nothing is ok --->
 		</cfif>
 		--->
+		<cfif rc.product.getBaseProductType() eq "event">
+			<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
+		</cfif>
 		<cf_HibachiListingColumn propertyIdentifier="imageFile" />
 		<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
 			<cf_HibachiListingColumn propertyIdentifier="listPrice" />
@@ -82,6 +86,7 @@ Notes:
 		</cfif>
 	</cf_HibachiListingDisplay>
 	
+	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn" icon="plus icon" modal="false" />
 	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />
 	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" class="btn" icon="plus icon" modal="true" />
 	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" class="btn" icon="plus icon" modal="true" />

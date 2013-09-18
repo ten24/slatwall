@@ -51,12 +51,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
+	property name="publishedFlag" ormtype="boolean" default="0";
 	property name="skuCode" ormtype="string" unique="true" length="50";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="imageFile" ormtype="string" length="50";
 	property name="userDefinedPriceFlag" ormtype="boolean" default="0";
+	property name="eventStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="eventEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="startReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="endReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -68,6 +73,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
+	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="Order" inverse="true" cascade="all" lazy="extra" ;
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	
@@ -76,6 +82,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID"; 
 	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
+	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="many-to-many" linktable="SwSkuLocationConfiguration" fkcolumn="skuID" inversejoincolumn="locationConfigurationID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
@@ -288,15 +295,26 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public numeric function getQuantity(required string quantityType, string locationID, string stockID) {
 		
-		// If this is a calculated quantity and locationID exists, then delegate
-		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) && structKeyExists(arguments, "locationID") ) {
-			var location = getService("locationService").getLocation(arguments.locationID);
-			var stock = getService("stockService").getStockBySkuAndLocation(this, location);
-			return stock.getQuantity(arguments.quantityType);
-		// If this is a calculated quantity and stockID exists, then delegate
-		} else if ( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) && structKeyExists(arguments, "stockID") ) {
-			var stock = getService("stockService").getStock(arguments.stockID);
-			return stock.getQuantity(arguments.quantityType);
+		
+		// Request for calculated quantity
+		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
+			// If this is a calculated quantity and locationID exists, then delegate
+			if( structKeyExists(arguments, "locationID") ) {
+				//Need to get location and all children of location 
+				var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
+				var totalQuantity = 0;
+				for(var i=1;i<=arraylen(locations);i++) {
+					var location = getService("locationService").getLocation(locations[i].value);
+					var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+					totalQuantity += stock.getQuantity(arguments.quantityType);
+				}
+				return totalQuantity;
+			
+			// If this is a calculated quantity and stockID exists, then delegate
+			} else if ( structKeyExists(arguments, "stockID") ) {
+				var stock = getService("stockService").getStock(arguments.stockID);
+				return stock.getQuantity(arguments.quantityType);
+			}
 		}
 		
 		// Standard Logic
@@ -312,6 +330,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables[ arguments.quantityType ];
 	}
+	
 	// END: Quantity Helper Methods
 	
 	// ====================  END: Logical Methods ==========================
@@ -572,19 +591,33 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public string function getSkuDefinition() {
 		if(!structKeyExists(variables, "skuDefinition")) {
 			variables.skuDefinition = "";
-			if(getBaseProductType() eq "contentAccess") {
-				
-			} else if (getBaseProductType() eq "merchandise") {
-				for(var option in getOptions()) {
-		    		variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
-		    	}
-		    	trim(variables.skuDefinition);
-			} else if (getBaseProductType() eq "subscription") {
-				variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+			var baseProductType = getBaseProductType();
+			switch (baseProductType) 
+			{
+				case "merchandise":
+					for(var option in getOptions()) {
+			    			variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
+			    			}
+			    		break;
+			    		
+			    	case "subscription":
+					variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+					break;
+					
+				case "event":
+					var configs = getLocationConfigurations();
+					for(config in configs){
+			    			variables.skuDefinition = variables.skuDefinition & config.getlocationConfigurationName() & "<br>";
+			    			/*variables.skuDefinition = listAppend(variables.skuDefinition, config.getlocation().getlocationName() & ">" & config.getlocationConfigurationName(), ",");*/
+					}
+					break;
+					
+				default: 
+					variables.skuDefinition = "";
 			}
 			
 		}
-		return variables.skuDefinition;
+		return trim(variables.skuDefinition);
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -751,6 +784,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			optionsList = listAppend(optionsList, getOptions()[i].getOptionID());
 		}
 		
+		if(isNull(getProduct())) {
+			return true;
+		}
 		var skus = getProduct().getSkusBySelectedOptions(selectedOptions=optionsList);
 		if(!arrayLen(skus) || (arrayLen(skus) == 1 && skus[1].getSkuID() == getSkuID() )) {
 			return true;
