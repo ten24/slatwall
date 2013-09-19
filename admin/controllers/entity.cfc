@@ -62,7 +62,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="scheduleService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
-	
+	property name="loyaltyService" type="any";
 	
 	this.publicMethods='';
 	this.anyAdminMethods='';

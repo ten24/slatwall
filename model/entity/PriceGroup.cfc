@@ -61,7 +61,8 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	// Related Object Properties (One-To-Many)
 	property name="appliedOrderItems" singularname="appliedOrderItem" cfc="OrderItem" type="array" fieldtype="one-to-many" fkcolumn="appliedPriceGroupID" inverse="true";
 	property name="childPriceGroups" singularname="ChildPriceGroup" cfc="PriceGroup" fieldtype="one-to-many" fkcolumn="parentPriceGroupID" inverse="true";
-	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";    
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyRedemption" cfc="loyaltyRedemption" type="array" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";    
 	
 	// Related Object Properties (many-to-many - invers)
 	property name="accounts" singularname="account" cfc="Account" fieldtype="many-to-many" linktable="SwAccountPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="accountID" inverse="true";
@@ -147,6 +148,14 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	public void function removePriceGroupRate(required any priceGroupRate) {
 		arguments.priceGroupRate.removePriceGroup( this );
 	}
+	
+	// Loyalty Redemptions (one-to-many)
+	public void function addLoyaltyRedemption(required any loyaltyRedemption) {
+		arguments.loyaltyRedemption.setPriceGroup( this );
+	}
+	public void function removeLoyaltyRedemption(required any loyaltyRedemption) {
+		arguments.loyaltyRedemption.removePriceGroup( this );
+	}	
 	
 	// Accounts (many-to-many - inverse)
 	public void function addAccount(required any account) {

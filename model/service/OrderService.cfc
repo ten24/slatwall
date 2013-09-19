@@ -973,6 +973,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_updateStatus(required any order, struct data) {
 		param name="arguments.data.updateItems" default="false";
 		
+		// Get the original order status code
+		var originalOrderStatus = arguments.order.getOrderStatusType().getSystemCode();
+		
 		// First we make sure that this order status is not 'closed', 'canceld', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 			
@@ -994,6 +997,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
+		// If the original order status is not 'closed', and now the order is closed, then we can run the promotion logics
+		if( originalOrderStatus neq "ostClosed" and arguments.order.getOrderStatusType().getSystemCode() eq "ostClosed" ) {
+			
+			// Loop over the loyalties that the account on the order has and call the processAccountLoyalty with context of 'orderClosed'
+			for(var accountLoyalty in arguments.order.getAccount().getAccountLoyalties()) {
+				var orderClosedData = {
+					order = arguments.order
+				};
+				
+				// Call the process method with 'orderClosed' as context
+				getAccountService().processAccountLoyalty(accountLoyalty, orderClosedData, 'orderClosed');
+			}
+
+		}
 		return arguments.order;
 	}
 	
@@ -1109,7 +1126,45 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			arguments.processObject.addError('capturableAmount', rbKey('validate.processOrderDelivery_create.captureAmount'));
 		}
+
 		
+		// Make sure the orderDelivery doesn't have errors
+		if (!arguments.orderDelivery.hasErrors()) {
+			
+			// Loop over the accounts loyalty programs
+			for(var accountLoyalty in arguments.orderDelivery.getOrder().getAccount().getAccountLoyalties()) {
+				var itemsFulfilledData = {
+					orderDelivery = arguments.orderDelivery
+				};
+				
+				// Call the process method with 'itemsFulfilled' as context
+				getAccountService().processAccountLoyalty(accountLoyalty, itemsFulfilledData, 'itemFulfilled');
+			}
+			
+			// Check to see if this orderFulfillment is complete and fully 'fulfilled'
+			var allOrderItemsFulfilled = true;
+			var orderFulfillment = arguments.orderDelivery.getOrderDeliveryItems()[1].getOrderItem().getOrderFulfillment();
+			
+			for(var orderfulfillmentItem in orderFulfillment.getOrderFulfillmentItems()) {
+				
+				if(!listFindNoCase("oistFulfilled",orderFulfillmentItem.getOrderItemStatusType().getSystemCode())){
+					allOrderItemsFulfilled = false;
+					break;
+				}
+			}
+
+			// If all items in an order have been fulfilled 
+			if( allOrderItemsFulfilled ){
+				
+				for(var accountLoyalty in arguments.orderDelivery.getOrder().getAccount().getAccountLoyalties()) {
+					var fulfillmentMethodUsedData = {
+						orderFulfillment = orderFulfillment
+					};
+					// Call the process method with 'fulfillmentMethodUsed' as context
+					getAccountService().processAccountLoyalty(accountLoyalty, fulfillmentMethodUsedData, 'fulfillmentMethodUsed'); 
+				}
+			}
+		}
 		return arguments.orderDelivery;
 	}
 	
@@ -1237,6 +1292,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		getStockService().saveStockReceiver( stockReceiver );
 		
+		for(var accountLoyalty in arguments.orderReturn.getOrder().getAccount().getAccountLoyalties()) {
+			var orderItemReceivedData = {
+				stockReceiver = stockReceiver
+			};
+			// Call the process method with 'orderItemReceived' as context
+			getAccountService().processAccountLoyalty(accountLoyalty, orderItemReceivedData, 'orderItemReceived'); 
+		}
+
 		// Update the orderStatus
 		this.processOrder(arguments.orderReturn.getOrder(), {updateItems=true}, 'updateStatus');
 		

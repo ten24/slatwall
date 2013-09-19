@@ -204,6 +204,7 @@ component extends="SlatwallUnitTestBase" {
 		var product  = request.slatwallScope.newEntity("Product");
 		request.slatwallScope.saveEntity( product );
 	}
+	
 }
 
 
