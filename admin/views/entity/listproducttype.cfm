@@ -60,6 +60,7 @@ Notes:
 				<cf_HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=event" type="list" />
 				<cf_HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=merchandise" type="list" />
 				<cf_HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=subscription" type="list" />
+				<cf_HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.bundle')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=bundle" type="list" />
 			</cf_HibachiActionCallerDropdown>
 		</cf_HibachiEntityActionBarButtonGroup>
 		
