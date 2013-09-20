@@ -59,6 +59,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getLocationDAO().getLocationCount();
 	}
 	
+	// Returns array of leaf locations, i.e. locations that can have stock
+	// @locationID string If specified will be used as top level location
 	public array function getLocationOptions( string locationID ) {
 		if(!structKeyExists(variables,"locationOptions")) {
 			arguments.entityName = "SlatwallLocation";
@@ -76,6 +78,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return variables.locationOptions;
 	}
 	
+	// Returns array including all locations
+	// @includeNone Boolean If true then 'None' will be included as an option
+	public array function getLocationParentOptions(boolean includeNone=true) {
+		if(!structKeyExists(variables,"locationParentOptions")) {
+			arguments.entityName = "SlatwallLocation";
+			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+			smartList.addOrder("locationName,locationIDPath");
+			var locations = smartList.getRecords();
+
+			variables.locationParentOptions = [];
+			
+			if( includeNone ) { 
+				arrayAppend(variables.locationParentOptions, {name="None", value=""}); 
+			}
+			
+			for(var i=1;i<=arrayLen(locations);i++) {
+				arrayAppend(variables.locationParentOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+			}
+		}
+		return variables.locationParentOptions;
+
+	}
+	
+	// Returns array of a location and all of its children
+	// @locationID String Top level location 
 	public array function getLocationAndChildren( required string locationID ) {
 		var locAndChildren = [];
 		var smartList = this.getLocationSmartList();
@@ -85,7 +112,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
 		}
 		return locAndChildren;
-	}
 	
 	// ===================== START: Logical Methods ===========================
 	
