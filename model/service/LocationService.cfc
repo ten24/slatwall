@@ -112,6 +112,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
 		}
 		return locAndChildren;
+	}
 	
 	// ===================== START: Logical Methods ===========================
 	
