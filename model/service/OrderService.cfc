@@ -841,6 +841,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
 							
+							// Loop over the orderItems looking for any skus that are 'event' skus.  
+							var orderItems = arguments.order.getorderItems(); 
+							for(var orderitem in orderItems) {
+								var itemsku = orderitem.getSku();
+								if(itemsku.getBaseProductType() == "event") {
+									// Create EventRegistration record.
+									var eventRegistration = this.newEventRegistration();
+									eventRegistration.setorderItemID(orderitem.getorderItemID());
+									eventRegistration.seteventRegistrationStatusTypeID(getSettingService().getTypeBySystemCode("erstRegistrationOpen").getTypeID());
+									eventRegistration.setaccountID(arguments.order.getaccount().getaccountID());
+									getHibachiDAO().save( eventRegistration );
+								}
+							}
+							
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 								
@@ -866,6 +880,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 		}	// END OF LOCK
+		
+		
 		
 		return arguments.order;
 	}
