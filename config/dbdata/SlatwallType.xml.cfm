@@ -69,6 +69,12 @@
 		<Record typeID="444df330fc19e5beb17ff974ac03db18" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df330fc19e5beb17ff974ac03db18" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Product" systemCode="cttProduct" />
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8b" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8b" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Product Type" systemCode="cttProductType" />
 		
+		<Record typeID="bb6fd9cff5afa5112ad66560b6a887dd" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd" parentTypeID="NULL" type="Event Registration Status Types" systemCode="eventRegistrationStatusType" />
+		<Record typeID="bb77e7dbd843851f84c158b01c851de0" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,bb77e7dbd843851f84c158b01c851de0" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Registration Open" systemCode="erstRegistrationOpen" />
+		<Record typeID="bb8c5b7be45ca71f1a8eba5075b3475a" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,bb8c5b7be45ca71f1a8eba5075b3475a" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Registration Closed" systemCode="erstRegistrationClosed" />
+		<Record typeID="bba2b415099a7b84b6c7c5992ddabbbb" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,bba2b415099a7b84b6c7c5992ddabbbb" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Cancelled" systemCode="erstCancelled" />
+		<Record typeID="bbace81cb1028de4dded90fb31a9a62b" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,bbace81cb1028de4dded90fb31a9a62b" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Confirmed" systemCode="erstConfirmed" />
+		
 		<Record typeID="444df2ce9c74fa886435c08706d343db" typeIDPath="444df2ce9c74fa886435c08706d343db" parentTypeID="NULL" type="Image Types" systemCode="imageType" />
 		
 		<Record typeID="444df2deab6476cb2c429946d6538436" typeIDPath="444df2deab6476cb2c429946d6538436" parentTypeID="NULL" type="Order Types" systemCode="orderType" />
