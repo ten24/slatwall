@@ -444,6 +444,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Set any customizations
 			newOrderItem.populate( arguments.data );
 			
+			// Calculate any additional charges based on associated order items
+			var additionalCharge = 0;
+			var chargesAdded = "";
+			for(var i=1; i<=arrayLen(newOrderItem.getAttributeValues()); i++) {
+				var thisAttribute = newOrderItem.getAttributeValues()[i];
+				if(thisAttribute.getAttributeValue() != "" AND thisAttribute.getAttributeValue() != 'None' AND NOT ListFind(chargesAdded, thisAttribute.getAttribute().getAttributeCode())){
+					chargesAdded = ListAppend(chargesAdded, thisAttribute.getAttribute().getAttributeCode());
+					additionalCharge += Val(thisAttribute.getAttribute().getAttributeSet().getAdditionalCharge());
+				}
+			}
+			newOrderItem.setPrice(newOrderItem.getPrice() + additionalCharge);
+
 			// Save the new order items
 			newOrderItem = this.saveOrderItem( newOrderItem );
 			
