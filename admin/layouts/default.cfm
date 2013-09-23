@@ -109,8 +109,8 @@ Notes:
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" icon="inbox icon-white" type="nav">
 							<cf_HibachiDividerHider>
 								<cf_HibachiActionCaller action="admin:entity.listorder" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listcartandquote" type="list">
+								<cf_HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderitem" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderpayment" type="list">
