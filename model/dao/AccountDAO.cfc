@@ -181,7 +181,7 @@ Notes:
 		</cfquery>
 		
 		<cfif rs.maxAccountLoyaltyNumber gt 0 >
-			<cfset accountLoyaltyNumber = maxAccountLoyaltyNumber + 1 />
+			<cfset accountLoyaltyNumber = rs.maxAccountLoyaltyNumber + 1 />
 		</cfif>
 		
 		<cfreturn accountLoyaltyNumber />
