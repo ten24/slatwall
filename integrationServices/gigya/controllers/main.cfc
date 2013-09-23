@@ -46,44 +46,36 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiObject" {
+component extends="Slatwall.org.Hibachi.HibachiController" output="false" accessors="true"  {
 
-	public any function init() {
-		return this;
+	property name="accountService" type="any";
+	property name="integrationService" type="any";
+
+	this.publicMethods="";
+	this.publicMethods = listAppend(this.publicMethods, "loginGigyaUser");
+	
+	this.secureMethods="";
+	this.secureMethods = listAppend(this.secureMethods, "default");
+	
+	// ======================== Admin Integration Methods
+	public void function default() {
+		// Do Nothing
 	}
 	
-	public string function getPaymentMethodTypes() {
-		return "";
+	// ========================= Core Methods (used from public and admin)
+	public void function loginGigyaUser(required struct rc) {
+		param name="arguments.rc.UID" default="";
+		param name="arguments.rc.UIDSignature" default="";
+		param name="arguments.rc.signatureTimestamp" default="";
+		
+		var authenticationCFC = getIntegrationService().getIntegrationByIntegrationPackage('gigya').getIntegrationCFC( 'authentication' );
+
+		authenticationCFC.loginGigyaUser(uid=arguments.rc.uid, uidSignature=arguments.rc.uidSignature, signatureTimestamp=arguments.rc.signatureTimestamp);
+		
+		arguments.rc.ajacResponse["success"] = true;
 	}
 	
-	public any function processCreditCard(required any requestBean) {
-		throw("The processCreditCard() Method was not setup for this integration service");	
-	}
 	
-	public string function getExternalPaymentHTML() {
-		return "";
-	}
 	
-	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
-			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
-		}
-		return super.setting(argumentcollection=arguments);
-	}
 	
-	// @hint helper function to return the integration entity that this belongs to
-	public any function getIntegration() {
-		return getService("integrationService").getIntegrationByIntegrationPackage(getPackageName());
-	}
-	
-	// @hint helper function to return the packagename of this integration
-	public any function getPackageName() {
-		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
-	}
-	
-	// DEPRECATED
-	public string function getExternalPaymentCheckoutViewPath() {
-		return "/Slatwall/integrationServices/#getPackageName()#/views/checkout/externalpayment.cfm";
-	}
 }

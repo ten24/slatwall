@@ -46,44 +46,47 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiObject" {
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
 
-	public any function init() {
-		return this;
+	public string function getIntegrationTypes() {
+		return "authentication,fw1";
 	}
 	
-	public string function getPaymentMethodTypes() {
-		return "";
+	public string function getDisplayName() {
+		return "Gigya";
 	}
 	
-	public any function processCreditCard(required any requestBean) {
-		throw("The processCreditCard() Method was not setup for this integration service");	
+	public struct function getSettings() {
+		return {
+			apiKey = {fieldType="text"},
+			secretKey = {fieldType="password", encryptValue="true"},
+			siteName = {fieldType="text"},
+			enabledProviders = {fieldType="text", defaultValue="facebook,twitter,googleplus,linkedin,yahoo,microsoft,aol,foursquare"}
+		};
 	}
 	
-	public string function getExternalPaymentHTML() {
-		return "";
+	public array function getEventHandlers() {
+		return ["Slatwall.integrationServices.gigya.model.handler.GigyaHandler"];
 	}
 	
-	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
-			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+	public string function getJSObjectAdditions() {
+		var jsObjectAdditions = "";
+		
+		var initializationStruct = {};
+		
+		initializationStruct[ "siteName" ] = setting('siteName');
+		initializationStruct[ "enabledProviders" ] = setting('enabledProviders');
+		
+		savecontent variable="jsObjectAdditions" {
+			writeOutput('
+				<script type="text/javascript" src="http://cdn.gigya.com/js/socialize.js?apiKey=#setting('apiKey')#">
+					#serializeJSON(initializationStruct)#
+				</script>
+				<script type="text/javascript" src="#getApplicationValue('baseURL')#/integrationServices/gigya/assets/js/gigya.js"></script>
+			');
 		}
-		return super.setting(argumentcollection=arguments);
+		
+		return jsObjectAdditions;
 	}
 	
-	// @hint helper function to return the integration entity that this belongs to
-	public any function getIntegration() {
-		return getService("integrationService").getIntegrationByIntegrationPackage(getPackageName());
-	}
-	
-	// @hint helper function to return the packagename of this integration
-	public any function getPackageName() {
-		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
-	}
-	
-	// DEPRECATED
-	public string function getExternalPaymentCheckoutViewPath() {
-		return "/Slatwall/integrationServices/#getPackageName()#/views/checkout/externalpayment.cfm";
-	}
 }
