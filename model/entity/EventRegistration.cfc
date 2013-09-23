@@ -82,7 +82,8 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 
 	// ================== START: Overridden Methods ========================
 	public string function getSimpleRepresentationPropertyName() {
-		return "orderItem.sku.product.productName";
+		//return "orderItem.sku.product.productName";
+		return "eventRegistrationStatusTypeID";
 	}
 	
 	// ==================  END:  Overridden Methods ========================
