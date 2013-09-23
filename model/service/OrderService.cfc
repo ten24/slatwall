@@ -848,9 +848,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								if(itemsku.getBaseProductType() == "event") {
 									// Create EventRegistration record.
 									var eventRegistration = this.newEventRegistration();
-									eventRegistration.setorderItemID(orderitem.getorderItemID());
-									eventRegistration.seteventRegistrationStatusTypeID(getSettingService().getTypeBySystemCode("erstRegistrationOpen").getTypeID());
-									eventRegistration.setaccountID(arguments.order.getaccount().getaccountID());
+									eventRegistration.setorderItem(orderitem);
+									eventRegistration.seteventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistrationOpen"));
+									eventRegistration.setaccount(arguments.order.getaccount());
 									getHibachiDAO().save( eventRegistration );
 								}
 							}

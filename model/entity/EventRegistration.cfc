@@ -50,11 +50,14 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// Persistent Properties
 	property name="eventRegistrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderItemID" ormtype="string" ;
+	/*property name="orderItemID" ormtype="string" ;
 	property name="eventRegistrationStatusTypeID" ormtype="string" ;
-	property name="accountID" ormtype="string" ;
+	property name="accountID" ormtype="string" ;*/
 	
 	// Related Object Properties (many-to-one)
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" ;
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" ;
+	property name="eventRegistrationStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventRegistrationStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventRegistrationType";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -81,6 +84,9 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	public string function getSimpleRepresentationPropertyName() {
+		return "account.firstName";
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
