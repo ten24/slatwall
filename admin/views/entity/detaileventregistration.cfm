@@ -63,16 +63,15 @@ Notes:
 								   backquerystring="orderID=#rc.eventregistration.getOrderItem().getOrder().getOrderID()#"
 								   deleteQueryString="redirectAction=admin:entity.detaileventregistration&eventregistrationID=#rc.eventregistration.geteventregistrationID()#">
 								      
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="eventregistrationID=#rc.eventregistration.geteventregistrationID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+			<!---<cf_HibachiActionCaller action="admin:entity.detailorder" querystring="orderID=#rc.eventregistration.getOrderItem().getOrder().getOrderID()#" modal="false" type="list" />--->
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getaccount()#" property="firstname" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getaccount()#" property="lastname" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku().getproduct()#" property="productName" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="eventStartDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="eventEndDateTime" edit="#rc.edit#" >
+				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getaccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.eventregistration.getaccount().getAccountID()#">
+				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku().getproduct()#" property="productName"  valuelink="?slatAction=admin:entity.detailproduct&productID=#rc.eventregistration.getorderitem().getsku().getproduct().getProductID()#">
+				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="eventStartDateTime" edit="false">
+				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="eventEndDateTime" edit="false" >
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="startReservationDateTime" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="endReservationDateTime" edit="#rc.edit#" >
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration#" property="eventRegistrationStatusType" edit="#rc.edit#" >
