@@ -54,7 +54,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" ;
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" ;
-	property name="eventRegistrationStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventRegistrationStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventRegistrationType";
+	property name="eventRegistrationStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventRegistrationStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventRegistrationStatusType";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -70,7 +70,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-	
+	property name="productName"  persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -82,11 +82,24 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 
 	// ================== START: Overridden Methods ========================
 	public string function getSimpleRepresentationPropertyName() {
-		//return "orderItem.sku.product.productName";
-		return "eventRegistrationStatusTypeID";
+		return "productName";
+	}
+	public string function getProductName() {
+		return orderItem.getsku().getproduct().getproductName();
 	}
 	
 	// ==================  END:  Overridden Methods ========================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	public any function geteventRegistrationStatusType() {
+		if(isNull(variables.eventRegistrationStatusType)) {
+			variables.eventRegistrationStatusType = getService("settingService").getTypeBySystemCode('erstRegistrationClosed');
+		}
+		return variables.eventRegistrationStatusType;
+	}
+	
+	// ==============  END: Overridden Implicet Getters ====================
 	
 	// =================== START: ORM Event Hooks  =========================
 	

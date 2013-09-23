@@ -44,6 +44,13 @@
     of the program, but you are not obligated to do so.
 
 Notes:
+	
+	Event Registration Status Types			
+	__________________			
+	erstCancelled
+	erstConfirmed		
+	erstRegistrationOpen						
+	erstRegistrationClosed					
 
 --->
 <cfparam name="rc.eventregistration" type="any" />
@@ -51,16 +58,13 @@ Notes:
 
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.eventregistration#" edit="#rc.edit#">
-		<!---<cf_HibachiEntityActionBar type="detail" object="#rc.product#" edit="#rc.edit#">
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="updateSkus" type="list" modal="true" />
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.processproduct" processContext="updateDefaultImageFileNames" type="list" confirm="true" confirmtext="#$.slatwall.rbKey('entity.Product.process.updateDefaultImageFileNames_confirm')#" />
-			<li class="divider"></li>
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" type="list" modal="true" />
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" type="list" modal="true" />
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" type="list" modal="true" />
-			<cf_HibachiActionCaller action="admin:entity.createImage" querystring="productID=#rc.product.getProductID()#&objectName=product&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="productID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-		</cf_HibachiEntityActionBar>--->
+		<cf_HibachiEntityActionBar type="detail" object="#rc.eventregistration#" edit="#rc.edit#"
+								   backaction="admin:entity.detailorder"
+								   backquerystring="orderID=#rc.eventregistration.getOrderItem().getOrder().getOrderID()#"
+								   deleteQueryString="redirectAction=admin:entity.detaileventregistration&eventregistrationID=#rc.eventregistration.geteventregistrationID()#">
+								      
+			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="eventregistrationID=#rc.eventregistration.geteventregistrationID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divClass="span6">
@@ -71,41 +75,9 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="eventEndDateTime" edit="#rc.edit#" >
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="startReservationDateTime" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="endReservationDateTime" edit="#rc.edit#" >
-				<!---<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="skudefinition" edit="#rc.edit#" >--->
+				<cf_HibachiPropertyDisplay object="#rc.eventregistration#" property="eventRegistrationStatusType" edit="#rc.edit#" >
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
-		
-		<!---<cf_HibachiTabGroup object="#rc.product#">
-			<!--- Skus --->
-			<cf_HibachiTab property="skus" />
-			
-			<!--- Images --->
-			<cf_HibachiTab view="admin:entity/producttabs/images" />
-			
-			<!--- Description --->
-			<cf_HibachiTab property="productDescription" />
-			
-			<!--- Relating --->
-			<cf_HibachiTab property="listingPages" />
-			<cf_HibachiTab property="categories" />
-			<cf_HibachiTab property="relatedProducts" />
-			
-			<!--- Reference --->
-			<cf_HibachiTab property="productReviews" />
-			<cf_HibachiTab property="vendors" />
-			
-			<!--- Settings --->
-			<cf_HibachiTab view="admin:entity/producttabs/productsettings" />
-			<cf_HibachiTab view="admin:entity/producttabs/skusettings" />
-			
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.product.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.product#" attributeSet="#attributeSet#" />
-			</cfloop>
-			
-			<!--- Comments --->
-			<cf_SlatwallAdminTabComments object="#rc.product#" />
-		</cf_HibachiTabGroup>--->
 		
 	</cf_HibachiEntityDetailForm>
 

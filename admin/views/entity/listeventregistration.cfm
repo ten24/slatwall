@@ -49,19 +49,12 @@ Notes:
 <cfparam name="rc.eventregistrationsmartlist" type="any" />
 
 <cfoutput>
-	<!---<cf_HibachiEntityActionBar type="listing" object="#rc.eventregistrationsmartlist#" showCreate="false">
-		
-		<!--- Create ---> 
+	<cf_HibachiEntityActionBar type="listing" object="#rc.eventregistrationsmartlist#" showCreate="false">
+		<!--- Create --->
 		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
-				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" type="list" />
-				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
-				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
-				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" disabled="#!$.slatwall.getSmartList("SubscriptionTerm").getRecordsCount() or !$.slatwall.getSmartList("SubscriptionBenefit").getRecordsCount()#"  disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoSubscriptionBenefitOrTerm')#" />
-			</cf_HibachiActionCallerDropdown>
+			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</cf_HibachiEntityActionBarButtonGroup>
-		
-	</cf_HibachiEntityActionBar>--->
+	</cf_HibachiEntityActionBar>
 	
 	<cf_HibachiListingDisplay smartList="#rc.eventregistrationsmartlist#"
 			recordEditAction="admin:entity.editeventregistration"
