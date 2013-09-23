@@ -205,7 +205,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				responseBean.addMessage(messageName="stripe.card", message="#responseData.result.card.id#");
 				responseBean.addMessage(messageName="stripe.last4", message="#responseData.result.card.last4#");
 				responseBean.addMessage(messageName="stripe.expiration", message="#responseData.result.card.exp_month#-#responseData.result.card.exp_year#");
-				responseBean.addMessage(messageName="stripe.fee", message="#responseData.result.fee/100#");
+				responseBean.addMessage(messageName="stripe.amount", message="#responseData.result.amount/100#");
 				if (!isNull(responseData.result.customer))
 				{
 					responseBean.addMessage(messageName="stripe.customer", message="#responseData.result.customer#");
@@ -245,7 +245,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				responseBean.addMessage(messageName="stripe.card", message="#responseData.result.card.id#");
 				responseBean.addMessage(messageName="stripe.last4", message="#responseData.result.card.last4#");
 				responseBean.addMessage(messageName="stripe.expiration", message="#responseData.result.card.exp_month#-#responseData.result.card.exp_year#");
-				responseBean.addMessage(messageName="stripe.fee", message="#responseData.result.fee / 100#");
+				responseBean.addMessage(messageName="stripe.amount", message="#responseData.result.amount / 100#");
 				if (!isNull(responseData.result.customer))
 				{
 					responseBean.addMessage(messageName="stripe.customer", message="#responseData.result.customer#");
@@ -259,14 +259,49 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 		}
 		else if (requestBean.getTransactionType() == "credit")
 		{
+			// get id of charge to refund and the amount to be refunded
+			var chargeID = requestBean.getOriginalAuthorizationCode();
+			var amountCredited = int(requestBean.getTransactionAmount() * 100);
+						
 			// refund charge
-			
 			var refundRequest = new http();
 			refundRequest.setMethod("post");
 			refundRequest.setCharset("utf-8");
-			//refundRequest.setUrl("#setting('apiUrl')#/#setting('apiVersion')#/charges/#chargeID#/refund");
+			refundRequest.setUrl("#setting('apiUrl')#/#setting('apiVersion')#/charges/#chargeID#/refund");
 			refundRequest.addParam(type="header", name="authorization", value="bearer #activeSecretKey#");
-			// response.setAmountCredited();
+			refundRequest.addParam(type="formfield", name="amount", value="#amountCredited#"); // amount as integer (eg. eliminate cents)
+			
+			responseData = deserializeResponse(refundRequest.send().getPrefix());
+			
+			// populate response
+			if (responseData.success)
+			{
+				responseBean.setProviderToken(requestBean.getProviderToken()); // manually persist
+				responseBean.setAuthorizationCode(responseData.result.id);
+				
+				var amount = 0;
+				for ( refund in responseData.result.refunds ) {
+					amount += refund.amount;
+				}
+				responseBean.setAmountCredited(amount / 100); // need to convert back to decimal from integer
+
+				// add messages to response
+				responseBean.addMessage(messageName="stripe.id", message="#responseData.result.id#");
+				responseBean.addMessage(messageName="stripe.captured", message="#responseData.result.captured#");
+				responseBean.addMessage(messageName="stripe.card", message="#responseData.result.card.id#");
+				responseBean.addMessage(messageName="stripe.last4", message="#responseData.result.card.last4#");
+				responseBean.addMessage(messageName="stripe.expiration", message="#responseData.result.card.exp_month#-#responseData.result.card.exp_year#");
+				responseBean.addMessage(messageName="stripe.amountrefunded", message="#amount/100#"); // need to convert back to decimal from integer
+				if (!isNull(responseData.result.customer))
+				{
+					responseBean.addMessage(messageName="stripe.customer", message="#responseData.result.customer#");
+				}
+			}
+			else
+			{
+				// error occurred
+				handleResponseErrors(responseBean, responseData);
+			}
 		}
 		
 		return responseBean;
