@@ -84,6 +84,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
 		returnHTML &= '<script type="text/javascript">(function( $ ){$.#lcase(getApplicationValue('applicationKey'))# = new Hibachi(#serializeJSON(config)#);})( jQuery );</script>';
+		
+		returnHTML &= getService("integrationService").getJSObjectAdditions();
+		
 		return returnHTML;
 	}
 	
