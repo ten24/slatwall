@@ -62,42 +62,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Returns array of leaf locations, i.e. locations that can have stock
 	// @locationID string If specified will be used as top level location
 	public array function getLocationOptions( string locationID ) {
-		if(!structKeyExists(variables,"locationOptions")) {
-			arguments.entityName = "SlatwallLocation";
-			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-			smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
-			smartList.addOrder("locationIDPath");
-			var locations = smartList.getRecords();
-			
-			variables.locationOptions = [];
-			
-			for(var i=1;i<=arrayLen(locations);i++) {
-				arrayAppend(variables.locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
-			}
+		var locationOptions = [];
+		
+		var smartList = this.getLocationSmartList();
+		
+		smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
+		smartList.addOrder("locationIDPath");
+		var locations = smartList.getRecords();
+		
+		for(var i=1;i<=arrayLen(locations);i++) {
+			arrayAppend(locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
 		}
-		return variables.locationOptions;
+		
+		return locationOptions;
 	}
 	
 	// Returns array including all locations
 	// @includeNone Boolean If true then 'None' will be included as an option
 	public array function getLocationParentOptions(boolean includeNone=true) {
-		if(!structKeyExists(variables,"locationParentOptions")) {
-			arguments.entityName = "SlatwallLocation";
-			var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-			smartList.addOrder("locationName,locationIDPath");
-			var locations = smartList.getRecords();
-
-			variables.locationParentOptions = [];
-			
-			if( includeNone ) { 
-				arrayAppend(variables.locationParentOptions, {name="None", value=""}); 
-			}
-			
-			for(var i=1;i<=arrayLen(locations);i++) {
-				arrayAppend(variables.locationParentOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
-			}
+		var locationParentOptions = [];
+		
+		var smartList = this.getLocationSmartList();
+		smartList.addOrder("locationName,locationIDPath");
+		var locations = smartList.getRecords();
+		
+		if( includeNone ) { 
+			arrayAppend(locationParentOptions, {name="None", value=""}); 
 		}
-		return variables.locationParentOptions;
+		
+		for(var i=1;i<=arrayLen(locations);i++) {
+			arrayAppend(locationParentOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+		}
+		
+		return locationParentOptions;
 
 	}
 	
