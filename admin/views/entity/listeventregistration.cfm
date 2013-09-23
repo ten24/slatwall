@@ -68,6 +68,10 @@ Notes:
 			recorddetailaction="admin:entity.detaileventregistration">
 		<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
 		<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
+		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.product.productName" />
+		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventStartDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventEndDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" />
 		<!---<cf_HibachiListingColumn propertyIdentifier="productType.productTypeName" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />
 		<cf_HibachiListingColumn propertyIdentifier="productCode" />
@@ -75,6 +79,14 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />--->
+		<!---
+		First Name
+		Last Name
+		Product Name
+		Sku Definition
+		Event Start Date
+		Event End Date
+		--->
 	</cf_HibachiListingDisplay>
 	
 </cfoutput>
