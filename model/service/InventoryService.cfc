@@ -67,13 +67,13 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' && arguments.entity.getStock().getSku().getBundledFlag() && arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag") && arguments.entity.getStock().getQuantity("QOH") lte 0) {
 						// Same as OrderDeliveryItem, but this is negative, and you need to check 'skuBundleAutoBreakupInventoryOnReturnFlag' instead of 'skuBundleAutoMakupInventoryOnSaleFlag'	
-					} else {
-						var inventory = this.newInventory();
-						inventory.setQuantityIn(arguments.entity.getQuantity());
-						inventory.setStock(arguments.entity.getStock());
-						inventory.setStockReceiverItem(arguments.entity);
-						getHibachiDAO().save(inventory);
 					}
+
+					var inventory = this.newInventory();
+					inventory.setQuantityIn(arguments.entity.getQuantity());
+					inventory.setStock(arguments.entity.getStock());
+					inventory.setStockReceiverItem(arguments.entity);
+					getHibachiDAO().save(inventory);
 					
 				}
 				break;
@@ -92,13 +92,17 @@ component extends="HibachiService" accessors="true" output="false" {
 						//		setStock = getStockBySkuAndLocation( location=arguments.entity.getStock().getLocation(), sku=skuBundle.getBundledSku()  );
 						//		setDeliveyItem same as below
 						// }
-					} else {
-						var inventory = this.newInventory();
-						inventory.setQuantityOut(arguments.entity.getQuantity());
-						inventory.setStock(arguments.entity.getStock());
-						inventory.setOrderDeliveryItem(arguments.entity);
-						getHibachiDAO().save(inventory);	
+						//
+						// REMEMBER TO MOVE THIS ALL TO THE SKU SERVICE 
+						// var processData = {locationID=arguments.entity.getStock().getLocation().getLocationID(), quantity=arguments.entity.getQuantity()};
+						// getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'makueBundledSkus')
 					}
+					
+					var inventory = this.newInventory();
+					inventory.setQuantityOut(arguments.entity.getQuantity());
+					inventory.setStock(arguments.entity.getStock());
+					inventory.setOrderDeliveryItem(arguments.entity);
+					getHibachiDAO().save(inventory);	
 					
 				}
 				break;

@@ -138,6 +138,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	public any function processSku_makeupBundledSkus() {
+		// data.location
+		
+		
+		/*
+		loop for every bundledSku
+			var inventory = this.newInventory();
+			inventory.setQuantityOut(arguments.entity.getQuantity());
+			inventory.setStock(arguments.entity.getStock());
+			getHibachiDAO().save(inventory);
+		}
+		
+		create one new sku of the parent
+		*/
+	}
+	
+	public any function processSku_breakupBundledSkus() {
+		// data.location
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================
