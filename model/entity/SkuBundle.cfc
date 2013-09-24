@@ -41,8 +41,6 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// Persistent Properties
 	property name="skuBundleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="bundledQuantity" ormtype="integer";
-	property name="skuBundleAutoMakupInventoryOnSaleFlag" ormtype="boolean";
-	property name="skuBundleAutoBreakupInventoryOnReturnFlag" ormtype="boolean";
 	
 	// Calculated Properties
 

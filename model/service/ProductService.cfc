@@ -436,6 +436,25 @@ component extends="HibachiService" accessors="true" {
         // Return the product
 		return arguments.product;
 	}
+		
+	public any function processProduct_createSkuBundle(required any product, required any processObject) {
+		// Create a new sku object
+		var sku = getSkuService().newSku();
+		
+		// Setup the sku
+		sku.setProduct( arguments.product );
+		sku.setSkuCode( arguments.processObject.getSkuCode() );
+		sku.setPrice( arguments.processObject.getPrice() );
+		sku.setBundleFlag( true );
+		
+		// Persist the new sku
+		sku = getSkuService().saveSku( sku );
+		
+		// Loop over skus from the process object and create entries for sku bundles
+		
+		
+		return arguments.product;
+	}
 	
 	public any function processProduct_deleteDefaultImage(required any product, required struct data) {
 		if(structKeyExists(arguments.data, "imageFile")) {
@@ -497,19 +516,7 @@ component extends="HibachiService" accessors="true" {
 		
 		return arguments.product;
 	}
-	
-	public any function processProduct_createSkuBundle(required any product, required any processObject) {
-		var sku = getSkuService().newSku();
-		
-		sku.setProduct( arguments.product );
-		sku.setSkuCode( arguments.processObject.getSkuCode() );
-		sku.setPrice( arguments.processObject.getPrice() );
-		sku.setBundleFlag( true );
-		
-		sku = getSkuService().saveSku( sku );
-		
-		return arguments.product;
-	}
+
 	
 	// =====================  END: Process Methods ============================
 	
