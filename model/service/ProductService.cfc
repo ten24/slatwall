@@ -504,7 +504,7 @@ component extends="HibachiService" accessors="true" {
 		sku.setProduct( arguments.product );
 		sku.setSkuCode( arguments.processObject.getSkuCode() );
 		sku.setPrice( arguments.processObject.getPrice() );
-		sku.setBundleFlag( "true" );
+		sku.setBundleFlag( true );
 		
 		sku = getSkuService().saveSku( sku );
 		
