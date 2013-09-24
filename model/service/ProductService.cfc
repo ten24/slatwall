@@ -498,6 +498,18 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
+	public any function processProduct_createSkuBundle(required any product, required any processObject) {
+		var sku = getSkuService().newSku();
+		
+		sku.setProduct( arguments.product );
+		sku.setSkuCode( arguments.processObject.getSkuCode() );
+		sku.setPrice( arguments.processObject.getPrice() );
+		sku.setBundleFlag( "true" );
+		
+		sku = getSkuService().saveSku( sku );
+		
+		return arguments.product;
+	}
 	
 	// =====================  END: Process Methods ============================
 	
