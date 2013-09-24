@@ -60,12 +60,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Inputs)
 	property name="skuCode" hb_rbKey="entity.sku.skuCode";
 	property name="price" hb_rbKey="entity.sku.price";
+	property name="skus" hb_rbKey="entity.sku_plural";
 	
 	// Data Properties (Related Entity Populate)
 	
 	// Data Properties (Object / Array Populate)
 	
 	// Option Properties
+	property name="skusSmartList";
 	
 	// Helper Properties
 	
@@ -82,6 +84,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ==================  END: New Property Helpers =======================
 	
 	// ====================== START: Data Options ==========================
+	
+	public any function getSkusSmartList() {
+		if(!structKeyExists(variables, "skusSmartList")) {
+			variables.skusSmartList = getService("skuService").getSkuSmartList();
+			variables.skusSmartList.addFilter('activeFlag', 1);
+		}
+		return variables.skusSmartList;
+	}
 	
 	// ======================  END: Data Options ===========================
 	

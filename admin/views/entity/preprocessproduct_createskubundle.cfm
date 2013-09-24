@@ -50,17 +50,29 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
-	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
-	</cf_HibachiEntityActionBar>
-	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuCode" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">		
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-	
-</cf_HibachiEntityProcessForm>
-
+<cfoutput>
+	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
+		
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
+		</cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuCode" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+		<!--- Skus --->
+		<cf_HibachiListingDisplay smartList="#rc.processObject.getSkusSmartList()#"
+								  multiselectFieldName="skus"
+								  edit="#rc.edit#">
+			<cf_HibachiListingColumn propertyIdentifier="skuCode" />
+			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />    
+			<cf_HibachiListingColumn propertyIdentifier="product.productName" />
+			<cf_HibachiListingColumn propertyIdentifier="product.productCode" />
+			<cf_HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		</cf_HibachiListingDisplay>
+		
+	</cf_HibachiEntityProcessForm>
+</cfoutput>
