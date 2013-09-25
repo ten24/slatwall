@@ -56,7 +56,7 @@ Notes:
 							recordEditQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#"
 							recordEditModal=true
 							recordDeleteAction="admin:entity.deleteskubundle"
-							recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabalternateskucodes"
+							recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabbundledskus"
 							edit="#rc.edit#">
 							
 		<cf_HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />

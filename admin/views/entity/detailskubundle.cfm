@@ -51,11 +51,11 @@ Notes:
 					cancelAction="admin:entity.detailSku"
 					cancelQueryString="skuID=#rc.sku.getSkuID()#"  />
 		
-		<input type="hidden" name="sku.skuID" value="#rc.sku.getSkuID()#" />
+		<input type="hidden" name="sku.SkuID" value="#rc.sku.getSkuID()#" />
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.skuBundle#" property="sku" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledSku" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledQuantity" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
