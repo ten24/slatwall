@@ -363,15 +363,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								&&
 							((isNull(thisItem.getStock()) && isNull(arguments.processObject.getStock())) || (!isNull(thisItem.getStock()) && !isNull(arguments.processObject.getStock()) && thisItem.getStock().getStockID() == arguments.processObject.getStock().getStockID() ))
 						) {
-							
-						foundItem = true;
-						orderFulfillment.getOrderFulfillmentItems()[i].setQuantity(orderFulfillment.getOrderFulfillmentItems()[i].getQuantity() + arguments.processObject.getQuantity());
-						orderFulfillment.getOrderFulfillmentItems()[i].validate(context='save');
-						if(orderFulfillment.getOrderFulfillmentItems()[i].hasErrors()) {
-							arguments.order.addError('addOrderItem', orderFulfillment.getOrderFulfillmentItems()[i].getErrors());
+
+						//We have the same line item, but we need to make sure that we don't have a different set of customizations.
+						var customizationsMatch = true;
+						if(NOT ArrayIsEmpty(thisItem.getAttributeValues())){
+							for(var j=1; j<=arrayLen(thisItem.getAttributeValues()); j++){
+								var thisAttribute = thisItem.getAttributeValues()[j];
+								if(	StructKeyExists(arguments.data, thisAttribute.getAttribute().getAttributeCode()) 
+										&& 
+									arguments.data[thisAttribute.getAttribute().getAttributeCode()] != thisAttribute.getAttributeValue()
+								){
+									customizationsMatch = false;
+									break;	
+								}
+							}
 						}
-						break;
 						
+						//If both the product data and the customizations match, then increase the quantity.
+						if(customizationsMatch){
+							foundItem = true;
+							orderFulfillment.getOrderFulfillmentItems()[i].setQuantity(orderFulfillment.getOrderFulfillmentItems()[i].getQuantity() + arguments.processObject.getQuantity());
+							orderFulfillment.getOrderFulfillmentItems()[i].validate(context='save');
+							if(orderFulfillment.getOrderFulfillmentItems()[i].hasErrors()) {
+								arguments.order.addError('addOrderItem', orderFulfillment.getOrderFulfillmentItems()[i].getErrors());
+							}
+							break;
+						}
 					}
 				}
 			}
@@ -427,6 +444,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Set any customizations
 			newOrderItem.populate( arguments.data );
 			
+			// Calculate any additional charges based on associated order items
+			var additionalCharge = 0;
+			var chargesAdded = "";
+			for(var i=1; i<=arrayLen(newOrderItem.getAttributeValues()); i++) {
+				var thisAttribute = newOrderItem.getAttributeValues()[i];
+				if(thisAttribute.getAttributeValue() != "" AND thisAttribute.getAttributeValue() != 'None' AND NOT ListFind(chargesAdded, thisAttribute.getAttribute().getAttributeCode())){
+					chargesAdded = ListAppend(chargesAdded, thisAttribute.getAttribute().getAttributeCode());
+					additionalCharge += Val(thisAttribute.getAttribute().getAttributeSet().getAdditionalCharge());
+				}
+			}
+			newOrderItem.setPrice(newOrderItem.getPrice() + additionalCharge);
+
 			// Save the new order items
 			newOrderItem = this.saveOrderItem( newOrderItem );
 			
