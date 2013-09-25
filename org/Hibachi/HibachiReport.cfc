@@ -2,6 +2,7 @@
 	
 	<!--- Title Information --->
 	<cfproperty name="reportTitle" />
+	<cfproperty name="reportEntity" />
 	
 	<!--- Date / Time Properties --->
 	<cfproperty name="reportStartDateTime" hb_formatType="date" />
@@ -9,7 +10,6 @@
 	<cfproperty name="reportCompareStartDateTime" hb_formatType="date" />
 	<cfproperty name="reportCompareEndDateTime" hb_formatType="date" />
 	<cfproperty name="reportDateTimeGroupBy" />
-	<cfproperty name="reportDateTimeDataColumn" />
 	<cfproperty name="reportCompareFlag" />
 	
 	<!--- Definition Properties --->
@@ -129,6 +129,10 @@
 	<!--- ================= START: TITLE HELPER METHODS ====================== --->
 		
 	<cffunction name="getReportTitle" access="public" output="false">
+		<cfif not isNull(getReportEntity())>
+			<cfreturn getReportEntity().getReportTitle() & " - " & rbKey('report.#getClassName()#') />
+		</cfif>
+		
 		<cfreturn rbKey('report.#getClassName()#') />
 	</cffunction>
 	
@@ -246,14 +250,14 @@
 	
 	<cffunction name="getReportCompareStartDateTime" access="public" output="false">
 		<cfif not structKeyExists(variables, "reportCompareStartDateTime")>
-			<cfset variables.reportCompareStartDateTime = dateFormat(getReportCompareEndDateTime() - 30, "yyyy-mm-dd") />
+			<cfset variables.reportCompareStartDateTime = dateFormat(getReportCompareEndDateTime() - dateDiff("d", getReportStartDateTime(), getReportEndDateTime()), "yyyy-mm-dd") />
 		</cfif>
 		<cfreturn dateFormat(variables.reportCompareStartDateTime,"yyyy-mm-dd") />
 	</cffunction>
 	
 	<cffunction name="getReportCompareEndDateTime" access="public" output="false">
 		<cfif not structKeyExists(variables, "reportCompareEndDateTime")>
-			<cfset variables.reportCompareEndDateTime = dateFormat(getReportStartDateTime()-1, "yyyy-mm-dd") />
+			<cfset variables.reportCompareEndDateTime = dateFormat(dateAdd("d", -1, getReportStartDateTime()), "yyyy-mm-dd") />
 		</cfif>
 		<cfreturn dateFormat(variables.reportCompareEndDateTime,"yyyy-mm-dd") />
 	</cffunction>
@@ -455,13 +459,14 @@
 	
 	<cffunction name="getMetricColorDetails" access="public" output="false">
 		<cfreturn [
-			{color="##eb6420",compareColor="##fad8c7"},
-			{color="##009800",compareColor="##bfe5bf"},
-			{color="##207de5",compareColor="##c7def8"},
-			{color="##5319e7",compareColor="##d4c5f9"},
-			{color="##fbca04",compareColor="##fef2c0"},
-			{color="##006b75",compareColor="##bfdadc"},
-			{color="##0052cc",compareColor="##bfd4f2"}
+			{color="##058DC7",compareColor="##63BEE5"},
+			{color="##ED7E17",compareColor="##FEBD81"},
+			{color="##50B432",compareColor="##88DC6F"},
+			{color="##AF49C5",compareColor="##DB88ED"},
+			{color="##EDEF00",compareColor="##FDFE94"},
+			{color="##8080FF",compareColor="##B9B9FF"},
+			{color="##A0A424",compareColor="##CACE4F"},
+			{color="##E3071C",compareColor="##FF606F"}
 		] />
 	</cffunction>
 	
@@ -797,6 +802,8 @@
 						<cfif compareDataValue.recordCount>
 							<cfset querySetCell(allDimensions, "#metricDefinition.alias#Compare", compareDataValue.dataValue, allDimensions.currentRow) />
 						</cfif>
+						
+						
 					</cfloop>
 				</cfloop>
 				
@@ -846,4 +853,140 @@
 	</cffunction>
 	
 	<!--- ===============  END: CUSTOM TAG OUTPUT METHODS ==================== --->	
+	
+	<!--- =============== START: EXPORT SPREADSHEET FUNCTIONS ================ --->
+	
+	<cffunction name="getSpreadsheetHeaderRow">
+		<cfset var headers = "" />
+		<cfset var i = "" />
+		
+		<cfloop list="#getDimensions()#" index="i">
+			<cfset headers = listAppend(headers, getDimensionTitle(i)) />
+		</cfloop>
+		<cfloop list="#getMetrics()#" index="i">
+			<cfset headers = listAppend(headers, getMetricTitle(i)) />
+			<cfif getReportCompareFlag()>
+				<cfset headers = listAppend(headers, ' ') />
+			</cfif>
+		</cfloop>
+		
+		<cfreturn headers />
+	</cffunction>
+	
+	<cffunction name="getSpreadsheetHeaderCompareRow">
+		<cfset var headerCompare = "" />
+		<cfset var i = "" />
+		
+		<cfloop list="#getDimensions()#" index="i">
+			<cfset headerCompare = listAppend(headerCompare, ' ') />
+		</cfloop>
+		<cfloop list="#getMetrics()#" index="i">
+			<cfset headerCompare = listAppend(headerCompare, "#dateFormat(getReportStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportEndDateTime(), 'yyyy/mm/dd')#") />
+			<cfset headerCompare = listAppend(headerCompare, "#dateFormat(getReportCompareStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportCompareEndDateTime(), 'yyyy/mm/dd')#") />
+		</cfloop>
+		
+		<cfreturn headerCompare />
+	</cffunction>
+
+	<cffunction name="getSpreadsheetTotals">
+		<cfset var totals = "" />
+		<cfset var i = "" />
+		
+		<cfset var totalsQuery = getTotalsQuery() />
+		<cfif getReportCompareFlag()>
+			<cfset var totalsCompareQuery = getCompareTotalsQuery() />
+		</cfif>
+		
+		<cfloop list="#getDimensions()#" index="i">
+			<cfset totals = listAppend(totals, ' ') />
+		</cfloop>
+		<cfloop list="#getMetrics()#" index="i">
+			<cfset totals = listAppend(totals, totalsQuery[ i ][1] ) />
+			<cfif getReportCompareFlag()>
+				<cfset totals = listAppend(totals, totalsCompareQuery[ i ][1] ) />
+			</cfif>
+		</cfloop>
+		
+		<cfreturn totals />
+	</cffunction>
+
+	<cffunction name="getSpreadsheetData">
+		<cfset var data = "" />
+		<cfset var i = "" />
+		<cfset var tableData = getTableDataQuery() />
+		
+		<cfquery name="data" dbtype="query">
+			SELECT
+				<cfloop from="1" to="#listLen(getDimensions())#" index="i">
+					<cfif i gt 1>,</cfif>#listGetAt(getDimensions(), i)#
+				</cfloop>
+				<cfloop from="1" to="#listLen(getMetrics())#" index="i">
+					,#listGetAt(getMetrics(), i)#
+					<cfif getReportCompareFlag()>
+						,#listGetAt(getMetrics(), i)#Compare
+					</cfif>
+				</cfloop>
+			FROM
+				tableData
+		</cfquery>
+		
+		<cfreturn data />
+	</cffunction>
+	
+	<cffunction name="exportSpreadsheet" access="public" output="false">
+		
+		<!--- Create the filename variables --->
+		<cfset var filename = "#getClassName()#_#getReportStartDateTime()#_#getReportEndDateTime()#_#createUUID()#.xls" />
+		<cfset var filepath = "#getHibachiTempDirectory()#" />
+		<cfset var fullFilename = filepath & filename />
+		
+		<cfset var totalColumns = listLen(getDimensions()) />
+		<cfif getReportCompareFlag()>
+			<cfset var totalColumns += listLen(getMetrics()) * 2 />
+		<cfelse>
+			<cfset var totalColumns += listLen(getMetrics()) />
+		</cfif>
+		
+		<!--- Create spreadsheet object --->
+		<cfset var spreadsheet = spreadsheetNew( filename ) />
+		
+		<!--- Add the column headers --->
+		<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetHeaderRow()) />
+		<cfset spreadsheetFormatRow(spreadsheet, {bold=true}, 1) />
+		
+		<!--- Add compare row --->
+		<cfif getReportCompareFlag()>
+			<cfset var i = 1 />
+			
+			<cfloop from="1" to="#listLen(getMetrics())#" index="i">
+				<cfset var startColumn = (listLen(getDimensions()) + (i*2)) - 1 />
+				<cfset spreadsheetMergeCells(spreadsheet, 1, 1, startColumn, startColumn + 1 ) />
+			</cfloop>
+			
+			<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetHeaderCompareRow()) />
+			<cfset spreadsheetFormatRow(spreadsheet, {fontsize=8}, spreadsheet.rowcount) />
+			<cfset spreadsheetMergeCells(spreadsheet, spreadsheet.rowcount, spreadsheet.rowcount, 1, listLen(getDimensions()) ) />	
+		</cfif>
+		
+		<!--- Add Header border --->
+		<cfset spreadsheetFormatCellRange (spreadsheet, {bottomborder='thin'}, spreadsheet.rowcount, 1, spreadsheet.rowcount, totalColumns) />
+		
+		<!--- Add the data --->
+		<cfset spreadsheetAddRows(spreadsheet, getSpreadsheetData()) />
+		
+		<!--- Add the totals --->
+		<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetTotals()) />
+		<cfset spreadsheetMergeCells(spreadsheet, spreadsheet.rowcount, spreadsheet.rowcount, 1, listLen(getDimensions())) />
+		<cfset spreadsheetSetCellValue(spreadsheet, rbKey('define.totals'), spreadsheet.rowcount, 1) />
+		<cfset spreadsheetFormatRow(spreadsheet, {bold=true}, spreadsheet.rowcount) />
+		
+		<!--- Add Totals border --->
+		<cfset spreadsheetFormatCellRange (spreadsheet, {topborder='thin'}, spreadsheet.rowcount, 1, spreadsheet.rowcount, totalColumns) />
+		
+		<cfspreadsheet action="write" filename="#fullFilename#" name="spreadsheet" >
+		<cfset getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true ) />
+	</cffunction>
+	
+	<!--- ===============  END: EXPORT SPREADSHEET FUNCTIONS  ================ --->
+	
 </cfcomponent>

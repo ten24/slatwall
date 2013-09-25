@@ -48,15 +48,14 @@
 --->
 <cfcomponent output="false" accessors="true">
 	
-	<cffunction name="onSessionLogout">
+	<cffunction name="afterAccountProcess_logoutSuccess">
 		<cfargument name="slatwallScope" type="any" required="true" />
+		<cfargument name="account" type="any" required="true" />
 		
 		<!--- Get the authentication CFC --->
 		<cfset var authenticationCFC = arguments.slatwallScope.getService("integrationService").getIntegrationByIntegrationPackage("gigya").getIntegrationCFC( 'authentication' ) />
 		
-		<!--- TODO: Tell gigya that the users has logged out --->
-		<!--- <cfset var gigyaResponse = authenticationCFC.socializeNotifyRegistration(account=arguments.account, uid=arguments.data.gigyaUID) />--->
-			
+		<cfset var gigyaResponse = authenticationCFC.socializeNotifyLogout( account=arguments.account ) />
 	</cffunction>
 	
 	<cffunction name="afterAccountProcess_loginSuccess">
@@ -67,12 +66,13 @@
 		<!--- If this was logging in with gigya credentials --->
 		<cfif structKeyExists(arguments.data, "gigyaUID") && structKeyExists(arguments.data, "gigyaUIDSignature") && structKeyExists(arguments.data, "gigyaSignatureTimestamp")>
 			
+		
+			<!--- Get the authentication CFC --->
+			<cfset var gigyaIntegration = arguments.slatwallScope.getService("integrationService").getIntegrationByIntegrationPackage("gigya") />
+			<cfset var authenticationCFC = gigyaIntegration.getIntegrationCFC( 'authentication' ) />
+			
 			<!--- Check to make sure that the UID and the accountID are different --->
 			<cfif arguments.account.getAccountID() neq arguments.data.gigyaUID>
-				
-				<!--- Get the authentication CFC --->
-				<cfset var gigyaIntegration = arguments.slatwallScope.getService("integrationService").getIntegrationByIntegrationPackage("gigya") />
-				<cfset var authenticationCFC = gigyaIntegration.getIntegrationCFC( 'authentication' ) />
 				
 				<!--- Verify the signature --->
 				<cfif authenticationCFC.getUserSignatureValidFlag( uid=arguments.data.gigyaUID, uidSignature=arguments.data.gigyaUIDSignature, signatureTimestamp=arguments.data.gigyaSignatureTimestamp )>
@@ -103,6 +103,8 @@
 				
 			</cfif>
 			
+			<!--- Call the socialize.notifyLogin function --->
+			<cfset var gigyaResponse = authenticationCFC.socializeNotifyLogin( account=arguments.account ) />
 		</cfif>
 		
 	</cffunction>

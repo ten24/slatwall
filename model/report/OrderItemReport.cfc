@@ -89,7 +89,7 @@ Notes:
 					SwOrder.orderID,
 					SwOrder.orderNumber,
 					SwOrder.currencyCode,
-					SwType.type,
+					ort.type,
 					SwAddress.countryCode,
 					SwAddress.stateCode,
 					SwAddress.city,
@@ -103,7 +103,7 @@ Notes:
 					END as salePreDiscount,
 					CASE
     					WHEN SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' THEN
-    						(SwOrderItem.price * SwOrderItem.quantity)
+    						(SwOrderItem.price * SwOrderItem.quantity) * -1
     					ELSE
     						0
 					END as returnPreDiscount,
@@ -113,11 +113,11 @@ Notes:
 				FROM
 					SwOrderItem
 				  INNER JOIN
-				  	SwType on SwOrderItem.orderItemTypeID = SwType.typeID
-				  INNER JOIN
+				  	SwType ort on SwOrderItem.orderItemTypeID = ort.typeID
+				  LEFT JOIN
 				  	SwOrderFulfillment on SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
 				  INNER JOIN
-				  	SwOrder on SwOrderFulfillment.orderID = SwOrder.orderID
+				  	SwOrder on SwOrderItem.orderID = SwOrder.orderID
 				  INNER JOIN
 				  	SwAccount on SwOrder.accountID = SwAccount.accountID
 				  INNER JOIN

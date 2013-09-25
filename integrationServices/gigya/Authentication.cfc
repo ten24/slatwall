@@ -197,6 +197,24 @@ Notes:
 		<cfreturn xmlResponse />
 	</cffunction>
 	
+	<!--- socialize.notifyLogin --->
+	<cffunction name="socializeNotifyLogin">
+		<cfargument name="account" type="any" required="true" />
+		
+		<cfset var rawResponse = "" />
+		<cfset var xmlResponse = "" />
+		
+		<cfhttp method="post" url="https://socialize.gigya.com/socialize.notifyLogin" result="rawResponse">
+			<cfhttpparam type="formfield" name="apiKey" value="#setting('apiKey')#" />
+			<cfhttpparam type="formfield" name="secret" value="#setting('secretKey')#" />
+			<cfhttpparam type="formfield" name="siteUID" value="#account.getAccountID()#" />
+		</cfhttp>
+		
+		<cfset xmlResponse = xmlParse(rawResponse.fileContent) />
+		
+		<cfreturn xmlResponse />
+	</cffunction>
+	
 	<!--- =============== END: GIGYA REST Calls =-================ --->
 		
 	<!--- ============== START: Processing Methods =============== --->
