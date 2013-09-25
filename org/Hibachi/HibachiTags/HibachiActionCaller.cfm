@@ -9,6 +9,7 @@
 	<cfparam name="attributes.icon" type="string" default="">
 	<cfparam name="attributes.iconOnly" type="boolean" default="false">
 	<cfparam name="attributes.submit" type="boolean" default="false">
+	<cfparam name="attributes.name" type="string" default="">
 	<cfparam name="attributes.confirm" type="boolean" default="false" />
 	<cfparam name="attributes.confirmtext" type="string" default="" />
 	<cfparam name="attributes.disabled" type="boolean" default="false" />
@@ -110,7 +111,7 @@
 		<cfelseif attributes.type eq "list">
 			<cfoutput><li><a title="#attributes.title#" class="#attributes.class#" href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"<cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif>>#attributes.icon##attributes.text#</a></li></cfoutput> 
 		<cfelseif attributes.type eq "button">
-			<cfoutput><button class="btn #attributes.class#" title="#attributes.title#"<cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif><cfif attributes.submit>type="submit"</cfif>>#attributes.icon##attributes.text#</button></cfoutput>
+			<cfoutput><button class="btn #attributes.class#" title="#attributes.title#"<cfif len(attributes.name)> name="#attributes.name#" value="#attributes.action#"</cfif><cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif><cfif attributes.submit>type="submit"</cfif>>#attributes.icon##attributes.text#</button></cfoutput>
 		<cfelseif attributes.type eq "submit">
 			<cfoutput>This action caller type has been discontinued</cfoutput>
 		</cfif>

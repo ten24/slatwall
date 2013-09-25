@@ -6,7 +6,7 @@
 		<column name="stateName" update="false" />
 	</Columns>
 	<Records>
-		
+
 		<!-- Canada -->
 		<Record stateCode="AB" countryCode="CA" stateName="Alberta" />
 		<Record stateCode="BC" countryCode="CA" stateName="British Columbia" />
@@ -21,7 +21,7 @@
 		<Record stateCode="QC" countryCode="CA" stateName="Quebec" />
 		<Record stateCode="SK" countryCode="CA" stateName="Saskatchewan" />
 		<Record stateCode="YT" countryCode="CA" stateName="Yukon" />
-		
+
 		<!-- Germany -->
 		<Record stateCode="BW" countryCode="DE" stateName="Baden-W&uuml;rttemberg" />
 		<Record stateCode="BY" countryCode="DE" stateName="Bayern" />
@@ -39,7 +39,7 @@
 		<Record stateCode="ST" countryCode="DE" stateName="Sachsen-Anhalt" />
 		<Record stateCode="SH" countryCode="DE" stateName="Schleswig-Holstein" />
 		<Record stateCode="TH" countryCode="DE" stateName="Th&uuml;ringen" />
-		
+
 		<!-- Sweden -->
 		<Record stateCode="K" countryCode="SE" stateName="Blekinge l&auml;n" />
 		<Record stateCode="W" countryCode="SE" stateName="Dalarnas l&auml;n" />
@@ -59,10 +59,10 @@
 		<Record stateCode="AC" countryCode="SE" stateName="V&auml;sterbottens l&auml;n" />
 		<Record stateCode="Y" countryCode="SE" stateName="V&auml;sternorrlands l&auml;n" />
 		<Record stateCode="U" countryCode="SE" stateName="V&auml;stmanlands l&auml;n" />
-		<Record stateCode="O" countryCode="SE" stateName="V&auml;stra Götalands l&auml;n" />
+		<Record stateCode="O" countryCode="SE" stateName="V&auml;stra G&ouml;talands l&auml;n" />
 		<Record stateCode="T" countryCode="SE" stateName="&Ouml;rebro l&auml;n" />
 		<Record stateCode="E" countryCode="SE" stateName="&Ouml;sterg&ouml;tlands l&auml;n" />
-		
+
 		<!-- United States -->
 		<Record stateCode="AK" countryCode="US" stateName="Alaska" />
 		<Record stateCode="AL" countryCode="US" stateName="Alabama" />

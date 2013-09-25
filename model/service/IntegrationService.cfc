@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	variables.paymentIntegrationCFCs = {};
 	variables.shippingIntegrationCFCs = {};
 	variables.authenticationIntegrationCFCs = {};
-
+	variables.jsObjectAdditions = '';
 	
 	public void function clearActiveFW1Subsystems() {
 		structDelete(variables, "activeFW1Subsystems");
@@ -299,6 +299,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return returnArr;
+	}
+	
+	public string function getJSObjectAdditions() {
+		if(!len(variables.jsObjectAdditions)) {
+			
+			var additions = ' ';
+			var isl = this.getIntegrationSmartList();
+			isl.addFilter('installedFlag', 1);
+			
+			for(var integration in isl.getRecords()) {
+				if(integration.getEnabledFlag()) {
+					additions &= integration.getIntegrationCFC().getJSObjectAdditions();
+				}
+			}
+			
+			variables.jsObjectAdditions = additions;
+			
+		}
+		return variables.jsObjectAdditions;
 	}
 	
 	// ===================== START: Logical Methods ===========================

@@ -136,6 +136,10 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 
 	// Attribute Value
+	public boolean function hasAttributeCode( required string attributeCode ) {
+		return getService("hibachiService").getEntityHasAttributeByEntityName( getClassName(), arguments.attributeCode );
+	}
+	
 	public array function getAttributeValuesForEntity() {
 		if(!structKeyExists(variables, "attributeValuesForEntity")) {
 			variables.attributeValuesForEntity = [];
