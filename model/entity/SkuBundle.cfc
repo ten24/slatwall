@@ -66,7 +66,9 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// Non-Persistent Properties
 
 
-
+	public string function getSimpleRepresentation() {
+    	return getSku().getSkuCode();
+    }
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

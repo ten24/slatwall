@@ -78,7 +78,11 @@ Notes:
 				<cf_HibachiTab property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">
 				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
-				<cf_HibachiTab view="admin:entity/skutabs/options" />
+				<cfif rc.sku.getBundleFlag() eq true>
+					<cf_HibachiTab view="admin:entity/skutabs/bundledskus" />
+				<cfelse>	
+					<cf_HibachiTab view="admin:entity/skutabs/options" />
+				</cfif>
 			</cfif>
 			<!---<cf_HibachiTab view="admin:entity/skutabs/registrants" />--->
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
