@@ -44,11 +44,49 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'default');
 
 	public void function default(required struct rc) {
-		if(!structKeyExists(arguments.rc, "reportName")) {
+		param name="arguments.rc.reportID" default="";
+		
+		if(!arguments.rc.ajaxRequest) {
+			var savedReportsSmartList = getHibachiReportService().getReportSmartList();
+			savedReportsSmartList.addOrder('reportTitle');
+			
+			arguments.rc.savedReports = savedReportsSmartList.getRecords();	
+			arguments.rc.builtInReportsList = getHibachiReportService().getBuiltInReportsList();
+			arguments.rc.customReportsList = getHibachiReportService().getCustomReportsList();
+			arguments.rc.integrationReportsList = "";
+		}
+		
+		var reportEntity = getHibachiReportService().getReport(arguments.rc.reportID);
+		
+		if(isNull(reportEntity) && !structKeyExists(arguments.rc, "reportName") && arrayLen(arguments.rc.savedReports)) {
+			reportEntity = arguments.rc.savedReports[1];
+		}
+		
+		if(!isNull(reportEntity)) {
+			
+			arguments.rc.reportID = reportEntity.getReportID();
+			arguments.rc.reportName = reportEntity.getReportName();
+			
+			param name="arguments.rc.reportName" default="#reportEntity.getReportName()#";
+			param name="arguments.rc.reportStartDateTime" default="#reportEntity.getReportStartDateTime()#";
+			param name="arguments.rc.reportEndDateTime" default="#reportEntity.getReportEndDateTime()#";
+			param name="arguments.rc.reportDateTimeGroupBy" default="#reportEntity.getReportDateTimeGroupBy()#";
+			param name="arguments.rc.reportCompareFlag" type="any" default="#reportEntity.getReportCompareFlag()#";
+			param name="arguments.rc.reportDateTime" default="#reportEntity.getReportDateTime()#";
+			param name="arguments.rc.dimensions" type="any" default="#reportEntity.getDimensions()#";
+			param name="arguments.rc.metrics" type="any" default="#reportEntity.getMetrics()#";
+			
+		} else if (!structKeyExists(arguments.rc, "reportName")) {
+			
 			arguments.rc.reportName = listFirst(getHibachiReportService().getBuiltInReportsList());
+			
 		}
 		
 		arguments.rc.report = getHibachiReportService().getReportCFC(arguments.rc.reportName, arguments.rc);
+		
+		if(!isNull(reportEntity)) {
+			arguments.rc.report.setReportEntity( reportEntity );	
+		}
 		
 		if(arguments.rc.ajaxRequest && structKeyExists(arguments.rc, "reportName")) {
 			arguments.rc.ajaxResponse["report"] = {};
@@ -56,10 +94,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
 			arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
 		} else {
-			arguments.rc.builtInReportsList = getHibachiReportService().getBuiltInReportsList();
-			arguments.rc.customReportsList = getHibachiReportService().getCustomReportsList();
-			arguments.rc.integrationReportsList = "";
+			arguments.rc.pageTitle = arguments.rc.report.getReportTitle();
 		}
+	}
+	
+	public void function export(required struct rc) {
+		var report = getHibachiReportService().getReportCFC( arguments.rc.reportName, arguments.rc );
+		
+		report.exportSpreadsheet();
+		
+		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
 	}
 	
 }

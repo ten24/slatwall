@@ -196,6 +196,7 @@ function initUIElements( scopeSelector ) {
 	// Report Sortable
 	jQuery( scopeSelector ).find(jQuery('#hibachi-report-dimension-sort')).sortable({
 		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' );
 			var newDimensionsValue = '';
 			jQuery.each(jQuery('#hibachi-report-dimension-sort').children(), function(i, v){
 				if(i > 0) {
@@ -210,6 +211,7 @@ function initUIElements( scopeSelector ) {
 	// Report Sortable
 	jQuery( scopeSelector ).find(jQuery('#hibachi-report-metric-sort')).sortable({
 		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' );
 			var newMetricsValue = '';
 			jQuery.each(jQuery('#hibachi-report-metric-sort').children(), function(i, v){
 				if(i > 0) {
@@ -1363,6 +1365,7 @@ function updateReport() {
 	
 	var data = {
 		slatAction: 'admin:report.default',
+		reportID: jQuery('input[name="reportID"]').val(),
 		reportName: jQuery('#hibachi-report').data('reportname'),
 		reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
 		reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),

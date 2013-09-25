@@ -177,6 +177,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function login(required struct rc) {
 		getFW().setView("admin:main.login");
 		rc.pageTitle = rc.$.slatwall.rbKey('define.login');
+		
+		if(!structKeyExists(rc, "sRedirectURL")) {
+			arguments.rc.sRedirectURL = getApplicationValue('baseURL') & '/'; 
+		}
+		
 		rc.accountAuthenticationExists = getAccountService().getAccountAuthenticationExists();
 		rc.integrationLoginHTMLArray = getIntegrationService().getAdminLoginHTMLArray();
 	}

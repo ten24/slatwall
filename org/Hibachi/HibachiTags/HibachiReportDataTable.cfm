@@ -13,7 +13,13 @@
 				</cfloop>
 				<cfloop from="1" to="#listLen(attributes.report.getMetrics())#" step="1" index="m">
 					<cfset metricDefinition = attributes.report.getMetricDefinition( listGetAt(attributes.report.getMetrics(), m) ) />
-					<th style="background-color:##e3e3e3;" <cfif attributes.report.getReportCompareFlag()>colspan="2"</cfif>><span style="color:#attributes.report.getMetricColorDetails()[m].color#;">&bull;</span> #attributes.report.getMetricTitle( metricDefinition.alias )#</th>
+					<th style="background-color:##e3e3e3;" <cfif attributes.report.getReportCompareFlag()>colspan="2"</cfif>>
+						<span style="color:#attributes.report.getMetricColorDetails()[m].color#; font-size:26px; float:left; margin-right:3px;">&bull;</span>
+						<cfif attributes.report.getReportCompareFlag()>
+							<span style="color:#attributes.report.getMetricColorDetails()[m].compareColor#; font-size:26px; float:left; margin-right:3px;">&bull;</span>	
+						</cfif>
+						| #attributes.report.getMetricTitle( metricDefinition.alias )#
+					</th>
 				</cfloop>
 			</tr>
 			<!--- Totals --->
