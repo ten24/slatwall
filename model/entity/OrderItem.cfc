@@ -154,14 +154,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			customizations = "<ul>";
 		}
 		for(var i=1; i<=arrayLen(getAttributeValues()); i++) {
-			if(len(customizations) && arguments.format == "list") {
-				customizations &= ", ";
-			} else if(arguments.format == "htmlList") {
-				customizations &= "<li>";
-			}
-			customizations &= "#getAttributeValues()[i].getAttribute().getAttributeName()#: #getAttributeValues()[i].getAttributeValue()#";
-			if(arguments.format == "htmlList") {
-				customizations &= "</li>";
+			if(getAttributeValues()[i].getAttributeValue() != ""){
+				if(len(customizations) && arguments.format == "list") {
+					customizations &= ", ";
+				} else if(arguments.format == "htmlList") {
+					customizations &= "<li>";
+				}
+				customizations &= "#getAttributeValues()[i].getAttribute().getAttributeName()#: #getAttributeValues()[i].getAttributeValue()#";
+				if(arguments.format == "htmlList") {
+					customizations &= "</li>";
+				}
 			}
 		}
 		if(arguments.format == "htmlList") {
