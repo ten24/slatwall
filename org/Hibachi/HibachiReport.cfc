@@ -946,45 +946,52 @@
 		<cfelse>
 			<cfset var totalColumns += listLen(getMetrics()) />
 		</cfif>
-		
-		<!--- Create spreadsheet object --->
-		<cfset var spreadsheet = spreadsheetNew( filename ) />
-		
-		<!--- Add the column headers --->
-		<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetHeaderRow()) />
-		<cfset spreadsheetFormatRow(spreadsheet, {bold=true}, 1) />
-		
-		<!--- Add compare row --->
-		<cfif getReportCompareFlag()>
-			<cfset var i = 1 />
+		<cftry>
+			<!--- Create spreadsheet object --->
+			<cfset var spreadsheet = spreadsheetNew( filename ) />
 			
-			<cfloop from="1" to="#listLen(getMetrics())#" index="i">
-				<cfset var startColumn = (listLen(getDimensions()) + (i*2)) - 1 />
-				<cfset spreadsheetMergeCells(spreadsheet, 1, 1, startColumn, startColumn + 1 ) />
-			</cfloop>
+			<!--- Add the column headers --->
+			<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetHeaderRow()) />
+			<cfset spreadsheetFormatRow(spreadsheet, {bold=true}, 1) />
 			
-			<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetHeaderCompareRow()) />
-			<cfset spreadsheetFormatRow(spreadsheet, {fontsize=8}, spreadsheet.rowcount) />
-			<cfset spreadsheetMergeCells(spreadsheet, spreadsheet.rowcount, spreadsheet.rowcount, 1, listLen(getDimensions()) ) />	
-		</cfif>
-		
-		<!--- Add Header border --->
-		<cfset spreadsheetFormatCellRange (spreadsheet, {bottomborder='thin'}, spreadsheet.rowcount, 1, spreadsheet.rowcount, totalColumns) />
-		
-		<!--- Add the data --->
-		<cfset spreadsheetAddRows(spreadsheet, getSpreadsheetData()) />
-		
-		<!--- Add the totals --->
-		<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetTotals()) />
-		<cfset spreadsheetMergeCells(spreadsheet, spreadsheet.rowcount, spreadsheet.rowcount, 1, listLen(getDimensions())) />
-		<cfset spreadsheetSetCellValue(spreadsheet, rbKey('define.totals'), spreadsheet.rowcount, 1) />
-		<cfset spreadsheetFormatRow(spreadsheet, {bold=true}, spreadsheet.rowcount) />
-		
-		<!--- Add Totals border --->
-		<cfset spreadsheetFormatCellRange (spreadsheet, {topborder='thin'}, spreadsheet.rowcount, 1, spreadsheet.rowcount, totalColumns) />
-		
-		<cfspreadsheet action="write" filename="#fullFilename#" name="spreadsheet" >
-		<cfset getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true ) />
+			<!--- Add compare row --->
+			<cfif getReportCompareFlag()>
+				<cfset var i = 1 />
+				
+				<cfloop from="1" to="#listLen(getMetrics())#" index="i">
+					<cfset var startColumn = (listLen(getDimensions()) + (i*2)) - 1 />
+					<cfset spreadsheetMergeCells(spreadsheet, 1, 1, startColumn, startColumn + 1 ) />
+				</cfloop>
+				
+				<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetHeaderCompareRow()) />
+				<cfset spreadsheetFormatRow(spreadsheet, {fontsize=8}, spreadsheet.rowcount) />
+				<cfset spreadsheetMergeCells(spreadsheet, spreadsheet.rowcount, spreadsheet.rowcount, 1, listLen(getDimensions()) ) />	
+			</cfif>
+			
+			<!--- Add Header border --->
+			<cfset spreadsheetFormatCellRange (spreadsheet, {bottomborder='thin'}, spreadsheet.rowcount, 1, spreadsheet.rowcount, totalColumns) />
+			
+			<!--- Add the data --->
+			<cfset spreadsheetAddRows(spreadsheet, getSpreadsheetData()) />
+			
+			<!--- Add the totals --->
+			<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetTotals()) />
+			<cfset spreadsheetMergeCells(spreadsheet, spreadsheet.rowcount, spreadsheet.rowcount, 1, listLen(getDimensions())) />
+			<cfset spreadsheetSetCellValue(spreadsheet, rbKey('define.totals'), spreadsheet.rowcount, 1) />
+			<cfset spreadsheetFormatRow(spreadsheet, {bold=true}, spreadsheet.rowcount) />
+			
+			<!--- Add Totals border --->
+			<cfset spreadsheetFormatCellRange (spreadsheet, {topborder='thin'}, spreadsheet.rowcount, 1, spreadsheet.rowcount, totalColumns) />
+			
+			<cfset spreadsheetWrite( spreadsheet, fullFilename ) />
+			<cfset getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true ) />
+			<cfcatch>
+				<cfif structKeyExists(server, "railo") and cfcatch.message eq "No matching function [SPREADSHEETADDROW] found">
+					<cfthrow type="Application" message="It appears that you are running Slatwall on Railo and have tried to export a report, but you do not have the cfspreadsheet extension installed on this instance of Railo.  Please install the cfspreadsheet extension and try again.">
+				</cfif>
+				<cfrethrow />
+			</cfcatch>
+		</cftry>
 	</cffunction>
 	
 	<!--- ===============  END: EXPORT SPREADSHEET FUNCTIONS  ================ --->
