@@ -51,7 +51,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#" sRedirectAction="admin:entity.editsku&skuID=#rc.product.getSku().getSkuID()#">
+	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
 		
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
 		</cf_HibachiEntityActionBar>

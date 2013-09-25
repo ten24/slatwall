@@ -439,19 +439,36 @@ component extends="HibachiService" accessors="true" {
 		
 	public any function processProduct_createSkuBundle(required any product, required any processObject) {
 		// Create a new sku object
-		var sku = getSkuService().newSku();
+		var newSku = getSkuService().newSku();
 		
 		// Setup the sku
-		sku.setProduct( arguments.product );
-		sku.setSkuCode( arguments.processObject.getSkuCode() );
-		sku.setPrice( arguments.processObject.getPrice() );
-		sku.setBundleFlag( true );
+		newSku.setProduct( arguments.product );
+		newSku.setSkuCode( arguments.processObject.getSkuCode() );
+		newSku.setPrice( arguments.processObject.getPrice() );
+		newSku.setBundleFlag( true );
+
+		// Loop over skus from the process object and create entries for sku bundles
+		var skubundle = getSkuService().newSkuBundle();
 		
 		// Persist the new sku
-		sku = getSkuService().saveSku( sku );
+		newSku = getSkuService().saveSku( newSku );
 		
-		// Loop over skus from the process object and create entries for sku bundles
+		if(listLen( arguments.processObject.getSkus() )) {
+			var skuArray = listToArray( arguments.processObject.getSkus() );
+			
+			for(var i=1; i<=arrayLen(skuArray); i++) {
+				skuBundle.setSku( newSku.getSkuID() );
+				skuBundle.setBundledSku( skuArray[i] );
+				skuBundle.setBundledQuantity(1);
+			}
+		}
 		
+		
+		writedump( var="#skubundle#" top=3);
+		abort;
+		
+		// Persist the new sku bundle
+		//skuBundle = getSkuService().saveSkuBundle( skuBundle );
 		
 		return arguments.product;
 	}
