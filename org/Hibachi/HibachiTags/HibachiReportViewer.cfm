@@ -11,15 +11,17 @@
 			</div>
 			<!--- Configure --->
 			<div id="hibachi-report-configure-bar" class="well" style="padding:10px;">
-				
+				#attributes.report.getReportConfigureBar()#
 			</div>
 			<!--- Table --->
 			<div id="hibachi-report-table">
-				
+				#attributes.report.getReportDataTable()#
 			</div>
 			
 			<script type="text/javascript">
 				jQuery(document).ready(function(){
+					//jQuery('##hibachi-report-chart').highcharts(#serializeJSON(attributes.report.getChartData())#);
+					addLoadingDiv( 'hibachi-report' );
 					updateReport();
 				});
 			</script>

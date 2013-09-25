@@ -193,6 +193,15 @@ component extends="FW1.framework" {
 			// setup the success redirect URL as this current page
 			request.context.sRedirectURL = getHibachiScope().getURL();
 			
+			// make sure there are no reload keys in the redirectURL
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "#variables.framework.reload#=#variables.framework.password#", "");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "#variables.framework.hibachi.fullUpdateKey#=#variables.framework.hibachi.fullUpdatePassword#", "");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "&&&", "&", "all");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "&&", "&", "all");
+			if(right(request.context.sRedirectURL, 1) == "?" || right(request.context.sRedirectURL, 1) == "&") {
+				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
+			}
+			
 			// If the current subsytem is a 'login' subsystem, then we can use the current subsystem
 			if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
 				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");

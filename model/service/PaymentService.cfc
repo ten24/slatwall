@@ -350,9 +350,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						// Move all of the info into the new request bean
 						if(arguments.paymentTransaction.getPayment().getClassName() eq "OrderPayment") {
-							requestBean.populatePaymentInfoWithOrderPayment( arguments.paymentTransaction.getPayment() );	
+							requestBean.populatePaymentInfoWithOrderPayment( arguments.paymentTransaction.getPayment() );
+							arguments.paymentTransaction.setCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );	
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPayment") {
 							requestBean.populatePaymentInfoWithAccountPayment( arguments.paymentTransaction.getPayment() );
+							arguments.paymentTransaction.setCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPaymentMethod") {
 							requestBean.populatePaymentInfoWithAccountPaymentMethod( arguments.paymentTransaction.getPayment() );
 						}
