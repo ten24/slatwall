@@ -138,6 +138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	// TODO [paul]: makeup / breakup
 	public any function processSku_makeupBundledSkus() {
 		// data.location
 		

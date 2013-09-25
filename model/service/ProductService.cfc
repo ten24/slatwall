@@ -447,28 +447,26 @@ component extends="HibachiService" accessors="true" {
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setBundleFlag( true );
 
-		// Loop over skus from the process object and create entries for sku bundles
-		var skubundle = getSkuService().newSkuBundle();
-		
 		// Persist the new sku
 		newSku = getSkuService().saveSku( newSku );
 		
 		if(listLen( arguments.processObject.getSkus() )) {
 			var skuArray = listToArray( arguments.processObject.getSkus() );
 			
+			// Loop over skus from the process object and create entries for sku bundles	
 			for(var i=1; i<=arrayLen(skuArray); i++) {
-				skuBundle.setSku( newSku.getSkuID() );
-				skuBundle.setBundledSku( skuArray[i] );
+				
+				// Create a new sku bundle
+				var skubundle = getSkuService().newSkuBundle();
+				
+				skuBundle.setSku( newSku );
+				skuBundle.setBundledSku( getSkuService().getSku( skuArray[i] ) );
 				skuBundle.setBundledQuantity(1);
+				
+				// Persist the new sku bundle
+				skuBundle = getSkuService().saveSkuBundle( skuBundle );
 			}
 		}
-		
-		
-		writedump( var="#skubundle#" top=3);
-		abort;
-		
-		// Persist the new sku bundle
-		//skuBundle = getSkuService().saveSkuBundle( skuBundle );
 		
 		return arguments.product;
 	}
