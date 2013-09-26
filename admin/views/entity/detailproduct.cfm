@@ -82,6 +82,9 @@ Notes:
 			<!--- Skus --->
 			<cf_HibachiTab property="skus" />
 			
+			<!--- Event Registrations --->
+			<cf_HibachiTab property="eventregistrations" />
+			
 			<!--- Images --->
 			<cf_HibachiTab view="admin:entity/producttabs/images" />
 			

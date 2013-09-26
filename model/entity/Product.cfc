@@ -70,7 +70,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	
 	// Related Object Properties (one-to-many)
-	property name="skus" type="array" cfc="Sku" singularname="Sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productImages" type="array" cfc="Image" singularname="productImage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singlularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -106,6 +106,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
+	property name="eventRegistrations" type="array" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
 	property name="qats" type="numeric" persistent="false";
@@ -539,6 +540,27 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var options = getPropertyOptions( "brand" );
 		options[1].name = rbKey('define.none');
 		return options;
+	}
+	
+	public any function getEventRegistrations() {
+		var result = "";
+		if( !structKeyExists(variables, "eventRegistrations") ) {
+			var orderItemsArray = [];
+			var orderItemIDList = "";
+			for ( var sku in getskus()) {
+				var orderItems = sku.getorderItems();
+				for( var orderItem in orderItems ) {
+					arrayAppend(orderItemsArray,orderItem.getorderItemID());
+					
+				}	
+			}
+			if(arraylen(orderItemsArray)) {
+				orderItemIDList = arrayToList(orderItemsArray);
+				result = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
+			}
+				
+		}
+		return result;
 	}
 	
 	public string function getTitle() {

@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallEventRegistration" table="SwEventRegistration" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="SkuService" hb_permission="this" {
+component entityname="SlatwallEventRegistration" table="SwEventRegistration" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="eventRegistrationService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="eventRegistrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
