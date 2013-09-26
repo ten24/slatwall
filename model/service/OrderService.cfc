@@ -845,13 +845,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var orderItems = arguments.order.getorderItems(); 
 							for(var orderitem in orderItems) {
 								var itemsku = orderitem.getSku();
+								var itemquantity = orderItem.getQuantity();
 								if(itemsku.getBaseProductType() == "event") {
-									// Create EventRegistration record.
-									var eventRegistration = this.newEventRegistration();
-									eventRegistration.setorderItem(orderitem);
-									eventRegistration.seteventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistrationOpen"));
-									eventRegistration.setaccount(arguments.order.getaccount());
-									getHibachiDAO().save( eventRegistration );
+									// Create EventRegistration records.
+									for(var i=1;i<=itemQuantity;i++) {
+										var eventRegistration = this.newEventRegistration();
+										eventRegistration.setorderItem(orderitem);
+										eventRegistration.seteventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistrationOpen"));
+										eventRegistration.setaccount(arguments.order.getaccount());
+										getHibachiDAO().save( eventRegistration );
+									}
 								}
 							}
 							
