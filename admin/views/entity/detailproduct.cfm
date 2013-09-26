@@ -83,7 +83,9 @@ Notes:
 			<cf_HibachiTab property="skus" />
 			
 			<!--- Event Registrations --->
-			<cf_HibachiTab property="eventregistrations" />
+			<cfif rc.product.getBaseProductType() EQ "event">
+				<cf_HibachiTab property="eventregistrations" />
+			</cfif>
 			
 			<!--- Images --->
 			<cf_HibachiTab view="admin:entity/producttabs/images" />
