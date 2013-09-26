@@ -49,11 +49,23 @@ Notes:
 <cfparam name="rc.sku" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.sku.getOrderItemsSmartList()#">
-		<cf_HibachiListingColumn propertyIdentifier="account.firstName" />
-		<cf_HibachiListingColumn propertyIdentifier="account.lastName" />
-		<cf_HibachiListingColumn propertyIdentifier="account.emailAddress" />
-		<cf_HibachiListingColumn propertyIdentifier="account.phoneNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="orderstatustype.type" />
-	</cf_HibachiListingDisplay>
+	
+	<cfset local.salesHistorySmartList = rc.sku.getSalesHistory()/>
+	<!---<cfdump var="#local.salesHistorySmartList#" top="1"><cfabort>--->
+	<cfif !isNull(local.salesHistorySmartList)>
+		<cf_HibachiListingDisplay smartList="#local.salesHistorySmartList#"
+				recordEditAction="admin:entity.editorderitem"
+				recorddetailaction="admin:entity.detailorderitem">
+			<cf_HibachiListingColumn propertyIdentifier="order.account.firstname" />
+			<cf_HibachiListingColumn propertyIdentifier="order.account.lastname" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
+		</cf_HibachiListingDisplay>
+	<cfelse>
+		<!--No sales history found for this SKU.-->
+	</cfif>
+	
 </cfoutput>

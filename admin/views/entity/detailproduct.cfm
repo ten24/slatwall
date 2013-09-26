@@ -86,6 +86,7 @@ Notes:
 			<cfif rc.product.getBaseProductType() EQ "event">
 				<cf_HibachiTab property="eventregistrations" />
 			</cfif>
+			<cf_HibachiTab property="saleshistory" />
 			
 			<!--- Images --->
 			<cf_HibachiTab view="admin:entity/producttabs/images" />

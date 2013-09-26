@@ -481,7 +481,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	// Retrieve event registrations related to this sku
 	public any function getEventRegistrations() {
-		var result = "";
+		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
+			var smartList = getService("eventRegistrationService").getEventRegistrations();
+			variables.eventRegistrationsSmartList = smartList;
+		}
 		var orderItemsArray = [];
 		var orderItemIDList = "";
 		for( var orderItem in getorderItems() ) {
@@ -489,10 +492,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}	
 		if(arraylen(orderItemsArray)) {
 			orderItemIDList = arrayToList(orderItemsArray);
-			result = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
+			variables.eventRegistrationsSmartList = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
+		} else {
+			variables.eventRegistrationsSmartList.addFilter('orderItemID','');
 		}
 				
-		return result;
+		return variables.eventRegistrationsSmartList;
 	}
 	
 	public string function getNextEstimatedAvailableDate() {
@@ -601,6 +606,27 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			return getSalePriceDetails()[ "salePriceExpirationDateTime"];
 		}
 		return "";
+	}
+	
+	// Retrieve sales history related to this sku
+	public any function getSalesHistory() {
+		if(!structKeyExists(variables, "salesHistorySmartList")) {
+			var smartList = getService("OrderService").getOrderItemSmartList();
+			variables.salesHistorySmartList = smartList;
+		}
+		var orderItemsArray = [];
+		var orderItemIDList = "";
+		for( var orderItem in getorderItems() ) {
+			arrayAppend(orderItemsArray,orderItem.getorderItemID());
+		}	
+		if(arraylen(orderItemsArray)) {
+			orderItemIDList = arrayToList(orderItemsArray);
+			variables.salesHistorySmartList.addInFilter('orderItemID', '#orderItemIDList#');
+		} else {
+			variables.salesHistorySmartList.addFilter('orderItemID', '');
+		}
+				
+		return variables.salesHistorySmartList;
 	}
 	
 	public boolean function getStocksDeletableFlag() {
