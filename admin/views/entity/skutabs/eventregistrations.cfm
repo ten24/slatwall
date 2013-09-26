@@ -46,11 +46,11 @@
 Notes:
 
 --->
-<cfparam name="rc.product" type="any" />
+<cfparam name="rc.sku" type="any" />
 
 <cfoutput>
 	
-	<cfset local.eventRegSmartList = rc.product.geteventRegistrations()/>
+	<cfset local.eventRegSmartList = rc.sku.geteventRegistrations()/>
 	
 		<cf_HibachiListingDisplay smartList="#local.eventRegSmartList#"
 				recordEditAction="admin:entity.editeventregistration"
