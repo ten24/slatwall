@@ -851,7 +851,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									for(var i=1;i<=itemQuantity;i++) {
 										var eventRegistration = this.newEventRegistration();
 										eventRegistration.setorderItem(orderitem);
-										eventRegistration.seteventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistrationOpen"));
+										eventRegistration.seteventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
 										eventRegistration.setaccount(arguments.order.getaccount());
 										getHibachiDAO().save( eventRegistration );
 									}
