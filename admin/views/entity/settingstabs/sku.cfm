@@ -50,6 +50,8 @@ Notes:
 	<cf_SlatwallSettingTable showInheritance="false">
 		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />
 		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" />
+		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
+		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
 		<cf_SlatwallSetting settingName="skuCurrency" />
 		<cf_SlatwallSetting settingName="skuEligibleCurrencies" />
 		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
