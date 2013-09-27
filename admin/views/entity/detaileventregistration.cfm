@@ -47,10 +47,12 @@ Notes:
 	
 	Event Registration Status Types			
 	__________________			
+	erstRegistered
+	erstApproved
+	erstWaitListed
+	erstPending
+	erstAttended
 	erstCancelled
-	erstConfirmed		
-	erstRegistrationOpen						
-	erstRegistrationClosed					
 
 --->
 <cfparam name="rc.eventregistration" type="any" />
@@ -59,8 +61,8 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.eventregistration#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.eventregistration#" edit="#rc.edit#"
-								   backaction="admin:entity.detailorder"
-								   backquerystring="orderID=#rc.eventregistration.getOrderItem().getOrder().getOrderID()#"
+								   backaction="admin:entity.detailproduct"
+								   backquerystring="productID=#rc.eventregistration.getorderitem().getsku().getproduct().getProductID()###tabeventregistrations"
 								   deleteQueryString="redirectAction=admin:entity.detaileventregistration&eventregistrationID=#rc.eventregistration.geteventregistrationID()#">
 								      
 			<!---<cf_HibachiActionCaller action="admin:entity.detailorder" querystring="orderID=#rc.eventregistration.getOrderItem().getOrder().getOrderID()#" modal="false" type="list" />--->
@@ -74,7 +76,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="eventEndDateTime" edit="false" >
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="startReservationDateTime" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getorderitem().getsku()#" property="endReservationDateTime" edit="#rc.edit#" >
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration#" property="eventRegistrationStatusType" edit="#rc.edit#" >
+				<cf_HibachiPropertyDisplay object="#rc.eventregistration#" property="eventRegistrationStatusType" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.type.parentType.eventRegistrationStatusType')#" >
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
