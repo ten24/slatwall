@@ -48,6 +48,9 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
+	property name="commentService";
+	property name="settingService";
+	
 	
 	public any function getEventRegistrations(string orderItemIDList="") {
 		var smartList = this.getEventRegistrationSmartList();
@@ -73,6 +76,98 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
+	
+	public any function processEventRegistration_approve(required any eventRegistration, struct data={}) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
+		}
+		
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstApproved") );
+		
+		return arguments.eventRegistration;
+	}
+	
+	public any function processEventRegistration_attend(required any eventRegistration, struct data={}) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
+		}
+		
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstAttended") );
+		
+		return arguments.eventRegistration;
+	}
+	
+	public any function processEventRegistration_register(required any eventRegistration, struct data={}) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
+		}
+		
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstRegistered") );
+		
+		return arguments.eventRegistration;
+	}
+	
+	public any function processEventRegistration_waitlist(required any eventRegistration, struct data={}) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
+		}
+		
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstWaitListed") );
+		
+		return arguments.eventRegistration;
+	
+	}
+	
+	public any function processEventRegistration_pend(required any eventRegistration, struct data={}) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
+		}
+		
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstPending") );
+		
+		return arguments.eventRegistration;
+	}
+	
+	public any function processEventRegistration_cancel(required any eventRegistration, struct data={}) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
+		}
+		
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstCancelled") );
+		
+		return arguments.eventRegistration;
+	}
+
+	
+	/*public any function processEventRegistration_updateStatus(required any eventRegistration, struct data) {
+		param name="arguments.data.updateItems" default="false";
+		
+		// Get the original eventRegistration status code
+		var originalEventRegistrationStatus = arguments.eventRegistration.geteventRegistrationStatusType().getSystemCode();
+		
+		// Save new code
+		arguments.eventRegistration.seteventRegistrationStatusType(  getSettingService().getTypeBySystemCode(arguments.eventRegistration.getEventRegistrationStatusType().getSystemCode() ) );
+		
+		return arguments.eventRegistration;
+	}*/
 	
 	// =====================  END: Process Methods ============================
 	
