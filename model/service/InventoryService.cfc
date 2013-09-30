@@ -55,7 +55,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// TODO [paul]: Each of these methods are going to need to look for a getBundleFlag() on the sku
 		// If it is a bundled sku, then we need to check the sku's settings:
-		//		skuBundleAutoMakupInventoryOnSaleFlag
+		//		skuBundleAutoMakeupInventoryOnSaleFlag
 		//		skuBundleAutoBreakupInventoryOnReturnFlag
 		// If yes for the respective, and the onHand of the item == 0, then we need to actually decrement / increment the bundled skus and not the original sku
 		// See Below
@@ -67,6 +67,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' && arguments.entity.getStock().getSku().getBundledFlag() && arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag") && arguments.entity.getStock().getQuantity("QOH") lte 0) {
 						// Same as OrderDeliveryItem, but this is negative, and you need to check 'skuBundleAutoBreakupInventoryOnReturnFlag' instead of 'skuBundleAutoMakupInventoryOnSaleFlag'	
+						var processData = {locationID=arguments.entity.getStock().getLocation().getLocationID(), quantity=arguments.entity.getQuantity()};
+						getSkuService().processSku(arguments.entity, processData, 'breakupBundledSkus');
 					}
 
 					var inventory = this.newInventory();
@@ -81,7 +83,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			case "SlatwallOrderDeliveryItem": {
 				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
 					
-					if(arguments.entity.getStock().getSku().getBundledFlag() && arguments.entity.getStock().getSku().setting("skuBundleAutoMakupInventoryOnSaleFlag") && arguments.entity.getStock().getQuantity("QOH") lte 0) {
+					if(arguments.entity.getStock().getSku().getBundledFlag() && arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") && arguments.entity.getStock().getQuantity("QOH") lte 0) {
 						// TODO [paul]: Create loop here to do same logic as below but for every sku thats part of the sku bundle
 						// find their stock, based upon the location in arguments.entity.getStock().getLocation()
 						// Create Inventory record where quantityOut is arguments.entity.getQuantity() * bundledStock
@@ -94,8 +96,8 @@ component extends="HibachiService" accessors="true" output="false" {
 						// }
 						//
 						// REMEMBER TO MOVE THIS ALL TO THE SKU SERVICE 
-						// var processData = {locationID=arguments.entity.getStock().getLocation().getLocationID(), quantity=arguments.entity.getQuantity()};
-						// getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'makueBundledSkus')
+						var processData = {locationID=arguments.entity.getStock().getLocation().getLocationID(), quantity=arguments.entity.getQuantity()};
+						getSkuService().processSku(arguments.entity, processData, 'makeupBundledSkus');
 					}
 					
 					var inventory = this.newInventory();

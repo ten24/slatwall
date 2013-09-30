@@ -54,6 +54,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="productService" type="any";
 	property name="subscriptionService" type="any";
 	property name="contentService" type="any";
+	property name="stockService" type="any";
 	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
@@ -139,9 +140,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 	
 	// TODO [paul]: makeup / breakup
-	public any function processSku_makeupBundledSkus() {
+	public any function processSku_makeupBundledSkus(required any entity, required struct data) {
 		// data.location
 		
+		// Loop over every bundledSku
+		for(skuBundle in arguments.entity.getStock().getSku().getBundledSkus()) {
+		
+			// Create inventory record
+			var inventory = this.newInventory();
+			
+			inventory.setQuantityOut( arguments.entity.getQuantity() * skuBundle.getBundledQuantity() );
+			inventory.setStock( getStockService().getStockBySkuAndLocation( location=arguments.entity.getStock().getLocation(), sku=skuBundle.getBundledSku() ));
+			getHibachiDAO().save(inventory);
+		}
 		
 		/*
 		loop for every bundledSku
@@ -153,10 +164,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		create one new sku of the parent
 		*/
+		
+		return arguments.entity;
 	}
 	
-	public any function processSku_breakupBundledSkus() {
+	public any function processSku_breakupBundledSkus(required any entity, required struct data) {
 		// data.location
+		
+		// Loop over every bundledSku
+		for(skuBundle in arguments.entity.getStock().getSku().getBundledSkus()) {
+		
+			// Create inventory record
+			var inventory = this.newInventory();
+			
+			inventory.setQuantityIn( arguments.entity.getQuantity() * skuBundle.getBundledQuantity() );
+			inventory.setStock( getStockService().getStockBySkuAndLocation( location=arguments.entity.getStock().getLocation(), sku=skuBundle.getBundledSku() ));
+			getHibachiDAO().save(inventory);
+		}
+		
+		/*
+		loop for every bundledSku
+			var inventory = this.newInventory();
+			inventory.setQuantityOut(arguments.entity.getQuantity());
+			inventory.setStock(arguments.entity.getStock());
+			getHibachiDAO().save(inventory);
+		}
+		
+		create one new sku of the parent
+		*/
+		
+		return arguments.entity;
 	}
 	
 	// =====================  END: Process Methods ============================
