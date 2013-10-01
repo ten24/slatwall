@@ -65,7 +65,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			case "SlatwallStockReceiverItem": {
 				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
 					
-					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' && arguments.entity.getStock().getSku().getBundledFlag() && arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag") && arguments.entity.getStock().getQuantity("QOH") lte 0) {
+					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' 
+						&& arguments.entity.getStock().getSku().getBundledFlag()  eq 1
+						&& arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag") 
+						&& arguments.entity.getStock().getQuantity("QOH") lte 0) {
 						// Same as OrderDeliveryItem, but this is negative, and you need to check 'skuBundleAutoBreakupInventoryOnReturnFlag' instead of 'skuBundleAutoMakupInventoryOnSaleFlag'	
 						var processData = {locationID=arguments.entity.getStock().getLocation().getLocationID(), quantity=arguments.entity.getQuantity()};
 						getSkuService().processSku(arguments.entity, processData, 'breakupBundledSkus');
@@ -83,7 +86,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			case "SlatwallOrderDeliveryItem": {
 				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
 					
-					if(arguments.entity.getStock().getSku().getBundledFlag() && arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") && arguments.entity.getStock().getQuantity("QOH") lte 0) {
+					if(arguments.entity.getStock().getSku().getBundledFlag() eq 1
+						&& arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") 
+						&& arguments.entity.getStock().getQuantity("QOH") lte 0) {
 						// TODO [paul]: Create loop here to do same logic as below but for every sku thats part of the sku bundle
 						// find their stock, based upon the location in arguments.entity.getStock().getLocation()
 						// Create Inventory record where quantityOut is arguments.entity.getQuantity() * bundledStock
