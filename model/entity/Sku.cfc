@@ -341,6 +341,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	// END: Quantity Helper Methods
 	
+	
 	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================

@@ -141,16 +141,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// TODO [paul]: makeup / breakup
 	public any function processSku_makeupBundledSkus(required any entity, required struct data) {
-		// data.location
 		
 		// Loop over every bundledSku
-		for(skuBundle in arguments.entity.getStock().getSku().getBundledSkus()) {
-		
+		for(skuBundle in arguments.entity.getBundledSkus()) {
+
 			// Create inventory record
 			var inventory = this.newInventory();
 			
-			inventory.setQuantityOut( arguments.entity.getQuantity() * skuBundle.getBundledQuantity() );
-			inventory.setStock( getStockService().getStockBySkuAndLocation( location=arguments.entity.getStock().getLocation(), sku=skuBundle.getBundledSku() ));
+			inventory.setQuantityOut( arguments.data.quantity * skuBundle.getBundledQuantity() );
+			inventory.setStock( getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=getService("locationService").getLocation(arguments.data.location)) );
 			getHibachiDAO().save(inventory);
 		}
 		
@@ -172,13 +171,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// data.location
 		
 		// Loop over every bundledSku
-		for(skuBundle in arguments.entity.getStock().getSku().getBundledSkus()) {
+		for(skuBundle in arguments.entity.getBundledSkus()) {
 		
 			// Create inventory record
 			var inventory = this.newInventory();
 			
-			inventory.setQuantityIn( arguments.entity.getQuantity() * skuBundle.getBundledQuantity() );
-			inventory.setStock( getStockService().getStockBySkuAndLocation( location=arguments.entity.getStock().getLocation(), sku=skuBundle.getBundledSku() ));
+			inventory.setQuantityIn( arguments.data.quantity * skuBundle.getBundledQuantity() );
+			inventory.setStock(  getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=getService("locationService").getLocation(arguments.data.location)) );
 			getHibachiDAO().save(inventory);
 		}
 		

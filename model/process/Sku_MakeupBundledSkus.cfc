@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,25 +45,49 @@
 
 Notes:
 
---->
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfparam name="rc.sku" type="any" />
-<cfparam name="rc.product" type="any">
-
-<cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartList()#"  
-							recordEditAction="admin:entity.editskubundle"
-							recordEditQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#"
-							recordEditModal=true
-							recordDeleteAction="admin:entity.deleteskubundle"
-							recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabbundledskus"
-							edit="#rc.edit#">
-							
-		<cf_HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
-		<cf_HibachiListingColumn propertyIdentifier="bundledQuantity" />
-		
-	</cf_HibachiListingDisplay>	
+	// Injected Entity
+	property name="sku";
 	
-	<cf_HibachiActionCaller action="admin:entity.createskubundle" text="#request.slatwallScope.rbKey('admin.define.createskubundle')#" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" modal="true" />
-</cfoutput>
+	// Lazy / Injected Objects
+	
+	// New Properties
+
+	// Data Properties (ID's)
+	
+	// Data Properties (Inputs)
+	property name="location" hb_formFieldType="select";
+	property name="quantity";
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
+	
+	
+}

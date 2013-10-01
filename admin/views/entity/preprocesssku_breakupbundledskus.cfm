@@ -46,24 +46,22 @@
 Notes:
 
 --->
-
 <cfparam name="rc.sku" type="any" />
-<cfparam name="rc.product" type="any">
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartList()#"  
-							recordEditAction="admin:entity.editskubundle"
-							recordEditQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#"
-							recordEditModal=true
-							recordDeleteAction="admin:entity.deleteskubundle"
-							recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabbundledskus"
-							edit="#rc.edit#">
-							
-		<cf_HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
-		<cf_HibachiListingColumn propertyIdentifier="bundledQuantity" />
+	<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
 		
-	</cf_HibachiListingDisplay>	
-	
-	<cf_HibachiActionCaller action="admin:entity.createskubundle" text="#request.slatwallScope.rbKey('admin.define.createskubundle')#" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" modal="true" />
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+		</cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="#rc.edit#" valueOptions="#$.slatwall.getService("locationService").getLocationOptions()#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityProcessForm>
 </cfoutput>

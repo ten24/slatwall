@@ -77,22 +77,41 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Sku (many-to-one)    
-    	public void function setSku(required any sku) {    
-    		variables.sku = arguments.sku;    
-    		if(isNew() or !arguments.sku.hasBundledSku( this )) {    
-    			arrayAppend(arguments.sku.getBundledSkus(), this);    
-    		}    
-    	}    
-    	public void function removeSku(any sku) {    
-    		if(!structKeyExists(arguments, "sku")) {    
-    			arguments.sku = variables.sku;    
-    		}    
-    		var index = arrayFind(arguments.sku.getBundledSkus(), this);    
-    		if(index > 0) {    
-    			arrayDeleteAt(arguments.sku.getBundledSkus(), index);    
-    		}    
-    		structDelete(variables, "sku");    
-    	}
+	/*public void function setSku(required any sku) {    
+		variables.sku = arguments.sku;    
+		if(isNew() or !arguments.sku.hasSkuBundle( this )) {    
+			arrayAppend(arguments.sku.getSkuBundles(), this);    
+		}    
+	}    
+	public void function removeSku(any sku) {    
+		if(!structKeyExists(arguments, "sku")) {    
+			arguments.sku = variables.sku;    
+		}    
+		var index = arrayFind(arguments.sku.getSkuBundles(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.sku.getSkuBundles(), index);    
+		}    
+		structDelete(variables, "sku");    
+	}
+	
+	// Bundled Sku (many-to-one)    
+	public void function setBundledSku(required any bundledSku) {    
+		variables.bundledSku = arguments.bundledSku;    
+		if(isNew() or !arguments.bundledSku.hasSkuBundle( this )) {    
+			arrayAppend(arguments.bundledSku.getSkuBundles(), this);    
+		}    
+	}    
+	public void function removeBundledSku(any bundledSku) {    
+		if(!structKeyExists(arguments, "bundledSku")) {    
+			arguments.bundledSku = variables.bundledSku;    
+		}    
+		var index = arrayFind(arguments.bundledSku.getSkuBundles(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.bundledSku.getSkuBundles(), index);    
+		}    
+		structDelete(variables, "bundledSku");    
+	}*/
+
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
