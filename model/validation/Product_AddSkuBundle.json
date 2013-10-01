@@ -1,0 +1,8 @@
+{
+
+	"properties":{
+		"price":						[{"dataType":"numeric","required":true}],
+		"skuCode":						[{"required":true}],
+		"skus":							[{"required":true}]
+	}
+}

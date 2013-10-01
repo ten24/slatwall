@@ -1,0 +1,6 @@
+{
+
+	"properties":{
+		"quantity":						[{"dataType":"numeric","required":true}]
+	}
+}
