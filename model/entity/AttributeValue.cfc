@@ -64,6 +64,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
@@ -81,6 +82,12 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
+	
+	// Audit properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
@@ -182,42 +189,60 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "brand");
 	}
+
+	// Image (many-to-one)
+	public void function setImage(required any image) {    
+		variables.image = arguments.image;    
+		if(isNew() or !arguments.image.hasAttributeValue( this )) {    
+			arrayAppend(arguments.image.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeImage(any image) {    
+		if(!structKeyExists(arguments, "image")) {    
+			arguments.image = variables.image;    
+		}    
+		var index = arrayFind(arguments.image.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.image.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "image");    
+	}
 	
 	// Location (many-to-one)    
-    	public void function setLocation(required any location) {    
-    		variables.location = arguments.location;    
-    		if(isNew() or !arguments.location.hasAttributeValue( this )) {    
-    			arrayAppend(arguments.location.getAttributeValues(), this);    
-    		}    
-    	}    
-    	public void function removeLocation(any location) {    
-    		if(!structKeyExists(arguments, "location")) {    
-    			arguments.location = variables.location;    
-    		}    
-    		var index = arrayFind(arguments.location.getAttributeValues(), this);    
-    		if(index > 0) {    
-    			arrayDeleteAt(arguments.location.getAttributeValues(), index);    
-    		}    
-    		structDelete(variables, "location");    
-    	}
+	public void function setLocation(required any location) {    
+		variables.location = arguments.location;    
+		if(isNew() or !arguments.location.hasAttributeValue( this )) {    
+			arrayAppend(arguments.location.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeLocation(any location) {    
+		if(!structKeyExists(arguments, "location")) {    
+			arguments.location = variables.location;    
+		}    
+		var index = arrayFind(arguments.location.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.location.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "location");    
+	}
 	
 	// Location Configuration (many-to-one)    
-    	public void function setLocationConfiguration(required any locationconfiguration) {    
-    		variables.locationconfiguration = arguments.locationconfiguration;    
-    		if(isNew() or !arguments.locationconfiguration.hasAttributeValue( this )) {    
-    			arrayAppend(arguments.locationconfiguration.getAttributeValues(), this);    
-    		}    
-    	}    
-    	public void function removeLocationConfiguration(any locationconfiguration) {    
-    		if(!structKeyExists(arguments, "locationconfiguration")) {    
-    			arguments.locationconfiguration = variables.locationconfiguration;    
-    		}    
-    		var index = arrayFind(arguments.locationconfiguration.getAttributeValues(), this);    
-    		if(index > 0) {    
-    			arrayDeleteAt(arguments.locationconfiguration.getAttributeValues(), index);    
-    		}    
-    		structDelete(variables, "locationconfiguration");    
-    	}
+	public void function setLocationConfiguration(required any locationconfiguration) {    
+		variables.locationconfiguration = arguments.locationconfiguration;    
+		if(isNew() or !arguments.locationconfiguration.hasAttributeValue( this )) {    
+			arrayAppend(arguments.locationconfiguration.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeLocationConfiguration(any locationconfiguration) {    
+		if(!structKeyExists(arguments, "locationconfiguration")) {    
+			arguments.locationconfiguration = variables.locationconfiguration;    
+		}    
+		var index = arrayFind(arguments.locationconfiguration.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.locationconfiguration.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "locationconfiguration");    
+	}
 	
 	// Order (many-to-one)    
 	public void function setOrder(required any order) {    
