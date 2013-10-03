@@ -149,6 +149,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var inventory = this.newInventory();
 			
 			inventory.setQuantityOut( arguments.data.quantity * skuBundle.getBundledQuantity() );
+			
 			inventory.setStock( getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=getService("locationService").getLocation(arguments.data.location)) );
 			getHibachiDAO().save(inventory);
 		}
@@ -168,7 +169,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processSku_breakupBundledSkus(required any entity, required struct data) {
-		// data.location
 		
 		// Loop over every bundledSku
 		for(skuBundle in arguments.entity.getBundledSkus()) {

@@ -77,7 +77,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Sku (many-to-one)    
-	/*public void function setSku(required any sku) {    
+	public void function setSku(required any sku) {    
 		variables.sku = arguments.sku;    
 		if(isNew() or !arguments.sku.hasSkuBundle( this )) {    
 			arrayAppend(arguments.sku.getSkuBundles(), this);    
@@ -110,7 +110,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 			arrayDeleteAt(arguments.bundledSku.getSkuBundles(), index);    
 		}    
 		structDelete(variables, "bundledSku");    
-	}*/
+	}
 
 	
 	// =============  END:  Bidirectional Helper Methods ===================
