@@ -52,13 +52,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="sku";
 	
 	// Lazy / Injected Objects
+	property name="location";
 	
 	// New Properties
 
 	// Data Properties (ID's)
+	property name="locationID" hb_formFieldType="select";
 	
 	// Data Properties (Inputs)
-	property name="location" hb_formFieldType="select";
 	property name="quantity";
 	
 	// Data Properties (Related Entity Populate)
@@ -74,6 +75,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ========================  END: Defaults =============================
 
 	// =================== START: Lazy Object Helpers ======================
+	
+	public any function getLocation() {
+		if(!structKeyExists(variables, "location") && !isNull(getLocationID())) {
+			variables.location = getService("locationService").getLocation( getLocationID() );
+		}
+		if(structKeyExists(variables, "location")) {
+			return variables.location;	
+		}
+	}
 	
 	// ===================  END: Lazy Object Helpers =======================
 	

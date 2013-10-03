@@ -140,50 +140,69 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 	
 	// TODO [paul]: makeup / breakup
-	public any function processSku_makeupBundledSkus(required any entity, required struct data) {
+	public any function processSku_MakeupBundledSkus(required any sku, required any processObject) {
 		
-		//writeDump(var=#data# top=3);
-		//abort;
+		// Create a stockAdjustment
+		var stockAdjustment = getStockService().newStockAdjustment();
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satMakeupBundledSkus') ); // <- You will need to add this type
+		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
+		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
+		
+		var makupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+		
+		var makupItem = getStockService().newStockAdjustmentItem();
+		makupItem.setStockAdjustment( stockAdjustment );
+		makupItem.setQuantity( arguments.processObject.getQuantity() );
+		makupItem.setToStock( makupStock );
 		
 		// Loop over every bundledSku
 		for(skuBundle in arguments.entity.getBundledSkus()) {
-
-			// Create inventory record
-			var inventory = this.newInventory();
 			
-			inventory.setQuantityOut( arguments.data.quantity * skuBundle.getBundledQuantity() );
-			inventory.setStock( getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=getService("locationService").getLocation(arguments.data.location)) );
-			getHibachiDAO().save(inventory);
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=arguments.processObject.getLocation() );
+			
+			var makupItem = getStockService().newStockAdjustmentItem();
+			makupItem.setStockAdjustment( stockAdjustment );
+			makupItem.setQuantity( bundledSku.getBundleQuantity() );
+			makupItem.setFromStock( thisStock );
+			
 		}
 		
-		/*
-		loop for every bundledSku
-			var inventory = this.newInventory();
-			inventory.setQuantityOut(arguments.entity.getQuantity());
-			inventory.setStock(arguments.entity.getStock());
-			getHibachiDAO().save(inventory);
-		}
+		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
 		
-		create one new sku of the parent
-		*/
-		
-		return arguments.entity;
+		return arguments.sku;
 	}
 	
-	public any function processSku_breakupBundledSkus(required any entity, required struct data) {
+	public any function processSku_BreakupBundledSkus(required any sku, required any processObject) {
+		
+		// Create a stockAdjustment
+		var stockAdjustment = getStockService().newStockAdjustment();
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satBreakupBundledSkus') ); // <- You will need to add this type
+		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
+		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
+		
+		var makupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+		
+		var makupItem = getStockService().newStockAdjustmentItem();
+		makupItem.setStockAdjustment( stockAdjustment );
+		makupItem.setQuantity( arguments.processObject.getQuantity() );
+		makupItem.setFromStock( makupStock );
 		
 		// Loop over every bundledSku
 		for(skuBundle in arguments.entity.getBundledSkus()) {
-		
-			// Create inventory record
-			var inventory = this.newInventory();
 			
-			inventory.setQuantityIn( arguments.data.quantity * skuBundle.getBundledQuantity() );
-			inventory.setStock(  getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=getService("locationService").getLocation(arguments.data.location)) );
-			getHibachiDAO().save(inventory);
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=arguments.processObject.getLocation() );
+			
+			var makupItem = getStockService().newStockAdjustmentItem();
+			makupItem.setStockAdjustment( stockAdjustment );
+			makupItem.setQuantity( bundledSku.getBundleQuantity() );
+			makupItem.setToStock( thisStock );
+			
 		}
 		
-		return arguments.entity;
+		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		
+		return arguments.sku;
+		
 	}
 	
 	// =====================  END: Process Methods ============================
