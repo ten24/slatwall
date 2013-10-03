@@ -36,6 +36,7 @@
 		<Record typeID="444df2a3ebb07d6280c339a09c0d90d3" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df2a3ebb07d6280c339a09c0d90d3" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account" systemCode="astAccount" />
 		<Record typeID="444df32b9730e4a50af0c0ecb9d77f3b" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32b9730e4a50af0c0ecb9d77f3b" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account Payment" systemCode="astAccountPayment" />
 		<Record typeID="444df325adea07a73014e74b449eb315" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df325adea07a73014e74b449eb315" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Brand" systemCode="astBrand" />
+		<Record typeID="c546d8f4f4a7cecacce568e94f04a30f" typeIDPath="444df2919d15d8ef5c9bc67857f19228,c546d8f4f4a7cecacce568e94f04a30f" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Image" systemCode="astImage" />
 		<Record typeID="444df327c72a5bd51bb2f691aac17008" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df327c72a5bd51bb2f691aac17008" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order" systemCode="astOrder" />
 		<Record typeID="444df292eea355ddad72f5614726bc75" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df292eea355ddad72f5614726bc75" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Item" systemCode="astOrderItem" />
 		<Record typeID="444df32ac631b198a0f0319dd64e0e00" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32ac631b198a0f0319dd64e0e00" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Payment" systemCode="astOrderPayment" />

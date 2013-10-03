@@ -46,49 +46,6 @@
 Notes:
 
 --->
-<cfparam name="rc.image" type="any">
-<cfparam name="rc.edit" type="boolean">
-
-<cfset backAction = rc.entityActionDetails.backAction />
-<cfset backQueryString = "" />
-
-<!--- find the correct back action & QS --->
-<cfif not isNull(rc.image.getProduct())>
-	<cfset backAction = "admin:entity.detailproduct" />
-	<cfset backQueryString = "productID=#rc.image.getProduct().getProductID()#" />	
-<cfelseif  not isNull(rc.image.getPromotion())>
-	<cfset backAction = "admin:entity.detailpromotion" />
-	<cfset backQueryString = "promotionID=#rc.image.getPromotion().getPromotionID()#" />
-<cfelseif not isNull(rc.image.getOption())>
-	<cfset backAction = "admin:entity.detailoption" />
-	<cfset backQueryString = "optionID=#rc.image.getOption().getOptionID()#" />
-</cfif>
-
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#" 
-								   backAction="#backAction#" 
-								   backQueryString="#backQueryString#"
-								   deleteQueryString="redirectAction=#backAction#&#backQueryString#"  />
-
-		<cf_HibachiPropertyRow>
-			
-			<cf_HibachiPropertyList divclass="span12">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.image#">
-			<cf_HibachiTab view="admin:entity/imagetabs/image" />
-			<cfif not isNull(rc.image.getProduct())>
-				<cf_HibachiTab view="admin:entity/imagetabs/options" />
-			</cfif>
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.image.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.image#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</cf_HibachiTabGroup>
-	</cf_HibachiEntityDetailForm>
+	#rc.image.getImage()#
 </cfoutput>
-

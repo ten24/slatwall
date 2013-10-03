@@ -64,6 +64,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
@@ -179,6 +180,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.brand.getAttributeValues(), index);
 		}
 		structDelete(variables, "brand");
+	}
+	
+	// Image (many-to-one)    
+	public void function setImage(required any image) {    
+		variables.image = arguments.image;    
+		if(isNew() or !arguments.image.hasAttributeValue( this )) {    
+			arrayAppend(arguments.image.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeImage(any image) {    
+		if(!structKeyExists(arguments, "image")) {    
+			arguments.image = variables.image;    
+		}    
+		var index = arrayFind(arguments.image.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.image.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "image");    
 	}
 	
 	// Order (many-to-one)    
