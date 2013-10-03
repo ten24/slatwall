@@ -79,17 +79,17 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// Sku (many-to-one)    
 	public void function setSku(required any sku) {    
 		variables.sku = arguments.sku;    
-		if(isNew() or !arguments.sku.hasSkuBundle( this )) {    
-			arrayAppend(arguments.sku.getSkuBundles(), this);    
+		if(isNew() or !arguments.sku.hasBundledSku( this )) {    
+			arrayAppend(arguments.sku.getBundledSkus(), this);    
 		}    
 	}    
 	public void function removeSku(any sku) {    
 		if(!structKeyExists(arguments, "sku")) {    
 			arguments.sku = variables.sku;    
 		}    
-		var index = arrayFind(arguments.sku.getSkuBundles(), this);    
+		var index = arrayFind(arguments.sku.getBundledSkus(), this);    
 		if(index > 0) {    
-			arrayDeleteAt(arguments.sku.getSkuBundles(), index);    
+			arrayDeleteAt(arguments.sku.getBundledSkus(), index);    
 		}    
 		structDelete(variables, "sku");    
 	}

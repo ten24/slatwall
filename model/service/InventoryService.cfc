@@ -72,7 +72,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						&& arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag") 
 						&& arguments.entity.getStock().getQuantity("QOH") gte 0) {
 						// Same as OrderDeliveryItem, but this is negative, and you need to check 'skuBundleAutoBreakupInventoryOnReturnFlag' instead of 'skuBundleAutoMakupInventoryOnSaleFlag'	
-						var processData = {location=arguments.entity.getStock().getLocation(), quantity=arguments.entity.getQuantity()};
+						var processData = {location=arguments.entity.getStock().getLocation().getLocationID(), quantity=arguments.entity.getQuantity()};
 						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'breakupBundledSkus');
 					}
 

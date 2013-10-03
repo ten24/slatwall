@@ -142,6 +142,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// TODO [paul]: makeup / breakup
 	public any function processSku_makeupBundledSkus(required any entity, required struct data) {
 		
+		//writeDump(var=#data# top=3);
+		//abort;
+		
 		// Loop over every bundledSku
 		for(skuBundle in arguments.entity.getBundledSkus()) {
 
@@ -180,17 +183,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			inventory.setStock(  getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=getService("locationService").getLocation(arguments.data.location)) );
 			getHibachiDAO().save(inventory);
 		}
-		
-		/*
-		loop for every bundledSku
-			var inventory = this.newInventory();
-			inventory.setQuantityOut(arguments.entity.getQuantity());
-			inventory.setStock(arguments.entity.getStock());
-			getHibachiDAO().save(inventory);
-		}
-		
-		create one new sku of the parent
-		*/
 		
 		return arguments.entity;
 	}
