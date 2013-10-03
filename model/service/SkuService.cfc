@@ -152,7 +152,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var inventory = this.newInventory();
 			
 			inventory.setQuantityOut( arguments.data.quantity * skuBundle.getBundledQuantity() );
-			
 			inventory.setStock( getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=getService("locationService").getLocation(arguments.data.location)) );
 			getHibachiDAO().save(inventory);
 		}
