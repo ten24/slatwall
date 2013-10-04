@@ -57,7 +57,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// New Properties
 
 	// Data Properties (ID's)
-	property name="locationID" hb_formFieldType="select";
+	property name="locationID" hb_formFieldType="select" hb_rbKey="entity.location";
 	
 	// Data Properties (Inputs)
 	property name="quantity";
@@ -67,6 +67,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Object / Array Populate)
 	
 	// Option Properties
+	property name="locationIDOptions";
 	
 	// Helper Properties
 	
@@ -92,6 +93,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ==================  END: New Property Helpers =======================
 	
 	// ====================== START: Data Options ==========================
+	
+	public array function getLocationIDOptions() {
+		if( !structKeyExists(variables,"locationIDOptions") ) {
+			variables.loyaltyIDOptions = getService("locationService").getLocationOptions();
+		}
+		return variables.loyaltyIDOptions;
+	}
 	
 	// ======================  END: Data Options ===========================
 	
