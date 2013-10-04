@@ -55,6 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="subscriptionService" type="any";
 	property name="contentService" type="any";
 	property name="stockService" type="any";
+	property name="settingService" type="any";
 	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
@@ -156,13 +157,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		makupItem.setToStock( makupStock );
 		
 		// Loop over every bundledSku
-		for(skuBundle in arguments.entity.getBundledSkus()) {
+		for(bundledSku in arguments.entity.getBundledSkus()) {
 			
-			var thisStock = getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=arguments.processObject.getLocation() );
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 			
 			var makupItem = getStockService().newStockAdjustmentItem();
 			makupItem.setStockAdjustment( stockAdjustment );
-			makupItem.setQuantity( bundledSku.getBundleQuantity() );
+			makupItem.setQuantity( bundledSku.getBundledQuantity() );
 			makupItem.setFromStock( thisStock );
 			
 		}
@@ -188,13 +189,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		makupItem.setFromStock( makupStock );
 		
 		// Loop over every bundledSku
-		for(skuBundle in arguments.entity.getBundledSkus()) {
+		for(bundledSku in arguments.entity.getBundledSkus()) {
 			
-			var thisStock = getStockService().getStockBySkuAndLocation( sku=skuBundle.getBundledSku(), location=arguments.processObject.getLocation() );
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 			
 			var makupItem = getStockService().newStockAdjustmentItem();
 			makupItem.setStockAdjustment( stockAdjustment );
-			makupItem.setQuantity( bundledSku.getBundleQuantity() );
+			makupItem.setQuantity( bundledSku.getBundledQuantity() );
 			makupItem.setToStock( thisStock );
 			
 		}

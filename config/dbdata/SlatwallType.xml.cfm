@@ -64,6 +64,10 @@
 		<Record typeID="444df2a7a2c39796d2b15516840344ea" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2a7a2c39796d2b15516840344ea" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Rich Text Editor" systemCode="atWysiwyg" />
 		<Record typeID="444df2d8eb236c42dbbef7ea66200f1b" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d8eb236c42dbbef7ea66200f1b" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Yes / No" systemCode="atYesNo" />
 		
+		<Record typeID="444df2e1afee04d4971094d467a2c619" typeIDPath="37459ca1a2693ce2ebeec6264e90d155" parentTypeID="NULL" type="Bundled Skus Build Types" systemCode="BundledSkusBuildType" />
+		<Record typeID="444df2e2f66ddfaf9c60caf5c76349a6" typeIDPath="37459ca1a2693ce2ebeec6264e90d155,3749e30bcf8179d5531d6713db673565" parentTypeID="37459ca1a2693ce2ebeec6264e90d155" type="Makeup Bundled Skus" systemCode="satMakeupBundledSkus" />
+		<Record typeID="444df2e3cd41522453f5582a5950342e" typeIDPath="37459ca1a2693ce2ebeec6264e90d155,37a1ceb6969fd35927b67733d849532a" parentTypeID="37459ca1a2693ce2ebeec6264e90d155" type="Breakup Bundled Skus" systemCode="satBreakupBundledSkus" />
+				
 		<Record typeID="444df32f9fb5d68f03f1af307b3d0644" typeIDPath="444df32f9fb5d68f03f1af307b3d0644" parentTypeID="NULL" type="Content Template Types" systemCode="contentTemplateType" />
 		<Record typeID="5accbf4aaecf23ab7e2dc384d04c3943" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,5accbf4aaecf23ab7e2dc384d04c3943" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Barrier Page" systemCode="cttBarrierPage" />
 		<Record typeID="444df332f3988ad0c802b83361f99a01" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df332f3988ad0c802b83361f99a01" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Brand" systemCode="cttBrand" />
@@ -166,3 +170,7 @@
 
 	</Records>
 </Table>
+
+37459ca1a2693ce2ebeec6264e90d155
+3749e30bcf8179d5531d6713db673565
+

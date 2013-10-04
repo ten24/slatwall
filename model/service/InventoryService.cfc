@@ -54,14 +54,16 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// entity will be one of StockReceiverItem, StockPhysicalItem, StrockAdjustmentDeliveryItem, VendorOrderDeliveryItem, OrderDeliveryItem
 	public void function createInventory(required any entity) {
+		//writeDump(var=#arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")# top=3);
+		//abort;
 		
-		switch(entity.getEntityName()) {
+		switch(arguments.entity.getEntityName()) {
 			case "SlatwallStockReceiverItem": {
-				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
+				if(!isNull(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) && arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
 					
 					// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
 					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' 
-						&& arguments.entity.getStock().getSku().getBundleFlag() eq 1
+						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
 						&& arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag")) {
 
 						var processData = {
@@ -83,11 +85,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				break;
 			}
 			case "SlatwallOrderDeliveryItem": {
-				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
+				if(!isNull(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) && arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
 
 					// Dynamically do a makeupBundledSkus call, if this is a bundle sku, the setting is enabled to do this dynamically, and we have QOH < whats needed
 					if(!isNull(arguments.entity.getStock().getSku().getBundleFlag())
-						&& arguments.entity.getStock().getSku().getBundleFlag()
+						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
 						&& arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") 
 						&& arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity() < 0) {
 							
