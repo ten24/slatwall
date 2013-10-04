@@ -50,9 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cfset local.salesHistorySmartList = rc.sku.getSalesHistory()/>
-	<!---<cfdump var="#local.salesHistorySmartList#" top="1"><cfabort>--->
-	<cfif !isNull(local.salesHistorySmartList)>
+	<cfset local.salesHistorySmartList = rc.sku.getOrderItemsSmartList()/>
 		<cf_HibachiListingDisplay smartList="#local.salesHistorySmartList#"
 				recordEditAction="admin:entity.editorderitem"
 				recorddetailaction="admin:entity.detailorderitem">
@@ -64,8 +62,5 @@ Notes:
 			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
 			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
 		</cf_HibachiListingDisplay>
-	<cfelse>
-		<!--No sales history found for this SKU.-->
-	</cfif>
 	
 </cfoutput>

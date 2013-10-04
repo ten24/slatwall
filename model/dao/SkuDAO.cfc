@@ -150,6 +150,7 @@ Notes:
 				hql &= "INNER JOIN FETCH sku.options option ";
 			} else if (arguments.product.getBaseProductType() eq "subscription") {
 				hql &= "INNER JOIN sku.subscriptionTerm st ";
+				hql &= "INNER JOIN sku.orderItems oi ";
 				hql &= "INNER JOIN FETCH sku.subscriptionBenefits sb ";
 			}
 		}
