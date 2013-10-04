@@ -50,24 +50,21 @@ Notes:
 
 <cfoutput>
 	
-	<!---<cfset local.salesHistorySmartList = rc.product.getSalesHistory()/>--->
-	<cfset local.salesHistorySmartList = rc.product.getSkusSmartList()/>
-	<!---<cfdump var="#local.salesHistorySmartList#" top="1"><cfabort>--->
-	<!---<cfdump var="#rc.product.getSkus()#" top="3"><cfabort>--->
-	<cfif !isNull(local.salesHistorySmartList)>
-		<cf_HibachiListingDisplay smartList="#local.salesHistorySmartList#"
-				recordEditAction="admin:entity.editorderitem"
-				recorddetailaction="admin:entity.detailorderitem">
-			<cf_HibachiListingColumn propertyIdentifier="orderitems.order.account.firstname" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitems.order.account.lastname" />
-			<cf_HibachiListingColumn propertyIdentifier="product.productName" />
-			<cf_HibachiListingColumn propertyIdentifier="skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="skudefinition" />
-		</cf_HibachiListingDisplay>
-	<cfelse>
-		<!--No sales history found for this SKU.-->
-	</cfif>
+	<cf_HibachiListingDisplay smartList="#rc.product.getPlacedOrderItemsSmartList()#"
+			recordEditAction="admin:entity.editorderitem"
+			recorddetailaction="admin:entity.detailorderitem">
+			
+		<cf_HibachiListingColumn propertyIdentifier="order.account.firstname" />
+		<cf_HibachiListingColumn propertyIdentifier="order.account.lastname" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
+		
+		<cfif rc.product.getBaseProductType() EQ "event">
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+		</cfif>
+		
+		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
+	</cf_HibachiListingDisplay>
 	
 </cfoutput>

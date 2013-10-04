@@ -107,7 +107,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
-	property name="salesHistory" type="array" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
 	property name="qats" type="numeric" persistent="false";
@@ -116,6 +115,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="unusedProductOptionGroups" type="array" persistent="false";
 	property name="unusedProductSubscriptionTerms" type="array" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
+	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	
 	// Non-Persistent Properties - Delegated to default sku
 	property name="currencyCode" persistent="false";
@@ -157,32 +157,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.listingPagesOptionsSmartList;
     }
-    
-	// Retrieve sales history related to this sku
-	public any function getSalesHistory() {
-		if(!structKeyExists(variables, "salesHistorySmartList")) {
-			var smartList = getService("OrderService").getOrderItemSmartList();
-			variables.salesHistorySmartList = smartList;
-		}
-		var orderItemsArray = [];
-		var orderItemIDList = "";
-		
-		for (var sku in skus) {
-			var orderitems = sku.getOrderItems();
-			for( var orderItem in orderitems ) {
-				arrayAppend(orderItemsArray,orderItem.getorderItemID());
-			}	
-		}
-		
-		if(arraylen(orderItemsArray)) {
-			orderItemIDList = arrayToList(orderItemsArray);
-			variables.salesHistorySmartList.addInFilter('orderItemID', '#orderItemIDList#');
-		} else {
-			variables.salesHistorySmartList.addFilter('orderItemID', '');
-		}
-				
-		return variables.salesHistorySmartList;
-	}
     
 	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
         if(!arguments.sorted && !arguments.fetchOptions) {
@@ -702,6 +676,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.unusedProductSubscriptionTerms = getService('subscriptionService').getUnusedProductSubscriptionTerms( getProductID() );
 		}
 		return variables.unusedProductSubscriptionTerms;
+	}
+	
+	public any function getPlacedOrderItemsSmartList() {
+		if(!structKeyExists(variables, "placedOrderItemsSmartList")) {
+			variables.placedOrderItemsSmartList = getService("OrderService").getOrderItemSmartList();
+			variables.placedOrderItemsSmartList.addFilter('sku.product.productID', getProductID());
+			variables.placedOrderItemsSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
+		}
+
+		return variables.placedOrderItemsSmartList;
 	}
 	
 

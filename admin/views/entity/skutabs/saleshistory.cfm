@@ -50,17 +50,16 @@ Notes:
 
 <cfoutput>
 	
-	<cfset local.salesHistorySmartList = rc.sku.getOrderItemsSmartList()/>
-		<cf_HibachiListingDisplay smartList="#local.salesHistorySmartList#"
-				recordEditAction="admin:entity.editorderitem"
-				recorddetailaction="admin:entity.detailorderitem">
-			<cf_HibachiListingColumn propertyIdentifier="order.account.firstname" />
-			<cf_HibachiListingColumn propertyIdentifier="order.account.lastname" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
-		</cf_HibachiListingDisplay>
-	
+	<cf_HibachiListingDisplay smartList="#rc.sku.getPlacedOrderItemsSmartList()#"
+			recordEditAction="admin:entity.editorderitem"
+			recorddetailaction="admin:entity.detailorderitem">
+		<cf_HibachiListingColumn propertyIdentifier="order.account.firstname" />
+		<cf_HibachiListingColumn propertyIdentifier="order.account.lastname" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
+	</cf_HibachiListingDisplay>
+
 </cfoutput>
