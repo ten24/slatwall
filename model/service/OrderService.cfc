@@ -841,19 +841,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
 							
-							// Loop over the orderItems looking for any skus that are 'event' skus.  
-							var orderItems = arguments.order.getorderItems(); 
-							for(var orderitem in orderItems) {
-								var itemsku = orderitem.getSku();
-								var itemquantity = orderItem.getQuantity();
-								if(itemsku.getBaseProductType() == "event") {
-									// Create EventRegistration records.
-									for(var i=1;i<=itemQuantity;i++) {
-										var eventRegistration = this.newEventRegistration();
-										eventRegistration.setorderItem(orderitem);
-										eventRegistration.seteventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
-										eventRegistration.setaccount(arguments.order.getaccount());
-										getHibachiDAO().save( eventRegistration );
+							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
+							for(var orderitem in arguments.order.getOrderItems()) {
+								if(orderitem.getSku().getBaseProductType() == "event") {
+									for(var eventRegistration in orderitem.getEventRegistrations()) {
+										if(orderItem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+										} else {
+											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
+										}
 									}
 								}
 							}
@@ -1032,6 +1028,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.order;
 	}
+	
 	
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
@@ -1251,6 +1248,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// Process: Order Item
+	public any function processOrderItem_updateRegistrationQuantity(required any orderItem) {
+		/*
+		
+		// We need less event registrations, and order has not been placed yet
+		if( arrayLen(orderItem.getEventRegistrations()) gt orderItem.getQuantity() && arguments.order.getStatusCode() == "ostNotPlaced" ) {
+			
+			var numberToRemove = arrayLen(orderItem.getEventRegistrations()) - orderItem.getQuantity();
+			var removableEvents = [];
+			
+			for(var eventRegistration in orderItem.getEventRegistrations()) {
+				if(isNull(eventRegistration.getFirstName()) && isNull(eventRegistration.getLastName()) && isNull(eventRegistration.getEmailAddress()) && isNull(eventRegistration().getPhoneNumber())) {
+					arrayAppend(removableEvents, eventRegistration);
+					if(arrayLen(removableEvents) eq numberToRemove) {
+						break;
+					}
+				}
+			}
+			if(arrayLen(removableEvents) >= numberToRemove) {
+				for(var eventRegistration in eventsToRemove) {
+					eventRegistration.removeOrderItem();
+				}
+			}
+		
+		}
+		
+		// We need less event registration, but couldn't do it... add error
+		if(arrayLen(orderItem.getEventRegistrations()) gt orderItem.getQuantity()) {
+			orderItem.addError('updateRegistrationQuantity', rbKey('validate.orderItem.quantity.tooManyEventRegistrations'));
+		}
+		
+		// We need more event registrations
+		if(arrayLen(orderItem.getEventRegistrations()) lt orderItem.getQuantity()) {
+			for(var i=1; i <= orderItem.getQuantity() - arrayLen(orderItem.getEventRegistrations()); i++ ) {
+				var eventRegistration = this.newEventRegistration();
+				eventRegistration.setOrderItem(orderitem);
+				
+				eventRegistration.setEventRegistrationStatusType( eventRegistration.getEventRegistrationStatusType() ); // TODO: CHANGE TO NOT PLACED
+				
+				eventRegistration.setAccount(arguments.order.getAccount());
+				eventRegistration = getEventService().saveEventRegistration( eventRegistration );	
+			}
+		}
+		*/
+		
+		return arguments.orderItem;
+	}
+
+	
 	public any function processOrderItem_updateStatus(required any orderItem) {
 		// First we make sure that this order item is not already fully fulfilled, or onHold because we cannont automatically update those statuses
 		if(!listFindNoCase("oistFulfilled,oistOnHold",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
@@ -1511,6 +1556,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Make sure the auto-state stuff gets called.
 			arguments.order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+		}
+		
+		// Check for updateEventRegistrationQuantity Needs
+		if(!arguments.order.hasErrors() && !listFindNoCase("ostClosed,ostCanceled", arguments.order.getStatusCode())) {
+			
+			var updateEventRegistrationQuantityError = false;
+			
+			// Loop over the orderItems looking for any skus that are 'event' skus. 
+			for(var orderitem in arguments.order.getOrderItems()) {
+				
+				// The number of reg & quantity don't match
+				if(orderItem.getSku().getBaseProductType() == "event" && arrayLen(orderItem.getEventRegistrations()) gt orderItem.getQuantity()) {
+					
+					orderItem = this.processOrderItem(orderItem, {}, 'updateEventRegistrationQuantity');
+					
+					if(orderItem.hasError('updateEventRegistrationQuantity')) {
+						updateEventRegistrationQuantityError = true;
+					}
+				}
+			}
+			
+			if(updateEventRegistrationQuantityError) {
+				order.addError('orderItems', rbKey('validate.order.orderItems.tooManyEventRegistrations') );
+			}
 		}
 		
 		return arguments.order;

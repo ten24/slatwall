@@ -144,6 +144,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processEventRegistration_cancel(required any eventRegistration, struct data={}) {
+		
+		// We need to update the quantity of the original orderItem
+		// var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1
+		// arguments.eventRegistration.getOrderItem( newQuantity )
+		// We'll prob need to add option in admin to refund credit for cancelation
+		
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();

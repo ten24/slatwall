@@ -50,10 +50,14 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// Persistent Properties
 	property name="eventRegistrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="firstName";
+	property name="lastName";
+	property name="emailAddress";
+	property name="phoneNumber";
 	
 	// Related Object Properties (many-to-one)
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" ;
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" ;
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="eventRegistrationStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventRegistrationStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventRegistrationStatusType";
 	
 	// Related Object Properties (one-to-many)
@@ -72,7 +76,15 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	// Non-Persistent Properties
 	property name="productName"  persistent="false";
 	
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
+	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getProductName() {
+		return orderItem.getsku().getproduct().getproductName();
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
@@ -80,28 +92,65 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
-	// ================== START: Overridden Methods ========================
-	public string function getSimpleRepresentationPropertyName() {
-		return "productName";
-	}
-	public string function getProductName() {
-		return orderItem.getsku().getproduct().getproductName();
-	}
+	// =============== START: Custom Validation Methods ====================
 	
-	// ==================  END:  Overridden Methods ========================
+	// ===============  END: Custom Validation Methods =====================
 	
-	// ============== START: Overridden Implicet Getters ===================
+	// =============== START: Custom Formatting Methods ====================
 	
-	public any function geteventRegistrationStatusType() {
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
+	
+	public any function getEventRegistrationStatusType() {
 		if(isNull(variables.eventRegistrationStatusType)) {
+			// Needs to change to something like 'erstRegistrationNotPlaced'
 			variables.eventRegistrationStatusType = getService("settingService").getTypeBySystemCode('erstRegistrationClosed');
 		}
 		return variables.eventRegistrationStatusType;
 	}
 	
-	// ==============  END: Overridden Implicet Getters ====================
+	public any function getFirstName() {
+		if(!isNull(getAccount())) {
+			variables.firstName = javaCast("null", "");
+			return getAccount().getFirstName();
+		}
+		if(structKeyExists(variables, "firstName")) {
+			return variables.firstName;
+		}
+	}
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
+	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentation() {
+		var simpleRep = "";
+		if(!isNull(getFirstName())) {
+			simpleRep = listAppend(simpleRep, getFirstName(), " ");
+		}
+		if(!isNull(getLastName())) {
+			simpleRep = listAppend(simpleRep, getLastName(), " ");
+		}
+		if(len(simpleRep)) {
+			simpleRep &= ": ";
+		}
+		var simpleRep = "#getOrderItem().getSku().getProduct().getProductName()# - #getOrderItem().getSku().getSkuDefinition()# - (#getOrderItem().getSku().getFormattedValue('eventStartDateTime')# - #getOrderItem().getSku().getFormattedValue('eventEndDateTime')#)";
+		
+		return simpleRep;
+	}
+	
+	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }

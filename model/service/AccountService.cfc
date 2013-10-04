@@ -236,6 +236,20 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
 		
+		
+		/*
+			//TODO [glen]: WE CAN LOOK FOR eventRegistrationID in the data, and attach this account to that eventRegistrationID 
+			var eventRegistration = getEventService().getEventRegistration( arguments.data.eventRegistrationID );
+		 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+		 		eventRegistartion().setFirstName( javaCast("null", "") );
+		 		eventRegistartion().setFirstName( javaCast("null", "") );
+		 		eventRegistartion().setFirstName( javaCast("null", "") );
+		 		eventRegistartion().setFirstName( javaCast("null", "") );
+		 		eventRegistartion().setAccount( arguments.account );
+		 	}
+		
+		*/
+		
 		return arguments.account;
 	}
 
@@ -262,6 +276,20 @@ component extends="HibachiService" accessors="true" output="false" {
 				// If the password matches what it should be, then set the account in the session and 
 				if(!isNull(accountAuthentications[i].getPassword()) && len(accountAuthentications[i].getPassword()) && accountAuthentications[i].getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentications[i].getAccountAuthenticationID())) {
 					getHibachiSessionService().loginAccount( accountAuthentications[i].getAccount(), accountAuthentications[i] );
+					
+					/*
+						//TODO [glen]: WE CAN LOOK FOR eventRegistrationID in the data, and attach this account to that eventRegistrationID 
+						var eventRegistration = getEventService().getEventRegistration( arguments.data.eventRegistrationID );
+					 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+						 	eventRegistartion().setFirstName( javaCast("null", "") );
+					 		eventRegistartion().setFirstName( javaCast("null", "") );
+					 		eventRegistartion().setFirstName( javaCast("null", "") );
+					 		eventRegistartion().setFirstName( javaCast("null", "") );
+					 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
+					 	}
+					
+					*/
+					
 					return arguments.account;
 				}
 			}
