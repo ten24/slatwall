@@ -47,8 +47,24 @@ Notes:
 
 --->
 <cfoutput>
+	
+	<cfset local.bundleSkusSmartList = rc.product.getBundleSkusSmartList() />
+	
+	<!--- If there are sku bundles then we can display them seperately here ---> 
+	<cfif local.bundleSkusSmartList.getRecordsCount()>
+		<h4>Sku Bundles</h4>
+		<cf_HibachiListingDisplay smartList="#local.bundleSkusSmartList#">
+			<cf_HibachiListingColumn propertyIdentifier="skuCode" />
+			<cf_HibachiListingColumn propertyIdentifier="imageFile" />
+		</cf_HibachiListingDisplay>
+		<br />
+		<hr />
+		<h4>Skus</h4>
+	</cfif>
+	
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
 	<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", true) />
+	<cfset local.skusSmartList.addFilter("bundleFlag", 0) />
 	
 	<cf_HibachiListingDisplay smartList="#local.skusSmartList#"
 							   edit="#rc.edit#"
@@ -62,15 +78,6 @@ Notes:
 							      
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
 		<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
-		<!---
-		<cfif rc.product.getBaseProductType() eq "merchandise">
-			<cf_HibachiListingColumn propertyIdentifier="optionsDisplay" />
-		<cfelseif  rc.product.getProductType().getBaseProductType() eq "subscription">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
-		<cfelseif rc.product.getProductType().getBaseProductType() eq "contentAccess">
-			<!--- Sumit says nothing is ok --->
-		</cfif>
-		--->
 		<cfif rc.product.getBaseProductType() eq "event">
 			<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
 			<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
