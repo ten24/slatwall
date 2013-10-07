@@ -51,6 +51,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="accountDAO" type="any";
 	
 	property name="emailService" type="any";
+	property name="eventRegistrationService" type="any";
 	property name="paymentService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
@@ -236,19 +237,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
 		
+		// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+		var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+	 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+	 		eventRegistration().setFirstName( javaCast("null", "") );
+	 		eventRegistration().setLastName( javaCast("null", "") );
+	 		eventRegistration().setEmailAddress( javaCast("null", "") );
+	 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+	 		eventRegistration().setAccount( arguments.account );
+	 	}
 		
-		/*
-			//TODO [glen]: WE CAN LOOK FOR eventRegistrationID in the data, and attach this account to that eventRegistrationID 
-			var eventRegistration = getEventService().getEventRegistration( arguments.data.eventRegistrationID );
-		 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
-		 		eventRegistartion().setFirstName( javaCast("null", "") );
-		 		eventRegistartion().setFirstName( javaCast("null", "") );
-		 		eventRegistartion().setFirstName( javaCast("null", "") );
-		 		eventRegistartion().setFirstName( javaCast("null", "") );
-		 		eventRegistartion().setAccount( arguments.account );
-		 	}
-		
-		*/
 		
 		return arguments.account;
 	}
@@ -277,18 +275,16 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(!isNull(accountAuthentications[i].getPassword()) && len(accountAuthentications[i].getPassword()) && accountAuthentications[i].getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentications[i].getAccountAuthenticationID())) {
 					getHibachiSessionService().loginAccount( accountAuthentications[i].getAccount(), accountAuthentications[i] );
 					
-					/*
-						//TODO [glen]: WE CAN LOOK FOR eventRegistrationID in the data, and attach this account to that eventRegistrationID 
-						var eventRegistration = getEventService().getEventRegistration( arguments.data.eventRegistrationID );
-					 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
-						 	eventRegistartion().setFirstName( javaCast("null", "") );
-					 		eventRegistartion().setFirstName( javaCast("null", "") );
-					 		eventRegistartion().setFirstName( javaCast("null", "") );
-					 		eventRegistartion().setFirstName( javaCast("null", "") );
-					 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
-					 	}
+					// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+					var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+				 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+				 		eventRegistration().setFirstName( javaCast("null", "") );
+				 		eventRegistration().setLastName( javaCast("null", "") );
+				 		eventRegistration().setEmailAddress( javaCast("null", "") );
+				 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+				 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
+				 	}
 					
-					*/
 					
 					return arguments.account;
 				}

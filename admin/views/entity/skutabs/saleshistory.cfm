@@ -55,6 +55,10 @@ Notes:
 			recorddetailaction="admin:entity.detailorderitem">
 		<cf_HibachiListingColumn propertyIdentifier="order.account.firstname" />
 		<cf_HibachiListingColumn propertyIdentifier="order.account.lastname" />
+		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
+		<cf_HibachiListingColumn propertyIdentifier="order.orderStatusType.type" />
+		<cf_HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
