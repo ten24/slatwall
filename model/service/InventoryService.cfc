@@ -49,17 +49,15 @@ Notes:
 component extends="HibachiService" accessors="true" output="false" {
 
 	property name="inventoryDAO" type="any";
-	
 	property name="skuService" type="any";
 	
 	// entity will be one of StockReceiverItem, StockPhysicalItem, StrockAdjustmentDeliveryItem, VendorOrderDeliveryItem, OrderDeliveryItem
 	public void function createInventory(required any entity) {
-		//writeDump(var=#arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")# top=3);
-		//abort;
 		
 		switch(arguments.entity.getEntityName()) {
 			case "SlatwallStockReceiverItem": {
-				if(!isNull(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) && arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
+
+				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
 					
 					// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
 					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' 
@@ -79,13 +77,14 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityIn(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setStockReceiverItem(arguments.entity);
-					getHibachiDAO().save(inventory);
+					getHibachiDAO().save( inventory );
 					
 				}
+				
 				break;
 			}
 			case "SlatwallOrderDeliveryItem": {
-				if(!isNull(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) && arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
+				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
 
 					// Dynamically do a makeupBundledSkus call, if this is a bundle sku, the setting is enabled to do this dynamically, and we have QOH < whats needed
 					if(!isNull(arguments.entity.getStock().getSku().getBundleFlag())
@@ -116,7 +115,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setVendorOrderDeliveryItem(arguments.entity);
-					getHibachiDAO().save(inventory);
+					getHibachiDAO().save( inventory );
 				}
 				break;
 			}
@@ -126,7 +125,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setStockAdjustmentDeliveryItem(arguments.entity);
-					getHibachiDAO().save(inventory);
+					getHibachiDAO().save( inventory );
 				}
 				break;
 			}

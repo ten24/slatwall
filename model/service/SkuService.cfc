@@ -145,28 +145,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Create a stockAdjustment
 		var stockAdjustment = getStockService().newStockAdjustment();
-		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satMakeupBundledSkus') ); // <- You will need to add this type
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satMakeupBundledSkus') ); 
 		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
 		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
 		
-		var makupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
-		
-		var makupItem = getStockService().newStockAdjustmentItem();
-		makupItem.setStockAdjustment( stockAdjustment );
-		makupItem.setQuantity( arguments.processObject.getQuantity() );
-		makupItem.setToStock( makupStock );
+		var makeupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+
+		var makeupItem = getStockService().newStockAdjustmentItem();
+		makeupItem.setStockAdjustment( stockAdjustment );
+		makeupItem.setQuantity( arguments.processObject.getQuantity() );
+		makeupItem.setToStock( makeupStock );
 		
 		// Loop over every bundledSku
 		for(bundledSku in arguments.entity.getBundledSkus()) {
 			
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 			
-			var makupItem = getStockService().newStockAdjustmentItem();
-			makupItem.setStockAdjustment( stockAdjustment );
-			makupItem.setQuantity( bundledSku.getBundledQuantity() );
-			makupItem.setFromStock( thisStock );
+			var makeupItem = getStockService().newStockAdjustmentItem();
+			makeupItem.setStockAdjustment( stockAdjustment );
+			makeupItem.setQuantity( bundledSku.getBundledQuantity() );
+			makeupItem.setFromStock( thisStock );
 			
 		}
+		
+		getStockService().saveStockAdjustment(stockAdjustment);
 		
 		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
 		
@@ -177,28 +179,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Create a stockAdjustment
 		var stockAdjustment = getStockService().newStockAdjustment();
-		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satBreakupBundledSkus') ); // <- You will need to add this type
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satBreakupBundledSkus') ); 
 		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
 		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
 		
-		var makupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+		var breakupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
 		
-		var makupItem = getStockService().newStockAdjustmentItem();
-		makupItem.setStockAdjustment( stockAdjustment );
-		makupItem.setQuantity( arguments.processObject.getQuantity() );
-		makupItem.setFromStock( makupStock );
+		var breakupItem = getStockService().newStockAdjustmentItem();
+		breakupItem.setStockAdjustment( stockAdjustment );
+		breakupItem.setQuantity( arguments.processObject.getQuantity() );
+		breakupItem.setFromStock( breakupStock );
 		
 		// Loop over every bundledSku
 		for(bundledSku in arguments.entity.getBundledSkus()) {
 			
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 			
-			var makupItem = getStockService().newStockAdjustmentItem();
-			makupItem.setStockAdjustment( stockAdjustment );
-			makupItem.setQuantity( bundledSku.getBundledQuantity() );
-			makupItem.setToStock( thisStock );
+			var breakupItem = getStockService().newStockAdjustmentItem();
+			breakupItem.setStockAdjustment( stockAdjustment );
+			breakupItem.setQuantity( bundledSku.getBundledQuantity() );
+			breakupItem.setToStock( thisStock );
 			
 		}
+		
+		getStockService().saveStockAdjustment(stockAdjustment);
 		
 		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
 		
