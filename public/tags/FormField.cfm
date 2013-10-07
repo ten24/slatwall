@@ -85,7 +85,7 @@ Notes:
 						(
 							attributes.valueObject.isPersistent()
 								AND
-							attributes.valueObject.hasAttributeByAttributeCode( attributes.valueObjectProperty )
+							attributes.valueObject.hasAttributeCode( attributes.valueObjectProperty )
 						) 
 					)>
 			<cfset thistag.thisValue = attributes.valueObject.invokeMethod("get#attributes.valueObjectProperty#") />
