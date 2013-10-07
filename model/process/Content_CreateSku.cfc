@@ -51,18 +51,77 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entity
 	property name="content";
 	
-	// Data Properties
-	property name="skuID";
+	// Lazy / Injected Objects
+	property name="product";
+	property name="sku";
+	
+	// New Properties
+
+	// Data Properties (ID's)
 	property name="productID";			// Only used on new sku
+	property name="productTypeID";		// Only used on new product
+	property name="skuID";
+	
+	// Data Properties (Inputs)
 	property name="price";				// Only used on new sku
 	property name="productCode";		// Only used on new product
-	property name="productTypeID";		// Only used on new product
+	property name="skuCode";			// Only used on new sku
+	property name="skuName";			// Only used on new sku
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
 	
 	public any function init() {
 		setSkuID("");
 		setProductID("");
 		
-		return super.init();	
+		return super.init();
 	}
+	
+	// ======================== START: Defaults ============================
+	
+	public string function getSkuCode() {
+		if(!structKeyExists(variables, "skuCode")) {
+			variables.skuCode = getProduct().getProductCode() & "-#arrayLen(getProduct().getSkus()) + 1#";
+		}
+		return variables.skuCode;
+	}
+	
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
+	
+	public any function getProduct() {
+		if(!structKeyExists(variables, "product")) {
+			variables.product = getService("productService").getProduct( nullReplace(getProductID(), ""), true );
+		}
+		return variables.product;
+	}
+	
+	public any function getSku() {
+		if(!structKeyExists(variables, "sku")) {
+			variables.sku = getService("skuService").getSku( nullReplace(getSkuID(), ""), true );
+		}
+		return variables.sku;
+	}
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
 	
 }

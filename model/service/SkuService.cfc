@@ -132,6 +132,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSkuDAO().getSkuStocksDeletableFlag(argumentCollection=arguments);
 	}
 	
+	public boolean function getTransactionExistsFlag() {
+		return getSkuDAO().getTransactionExistsFlag( argumentCollection=arguments );
+	}
+	
 	public any function getSkuBySkuCode( string skuCode ){
 		return getSkuDAO().getSkuBySkuCode(argumentCollection=arguments);
 	}

@@ -122,7 +122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
 	
-	public any function updateIntegrationsFromDirectory() {
+	public any function updateIntegrationsFromDirectory( required any beanFactory ) {
 		logHibachi("Update Integrations Started");
 		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
 		var integrationList = this.listIntegration();
@@ -247,19 +247,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					getHibachiDAO().flushORMSession();
 					logHibachi("The Integration: #integrationPackage# has been registerd");
 					
-					// If this integration is active lets register all of its event handlers
+					// If this integration is active lets register all of its event handlers, and decorate the beanFactory with it
 					if( integration.getEnabledFlag() ) {
+						
 						logHibachi("The Integration: #integrationPackage# is 'enabled'");
+						
 						for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
 							getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
 						}
+						
 						if(arrayLen(integrationCFC.getEventHandlers())) {
 							logHibachi("The Integration: #integrationPackage# has had #arrayLen(integrationCFC.getEventHandlers())# eventHandler(s) registered");	
+						}
+						
+						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
+							var integrationBF = new Slatwall.org.Hibachi.DI1.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
+								transients=["entity", "process", "transient", "report"]
+							});
+							
+							var integrationBFBeans = integrationBF.getBeanInfo();
+							for(var beanName in integrationBFBeans.beanInfo) {
+								if(isStruct(integrationBFBeans.beanInfo[beanName]) && structKeyExists(integrationBFBeans.beanInfo[beanName], "cfc") && structKeyExists(integrationBFBeans.beanInfo[beanName], "isSingleton")) {
+									arguments.beanFactory.declareBean( "#integrationPackage##beanName#", integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );	
+								}
+							}
 						}
 					}
 				}
 			}
 		}
+		
+		return arguments.beanFactory;
 	}
 	
 	

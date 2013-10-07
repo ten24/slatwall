@@ -102,9 +102,13 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	}
 	
 	public void function onFirstRequestPostUpdate() {
-		// Reload All Integrations
-		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
-		writeLog(file="Slatwall", text="General Log - Integrations have been updated");
+		
+		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
+		var beanFactory = getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory( getBeanFactory() );
+		
+		setBeanFactory( beanFactory );
+		
+		writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
 	}
 	
 	// ===================================== END: HIBACHI HOOKS
