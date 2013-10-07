@@ -1,17 +1,19 @@
 {
 	"properties":{
-		"urlTitle":							[{"contexts":"save","required":true,"unique":true}],
-		"productName":						[{"contexts":"save","required":true}],
-		"productCode":						[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
-		"productType":						[{"contexts":"save","required":true}],
-		"unusedProductOptions":				[{"contexts":"addOption","minCollection":1}],
-		"unusedProductOptionGroups":		[{"contexts":"addOptionGroup","minCollection":1}],
 		"baseProductType":					[
 		    	{"contexts":"addOptionGroup,addOption","inList":"merchandise"},
 		    	{"contexts":"addSubscriptionSku","inList":"subscription"},
 		    	{"contexts":"addSku","inList":"event"}
 		 ],
+		"physicalCounts":					[{"contexts":"delete","maxCollection":0}],
 		"price":							[{"contexts":"save","required":true,"dataType":"numeric"}],
-		"physicalCounts":					[{"contexts":"delete","maxCollection":0}]
+		"productName":						[{"contexts":"save","required":true}],
+		"productCode":						[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
+		"productType":						[{"contexts":"save","required":true}],
+		"transactionExistsFlag":			[{"contexts":"delete","eq":false}],
+		"unusedProductOptions":				[{"contexts":"addOption","minCollection":1}],
+		"unusedProductOptionGroups":		[{"contexts":"addOptionGroup","minCollection":1}],
+		"unusedProductSubscriptionTerms":	[{"contexts":"addSubscriptionTerm","minCollection":1}],
+		"urlTitle":							[{"contexts":"save","required":true,"unique":true}]
 	}
 }

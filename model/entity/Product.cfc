@@ -103,17 +103,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
+	property name="allowBackorderFlag" type="boolean" persistent="false";
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
+	property name="estimatedReceivalDetails" type="struct" persistent="false";
+	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
-	property name="qats" type="numeric" persistent="false";
-	property name="allowBackorderFlag" type="boolean" persistent="false";
+	property name="transactionExistsFlag" type="boolean" persistent="false";
 	property name="unusedProductOptions" type="array" persistent="false";
 	property name="unusedProductOptionGroups" type="array" persistent="false";
 	property name="unusedProductSubscriptionTerms" type="array" persistent="false";
-	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	
 	// Non-Persistent Properties - Delegated to default sku
 	property name="currencyCode" persistent="false";
@@ -625,6 +626,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.salePriceExpirationDateTime;
 	}
 	
+	public boolean function getTransactionExistsFlag() {
+		if(!structKeyExists(variables, "transactionExistsFlag")) {
+			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( productID=this.getProductID() );
+		}
+		return variables.transactionExistsFlag;
+	}
+	
 	public array function getProductOptionsByGroup(){
 		return getProductService().getProductOptionsByGroup( this );
 	}
@@ -821,15 +829,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public string function getSimpleRepresentationPropertyName() {
 		return "productName";
 	}
-	
-	public boolean function isDeletable() {
-		var pot = getService("productService").getProductIsOnTransaction(product=this);
-		if(!pot) {
-			return super.isDeletable();
-		}
-		return false;
-	}
-	
+
 	public any function getAssignedAttributeSetSmartList(){
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
 			

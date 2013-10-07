@@ -113,10 +113,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Find the product
-		var product = getProductService().getProduct( nullReplace(arguments.processObject.getProductID(), ""), true );
+		var product = arguments.processObject.getProduct();
 		
 		// If the product was need, then set the necessary values
-		if(product.isNew()) {
+		if(product.getNewFlag()) {
 			product.setPublishedFlag( 1 );
 			product.setProductType( productType );
 			product.setProductName( arguments.content.getTitle() );
@@ -125,14 +125,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Find the sku
-		var sku = getSkuService().getSku( nullReplace(arguments.processObject.getSkuID(), ""), true);
+		var sku = arguments.processObject.getSku();
 		
 		// If the sku was new, then set the necessary values
-		if(sku.isNew()) {
+		if(sku.getNewFlag()) {
 			sku.setPrice( arguments.processObject.getPrice() );
-			sku.setSkuCode( product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#" );
+			sku.setSkuCode( arguments.processObject.getSkuCode() );
+			if(!isNull(arguments.processObject.getSkuName()) && len(arguments.processObject.getSkuName())) {
+				sku.setSkuName( arguments.processObject.getSkuName() );
+			}
 			sku.setProduct( product );
-			if(product.isNew()) {
+			if(product.getNewFlag()) {
 				product.setDefaultSku( sku );
 			}
 			sku.setImageFile( sku.generateImageFileName() );
