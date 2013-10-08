@@ -65,6 +65,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
 		
 		arguments.rc.$.slatwall.addActionResult( "public:account.login", account.hasErrors() );
+		getFW().redirect('public:main.account');
 	}
 	
 	// Account - Logout
@@ -72,6 +73,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'logout' );
 		
 		arguments.rc.$.slatwall.addActionResult( "public:account.logout", false );
+		getFW().redirect('public:main');
 	}
 	
 	// Account - Forgot Password
