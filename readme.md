@@ -11,7 +11,11 @@ What's Being Done in this Fork:
 -------------
 
 I'm Building out the Front-End (public) UI, based off of the Bootstrap 2.2.0.
-What I've 
+
+What's Been Done:
+- Moved the Start Global Container to slatwall-header.cfm
+- Moved the End of the Global Container to slatwall-footer.cfm
+- Added Copyright and Footer Links to slatwall-footer.cfm
 
 -J Harvey (webdevsourcerer)
 
