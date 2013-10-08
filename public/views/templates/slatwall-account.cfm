@@ -78,7 +78,7 @@ Notes:
 --->
 
 <cfoutput>
-	<div class="container">
+	
 		
 		
 		<!--- USER MY-ACCOUNT SECTION IF LOGGED IN --->
@@ -1835,7 +1835,7 @@ Notes:
 				
 			</div>
 		</cfif>
-	</div>
+	
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />
 
