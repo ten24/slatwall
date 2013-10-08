@@ -67,17 +67,58 @@
 			// Call any public slatAction methods that are found
 			if(len($.event('slatAction')) && listFirst($.event('slatAction'), ":") != "frontend") {
 				
+				// We need to pull out any redirectURL's for the form & url so they don't automatically get called
+				var redirectFormDetails = {};
+				var redirectURLDetails = {};
+				
+				if(structKeyExists(form, "fRedirectURL")) {
+					redirectFormDetails.fRedirectURL = form.fRedirectURL;
+					structDelete(form, "fRedirectURL");
+				} else if (structKeyExists(url, "fRedirectURL")) {
+					redirectURLDetails.fRedirectURL = url.fRedirectURL;
+					structDelete(url, "fRedirectURL");
+				}
+				if(structKeyExists(form, "sRedirectURL")) {
+					redirectFormDetails.sRedirectURL = form.sRedirectURL;
+					structDelete(form, "sRedirectURL");
+				} else if (structKeyExists(url, "sRedirectURL")) {
+					redirectURLDetails.sRedirectURL = url.sRedirectURL;
+					structDelete(url, "sRedirectURL");
+				}
+				if(structKeyExists(form, "redirectURL")) {
+					redirectFormDetails.redirectURL = url.sRedirectURL;
+					structDelete(form, "redirectURL");
+				} else if (structKeyExists(url, "redirectURL")) {
+					redirectURLDetails.redirectURL = url.sRedirectURL;
+					structDelete(url, "redirectURL");
+				}
+				
+				var allRedirects = redirectURLDetails;
+				structAppend(allRedirects, redirectFormDetails, true);
+				
 				// This allows for multiple actions to be called
 				var actionsArray = listToArray( $.event('slatAction') );
 				
 				// This loops over the actions that were passed in
 				for(var a=1; a<=arrayLen(actionsArray); a++) {
-				
 					// Call the correct public controller
 					$.slatwall.doAction( actionsArray[a] );
-					
 				}
 				
+				if(structKeyExists(allRedirects, "fRedirectURL") && arrayLen($.slatwall.getFailureActions())) {
+					endSlatwallRequest();
+					location(url=allRedirects.fRedirectURL, addtoken=false);
+				} else if (structKeyExists(allRedirects, "sRedirectURL") && !arrayLen($.slatwall.getFailureActions())) {
+					endSlatwallRequest();
+					location(url=allRedirects.sRedirectURL, addtoken=false);
+				} else if (structKeyExists(allRedirects, "redirectURL")) {
+					endSlatwallRequest();
+					location(url=allRedirects.redirectURL, addtoken=false);
+				}
+				
+				// Replace the form & url with the correct values
+				structAppend(form, redirectFormDetails);
+				structAppend(url, redirectURLDetails);
 			}
 			
 			// If we aren't on the homepage we can do our own URL inspection
