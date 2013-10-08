@@ -68,7 +68,7 @@ Notes:
 --->
 
 <cfoutput>
-	<div class="container">
+	
 		
 		<div class="row">
 			<div class="span12">
@@ -615,7 +615,7 @@ Notes:
 			</div>
 		</div>
 		<!--- End: Image Gallery Example --->
-	</div>
+	
 </cfoutput>
 
 <!--- This footer should be replaced with the footer of your site --->
