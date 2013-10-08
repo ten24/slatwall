@@ -50,18 +50,18 @@ Notes:
 
 <cfoutput>
 	
-	<cfset local.eventRegSmartList = rc.product.geteventRegistrations()/>
+	<cfset local.eventRegSmartList = rc.product.geteventRegistrationsSmartList()/>
 	
 		<cf_HibachiListingDisplay smartList="#local.eventRegSmartList#"
 				recordEditAction="admin:entity.editeventregistration"
 				recorddetailaction="admin:entity.detaileventregistration">
 			<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
 			<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.product.productName" />
 			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skuCode" />
 			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventStartDateTime" />
 			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" />
+			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" title="#$.slatwall.rbKey('entity.eventRegistration.skuDefinition')#" />
+			<cf_HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
 		</cf_HibachiListingDisplay>
 	
 </cfoutput>

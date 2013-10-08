@@ -62,6 +62,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addOrder("orderitem.sku.skuCode|ASC");
 		return smartList;
 	}
+
+	public any function getEventRegistrationSmartList(struct data={}) {
+		arguments.entityName = "SlatwallEventRegistration";
+		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		//smartList.joinRelatedProperty("SlatwallEventRegistration", "orderItem", "left", true) ;
+		//smartList.joinRelatedProperty("SlatwallOrderItem", "sku", "left", true) ;
+		//smartList.joinRelatedProperty("SlatwallSku", "product", "left", true) ;
+		//smartList.joinRelatedProperty("SlatwallProduct", "sku", "left", true) ;
+		smartList.addOrder("orderitem.sku.skuCode|ASC");
+		return smartList;
+	}
 	
 	// ===================== START: Logical Methods ===========================
 	
