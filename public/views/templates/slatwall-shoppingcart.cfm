@@ -66,7 +66,7 @@ Notes:
 --->
 
 <cfoutput>
-	<div class="container">
+	
 		
 		<!--- START SHOPPING CART EXAMPLE 1 --->
 		<div class="row">
@@ -352,6 +352,6 @@ Notes:
 		
 		<hr />
 		
-	</div>
+	
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />
