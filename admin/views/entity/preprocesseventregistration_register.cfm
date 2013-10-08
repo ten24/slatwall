@@ -46,14 +46,21 @@
 Notes:
 
 --->
-<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.eventRegistration" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.sku.getOrderItemsSmartList()#">
-		<cf_HibachiListingColumn propertyIdentifier="account.firstName" />
-		<cf_HibachiListingColumn propertyIdentifier="account.lastName" />
-		<cf_HibachiListingColumn propertyIdentifier="account.emailAddress" />
-		<cf_HibachiListingColumn propertyIdentifier="account.phoneNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="orderstatustype.type" />
-	</cf_HibachiListingDisplay>
+	<cf_HibachiEntityProcessForm entity="#rc.eventRegistration#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventRegistration">
+		
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.eventRegistration#">
+		</cf_HibachiEntityActionBar>
+		
+		<!---<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				
+				<cfinclude template="preprocesseventRegistration_include/changestatuscomment.cfm" />
+				
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>--->
+		
+	</cf_HibachiEntityProcessForm>
 </cfoutput>

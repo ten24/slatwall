@@ -120,12 +120,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="currencyDetails" type="struct" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
+	property name="eventRegistrations" type="array" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="nextEstimatedAvailableDate" type="string" persistent="false";
 	property name="optionsByOptionGroupCodeStruct" persistent="false";
 	property name="optionsByOptionGroupIDStruct" persistent="false";
 	property name="optionsIDList" persistent="false";
+	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetails" type="struct" persistent="false";
 	property name="salePrice" type="numeric" hb_formatType="currency" persistent="false";
@@ -485,6 +487,27 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.eligibleFulfillmentMethods;
 	}
 	
+	// Retrieve event registrations related to this sku
+	public any function getEventRegistrations() {
+		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
+			var smartList = getService("eventRegistrationService").getEventRegistrations();
+			variables.eventRegistrationsSmartList = smartList;
+		}
+		var orderItemsArray = [];
+		var orderItemIDList = "";
+		for( var orderItem in getorderItems() ) {
+			arrayAppend(orderItemsArray,orderItem.getorderItemID());
+		}	
+		if(arraylen(orderItemsArray)) {
+			orderItemIDList = arrayToList(orderItemsArray);
+			variables.eventRegistrationsSmartList = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
+		} else {
+			variables.eventRegistrationsSmartList.addFilter('orderItemID','');
+		}
+				
+		return variables.eventRegistrationsSmartList;
+	}
+	
 	public string function getNextEstimatedAvailableDate() {
 		if(!structKeyExists(variables, "nextEstimatedAvailableDate")) {
 			if(getQuantity("QIATS")) {
@@ -560,6 +583,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
     	
 		return variables.optionsIDList;
     }
+    
+    public any function getPlacedOrderItemsSmartList() {
+		if(!structKeyExists(variables, "placedOrderItemsSmartList")) {
+			variables.placedOrderItemsSmartList = getService("OrderService").getOrderItemSmartList();
+			variables.placedOrderItemsSmartList.addFilter('sku.skuID', getSkuID());
+			variables.placedOrderItemsSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
+		}
+
+		return variables.placedOrderItemsSmartList;
+	}
+	
 	
 	public any function getQATS() {
 		return getQuantity("QATS");

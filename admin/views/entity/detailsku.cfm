@@ -80,6 +80,7 @@ Notes:
 			<cfelseif rc.product.getBaseProductType() eq "event">
 				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
 				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
+				<cf_HibachiTab view="admin:entity/skutabs/eventregistrations" />
 			<cfelseif rc.product.getBaseProductType() eq "subscription">
 				<cf_HibachiTab property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">
@@ -91,6 +92,7 @@ Notes:
 				</cfif>
 			</cfif>
 			<cf_HibachiTab property="skuDescription" />
+			<cf_HibachiTab view="admin:entity/skutabs/saleshistory" />
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
 			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />

@@ -70,7 +70,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	
 	// Related Object Properties (one-to-many)
-	property name="skus" type="array" cfc="Sku" singularname="Sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productImages" type="array" cfc="Image" singularname="productImage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singlularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -109,6 +109,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brandOptions" type="array" persistent="false";
 	property name="bundleSkusSmartList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
+	property name="eventRegistrations" type="array" persistent="false";
+	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
@@ -552,6 +554,32 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return options;
 	}
 	
+	public any function getEventRegistrations() {
+		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
+			var smartList = getService("eventRegistrationService").getEventRegistrations();
+			variables.eventRegistrationsSmartList = smartList;
+		}
+		if( !structKeyExists(variables, "eventRegistrations") ) {
+			var orderItemsArray = [];
+			var orderItemIDList = "";
+			for ( var sku in getskus()) {
+				var orderItems = sku.getorderItems();
+				for( var orderItem in orderItems ) {
+					arrayAppend(orderItemsArray,orderItem.getorderItemID());
+					
+				}	
+			}
+			if(arraylen(orderItemsArray)) {
+				orderItemIDList = arrayToList(orderItemsArray);
+				variables.eventRegistrationsSmartList = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
+			} else {
+				variables.eventRegistrationsSmartList.addFilter('orderItemID','');
+			}
+				
+		}
+		return variables.eventRegistrationsSmartList;
+	}
+	
 	public string function getTitle() {
 		if(!structKeyExists(variables, "title")) {
 			variables.title = getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this);
@@ -666,6 +694,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.unusedProductSubscriptionTerms = getService('subscriptionService').getUnusedProductSubscriptionTerms( getProductID() );
 		}
 		return variables.unusedProductSubscriptionTerms;
+	}
+	
+	public any function getPlacedOrderItemsSmartList() {
+		if(!structKeyExists(variables, "placedOrderItemsSmartList")) {
+			variables.placedOrderItemsSmartList = getService("OrderService").getOrderItemSmartList();
+			variables.placedOrderItemsSmartList.addFilter('sku.product.productID', getProductID());
+			variables.placedOrderItemsSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
+		}
+
+		return variables.placedOrderItemsSmartList;
 	}
 	
 
