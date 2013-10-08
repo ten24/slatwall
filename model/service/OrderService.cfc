@@ -54,6 +54,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService";
 	property name="commentService";
 	property name="emailService";
+	property name="eventRegistrationService";
 	property name="locationService";
 	property name="fulfillmentService";
 	property name="paymentService";
@@ -1249,22 +1250,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// Process: Order Item
 	public any function processOrderItem_updateRegistrationQuantity(required any orderItem) {
-		/*
 		
-		// We need less event registrations, and order has not been placed yet
-		if( arrayLen(orderItem.getEventRegistrations()) gt orderItem.getQuantity() && arguments.order.getStatusCode() == "ostNotPlaced" ) {
+		// We need LESS event registrations due to order adjustment before order has been placed
+		if( arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity() && arguments.order.getStatusCode() == "ostNotPlaced" ) {
 			
 			var numberToRemove = arrayLen(orderItem.getEventRegistrations()) - orderItem.getQuantity();
-			var removableEvents = [];
 			
+			// Create an array of registrations we can safely remove, i.e. not associated with an account
+			var removableEvents = [];
 			for(var eventRegistration in orderItem.getEventRegistrations()) {
 				if(isNull(eventRegistration.getFirstName()) && isNull(eventRegistration.getLastName()) && isNull(eventRegistration.getEmailAddress()) && isNull(eventRegistration().getPhoneNumber())) {
 					arrayAppend(removableEvents, eventRegistration);
-					if(arrayLen(removableEvents) eq numberToRemove) {
+					// Break from loop when we have enough registrations
+					if(arrayLen(removableEvents) == numberToRemove) {
 						break;
 					}
 				}
 			}
+			
+			// Delete extra event registrations
 			if(arrayLen(removableEvents) >= numberToRemove) {
 				for(var eventRegistration in eventsToRemove) {
 					eventRegistration.removeOrderItem();
@@ -1274,23 +1278,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// We need less event registration, but couldn't do it... add error
-		if(arrayLen(orderItem.getEventRegistrations()) gt orderItem.getQuantity()) {
+		if(arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
 			orderItem.addError('updateRegistrationQuantity', rbKey('validate.orderItem.quantity.tooManyEventRegistrations'));
 		}
 		
-		// We need more event registrations
-		if(arrayLen(orderItem.getEventRegistrations()) lt orderItem.getQuantity()) {
+		// We need MORE event registrations due to order adjustment before order has been placed
+		if(arrayLen(orderItem.getEventRegistrations()) < orderItem.getQuantity()) {
 			for(var i=1; i <= orderItem.getQuantity() - arrayLen(orderItem.getEventRegistrations()); i++ ) {
 				var eventRegistration = this.newEventRegistration();
 				eventRegistration.setOrderItem(orderitem);
-				
 				eventRegistration.setEventRegistrationStatusType( eventRegistration.getEventRegistrationStatusType() ); // TODO: CHANGE TO NOT PLACED
-				
 				eventRegistration.setAccount(arguments.order.getAccount());
-				eventRegistration = getEventService().saveEventRegistration( eventRegistration );	
+				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );	
 			}
 		}
-		*/
 		
 		return arguments.orderItem;
 	}
@@ -1567,7 +1568,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var orderitem in arguments.order.getOrderItems()) {
 				
 				// The number of reg & quantity don't match
-				if(orderItem.getSku().getBaseProductType() == "event" && arrayLen(orderItem.getEventRegistrations()) gt orderItem.getQuantity()) {
+				if(orderItem.getSku().getBaseProductType() == "event" && arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
 					
 					orderItem = this.processOrderItem(orderItem, {}, 'updateEventRegistrationQuantity');
 					

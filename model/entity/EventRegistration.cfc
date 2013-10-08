@@ -104,8 +104,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	public any function getEventRegistrationStatusType() {
 		if(isNull(variables.eventRegistrationStatusType)) {
-			// Needs to change to something like 'erstRegistrationNotPlaced'
-			variables.eventRegistrationStatusType = getService("settingService").getTypeBySystemCode('erstRegistrationClosed');
+			variables.eventRegistrationStatusType = getService("settingService").getTypeBySystemCode('erstNotPlaced');
 		}
 		return variables.eventRegistrationStatusType;
 	}
@@ -119,6 +118,37 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 			return variables.firstName;
 		}
 	}
+	
+	public any function getLastName() {
+		if(!isNull(getAccount())) {
+			variables.lastName = javaCast("null", "");
+			return getAccount().getLastName();
+		}
+		if(structKeyExists(variables, "lastName")) {
+			return variables.lastName;
+		}
+	}
+	
+	public any function getEmailAddress() {
+		if(!isNull(getAccount())) {
+			variables.emailAddress = javaCast("null","" );
+			return getAccount().getPrimaryEmailAddress();
+		}
+		if(structKeyExists(variables,"emailAddress")) {
+			return variables.emailAddress;
+		}
+	}
+	
+	public any function getPhoneNumber() {
+		if(!isNull(getAccount())) {
+			variables.phoneNumber = javaCast("null", "");
+			return getAccount().getPrimaryPhoneNumber();
+		}
+		if(structKeyExists(variables, "phoneNumber")) {
+			return variables.phoneNumber;
+		}
+	}
+	
 	
 	// ==============  END: Overridden Implicit Getters ====================
 	
