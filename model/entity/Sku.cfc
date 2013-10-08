@@ -52,6 +52,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
 	property name="publishedFlag" ormtype="boolean" default="0";
+	property name="skuName" ormtype="string";
+	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="skuCode" ormtype="string" unique="true" length="50";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
@@ -74,7 +76,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
-	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="Order" inverse="true" cascade="all" lazy="extra" ;
+	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
@@ -132,6 +134,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="salePriceExpirationDateTime" type="date" hb_formatType="datetime" persistent="false";
 	property name="skuDefinition" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
+	property name="transactionExistsFlag" persistent="false" type="boolean";
 	
 	// Deprecated Properties
 	
@@ -627,6 +630,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			
 		}
 		return trim(variables.skuDefinition);
+	}
+	
+	public boolean function getTransactionExistsFlag() {
+		if(!structKeyExists(variables, "transactionExistsFlag")) {
+			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( skuID=this.getSkuID() );
+		}
+		return variables.transactionExistsFlag;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

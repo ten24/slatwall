@@ -56,6 +56,7 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
 				<cfif rc.product.getBaseProductType() EQ "event">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
@@ -89,7 +90,7 @@ Notes:
 					<cf_HibachiTab view="admin:entity/skutabs/options" />
 				</cfif>
 			</cfif>
-			<!---<cf_HibachiTab view="admin:entity/skutabs/registrants" />--->
+			<cf_HibachiTab property="skuDescription" />
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
 			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
 			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
