@@ -1,7 +1,7 @@
 <cfoutput>
 <div class="row">
 			<div class="span12">
-			<p class="footer">&copy; #dateformat(now(), "YYYY")# SlatWall. All Rights REserved. </p>	
+			<p class="footer">&copy; #dateformat(now(), "YYYY")# SlatWall. All Rights Reserved. </p>	
 			</div>
 		</div>
 		</cfoutput>
