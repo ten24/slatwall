@@ -16,6 +16,7 @@ What's Been Done:
 - Moved the Start Global Container to slatwall-header.cfm
 - Moved the End of the Global Container to slatwall-footer.cfm
 - Added Copyright and Footer Links to slatwall-footer.cfm
+- Removed <div class="container"> </div> from all Sub-Template Files.
 
 -J Harvey (webdevsourcerer)
 
