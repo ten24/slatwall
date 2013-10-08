@@ -61,9 +61,12 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
+		
+		<cfif rc.sku.getProduct().getBaseProductType() EQ "event">
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+		</cfif>
 	</cf_HibachiListingDisplay>
 
 </cfoutput>
