@@ -77,7 +77,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
-	public any function processEventRegistration_approve(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_approved(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -90,7 +90,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_attend(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_attended(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -103,7 +103,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_register(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_registered(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -116,7 +116,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_waitlist(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_waitlisted(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -130,7 +130,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	}
 	
-	public any function processEventRegistration_pend(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_pending(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -139,6 +139,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Change the status
 		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstPending") );
+		
+		return arguments.eventRegistration;
+	}
+	
+	public any function processEventRegistration_notplaced(required any eventRegistration, struct data={}) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.data);
+		}
+		
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstNotPlaced") );
 		
 		return arguments.eventRegistration;
 	}
