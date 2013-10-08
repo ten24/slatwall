@@ -114,7 +114,7 @@ Notes:
 <cfparam name="url.step" default="" />
 
 <cfoutput>
-	<div class="container">
+	
 		
 		<!--- START CEHECKOUT EXAMPLE 1 --->
 		<div class="row">
@@ -1326,7 +1326,7 @@ Notes:
 		
 		<!--- END CHECKOUT EXAMPLE 1 --->
 		
-	</div>
+	
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />
 
