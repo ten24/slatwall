@@ -7,6 +7,14 @@ Coldfusion 9.0.1 or Newer
 
 Railo 4.1 or Newer
 
+What's Being Done in this Fork:
+-------------
+
+I'm Building out the Front-End (public) UI, based off of the Bootstrap 2.2.0.
+What I've 
+
+-J Harvey (webdevsourcerer)
+
 
 Documentation
 -------------
