@@ -10,13 +10,14 @@ Railo 4.1 or Newer
 What's Being Done in this Fork:
 -------------
 
-I'm Building out the Front-End (public) UI, based off of the Bootstrap 2.2.0.
+I'm Building out the Front-End (public) UI, based off of the Bootstrap 2.2.0. (Soon to be Bootstrap 3.0)
 
 What's Been Done:
 - Moved the Start Global Container to slatwall-header.cfm
 - Moved the End of the Global Container to slatwall-footer.cfm
 - Added Copyright and Footer Links to slatwall-footer.cfm
 - Removed < div class="container" > < /div > from all Sub-Template Files.
+- Added Redirect functions for the Login/Logout Functions
 
 -J Harvey (webdevsourcerer)
 
