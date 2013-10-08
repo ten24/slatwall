@@ -68,7 +68,7 @@ Notes:
 --->
 
 <cfoutput>
-	<div class="container">
+	
 		
 		<div class="row">
 			<div class="span12">
@@ -130,7 +130,7 @@ Notes:
 				</ul>
 			</div>
 		</div>
-	</div>
+	
 </cfoutput>
 
 <cfinclude template="_slatwall-footer.cfm" />
