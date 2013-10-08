@@ -162,7 +162,7 @@ Notes:
 	
 
 <!--- Product Listing Example 1 --->
-<div class="container">
+
 	
 	<!--- Header Row --->
 	<div class="row">
@@ -258,7 +258,7 @@ Notes:
 		
 	</div>
 	
-</div>
+
 
 
 </cfoutput>
