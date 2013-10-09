@@ -268,7 +268,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var integrationBFBeans = integrationBF.getBeanInfo();
 							for(var beanName in integrationBFBeans.beanInfo) {
 								if(isStruct(integrationBFBeans.beanInfo[beanName]) && structKeyExists(integrationBFBeans.beanInfo[beanName], "cfc") && structKeyExists(integrationBFBeans.beanInfo[beanName], "isSingleton")) {
-									arguments.beanFactory.declareBean( "#integrationPackage##beanName#", integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );	
+									if(len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage) {
+										arguments.beanFactory.declareBean( beanName, integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );
+									} else {
+										arguments.beanFactory.declareBean( "#integrationPackage##beanName#", integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );	
+									}
 								}
 							}
 						}

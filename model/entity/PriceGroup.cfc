@@ -50,7 +50,7 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	
 	// Persistent Properties
 	property name="priceGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="priceGroupIDPath" ormtype="string";
+	property name="priceGroupIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean";
 	property name="priceGroupName" ormtype="string";
 	property name="priceGroupCode" ormtype="string";

@@ -60,6 +60,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 	}
 	
+	public void function after( required struct rc ) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.getFailureActions())) {
+			getFW().redirectExact( url=arguments.rc.fRedirectURL );
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.getFailureActions())) {
+			getFW().redirectExact( url=arguments.rc.sRedirectURL );
+		} else if (structKeyExists(arguments.rc, "redirectURL")) {
+			getFW().redirectExact( url=arguments.rc.redirectURL );
+		}
+	}
+	
 	// Account - Login
 	public void function login( required struct rc ) {
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );

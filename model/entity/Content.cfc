@@ -50,7 +50,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// Persistent Properties
 	property name="contentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="contentIDPath" ormtype="string" length="500";
+	property name="contentIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean";
 	property name="title" ormtype="string";
 	property name="allowPurchaseFlag" ormtype="boolean";
