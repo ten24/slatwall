@@ -101,8 +101,14 @@
 				
 				// This loops over the actions that were passed in
 				for(var a=1; a<=arrayLen(actionsArray); a++) {
+					
 					// Call the correct public controller
 					$.slatwall.doAction( actionsArray[a] );
+					
+					// If the action failed, break out of the loop so that we don't continue to try processing
+					if($.slatwall.hasFailureAction(actionsArray[a])) {
+						break;
+					}
 				}
 				
 				if(structKeyExists(allRedirects, "fRedirectURL") && arrayLen($.slatwall.getFailureActions())) {

@@ -46,11 +46,11 @@
 Notes:
 
 --->
+<cfparam name="rc.site" type="any" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
-		<cf_SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
+	<cf_SlatwallSettingTable>
+		<cf_SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" />
+		<cf_SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" settingObject="#rc.site#" />
 	</cf_SlatwallSettingTable>
 </cfoutput>
-

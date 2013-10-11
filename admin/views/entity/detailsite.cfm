@@ -60,7 +60,7 @@ Notes:
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.site#">
-			<!--- <cf_HibachiTab view="admin:section/tabsfolder/view" /> --->
+			<cf_HibachiTab view="admin:entity/sitetabs/sitesettings" />
 		</cf_HibachiTabGroup>
 		
 	</cf_HibachiEntityDetailForm>

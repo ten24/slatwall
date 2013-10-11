@@ -258,7 +258,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public any function getOptionByOptionGroupCode(required string optionGroupCode) {
 		if(structKeyExists(getOptionsByOptionGroupCodeStruct(), arguments.optionGroupCode)) {
-			return getOptionsByOptionGroupIDStruct()[ arguments.optionGroupCode ];	
+			return getOptionsByOptionGroupCodeStruct()[ arguments.optionGroupCode ];	
 		}
 	}
 	
@@ -523,7 +523,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public any function getOptionsByOptionGroupCodeStruct() {
 		if(!structKeyExists(variables, "optionsByOptionGroupCodeStruct")) {
-			variables.optionsByOptionGroupIDStruct = {};
+			variables.optionsByOptionGroupCodeStruct = {};
 			for(var option in getOptions()) {
 				if( !structKeyExists(variables.optionsByOptionGroupCodeStruct, option.getOptionGroup().getOptionGroupCode())){
 					variables.optionsByOptionGroupCodeStruct[ option.getOptionGroup().getOptionGroupCode() ] = option;

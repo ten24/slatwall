@@ -81,6 +81,18 @@ Notes:
 								AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 								ORDER BY changeDateTime DESC LIMIT 1)
 			</cfquery>
+		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfquery name="getsu">
+				SELECT DISTINCT su.subscriptionUsageID
+				FROM SwSubsUsage su
+				WHERE (su.nextBillDate <= <cfqueryparam value="#dateformat(now(),'mm-dd-yyyy 23:59')#" cfsqltype="cf_sql_timestamp" />)
+					AND 'sstActive' = (SELECT systemcode FROM (SELECT systemCode,subscriptionUsageID FROM SwSubscriptionStatus 
+				                    INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID 
+				                    WHERE SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+				                    ORDER BY changeDateTime DESC) 
+									WHERE subscriptionUsageID = su.subscriptionUsageID 
+				                    AND rownum <= 1)
+			</cfquery>
 		<cfelse>
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
@@ -117,6 +129,18 @@ Notes:
 								WHERE SwSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
 								AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 								ORDER BY changeDateTime DESC LIMIT 1)
+			</cfquery>
+		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfquery name="getsu">
+				SELECT DISTINCT su.subscriptionUsageID
+				FROM SwSubsUsage su
+				WHERE (su.nextReminderEmailDate <= <cfqueryparam value="#dateformat(now(),'mm-dd-yyyy 23:59')#" cfsqltype="cf_sql_timestamp" />)
+					AND 'sstActive' = (SELECT systemcode FROM (SELECT systemCode,subscriptionUsageID FROM SwSubscriptionStatus 
+				                    INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID 
+				                    WHERE SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+				                    ORDER BY changeDateTime DESC) 
+									WHERE subscriptionUsageID = su.subscriptionUsageID 
+				                    AND rownum <= 1)
 			</cfquery>
 		<cfelse>
 			<cfquery name="getsu">

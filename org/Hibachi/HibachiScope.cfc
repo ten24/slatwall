@@ -38,7 +38,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public boolean function getLoggedInFlag() {
-		if(!getSession().getAccount().isNew()) {
+		if(!getSession().getAccount().getNewFlag()) {
 			return true;
 		}
 		return false;

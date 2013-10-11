@@ -252,6 +252,13 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	// ================== START: Deprecated Methods ========================
 	
+	public any function getPhone() {
+		if(!isNull(getPhoneNumber())) {
+			return getPhoneNumber();
+		}
+		return "";
+	}
+	
 	// ==================  END:  Deprecated Methods ========================
 	
 }

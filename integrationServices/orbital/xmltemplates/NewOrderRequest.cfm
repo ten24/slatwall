@@ -80,7 +80,7 @@ Notes:
 		<OrderID>#arguments.requestBean.getOrder().getShortReferenceID( true )#</OrderID>
 		<Amount>#arguments.requestBean.getTransactionAmount()*100#</Amount>
 		<cfif arguments.requestBean.getTransactionType() EQ "credit">
-			<TxRefNum>#arguments.requestBean.getProviderTransactionID()#</TxRefNum>
+			<TxRefNum>#arguments.requestBean.getOriginalChargeProviderTransactionID()#</TxRefNum>
 		</cfif>
 		<CustomerEmail>#arguments.requestBean.getAccountPrimaryEmailAddress()#</CustomerEmail>
 		<CustomerIpAddress>#CGI.REMOTE_ADDR#</CustomerIpAddress>

@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,12 +45,38 @@
 
 Notes:
 
---->
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-<cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
-		<cf_SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
-	</cf_SlatwallSettingTable>
-</cfoutput>
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getBean("dataService");
+	}
+	
+		
+	public void function getUrlTitle() {
+		
+		//Gift Card-$50
+		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift Card-$50", tableName="SwProduct");
+		assert(urlTitle eq "gift-card-50");
+		debug(var="#urlTitle#");
+		
+		//Gift Card $50
+		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift Card $50", tableName="SwProduct");
+		assert(urlTitle eq "gift-card-50");
+		debug(var="#urlTitle#");
+		
+		//Gift - Card - $50
+		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift - Card - $50", tableName="SwProduct");
+		assert(urlTitle eq "gift-card-50");
+		debug(var="#urlTitle#");
+		
+		//Gift    Card  --  $50
+		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift    Card  --  $50", tableName="SwProduct");
+		assert(urlTitle eq "gift-card-50");
+		debug(var="#urlTitle#");
 
+	}
+	
+}
