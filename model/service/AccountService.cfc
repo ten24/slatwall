@@ -900,6 +900,45 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	public any function saveAccount(required any account, struct data={}, string context="save")
+	{
+		var existingPaymentMethodIDs = "";
+		
+		// store existing accountPaymentMethodID to compare against in order to determine newly added accountPaymentMethods
+		for (var existingAccountPaymentMethod in arguments.account.getAccountPaymentMethods())
+		{
+			existingPaymentMethodIDs = listAppend(existingPaymentMethodIDs, existingAccountPaymentMethod.getAccountPaymentMethodID());
+		}
+		
+		// Call the generic save method to populate and validate
+		arguments.account = save(arguments.account, arguments.data, arguments.context);
+		
+		// loop over new accountPaymentMethod that we know did not exist until after the save
+		for(var accountPaymentMethod in arguments.account.getAccountPaymentMethods())
+		{
+			// handle any new accountPaymentMethods
+			if (!listFindNoCase(existingPaymentMethodIDs, accountPaymentMethod.getAccountPaymentMethodID()))
+			{
+				// If the account payment method does not have errors, then we can check the payment method for a saveTransaction
+				if(!accountPaymentMethod.hasErrors() && !isNull(accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && len(accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType() neq "none")
+				{
+					
+					// Setup transaction data
+					var transactionData = {
+						amount = 0,
+						transactionType = accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()
+					};
+					
+					// Clear out any previous 'createTransaction' process objects
+					accountPaymentMethod.clearProcessObject( 'createTransaction' );
+					
+					accountPaymentMethod = this.processAccountPaymentMethod(accountPaymentMethod, transactionData, 'createTransaction');
+				}
+			}
+		}
+		
+		return arguments.account;
+	}
 	
 	public any function saveAccountPaymentMethod(required any accountPaymentMethod, struct data={}, string context="save") {
 		param name="arguments.data.runSaveAccountPaymentMethodTransactionFlag" default="true"; 

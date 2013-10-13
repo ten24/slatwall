@@ -50,23 +50,23 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	
 	// Persistent Properties
 	property name="accountPaymentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormType="boolean";
-	property name="accountPaymentMethodName" ormType="string";
+	property name="activeFlag" hb_populateEnabled="public" ormType="boolean";
+	property name="accountPaymentMethodName" hb_populateEnabled="public" ormType="string";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
-	property name="expirationMonth" ormType="string" hb_formfieldType="select";
-	property name="expirationYear" ormType="string" hb_formfieldType="select";
+	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
+	property name="expirationYear" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
 	property name="giftCardNumberEncrypted" ormType="string";
-	property name="nameOnCreditCard" ormType="string";
+	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="providerToken" ormType="string";
 	
 	// Related Object Properties (many-to-one)
-	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" hb_optionsNullRBKey="define.select" hb_optionsAdditionalProperties="paymentMethodType" hb_optionsSmartListData="f:activeFlag=1&f:paymentMethodType=creditCard,termPayment,check,giftCard";
+	property name="paymentMethod" hb_populateEnabled="public" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" hb_optionsNullRBKey="define.select" hb_optionsAdditionalProperties="paymentMethodType" hb_optionsSmartListData="f:activeFlag=1&f:paymentMethodType=creditCard,termPayment,check,giftCard";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
-	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_optionsNullRBKey="define.select";
+	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_optionsNullRBKey="define.select";
 	
 	// Related Object Properties (one-to-many)
 	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true" lazy="extra";
@@ -84,11 +84,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-	property name="creditCardNumber" persistent="false";
+	property name="creditCardNumber" hb_populateEnabled="public" persistent="false";
 	property name="giftCardNumber" persistent="false";
 	property name="bankRoutingNumber" persistent="false";
 	property name="bankAccountNumber" persistent="false";
-	property name="securityCode" persistent="false";
+	property name="securityCode" hb_populateEnabled="public" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 	
