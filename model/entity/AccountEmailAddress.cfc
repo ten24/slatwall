@@ -52,7 +52,7 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 	property name="accountEmailAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string" hb_formatType="email";
 	property name="verifiedFlag" hb_populateEnabled="false" ormtype="boolean";
-	property name="verificationCode" hb_populateEnabled="false" unique="true" ormtype="string";
+	property name="verificationCode" hb_populateEnabled="false" ormtype="string";
 	
 	// Calculated Properties
 	

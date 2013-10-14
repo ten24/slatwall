@@ -219,6 +219,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			var accountEmailAddress = this.newAccountEmailAddress();
 			accountEmailAddress.setAccount( arguments.account );
 			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
+			
+			arguments.account.setPrimaryEmailAddress( accountEmailAddress );
 		}
 		
 		// Save & Populate the account so that custom attributes get set
