@@ -92,7 +92,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return entityService.invokeMethod("new#arguments.entityName#");
 	}
 	
-	public any function getEntity(required string entityName, string entityID="", boolean isReturnNewOnNotFound=false) {
+	public any function getEntity(required string entityName, any entityID="", boolean isReturnNewOnNotFound=false) {
 		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
 		
 		return entityService.invokeMethod("get#arguments.entityName#", {1=arguments.entityID, 2=arguments.isReturnNewOnNotFound});
