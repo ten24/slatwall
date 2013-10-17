@@ -66,10 +66,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getEventRegistrationSmartList(struct data={}) {
 		arguments.entityName = "SlatwallEventRegistration";
 		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-		//smartList.joinRelatedProperty("SlatwallEventRegistration", "orderItem", "left", true) ;
-		//smartList.joinRelatedProperty("SlatwallOrderItem", "sku", "left", true) ;
-		//smartList.joinRelatedProperty("SlatwallSku", "product", "left", true) ;
-		//smartList.joinRelatedProperty("SlatwallProduct", "sku", "left", true) ;
 		smartList.addOrder("orderitem.sku.skuCode|ASC");
 		return smartList;
 	}
@@ -167,12 +163,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_cancel(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_canceled(required any eventRegistration, struct data={}) {
 		
-		// We need to update the quantity of the original orderItem
-		// var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1
-		// arguments.eventRegistration.getOrderItem( newQuantity )
-		// We'll prob need to add option in admin to refund credit for cancelation
+		// Reduce the quantity of the original orderItem
+		var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1;
+		var order = arguments.eventRegistration.getOrderItem().getOrder();
+		arguments.eventRegistration.getOrderItem().setQuantity(newQuantity);
+		
+		// TODO: Add option in admin to refund credit for cancelation
 		
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
@@ -184,6 +182,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstCancelled") );
 		
 		return arguments.eventRegistration;
+		
 	}
 
 	
