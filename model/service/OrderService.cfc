@@ -460,13 +460,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAccount.setLastName(registrant.lastName);
 					}
 					if(isDefined("registrant.emailAddress") && len(registrant.emailAddress)) {
-						var newEmailAddress = getAccountService().newPrimaryEmailAddress();
-						newEmailAddress.setPrimaryEmailAddress(registrant.emailAddress);
+						var newEmailAddress = getAccountService().newAccountEmailAddress();
+						newEmailAddress.setEmailAddress(registrant.emailAddress);
 						newAccount.setPrimaryEmailAddress(newEmailAddress);
 						
 					}
 					if(isDefined("registrant.phoneNumber") && len(registrant.phoneNumber)) {
-						var newPhoneNumber = getAccountService().newprimaryPhoneNumber();
+						var newPhoneNumber = getAccountService().newAccountPhoneNumber();
 						newPhoneNumber.setPhoneNumber(registrant.phoneNumber);
 						newAccount.setPrimaryPhoneNumber(newPhoneNumber);
 					}
@@ -893,7 +893,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
 							
 							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
-							for(var orderitem in arguments.order.getOrderItems()) {
+							/*for(var orderitem in arguments.order.getOrderItems()) {
 								if(orderitem.getSku().getBaseProductType() == "event") {
 									for(var eventRegistration in orderitem.getEventRegistrations()) {
 										if(orderItem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
@@ -903,7 +903,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										}
 									}
 								}
-							}
+							}*/
 							
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
