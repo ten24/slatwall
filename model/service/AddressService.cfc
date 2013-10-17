@@ -85,7 +85,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var addressCopy = this.newAddress();
 		addressCopy.setName(arguments.address.getName());
 		addressCopy.setCompany(arguments.address.getCompany());
-		addressCopy.setPhone(arguments.address.getPhone());
+		addressCopy.setPhoneNumber(arguments.address.getPhoneNumber());
 		addressCopy.setStreetAddress(arguments.address.getStreetAddress());
 		addressCopy.setStreet2Address(arguments.address.getStreet2Address());
 		addressCopy.setLocality(arguments.address.getLocality());
