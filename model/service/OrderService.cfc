@@ -436,6 +436,56 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
+		// If this is an event then we need to attach accounts and registrations
+		// to match the quantity of the order item. Comes from Order_AddOrderItem.		
+		if(arguments.processObject.getSku().getBaseProductType() == "event") {
+			
+			// ProcessObject should contain account info in registrants array	
+			for(var registrant in arguments.processObject.getRegistrants()) {
+				
+				// Create new event registration	 record
+				var eventRegistration = this.newEventRegistration();
+				eventRegistration.setOrderItem(newOrderItem);
+				
+				// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
+				if(registrant.newAccountFlag == 0) {
+					eventRegistration.setAccount( getAccountService().getAccount(registrant.accountID) );
+				} else {
+					//Create new account to associate with registration
+					var newAccount = getAccountService().newAccount();
+					if(isDefined("registrant.firstName") && len(registrant.firstName)) {
+						newAccount.setFirstName(registrant.firstName);
+					}
+					if(isDefined("registrant.lastName") && len(registrant.lastName)) {
+						newAccount.setLastName(registrant.lastName);
+					}
+					if(isDefined("registrant.emailAddress") && len(registrant.emailAddress)) {
+						var newEmailAddress = getAccountService().newPrimaryEmailAddress();
+						newEmailAddress.setPrimaryEmailAddress(registrant.emailAddress);
+						newAccount.setPrimaryEmailAddress(newEmailAddress);
+						
+					}
+					if(isDefined("registrant.phoneNumber") && len(registrant.phoneNumber)) {
+						var newPhoneNumber = getAccountService().newprimaryPhoneNumber();
+						newPhoneNumber.setPhoneNumber(registrant.phoneNumber);
+						newAccount.setPrimaryPhoneNumber(newPhoneNumber);
+					}
+					newAccount = getAccountService().saveAccount(newAccount);
+					eventRegistration.setAccount(newAccount);
+				}
+				
+				// Set registration status
+				if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+				} else {
+					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
+				}
+				
+				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
+					
+			}
+		}
+		
 		// Call save order to place in the hibernate session and re-calculate all of the totals 
 		arguments.order = this.saveOrder( arguments.order );
 		
@@ -992,12 +1042,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Get the original order status code
 		var originalOrderStatus = arguments.order.getOrderStatusType().getSystemCode();
 		
-		// First we make sure that this order status is not 'closed', 'canceld', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
+		// First we make sure that this order status is not 'closed', 'canceled', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 			
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
 			if(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
-				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostClosed") );
+				arguments.order.setOrderStatusType( getSettingService().getTypeBySystemCode("ostClosed") );
 				
 			// The default case is just to set it to processing
 			} else {
@@ -1249,15 +1299,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// Process: Order Item
-	public any function processOrderItem_updateRegistrationQuantity(required any orderItem) {
+	public any function processOrderItem_updateEventRegistrationQuantity(required any orderItem,struct data={}) {
 		
 		// We need LESS event registrations due to order adjustment before order has been placed
-		if( arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity() && arguments.order.getStatusCode() == "ostNotPlaced" ) {
+		if( arrayLen(orderItem.getActiveEventRegistrations()) > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
 			
+			var removableEvents = [];
 			var numberToRemove = arrayLen(orderItem.getEventRegistrations()) - orderItem.getQuantity();
 			
 			// Create an array of registrations we can safely remove, i.e. not associated with an account
-			var removableEvents = [];
 			for(var eventRegistration in orderItem.getEventRegistrations()) {
 				if(isNull(eventRegistration.getFirstName()) && isNull(eventRegistration.getLastName()) && isNull(eventRegistration.getEmailAddress()) && isNull(eventRegistration().getPhoneNumber())) {
 					arrayAppend(removableEvents, eventRegistration);
@@ -1287,7 +1337,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var i=1; i <= orderItem.getQuantity() - arrayLen(orderItem.getEventRegistrations()); i++ ) {
 				var eventRegistration = this.newEventRegistration();
 				eventRegistration.setOrderItem(orderitem);
-				eventRegistration.setEventRegistrationStatusType( eventRegistration.getEventRegistrationStatusType() ); // TODO: CHANGE TO NOT PLACED
+				eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstNotPlaced") );
 				eventRegistration.setAccount(arguments.order.getAccount());
 				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );	
 			}
@@ -1566,10 +1616,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Loop over the orderItems looking for any skus that are 'event' skus. 
 			for(var orderitem in arguments.order.getOrderItems()) {
-				
+
 				// The number of reg & quantity don't match
 				if(orderItem.getSku().getBaseProductType() == "event" && arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
-					
+
 					orderItem = this.processOrderItem(orderItem, {}, 'updateEventRegistrationQuantity');
 					
 					if(orderItem.hasError('updateEventRegistrationQuantity')) {
