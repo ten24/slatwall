@@ -225,7 +225,6 @@ globalEncryptionKeySize
 					// Sku
 					skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 					skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
-					skuBundleInventory = {fieldType="select", defaultValue="On Purchase"},
 					skuCurrency = {fieldType="select", defaultValue="USD"},
 					skuEligibleCurrencies = {fieldType="listingMultiselect", listingMultiselectEntityName="Currency", defaultValue=getCurrencyService().getAllActiveCurrencyIDList()},
 					skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
@@ -361,8 +360,6 @@ globalEncryptionKeySize
 					return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 				case "shippingMethodRateAdjustmentType" :
 					return [{name='Increase Percentage', value='increasePercentage'}, {name='Decrease Percentage', value='decreasePercentage'}, {name='Increase Amount', value='increaseAmount'}, {name='Decrease Amount', value='decreaseAmount'}];
-				case "skuBundleInventory":
-					return ['On Make Up','On Purchase','On Delivery'];
 				case "skuCurrency" :
 					return getCurrencyService().getCurrencyOptions();
 				case "skuTaxCategory":
