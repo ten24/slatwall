@@ -70,9 +70,10 @@ Notes:
 			{alias='price', formatType="currency", title=rbKey('entity.orderItem.price')},
 			{alias='type', title=rbKey('entity.orderItem.orderItemType')},
 			{alias='orderNumber', title=rbKey('entity.order.orderNumber')},
-			{alias='countryCode', title=rbKey('entity.address.countryCode')},
 			{alias='stateCode', title=rbKey('entity.address.stateCode')},
-			{alias='city', title=rbKey('entity.address.city')}
+			{alias='city', title=rbKey('entity.address.city')},
+			{alias='postalCode', title=rbKey('entity.address.postalCode')},
+			{alias='countryCode', title=rbKey('entity.address.countryCode')}
 		] />
 	</cffunction>
 	
@@ -96,10 +97,11 @@ Notes:
 					<cfelse>
 						oit.type,
 					</cfif>
-					SwAddress.countryCode,
-					SwAddress.stateCode,
 					SwAddress.city,
+					SwAddress.stateCode,
+					SwAddress.postalCode,
 					SwOrderItem.price,
+					SwAddress.countryCode,
 					CASE
     					WHEN SwOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' THEN
     						SwOrderItem.quantity

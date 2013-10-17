@@ -50,7 +50,7 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	
 	// Persistent Properties
 	property name="categoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="categoryIDPath" ormtype="string";
+	property name="categoryIDPath" ormtype="string" length="4000";
 	property name="categoryName" ormtype="string";
 	property name="restrictAccessFlag" ormtype="boolean";
 	property name="allowProductAssignmentFlag" ormtype="boolean";

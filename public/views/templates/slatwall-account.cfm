@@ -353,7 +353,12 @@ Notes:
 																<div class="aea#accountEmailAddressIndex#<cfif accountEmailAddress.hasErrors()> hide</cfif>">
 																	
 																	<!--- Email Address --->
-																	<span>#accountEmailAddress.getEmailAddress()#</span>
+																	<span>#accountEmailAddress.getEmailAddress()# ( <cfif accountEmailAddress.getVerifiedFlag()>verified<cfelse><a href="?slatAction=public:account.sendAccountEmailAddressVerificationEmail&accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#">Verify Now</a></cfif> )</span>
+																	<!---[DEVELOPER NOTES]
+																		We are displaying a 'verified' value next to the email address, however you do not need to have email addresses get verified
+																		for slatwall to function properly.  If you choose not to use verifications then you can just remove the links and let
+																		email addresses stay unverified.
+																	--->
 																	
 																	<!--- Admin buttons --->
 																	<span class="pull-right">
@@ -367,7 +372,6 @@ Notes:
 																			<a href="?slatAction=public:account.update&primaryEmailAddress.accountEmailAddressID=#accountEmailAddress.getAccountEmailAddressID()#" title="Set #accountEmailAddress.getEmailAddress()# as your primary email address"><i class="icon-asterisk"></i></a>&nbsp;
 																		</cfif>
 																	</span>
-																	
 																	
 																</div>
 																

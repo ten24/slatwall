@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,17 +45,12 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+--->
+<cfparam name="rc.site" type="any" />
 
-	public void function getEntity_works() {
-		assert(!isNull(request.slatwallScope.getEntity('SlatwallCountry', 'US')));
-	}
-	
-	public void function getEntity_works_with_struct() {
-		assert(!isNull(request.slatwallScope.getEntity('Country', {countryCode='US'})));
-	}
-	
-}
-
-
+<cfoutput>
+	<cf_SlatwallSettingTable>
+		<cf_SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" />
+		<cf_SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" settingObject="#rc.site#" />
+	</cf_SlatwallSettingTable>
+</cfoutput>

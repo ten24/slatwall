@@ -48,14 +48,35 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	public void function getEntity_works() {
-		assert(!isNull(request.slatwallScope.getEntity('SlatwallCountry', 'US')));
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getBean("dataService");
 	}
 	
-	public void function getEntity_works_with_struct() {
-		assert(!isNull(request.slatwallScope.getEntity('Country', {countryCode='US'})));
+		
+	public void function getUrlTitle() {
+		
+		//Gift Card-$50
+		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift Card-$50", tableName="SwProduct");
+		assert(urlTitle eq "gift-card-50");
+		debug(var="#urlTitle#");
+		
+		//Gift Card $50
+		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift Card $50", tableName="SwProduct");
+		assert(urlTitle eq "gift-card-50");
+		debug(var="#urlTitle#");
+		
+		//Gift - Card - $50
+		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift - Card - $50", tableName="SwProduct");
+		assert(urlTitle eq "gift-card-50");
+		debug(var="#urlTitle#");
+		
+		//Gift    Card  --  $50
+		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift    Card  --  $50", tableName="SwProduct");
+		assert(urlTitle eq "gift-card-50");
+		debug(var="#urlTitle#");
+
 	}
 	
 }
-
-
