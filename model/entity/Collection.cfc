@@ -43,7 +43,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string";
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
-	property name="collectionData" ormtype="string" length="4000";
+	property name="collectionConfig" ormtype="string" length="4000";
 	
 	// Calculated Properties
 
@@ -65,9 +65,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
+	property name="config" persistent="false";
+	property name="pageRecords" persistent="false";
 	property name="collectionObjectOptions" persistent="false";
-
-
 	
 	// ============ START: Non-Persistent Property Methods =================
 	public array function getCollectionObjectOptions() {
@@ -81,6 +81,44 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			}
 		}
 		return variables.collectionObjectOptions;
+	}
+	
+	public any function getConfig() {
+		if(!structKeyExists(variables, "config")) {
+			variables.config = {};
+			variables.config['columns'] = [];
+			var column = {};
+			column['propertyIdentifier'] = 'brandName';
+			arrayAppend(variables.config['columns'], column);
+			
+			var column2 = {};
+			column2['propertyIdentifier'] = 'brandWebsite';
+			arrayAppend(variables.config['columns'], column2);
+			
+			
+			if(!isNull(getCollectionConfig()) && isJSON(getCollectionConfig())) {
+				variables.config = deserializeJSON(getCollectionConfig());
+			}
+		}
+		return variables.config;
+	}
+	
+	public any function getPageRecords() {
+		if(!structKeyExists(variables, "pageRecords")) {
+			variables.pageRecords = [];
+			
+			var record = {};
+			record['brandName'] = "Nike";
+			record['brandWebsite'] = "http://www.nike.com/";
+			
+			arrayAppend(variables.pageRecords, record);
+			
+			record2['brandName'] = "Etnies";
+			record2['brandWebsite'] = "http://www.etnies.com/";
+			
+			arrayAppend(variables.pageRecords, record2);
+		}
+		return variables.pageRecords;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -117,3 +155,285 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	// ==================  END:  Deprecated Methods ========================
 }
+
+
+
+
+
+/*
+	{
+		entityName = '',
+		columns = [
+			{
+				propertyIdentifier = 'primaryIDProperty'
+			},
+			{
+				propertyIdentifier = '',
+				function = len(), max(), whatever()
+			}
+		],
+		where = [
+			{ see below }
+		],
+		orderby = [
+			{
+				propertyIdentifier = '',
+				direction = 'ASC' | 'DESC',
+				function = len(), max(), whatever()
+			}
+		],	
+		groupby = [
+			{
+				propertyIdentifier = '',
+				direction = 'ASC' | 'DESC',
+				function = len(), max(), whatever()
+			}
+		],
+		relationships = {
+			propertyIdentifier = {
+				fetch = true | false,
+				join = 'left' | 'inner'
+			}
+		},
+		subqueries = {
+			aliase1 = {
+				entityName = '',
+				joinPropertyIdentifier,
+				columns = [],
+				where = [],
+				orderby = [],	
+				groupby = [],
+				relationships = {},
+				subqueries = {}
+			},
+			aliase2 = {
+				collectionID = ''
+			}
+		}
+	}
+	
+	===============================================================================
+	WHERE (productCode = 'X' AND activeFlag = 1)
+	
+	where[1].propertyIdentifier = 'productCode',
+	where[1].operator = '=',
+	where[1].value = 'X',
+	where[2].propertyIdentifier = 'activeFlag',
+	where[2].operator = '=',
+	where[2].value = 1,
+	
+	where = [
+		{
+			propertyIdentifier = 'productCode',
+			operator = '=',
+			value = 'X'
+		},
+		{
+			propertyIdentifier = 'activeFlag',
+			operator = '=',
+			value = 1
+		}
+	]
+	
+	
+	================================================================================
+	WHERE ( ( productCode = X AND productName = 'Y' ) OR ( activeFlag = 1 ) )
+	
+	where[1].propertyIdentifier = 'productCode'
+	where[1].operator = '='
+	where[1].value = 'X'
+	where[2].propertyIdentifier = 'productName'
+	where[2].operator = '='
+	where[2].value = 'Y'
+	where[3].or[1].propertyIdentifier = 'activeFlag'
+	where[3].or[1].operator = '='
+	where[3].or[1].value = 1
+	
+	where = [
+		{
+			propertyIdentifier = 'productCode',
+			operator = '=',
+			value = 'X'
+		},
+		{
+			propertyIdentifier = 'productName',
+			operator = '=',
+			value = 'Y'
+		},
+		{
+			or = [
+				propertyIdentifier = 'activeFlag',
+				operator = '=',
+				value = 1
+			]
+		}
+	]
+	
+	
+	=============================================================================================
+	WHERE ( (productCode = X AND productName = Y) AND ( (activeFlag = 1 OR publishedFlag = 1) ) )
+	
+	where[1].propertyIdentifier = 'productCode'
+	where[1].value = 'X'
+	where[1].operator = '='
+	where[2].propertyIdentifier = 'productName'
+	where[2].value = 'Y'
+	where[2].operator = '='
+	where[3].and[1].or[1].propertyIdentifier = 'activeFlag'
+	where[3].and[1].or[1].operator = '='
+	where[3].and[1].or[1].value = 1
+	where[3].and[1].or[2].propertyIdentifier = 'publishedFlag'
+	where[3].and[1].or[2].operator = '='
+	where[3].and[1].or[2].value = 1
+	
+	where = [
+		{
+			propertyIdentifier = 'productCode',
+			operator = '=',
+			value = 'X'
+		},
+		{
+			propertyIdentifier = 'productName',
+			operator = '=',
+			value = 'Y'
+		},
+		{
+			and = [
+				{
+					or = [
+						{
+							propertyIdentifier = 'activeFlag',
+							operator = '=',
+							value = 1
+						},
+						{
+							propertyIdentifier = 'publishedFlag',
+							operator = '=',
+							value = 1
+						}
+					]
+				}
+				
+			]
+		}
+	]
+	
+	where (((productCode = X AND productName = Y) AND (activeFlag = 1 OR publishedFlag = 1)) OR (LEN(productDescription) > 10 AND LEN(productDescription) < 100))
+	
+	where[1].or[1].and[1].and[1].propertyIdentifier = 'productCode'
+	where[1].or[1].and[1].and[1].operator = '='
+	where[1].or[1].and[1].and[1].value = 'x'
+	where[1].or[1].and[1].and[2].propertyIdentifier = 'productName'
+	where[1].or[1].and[1].and[2].operator = '='
+	where[1].or[1].and[1].and[2].value = 'Y'
+	where[1].or[1].and[1].or[1].propertyIdentifier = 'activeFlag'
+	where[1].or[1].and[1].or[1].operator = '='
+	where[1].or[1].and[1].or[1].value = 1
+	where[1].or[1].and[1].or[2].propertyIdentifier = 'publishedFlag'
+	where[1].or[1].and[1].or[2].operator = '='
+	where[1].or[1].and[1].or[2].value = 1
+	where[1].or[2].and[1].function = 'LEN'
+	where[1].or[2].and[1].propertyIdentifier = 'productDescription'
+	where[1].or[2].and[1].operator = '>'
+	where[1].or[2].and[1].value = 10,
+	where[1].or[2].and[1].function = 'LEN'
+	where[1].or[2].and[1].propertyIdentifier = 'productDescription'
+	where[1].or[2].and[1].operator = '<'
+	where[1].or[2].and[1].value = 100,
+	
+	where = [
+		{
+			or = [
+				{
+					and = [
+						{
+							and = [
+								{
+									propertyIdentifier = 'productCode',
+									operator = '=',
+									value = 'X'
+								},
+								{
+									propertyIdentifier = 'productName',
+									operator = '=',
+									value = 'Y'
+								},
+							]
+						},
+						{
+							or = [
+								{
+									propertyIdentifier = 'activeFlag',
+									operator = '=',
+									value = 1
+								},
+								{
+									propertyIdentifier = 'publishedFlag',
+									operator = '=',
+									value = 1
+								}
+							]
+						},
+					]
+				},
+				{
+					and = [
+						{
+							function = 'LEN',
+							propertyIdentifier = 'productDescription',
+							operator = '>',
+							value = 10
+						},
+						{
+							function = 'LEN',
+							propertyIdentifier = 'productDescription',
+							operator = '<',
+							value = 100
+							
+						}
+					]
+				},
+			]
+		},
+	]
+	
+	
+	WHERE activeFlag=1 AND EXISTS( SELECT skuID FROM SlatwallSku sqsku WHERE ( sqsku.product.productID = base.productID AND price < 30 ) )
+	
+	where[1].propertyIdentifier = 'activeFlag'
+	where[1].operator = '='
+	where[1].value = 1
+	where[2].exists.entityName = 'SlatwallSku'
+	where[2].exists.where[1].propertyIdentifier = 'product.productID'
+	where[2].exists.where[1].operator = '='
+	where[2].exists.where[1].valuePropertyIdentifier = 'base.productID' 
+	where[2].exists.where[2].propertyIdentifier = 'price'
+	where[2].exists.where[2].operator = '<'
+	where[2].exists.where[2].value = 30
+	
+	where = [
+		{
+			propertyIdentifier = 'activeFlag',
+			operator = '=',
+			value = 1
+		},
+		{
+			exists = {
+				entityName = 'SlatwallSku',
+				where = [
+					{
+						propertyIdentifier = 'product.productID',
+						operator = '=',
+						valuePropertyIdentifier = 'base.productID'
+					},
+					{
+						propertyIdentifier = 'price',
+						operator = '=',
+						value = 30
+					}
+				]
+			},
+		}
+	]
+	
+*/
