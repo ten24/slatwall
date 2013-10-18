@@ -47,7 +47,10 @@ Notes:
 	
 */
 component extends="org.Hibachi.Hibachi" output="false" {
-
+ 	// ==================================== Added Application Mapping to iself for /Slatwall Mapping
+ 	this.applicationroot = getDirectoryFromPath( getCurrentTemplatePath() );
+    	this.mappings[ "/Slatwall" ] = this.applicationroot;
+	
 	// ===================================== HIBACHI HOOKS
 	
 	// @hint this method always fires one time, even if the request is coming from an outside application.
