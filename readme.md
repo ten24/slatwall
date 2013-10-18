@@ -18,6 +18,11 @@ What's Been Done:
 - Added Copyright and Footer Links to slatwall-footer.cfm
 - Removed < div class="container" > < /div > from all Sub-Template Files.
 - Added Redirect functions for the Login/Logout Functions
+- Added:  this.applicationroot = getDirectoryFromPath( getCurrentTemplatePath() );
+	  this.mappings[ "/Slatwall" ] = this.applicationroot; 
+	to Application.cfc for self-mapping "/Slatwall" to application root (For Stand-Alone)
+
+-
 
 -J Harvey (webdevsourcerer)
 
