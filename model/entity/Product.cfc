@@ -680,32 +680,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.eventRegistrationsSmartList;
 	}
 	
-	/*public any function getEventRegistrations() {
-		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
-			var smartList = getService("eventRegistrationService").getEventRegistrations();
-			variables.eventRegistrationsSmartList = smartList;
-		}
-		if( !structKeyExists(variables, "eventRegistrations") ) {
-			var orderItemsArray = [];
-			var orderItemIDList = "";
-			for ( var sku in getskus()) {
-				var orderItems = sku.getorderItems();
-				for( var orderItem in orderItems ) {
-					arrayAppend(orderItemsArray,orderItem.getorderItemID());
-					
-				}	
-			}
-			if(arraylen(orderItemsArray)) {
-				orderItemIDList = arrayToList(orderItemsArray);
-				variables.eventRegistrationsSmartList = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
-			} else {
-				variables.eventRegistrationsSmartList.addFilter('orderItemID','');
-			}
-				
-		}
-		return variables.eventRegistrationsSmartList;
-	}*/
-	
 
 	// ============  END:  Non-Persistent Property Methods =================
 		

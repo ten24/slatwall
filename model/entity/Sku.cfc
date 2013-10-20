@@ -124,6 +124,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="optionsByOptionGroupIDStruct" persistent="false";
 	property name="optionsIDList" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
+	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetails" type="struct" persistent="false";
 	property name="salePrice" type="numeric" hb_formatType="currency" persistent="false";
@@ -480,6 +481,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+	
+	public any function getEventStatus() {
+		if(!structKeyExists(variables, "eventStatus")) {
+			variables.eventStatus = getService("settingService").getTypeBySystemCode('estRegOpen');
+			if(now() > getstartReservationDateTime() ){
+				variables.eventStatus = getService("settingService").getTypeBySystemCode('estRegClosed');
+			} 
+		}
+		return variables.eventStatus;
 	}
 	
 	// Retrieve event registrations related to this sku
