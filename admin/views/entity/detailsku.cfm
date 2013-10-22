@@ -45,6 +45,11 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.sku#" edit="#rc.edit#"
 					backAction="admin:entity.detailproduct"
 					backQueryString="productID=#rc.product.getProductID()#">
+			<cfif rc.sku.getBundleFlag() eq true>		
+				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="makeupBundledSkus" type="list" modal="true" />
+				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="breakupBundledSkus" type="list" modal="true" />
+				<li class="divider"></li>
+			</cfif>
 			<cf_HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 		</cf_HibachiEntityActionBar>
 		
@@ -80,7 +85,11 @@ Notes:
 				<cf_HibachiTab property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">
 				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
-				<cf_HibachiTab view="admin:entity/skutabs/options" />
+				<cfif rc.sku.getBundleFlag() eq true>
+					<cf_HibachiTab view="admin:entity/skutabs/bundledskus" />
+				<cfelse>	
+					<cf_HibachiTab view="admin:entity/skutabs/options" />
+				</cfif>
 			</cfif>
 			<cf_HibachiTab property="skuDescription" />
 			<cf_HibachiTab view="admin:entity/skutabs/saleshistory" />

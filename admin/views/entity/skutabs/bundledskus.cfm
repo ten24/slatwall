@@ -46,29 +46,24 @@
 Notes:
 
 --->
-<cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />
-		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
-		<cf_SlatwallSetting settingName="skuCurrency" />
-		<cf_SlatwallSetting settingName="skuEligibleCurrencies" />
-		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
-		<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" />
-		<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" />
-		<cf_SlatwallSetting settingName="skuHoldBackQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" />
-		<cf_SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
-		<cf_SlatwallSetting settingName="skuRegistrationAutoApprovalAccountCollection" />
-		<cf_SlatwallSetting settingName="skuShippingWeight" />
-		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" />
-		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
-		<cf_SlatwallSetting settingName="skuTaxCategory" />
-	</cf_SlatwallSettingTable>
-</cfoutput>
 
+<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.product" type="any">
+
+<cfoutput>
+	<cf_HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartList()#"  
+							recordEditAction="admin:entity.editskubundle"
+							recordEditQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#"
+							recordEditModal=true
+							recordDeleteAction="admin:entity.deleteskubundle"
+							recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabbundledskus"
+							edit="#rc.edit#">
+							
+		<cf_HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
+		<cf_HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
+		<cf_HibachiListingColumn propertyIdentifier="bundledQuantity" />
+		
+	</cf_HibachiListingDisplay>	
+	
+	<cf_HibachiActionCaller action="admin:entity.createskubundle" text="#request.slatwallScope.rbKey('admin.define.createskubundle')#" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" modal="true" />
+</cfoutput>

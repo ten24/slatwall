@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,30 +45,67 @@
 
 Notes:
 
---->
-<cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />
-		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
-		<cf_SlatwallSetting settingName="skuCurrency" />
-		<cf_SlatwallSetting settingName="skuEligibleCurrencies" />
-		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
-		<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" />
-		<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" />
-		<cf_SlatwallSetting settingName="skuHoldBackQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" />
-		<cf_SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
-		<cf_SlatwallSetting settingName="skuRegistrationAutoApprovalAccountCollection" />
-		<cf_SlatwallSetting settingName="skuShippingWeight" />
-		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" />
-		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
-		<cf_SlatwallSetting settingName="skuTaxCategory" />
-	</cf_SlatwallSettingTable>
-</cfoutput>
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="sku";
+	
+	// Lazy / Injected Objects
+	property name="location";
+	
+	// New Properties
+
+	// Data Properties (ID's)
+	property name="locationID" hb_formFieldType="select" hb_rbKey="entity.location";
+	
+	// Data Properties (Inputs)
+	property name="quantity";
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	property name="locationIDOptions";
+	
+	// Helper Properties
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
+	
+	public any function getLocation() {
+		if(!structKeyExists(variables, "location") && !isNull(getLocationID())) {
+			variables.location = getService("locationService").getLocation( getLocationID() );
+		}
+		if(structKeyExists(variables, "location")) {
+			return variables.location;	
+		}
+	}
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	public array function getLocationIDOptions() {
+		if( !structKeyExists(variables,"locationIDOptions") ) {
+			variables.loyaltyIDOptions = getService("locationService").getLocationOptions();
+		}
+		return variables.loyaltyIDOptions;
+	}
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
+	
+	
+}

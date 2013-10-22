@@ -63,7 +63,7 @@
 		<Record typeID="444df2d7dddd6c7549632a58d2887bd0" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d7dddd6c7549632a58d2887bd0" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Time" systemCode="atTime" />
 		<Record typeID="444df2a7a2c39796d2b15516840344ea" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2a7a2c39796d2b15516840344ea" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Rich Text Editor" systemCode="atWysiwyg" />
 		<Record typeID="444df2d8eb236c42dbbef7ea66200f1b" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d8eb236c42dbbef7ea66200f1b" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Yes / No" systemCode="atYesNo" />
-		
+				
 		<Record typeID="444df32f9fb5d68f03f1af307b3d0644" typeIDPath="444df32f9fb5d68f03f1af307b3d0644" parentTypeID="NULL" type="Content Template Types" systemCode="contentTemplateType" />
 		<Record typeID="5accbf4aaecf23ab7e2dc384d04c3943" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,5accbf4aaecf23ab7e2dc384d04c3943" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Barrier Page" systemCode="cttBarrierPage" />
 		<Record typeID="444df332f3988ad0c802b83361f99a01" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df332f3988ad0c802b83361f99a01" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Brand" systemCode="cttBrand" />
@@ -136,6 +136,8 @@
 		<Record typeID="444df2e60db81c12589c9b39346009f2" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e60db81c12589c9b39346009f2" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Manual In" systemCode="satManualIn" />
 		<Record typeID="444df2e7dba550b7a24a03acbb37e717" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e7dba550b7a24a03acbb37e717" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Manual Out" systemCode="satManualOut" />
 		<Record typeID="5accbf51d91d4c3badc6f22b1caace97" typeIDPath="444df2e4e0ec725f718318de5bd3b973,5accbf51d91d4c3badc6f22b1caace97" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Physical Count" systemCode="satPhysicalCount" />
+		<Record typeID="3749e30bcf8179d5531d6713db673565" typeIDPath="444df2e4e0ec725f718318de5bd3b973,3749e30bcf8179d5531d6713db673565" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Makeup Bundled Skus" systemCode="satMakeupBundledSkus" />
+		<Record typeID="37a1ceb6969fd35927b67733d849532a" typeIDPath="444df2e4e0ec725f718318de5bd3b973,37a1ceb6969fd35927b67733d849532a" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Breakup Bundled Skus" systemCode="satBreakupBundledSkus" />		
 		
 		<Record typeID="444df2e1afee04d4971094d467a2c619" typeIDPath="444df2e1afee04d4971094d467a2c619" parentTypeID="NULL" type="Stock Adjustment Status Types" systemCode="stockAdjustmentStatusType" />
 		<Record typeID="444df2e2f66ddfaf9c60caf5c76349a6" typeIDPath="444df2e1afee04d4971094d467a2c619,444df2e2f66ddfaf9c60caf5c76349a6" parentTypeID="444df2e1afee04d4971094d467a2c619" type="New" systemCode="sastNew" />
@@ -181,3 +183,4 @@
 
 	</Records>
 </Table>
+

@@ -46,29 +46,33 @@
 Notes:
 
 --->
-<cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />
-		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
-		<cf_SlatwallSetting settingName="skuCurrency" />
-		<cf_SlatwallSetting settingName="skuEligibleCurrencies" />
-		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
-		<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" />
-		<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" />
-		<cf_SlatwallSetting settingName="skuHoldBackQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" />
-		<cf_SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
-		<cf_SlatwallSetting settingName="skuRegistrationAutoApprovalAccountCollection" />
-		<cf_SlatwallSetting settingName="skuShippingWeight" />
-		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" />
-		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
-		<cf_SlatwallSetting settingName="skuTaxCategory" />
-	</cf_SlatwallSettingTable>
-</cfoutput>
+<cfparam name="rc.product" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
+<cfoutput>
+	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
+		
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
+		</cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuCode" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+		<!--- Skus --->
+		<cf_HibachiListingDisplay smartList="#rc.processObject.getSkusSmartList()#"
+								  multiselectFieldName="skus"
+								  edit="#rc.edit#">
+			<cf_HibachiListingColumn propertyIdentifier="skuCode" />
+			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />    
+			<cf_HibachiListingColumn propertyIdentifier="product.productName" />
+			<cf_HibachiListingColumn propertyIdentifier="product.productCode" />
+			<cf_HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		</cf_HibachiListingDisplay>
+		
+	</cf_HibachiEntityProcessForm>
+</cfoutput>

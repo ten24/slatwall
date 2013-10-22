@@ -89,11 +89,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If any purchase records come back, then we can set purchasedAccess to true
 		if(arrayLen(accountContentAccessSmartList.getRecords())) {
 			
-			accessDetails.accessFlag = true;
 			accessDetails.purchasedAccessFlag = true;
 			
 			// If the content node does not 'requireSubscription' then we can return true and log it
 			if(!requireSubscriptionSettingDetails.settingValue) {
+				
+				accessDetails.accessFlag = true;
 				
 				logAccess(content=arguments.content, accountContentAccess=accountContentAccessSmartList.getRecords()[1]);
 				

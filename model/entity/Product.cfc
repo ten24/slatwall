@@ -107,6 +107,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
+	property name="bundleSkusSmartList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
@@ -499,6 +500,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public any function getBaseProductType() {
 		return getProductType().getBaseProductType();
+	}
+	
+	public any function getBundleSkusSmartList() {
+		if(!structKeyExists(variables,"bundleSkusSmartList")) {
+			variables.bundleSkusSmartList = getService("skuService").getSkuSmartList();
+			variables.bundleSkusSmartList.addFilter('product.productID', getProductID());
+			variables.bundleSkusSmartList.addFilter('bundleFlag', 1);
+		}
+		return variables.bundleSkusSmartList;
 	}
 	
 	public array function getDefaultProductImageFiles() {

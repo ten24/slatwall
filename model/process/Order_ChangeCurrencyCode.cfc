@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,30 +45,47 @@
 
 Notes:
 
---->
-<cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />
-		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
-		<cf_SlatwallSetting settingName="skuCurrency" />
-		<cf_SlatwallSetting settingName="skuEligibleCurrencies" />
-		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
-		<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" />
-		<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" />
-		<cf_SlatwallSetting settingName="skuHoldBackQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" />
-		<cf_SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
-		<cf_SlatwallSetting settingName="skuRegistrationAutoApprovalAccountCollection" />
-		<cf_SlatwallSetting settingName="skuShippingWeight" />
-		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" />
-		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
-		<cf_SlatwallSetting settingName="skuTaxCategory" />
-	</cf_SlatwallSettingTable>
-</cfoutput>
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="order";
+	
+	// Lazy / Injected Objects
+	
+	// New Properties
+
+	// Data Properties (ID's)
+	
+	// Data Properties (Inputs)
+	property name="currencyCode";
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
+	
+}

@@ -226,6 +226,8 @@ globalEncryptionKeySize
 					// Sku
 					skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 					skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
+					skuBundleAutoMakeupInventoryOnSaleFlag = {fieldType="yesno", defaultValue=0},
+					skuBundleAutoBreakupInventoryOnReturnFlag = {fieldType="yesno", defaultValue=0},
 					skuCurrency = {fieldType="select", defaultValue="USD"},
 					skuEligibleCurrencies = {fieldType="listingMultiselect", listingMultiselectEntityName="Currency", defaultValue=getCurrencyService().getAllActiveCurrencyIDList()},
 					skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
@@ -242,7 +244,7 @@ globalEncryptionKeySize
 					skuShippingWeight = {fieldType="text", defaultValue=1},
 					skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
 					skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
-					skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
+					skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},					
 					
 					// Subscription Term
 					subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -761,9 +763,9 @@ globalEncryptionKeySize
 		<cfset var allSettings = getAllSettingsQuery() />
 		<cfset var rs = "" />
 		
-		<cfquery name="rs" dbType="query">
+		<cfquery name="rs" dbType="query" maxrows="1">
 			SELECT
-				count(*) as settingRecordCount
+				settingID
 			FROM
 				allSettings
 			WHERE
@@ -772,9 +774,9 @@ globalEncryptionKeySize
 			  	  AND
 			  	LOWER(allSettings.settingValue) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(arguments.settingValue)#">  
 			  </cfif>
-		</cfquery> 
+		</cfquery>
 		
-		<cfreturn val(rs.settingRecordCount) />
+		<cfreturn val(rs.recordCount) />
 	</cffunction>
 	
 	<cffunction name="getSettingRecordBySettingRelationships" output="false">

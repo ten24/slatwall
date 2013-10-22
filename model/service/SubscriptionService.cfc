@@ -249,7 +249,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
-	private void function setSubscriptionUsageStatus(required any subscriptionUsage, required string subscriptionStatusTypeCode, any effectiveDateTime = now(), any subscriptionStatusChangeReasonTypeCode) {
+	public void function setSubscriptionUsageStatus(required any subscriptionUsage, required string subscriptionStatusTypeCode, any effectiveDateTime = now(), any subscriptionStatusChangeReasonTypeCode) {
 		var subscriptionStatus = this.newSubscriptionStatus();
 		subscriptionStatus.setSubscriptionStatusType(this.getTypeBySystemCode(arguments.subscriptionStatusTypeCode));
 		if(structKeyExists(arguments, "subscriptionStatusChangeReasonTypeCode") && arguments.subscriptionStatusChangeReasonTypeCode != "") {

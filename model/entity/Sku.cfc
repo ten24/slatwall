@@ -64,6 +64,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="startReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="endReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="bundleFlag" ormtype="boolean";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -78,6 +79,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
+	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
+	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
+	
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
@@ -342,6 +346,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// END: Quantity Helper Methods
+	
 	
 	// ====================  END: Logical Methods ==========================
 	
@@ -750,6 +755,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function removeStock(required any stock) {
 		arguments.stock.removeSku( this );
 	}
+	
+	// Bundled Skus (one-to-many)
+	public void function addBundledSku(required any bundledSku) {
+		arguments.bundledSku.setSku( this );
+	}
+	public void function removeBundledSku(required any bundledSku) {
+		arguments.bundledSku.removeSku( this );
+	}	
 	
 	// Promotion Rewards (many-to-many - inverse)
 	public void function addPromotionReward(required any promotionReward) {

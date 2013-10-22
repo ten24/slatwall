@@ -54,6 +54,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="productService" type="any";
 	property name="subscriptionService" type="any";
 	property name="contentService" type="any";
+	property name="stockService" type="any";
+	property name="settingService" type="any";
 	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
@@ -141,6 +143,76 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: DAO Passthrough ============================
 	
 	// ===================== START: Process Methods ===========================
+	
+	// TODO [paul]: makeup / breakup
+	public any function processSku_MakeupBundledSkus(required any sku, required any processObject) {
+		
+		// Create a stockAdjustment
+		var stockAdjustment = getStockService().newStockAdjustment();
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satMakeupBundledSkus') ); 
+		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
+		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
+		
+		var makeupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+
+		var makeupItem = getStockService().newStockAdjustmentItem();
+		makeupItem.setStockAdjustment( stockAdjustment );
+		makeupItem.setQuantity( arguments.processObject.getQuantity() );
+		makeupItem.setToStock( makeupStock );
+		
+		// Loop over every bundledSku
+		for(bundledSku in arguments.entity.getBundledSkus()) {
+			
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+			
+			var makeupItem = getStockService().newStockAdjustmentItem();
+			makeupItem.setStockAdjustment( stockAdjustment );
+			makeupItem.setQuantity( bundledSku.getBundledQuantity() );
+			makeupItem.setFromStock( thisStock );
+			
+		}
+		
+		getStockService().saveStockAdjustment(stockAdjustment);
+		
+		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		
+		return arguments.sku;
+	}
+	
+	public any function processSku_BreakupBundledSkus(required any sku, required any processObject) {
+		
+		// Create a stockAdjustment
+		var stockAdjustment = getStockService().newStockAdjustment();
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satBreakupBundledSkus') ); 
+		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
+		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
+		
+		var breakupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+		
+		var breakupItem = getStockService().newStockAdjustmentItem();
+		breakupItem.setStockAdjustment( stockAdjustment );
+		breakupItem.setQuantity( arguments.processObject.getQuantity() );
+		breakupItem.setFromStock( breakupStock );
+		
+		// Loop over every bundledSku
+		for(bundledSku in arguments.entity.getBundledSkus()) {
+			
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+			
+			var breakupItem = getStockService().newStockAdjustmentItem();
+			breakupItem.setStockAdjustment( stockAdjustment );
+			breakupItem.setQuantity( bundledSku.getBundledQuantity() );
+			breakupItem.setToStock( thisStock );
+			
+		}
+		
+		getStockService().saveStockAdjustment(stockAdjustment);
+		
+		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		
+		return arguments.sku;
+		
+	}
 	
 	// =====================  END: Process Methods ============================
 	

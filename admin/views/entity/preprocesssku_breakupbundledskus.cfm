@@ -46,29 +46,22 @@
 Notes:
 
 --->
-<cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />
-		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
-		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
-		<cf_SlatwallSetting settingName="skuCurrency" />
-		<cf_SlatwallSetting settingName="skuEligibleCurrencies" />
-		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
-		<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" />
-		<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" />
-		<cf_SlatwallSetting settingName="skuHoldBackQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" />
-		<cf_SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
-		<cf_SlatwallSetting settingName="skuRegistrationAutoApprovalAccountCollection" />
-		<cf_SlatwallSetting settingName="skuShippingWeight" />
-		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" />
-		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
-		<cf_SlatwallSetting settingName="skuTaxCategory" />
-	</cf_SlatwallSettingTable>
-</cfoutput>
+<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
+<cfoutput>
+	<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
+		
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+		</cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityProcessForm>
+</cfoutput>
