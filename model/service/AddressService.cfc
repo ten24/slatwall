@@ -83,7 +83,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function copyAddress(required any address, saveNewAddress=false) {
 		var addressCopy = this.newAddress();
-		
+
 		addressCopy.setName( arguments.address.getName() );
 		addressCopy.setCompany( arguments.address.getCompany() );
 		addressCopy.setStreetAddress( arguments.address.getStreetAddress() );

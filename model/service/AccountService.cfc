@@ -241,7 +241,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
-		
+
 		// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
 		var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
 	 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
