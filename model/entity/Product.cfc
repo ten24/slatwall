@@ -554,32 +554,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return options;
 	}
 	
-	public any function getEventRegistrations() {
-		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
-			var smartList = getService("eventRegistrationService").getEventRegistrations();
-			variables.eventRegistrationsSmartList = smartList;
-		}
-		if( !structKeyExists(variables, "eventRegistrations") ) {
-			var orderItemsArray = [];
-			var orderItemIDList = "";
-			for ( var sku in getskus()) {
-				var orderItems = sku.getorderItems();
-				for( var orderItem in orderItems ) {
-					arrayAppend(orderItemsArray,orderItem.getorderItemID());
-					
-				}	
-			}
-			if(arraylen(orderItemsArray)) {
-				orderItemIDList = arrayToList(orderItemsArray);
-				variables.eventRegistrationsSmartList = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
-			} else {
-				variables.eventRegistrationsSmartList.addFilter('orderItemID','');
-			}
-				
-		}
-		return variables.eventRegistrationsSmartList;
-	}
-	
 	public string function getTitle() {
 		if(!structKeyExists(variables, "title")) {
 			variables.title = getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this);
@@ -704,6 +678,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.placedOrderItemsSmartList;
+	}
+	
+	public any function getEventRegistrationsSmartList() {
+		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
+			variables.eventRegistrationsSmartList = getService("EventRegistrationService").getEventRegistrationSmartList();
+			variables.eventRegistrationsSmartList.addFilter('orderitem.sku.product.productID', getProductID());
+			//variables.eventRegistrationsSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
+		}
+
+		return variables.eventRegistrationsSmartList;
 	}
 	
 

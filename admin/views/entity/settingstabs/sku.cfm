@@ -60,6 +60,8 @@ Notes:
 		<cf_SlatwallSetting settingName="skuHoldBackQuantity" />
 		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" />
 		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" />
+		<cf_SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
+		<cf_SlatwallSetting settingName="skuRegistrationAutoApprovalAccountCollection" />
 		<cf_SlatwallSetting settingName="skuShippingWeight" />
 		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" />
 		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" />

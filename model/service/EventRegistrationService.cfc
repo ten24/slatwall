@@ -62,6 +62,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addOrder("orderitem.sku.skuCode|ASC");
 		return smartList;
 	}
+
+	public any function getEventRegistrationSmartList(struct data={}) {
+		arguments.entityName = "SlatwallEventRegistration";
+		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		smartList.addOrder("orderitem.sku.skuCode|ASC");
+		return smartList;
+	}
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -156,12 +163,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_cancel(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_canceled(required any eventRegistration, struct data={}) {
 		
-		// We need to update the quantity of the original orderItem
-		// var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1
-		// arguments.eventRegistration.getOrderItem( newQuantity )
-		// We'll prob need to add option in admin to refund credit for cancelation
+		// Reduce the quantity of the original orderItem
+		var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1;
+		var order = arguments.eventRegistration.getOrderItem().getOrder();
+		arguments.eventRegistration.getOrderItem().setQuantity(newQuantity);
+		
+		// TODO: Add option in admin to refund credit for cancelation
 		
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
@@ -173,6 +182,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstCancelled") );
 		
 		return arguments.eventRegistration;
+		
 	}
 
 	

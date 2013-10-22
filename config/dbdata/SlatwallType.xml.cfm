@@ -70,6 +70,12 @@
 		<Record typeID="444df330fc19e5beb17ff974ac03db18" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df330fc19e5beb17ff974ac03db18" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Product" systemCode="cttProduct" />
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8b" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8b" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Product Type" systemCode="cttProductType" />
 		
+		<Record typeID="d28d6b26a0ee941c2cd0a282f7cd7ef4" typeIDPath="d28d6b26a0ee941c2cd0a282f7cd7ef4" parentTypeID="NULL" type="Event Status Types" systemCode="eventStatusType" />
+		<Record typeID="d28d6b27949d1e28e1b15cf4911e2927" typeIDPath="d28d6b26a0ee941c2cd0a282f7cd7ef4,d28d6b27949d1e28e1b15cf4911e2927" parentTypeID="d28d6b26a0ee941c2cd0a282f7cd7ef4" type="Registration Open" systemCode="estRegOpen" />
+		<Record typeID="d28d6b28f119c0c663240b5c2eeb8b1d" typeIDPath="d28d6b26a0ee941c2cd0a282f7cd7ef4,d28d6b28f119c0c663240b5c2eeb8b1d" parentTypeID="d28d6b26a0ee941c2cd0a282f7cd7ef4" type="Registration Closed" systemCode="estRegClosed" />
+		<Record typeID="d28d6b29c85e0966caca135b1cfe40a6" typeIDPath="d28d6b26a0ee941c2cd0a282f7cd7ef4,d28d6b29c85e0966caca135b1cfe40a6" parentTypeID="d28d6b26a0ee941c2cd0a282f7cd7ef4" type="Canceled" systemCode="estCanceled" />
+		<Record typeID="d28d6b2a9630d30689715360939fb73d" typeIDPath="d28d6b26a0ee941c2cd0a282f7cd7ef4,d28d6b2a9630d30689715360939fb73d" parentTypeID="d28d6b26a0ee941c2cd0a282f7cd7ef4" type="Confirmed" systemCode="estConfirmed" />
+		
 		<Record typeID="bb6fd9cff5afa5112ad66560b6a887dd" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd" parentTypeID="NULL" type="Event Registration Status Types" systemCode="eventRegistrationStatusType" />
 		<Record typeID="b8861693e7abb9a80d7ce2ae027fb824" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b8861693e7abb9a80d7ce2ae027fb824" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Registered" systemCode="erstRegistered" />
 		<Record typeID="b8861694a4f61e898b24171c5adae7fc" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b8861694a4f61e898b24171c5adae7fc" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Approved" systemCode="erstApproved" />

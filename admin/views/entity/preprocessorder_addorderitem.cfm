@@ -78,6 +78,31 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
 					
+					<!--- Add form fields to add registrant accounts --->
+					<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
+						<cfloop from="1" to="#rc.processObject.getQuantity()#" index="i" >
+							<cfset newAccount = rc.processObject.getAccountService().newAccount()/>
+							#newAccount.getfirstName()#
+							<fieldset>
+								<legend>Registrant #i#</legend>
+								<cf_HibachiFieldDisplay fieldname="registrants[#i#].newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
+								<!--- New Account --->
+								<cf_HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" loadVisable="yes">
+									<cf_HibachiFieldDisplay fieldname="registrants[#i#].firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
+									<cf_HibachiFieldDisplay fieldname="registrants[#i#].lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
+									<cf_HibachiFieldDisplay fieldname="registrants[#i#].emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
+									<cf_HibachiFieldDisplay fieldname="registrants[#i#].phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
+								</cf_HibachiDisplayToggle>
+								<!--- Existing Account --->
+								<cf_HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
+									<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
+									<cf_HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+								</cf_HibachiDisplayToggle>
+							</fieldset>
+							<br>
+						</cfloop>
+					</cfif>
+					
 					<!--- Order Item Custom Attributes --->
 					<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
 						<hr />
