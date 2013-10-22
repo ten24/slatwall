@@ -50,6 +50,7 @@ Notes:
 <cfoutput>
 	<cf_SlatwallSettingTable showInheritance="false">
 		<cf_SlatwallSetting settingName="siteForgotPasswordEmailTemplate" />
+		<cf_SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" />
 	</cf_SlatwallSettingTable>
 </cfoutput>
 

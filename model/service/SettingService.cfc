@@ -212,6 +212,7 @@ globalEncryptionKeySize
 					
 					// Site
 					siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
+					siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 					
 					// Shipping Method
 					shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
@@ -356,6 +357,8 @@ globalEncryptionKeySize
 					return ['-','_'];
 				case "siteForgotPasswordEmailTemplate":
 					return getEmailService().getEmailTemplateOptions( "account" );
+				case "siteVerifyAccountEmailAddressEmailTemplate":
+					return getEmailService().getEmailTemplateOptions( "accountEmailAddress" );
 				case "shippingMethodQualifiedRateSelection" :
 					return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 				case "shippingMethodRateAdjustmentType" :
@@ -758,9 +761,9 @@ globalEncryptionKeySize
 		<cfset var allSettings = getAllSettingsQuery() />
 		<cfset var rs = "" />
 		
-		<cfquery name="rs" dbType="query">
+		<cfquery name="rs" dbType="query" maxrows="1">
 			SELECT
-				count(*) as settingRecordCount
+				settingID
 			FROM
 				allSettings
 			WHERE
@@ -769,9 +772,9 @@ globalEncryptionKeySize
 			  	  AND
 			  	LOWER(allSettings.settingValue) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(arguments.settingValue)#">  
 			  </cfif>
-		</cfquery> 
+		</cfquery>
 		
-		<cfreturn val(rs.settingRecordCount) />
+		<cfreturn val(rs.recordCount) />
 	</cffunction>
 	
 	<cffunction name="getSettingRecordBySettingRelationships" output="false">

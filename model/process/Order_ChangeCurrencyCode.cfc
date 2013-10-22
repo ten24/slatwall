@@ -46,16 +46,46 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component output="false" accessors="true" extends="HibachiProcess" {
 
-	public void function getEntity_works() {
-		assert(!isNull(request.slatwallScope.getEntity('SlatwallCountry', 'US')));
-	}
+	// Injected Entity
+	property name="order";
 	
-	public void function getEntity_works_with_struct() {
-		assert(!isNull(request.slatwallScope.getEntity('Country', {countryCode='US'})));
-	}
+	// Lazy / Injected Objects
+	
+	// New Properties
+
+	// Data Properties (ID's)
+	
+	// Data Properties (Inputs)
+	property name="currencyCode";
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
+
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
 	
 }
-
-

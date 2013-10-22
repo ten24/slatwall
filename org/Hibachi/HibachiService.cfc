@@ -644,15 +644,12 @@
 		
 		public any function getEntitiesMetaData() {
 			if(!structCount(variables.entitiesMetaData)) {
-				var entityDirectoryArray = directoryList(expandPath('/#getApplicationValue('applicationKey')#/model/entity'));
-				for(var e=1; e<=arrayLen(entityDirectoryArray); e++) {
-					if(listLast(entityDirectoryArray[e], '.') eq 'cfc') {
-						var entityShortName = listFirst(listLast(replace(entityDirectoryArray[e], '\', '/', 'all'), '/'), '.');
-						var entityMetaData = createObject('component', '#getApplicationValue('applicationKey')#.model.entity.#entityShortName#').getThisMetaData();
-						
-						if(structKeyExists(entityMetaData, "persistent") && entityMetaData.persistent) {
-							 variables.entitiesMetaData[ entityShortName ] = entityMetaData;
-						}
+				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+				for(var entityName in entityNamesArr) {
+					var entityMetaData = entityNew(entityName).getThisMetaData();
+					var entityShortName = listLast(entityMetaData.fullname, '.');
+					if(structKeyExists(entityMetaData, "persistent") && entityMetaData.persistent) {
+						 variables.entitiesMetaData[ entityShortName ] = entityMetaData;
 					}
 				}
 			}

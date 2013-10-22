@@ -123,6 +123,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Account - Create
 	public void function create( required struct rc ) {
+		param name="arguments.rc.createAuthenticationFlag" default="1";
+		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
@@ -146,6 +148,34 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", !deleteOK );
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", true );	
+		}
+	}
+	
+	// Account Email Address - Send Verification Email
+	public void function sendAccountEmailAddressVerificationEmail() {
+		param name="rc.accountEmailAddressID" default="";
+		
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		
+		if(!isNull(accountEmailAddress)) {
+			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, rc, 'sendVerificationEmail' );
+			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", accountEmailAddress.hasErrors() );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
+		}
+	}
+	
+	// Account Email Address - Verify
+	public void function verifyAccountEmailAddress() {
+		param name="rc.accountEmailAddressID" default="";
+		
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		
+		if(!isNull(accountEmailAddress)) {
+			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, rc, 'verify' );
+			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", accountEmailAddress.hasErrors() );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", true );
 		}
 	}
 	

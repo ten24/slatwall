@@ -501,7 +501,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		var hqlSelect = "";
 		
 		if(arguments.countOnly) {
-			hqlSelect &= "SELECT count(distinct #variables.entities[getBaseEntityName()].entityAlias#.#getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getBaseEntityName())#)";
+			hqlSelect &= "SELECT count(";
+			if(getSelectDistinctFlag()) {
+					hqlSelect &= "distinct ";
+			}
+			hqlSelect &= "#variables.entities[getBaseEntityName()].entityAlias#.#getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getBaseEntityName())#)";
 		} else {
 			if(structCount(variables.selects)) {
 				hqlSelect = "SELECT";

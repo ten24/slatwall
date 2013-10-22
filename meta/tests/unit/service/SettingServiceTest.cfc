@@ -48,14 +48,17 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	public void function getEntity_works() {
-		assert(!isNull(request.slatwallScope.getEntity('SlatwallCountry', 'US')));
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getService("settingService");
 	}
 	
-	public void function getEntity_works_with_struct() {
-		assert(!isNull(request.slatwallScope.getEntity('Country', {countryCode='US'})));
+	// getSettingRecordCount()
+	public void function getSettingRecordCount() {
+		var count = variables.service.getSettingRecordCount(settingName="contentRestrictAccessFlag", settingValue=1);
+		assert(isBoolean(count));
 	}
-	
 }
 
 
