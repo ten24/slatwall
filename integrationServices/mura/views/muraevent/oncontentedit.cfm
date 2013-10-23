@@ -72,8 +72,13 @@
 	<cfif !isNull($.slatwall.getContent().getParentContent())>
 		<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValue = $.slatwall.getContent().getParentContent().setting('contentRestrictedContentDisplayTemplate') />	
 	</cfif>
-	<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValueFormatted = $.slatwall.formatValue(local.contentRestrictedContentDisplayTemplateDetails.parentValue, "yesno") />
-	<cfset local.contentRestrictedContentDisplayTemplateDetails.valueOptions = $.slatwall.getService("contentService").getDisplayTemplateOptions( "barrierPage", $.slatwall.getContent().getSite().getSiteID() ) />
+	<cfset local.contentRestrictedContentDisplayTemplateDetails.valueOptions = $.slatwall.getService("contentService").getDisplayTemplateOptions( "BarrierPage", $.slatwall.getContent().getSite().getSiteID() ) />
+	<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValueFormatted = $.slatwall.rbKey('define.none') />
+	<cfloop array="#local.contentRestrictedContentDisplayTemplateDetails.valueOptions#" index="local.thisOption">
+		<cfif local.thisOption['value'] eq local.contentRestrictedContentDisplayTemplateDetails.parentValue>
+			<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValueFormatted = local.thisOption['name'] />
+		</cfif>
+	</cfloop>
 	
 	<!--- contentRequirePurchaseFlagDetails --->
 	<cfset local.contentRequirePurchaseFlagDetails = $.slatwall.getContent().getSettingDetails('contentRequirePurchaseFlag') />
