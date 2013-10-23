@@ -936,7 +936,23 @@
 	<cffunction name="exportSpreadsheet" access="public" output="false">
 		
 		<!--- Create the filename variables --->
-		<cfset var filename = "#getClassName()#_#getReportStartDateTime()#_#getReportEndDateTime()#_#createUUID()#.xls" />
+		<cfset var filename = "" />
+		<cfif not isNull(getReportEntity())>
+			<cfset filename = reReplace(lcase(trim(getReportEntity().getReportTitle())), "[^a-z0-9 \-]", "", "all") />
+			<cfset filename = reReplace(filename, "[-\s]+", "-", "all") />
+			<cfset filename &= "_" />
+		<cfelse>
+			<cfset filename = "#getClassName()#_" />
+		</cfif>
+		<cfset filename = replace(filename, "Report_", "_") />
+		<cfset filename &= replace(getReportStartDateTime(), "-", "", "all") />
+		<cfset filename &= "-" />
+		<cfset filename &= replace(getReportEndDateTime(), "-", "", "all") />
+		<cfset filename &= ".xls" />
+		<cfif structKeyExists(server, "railo")>
+			<cfset filename &= left(filename, 31) />
+		</cfif>
+		
 		<cfset var filepath = "#getHibachiTempDirectory()#" />
 		<cfset var fullFilename = filepath & filename />
 		

@@ -302,22 +302,22 @@ globalEncryptionKeySize
 					return optionSL.getRecords();
 				case "brandDisplayTemplate":
 					if(structKeyExists(arguments, "settingObject")) {
-						return getContentService().getDisplayTemplateOptions( "brand", arguments.settingObject.getSite().getSiteID() );	
+						return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );	
 					}
 					return getContentService().getDisplayTemplateOptions( "brand" );
 				case "productDisplayTemplate":
 					if(structKeyExists(arguments, "settingObject")) {
-						return getContentService().getDisplayTemplateOptions( "product", arguments.settingObject.getSite().getSiteID() );	
+						return getContentService().getDisplayTemplateOptions( "Product", arguments.settingObject.getSite().getSiteID() );	
 					}
 					return getContentService().getDisplayTemplateOptions( "product" );
 				case "productTypeDisplayTemplate":
 					if(structKeyExists(arguments, "settingObject")) {
-						return getContentService().getDisplayTemplateOptions( "productType", arguments.settingObject.getSite().getSiteID() );	
+						return getContentService().getDisplayTemplateOptions( "ProductType", arguments.settingObject.getSite().getSiteID() );	
 					}
 					return getContentService().getDisplayTemplateOptions( "productType" );
 				case "contentRestrictedContentDisplayTemplate":
 					if(structKeyExists(arguments, "settingObject")) {
-						return getContentService().getDisplayTemplateOptions( "barrierPage", arguments.settingObject.getSite().getSiteID() );	
+						return getContentService().getDisplayTemplateOptions( "BarrierPage", arguments.settingObject.getContent().getSite().getSiteID() );	
 					}
 					return getContentService().getDisplayTemplateOptions( "barrierPage" );
 				case "fulfillmentMethodAutoLocation" :
