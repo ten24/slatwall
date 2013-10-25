@@ -71,9 +71,7 @@ Notes:
 		<AVSphoneNum>#arguments.requestBean.getAccountPrimaryPhoneNumber()#</AVSphoneNum>
 		<AVSname>#arguments.requestBean.getNameOnCreditCard()#</AVSname>
 		<AVScountryCode>#arguments.requestBean.getBillingCountryCode()#</AVScountryCode>
-		<cfif !isNull(arguments.requestBean.getCreditCardNumber())>
-			<CustomerRefNum>#arguments.requestBean.getAccount().getShortReferenceID( true )#</CustomerRefNum>
-		<cfelse>
+		<cfif isNull(arguments.requestBean.getCreditCardNumber())>
 			<CustomerRefNum>#arguments.requestBean.getProviderToken()#</CustomerRefNum>
 		</cfif>
 		<OrderID>#arguments.requestBean.getOrder().getShortReferenceID( true )#</OrderID>
