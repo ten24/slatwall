@@ -71,6 +71,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	// Related Object Properties (many-to-one)
 	property name="product" fieldtype="many-to-one" fkcolumn="productID" cfc="Product" hb_cascadeCalculate="true";
+	property name="productSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID" cfc="ProductSchedule" hb_cascadeCalculate="true";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	
 	// Related Object Properties (one-to-many)

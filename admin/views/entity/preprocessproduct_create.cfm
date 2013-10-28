@@ -50,6 +50,13 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
+	
+	<!---<cfloop from="1" to="20" index="i" >
+		#lcase(replace(createUUID(),"-","","all"))#<br>
+	</cfloop>--->
+	#dateadd("yyyy",1,now())#
+	
+	
 	<cf_HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
 		
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></cf_HibachiEntityActionBar>
@@ -68,8 +75,28 @@ Notes:
 				</cfif>
 				
 				<cfif rc.processObject.getBaseProductType() eq "event">
+					
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
+					
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
+					<!--- Schedule --->
+					<cf_HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('schRecurring').getTypeID()#">
+						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
+						
+						<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
+						<!--- Ends on Date --->
+						<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="yes" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#">
+							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
+						</cf_HibachiDisplayToggle>
+
+						<!--- Ends after # of occurences --->
+						<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setOccurrences').getTypeID()#">
+							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndOccurrences" edit="#rc.edit#">
+						</cf_HibachiDisplayToggle>
+					
+					</cf_HibachiDisplayToggle>
+					
 				</cfif>
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
