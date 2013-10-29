@@ -68,9 +68,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="locationConfigurations";
 	
 	// Scheduling-related properties
-	/*property name="days";
-	property name="weeks";  
-	property name="months"; */ 
 	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";
 	property name="recurringTimeUnit" hb_formFieldType="select" hint="How often to repeat (daily, weekly, monthly, etc.)"; 
 	property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
