@@ -87,9 +87,9 @@ Notes:
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 		
-		<cfset var hql = "SELECT NEW MAP(spt.authorizationCode as authorizationCode) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType = :transactionType AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.authorizationCode as authorizationCode) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN ( :transactionType ) AND " />
 		<cfset hqlParams = {} />
-		<cfset hqlParams['transactionType'] = "authorize" />
+		<cfset hqlParams['transactionType'] = ["authorize", "authorizeAndCharge"] />
 		
 		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
 			<cfset hql &= "(spt.orderPayment.orderPaymentID = :orderPaymentID OR spt.orderPayment.orderPaymentID = :referencedOrderPaymentID) " />

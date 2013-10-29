@@ -1205,7 +1205,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var orderDeliveryItem = this.newOrderDeliveryItem();
 					
 					// Populate with the data
-					orderDeliveryItem.populate( arguments.processObject.getOrderDeliveryItems()[i] );
+					orderDeliveryItem.setOrderItem( this.getOrderItem( arguments.processObject.getOrderDeliveryItems()[i].orderItem.orderItemID ) );
+					orderDeliveryItem.setQuantity( this.getOrderItem( arguments.processObject.getOrderDeliveryItems()[i].quantity ) );
 					orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
 					orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
 				}	
