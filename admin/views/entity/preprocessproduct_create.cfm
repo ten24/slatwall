@@ -51,12 +51,6 @@ Notes:
 
 <cfoutput>
 	
-	<!---<cfloop from="1" to="20" index="i" >
-		#lcase(replace(createUUID(),"-","","all"))#<br>
-	</cfloop>--->
-	#dateadd("yyyy",1,now())#
-	
-	
 	<cf_HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
 		
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></cf_HibachiEntityActionBar>
@@ -76,8 +70,8 @@ Notes:
 				
 				<cfif rc.processObject.getBaseProductType() eq "event">
 					
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 					
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
 					<!--- Schedule --->
@@ -97,10 +91,11 @@ Notes:
 					
 					</cf_HibachiDisplayToggle>
 					
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
+					
 				</cfif>
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 			</cf_HibachiPropertyList>
 			

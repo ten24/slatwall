@@ -129,6 +129,30 @@ component extends="HibachiService" accessors="true" {
 		return result;
 	}
 	
+	// Create new incremented datetime based on recurring type (daily, weekly, monthly, etc.)
+	private any function incrementDateTimeByRecurringTypeID(string recurringTypeID, string dateToIncrement) {
+		var result = "";
+
+		if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuDaily").getTypeID()) {
+			result = dateAdd( "d", 1, arguments.dateToIncrement );
+		}
+		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
+			result = dateAdd( "w" ,1, arguments.dateToIncrement );
+		}
+		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
+			result = dateAdd( "ww", 1, arguments.dateToIncrement );
+		}
+		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
+			result = dateAdd( "m", 1, arguments.dateToIncrement );
+		}
+		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuYearly").getTypeID()) {
+			result = dateAdd( "yyyy", 1, arguments.dateToIncrement );
+		}
+		
+		return result;
+		
+	}
+	
 	
 	// =====================  END: Logical Methods ============================
 	
@@ -203,7 +227,7 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	public any function processProduct_addEventInstance(required any product, required any processObject) {
+	public any function processProduct_addEventSchedule(required any product, required any processObject) {
 		
 		// Single or recurring?
 		var schedulingType = getSettingService().getTypeByTypeID(arguments.processObject.getSchedulingType());
@@ -212,9 +236,10 @@ component extends="HibachiService" accessors="true" {
 		var newProductSchedule = this.newProductSchedule();
 		newProductSchedule.setSchedulingType( schedulingType );
 		
-		var SkusToCreate = 1; // Increments with each new sku
-		var isFirstSku = true; // Used to set default sku
-		var SkuQualifier = getMaxSkuQualifier(arguments.product.getSkus()) + 1; // Generate next highest sku qualifier
+		var SkusToCreate = 1;
+		
+		// Generate next highest sku qualifier
+		var SkuQualifier = getMaxSkuQualifier(arguments.product.getSkus()) + 1; 
 		
 		// Set date and time for first sku
 		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
@@ -227,12 +252,6 @@ component extends="HibachiService" accessors="true" {
 				var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
 				skuQualifier++;
 				newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-				
-				// Set first as default sku
-				if(isFirstSku) {
-					arguments.product.setDefaultSku( newSku );	
-					isFirstSku = false;
-				}
 			}
 		}
 		
@@ -260,11 +279,10 @@ component extends="HibachiService" accessors="true" {
 						skuQualifier++;
 						newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
 						
-						// Set first as default sku
-						if(isFirstSku) {
-							arguments.product.setDefaultSku( newSku );	
-							isFirstSku = false;
-						}
+						// Increment Start/End date time based on recurring time unit
+						newSkuStartDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuStartDateTime);
+						newSkuEndDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuEndDateTime);
+						
 					}
 					
 				}
@@ -283,41 +301,11 @@ component extends="HibachiService" accessors="true" {
 						newSku.setProductSchedule(newProductSchedule); 
 						skuQualifier++;
 						newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-						
-						// Set first as default sku
-						if(isFirstSku) {
-							arguments.product.setDefaultSku( newSku );	
-							isFirstSku = false;
-						}
 					}
 					
-					// Set date and time for next sku based on frequency of recurrence
-					
-					//Daily 
-					if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuDaily").getTypeID()) {
-						newSkuStartDateTime = dateAdd( "d", 1, newSkuStartDateTime );
-						newSkuEndDateTime = dateAdd( "d", 1, newSkuEndDateTime );
-					}
-					//Weekday 
-					else if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
-						newSkuStartDateTime = dateAdd( "w" ,1, newSkuStartDateTime );
-						newSkuEndDateTime = dateAdd( "w", 1, newSkuEndDateTime);
-					}
-					//Weekly 
-					else if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
-						newSkuStartDateTime = dateAdd( "ww", 1, newSkuStartDateTime );
-						newSkuEndDateTime = dateAdd( "ww", 1, newSkuEndDateTime );
-					}
-					//Monthly 
-					else if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
-						newSkuStartDateTime = dateAdd( "m", 1, newSkuStartDateTime );
-						newSkuEndDateTime = dateAdd( "m", 1, newSkuEndDateTime );
-					}
-					//Yearly 
-					else if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuYearly").getTypeID()) {
-						newSkuStartDateTime = dateAdd( "yyyy", 1, newSkuStartDateTime );
-						newSkuEndDateTime = dateAdd( "yyyy", 1, newSkuEndDateTime );
-					}
+					// Increment Start/End date time based on recurring time unit
+					newSkuStartDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuStartDateTime);
+					newSkuEndDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuEndDateTime);
 					
 						
 				} while ( newSkuEndDateTime < arguments.processObject.getscheduleEndDate() );
@@ -329,12 +317,6 @@ component extends="HibachiService" accessors="true" {
 		//Persist new product schedule
 		getProductScheduleService().saveProductSchedule( newProductSchedule );
 		
-		
-		
-		
-		
-		
-				
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
         
@@ -596,6 +578,7 @@ component extends="HibachiService" accessors="true" {
 				
 				// How frequently will event occur (Daily, Weekly, etc.)?
 				newProductSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
+				
 				// Is end type based on occurrences or date?
 				newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
 				
@@ -640,6 +623,11 @@ component extends="HibachiService" accessors="true" {
 							}
 						}
 						
+						// Increment Start/End date time based on recurring time unit
+						newSkuStartDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuStartDateTime);
+						newSkuEndDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuEndDateTime);
+						
+						
 					}
 				}
 				
@@ -682,33 +670,9 @@ component extends="HibachiService" accessors="true" {
 							}
 						}
 						
-						// Set date and time for next sku based on frequency of recurrence
-						
-						//Daily 
-						if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuDaily").getTypeID()) {
-							newSkuStartDateTime = dateAdd( "d", 1, newSkuStartDateTime );
-							newSkuEndDateTime = dateAdd( "d", 1, newSkuEndDateTime );
-						}
-						//Weekday 
-						else if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
-							newSkuStartDateTime = dateAdd( "w" ,1, newSkuStartDateTime );
-							newSkuEndDateTime = dateAdd( "w", 1, newSkuEndDateTime);
-						}
-						//Weekly 
-						else if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
-							newSkuStartDateTime = dateAdd( "ww", 1, newSkuStartDateTime );
-							newSkuEndDateTime = dateAdd( "ww", 1, newSkuEndDateTime );
-						}
-						//Monthly 
-						else if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
-							newSkuStartDateTime = dateAdd( "m", 1, newSkuStartDateTime );
-							newSkuEndDateTime = dateAdd( "m", 1, newSkuEndDateTime );
-						}
-						//Yearly 
-						else if(arguments.processObject.getrecurringTimeUnit() == getSettingService().getTypeBySystemCode("rtuYearly").getTypeID()) {
-							newSkuStartDateTime = dateAdd( "yyyy", 1, newSkuStartDateTime );
-							newSkuEndDateTime = dateAdd( "yyyy", 1, newSkuEndDateTime );
-						}
+						// Increment Start/End date time based on recurring time unit
+						newSkuStartDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuStartDateTime);
+						newSkuEndDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuEndDateTime);
 						
 							
 					} while ( newSkuEndDateTime < arguments.processObject.getscheduleEndDate() );

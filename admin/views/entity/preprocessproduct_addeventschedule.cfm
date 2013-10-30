@@ -57,7 +57,6 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
 				<!--- Schedule --->
 				<cf_HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('schRecurring').getTypeID()#">
@@ -77,6 +76,7 @@ Notes:
 				</cf_HibachiDisplayToggle>
 				
 				
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 			</cf_HibachiPropertyList>
