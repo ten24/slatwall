@@ -211,7 +211,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function deleteAccountPaymentMethod() {
 		param name="rc.accountAddressID" default="";
 		
-		var accountPaymentMethod = getAccountService().getAccountPhoneNumber( rc.accountAddressID );
+		var accountPaymentMethod = getAccountService().getAccountPaymentMethod( rc.accountPaymentMethodID );
 		
 		if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
 			var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
