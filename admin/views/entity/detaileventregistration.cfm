@@ -73,10 +73,8 @@ Notes:
 			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="pending" type="list" modal="false" />
 			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="canceled" type="list" modal="false" />
 			<!---<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="notPlaced" type="list" modal="false" />--->
-			<!---<cf_HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />--->
 			
 			
-			<!---<cf_HibachiActionCaller action="admin:entity.detailorder" querystring="orderID=#rc.eventregistration.getOrderItem().getOrder().getOrderID()#" modal="false" type="list" />--->
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>

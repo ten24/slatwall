@@ -144,6 +144,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	// Modifies event related start/end dates based on process object data
+	public any function processSku_changeEventDates(required any sku, required any processObject) {
+		arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
+		arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
+		arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
+		arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
+		return arguments.sku;
+	}
+	
 	// TODO [paul]: makeup / breakup
 	public any function processSku_MakeupBundledSkus(required any sku, required any processObject) {
 		

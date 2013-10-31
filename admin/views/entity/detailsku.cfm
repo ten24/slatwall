@@ -51,6 +51,12 @@ Notes:
 				<li class="divider"></li>
 			</cfif>
 			<cf_HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
+			<cfif rc.product.getBaseProductType() EQ "event">
+				<!---<cf_HibachiActionCaller action="admin:entity.entity.changeeventdates" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />--->
+				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="changeeventdates" type="list" modal="true" />
+			</cfif>
+			
+			
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
@@ -60,10 +66,10 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
 				<cfif rc.product.getBaseProductType() EQ "event">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="false">
 				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">

@@ -43,17 +43,68 @@ component  extends="HibachiService" accessors="true" {
 	property name="contentService" type="any";
 	property name="optionService" type="any";
 	
+
 	// ===================== START: Logical Methods ===========================
-	public any function getscheduleEndTypeOptions() {
-		if(!structKeyExists(variables, "scheduleEndTypeOptions")) {
+
+	
+	public any function getDaysOfWeekOptions(boolean includeWeekends=true) {
+		var options = [
+			{name="Monday", value="2"},
+			{name="Tuesday", value="3"},
+			{name="Wednesday", value="4"},
+			{name="Thursday", value="5"},
+			{name="Friday", value="6"}
+		];
+		
+		if(arguments.includeWeekends) {
+			arrayPrepend(options,{name="Sunday", value="1"});		
+			arrayAppend(options,{name="Saturday", value="7"});		
+		}
+
+		return options;
+	}
+	
+	// Returns a date object of the first occurance of a specified day in the given month and year.
+	// @param day_number			An integer in the range 1 - 7. 1=Sun, 2=Mon, 3=Tue, 4=Wed, 5=Thu, 6=Fri, 7=Sat. (Required)
+	// @param month_number		Month value.  (Required)
+	// @param year				Year value. (Required)
+	// @return					Returns a date object. 
+	// @author Troy Pullis (tpullis@yahoo.com) 
+	// @version 1, March 23, 2005 
+	public any function getFirstXDayOfMonth( dayNumber, monthNumber, year ) {
+		// date object of first day for given month/year
+		var startOfMonth = CreateDate( arguments.year, arguments.monthNumber, 1 );  
+		var daydiff = DayOfWeek( startOfMonth ) - arguments.dayNumber;
+		var returnDate = "";
+		switch( daydiff ) {
+			case "-1": returnDate = DateAdd("d", 1, startOfMonth); break;
+			case "6": returnDate = DateAdd("d", 1, startOfMonth); break;
+			case "-2": returnDate = DateAdd("d", 2, startOfMonth); break;
+			case "5": returnDate = DateAdd("d", 2, startOfMonth); break;
+			case "-3": returnDate = DateAdd("d", 3, startOfMonth); break;
+			case "4": returnDate = DateAdd("d", 3, startOfMonth); break;
+			case "-4": returnDate = DateAdd("d", 4, startOfMonth); break;
+			case "3": returnDate = DateAdd("d", 4, startOfMonth); break;
+			case "-5": returnDate = DateAdd("d", 5, startOfMonth); break;
+			case "2": returnDate = DateAdd("d", 5, startOfMonth); break;
+			case "-6": returnDate = DateAdd("d", 6, startOfMonth); break;
+			case "1": returnDate = DateAdd("d", 6, startOfMonth); break;
+			// daydiff=0, default to first day in current month
+			default: returnDate = startOfMonth; break;  
+		} 
+		return returnDate;
+	}
+	
+	public array function getRecurringTimeUnitOptions() {
+		if(!structKeyExists(variables, "recurringTimeUnitTypeOptions")) {
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="scheduleEndType"); 
+			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="recurringTimeUnitType"); 
 			smartList.addOrder("type|ASC");
-			variables.scheduleEndTypeOptions = smartList.getRecords();
+			variables.recurringTimeUnitTypeOptions = smartList.getRecords();
 		}
-		return variables.scheduleEndTypeOptions;
+		return variables.recurringTimeUnitTypeOptions;
 	}
 	
 	public any function getRepeatTimeUnitOptions() {
@@ -76,16 +127,16 @@ component  extends="HibachiService" accessors="true" {
 		return variables.schedulingTypeOptions;
 	}
 	
-	public array function getRecurringTimeUnitOptions() {
-		if(!structKeyExists(variables, "recurringTimeUnitTypeOptions")) {
+	public any function getScheduleEndTypeOptions() {
+		if(!structKeyExists(variables, "scheduleEndTypeOptions")) {
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="recurringTimeUnitType"); 
+			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="scheduleEndType"); 
 			smartList.addOrder("type|ASC");
-			variables.recurringTimeUnitTypeOptions = smartList.getRecords();
+			variables.scheduleEndTypeOptions = smartList.getRecords();
 		}
-		return variables.recurringTimeUnitTypeOptions;
+		return variables.scheduleEndTypeOptions;
 	}
 	
 	// =====================  END: Logical Methods ============================

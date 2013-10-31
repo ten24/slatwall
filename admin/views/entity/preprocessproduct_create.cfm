@@ -51,6 +51,7 @@ Notes:
 
 <cfoutput>
 	
+	
 	<cf_HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
 		
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></cf_HibachiEntityActionBar>
@@ -76,7 +77,12 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
 					<!--- Schedule --->
 					<cf_HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('schRecurring').getTypeID()#">
+						
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
+						
+						<!---<cf_HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('rtuWeekly').getTypeID()#">
+							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="weeklyDaysOfOccurrence" edit="#rc.edit#" valueOptions="#rc.processObject.getDaysOfWeekOptions()#">
+						</cf_HibachiDisplayToggle>--->
 						
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
 						<!--- Ends on Date --->
@@ -157,4 +163,10 @@ Notes:
 		</cf_HibachiPropertyRow>
 		
 	</cf_HibachiEntityProcessForm>
+	
+	<script>
+		</script>
+		
+	
+	
 </cfoutput>
