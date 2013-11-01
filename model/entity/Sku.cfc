@@ -489,6 +489,19 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.eligibleFulfillmentMethods;
 	}
 	
+	public any function getEmailList() {
+		if(!structKeyExists(variables, "emailList")) {
+			variables.emailList = [];
+			var eventRegistrationsSmartList = getEventRegistrations();
+			for(var registration in eventRegistrationsSmartList.getRecords()) {
+				if( len(registration.getemailaddress().getemailaddress()) ) {
+					arrayAppend(variables.emailList,registration.getemailaddress().getemailaddress());
+				}
+			}
+		}
+		return variables.emailList;
+	}
+	
 	public any function getEventStatus() {
 		if(!structKeyExists(variables, "eventStatus")) {
 			variables.eventStatus = getService("settingService").getTypeBySystemCode('estRegOpen');
