@@ -131,6 +131,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
+	property name="registrantEmailList" type="array" persistent="false";
 	property name="salePriceDetails" type="struct" persistent="false";
 	property name="salePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="salePriceDiscountType" type="string" persistent="false";
@@ -489,17 +490,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.eligibleFulfillmentMethods;
 	}
 	
-	public any function getEmailList() {
-		if(!structKeyExists(variables, "emailList")) {
-			variables.emailList = [];
+	public any function getRegistrantEmailList() {
+		if(!structKeyExists(variables, "registrantEmailList")) {
+			variables.registrantEmailList = [];
 			var eventRegistrationsSmartList = getEventRegistrations();
 			for(var registration in eventRegistrationsSmartList.getRecords()) {
 				if( len(registration.getemailaddress().getemailaddress()) ) {
-					arrayAppend(variables.emailList,registration.getemailaddress().getemailaddress());
+					arrayAppend(variables.registrantEmailList,registration.getemailaddress().getemailaddress());
 				}
 			}
 		}
-		return variables.emailList;
+		return variables.registrantEmailList;
 	}
 	
 	public any function getEventStatus() {
