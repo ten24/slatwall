@@ -699,6 +699,30 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.transactionExistsFlag;
 	}
 	
+	// Compile smartlist of conflicting events based on location and event dates
+	public any function getEventConflictsSmartList() {
+		locationConfigurationIDList = "";
+		// Build list of this Sku's location configurations
+		for(var lc in this.getLocationConfigurations()) {
+			if(len(locationConfigurationIDList)) {
+				listAppend(locationConfigurationIDList,lc.getLocationConfigurationID(),",");
+			} else {
+				locationConfigurationIDList = lc.getLocationConfigurationID();
+			}
+		} 
+		// Build smartlist that will return other sku events occurring at the same time and location
+		var smartList = getService("skuService").getSkuSmartlist();
+		smartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
+		smartList.addWhereCondition("aslatwalllocationconfiguration.locationConfigurationID IN (:lcIDs)",{lcIDs=locationConfigurationIDList});
+		smartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=this.getSkuID()});
+		smartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=this.getSkuID()});
+		smartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=this.getEventEndDateTime()});
+		smartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=this.getEventStartDateTime()});
+		smartList.addOrder("eventStartDateTime|ASC");
+		return smartList;
+	}
+	
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

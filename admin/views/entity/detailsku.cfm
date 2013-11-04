@@ -86,6 +86,7 @@ Notes:
 			<cfelseif rc.product.getBaseProductType() eq "event">
 				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
 				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
+				<cf_HibachiTab view="admin:entity/skutabs/eventconflicts" />
 				<cf_HibachiTab view="admin:entity/skutabs/eventregistrations" />
 			<cfelseif rc.product.getBaseProductType() eq "subscription">
 				<cf_HibachiTab property="accessContents" />
