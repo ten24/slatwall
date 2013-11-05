@@ -59,7 +59,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(len(arguments.orderItemIDList)) {
 			smartList.addInFilter('orderItem.orderItemID', '#arguments.orderItemIDList#');
 		}
-		smartList.addOrder("orderitem.sku.skuCode|ASC");
+		//smartList.addOrder("orderitem.sku.skuCode|ASC");
 		return smartList;
 	}
 
