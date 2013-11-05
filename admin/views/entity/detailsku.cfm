@@ -39,6 +39,7 @@ Notes:
 <cfparam name="rc.sku" type="any">
 <cfparam name="rc.product" type="any" default="#rc.sku.getProduct()#">
 <cfparam name="rc.edit" type="boolean">
+<cfset skuHasEventConflict=rc.sku.hasEventConflict()>
 
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.sku#" edit="#rc.edit#" saveActionQueryString="skuID=#rc.sku.getSkuID()#">
@@ -58,6 +59,12 @@ Notes:
 			
 			
 		</cf_HibachiEntityActionBar>
+		
+		<cfif skuHasEventConflict>
+			<div class="alert alert-error">
+				<p>This event time and location conflicts with another event. Click the Event Conflicts tab to view conflicts.</p>
+			</div>
+		</cfif>
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
@@ -86,7 +93,11 @@ Notes:
 			<cfelseif rc.product.getBaseProductType() eq "event">
 				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
 				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
-				<cf_HibachiTab view="admin:entity/skutabs/eventconflicts" />
+				<cfset conflictLabel = $.slatwall.rbKey('admin.entity.skutabs.eventconflicts') />
+				<cfif skuHasEventConflict>
+					<cfset conflictLabel = conflictLabel & '*'>
+				</cfif>
+				<cf_HibachiTab view="admin:entity/skutabs/eventconflicts" text="#conflictLabel#" />
 				<cf_HibachiTab view="admin:entity/skutabs/eventregistrations" />
 			<cfelseif rc.product.getBaseProductType() eq "subscription">
 				<cf_HibachiTab property="accessContents" />

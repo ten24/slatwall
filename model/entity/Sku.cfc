@@ -121,6 +121,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="currencyDetails" type="struct" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
+	property name="eventConflictsSmartList" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
@@ -699,29 +700,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.transactionExistsFlag;
 	}
 	
-	// Compile smartlist of conflicting events based on location and event dates
-	public any function getEventConflictsSmartList() {
-		locationConfigurationIDList = "";
-		// Build list of this Sku's location configurations
-		for(var lc in this.getLocationConfigurations()) {
-			if(len(locationConfigurationIDList)) {
-				listAppend(locationConfigurationIDList,lc.getLocationConfigurationID(),",");
-			} else {
-				locationConfigurationIDList = lc.getLocationConfigurationID();
-			}
-		} 
-		// Build smartlist that will return other sku events occurring at the same time and location
-		var smartList = getService("skuService").getSkuSmartlist();
-		smartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
-		smartList.addWhereCondition("aslatwalllocationconfiguration.locationConfigurationID IN (:lcIDs)",{lcIDs=locationConfigurationIDList});
-		smartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=this.getSkuID()});
-		smartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=this.getSkuID()});
-		smartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=this.getEventEndDateTime()});
-		smartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=this.getEventStartDateTime()});
-		smartList.addOrder("eventStartDateTime|ASC");
-		return smartList;
-	}
-	
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
@@ -919,6 +897,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// =============== START: Custom Validation Methods ====================
 	
+	
+	public boolean function hasEventConflict() {
+		if(getEventConflictsSmartList().getRecordsCount() GT 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	// @hint this method validates that this skus has a unique option combination that no other sku has
 	public any function hasUniqueOptions() {
 		var optionsList = "";
@@ -977,7 +963,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentationPropertyName() {
-    	return "skuCode";
+    		return "skuCode";
     }
     
     public any function getAssignedAttributeSetSmartList(){
@@ -1007,6 +993,38 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		
 		return variables.assignedAttributeSetSmartList;
+	}
+	
+	// @help Compile smartlist of conflicting events based on location and event dates
+	public any function getEventConflictsSmartList() {
+		if(!structKeyExists(variables, "eventConflictsSmartList")) {
+			var locationConfigurationIDList = "";
+			
+			// Build list of this Sku's locations
+			var locationIDList = "";
+			for(var lc in this.getLocationConfigurations()) {
+				if( len(locationIDList) ) {
+					if( !listFind( locationIDList,lc.getLocationID() ) ) {
+						listAppend(locationIDList,lc.getLocationID(),",");
+					}
+				} else {
+					locationIDList = lc.getLocationID();
+				}
+			}
+			
+			// Build smartlist that will return sku events occurring at the same time and location as this event
+			variables.eventConflictsSmartList = getService("skuService").getSkuSmartlist();
+			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
+			variables.eventConflictsSmartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
+			variables.eventConflictsSmartList.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
+			variables.eventConflictsSmartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=this.getSkuID()});
+			variables.eventConflictsSmartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=this.getEventEndDateTime()});
+			variables.eventConflictsSmartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=this.getEventStartDateTime()});
+			variables.eventConflictsSmartList.addOrder("eventStartDateTime|ASC");
+		}
+		
+		return variables.eventConflictsSmartList;
+		
 	}
 	
 	// @help we override this so that the onMM below will work
