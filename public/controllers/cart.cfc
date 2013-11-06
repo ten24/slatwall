@@ -62,9 +62,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public void function after( required struct rc ) {
-		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.getFailureActions())) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
 			getFW().redirectExact( url=arguments.rc.fRedirectURL );
-		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.getFailureActions())) {
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
 			getFW().redirectExact( url=arguments.rc.sRedirectURL );
 		} else if (structKeyExists(arguments.rc, "redirectURL")) {
 			getFW().redirectExact( url=arguments.rc.redirectURL );

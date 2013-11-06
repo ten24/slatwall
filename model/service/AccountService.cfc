@@ -448,7 +448,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			throw("No email template could be found.  Please update the site settings to define a 'Verify Account Email Address Email Template'.");
 		}
 		
-		return arguments.account;
+		return arguments.accountEmailAddress;
 	}
 	
 	public any function processAccountEmailAddress_verify(required any accountEmailAddress) {
