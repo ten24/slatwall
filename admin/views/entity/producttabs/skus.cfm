@@ -75,37 +75,39 @@ Notes:
 	</cfif>
 	
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
-	<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", true) />
-	<cfset local.skusSmartList.addKeywordProperty(propertyIdentifier="hasEventConflict", weight=1)>
-	<cfset local.skusSmartList.addFilter("bundleFlag", "NULL") />
-	<!---<cfdump var="#local.skusSmartList#" top="2">--->
-	<cf_HibachiListingDisplay smartList="#local.skusSmartList#"
-							   edit="#rc.edit#"
-							   recordDetailAction="admin:entity.detailsku"
-							   recordDetailQueryString="productID=#rc.product.getProductID()#"
-							   recordEditAction="admin:entity.editsku"
-							   recordEditQueryString="productID=#rc.product.getProductID()#"
-							   selectFieldName="defaultSku.skuID"
-							   selectValue="#rc.product.getDefaultSku().getSkuID()#"
-							   selectTitle="#$.slatwall.rbKey('define.default')#">
-							      
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
-		<cfif rc.product.getBaseProductType() eq "event">
-			<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
-		</cfif>
-		<cf_HibachiListingColumn propertyIdentifier="imageFile" />
-		<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
-			<cf_HibachiListingColumn propertyIdentifier="listPrice" />
-			<cf_HibachiListingColumn propertyIdentifier="price" />
-			<cfif  rc.product.getProductType().getBaseProductType() eq "subscription">
-				<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
+	<cfif local.skusSmartList.getRecordsCount() gt 0>
+		<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", true) />
+		<cfset local.skusSmartList.addKeywordProperty(propertyIdentifier="hasEventConflict", weight=1)>
+		<cfset local.skusSmartList.addFilter("bundleFlag", "NULL") />
+	
+		<cf_HibachiListingDisplay smartList="#local.skusSmartList#"
+								   edit="#rc.edit#"
+								   recordDetailAction="admin:entity.detailsku"
+								   recordDetailQueryString="productID=#rc.product.getProductID()#"
+								   recordEditAction="admin:entity.editsku"
+								   recordEditQueryString="productID=#rc.product.getProductID()#"
+								   selectFieldName="defaultSku.skuID"
+								   selectValue="#rc.product.getDefaultSku().getSkuID()#"
+								   selectTitle="#$.slatwall.rbKey('define.default')#">
+								      
+			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
+			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
+			<cfif rc.product.getBaseProductType() eq "event">
+				<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
+				<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
+				<cf_HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
 			</cfif>
-			<cf_HibachiListingColumn propertyIdentifier="salePrice" />
-		</cfif>
-	</cf_HibachiListingDisplay>
+			<cf_HibachiListingColumn propertyIdentifier="imageFile" />
+			<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
+				<cf_HibachiListingColumn propertyIdentifier="listPrice" />
+				<cf_HibachiListingColumn propertyIdentifier="price" />
+				<cfif  rc.product.getProductType().getBaseProductType() eq "subscription">
+					<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
+				</cfif>
+				<cf_HibachiListingColumn propertyIdentifier="salePrice" />
+			</cfif>
+		</cf_HibachiListingDisplay>
+	</cfif>
 	
 	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn" icon="plus icon" modal="false" />
 	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />

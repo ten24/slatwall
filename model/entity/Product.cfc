@@ -597,10 +597,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getPrice() {
 		if( structKeyExists(variables, "price") ) {
 			return variables.price;
-		}
-		if( structKeyExists(variables, "defaultSku") ) {
+		} else if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getPrice();
-		}
+		} 
+		
+		// Product without a sku 
+		return 0;
 	}
 	
 	public any function getRenewalPrice() {
