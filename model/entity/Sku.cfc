@@ -123,6 +123,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
+	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="nextEstimatedAvailableDate" type="string" persistent="false";
@@ -249,6 +250,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// END: Image Methods
+	
+	public boolean function getEventConflictExistsFlag() {
+		if(getEventConflictsSmartList().getRecordsCount() GT 0) {
+			return true;
+		}
+		return false;
+	}
 	
 	// START: Option Methods
 	
@@ -897,13 +905,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// =============== START: Custom Validation Methods ====================
 	
-	
-	public boolean function hasEventConflict() {
-		if(getEventConflictsSmartList().getRecordsCount() GT 0) {
-			return true;
-		}
-		return false;
-	}
 	
 	// @hint this method validates that this skus has a unique option combination that no other sku has
 	public any function hasUniqueOptions() {

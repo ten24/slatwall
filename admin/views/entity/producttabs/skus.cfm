@@ -76,8 +76,9 @@ Notes:
 	
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
 	<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", true) />
+	<cfset local.skusSmartList.addKeywordProperty(propertyIdentifier="hasEventConflict", weight=1)>
 	<cfset local.skusSmartList.addFilter("bundleFlag", "NULL") />
-	
+	<!---<cfdump var="#local.skusSmartList#" top="2">--->
 	<cf_HibachiListingDisplay smartList="#local.skusSmartList#"
 							   edit="#rc.edit#"
 							   recordDetailAction="admin:entity.detailsku"
@@ -93,6 +94,7 @@ Notes:
 		<cfif rc.product.getBaseProductType() eq "event">
 			<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
 			<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
 		</cfif>
 		<cf_HibachiListingColumn propertyIdentifier="imageFile" />
 		<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>

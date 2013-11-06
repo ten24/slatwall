@@ -58,6 +58,8 @@ Notes:
 		
 		<!--- Submit the baseProductType as well in case of a validation error --->
 		<input type="hidden" name="baseProductType" value="#rc.processObject.getBaseProductType()#" />
+		<!---<input type="hidden" name="generateSkusFlag" value="#rc.processObject.getGenerateSkusFlag()#" />--->
+		<input type="hidden" name="generateSkusFlag" value="0" />
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>

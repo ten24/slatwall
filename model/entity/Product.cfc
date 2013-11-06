@@ -110,6 +110,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brandOptions" type="array" persistent="false";
 	property name="bundleSkusSmartList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
+	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
@@ -576,6 +577,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getCurrencyCode();
 		}
+	}
+	
+	public any function getEventConflictExistsFlag() {
+		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
+			return variables.eventConflictExistsFlag;
+		} else {
+			variables.eventConflictExistsFlag = false;
+			for(sku in getSkus()) {
+				if(sku.getEventConflictExistsFlag()) {
+					variables.eventConflictExistsFlag = true;
+					break;
+				}
+			}
+		}
+		return variables.eventConflictExistsFlag;
 	}
 	
 	public any function getPrice() {

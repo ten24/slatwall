@@ -39,7 +39,7 @@ Notes:
 <cfparam name="rc.sku" type="any">
 <cfparam name="rc.product" type="any" default="#rc.sku.getProduct()#">
 <cfparam name="rc.edit" type="boolean">
-<cfset skuHasEventConflict=rc.sku.hasEventConflict()>
+<cfset skuHasEventConflict=rc.sku.geteventConflictExistsFlag()>
 
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.sku#" edit="#rc.edit#" saveActionQueryString="skuID=#rc.sku.getSkuID()#">
@@ -62,7 +62,7 @@ Notes:
 		
 		<cfif skuHasEventConflict>
 			<div class="alert alert-error">
-				<p>This event time and location conflicts with another event. Click the Event Conflicts tab to view conflicts.</p>
+				This event time and location conflicts with another event. Click the Event Conflicts tab to view conflicts.
 			</div>
 		</cfif>
 		
