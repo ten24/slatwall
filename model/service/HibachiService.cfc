@@ -95,9 +95,6 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 				var settingsRemoved = getService("settingService").updateAllSettingValuesToRemoveSpecificID( arguments.entity.getPrimaryIDValue() );	
 			}
 			
-			if(settingsRemoved gt 0 || listFindNoCase("Currency,FulfillmentMethod,OrderOrigin,PaymentTerm,PaymentMethod", arguments.entity.getClassName())) {
-				getService("settingService").clearAllSettingsCache();
-			}
 		}
 	
 		return arguments.entity;

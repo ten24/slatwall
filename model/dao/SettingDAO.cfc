@@ -46,19 +46,58 @@
 Notes:
 
 --->
-<cfcomponent extends="HibachiDAO">
+<cfcomponent extends="HibachiDAO" accessors="true" output="false">
 	
-	<cffunction name="getAllSettingsQuery">
+	<cfproperty name="hibachiCacheService" type="any" />
+	
+	<cffunction name="getSettingRecordExistsFlag" output="false" returntype="boolean">
+		<cfargument name="settingName" type="string" required="true" />
+		<cfargument name="settingValue" />
+		
 		<cfset var rs = "" />
 		
-		<cfquery name="rs">
+		<cfquery name="rs" maxrows="1">
 			SELECT
-				*
+				settingID
 			FROM
 				SwSetting
+			WHERE
+			  	LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#">
+		  		<cfif structKeyExists(arguments, "settingValue")>
+			  	  		AND
+			  		LOWER(settingValue) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingValue)#">  
+		  		</cfif>
 		</cfquery>
 		
-		<cfreturn rs />
+		<cfreturn rs.recordCount gt 0 />
+	</cffunction>
+	
+	<cffunction name="getSettingRecordBySettingRelationships" output="false">
+		<cfargument name="settingName" type="string" required="true" />
+		<cfargument name="settingRelationships" type="struct" default="#structNew()#" />
+		
+		<cfset var potentialRelationships = "accountID,contentID,brandID,emailID,emailTemplateID,fulfillmentMethodID,locationID,locationConfigurationID,paymentMethodID,productID,productTypeID,shippingMethodID,shippingMethodRateID,siteID,skuID,subscriptionTermID,subscriptionUsageID,taskID" />
+		<cfset var relationship = "">
+		<cfset var rs = "">
+		
+		<cfquery name="rs" >
+			SELECT
+				settingID,
+				settingValue
+			FROM
+				SwSetting
+			WHERE
+				LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(arguments.settingName)#">
+				<cfloop list="#potentialRelationships#" index="relationship">
+					<cfif structKeyExists(arguments.settingRelationships, relationship)>
+						AND #relationship# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingRelationships[ relationship ]#" > 
+					<cfelse>
+						AND #relationship# IS NULL
+					</cfif>
+				</cfloop>
+		</cfquery>
+		
+		<cfreturn rs />		
 	</cffunction>
 	
 	<cffunction name="removeAllRelatedSettings">
@@ -66,11 +105,20 @@ Notes:
 		<cfargument name="columnID" type="string" />
 		
 		<cfset var rs = "" />
+		<cfset var rs2 = "" />
 		<cfset var rsResult = "" />
 		
-		<cfquery name="rs" result="rsResult">
+		<cfquery name="rs">
+			SELECT DISTINCT settingName FROM SwSetting WHERE #columnName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.columnID#">
+		</cfquery>
+		
+		<cfquery name="rs2" result="rsResult">
 			DELETE FROM SwSetting WHERE #columnName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.columnID#">
 		</cfquery>
+		
+		<cfloop query="rs">
+			<cfset getHibachiCacheService().resetCachedKeyByPrefix('setting_#rs.settingName#') />
+		</cfloop>
 		
 		<cfreturn rsResult.recordCount />
 	</cffunction>
@@ -84,26 +132,29 @@ Notes:
 		<cfset var updatedSettings = 0 />
 		
 		<cfquery name="rs">
-			SELECT settingID, settingValue FROM SwSetting WHERE settingValue LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.primaryIDValue#%">
+			SELECT settingID, settingName, settingValue FROM SwSetting WHERE settingValue LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.primaryIDValue#%">
 		</cfquery>
 		
 		<cfloop query="rs">
-			<cfset var updatedSettings += 1 />
 			
 			<cfset var oldListIndex = listFindNoCase(rs.settingValue, arguments.primaryIDValue) />
 			
 			<cfif oldListIndex>
+				
 				<cfset var newValue = listDeleteAt(rs.settingValue, oldListIndex) />
 				
 				<cfquery name="rs2">
 					UPDATE SwSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#newValue#"> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#">
 				</cfquery>
+				
+				<cfset getHibachiCacheService().resetCachedKeyByPrefix('setting_#rs.settingName#') />
+				
+				<cfset updatedSettings += 1 />
+				
 			</cfif>
 		</cfloop>
 		
 		<cfreturn updatedSettings />
 	</cffunction>
-	
-	
 	
 </cfcomponent>
