@@ -1206,7 +1206,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// Populate with the data
 					orderDeliveryItem.setOrderItem( this.getOrderItem( arguments.processObject.getOrderDeliveryItems()[i].orderItem.orderItemID ) );
-					orderDeliveryItem.setQuantity( this.getOrderItem( arguments.processObject.getOrderDeliveryItems()[i].quantity ) );
+					orderDeliveryItem.setQuantity( arguments.processObject.getOrderDeliveryItems()[i].quantity );
 					orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
 					orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
 				}	
@@ -1441,16 +1441,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 					var stockReceiverItem = getStockService().newStockReceiverItem();
 				
-					stockreceiverItem.setQuantity( thisRecord.quantity );
-					stockreceiverItem.setStock( stock );
-					stockreceiverItem.setOrderItem( orderReturnItem );
-					stockreceiverItem.setStockReceiver( stockReceiver );
+					stockReceiverItem.setQuantity( thisRecord.quantity );
+					stockReceiverItem.setStock( stock );
+					stockReceiverItem.setOrderItem( orderReturnItem );
+					stockReceiverItem.setStockReceiver( stockReceiver );
 				}
 				
 			}
 		}
 		
-		getStockService().saveStockReceiver( stockReceiver );
+		
+		// Loop over the stockReceiverItems to remove subscriptions and contentAccess
+		for(var stockReceiverItem in stockReceiver.getStockReceiverItems()) {
+			
+			// If there was a subscriptionOrderItem attached to referenced order item, we can cancel that subscription usage
+			var subscriptionOrderItem = getSubscriptionService().getSubscriptionOrderItem({orderItem=stockReceiverItem.getOrderItem().getReferencedOrderItem()}); 
+			if(!isNull(subscriptionOrderItem)) {
+				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
+			}
+			
+			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them
+
+		}
+		
+		
+		stockReceiver = getStockService().saveStockReceiver( stockReceiver );
 		
 		for(var accountLoyalty in arguments.orderReturn.getOrder().getAccount().getAccountLoyalties()) {
 			var orderItemReceivedData = {

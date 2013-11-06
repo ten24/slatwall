@@ -56,7 +56,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="skuService" type="any";
 	
 	public boolean function restrictedContentExists() {
-		return getSettingService().getSettingRecordCount(settingName="contentRestrictAccessFlag", settingValue=1);
+		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 	
 	public any function getRestrictedContentByCMSContentIDAndCMSSiteID(required any cmsContentID, required any cmsSiteID) {

@@ -3,6 +3,7 @@
 	<!--- Import all of the Hibachi services and DAO's --->
 	<cfproperty name="hibachiDAO" type="any">
 	<cfproperty name="hibachiAuthenticationService" type="any">
+	<cfproperty name="hibachiCacheService" type="any">
 	<cfproperty name="hibachiEventService" type="any">
 	<cfproperty name="hibachiRBService" type="any">
 	<cfproperty name="hibachiSessionService" type="any">

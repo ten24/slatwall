@@ -215,7 +215,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				var ssDirectory = getApplicationValue('application').getSubsystemDirPrefix( aspArr[s] );
 				
 				// expand the path of the controllers sub-directory
-				var ssControllerPath = expandPath( "#ssDirectory#/controllers" );
+				var ssControllerPath = expandPath( "/#getApplicationValue('applicationKey')#" ) & "/#ssDirectory#/controllers";
 				
 				// Make sure the controllers sub-directory is actually there
 				if(directoryExists(ssControllerPath)) {
