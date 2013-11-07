@@ -58,8 +58,7 @@ Notes:
 		
 		<!--- Submit the baseProductType as well in case of a validation error --->
 		<input type="hidden" name="baseProductType" value="#rc.processObject.getBaseProductType()#" />
-		<!---<input type="hidden" name="generateSkusFlag" value="#rc.processObject.getGenerateSkusFlag()#" />--->
-		<input type="hidden" name="generateSkusFlag" value="0" />
+		<input type="hidden" name="generateSkusFlag" value="#rc.processObject.getGenerateSkusFlag()#" />
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
@@ -67,14 +66,16 @@ Notes:
 				<!--- Select Product Type --->
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product.productType.productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
 				
+				
 				<cfif rc.processObject.getBaseProductType() eq "merchandise">
 					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
 				</cfif>
 				
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
+				
 				<cfif rc.processObject.getBaseProductType() eq "event">
 					
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 					
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
 					<!--- Schedule --->

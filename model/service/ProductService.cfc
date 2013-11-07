@@ -423,12 +423,12 @@ component extends="HibachiService" accessors="true" {
 					currentIndexesByKey[ key ] = 1;
 					totalCombos = totalCombos * arrayLen(optionGroups[key]);
 				}
+				
 
 				// ==============================================
 				// BEGIN MERCHANDISE SKU GENERATION (OPTIONS)
 				// ==============================================
-				if(structKeyExists(arguments.processObject,"generateSkusFlag") && arguments.processObject.getGenerateSkusFlag()) {
-									
+				if(arguments.processObject.getGenerateSkusFlag() == 1) {
 					// Create a sku with 1 option from each group, and then update the indexes properly for the next loop
 					for(var i = 1; i<=totalCombos; i++) {
 						
@@ -471,11 +471,10 @@ component extends="HibachiService" accessors="true" {
 				
 			// If no options were passed in we will just create a single sku
 			} else {
-				
 				// ==============================================
 				// BEGIN MERCHANDISE SKU GENERATION (NO OPTIONS)
 				// ==============================================
-				if(structKeyExists(arguments.processObject,"generateSkusFlag") && arguments.processObject.getGenerateSkusFlag()) {
+				if(arguments.processObject.getGenerateSkusFlag() == 1) {
 					var thisSku = this.newSku();
 					thisSku.setProduct(arguments.product);
 					thisSku.setPrice(arguments.processObject.getPrice()); 
@@ -497,7 +496,7 @@ component extends="HibachiService" accessors="true" {
 			// ===================================
 			// BEGIN SUBSCRIPTION SKU GENERATION
 			// ===================================
-			if(structKeyExists(arguments.processObject,"generateSkusFlag") && arguments.processObject.getGenerateSkusFlag()) {
+			if(arguments.processObject.getGenerateSkusFlag() == 1) {
 				for(var i=1; i <= listLen(arguments.processObject.getSubscriptionTerms()); i++){
 					var thisSku = this.newSku();
 					thisSku.setProduct(arguments.product);
@@ -529,7 +528,7 @@ component extends="HibachiService" accessors="true" {
 			// BEGIN CONTENT ACCESS SKU GENERATION
 			// ===================================
 				
-			if(structKeyExists(arguments.processObject,"generateSkusFlag") && arguments.processObject.getGenerateSkusFlag()) {
+			if(arguments.processObject.getGenerateSkusFlag() == 1) {
 			
 				if(structKeyExists(arguments.processObject, "bundleContentAccess") && arguments.processObject.bundleContentAccess) {
 					var newSku = this.newSku();
@@ -567,7 +566,7 @@ component extends="HibachiService" accessors="true" {
 			// BEGIN EVENT SKU GENERATION
 			// ===================================
 				
-			if(structKeyExists(arguments.processObject,"generateSkusFlag") && arguments.processObject.getGenerateSkusFlag()) {
+			if(arguments.processObject.getGenerateSkusFlag() == 1) {
 				// Single or recurring?
 				var schedulingType = getSettingService().getTypeByTypeID(arguments.processObject.getSchedulingType());
 				
