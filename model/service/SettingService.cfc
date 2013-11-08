@@ -343,9 +343,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "productImageOptionCodeDelimiter":
 				return ['-','_'];
 			case "siteForgotPasswordEmailTemplate":
-				return getEmailService().getEmailTemplateOptions( "account" );
+				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
-				return getEmailService().getEmailTemplateOptions( "accountEmailAddress" );
+				return getEmailService().getEmailTemplateOptions( "AccountEmailAddress" );
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "shippingMethodRateAdjustmentType" :
@@ -358,11 +358,11 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
 			case "subscriptionUsageRenewalReminderEmailTemplate":
-				return getEmailService().getEmailTemplateOptions( "subscriptionUsage" );
+				return getEmailService().getEmailTemplateOptions( "SubscriptionUsage" );
 			case "taskFailureEmailTemplate":
-				return getEmailService().getEmailTemplateOptions( "task" );
+				return getEmailService().getEmailTemplateOptions( "Task" );
 			case "taskSuccessEmailTemplate":
-				return getEmailService().getEmailTemplateOptions( "task" );
+				return getEmailService().getEmailTemplateOptions( "Task" );
 		}
 		
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {

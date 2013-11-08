@@ -65,6 +65,9 @@ component output="false" accessors="true" {
 		
 		var country = getAddressService().getCountry(rc.countryCode);
 		
+		// Make sure that the stateCodeOptions are in the variables scope
+		country.getStateCodeOptions();
+		
 		if(!isNull(country)) {
 			rc.ajaxResponse["country"] = country;	
 		}
