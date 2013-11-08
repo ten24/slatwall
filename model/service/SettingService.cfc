@@ -78,6 +78,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"shippingMethod",
 			"paymentMethod",
 			"productType",
+			"location",
 			"product",
 			"content",
 			"account",
