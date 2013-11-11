@@ -60,7 +60,6 @@ component accessors="true" output="false" {
 	this.anyAdminMethods='';
 	
 	this.secureMethods='';
-	this.secureMethods=listAppend(this.secureMethods, 'main');
 	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
