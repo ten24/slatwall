@@ -57,4 +57,66 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="startReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
 	property name="endReservationDateTime" hb_rbKey="entity.sku.endReservationDateTime" hb_formFieldType="datetime";
 	
+	// Scheduling-related properties
+	property name="editScope" hb_formFieldType="select" hint="Edit this sku schedule or all?";
+	property name="recurringTimeUnit" hb_formFieldType="select" hint="How often to repeat (daily, weekly, monthly, etc.)";
+	//property name="weeklyDaysOfOccurrence" hb_formFieldType="checkboxgroup"; 
+	property name="scheduleStartDate" hb_formFieldType="date" hint="Date the schedule starts" ;
+	property name="scheduleEndType" hb_formFieldType="radiogroup" hint="occurrences, or date"; 
+	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
+	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
+	
+	// Non persistent
+	property name="generateSkusFlag" hb_formFieldType="yesno" default="1" hint="If set to 0 skus will not be create when product is.";
+	
+	public array function getDaysOfWeekOptions(boolean includeWeekends=true) {
+		return getService("ProductScheduleService").getDaysOfWeekOptions(arguments.includeWeekends);
+	}
+	
+	public array function getEditScopeOptions() {
+		var options = [
+			{name="This Instance Only", value="single"},
+			{name="All Instances", value="all"}
+		];
+
+		return options;
+	}
+	
+	public array function getscheduleEndTypeOptions() {
+		return getService("ProductScheduleService").getscheduleEndTypeOptions();
+	}
+	
+	public array function getRepeatTimeUnitOptions() {
+		return getService("ProductScheduleService").getRepeatTimeUnitOptions();
+	}
+	
+	public array function getSchedulingTypeOptions() {
+		return getService("ProductScheduleService").getSchedulingTypeOptions();
+	}
+	
+	public array function getRecurringTimeUnitOptions() {
+		return getService("ProductScheduleService").getRecurringTimeUnitOptions();
+	}
+	
+	public any function getScheduleEndDate() {
+		var result = "";
+		if(sku.hasProductSchedule() && sku.getProductSchedule().getScheduleEndType().getTypeID() == getService("SettingService").getTypeBySystemCode("setDate").getTypeID()) {
+			result = sku.getProductSchedule().getScheduleEndDate();
+		}
+		return result;
+	}
+	
+	public any function getScheduleEndOccurrences() {
+		var result = 1;
+		if(sku.hasProductSchedule()) {
+			if(sku.getProductSchedule().getScheduleEndType().getTypeID() == getService("SettingService").getTypeBySystemCode("setOccurrences").getTypeID()) {
+				result = sku.getProductSchedule().getScheduleEndOccurrences();
+			} else {
+				result = "";
+			}
+		} 
+		return result;
+	}
+	
+	
 }

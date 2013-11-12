@@ -57,6 +57,27 @@ Notes:
 	
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList>
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="editScope" property="editScope" edit="#rc.edit#" valueOptions="#rc.processObject.getEditScopeOptions()#">
+			
+			<!--- Changing schedule for all skus... --->
+			<cf_HibachiDisplayToggle selector="select[name='editScope']" loadVisable="no" showValues="all">
+				
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
+				
+				<!--- Ends on Date --->
+				<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="yes" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
+<!---					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" value="#rc.sku.getProductSchedule().getScheduleEndDate()#" edit="#rc.edit#">--->
+				</cf_HibachiDisplayToggle>
+
+				<!--- Ends after # of occurences --->
+				<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setOccurrences').getTypeID()#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndOccurrences" edit="#rc.edit#">
+				</cf_HibachiDisplayToggle>
+			
+			</cf_HibachiDisplayToggle>
+			
 			<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">

@@ -146,10 +146,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
-		arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
-		arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
-		arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
-		arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
+		if(arguments.processObject.geteditScope()=="single" || isNull(arguments.sku.getProductSchedule()) ){
+			arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
+			arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
+			arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
+			arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
+			arguments.sku.setProductSchedule(javaCast("null",""));
+		} else if(arguments.processObject.geteditScope()=="recurring"){
+			
+			// SchedulingType = Single or recurring;
+			// Recurring Time Unit = daily, weekly, monthly, etc.
+			// ScheduleEndType = Date or occurrences 
+			
+			/*var productSchedule = arguments.sku.getProductSchedule();
+			var origRecurringTimeUnit = productSchedule.getRecurringTimeUnit();
+			var origScheduleEndType = productSchedule.getScheduleEndType();
+			
+			// How frequently will event occur (Daily, Weekly, etc.)?
+			productSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
+			
+			// Is end type based on occurrences or date?
+			productSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
+			
+			
+			for(var sku in arguments.sku.getProductSchedule().getSkus()) {
+				//loop through skus assigning new datetimes
+				sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
+				sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
+				sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
+				sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
+				
+			}*/
+			
+		}
 		return arguments.sku;
 	}
 	

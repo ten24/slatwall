@@ -53,7 +53,6 @@ Notes:
 			</cfif>
 			<cf_HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 			<cfif rc.product.getBaseProductType() EQ "event">
-				<!---<cf_HibachiActionCaller action="admin:entity.entity.changeeventdates" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />--->
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="changeeventdates" type="list" modal="true" />
 			</cfif>
 			

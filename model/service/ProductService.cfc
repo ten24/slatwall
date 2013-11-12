@@ -105,6 +105,7 @@ component extends="HibachiService" accessors="true" {
 		var newSku = this.newSku();
 		var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');
 		var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPostReservationTime');
+		
 		newSku.setProduct( arguments.processObject.getproduct() );
 		newSku.setSkuCode( arguments.processObject.getproduct().getProductCode() & "-#arguments.qualifier#");
 		newSku.setPrice( arguments.processObject.getPrice() );
