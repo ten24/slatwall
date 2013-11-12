@@ -146,13 +146,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
-		if(arguments.processObject.geteditScope()=="single" || isNull(arguments.sku.getProductSchedule()) ){
+		
+		if(arguments.processObject.getEditScope()=="single" || isNull(arguments.sku.getProductSchedule()) ){
 			arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
 			arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
 			arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
 			arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
 			arguments.sku.setProductSchedule(javaCast("null",""));
-		} else if(arguments.processObject.geteditScope()=="recurring"){
+		
+		} else if(arguments.processObject.getEditScope()=="all"){
+			
+			throw("The feature that will allow you to modify a schedule is not functional at this time. It's coming soon though!");
 			
 			// SchedulingType = Single or recurring;
 			// Recurring Time Unit = daily, weekly, monthly, etc.
