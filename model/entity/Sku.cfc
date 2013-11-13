@@ -545,7 +545,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public string function getNextEstimatedAvailableDate() {
 		if(!structKeyExists(variables, "nextEstimatedAvailableDate")) {
-			if(getQuantity("QIATS")) {
+			if(getQuantity("QIATS") > 0) {
 				return dateFormat(now(), setting('globalDateFormat'));
 			}
 			var quantityNeeded = getQuantity("QNC") * -1;

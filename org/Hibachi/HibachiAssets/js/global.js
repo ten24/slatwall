@@ -1296,13 +1296,17 @@ function globalSearchHold() {
 	return true;
 }
 
-function globalSearchRelease() {
+function globalSearchRelease( lastKeyword ) {
 	globalSearchCache.onHold = false;
+	if(jQuery('#global-search').val() != lastKeyword) {
+		updateGlobalSearchResults();
+	}
 }
 
 function updateGlobalSearchResults() {
 	
 	if(!globalSearchHold()) {
+		
 		addLoadingDiv( 'search-results' );
 		
 		var data = {
@@ -1354,7 +1358,7 @@ function updateGlobalSearchResults() {
 				}
 				
 				removeLoadingDiv( 'search-results' );
-				globalSearchRelease();
+				globalSearchRelease( data.keywords );
 			}
 			
 		});

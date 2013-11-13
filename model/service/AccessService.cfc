@@ -71,7 +71,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var restrictedContentExistsFlag = getHibachiCacheService().getOrCacheFunctionValue("setting_contentRestrictAccessFlag_recordExistsFlag", getSettingService(), "getSettingRecordExistsFlag", dataIfNotCached);
 		
 		// Make sure there is restricted content in the system before doing any check
-		if( restrictedContentExistsFlag ) {
+		if( !restrictedContentExistsFlag ) {
 			accessDetails.accessFlag = true;
 			accessDetails.nonRestrictedFlag = true;
 			return accessDetails;

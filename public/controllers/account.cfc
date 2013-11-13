@@ -209,7 +209,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Account Payment Method - Delete
 	public void function deleteAccountPaymentMethod() {
-		param name="rc.accountAddressID" default="";
+		param name="rc.accountPaymentMethodID" default="";
 		
 		var accountPaymentMethod = getAccountService().getAccountPaymentMethod( rc.accountPaymentMethodID );
 		
