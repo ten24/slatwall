@@ -259,11 +259,14 @@ component extends="HibachiService" accessors="true" {
 		
 		// Recurring schedule is specified for event
 		else if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schRecurring").getTypeID()) {
-			
+
 			// How frequently will event occur (Daily, Weekly, etc.)?
 			newProductSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
 			// Is end type based on occurrences or date?
 			newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
+			
+			// Modify date the schedule begins on
+			newProductSchedule.setScheduleStartDate(arguments.processObject.getScheduleStartDate());
 			
 			// Schedule ends based on occurrences
 			if(arguments.processObject.getScheduleEndType() == getSettingService().getTypeBySystemCode("setOccurrences").getTypeID()) {
@@ -626,6 +629,9 @@ component extends="HibachiService" accessors="true" {
 					
 					// Is end type based on occurrences or date?
 					newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
+					
+					// Add date the schedule begins on
+					newProductSchedule.setScheduleStartDate(arguments.processObject.getScheduleStartDate());
 					
 					// Schedule ends based on occurrences
 					if(arguments.processObject.getScheduleEndType() == getSettingService().getTypeBySystemCode("setOccurrences").getTypeID()) {

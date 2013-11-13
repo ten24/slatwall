@@ -62,6 +62,8 @@ Notes:
 			<!--- Changing schedule for all skus... --->
 			<cf_HibachiDisplayToggle selector="select[name='editScope']" loadVisable="no" showValues="all">
 				
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleStartDate" edit="#rc.edit#">
+				
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
 				

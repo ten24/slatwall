@@ -118,5 +118,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return result;
 	}
 	
+	public any function getScheduleStartDate() {
+		var result = createODBCDateTime(now());
+		if( sku.hasProductSchedule() && sku.getProductSchedule().getScheduleStartDate() >= now() ) {
+			result = sku.getProductSchedule().getScheduleStartDate();
+		}
+		return result;
+	}
+	
 	
 }

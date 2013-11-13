@@ -156,13 +156,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		} else if(arguments.processObject.getEditScope()=="all"){
 			
-			throw("The feature that will allow you to modify a schedule is not functional at this time. It's coming soon though!");
+			//throw("The feature that will allow you to modify a schedule is not functional at this time. It's coming soon though!");
 			
 			// SchedulingType = Single or recurring;
 			// Recurring Time Unit = daily, weekly, monthly, etc.
 			// ScheduleEndType = Date or occurrences 
 			
-			/*var productSchedule = arguments.sku.getProductSchedule();
+			var productSchedule = arguments.sku.getProductSchedule();
 			var origRecurringTimeUnit = productSchedule.getRecurringTimeUnit();
 			var origScheduleEndType = productSchedule.getScheduleEndType();
 			
@@ -173,13 +173,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			productSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
 			
 			
-			for(var sku in arguments.sku.getProductSchedule().getSkus()) {
+			/*for(var sku in arguments.sku.getProductSchedule().getSkus()) {
 				//loop through skus assigning new datetimes
 				sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
 				sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
 				sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
 				sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
-				
+						
 			}*/
 			
 		}

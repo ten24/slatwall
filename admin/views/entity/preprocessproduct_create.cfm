@@ -87,6 +87,7 @@ Notes:
 							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="weeklyDaysOfOccurrence" edit="#rc.edit#" valueOptions="#rc.processObject.getDaysOfWeekOptions()#">
 						</cf_HibachiDisplayToggle>--->
 						
+							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleStartDate" edit="#rc.edit#">
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
 						<!--- Ends on Date --->
 						<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="yes" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#">
@@ -100,7 +101,7 @@ Notes:
 					
 					</cf_HibachiDisplayToggle>
 					
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
+					<cf_HibachiPropertyDisplay class="eventStartDateTime" object="#rc.processObject#" property="eventStartDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 					
 				</cfif>
@@ -167,9 +168,14 @@ Notes:
 		
 	</cf_HibachiEntityProcessForm>
 	
-	<script>
-		</script>
 		
 	
 	
 </cfoutput>
+<script>
+	$("input[name='scheduleStartDate']").change(function() {
+		$("input[name='eventStartDateTime']").val($("input[name='scheduleStartDate']").val());
+		//console.log($("input[name='scheduleStartDate']"));
+	});
+
+</script>
