@@ -16,8 +16,13 @@
 	</cfloop>
 
 	<cfset local.downloadLink = "http://" />
-	<cfset local.downloadLink &= CGI.HTTP_HOST /> <!--- This adds the current domain name --->
-	<cfset local.downloadLink &= CGI.SCRIPT_NAME /> <!--- This adds the script name which includes the sub-directories that a site is in --->
+	<cfset local.downloadLink &= cgi.server_name /> <!--- This adds the current domain name --->
+	
+	<cfif findNoCase('/Slatwall',cgi.script_name)>	<!--- This adds the script name which includes the sub-directories that a site is in --->
+		<cfset local.downloadLink &= getDirectoryFromPath(left(cgi.script_name,findNoCase('/Slatwall',cgi.script_name))) />
+	<cfelse>
+		<cfset local.downloadLink &= getDirectoryFromPath(cgi.script_name) /> 
+	</cfif>
 	<cfset local.downloadLink &= "?slatAction=s3:public.get&id=" /> <!--- This is what tells the page to execute the download reset --->
 </cfsilent>
 
