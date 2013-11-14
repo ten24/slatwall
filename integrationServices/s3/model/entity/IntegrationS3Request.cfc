@@ -3,8 +3,9 @@
 <cfproperty name="s3RequestID" ormType="string" length="32" fieldType="id" generator="uuid" unsavedValue="" default="" />
 
 <cfproperty name="createdDateTime"	ormType="timestamp" />
-<cfproperty name="userAgent"				ormType="string"	length="250" />
-<cfproperty name="remoteIP"					ormType="string"	length="25" />
+<cfproperty name="userAgent"		ormType="string"	length="250" />
+<cfproperty name="remoteIP"			ormType="string"	length="25" />
+<cfproperty name="takeIntoAccountForRequestLimiting"	ormType="boolean"	notNull="true"	default="true"	dbDefault="1" />
 
 <cfproperty name="createdByAccount"		cfc="Account"						fieldType="many-to-one"	fkColumn="createdByAccountID" />
 <cfproperty name="orderDeliveryItem"	cfc="OrderDeliveryItem"	fieldType="many-to-one"	fkColumn="orderDeliveryItemID" />

@@ -104,8 +104,9 @@
 			SELECT COUNT(*) FROM SlatwallIntegrationS3Request AS s3r
 				INNER JOIN s3r.orderDeliveryItem AS odi
 			WHERE odi.orderDeliveryItemID = :orderDeliveryItemID
+				AND s3r.takeIntoAccountForRequestLimiting = :takeIntoAccountForRequestLimiting
 		</cfsavecontent>
-		<cfset local.requestCount = ormExecuteQuery(local.hql,{ orderDeliveryItemID=arguments.orderDeliveryItem.getOrderDeliveryItemID() },true) />
+		<cfset local.requestCount = ormExecuteQuery(local.hql,{ orderDeliveryItemID=arguments.orderDeliveryItem.getOrderDeliveryItemID(),takeIntoAccountForRequestLimiting=true },true) />
 
 		<cfset local.limitExceeded = local.requestCount GTE local.limitDownloadAttempts />
 	</cfif>
@@ -117,11 +118,37 @@
 <cffunction name="isLimitDownloadTimeFrameExceeded" returnType="boolean" access="public">
 	<cfargument name="orderDeliveryItem" type="any" required="true" />
 
-	<cfset local.limitExceeded					= false />
+	<cfset local.limitExceeded			= false />
 	<cfset local.limitDownloadTimeFrame	= setting('limitDownloadAttempts') />
 
 	<cfif isNumeric(local.limitDownloadTimeFrame) AND local.limitDownloadTimeFrame GT 0 AND NOT isNull(arguments.orderDeliveryItem.getOrderDelivery().getOrder().getOrderCloseDateTime())>
-		<cfset local.limitExceeded = dateAdd('d',local.limitDownloadTimeFrame,arguments.orderDeliveryItem.getOrderDelivery().getOrder().getOrderCloseDateTime()) LT now() />
+		<cfset local.startTime = arguments.orderDeliveryItem.getOrderDelivery().getOrder().getOrderCloseDateTime() />
+		
+		<cfsavecontent variable="local.hql">
+			SELECT COUNT(*) FROM SlatwallIntegrationS3Request AS s3r
+				INNER JOIN s3r.orderDeliveryItem AS odi
+			WHERE odi.orderDeliveryItemID = :orderDeliveryItemID
+				AND s3r.takeIntoAccountForRequestLimiting = :takeIntoAccountForRequestLimiting
+		</cfsavecontent>
+		<cfset local.ignoreCount = ormExecuteQuery(local.hql,{ orderDeliveryItemID=arguments.orderDeliveryItem.getOrderDeliveryItemID(),takeIntoAccountForRequestLimiting=false },true) />
+		
+		<cfif local.ignoreCount>
+			<cfsavecontent variable="local.hql">
+				SELECT s3r.createdDateTime FROM SlatwallIntegrationS3Request AS s3r
+					INNER JOIN s3r.orderDeliveryItem AS odi
+				WHERE odi.orderDeliveryItemID = :orderDeliveryItemID
+					AND s3r.takeIntoAccountForRequestLimiting = :takeIntoAccountForRequestLimiting
+				ORDER BY s3r.createdDateTime ASC
+			</cfsavecontent>
+			<cfset local.considerDownloads = ormExecuteQuery(local.hql,{ orderDeliveryItemID=arguments.orderDeliveryItem.getOrderDeliveryItemID(),takeIntoAccountForRequestLimiting=true },{ maxResults=1 }) />
+			
+			<cfset local.startTime = now() />
+			<cfif arrayLen(local.considerDownloads)>
+				<cfset local.startTime = local.considerDownloads[1] />
+			</cfif>
+		</cfif>
+		
+		<cfset local.limitExceeded = dateAdd('d',local.limitDownloadTimeFrame,local.startTime) LT now() />
 	</cfif>
 
 	<cfreturn local.limitExceeded />
