@@ -147,40 +147,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
 		
-		if(arguments.processObject.getEditScope()=="single" || isNull(arguments.sku.getProductSchedule()) ){
+		if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
 			arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
 			arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
-			arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
+			arguments.sku.setStartReservationDateTime(arguments.processObject.getEndReservationDateTime());
 			arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
 			arguments.sku.setProductSchedule(javaCast("null",""));
 		
-		} else if(arguments.processObject.getEditScope()=="all"){
+		} else if(arguments.processObject.getEditScope() == "all"){
 			
-			//throw("The feature that will allow you to modify a schedule is not functional at this time. It's coming soon though!");
-			
-			// SchedulingType = Single or recurring;
-			// Recurring Time Unit = daily, weekly, monthly, etc.
-			// ScheduleEndType = Date or occurrences 
-			
-			var productSchedule = arguments.sku.getProductSchedule();
-			var origRecurringTimeUnit = productSchedule.getRecurringTimeUnit();
-			var origScheduleEndType = productSchedule.getScheduleEndType();
-			
-			// How frequently will event occur (Daily, Weekly, etc.)?
-			productSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
-			
-			// Is end type based on occurrences or date?
-			productSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
-			
-			
-			/*for(var sku in arguments.sku.getProductSchedule().getSkus()) {
-				//loop through skus assigning new datetimes
-				sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
-				sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
-				sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
-				sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
-						
-			}*/
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				if(thisSku.eventStartDateTime() > now()) {
+					var newEventStartDateTime = createDateTime(year(thisSku.getEventStartDateTime()),month(thisSku.getEventStartDateTime()),day(thisSku.getEventStartDateTime()),hour(arguments.processObject.getEventStartTime()),minute(arguments.processObject.getEventStartTime()),0);
+					var newEventEndDateTime = createDateTime(year(thisSku.getEventEndDateTime()),month(thisSku.getEventEndDateTime()),day(thisSku.getEventEndDateTime()),hour(arguments.processObject.getEventEndTime()),minute(arguments.processObject.getEventEndTime()),0);
+					var newReservationStartDateTime = createDateTime(year(thisSku.getStartReservationDateTime()),month(thisSku.getStartReservationDateTime()),day(thisSku.getStartReservationDateTime()),hour(arguments.processObject.getReservationStartTime()),minute(arguments.processObject.getReservationStartTime()),0);
+					var newReservationEndDateTime = createDateTime(year(thisSku.getEndReservationDateTime()),month(thisSku.getEndReservationDateTime()),day(thisSku.getEndReservationDateTime()),hour(arguments.processObject.getReservationEndTime()),minute(arguments.processObject.getReservationEndTime()),0);
+					thisSku.setEventStartDateTime(newEventStartDateTime);
+					thisSku.setEventEndDateTime(newEventEndDateTime);
+					thisSku.setStartReservationDateTime(newReservationStartDateTime);
+					thisSku.setEndReservationDateTime(newReservationEndDateTime);
+				}
+			}
 			
 		}
 		return arguments.sku;

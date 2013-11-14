@@ -55,7 +55,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	property name="recurringTimeUnit" cfc="Type" fieldtype="many-to-one" fkcolumn="recurringTimeUnitID" hb_optionsSmartListData="f:parentType.systemCode=recurringTimeUnit";
 	property name="schedulingType" cfc="Type" fieldtype="many-to-one" fkcolumn="schedulingTypeID" hb_optionsSmartListData="f:parentType.systemCode=schedulingType";
 	property name="scheduleEndType" cfc="Type" fieldtype="many-to-one" fkcolumn="scheduleEndTypeID" hb_optionsSmartListData="f:parentType.systemCode=scheduleEndType";
-	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all-delete-orphan" inverse="true";
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all-delete-orphan" inverse="true" orderby="eventStartDateTime" ;
 	
 	// Related Object Properties (many-to-many - owner)
 
