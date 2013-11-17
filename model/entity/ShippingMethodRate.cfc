@@ -64,7 +64,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID";
 	
 	// Related Object Properties (one-to-many)
-	property name="shippingMethodOptions" singularname="shippingMethodOption" cfc="ShippingMethodOption" type="array" fieldtype="one-to-many" fkcolumn="shippingMethodRateID" cascade="all-delete-orphan" inverse="true";
+	property name="shippingMethodOptions" singularname="shippingMethodOption" cfc="ShippingMethodOption" type="array" fieldtype="one-to-many" fkcolumn="shippingMethodRateID" cascade="delete-orphan" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many - owner)
 	
