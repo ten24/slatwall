@@ -96,24 +96,26 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return this;
 	}
 
-	/*
-
 	// @help overwrite parents _setProperty to enable formatType parsing
 	private void function _setProperty( required any name, any value, any formatType='' ){
-		
-		if( arguments.formatType EQ 'dateTime' ){
-			local.convertedJavaDateFormat = trim('#reReplace(reReplace(reReplace(setting("globalDateFormat"),"y\{1,4}","y"),"d\{1,2}","d"),"\m{1,2}","M")# #reReplace(reReplace(replace(setting("globalTimeFormat"),"tt","a"),"h\{2}","H"),"\m{1,2}","m")#');
-
+		if( NOT isNull(arguments.value) AND ( arguments.formatType EQ 'dateTime' OR findNoCase('dateTime',arguments.name) ) ){
+			local.originalValue = arguments.value;
+			local.javaDateFormat = trim('#replace(setting("globalDateFormat"),"m","M","all")# #replace(replace(setting("globalTimeFormat"),"tt","a"),"h","H","all")#');
+			
 			try{
-				arguments.value = createObject('java','java.text.SimpleDateFormat').init(local.convertedJavaDateFormat).parse(arguments.value,createObject('java','java.text.ParsePosition').init(0));
+				arguments.value = createObject('java','java.text.SimpleDateFormat').init(local.javaDateFormat).parse(arguments.value,createObject('java','java.text.ParsePosition').init(0));
 			}catch(any e){}
+			
+			if( isDate(arguments.value) AND findNoCase('PM',local.originalValue) ){
+				arguments.value = dateAdd('h',12,arguments.value);  //for some reason SimpleDateFormat does not recognize AM/PM on all platforms, so we have to maintain it manually
+			
+			} else if( isNull(arguments.value) OR NOT isDate(arguments.value) ){
+				arguments.value = local.originalValue;  //fallback gracefully: send originalValue to parent _setProperty
+			}
 		}
 		
-
 		super._setProperty(argumentCollection=arguments);
 	}
-	
-	*/
 
 	// @hint Returns an array of comments related to this entity
 	public array function getComments( boolean publicFlag ) {
