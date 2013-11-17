@@ -1,4 +1,4 @@
-<cfcomponent accessors="true" extends="Slatwall.integrationServices.BasePayment" implements="Slatwall.integrationServices.PaymentInterface" hint="SOFORT Überweisung Slatwall v3 Payment">
+﻿<cfcomponent accessors="true" extends="Slatwall.integrationServices.BasePayment" implements="Slatwall.integrationServices.PaymentInterface" hint="SOFORT Überweisung Slatwall v3 Payment">
 
 <cfproperty name="apiURL"	setter="false" />
 <cfproperty name="successStates" setter="false" />
