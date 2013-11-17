@@ -63,7 +63,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.loginDefaultSubsystem = 'admin';
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
-	
+	variables.framework.hibachi.useCachingEngineFlag = false;
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}

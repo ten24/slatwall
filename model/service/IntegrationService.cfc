@@ -73,20 +73,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return variables.activeFW1Subsystems;
 	}
 	
-	public any function getAllSettings() {
-		if( !structKeyExists(variables, "allSettings") ) {
-			variables.allSettings = {};
-			var isl = this.getIntegrationSmartList();
-			isl.addFilter('installedFlag', 1);
-			var integrations = isl.getRecords();
-			for(var i=1; i<=arrayLen(integrations); i++) {
-				for(var settingName in integrations[i].getSettings()) {
-					variables.allSettings['integration#integrations[i].getIntegrationPackage()##settingName#'] = integrations[i].getSettings()[ settingName ];
-				}
+	public any function getAllSettingMetaData() {
+		var allSettingMetaData = {};
+		
+		var isl = this.getIntegrationSmartList();
+		isl.addFilter('installedFlag', 1);
+		
+		for(var integration in isl.getRecords()) {
+			for(var settingName in integration.getSettings()) {
+				allSettingMetaData['integration#integration.getIntegrationPackage()##settingName#'] = integration.getSettings()[ settingName ];
 			}
 		}
 		
-		return variables.allSettings;
+		
+		return allSettingMetaData;
 	}
 	
 	public any function getIntegrationCFC(required any integration) {

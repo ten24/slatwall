@@ -151,51 +151,88 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
-	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {
-		
+	public any function duplicateOrder(required any order, boolean saveNewFlag=false) {
 		var newOrder = this.newOrder();
-		newOrder.setCurrencyCode( arguments.originalOrder.getCurrencyCode() );
+		
+		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		
 		// Copy Order Items
-		for(var i=1; i<=arrayLen(arguments.originalOrder.getOrderItems()); i++) {
+		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
 			var newOrderItem = this.newOrderItem();
 			
-			newOrderItem.setPrice( arguments.originalOrder.getOrderItems()[i].getPrice() );
-			newOrderItem.setSkuPrice( arguments.originalOrder.getOrderItems()[i].getSkuPrice() );
-			newOrderItem.setCurrencyCode( arguments.originalOrder.getOrderItems()[i].getCurrencyCode() );
-			newOrderItem.setQuantity( arguments.originalOrder.getOrderItems()[i].getQuantity() );
-			newOrderItem.setOrderItemType( arguments.originalOrder.getOrderItems()[i].getOrderItemType() );
-			newOrderItem.setOrderItemStatusType( arguments.originalOrder.getOrderItems()[i].getOrderItemStatusType() );
-			newOrderItem.setSku( arguments.originalOrder.getOrderItems()[i].getSku() );
-			if(!isNull(arguments.originalOrder.getOrderItems()[i].getStock())) {
-				newOrderItem.setStock( arguments.originalOrder.getOrderItems()[i].getStock() );
+			newOrderItem.setPrice( arguments.order.getOrderItems()[i].getPrice() );
+			newOrderItem.setSkuPrice( arguments.order.getOrderItems()[i].getSkuPrice() );
+			newOrderItem.setCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() );
+			newOrderItem.setQuantity( arguments.order.getOrderItems()[i].getQuantity() );
+			newOrderItem.setOrderItemType( arguments.order.getOrderItems()[i].getOrderItemType() );
+			newOrderItem.setOrderItemStatusType( arguments.order.getOrderItems()[i].getOrderItemStatusType() );
+			newOrderItem.setSku( arguments.order.getOrderItems()[i].getSku() );
+			if(!isNull(arguments.order.getOrderItems()[i].getStock())) {
+				newOrderItem.setStock( arguments.order.getOrderItems()[i].getStock() );
 			}
 			
 			// copy order item customization
-			for(var attributeValue in arguments.originalOrder.getOrderItems()[i].getAttributeValues()) {
+			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
 				var av = this.newAttributeValue();
 				av.setAttributeValueType(attributeValue.getAttributeValueType());
 				av.setAttribute(attributeValue.getAttribute());
 				av.setAttributeValue(attributeValue.getAttributeValue());
 				av.setOrderItem(newOrderItem);
 			}
-
+			
+			var orderFulfillmentFound = false;
+			
 			// check if there is a fulfillment method of this type in the order
 			for(var fulfillment in newOrder.getOrderFulfillments()) {
-				if(arguments.originalOrder.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() == fulfillment.getFulfillmentMethod().getFulfillmentMethodID()) {
+				if(arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() == fulfillment.getFulfillmentMethod().getFulfillmentMethodID()) {
 					var newOrderFulfillment = fulfillment;
+					orderFulfillmentFound = true;
 					break;
 				}
 			}
-			if(isNull(newOrderFulfillment)) {
+			if(!orderFulfillmentFound) {
 				var newOrderFulfillment = this.newOrderFulfillment();
-				newOrderFulfillment.setFulfillmentMethod( arguments.originalOrder.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
+				newOrderFulfillment.setFulfillmentMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
 				newOrderFulfillment.setOrder( newOrder );
-				newOrderFulfillment.setCurrencyCode( arguments.originalOrder.getOrderItems()[i].getOrderFulfillment().getCurrencyCode() );
+				newOrderFulfillment.setCurrencyCode( arguments.order.getOrderItems()[i].getOrderFulfillment().getCurrencyCode() );
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod())) {
+					newOrderFulfillment.setShippingMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod() );	
+				}
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
+					newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress() );
+				}
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
+					newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
+				}
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress())) {
+					newOrderFulfillment.setEmailAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress() );
+				}
+				
 			}
 			newOrderItem.setOrder( newOrder );
 			newOrderItem.setOrderFulfillment( newOrderFulfillment );
 
+		}
+		
+		if(!isNull(arguments.order.getAccount())) {
+			newOrder.setAccount( arguments.order.getAccount() );
+		}
+		
+		if(arguments.saveNewFlag) {
+			this.saveOrder( newOrder );
+		}
+		
+		return newOrder;
+	}
+	
+	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {
+		var newOrder = duplicateOrder(arguments.originalOrder, true);
+		
+		// Clear out account specific stuff in fulfillments
+		for(var fulfillment in newOrder.getOrderFulfillments()) {
+			fulfillment.setShippingAddress( javaCast("null", "" ) );
+			fulfillment.setAccountAddress( javaCast("null", "" ) );
+			fulfillment.setEmailAddress( javaCast("null", "" ) );
 		}
 		
 		newOrder.setAccount( arguments.newAccount );
@@ -1140,7 +1177,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// Populate with the data
 					orderDeliveryItem.setOrderItem( this.getOrderItem( arguments.processObject.getOrderDeliveryItems()[i].orderItem.orderItemID ) );
-					orderDeliveryItem.setQuantity( this.getOrderItem( arguments.processObject.getOrderDeliveryItems()[i].quantity ) );
+					orderDeliveryItem.setQuantity( arguments.processObject.getOrderDeliveryItems()[i].quantity );
 					orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
 					orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
 				}	
@@ -1327,16 +1364,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 					var stockReceiverItem = getStockService().newStockReceiverItem();
 				
-					stockreceiverItem.setQuantity( thisRecord.quantity );
-					stockreceiverItem.setStock( stock );
-					stockreceiverItem.setOrderItem( orderReturnItem );
-					stockreceiverItem.setStockReceiver( stockReceiver );
+					stockReceiverItem.setQuantity( thisRecord.quantity );
+					stockReceiverItem.setStock( stock );
+					stockReceiverItem.setOrderItem( orderReturnItem );
+					stockReceiverItem.setStockReceiver( stockReceiver );
 				}
 				
 			}
 		}
 		
-		getStockService().saveStockReceiver( stockReceiver );
+		
+		// Loop over the stockReceiverItems to remove subscriptions and contentAccess
+		for(var stockReceiverItem in stockReceiver.getStockReceiverItems()) {
+			
+			// If there was a subscriptionOrderItem attached to referenced order item, we can cancel that subscription usage
+			var subscriptionOrderItem = getSubscriptionService().getSubscriptionOrderItem({orderItem=stockReceiverItem.getOrderItem().getReferencedOrderItem()}); 
+			if(!isNull(subscriptionOrderItem)) {
+				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
+			}
+			
+			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them
+
+		}
+		
+		
+		stockReceiver = getStockService().saveStockReceiver( stockReceiver );
 		
 		for(var accountLoyalty in arguments.orderReturn.getOrder().getAccount().getAccountLoyalties()) {
 			var orderItemReceivedData = {
