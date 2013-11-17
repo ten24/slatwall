@@ -588,17 +588,20 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 	// ================== START: Overridden Methods ========================
 	
+	public any function afterPopulate() {
+		if(!isNull(getCreditCardNumber()) && len(getCreditCardNumber()) && getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveOrderPaymentEncryptFlag()) && getPaymentMethod().getSaveOrderPaymentEncryptFlag()) {
+			setCreditCardNumberEncrypted(encryptValue(getCreditCardNumber()));
+		}
+	}
+	
 	public void function setCreditCardNumber(required string creditCardNumber) {
 		if(len(arguments.creditCardNumber)) {
 			variables.creditCardNumber = arguments.creditCardNumber;
 			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
 			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
-			if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveOrderPaymentEncryptFlag()) && getPaymentMethod().getSaveOrderPaymentEncryptFlag()) {
-				setCreditCardNumberEncrypted(encryptValue(arguments.creditCardNumber));
-			}
 		} else {
 			structDelete(variables, "creditCardNumber");
-			setCreditCardType(javaCast("null", ""));
+			setCreditCardLastFour(javaCast("null", ""));
 			setCreditCardType(javaCast("null", ""));
 			setCreditCardNumberEncrypted(javaCast("null", ""));
 		}

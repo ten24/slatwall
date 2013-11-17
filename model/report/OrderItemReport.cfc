@@ -70,6 +70,8 @@ Notes:
 			{alias='price', formatType="currency", title=rbKey('entity.orderItem.price')},
 			{alias='type', title=rbKey('entity.orderItem.orderItemType')},
 			{alias='orderNumber', title=rbKey('entity.order.orderNumber')},
+			{alias='orderOpenDateTime', title=rbKey('entity.order.orderOpenDateTime')},
+			{alias='orderCloseDateTime', title=rbKey('entity.order.orderCloseDateTime')},
 			{alias='stateCode', title=rbKey('entity.address.stateCode')},
 			{alias='city', title=rbKey('entity.address.city')},
 			{alias='postalCode', title=rbKey('entity.address.postalCode')},
@@ -91,6 +93,8 @@ Notes:
 					SwBrand.brandName,
 					SwOrder.orderID,
 					SwOrder.orderNumber,
+					SwOrder.orderOpenDateTime,
+					SwOrder.orderCloseDateTime,
 					SwOrder.currencyCode,
 					<cfif getApplicationValue('databaseType') eq "Oracle10g">
 						oit."type" as type,

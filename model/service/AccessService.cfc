@@ -50,6 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="accountService" type="any";
 	property name="contentService" type="any";
+	property name="settingService" type="any";
 	property name="subscriptionService" type="any";
 
 	public struct function getAccessToContentDetails( required any account, required any content ) {
@@ -63,9 +64,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			subscribedByContentFlag = false,
 			subscribedByCategoryFlag = false
 		};
+		var dataIfNotCached = {
+			settingName="contentRestrictAccessFlag",
+			settingValue=1
+		};
+		var restrictedContentExistsFlag = getHibachiCacheService().getOrCacheFunctionValue("setting_contentRestrictAccessFlag_recordExistsFlag", getSettingService(), "getSettingRecordExistsFlag", dataIfNotCached);
 		
 		// Make sure there is restricted content in the system before doing any check
-		if( !getService("contentService").restrictedContentExists() ) {
+		if( !restrictedContentExistsFlag ) {
 			accessDetails.accessFlag = true;
 			accessDetails.nonRestrictedFlag = true;
 			return accessDetails;

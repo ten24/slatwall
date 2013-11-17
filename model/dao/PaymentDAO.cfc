@@ -82,7 +82,7 @@ Notes:
 		<cfreturn rs.recordcount />
 	</cffunction>
 
-	<cffunction name="getOriginalAuthorizationCode">
+	<cffunction name="getOriginalAuthorizationCode" access="public" returntype="string" output="false">
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
@@ -112,7 +112,7 @@ Notes:
 		<cfreturn "" />	
 	</cffunction>
 	
-	<cffunction name="getOriginalAuthorizationProviderTransactionID">
+	<cffunction name="getOriginalAuthorizationProviderTransactionID" access="public" returntype="string" output="false">
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
@@ -142,7 +142,7 @@ Notes:
 		<cfreturn "" />	
 	</cffunction>
 	
-	<cffunction name="getOriginalChargeProviderTransactionID">
+	<cffunction name="getOriginalChargeProviderTransactionID" access="public" returntype="string" output="false">
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
@@ -172,7 +172,7 @@ Notes:
 		<cfreturn "" />	
 	</cffunction>
 	
-	<cffunction name="getOriginalProviderTransactionID">
+	<cffunction name="getOriginalProviderTransactionID" access="public" returntype="string" output="false">
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
@@ -203,7 +203,7 @@ Notes:
 		<cfreturn "" />
 	</cffunction>
 	
-	<cffunction name="updateInvalidAuthorizationCode">
+	<cffunction name="updateInvalidAuthorizationCode" access="public" returntype="any" output="false">
 		<cfargument name="authorizationCode" type="string" required="true" />
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />

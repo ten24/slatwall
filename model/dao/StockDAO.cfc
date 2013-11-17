@@ -108,7 +108,7 @@ Notes:
 						  INNER JOIN
 						  	sku.product product
 						WHERE
-							vendorOrder.vendorOrderStatusType.systemCode != 'ostClosed'
+							vendorOrder.vendorOrderStatusType.systemCode != 'vostClosed'
 						  AND
 						  	vendorOrder.vendorOrderType.systemCode = 'votPurchaseOrder'
 						  AND

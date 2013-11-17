@@ -61,9 +61,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public void function after( required struct rc ) {
-		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.getFailureActions())) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
 			getFW().redirectExact( url=arguments.rc.fRedirectURL );
-		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.getFailureActions())) {
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
 			getFW().redirectExact( url=arguments.rc.sRedirectURL );
 		} else if (structKeyExists(arguments.rc, "redirectURL")) {
 			getFW().redirectExact( url=arguments.rc.redirectURL );
@@ -209,9 +209,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Account Payment Method - Delete
 	public void function deleteAccountPaymentMethod() {
-		param name="rc.accountAddressID" default="";
+		param name="rc.accountPaymentMethodID" default="";
 		
-		var accountPaymentMethod = getAccountService().getAccountPhoneNumber( rc.accountAddressID );
+		var accountPaymentMethod = getAccountService().getAccountPaymentMethod( rc.accountPaymentMethodID );
 		
 		if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
 			var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
