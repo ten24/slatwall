@@ -85,23 +85,19 @@ Notes:
 			
 			</cfif>
 			
-			<!--- Changing schedule for all skus... --->
-			<!---<cf_HibachiDisplayToggle selector="select[name='editScope']" loadVisable="no" showValues="all">
-				
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleStartDate" edit="#rc.edit#">
-				
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
-				
-				<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="yes" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
-				</cf_HibachiDisplayToggle>
-
-				<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setOccurrences').getTypeID()#">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndOccurrences" edit="#rc.edit#">
-				</cf_HibachiDisplayToggle>
-			
-			</cf_HibachiDisplayToggle>--->
+			<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
+			<cfset selectedLocationConfigurationIDs = "" />
+			<cfloop array="#rc.sku.getLocationConfigurations()#" index="lc">
+				<cfset selectedLocationConfigurationIDs = listAppend(selectedLocationConfigurationIDs, lc.getlocationConfigurationID()) />
+			</cfloop>
+			<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" 
+									  multiselectFieldName="locationConfigurations"
+									  multiselectPropertyIdentifier="locationConfigurationID" 
+									  multiselectValues="#selectedLocationConfigurationIDs#"
+									  edit="#rc.edit#">
+				<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
+				<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+			</cf_HibachiListingDisplay>
 			
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>

@@ -49,7 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="skuDAO" type="any";
-	
+	property name="locationService" type="any";
 	property name="optionService" type="any";
 	property name="productService" type="any";
 	property name="subscriptionService" type="any";
@@ -147,12 +147,50 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
 		
+				writeLog(file="slatwall",text=":::::::::>>>>>>>>>>#arguments.processObject.getLocationConfigurations()#");
 		if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
-			arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
-			arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
-			arguments.sku.setStartReservationDateTime(arguments.processObject.getEndReservationDateTime());
-			arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
-			arguments.sku.setProductSchedule(javaCast("null",""));
+			
+			if(locationConflictExists(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),arguments.processObject.getLocationConfigurations())) {
+				// There is already an event scheduled at that location in the same date range
+				processObject.addError('locationConfigurations', getHibachiScope().rbKey('validate.eventScheduleConflict'));
+			} else {
+
+				// Update schedule dates/times
+				arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
+				arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
+				arguments.sku.setStartReservationDateTime(arguments.processObject.getEndReservationDateTime());
+				arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
+
+				var existingLocationConfigurations = [];
+				
+				
+				// Remove deleted location configurations
+				for(var locationConfig in arguments.sku.getLocationConfigurations()) {
+					var lcExistsAt = listFindNoCase(arguments.processObject.getLocationConfigurations(),locationConfig.getLocationConfigurationID(),"," );
+					if(lcExistsAt == 0) {
+						//arguments.sku.delLocationConfiguration(locationConfig);
+						getDAO("SkuDAO").deleteSkuLocationConfiguration(arguments.sku.getSkuID(), locationConfig.getLocationConfigurationID());
+						getHibachiDAO().flushORMSession();
+					} else {
+						// remove existing location configurations from processObject so we don't add them again
+						arguments.processObject.setLocationConfigurations(listDeleteAt(arguments.processObject.getLocationConfigurations(),lcExistsAt));
+					}
+				}
+				
+				// Update/add locations
+				var newConfigCount = listLen(arguments.processObject.getLocationConfigurations(),",");
+				if(newConfigCount > 0) {
+					// Add new location configurations
+					for(var lc=1; lc<=newConfigCount; lc++) {
+						var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
+						arguments.sku.addLocationConfiguration( thisLocationConfig );
+					}
+				}
+				
+				// Disconnect this sku from any recurring schedule
+				arguments.sku.setProductSchedule(javaCast("null",""));
+			}
+			
 		
 		} else if(arguments.processObject.getEditScope() == "all"){
 			
@@ -171,6 +209,49 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		return arguments.sku;
+	}
+	
+	
+	
+	//@help Takes a sku along with a start datetime, an end datetimem and a list of location configurations, to check for location/date/time conflicts with other event schedules
+	public boolean function locationConflictExists(any sku, any eventStartDateTime, any eventEndDateTime, any locationConfigurations) {
+		var locationIDList = "";
+		var result = false;
+
+		//Build list of locationIDs from locationConfigurations
+		if(listLen(arguments.locationConfigurations,",") == 1) {
+			var locationConfigurationSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
+			locationConfigurationSmartList.addFilter("locationConfigurationID",arguments.locationConfigurations);
+			var locationID = locationConfigurationSmartList.getRecords()[1].getLocation().getLocationID();
+			locationIDList = listAppend(locationIDList,locationID);
+		} else {
+			locationConfigs = listToArray(arguments.locationConfigurations);
+			for(var configID in locationConfigs) {
+				var locationConfigurationSmartList = getService("SkuService").getLocationConfigurationSmartList();
+				locationConfigurationSmartList.addFilter("locationConfigurationID",configID);
+				var locationID = locationConfigurationSmartList.getRecords()[1].getLocation().getLocationID();
+				if(!listFindNoCase(locationIDList,locationID)) {
+					listAppend(locationIDList,locationID);
+				}
+			} 
+		}
+		
+		// Build smartlist of conflicting events schedules
+		var smartlist = getService("SkuService").getSkuSmartList();
+		smartlist.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
+		smartlist.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
+		smartlist.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
+		smartlist.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=arguments.sku.getSkuID()});
+		smartlist.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
+		smartlist.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
+
+		// Do we have conflicts?
+		if(smartList.getRecordsCount() > 0) {
+			result = true;
+		}
+		
+		return result;
+		
 	}
 	
 	// TODO [paul]: makeup / breakup

@@ -56,6 +56,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="eventEndTime" hb_formFieldType="time";
 	property name="reservationStartTime" hb_formFieldType="time";
 	property name="reservationEndTime" hb_formFieldType="time";
+	property name="locationConfigurations";
 	
 	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
@@ -64,12 +65,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Scheduling-related properties
 	property name="editScope" hb_formFieldType="select" hint="Edit this sku schedule or all?";
-	//property name="recurringTimeUnit" hb_formFieldType="select" hint="How often to repeat (daily, weekly, monthly, etc.)";
-	//property name="weeklyDaysOfOccurrence" hb_formFieldType="checkboxgroup"; 
-	/*property name="scheduleStartDate" hb_formFieldType="date" hint="Date the schedule starts" ;
-	property name="scheduleEndType" hb_formFieldType="radiogroup" hint="occurrences, or date"; 
-	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
-	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";*/
 	
 	
 	public array function getDaysOfWeekOptions(boolean includeWeekends=true) {

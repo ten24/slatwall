@@ -126,6 +126,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
+	property name="locations" type="array" persistent="false";
 	property name="nextEstimatedAvailableDate" type="string" persistent="false";
 	property name="optionsByOptionGroupCodeStruct" persistent="false";
 	property name="optionsByOptionGroupIDStruct" persistent="false";
@@ -166,11 +167,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public string function getImagePath() {
-    	return "#getHibachiScope().getBaseImageURL()#/product/default/#getImageFile()#";
+   	 	return "#getHibachiScope().getBaseImageURL()#/product/default/#getImageFile()#";
     }
     
     public string function getImage() {
-    	return getResizedImage(argumentcollection=arguments);
+   	 	return getResizedImage(argumentcollection=arguments);
     }
     
 	public string function getResizedImage() {
@@ -297,21 +298,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public any function getPriceByCurrencyCode( required string currencyCode ) {
-    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
-    		return getCurrencyDetails()[ arguments.currencyCode ].price;
-    	}
+	    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
+	    		return getCurrencyDetails()[ arguments.currencyCode ].price;
+	    	}
     }
     
     public any function getListPriceByCurrencyCode( required string currencyCode ) {
-    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "listPrice")) {
-    		return getCurrencyDetails()[ arguments.currencyCode ].listPrice;
-    	}
+	    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "listPrice")) {
+	    		return getCurrencyDetails()[ arguments.currencyCode ].listPrice;
+	    	}
     }
     
     public any function getRenewalPriceByCurrencyCode( required string currencyCode ) {
-    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "renewalPrice")) {
-    		return getCurrencyDetails()[ arguments.currencyCode ].renewalPrice;
-    	}
+	    	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "renewalPrice")) {
+	    		return getCurrencyDetails()[ arguments.currencyCode ].renewalPrice;
+	    	}
     }
     
 	// END: Price / Currency Methods
@@ -357,6 +358,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// END: Quantity Helper Methods
+	
 	
 	
 	// ====================  END: Logical Methods ==========================
@@ -424,7 +426,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					variables.currencyDetails[ thisCurrency.getCurrencyCode() ] = {};
 					variables.currencyDetails[ thisCurrency.getCurrencyCode() ].skuCurrencyID = "";
 					
-					// Check to see if thisCurrency is the same as the default currency
+					// Check to see if thisCurrency is the same as the 	 currency
 					if(thisCurrency.getCurrencyCode() eq this.setting('skuCurrency')) {
 						if(!isNull(getRenewalPrice())) {
 							variables.currencyDetails[ thisCurrency.getCurrencyCode() ].renewalPrice = getRenewalPrice();
@@ -584,6 +586,18 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.livePrice;
 	}
 	
+	public any function getLocations() {
+		if(!structKeyExists(variables,"locations")) {
+			variables.locations = [];
+			if(this.hasLocationConfigurations()) {
+				for(var config in this.getLocationConfigurations()) {
+					arrayAppend(variables.locations,config.getLocation());
+				}
+			}
+		}
+		return variables.locations;
+	}
+	
 	public any function getOptionsByOptionGroupCodeStruct() {
 		if(!structKeyExists(variables, "optionsByOptionGroupCodeStruct")) {
 			variables.optionsByOptionGroupCodeStruct = {};
@@ -688,8 +702,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				case "event":
 					var configs = getLocationConfigurations();
 					for(config in configs){
-			    			variables.skuDefinition = variables.skuDefinition & config.getlocationConfigurationName() & "<br>";
-			    			/*variables.skuDefinition = listAppend(variables.skuDefinition, config.getlocation().getlocationName() & ">" & config.getlocationConfigurationName(), ",");*/
+						variables.skuDefinition = config.getlocationPathName();
 					}
 					break;
 					

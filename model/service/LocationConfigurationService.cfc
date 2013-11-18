@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) 2011 ten24, LLC
@@ -35,36 +35,47 @@
 
 Notes:
 
---->
-<cfparam name="rc.sku" default="any" >
-<cfparam name="rc.edit" type="boolean">
+*/
 
-<cfoutput>
-
-	<cfif rc.edit>
-		<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
-		<cfset selectedLocationConfigurationIDs = "" />
-		<cfloop array="#rc.sku.getLocationConfigurations()#" index="lc">
-			<cfset selectedLocationConfigurationIDs = listAppend(selectedLocationConfigurationIDs, lc.getlocationConfigurationID()) />
-		</cfloop>
-		<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" 
-								  multiselectFieldName="locationConfigurations"
-								  multiselectPropertyIdentifier="locationConfigurationID" 
-								  multiselectValues="#selectedLocationConfigurationIDs#"
-								  edit="#rc.edit#">
-			<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
-			<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-		</cf_HibachiListingDisplay>
-	<cfelse>
-		<cf_HibachiListingDisplay smartList="#rc.sku.getLocationConfigurationsSmartList()#"
-								  recordEditAction="admin:entity.editlocationconfiguration"
-								  recordDetailAction="admin:entity.detaillocationconfiguration"
-								  edit="false">
-								    
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
-			<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-			
-		</cf_HibachiListingDisplay>
-	</cfif>
+component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
-</cfoutput>
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Status Methods ===========================
+	
+	// ======================  END: Status Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	public any function getLocationConfigurationSmartList(struct data={}) {
+		arguments.entityName = "SlatwallLocationConfiguration";
+		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		smartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left", true);
+		return smartList;
+	}
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
+	
+	// ===================== START: Delete Overrides ==========================
+	
+	// =====================  END: Delete Overrides ===========================
+	
+}

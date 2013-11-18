@@ -68,7 +68,6 @@ Notes:
 			</div>
 		</cfif>
 		
-		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divClass="span6">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">

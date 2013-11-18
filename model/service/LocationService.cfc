@@ -63,9 +63,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// @locationID string If specified will be used as top level location
 	public array function getLocationOptions( string locationID ) {
 		var locationOptions = [];
-		
 		var smartList = this.getLocationSmartList();
-		
+		if(structKeyExists(arguments,"locationID")) {
+			smartList.addFilter("locationID",arguments.locationID);
+		}
 		smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
 		smartList.addOrder("locationIDPath");
 		var locations = smartList.getRecords();
