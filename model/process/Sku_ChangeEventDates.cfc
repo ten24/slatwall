@@ -80,6 +80,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return options;
 	}
 	
+	public string function getEventStartTime() {
+		return timeFormat(this.getsku().getEventStartDateTime(),"h:mm tt");
+	}
+	
+	public string function getEventEndTime() {
+		return timeFormat(this.getsku().getEventEndDateTime(),"h:mm tt");
+	}
+	
+	public string function getReservationStartTime() {
+		return timeFormat(this.getsku().getStartReservationDateTime(),"h:mm tt");
+	}
+	
+	public string function getReservationEndTime() {
+		return timeFormat(this.getsku().getEndReservationDateTime(),"h:mm tt");
+	}
+	
 	public array function getscheduleEndTypeOptions() {
 		return getService("ProductScheduleService").getscheduleEndTypeOptions();
 	}

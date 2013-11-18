@@ -147,7 +147,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
 		
-				writeLog(file="slatwall",text=":::::::::>>>>>>>>>>#arguments.processObject.getLocationConfigurations()#");
 		if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
 			
 			if(locationConflictExists(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),arguments.processObject.getLocationConfigurations())) {
@@ -161,16 +160,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.sku.setStartReservationDateTime(arguments.processObject.getEndReservationDateTime());
 				arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
 
-				var existingLocationConfigurations = [];
-				
-				
 				// Remove deleted location configurations
 				for(var locationConfig in arguments.sku.getLocationConfigurations()) {
 					var lcExistsAt = listFindNoCase(arguments.processObject.getLocationConfigurations(),locationConfig.getLocationConfigurationID(),"," );
 					if(lcExistsAt == 0) {
-						//arguments.sku.delLocationConfiguration(locationConfig);
 						getDAO("SkuDAO").deleteSkuLocationConfiguration(arguments.sku.getSkuID(), locationConfig.getLocationConfigurationID());
-						getHibachiDAO().flushORMSession();
 					} else {
 						// remove existing location configurations from processObject so we don't add them again
 						arguments.processObject.setLocationConfigurations(listDeleteAt(arguments.processObject.getLocationConfigurations(),lcExistsAt));
@@ -195,7 +189,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if(arguments.processObject.getEditScope() == "all"){
 			
 			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
-				if(thisSku.eventStartDateTime() > now()) {
+				var lcList = arguments.processObject.getLocationConfigurations();
+				if(thisSku.geteventStartDateTime() > now()) {
 					var newEventStartDateTime = createDateTime(year(thisSku.getEventStartDateTime()),month(thisSku.getEventStartDateTime()),day(thisSku.getEventStartDateTime()),hour(arguments.processObject.getEventStartTime()),minute(arguments.processObject.getEventStartTime()),0);
 					var newEventEndDateTime = createDateTime(year(thisSku.getEventEndDateTime()),month(thisSku.getEventEndDateTime()),day(thisSku.getEventEndDateTime()),hour(arguments.processObject.getEventEndTime()),minute(arguments.processObject.getEventEndTime()),0);
 					var newReservationStartDateTime = createDateTime(year(thisSku.getStartReservationDateTime()),month(thisSku.getStartReservationDateTime()),day(thisSku.getStartReservationDateTime()),hour(arguments.processObject.getReservationStartTime()),minute(arguments.processObject.getReservationStartTime()),0);
@@ -204,6 +199,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					thisSku.setEventEndDateTime(newEventEndDateTime);
 					thisSku.setStartReservationDateTime(newReservationStartDateTime);
 					thisSku.setEndReservationDateTime(newReservationEndDateTime);
+					
+					// Remove deleted location configurations
+					for(var locationConfig in thisSku.getLocationConfigurations()) {
+						var lcExistsAt = listFindNoCase(lcList,locationConfig.getLocationConfigurationID(),"," );
+						if(lcExistsAt == 0) {
+							getDAO("SkuDAO").deleteSkuLocationConfiguration(thisSku.getSkuID(), locationConfig.getLocationConfigurationID());
+						} else {
+							// remove existing location configurations from processObject so we don't add them again
+							lcList = listDeleteAt(arguments.processObject.getLocationConfigurations(),lcExistsAt);
+						}
+					}
+					
+					// Update/add locations
+					var newConfigCount = listLen(lcList,",");
+					if(newConfigCount > 0) {
+						// Add new location configurations
+						for(var lc=1; lc<=newConfigCount; lc++) {
+							var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(lcList, lc) );
+							thisSku.addLocationConfiguration( thisLocationConfig );
+						}
+					}
+					
 				}
 			}
 			
