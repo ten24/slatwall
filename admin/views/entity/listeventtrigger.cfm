@@ -55,8 +55,10 @@ Notes:
 <cf_HibachiListingDisplay smartList="#rc.eventTriggerSmartList#"
 						   recordDetailAction="admin:entity.detaileventtrigger"
 						   recordEditAction="admin:entity.editeventtrigger">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="eventTriggerName" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="eventTriggerType" />
+	<cf_HibachiListingColumn propertyIdentifier="eventTriggerName" />
+	<cf_HibachiListingColumn propertyIdentifier="eventTriggerType" />
+	<cf_HibachiListingColumn propertyIdentifier="eventTriggerObject" />
+	<cf_HibachiListingColumn propertyIdentifier="eventName" />
 </cf_HibachiListingDisplay>
 
 </cfoutput>

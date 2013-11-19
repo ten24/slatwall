@@ -282,7 +282,7 @@
 				return onMissingProcessMethod( missingMethodName, missingMethodArguments );
 			}
 
-			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
+			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# service.');
 		}
 		
 	
