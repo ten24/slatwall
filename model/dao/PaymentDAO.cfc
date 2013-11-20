@@ -82,14 +82,14 @@ Notes:
 		<cfreturn rs.recordcount />
 	</cffunction>
 
-	<cffunction name="getOriginalAuthorizationCode">
+	<cffunction name="getOriginalAuthorizationCode" access="public" returntype="string" output="false">
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 		
-		<cfset var hql = "SELECT NEW MAP(spt.authorizationCode as authorizationCode) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType = :transactionType AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.authorizationCode as authorizationCode) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN ( :transactionType ) AND " />
 		<cfset hqlParams = {} />
-		<cfset hqlParams['transactionType'] = "authorize" />
+		<cfset hqlParams['transactionType'] = ["authorize", "authorizeAndCharge"] />
 		
 		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
 			<cfset hql &= "(spt.orderPayment.orderPaymentID = :orderPaymentID OR spt.orderPayment.orderPaymentID = :referencedOrderPaymentID) " />
@@ -112,12 +112,12 @@ Notes:
 		<cfreturn "" />	
 	</cffunction>
 	
-	<cffunction name="getOriginalAuthorizationProviderTransactionID">
+	<cffunction name="getOriginalAuthorizationProviderTransactionID" access="public" returntype="string" output="false">
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 		
-		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN (:transactionType) AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
 		<cfset hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["authorize","authorizeAndCharge"] />
 		
@@ -142,12 +142,12 @@ Notes:
 		<cfreturn "" />	
 	</cffunction>
 	
-	<cffunction name="getOriginalChargeProviderTransactionID">
+	<cffunction name="getOriginalChargeProviderTransactionID" access="public" returntype="string" output="false">
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 		
-		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN (:transactionType) AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
 		<cfset hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["chargePreAuthorization","authorizeAndCharge"] />
 		
@@ -172,12 +172,12 @@ Notes:
 		<cfreturn "" />	
 	</cffunction>
 	
-	<cffunction name="getOriginalProviderTransactionID">
+	<cffunction name="getOriginalProviderTransactionID" access="public" returntype="string" output="false">
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 		
-		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND " />
 		<cfset hqlParams = {} />
 		
 		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
@@ -203,7 +203,7 @@ Notes:
 		<cfreturn "" />
 	</cffunction>
 	
-	<cffunction name="updateInvalidAuthorizationCode">
+	<cffunction name="updateInvalidAuthorizationCode" access="public" returntype="any" output="false">
 		<cfargument name="authorizationCode" type="string" required="true" />
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />

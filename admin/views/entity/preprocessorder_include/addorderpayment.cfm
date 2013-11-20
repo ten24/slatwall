@@ -98,6 +98,11 @@ Notes:
 			<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" fieldName="newOrderPayment.bankAccountNumber" property="bankAccountNumber" edit="#rc.edit#">
 		</cf_HibachiDisplayToggle>
 		
+		<!--- External --->
+		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="external" loadVisable="#loadPaymentMethodType eq 'external'#">
+			#$.slatwall.getEntity('paymentMethod', '402881c14074533b01407f96c56601ad').getExternalPaymentHTML()#
+		</cf_HibachiDisplayToggle>
+		
 		<!--- Billing Address --->
 		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
 			<h5>#$.slatwall.rbKey('entity.orderPayment.billingAddress')#</h5>
@@ -112,7 +117,7 @@ Notes:
 		<cfif structKeyExists(rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()[1], 'allowsaveflag') and rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()[1]['allowsaveflag']> 
 			<cfset loadVisable = 1 />
 		</cfif>
-		<cfif !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod())>
+		<cfif !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod()) AND !isNUll(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod().getAllowSaveFlag())>
 			<cfset loadVisable = rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod().getAllowSaveFlag() />
 		</cfif>
 		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsaveflag" showValues="YES" loadVisable="#loadVisable#">

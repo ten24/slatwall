@@ -51,7 +51,7 @@ Notes:
 
 <!--- Update SlatwallPromotionQualifierExcludedProduct and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionQualifierExcludedProduct" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoQualExclProduct" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -102,7 +102,7 @@ Notes:
 
 <!--- Update SlatwallPromotionQualifierExcludedProductType and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionQualifierExcludedProductType" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoQualExclProductType" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -153,7 +153,7 @@ Notes:
 
 <!--- Update SlatwallPromotionQualifierExcludedSku and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionQualifierExcludedSku" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoQualExclSku" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -204,7 +204,7 @@ Notes:
 
 <!--- Update SlatwallPromotionRewardExcludedProduct and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionRewardExcludedProduct" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoRewardExclProduct" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -255,7 +255,7 @@ Notes:
 
 <!--- Update SlatwallPromotionRewardExcludedProductType and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionRewardExcludedProductType" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoRewardExclProductType" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -307,7 +307,7 @@ Notes:
 
 <!--- Update SlatwallPromotionRewardExcludedSku and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionRewardExcludedSku" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoRewardExclSku" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT

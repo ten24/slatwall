@@ -72,8 +72,13 @@
 	<cfif !isNull($.slatwall.getContent().getParentContent())>
 		<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValue = $.slatwall.getContent().getParentContent().setting('contentRestrictedContentDisplayTemplate') />	
 	</cfif>
-	<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValueFormatted = $.slatwall.formatValue(local.contentRestrictedContentDisplayTemplateDetails.parentValue, "yesno") />
-	<cfset local.contentRestrictedContentDisplayTemplateDetails.valueOptions = $.slatwall.getService("contentService").getDisplayTemplateOptions( "barrierPage", $.slatwall.getContent().getSite().getSiteID() ) />
+	<cfset local.contentRestrictedContentDisplayTemplateDetails.valueOptions = $.slatwall.getService("contentService").getDisplayTemplateOptions( "BarrierPage", $.slatwall.getContent().getSite().getSiteID() ) />
+	<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValueFormatted = $.slatwall.rbKey('define.none') />
+	<cfloop array="#local.contentRestrictedContentDisplayTemplateDetails.valueOptions#" index="local.thisOption">
+		<cfif local.thisOption['value'] eq local.contentRestrictedContentDisplayTemplateDetails.parentValue>
+			<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValueFormatted = local.thisOption['name'] />
+		</cfif>
+	</cfloop>
 	
 	<!--- contentRequirePurchaseFlagDetails --->
 	<cfset local.contentRequirePurchaseFlagDetails = $.slatwall.getContent().getSettingDetails('contentRequirePurchaseFlag') />
@@ -140,111 +145,108 @@
 				<cfif local.contentRestrictAccessFlagDetails.parentValue>
 					<cfset inheritedAttribute = "show" />	
 				</cfif>
-				<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRestrictAccessFlag" data-checked-show="restricAccessDetails" value="1" <cfif !local.contentRestrictAccessFlagDetails.settinginherited and local.contentRestrictAccessFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.yes')#</label>
-				<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRestrictAccessFlag" data-checked-hide="restricAccessDetails" value="0" <cfif !local.contentRestrictAccessFlagDetails.settinginherited and !local.contentRestrictAccessFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.no')#</label>
-				<label class="radio inline span3"><input type="radio" name="slatwallData.content.contentRestrictAccessFlag" data-checked-#inheritedAttribute#="restricAccessDetails" value="" <cfif local.contentRestrictAccessFlagDetails.settinginherited>checked="checked"</cfif>>#$.slatwall.rbKey('define.inherit')# ( #local.contentRestrictAccessFlagDetails.parentValueFormatted# )</label>
+				<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRestrictAccessFlag" value="1" <cfif !local.contentRestrictAccessFlagDetails.settinginherited and local.contentRestrictAccessFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.yes')#</label>
+				<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRestrictAccessFlag" value="0" <cfif !local.contentRestrictAccessFlagDetails.settinginherited and !local.contentRestrictAccessFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.no')#</label>
+				<label class="radio inline span3"><input type="radio" name="slatwallData.content.contentRestrictAccessFlag" value="" <cfif local.contentRestrictAccessFlagDetails.settinginherited>checked="checked"</cfif>>#$.slatwall.rbKey('define.inherit')# ( #local.contentRestrictAccessFlagDetails.parentValueFormatted# )</label>
 			</div>
 		</div>
-		<!--- Restrict Access Details --->
-		<div id="restricAccessDetails">
-			<!--- Setting: Barrier Page --->
+		<!--- Setting: Barrier Page --->
+		<div class="control-group">
+			<label class="control-label"><a href="##" rel="tooltip" data-original-title="#$.slatwall.rbKey('setting.contentRestrictedContentDisplayTemplate_hint')#">#$.slatwall.rbKey('setting.contentRestrictedContentDisplayTemplate')# <i class="icon-question-sign"></i></a></label>
+			<div class="controls">
+				<select name="slatwallData.content.contentRestrictedContentDisplayTemplate">
+					<option value="" <cfif local.contentRestrictedContentDisplayTemplateDetails.settinginherited>selected="selected"</cfif>>#$.slatwall.rbKey('define.inherit')# ( #local.contentRestrictedContentDisplayTemplateDetails.parentValueFormatted# )</option>
+					<cfloop array="#local.contentRestrictedContentDisplayTemplateDetails.valueOptions#" index="option">
+						<option value="#option['value']#" <cfif !local.contentRestrictedContentDisplayTemplateDetails.settinginherited and option['value'] eq local.contentRestrictedContentDisplayTemplateDetails.settingValue>selected="selected"</cfif>>#option['name']#</option>
+					</cfloop>
+				</select>
+			</div>
+		</div>
+		<!--- Setting: Require Purchase Flag --->
+		<div class="control-group">
+			<label class="control-label"><a href="##" rel="tooltip" data-original-title="#$.slatwall.rbKey('setting.contentRequirePurchaseFlag_hint')#">#$.slatwall.rbKey('setting.contentRequirePurchaseFlag')# <i class="icon-question-sign"></i></a></label>
+			<div class="controls">
+				<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRequirePurchaseFlag" value="1" <cfif !local.contentRequirePurchaseFlagDetails.settinginherited and local.contentRequirePurchaseFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.yes')#</label>
+				<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRequirePurchaseFlag" value="0" <cfif !local.contentRequirePurchaseFlagDetails.settinginherited and !local.contentRequirePurchaseFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.no')#</label>
+				<label class="radio inline span3"><input type="radio" name="slatwallData.content.contentRequirePurchaseFlag" value="" <cfif local.contentRequirePurchaseFlagDetails.settinginherited>checked="checked"</cfif>>#$.slatwall.rbKey('define.inherit')# ( #local.contentRequirePurchaseFlagDetails.parentValueFormatted# )</label>
+			</div>
+		</div>
+		<!--- Setting: Require Subscription Flag --->
+		<div class="control-group">
+			<label class="control-label"><a href="##" rel="tooltip" data-original-title="#$.slatwall.rbKey('setting.contentRequireSubscriptionFlag_hint')#">#$.slatwall.rbKey('setting.contentRequireSubscriptionFlag')# <i class="icon-question-sign"></i></a></label>
+			<div class="controls">
+				<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRequireSubscriptionFlag" value="1" <cfif !local.contentRequireSubscriptionFlagDetails.settinginherited and local.contentRequireSubscriptionFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.yes')#</label>
+				<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRequireSubscriptionFlag" value="0" <cfif !local.contentRequireSubscriptionFlagDetails.settinginherited and !local.contentRequireSubscriptionFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.no')#</label>
+				<label class="radio inline span3"><input type="radio" name="slatwallData.content.contentRequireSubscriptionFlag" value="" <cfif local.contentRequireSubscriptionFlagDetails.settinginherited>checked="checked"</cfif>>#$.slatwall.rbKey('define.inherit')# ( #local.contentRequireSubscriptionFlagDetails.parentValueFormatted# )</label>
+			</div>
+		</div>
+		<!--- Sell This Page --->
+		<div class="control-group">
+			<label class="control-label"><a href="##" rel="tooltip" data-original-title="#$.slatwall.rbKey('entity.content.allowPurchaseFlag_hint')#">#$.slatwall.rbKey('entity.content.allowPurchaseFlag')# <i class="icon-question-sign"></i></a></label>
+			<div class="controls">
+				<label class="radio inline span2"><input type="radio" name="slatwallData.content.allowPurchaseFlag" value="1" data-checked-show="allowPurchaseDetails" <cfif !isNull($.slatwall.getContent().getAllowPurchaseFlag()) and $.slatwall.getContent().getAllowPurchaseFlag()>checked="checked"</cfif>>#$.slatwall.rbKey('define.yes')#</label>
+				<label class="radio inline span2"><input type="radio" name="slatwallData.content.allowPurchaseFlag" value="0" data-checked-hide="allowPurchaseDetails" <cfif isNull($.slatwall.getContent().getAllowPurchaseFlag()) or !$.slatwall.getContent().getAllowPurchaseFlag()>checked="checked"</cfif>>#$.slatwall.rbKey('define.no')#</label>
+			</div>
+		</div>
+		<div id="allowPurchaseDetails">
 			<div class="control-group">
-				<label class="control-label"><a href="##" rel="tooltip" data-original-title="#$.slatwall.rbKey('setting.contentRestrictedContentDisplayTemplate_hint')#">#$.slatwall.rbKey('setting.contentRestrictedContentDisplayTemplate')# <i class="icon-question-sign"></i></a></label>
+				<table class="table table-striped table-condensed table-bordered mura-table-grid"> 
+					<thead>
+						<tr>
+							<th class="var-width">#$.slatwall.rbKey('entity.product.title')#</th>
+							<th class="var-width">#$.slatwall.rbKey('entity.sku.skuCode')#</th>
+							<th class="var-width">#$.slatwall.rbKey('entity.define.price')#</th>
+						</tr>
+					</thead>
+					<tbody>
+						<cfif arrayLen($.slatwall.getContent().getSkus())>
+							<cfloop array="#$.slatwall.getContent().getSkus()#" index="sku">
+								<tr>
+									<td class="var-width">#sku.getProduct().getTitle()#</td>
+									<td>#sku.getSkuCode()#</td>
+									<td>#sku.getProduct().getPrice()#</td>
+								</tr>
+							</cfloop>
+						<cfelse>
+							<tr>
+								<td id="noFilters" colspan="3" class="noResults">#$.slatwall.rbKey('mura.muraevent.oncontentedit.contentSkus.norecords')#</td>
+							</tr>
+						</cfif>
+					</tbody>
+				</table>
+				<label class="control-label">#$.slatwall.rbKey('mura.muraevent.oncontentedit.createSkuHeader')#</label>
+				<hr />
+				<label class="control-label">#$.slatwall.rbKey('entity.productType')#</label>
 				<div class="controls">
-					<select name="slatwallData.content.contentRestrictedContentDisplayTemplate">
-						<option value="" <cfif local.contentRestrictedContentDisplayTemplateDetails.settinginherited>selected="selected"</cfif>>#$.slatwall.rbKey('define.inherit')# ( #local.contentRestrictedContentDisplayTemplateDetails.parentValueFormatted# )</option>
-						<cfloop array="#local.contentRestrictedContentDisplayTemplateDetails.valueOptions#" index="option">
-							<option value="#option['value']#" <cfif !local.contentRestrictedContentDisplayTemplateDetails.settinginherited and option['value'] eq local.contentRestrictedContentDisplayTemplateDetails.settingValue>selected="selected"</cfif>>#option['name']#</option>
+					<select name="slatwallData.content.addskudetails.productTypeID">
+						<cfloop array="#local.productTypeOptions#" index="option">
+							<option value="#option['value']#">#option['name']#</option>
 						</cfloop>
 					</select>
 				</div>
-			</div>
-			<!--- Setting: Require Purchase Flag --->
-			<div class="control-group">
-				<label class="control-label"><a href="##" rel="tooltip" data-original-title="#$.slatwall.rbKey('setting.contentRequirePurchaseFlag_hint')#">#$.slatwall.rbKey('setting.contentRequirePurchaseFlag')# <i class="icon-question-sign"></i></a></label>
+				<label class="control-label">#$.slatwall.rbKey('entity.product')#</label>
 				<div class="controls">
-					<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRequirePurchaseFlag" value="1" <cfif !local.contentRequirePurchaseFlagDetails.settinginherited and local.contentRequirePurchaseFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.yes')#</label>
-					<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRequirePurchaseFlag" value="0" <cfif !local.contentRequirePurchaseFlagDetails.settinginherited and !local.contentRequirePurchaseFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.no')#</label>
-					<label class="radio inline span3"><input type="radio" name="slatwallData.content.contentRequirePurchaseFlag" value="" <cfif local.contentRequirePurchaseFlagDetails.settinginherited>checked="checked"</cfif>>#$.slatwall.rbKey('define.inherit')# ( #local.contentRequirePurchaseFlagDetails.parentValueFormatted# )</label>
+					<select name="slatwallData.content.addskudetails.productID">
+						<option value="">#$.slatwall.rbKey('define.new')# #$.slatwall.rbKey('entity.product')#</option>
+					</select>
 				</div>
-			</div>
-			<!--- Setting: Require Subscription Flag --->
-			<div class="control-group">
-				<label class="control-label"><a href="##" rel="tooltip" data-original-title="#$.slatwall.rbKey('setting.contentRequireSubscriptionFlag_hint')#">#$.slatwall.rbKey('setting.contentRequireSubscriptionFlag')# <i class="icon-question-sign"></i></a></label>
+				<label class="control-label">#$.slatwall.rbKey('entity.sku')#</label>
 				<div class="controls">
-					<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRequireSubscriptionFlag" value="1" <cfif !local.contentRequireSubscriptionFlagDetails.settinginherited and local.contentRequireSubscriptionFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.yes')#</label>
-					<label class="radio inline span2"><input type="radio" name="slatwallData.content.contentRequireSubscriptionFlag" value="0" <cfif !local.contentRequireSubscriptionFlagDetails.settinginherited and !local.contentRequireSubscriptionFlagDetails.settingValue>checked="checked"</cfif>>#$.slatwall.rbKey('define.no')#</label>
-					<label class="radio inline span3"><input type="radio" name="slatwallData.content.contentRequireSubscriptionFlag" value="" <cfif local.contentRequireSubscriptionFlagDetails.settinginherited>checked="checked"</cfif>>#$.slatwall.rbKey('define.inherit')# ( #local.contentRequireSubscriptionFlagDetails.parentValueFormatted# )</label>
+					<select name="slatwallData.content.addskudetails.skuID">
+						<option value="">#$.slatwall.rbKey('define.new')# #$.slatwall.rbKey('entity.sku')#</option>
+					</select>
 				</div>
-			</div>
-			<!--- Sell This Page --->
-			<div class="control-group">
-				<label class="control-label"><a href="##" rel="tooltip" data-original-title="#$.slatwall.rbKey('entity.content.allowPurchaseFlag_hint')#">#$.slatwall.rbKey('entity.content.allowPurchaseFlag')# <i class="icon-question-sign"></i></a></label>
-				<div class="controls">
-					<label class="radio inline span2"><input type="radio" name="slatwallData.content.allowPurchaseFlag" value="1" data-checked-show="allowPurchaseDetails" <cfif !isNull($.slatwall.getContent().getAllowPurchaseFlag()) and $.slatwall.getContent().getAllowPurchaseFlag()>checked="checked"</cfif>>#$.slatwall.rbKey('define.yes')#</label>
-					<label class="radio inline span2"><input type="radio" name="slatwallData.content.allowPurchaseFlag" value="0" data-checked-hide="allowPurchaseDetails" <cfif isNull($.slatwall.getContent().getAllowPurchaseFlag()) or !$.slatwall.getContent().getAllowPurchaseFlag()>checked="checked"</cfif>>#$.slatwall.rbKey('define.no')#</label>
+				<div id="newSkuDetails">
+					<label class="control-label">#$.slatwall.rbKey('define.price')#</label>
+					<div class="controls">
+						<input type="text" name="slatwallData.content.addskudetails.price" value="" />
+					</div>
 				</div>
-			</div>
-			<div id="allowPurchaseDetails">
-				<div class="control-group">
-					<table class="table table-striped table-condensed table-bordered mura-table-grid"> 
-						<thead>
-							<tr>
-								<th class="var-width">#$.slatwall.rbKey('entity.product.title')#</th>
-								<th class="var-width">#$.slatwall.rbKey('entity.sku.skuCode')#</th>
-								<th class="var-width">#$.slatwall.rbKey('entity.define.price')#</th>
-							</tr>
-						</thead>
-						<tbody>
-							<cfif arrayLen($.slatwall.getContent().getSkus())>
-								<cfloop array="#$.slatwall.getContent().getSkus()#" index="sku">
-									<tr>
-										<td class="var-width">#sku.getProduct().getTitle()#</td>
-										<td>#sku.getSkuCode()#</td>
-										<td>#sku.getProduct().getPrice()#</td>
-									</tr>
-								</cfloop>
-							<cfelse>
-								<tr>
-									<td id="noFilters" colspan="3" class="noResults">#$.slatwall.rbKey('mura.muraevent.oncontentedit.contentSkus.norecords')#</td>
-								</tr>
-							</cfif>
-						</tbody>
-					</table>
-					<label class="control-label">#$.slatwall.rbKey('mura.muraevent.oncontentedit.createSkuHeader')#</label>
-					<hr />
-					<label class="control-label">#$.slatwall.rbKey('entity.productType')#</label>
-					<div class="controls">
-						<select name="slatwallData.content.addskudetails.productTypeID">
-							<cfloop array="#local.productTypeOptions#" index="option">
-								<option value="#option['value']#">#option['name']#</option>
-							</cfloop>
-						</select>
-					</div>
-					<label class="control-label">#$.slatwall.rbKey('entity.product')#</label>
-					<div class="controls">
-						<select name="slatwallData.content.addskudetails.productID">
-							<option value="">#$.slatwall.rbKey('define.new')# #$.slatwall.rbKey('entity.product')#</option>
-						</select>
-					</div>
-					<label class="control-label">#$.slatwall.rbKey('entity.sku')#</label>
-					<div class="controls">
-						<select name="slatwallData.content.addskudetails.skuID">
-							<option value="">#$.slatwall.rbKey('define.new')# #$.slatwall.rbKey('entity.sku')#</option>
-						</select>
-					</div>
-					<div id="newSkuDetails">
-						<label class="control-label">#$.slatwall.rbKey('define.price')#</label>
-						<div class="controls">
-							<input type="text" name="slatwallData.content.addskudetails.price" value="" />
-						</div>
-					</div>
-					<br />
-					<br />
-					<div class="form-actions" style="text-align:left;">
-						<input type="hidden" name="slatwallData.content.addSku" value="0" />
-						<button type="button" class="btn" id="addSkuBtn" onclick="addSku();document.contentForm.approved.value=1;if(siteManager.ckContent(draftremovalnotice)){submitForm(document.contentForm,'add');}"><i class="icon-check"></i> Add SKU & Publish</button>
-					</div>
+				<br />
+				<br />
+				<div class="form-actions" style="text-align:left;">
+					<input type="hidden" name="slatwallData.content.addSku" value="0" />
+					<button type="button" class="btn" id="addSkuBtn" onclick="addSku();document.contentForm.approved.value=1;if(siteManager.ckContent(draftremovalnotice)){submitForm(document.contentForm,'add');}"><i class="icon-check"></i> Add SKU & Publish</button>
 				</div>
 			</div>
 		</div>

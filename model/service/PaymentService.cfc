@@ -50,6 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="paymentDAO" type="any";
 	
+	property name="currencyService" type="any";
 	property name="integrationService" type="any";
 	property name="settingService" type="any";
 	
@@ -340,14 +341,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							requestBean.setPreAuthorizationProviderTransactionID( arguments.data.preAuthorizationProviderTransactionID );
 						}
 						if(listFindNoCase("OrderPayment,AccountPayment", arguments.paymentTransaction.getPayment().getClassName())) {
-							requestBean.setTransactionCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );	
+							requestBean.setTransactionCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+							var currency = getCurrencyService().getCurrency( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+							if(!isNull(currency) && !isNull(currency.getCurrencyISONumber())) {
+								requestBean.setTransactionCurrencyISONumber( currency.getCurrencyISONumber() );
+							}
 						}
 						
 						// Move all of the info into the new request bean
 						if(arguments.paymentTransaction.getPayment().getClassName() eq "OrderPayment") {
-							requestBean.populatePaymentInfoWithOrderPayment( arguments.paymentTransaction.getPayment() );	
+							requestBean.populatePaymentInfoWithOrderPayment( arguments.paymentTransaction.getPayment() );
+							arguments.paymentTransaction.setCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );	
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPayment") {
 							requestBean.populatePaymentInfoWithAccountPayment( arguments.paymentTransaction.getPayment() );
+							arguments.paymentTransaction.setCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPaymentMethod") {
 							requestBean.populatePaymentInfoWithAccountPaymentMethod( arguments.paymentTransaction.getPayment() );
 						}
@@ -416,7 +423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							
 							// add the providerToken to the orderPayment & accountPayment
-							if(!isNull(response.getProviderToken())) {
+							if(!isNull(response.getProviderToken()) && len(response.getProviderToken())) {
 								
 								// Set the provider token if one was returned
 								arguments.paymentTransaction.getPayment().setProviderToken( response.getProviderToken() );

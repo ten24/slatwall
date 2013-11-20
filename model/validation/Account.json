@@ -17,6 +17,7 @@
 											    	{"contexts":"changePassword","eq":true}
 												],
 		"accountEmailAddressesNotInUseFlag":	[{"contexts":"createPassword","eq":true}],
-		"primaryEmailAddress":					[{"contexts":"save","conditions":"slatwallAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}]
+		"primaryEmailAddress":					[{"contexts":"save","conditions":"slatwallAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}],
+		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}]
 	}
 }

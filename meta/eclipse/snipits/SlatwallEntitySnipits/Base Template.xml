@@ -40,7 +40,7 @@
 Notes:
 
 */
-component entityname="$${EntityName}" table="$${EntityName}" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="$${serviceName}" {
+component entityname="$${EntityName}" table="$${TableName}" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="$${serviceName}" {
 	
 	// Persistent Properties
 	property name="$${idPropertyName}" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

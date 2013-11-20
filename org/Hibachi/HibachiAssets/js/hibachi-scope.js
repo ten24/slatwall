@@ -28,6 +28,26 @@
 				return config;
 			},
 			
+			doAction: function( action, data, cbs, cbf ) {
+				var doasync = arguments.length > 2;
+				var s = cbs || function(r) {result=r};
+				var f = cbf || s;
+				var result = {};
+				
+				$.ajax({
+					url: config.baseURL + '/index.cfm?slatAction=' + action + '&entityID=' + entityID,
+					method: 'post',
+					async: doasync,
+					data: data,
+					dataType: 'json',
+					beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+					success: s,
+					error: f
+				});
+				
+				return result;
+			},
+			
 			getEntity : function( entityName, entityID, cbs, cbf ) {
 				
 				var doasync = arguments.length > 2;
@@ -36,7 +56,7 @@
 				var result = {};
 				
 				$.ajax({
-					url: config.baseURL + '/index.cfm/api/' + entityName + '/' + entityID + '/',
+					url: config.baseURL + '/index.cfm?slatAction=admin:api.get&entityName=' + entityName + '&entityID=' + entityID,
 					method: 'get',
 					async: doasync,
 					dataType: 'json',
@@ -68,7 +88,7 @@
 				var result = {};
 				
 				$.ajax({
-					url: config.baseURL + '/index.cfm/api/' + entityName + '/',
+					url: config.baseURL + '/index.cfm?slatAction=admin:api.get&entityName=' + entityName,
 					method: 'get',
 					async: doasync,
 					dataType: 'json',
@@ -86,6 +106,7 @@
 		// Define Public API Methods
 		this.setConfig = methods.setConfig;
 		this.getConfig = methods.getConfig;
+		this.doAction = methods.doAction;
 		this.getEntity = methods.getEntity;
 		this.getSmartList = methods.getSmartList;
 		this.onError = methods.onError;

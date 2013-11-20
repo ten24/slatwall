@@ -107,23 +107,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// ======================== START: Defaults ============================
 	
-	public any function setupDefaults() {
-		variables.orderFulfillmentID = getOrderFulfillmentIDOptions()[1]['value'];
-		variables.orderReturnID = getOrderReturnIDOptions()[1]['value'];
-	}
-	
 	public any function getOrderFulfillmentID() {
-		if(!structKeyExists(variables, 'orderFulfillmentID')) {
-			variables.orderFulfillmentID = "";
+		if(structKeyExists(variables, "orderFulfillmentID")) {
+			return variables.orderFulfillmentID;
 		}
-		return variables.orderFulfillmentID;
+		return getOrderFulfillmentIDOptions()[1]['value'];
 	}
 	
 	public any function getOrderReturnID() {
-		if(!structKeyExists(variables, 'orderReturnID')) {
-			variables.orderReturnID = ""; 
+		if(structKeyExists(variables, "orderReturnID")) {
+			return variables.orderReturnID;
 		}
-		return variables.orderReturnID;
+		return getOrderReturnIDOptions()[1]['value'];
 	}
 	
 	public any function getOrderItemTypeSystemCode() {
@@ -306,7 +301,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getOrderFulfillment() {
-		if(!structKeyExists(variables, "orderFulfillment")) {
+		if(!structKeyExists(variables, "orderFulfillment") && !isNull(getOrderFulfillmentID())) {
 			variables.orderFulfillment = getService("orderService").getOrderFulfillment(getOrderFulfillmentID());
 		}
 		if(structKeyExists(variables, "orderFulfillment")) {
@@ -315,7 +310,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getOrderReturn() {
-		if(!structKeyExists(variables, "orderReturn")) {
+		if(!structKeyExists(variables, "orderReturn") && !isNull(getOrderReturnID())) {
 			variables.orderReturn = getService("orderService").getOrderReturn(getOrderReturnID());
 		}
 		if(structKeyExists(variables, "orderReturn")) {
@@ -324,7 +319,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getReturnLocation() {
-		if(!structKeyExists(variables, "returnLocation")) {
+		if(!structKeyExists(variables, "returnLocation") && !isNull(getReturnLocationID())) {
 			variables.returnLocation = getService("locationService").getLocation(getReturnLocationID());
 		}
 		if(structKeyExists(variables, "returnLocation")) {
@@ -333,10 +328,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getFulfillmentMethod() {
-		if(!structKeyExists(variables, "fulfillmentMethod")) {
+		if(!structKeyExists(variables, "fulfillmentMethod") && !isNull(getFulfillmentMethodID())) {
 			variables.fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethod(getFulfillmentMethodID());
 		}
-		if(structKeyExists(variables, "orderReturn")) {
+		if(structKeyExists(variables, "fulfillmentMethod")) {
 			return variables.fulfillmentMethod;
 		}
 	}
@@ -381,7 +376,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					}
 				}	
 			}
-			arrayAppend(variables.orderFulfillmentIDOptions, {name=getHibachiScope().rbKey('define.new'), value=""});
+			arrayAppend(variables.orderFulfillmentIDOptions, {name=getHibachiScope().rbKey('define.new'), value="new"});
 		}
 		return variables.orderFulfillmentIDOptions;
 	}
@@ -393,7 +388,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			for(var i=1; i<=arrayLen(arr); i++) {
 				arrayAppend(variables.orderReturnIDOptions, {name=arr[i].getSimpleRepresentation(), value=arr[i].getOrderReturnID()});	
 			}
-			arrayAppend(variables.orderReturnIDOptions, {name=getHibachiScope().rbKey('define.new'), value=""});
+			arrayAppend(variables.orderReturnIDOptions, {name=getHibachiScope().rbKey('define.new'), value="new"});
 		}
 		return variables.orderReturnIDOptions;
 	}

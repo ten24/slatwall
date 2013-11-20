@@ -1,0 +1,17 @@
+{
+	"conditions":{
+	    "needsEndAfterStart":{
+	        "startDateTime":{"required":true},
+	        "endDateTime":{"required":true}
+	    },
+	    "accruementTypeEnroll":{
+	        "accruementType":{"eq":"enrollment"}
+	    }
+	},
+	"properties":{
+		"pointQuantity":			[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"startDateTime":			[{"contexts":"save","dataType":"date"}],
+		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtProperty":"startDateTime"}],
+		"pointType":				[{"contexts":"save","conditions":"accruementTypeEnroll","inList":"fixed"}]
+	}
+}

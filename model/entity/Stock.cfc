@@ -65,6 +65,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
 	
+	// Non-Persistent Properties
+	property name="calculatedQATS" ormtype="integer";
+	
 	// Quantity
 	public numeric function getQuantity(required string quantityType) {
 		if( !structKeyExists(variables, arguments.quantityType) ) {
@@ -81,6 +84,10 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getQATS() {
+		return getQuantity("QATS");
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 	

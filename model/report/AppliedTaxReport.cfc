@@ -47,24 +47,15 @@ Notes:
 	
 	<cffunction name="getMetricDefinitions">
 		<cfreturn [
-			{alias='revenue', calculation='(SUM(salePreDiscount) - SUM(itemDiscount)) + (SUM(returnPreDiscount) - SUM(itemDiscount))', formatType="currency"},
-			{alias='salePreDiscount', function='sum', formatType="currency"},
-			{alias='returnPreDiscount', function='sum', formatType="currency"},
-			{alias='itemDiscount', function='sum', formatType="currency"},
-			{alias='saleAfterDiscount', calculation='SUM(salePreDiscount) - SUM(itemDiscount)', formatType="currency"},
-			{alias='returnAfterDiscount', calculation='SUM(returnPreDiscount) - SUM(itemDiscount)', formatType="currency"}
+			{alias='taxAmount', function='sum', formatType="currency", title=rbKey('entity.taxApplied.taxAmount')},
+			{alias='taxRate', function='avg', formatType="currency", title=rbKey('entity.taxApplied.taxRate')}
 		] />
 	</cffunction>
 	
 	<cffunction name="getDimensionDefinitions">
 		<cfreturn [
-			{alias='productName', filterAlias='productID', filterDimension='skuCode', title=rbKey('entity.product.productName')},
-			{alias='skuCode', title=rbKey('entity.sku.skuCode')},
-			{alias='productTypeName', filterAlias='productTypeID', filterDimension='productName', title=rbKey('entity.productType.productTypeName')},
-			{alias='brandName', title=rbKey('entity.brand.brandName')},
-			{alias='city', title=rbKey('entity.address.city')},
-			{alias='stateCode', title=rbKey('entity.address.stateCode')},
-			{alias='countryCode', title=rbKey('entity.address.countryCode')}
+			{alias='taxCategoryName', title=rbKey('entity.taxCategory.taxCategoryName')},
+			{alias='taxRate', title=rbKey('entity.taxCategoryRate.taxRate')}
 		] />
 	</cffunction>
 	
@@ -72,14 +63,15 @@ Notes:
 		<cfif not structKeyExists(variables, "data")>
 			<cfquery name="variables.data">
 				SELECT
+					SwTaxApplied.taxAmount,
+					SwTaxApplied.taxRate,
+					SwTaxCategory.taxCategoryName,
 					SwSku.skuID,
 					SwSku.skuCode,
 					SwProduct.productID,
 					SwProduct.productName,
 					SwProductType.productTypeID,
 					SwProductType.productTypeName,
-					SwBrand.brandID,
-					SwBrand.brandName,
 					SwOrder.orderID,
 					SwAddress.countryCode,
 					SwAddress.stateCode,
@@ -98,10 +90,16 @@ Notes:
     					ELSE
     						0
 					END as returnPreDiscount,
-					(SELECT coalesce(SUM(pa.discountAmount), 0) FROM SwPromotionApplied pa WHERE pa.orderItemID = SwOrderItem.orderItemID) as 'itemDiscount',
+					( SELECT COALESCE(SUM(swpa.discountAmount), 0) FROM SwPromotionApplied swpa WHERE swpa.orderItemID = SwOrderItem.orderItemID ) as itemDiscount,
 					#getReportDateTimeSelect()#
 				FROM
-					SwOrderItem
+					SwTaxApplied
+				  INNER JOIN
+				  	SwTaxCategoryRate on SwTaxApplied.taxCategoryRateID = SwTaxCategoryRate.taxCategoryRateID
+				  INNER JOIN
+				  	SwTaxCategory on SwTaxCategoryRate.taxCategoryID = SwTaxCategoryRate.taxCategoryID 
+				  INNER JOIN
+					SwOrderItem on SwTaxApplied.orderItemID = SwOrderItem.orderItemID
 				  INNER JOIN
 				  	SwOrderFulfillment on SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
 				  INNER JOIN
@@ -114,8 +112,6 @@ Notes:
 				  	SwProduct on SwSku.productID = SwProduct.productID
 				  INNER JOIN
 				  	SwProductType on SwProduct.productTypeID = SwProductType.productTypeID
-				  LEFT JOIN
-				  	SwBrand on SwProduct.brandID = SwBrand.brandID
 				  LEFT JOIN
 				  	SwAddress on SwOrderFulfillment.shippingAddressID = SwAddress.addressID
 				WHERE

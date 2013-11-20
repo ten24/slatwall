@@ -61,6 +61,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 	}
 	
+	public void function after( required struct rc ) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
+			getFW().redirectExact( url=arguments.rc.fRedirectURL );
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
+			getFW().redirectExact( url=arguments.rc.sRedirectURL );
+		} else if (structKeyExists(arguments.rc, "redirectURL")) {
+			getFW().redirectExact( url=arguments.rc.redirectURL );
+		}
+	}
+	
 	// Update
 	public void function update( required struct rc ) {
 		var cart = getOrderService().saveOrder( rc.$.slatwall.cart(), arguments.rc );
@@ -106,8 +116,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		// Setup the frontend defaults
 		param name="rc.preProcessDisplayedFlag" default="true";
 		param name="rc.saveShippingAccountAddressFlag" default="false";
-		param name="rc.orderFulfillmentID" default="";
-		param name="rc.fulfillmentMethodID" default="";
 		
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addOrderItem');
 		

@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	variables.paymentIntegrationCFCs = {};
 	variables.shippingIntegrationCFCs = {};
 	variables.authenticationIntegrationCFCs = {};
-
+	variables.jsObjectAdditions = '';
 	
 	public void function clearActiveFW1Subsystems() {
 		structDelete(variables, "activeFW1Subsystems");
@@ -73,20 +73,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return variables.activeFW1Subsystems;
 	}
 	
-	public any function getAllSettings() {
-		if( !structKeyExists(variables, "allSettings") ) {
-			variables.allSettings = {};
-			var isl = this.getIntegrationSmartList();
-			isl.addFilter('installedFlag', 1);
-			var integrations = isl.getRecords();
-			for(var i=1; i<=arrayLen(integrations); i++) {
-				for(var settingName in integrations[i].getSettings()) {
-					variables.allSettings['integration#integrations[i].getIntegrationPackage()##settingName#'] = integrations[i].getSettings()[ settingName ];
-				}
+	public any function getAllSettingMetaData() {
+		var allSettingMetaData = {};
+		
+		var isl = this.getIntegrationSmartList();
+		isl.addFilter('installedFlag', 1);
+		
+		for(var integration in isl.getRecords()) {
+			for(var settingName in integration.getSettings()) {
+				allSettingMetaData['integration#integration.getIntegrationPackage()##settingName#'] = integration.getSettings()[ settingName ];
 			}
 		}
 		
-		return variables.allSettings;
+		
+		return allSettingMetaData;
 	}
 	
 	public any function getIntegrationCFC(required any integration) {
@@ -122,7 +122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
 	
-	public any function updateIntegrationsFromDirectory() {
+	public any function updateIntegrationsFromDirectory( required any beanFactory ) {
 		logHibachi("Update Integrations Started");
 		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
 		var integrationList = this.listIntegration();
@@ -247,19 +247,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					getHibachiDAO().flushORMSession();
 					logHibachi("The Integration: #integrationPackage# has been registerd");
 					
-					// If this integration is active lets register all of its event handlers
+					// If this integration is active lets register all of its event handlers, and decorate the beanFactory with it
 					if( integration.getEnabledFlag() ) {
+						
 						logHibachi("The Integration: #integrationPackage# is 'enabled'");
+						
 						for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
 							getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
 						}
+						
 						if(arrayLen(integrationCFC.getEventHandlers())) {
 							logHibachi("The Integration: #integrationPackage# has had #arrayLen(integrationCFC.getEventHandlers())# eventHandler(s) registered");	
+						}
+						
+						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
+							var integrationBF = new Slatwall.org.Hibachi.DI1.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
+								transients=["entity", "process", "transient", "report"]
+							});
+							
+							var integrationBFBeans = integrationBF.getBeanInfo();
+							for(var beanName in integrationBFBeans.beanInfo) {
+								if(isStruct(integrationBFBeans.beanInfo[beanName]) && structKeyExists(integrationBFBeans.beanInfo[beanName], "cfc") && structKeyExists(integrationBFBeans.beanInfo[beanName], "isSingleton")) {
+									if(len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage) {
+										arguments.beanFactory.declareBean( beanName, integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );
+									} else {
+										arguments.beanFactory.declareBean( "#integrationPackage##beanName#", integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );	
+									}
+								}
+							}
 						}
 					}
 				}
 			}
 		}
+		
+		return arguments.beanFactory;
 	}
 	
 	
@@ -299,6 +321,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return returnArr;
+	}
+	
+	public string function getJSObjectAdditions() {
+		if(!len(variables.jsObjectAdditions)) {
+			
+			var additions = ' ';
+			var isl = this.getIntegrationSmartList();
+			isl.addFilter('installedFlag', 1);
+			
+			for(var integration in isl.getRecords()) {
+				if(integration.getEnabledFlag()) {
+					additions &= integration.getIntegrationCFC().getJSObjectAdditions();
+				}
+			}
+			
+			variables.jsObjectAdditions = additions;
+			
+		}
+		return variables.jsObjectAdditions;
 	}
 	
 	// ===================== START: Logical Methods ===========================

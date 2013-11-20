@@ -696,7 +696,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString ) {
 		if(arguments.maintainQueryString) {
 			for(var key in url) {
-				if(key != getFW().getAction()) {
+				if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL", key)) {
 					arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
 				}
 			}

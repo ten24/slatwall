@@ -266,12 +266,13 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 				response.setAmountCharged(requestBean.getTransactionAmount());
 			} else if(requestBean.getTransactionType() == "credit") {
 				response.setAmountCredited(requestBean.getTransactionAmount());
+			} else if(requestBean.getTransactionType() == "generateToken") {
+				response.setProviderToken(responseData["pnref"]);		
 			}
 		}
 		
 		response.setTransactionID(responseData["pnref"]);
 		response.setAuthorizationCode(responseData["authcode"]);
-		response.setProviderToken(responseData["pnref"]);
 		
 		if(responseData["avsaddr"] == 'Y' && responseData["avszip"] == 'Y') {
 			response.setAVSCode("Y");

@@ -156,7 +156,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					thisSku.setPrice(arguments.data.price);
 					thisSku.setRenewalPrice(arguments.data.price);
 					thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.data.subscriptionTerms, i)) );
-					thisSku.setSkuCode(arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+					thisSku.setSkuCode(arguments.product.getProductCode() & "-#i#");
 					for(var b=1; b <= listLen(arguments.data.subscriptionBenefits); b++) {
 						thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.data.subscriptionBenefits, b) ) );
 					}
@@ -272,25 +272,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSkuDAO().searchSkusByProductType(argumentCollection=arguments);
 	}	
 	
-	/**
-	/* @hint Updates the prices of all of the SKUs in a product 
-	**/
-	public void function updateAllSKUPricesForProduct(productId, price){
-		var skus = getProductService().getProduct(arguments.productId).getSKUs();
-		for(var i=1; i LTE ArrayLen(skus); i++)
-			skus[i].setPrice(price);
-	}
-
-	/**
-	/* @hint Updates the wight of all of the SKUs in a product 
-	**/
-	public void function updateAllSKUWeightsForProduct(productId, weight){
-		var skus = getProductService().getProduct(arguments.productId).getSKUs();
-		for(var i=1; i LTE ArrayLen(skus); i++)
-			skus[i].setShippingWeight(weight);
-	}
-	
-
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
@@ -299,6 +280,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public boolean function getSkuStocksDeletableFlag( required string skuID ) {
 		return getSkuDAO().getSkuStocksDeletableFlag(argumentCollection=arguments);
+	}
+	
+	public boolean function getTransactionExistsFlag() {
+		return getSkuDAO().getTransactionExistsFlag( argumentCollection=arguments );
 	}
 	
 	public any function getSkuBySkuCode( string skuCode ){

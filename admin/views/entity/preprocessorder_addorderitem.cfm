@@ -92,7 +92,7 @@ Notes:
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderFulfillmentID" edit="#rc.edit#">
 						
 						<!--- New Order Fulfillment --->
-						<cf_HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="" loadVisable="#!len(rc.processObject.getOrderFulfillmentID())#">
+						<cf_HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderFulfillmentID()) && rc.processObject.getOrderFulfillmentID() eq 'new')#">
 							
 							<!--- Fulfillment Method --->
 							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentMethodID" edit="#rc.edit#">
@@ -160,7 +160,7 @@ Notes:
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderReturnID" edit="#rc.edit#">
 						
 						<!--- New Order Return --->
-						<cf_HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="" loadVisable="#!len(rc.processObject.getOrderReturnID())#">
+						<cf_HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderReturnID()) && rc.processObject.getOrderReturnID() eq 'new')#">
 							
 							<!--- Return Location --->
 							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="returnLocationID" edit="#rc.edit#">

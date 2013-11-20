@@ -50,7 +50,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// Persistent Properties
 	property name="contentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="contentIDPath" ormtype="string" length="500";
+	property name="contentIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean";
 	property name="title" ormtype="string";
 	property name="allowPurchaseFlag" ormtype="boolean";
@@ -139,26 +139,6 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}    
 	public void function removeChildContent(required any childContent) {    
 		arguments.childContent.removeParentContent( this );    
-	}
-	
-	// Categories (many-to-many - owner)    
-	public void function addCategory(required any category) {    
-		if(arguments.category.isNew() or !hasCategory(arguments.category)) {    
-			arrayAppend(variables.categories, arguments.category);    
-		}    
-		if(isNew() or !arguments.category.hasContent( this )) {    
-			arrayAppend(arguments.category.getContents(), this);    
-		}    
-	}    
-	public void function removeCategory(required any category) {    
-		var thisIndex = arrayFind(variables.categories, arguments.category);    
-		if(thisIndex > 0) {    
-			arrayDeleteAt(variables.categories, thisIndex);    
-		}    
-		var thatIndex = arrayFind(arguments.category.getContents(), this);    
-		if(thatIndex > 0) {    
-			arrayDeleteAt(arguments.category.getContents(), thatIndex);    
-		}    
 	}
 	
 	// Skus (many-to-many - inverse)

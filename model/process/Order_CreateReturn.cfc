@@ -58,8 +58,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="fulfillmentRefundAmount";
 	property name="refundOrderPaymentID" hb_formFieldType="select";
 	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
+	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
 	
+
 	variables.orderItems = [];
+
 	
 	public any function setupDefaults() {
 		variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
@@ -108,5 +111,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return false;
 	}
-	
+
+	public array function getOrderTypeCodeOptions() {
+		if(!structKeyExists(variables, "orderTypeOptions")) {
+			variables.orderTypeCodeOptions=[];
+			arrayAppend(variables.orderTypeCodeOptions, {name=rbKey('define.return'), value='otReturnOrder'});
+			arrayAppend(variables.orderTypeCodeOptions, {name=rbKey('define.exchange'), value='otExchangeOrder'});
+			
+		}
+		return variables.orderTypeCodeOptions;
+	}
+
+	public string function getOrderTypeCode(){
+		if(!structKeyExists(variables,"orderTypeCode")){
+			variables.orderTypeCode="otReturnOrder";
+		}
+		return variables.orderTypeCode;
+	}
 }

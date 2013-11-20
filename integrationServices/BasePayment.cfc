@@ -60,6 +60,9 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		throw("The processCreditCard() Method was not setup for this integration service");	
 	}
 	
+	public string function getExternalPaymentHTML() {
+		return "";
+	}
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -77,10 +80,6 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	// @hint helper function to return the packagename of this integration
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
-	}
-	
-	public string function getExternalPaymentHTML() {
-		return "";
 	}
 	
 	// DEPRECATED

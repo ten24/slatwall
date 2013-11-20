@@ -161,7 +161,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.availableMasterVersion = versions.master;
 
 		rc.currentVersion = getApplicationValue('version');
-		if(listLen(rc.currentVersion, '.') > 2) {
+		if(listLen(rc.currentVersion, '.') > 3) {
 			rc.currentBranch = "develop";
 		} else {
 			rc.currentBranch = "master";
@@ -177,6 +177,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function login(required struct rc) {
 		getFW().setView("admin:main.login");
 		rc.pageTitle = rc.$.slatwall.rbKey('define.login');
+		
+		if(!structKeyExists(rc, "sRedirectURL")) {
+			arguments.rc.sRedirectURL = getApplicationValue('baseURL') & '/'; 
+		}
+		
 		rc.accountAuthenticationExists = getAccountService().getAccountAuthenticationExists();
 		rc.integrationLoginHTMLArray = getIntegrationService().getAdminLoginHTMLArray();
 	}

@@ -65,7 +65,7 @@ Notes:
 		
 		<cfquery name="rs">
 			UPDATE
-				SlatwallOrderFulfillment
+				SwOrderFulfillment
 			SET
 				accountAddressID = null 
 			WHERE
@@ -110,7 +110,7 @@ Notes:
 		<cfset var auditColumns = "" />
 		<cfset var rs = "" />
 		
-		<cfdbinfo type="Tables" name="allTables" pattern="Slatwall%" />
+		<cfdbinfo type="Tables" name="allTables" pattern="Sw%" />
 		
 		<cfloop query="allTables">
 			<cfdbinfo type="Columns" table="#allTables.TABLE_NAME#" name="auditColumns" pattern="%ByAccountID" />
@@ -143,7 +143,7 @@ Notes:
 		
 		<cfset var rs = "" />
 		<cfset var tableInfo = "" />
-		<cfdbinfo type="Tables" name="tableInfo">
+		<cfdbinfo type="Tables" name="tableInfo" pattern="Sw%">
 		
 		<cfloop query="#tableInfo#">
 			<cfset var tableName = tableInfo.tableName />
@@ -169,5 +169,23 @@ Notes:
 			DELETE FROM SwAccount WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.oldAccountID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="getNewAccountLoyaltyNumber" output="false">
+		<cfargument name="loyaltyID" type="string" required="true" />
+		
+		<cfset var accountLoyaltyNumber="1234" />
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			SELECT MAX(accountLoyaltyNumber) as maxAccountLoyaltyNumber FROM SwAccountLoyalty WHERE loyaltyID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.loyaltyID#" />	
+		</cfquery>
+		
+		<cfif rs.maxAccountLoyaltyNumber gt 0 >
+			<cfset accountLoyaltyNumber = rs.maxAccountLoyaltyNumber + 1 />
+		</cfif>
+		
+		<cfreturn accountLoyaltyNumber />
+	</cffunction>
+	
 </cfcomponent>
 

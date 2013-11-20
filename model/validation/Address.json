@@ -27,6 +27,7 @@
 		"locality":			[{"contexts":"full,location","conditions":"localityRequired","required":true}],
 		"city":				[{"contexts":"full,location","conditions":"cityRequired","required":true}],
 		"stateCode":		[{"contexts":"full,location","conditions":"stateCodeRequired","required":true}],
-		"postalCode":		[{"contexts":"full,location","conditions":"postalCodeRequired","required":true}]
+		"postalCode":		[{"contexts":"full,location","conditions":"postalCodeRequired","required":true}],
+		"emailAddress":		[{"contexts":"save","dataType":"email"}]
 	}
 }

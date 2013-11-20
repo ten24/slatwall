@@ -49,11 +49,11 @@ Notes:
 
 <cfset local.scriptHasErrors = false />
 
-<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Tables" name="local.infoTables" />
+<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Tables" name="local.infoTables" pattern="Sw%" />
 
 <!--- Update payment methods to use the new paymentIntegrationID value instead of provider gateway --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPaymentMethod" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPaymentMethod" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -295,7 +295,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SwSubscriptionUsage
+			SwSubsUsage
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -390,7 +390,7 @@ Notes:
 
 <!--- Move amountCharged into amountReceived --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPaymentTransaction" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPaymentTransaction" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
