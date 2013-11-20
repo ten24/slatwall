@@ -101,6 +101,15 @@ component accessors="true" output="false" extends="HibachiService" {
 			return getCachedValue(arguments.key);
 		}
 		
+		// If a string was passed in, then we will figure out what type of object it is and instantiate
+		if(!isObject(arguments.fallbackObject) && right(arguments.fallbackObject, 7) eq "Service") {
+			arguments.fallbackObject = getService( arguments.fallbackObject );
+		} else if (!isObject(arguments.fallbackObject) && right(arguments.fallbackObject, 3) eq "DAO") {
+			arguments.fallbackObject = getDAO( arguments.fallbackObject );
+		} else if (!isObject(arguments.fallbackObject)) {
+			arguments.fallbackObject = getBean( arguments.fallbackObject );
+		}
+		
 		// If not then execute the function
 		var results = arguments.fallbackObject.invokeMethod(arguments.fallbackFunction, arguments.fallbackArguments);
 		

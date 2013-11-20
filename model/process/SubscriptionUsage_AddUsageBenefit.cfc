@@ -46,67 +46,68 @@
 Notes:
 
 */
-component extends="HibachiService" accessors="true" output="false" {
+component output="false" accessors="true" extends="HibachiProcess" {
 
-	property name="optionDAO" type="any";
-
-	property name="productService" type="any";
+	// Injected Entity
+	property name="subscriptionUsage";
 	
-	public array function getOptionsForSelect(required any options){
-		var sortedOptions = [];
-		
-		for(i=1; i <= arrayLen(arguments.options); i++){
-			arrayAppend(sortedOptions,{name=arguments.options[i].getOptionName(),value=arguments.options[i].getOptionID()});
+	// Lazy / Injected Objects
+	
+	// New Properties
+	
+	// Data Properties (ID's)
+	property name="benefitTermType" hb_formFieldType="select";
+	property name="subscriptionBenefitID" hb_formFieldType="select" hb_rbKey="entity.subscriptionBenefit";
+	
+	// Data Properties (Inputs)
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
+	
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	public array function getSubscriptionBenefitIDOptions() {
+		if(!structKeyExists(variables, "subscriptionBenefitIDOptions")) {
+			var s = getService("subscriptionService").getSubscriptionBenefitSmartList();
+			s.addSelect("subscriptionBenefitName", "name");
+			s.addSelect("subscriptionBenefitID", "value");
+			variables.subscriptionBenefitIDOptions = s.getRecords();
+			arrayPrepend(variables.subscriptionBenefitIDOptions, {name=getHibachiScope().rbKey('define.select'), value=""});
 		}
-		
-		return sortedOptions;
+		return variables.subscriptionBenefitIDOptions;
 	}
 	
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	public array function getUnusedProductOptions(required string productID, required string existingOptionGroupIDList){
-		return getOptionDAO().getUnusedProductOptions(argumentCollection=arguments);
+	public array function getBenefitTermTypeOptions() {
+		return [
+			{name=getHibachiScope().rbKey('define.both'), value='both'},
+			{name=getHibachiScope().rbKey('define.initial'), value='initial'},
+			{name=getHibachiScope().rbKey('define.renewal'), value='renewal'}
+		];
 	}
 	
-	public array function getUnusedProductOptionGroups(required string existingOptionGroupIDList){
-		return getOptionDAO().getUnusedProductOptionGroups(argumentCollection=arguments);
-	}
+	// ======================  END: Data Options ===========================
 	
-	// ===================== START: DAO Passthrough ===========================
+	// ===================== START: Helper Methods =========================
 	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	public any function saveOptionGroup(required any optionGroup, struct data={}) {
-		var wasNew = optionGroup.getNewFlag();
-				
-		arguments.optionGroup = super.save(arguments.optionGroup, arguments.data);
-		
-		if(!arguments.optionGroup.hasErrors() && wasNew) {
-			getHibachiCacheService().resetCachedKey("skuDAO_getNextOptionGroupSortOrder");
-		}
-		
-		return arguments.productType;
-	}
-	
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
+	// =====================  END: Helper Methods ==========================
 	
 }
 

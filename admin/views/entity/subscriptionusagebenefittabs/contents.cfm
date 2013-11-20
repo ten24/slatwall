@@ -46,15 +46,34 @@
 Notes:
 
 --->
-<cfparam name="rc.subscriptionUsage" type="any" />
+<cfparam name="rc.subscriptionUsageBenefit" type="any">
+<cfparam name="rc.edit" type="boolean">
+
+<cfset selectedContent = rc.subscriptionUsageBenefit.getContents() />
+<cfset selectedContentIDs = "" />
+<cfloop array="#selectedContent#" index="i">
+	<cfset selectedContentIDs = listAppend(selectedContentIDs, i.getContentID()) />
+</cfloop>
+
+<cfset selectedExcludedContent = rc.subscriptionUsageBenefit.getExcludedContents() />
+<cfset selectedExcludedContentIDs = "" />
+<cfloop array="#selectedExcludedContent#" index="i">
+	<cfset selectedExcludedContentIDs = listAppend(selectedExcludedContentIDs, i.getContentID()) />
+</cfloop>
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
-			recordEditAction="admin:entity.editrenewalsubscriptionusagebenefits">
-			
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionUsageBenefitID" />
-		
-	</cf_HibachiListingDisplay>
-	
-	<cf_HibachiActionCaller action="admin:entity.createrenewalsubscriptionusagebenefits" class="btn" icon="plus" queryString="SubscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#" />
+	<div class="span6">
+		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.contents')#</h5>
+		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getContentsOptionsSmartList()#" multiselectFieldName="contents" multiselectValues="#selectedContentIDs#" edit="#rc.edit#">
+			<cf_HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
+			<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
+		</cf_HibachiListingDisplay>
+	</div>
+	<div class="span6">
+		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.excludedcontents')#</h5>
+		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getExcludedContentsOptionsSmartList()#" multiselectFieldName="excludedContents" multiselectValues="#selectedExcludedContentIDs#" edit="#rc.edit#">
+			<cf_HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
+			<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
+		</cf_HibachiListingDisplay>	
+	</div>
 </cfoutput>
