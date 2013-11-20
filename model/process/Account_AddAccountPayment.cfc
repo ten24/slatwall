@@ -57,7 +57,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName";
-	
+	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
+
 	// Cached Properties
 	property name="accountPaymentMethodIDOptions";
 	property name="paymentMethodIDOptions";
@@ -82,6 +83,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			arrayAppend(variables.accountPaymentMethodIDOptions, {name=rbKey('define.new'), value=""});
 		}
 		return variables.accountPaymentMethodIDOptions;
+	}
+	
+	public array function getCurrencyCodeOptions() {
+		return getService("currencyService").getCurrencyOptions();
 	}
 	
 	public string function getAccountAddressID() {

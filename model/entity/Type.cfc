@@ -50,7 +50,7 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	
 	// Persistent Properties
 	property name="typeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="typeIDPath" ormtype="string";
+	property name="typeIDPath" ormtype="string" length="4000";
 	property name="type" ormtype="string";
 	property name="systemCode" ormtype="string";
 	

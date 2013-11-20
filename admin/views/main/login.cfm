@@ -58,7 +58,7 @@ Notes:
 			<div class="well" style="width:400px;margin: 0px auto;">
 				<h3>Reset Password</h3>
 				<br />
-				<form action="?s=1" class="form-horizontal" method="post">
+				<form id="adminResetPasswordForm" action="?s=1" class="form-horizontal" method="post">
 					<input type="hidden" name="slatAction" value="admin:main.resetPassword" />
 					<input type="hidden" name="swprid" value="#rc.swprid#" />
 					<input type="hidden" name="accountID" value="#left(rc.swprid, 32)#" />
@@ -80,7 +80,7 @@ Notes:
 				<h3>#$.slatwall.rbKey('define.login')#</h3>
 				<br />
 				<cfset authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login") />
-				<form action="?s=1" class="form-horizontal" method="post">
+				<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
 					<input type="hidden" name="slatAction" value="admin:main.authorizelogin" />
 					<cfif structKeyExists(rc, "sRedirectURL")>
 						<input type="hidden" name="sRedirectURL" value="#rc.sRedirectURL#" />
@@ -96,7 +96,7 @@ Notes:
 				<hr />
 				<h5>#$.slatwall.rbKey('admin.main.forgotPassword')#</h5>
 				<cfset forgotPasswordProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("forgotPassword") />
-				<form action="?s=1" class="form-horizontal" method="post">
+				<form id="adminForgotPasswordForm" action="?s=1" class="form-horizontal" method="post">
 					<input type="hidden" name="slatAction" value="admin:main.forgotpassword" />
 					<fieldset class="dl-horizontal">
 						<fieldset class="dl-horizontal">
@@ -115,7 +115,7 @@ Notes:
 			<div class="well" style="width:400px;margin: 0px auto;">
 				<h3>Create Super Administrator Account</h3>
 				<br />
-				<form action="?s=1" class="form-horizontal" method="post">
+				<form id="adminCreateSuperUserForm" action="?s=1" class="form-horizontal" method="post">
 					<input type="hidden" name="slatAction" value="admin:main.setupinitialadmin" />
 					
 					<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("setupInitialAdmin") />

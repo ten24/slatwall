@@ -64,4 +64,29 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="contents";
 	property name="locationConfigurations";
 	
+	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";
+	property name="recurringTimeUnit" hb_formFieldType="select" hint="How often to repeat (daily, weekly, monthly, etc.)"; 
+	property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
+	property name="scheduleStartDate" hb_formFieldType="date" hint="Date the schedule starts" ;
+	property name="scheduleEndType" hb_formFieldType="radiogroup" hint="never, occurrences, or date"; 
+	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
+	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
+
+	
+	public array function getscheduleEndTypeOptions() {
+		return getService("ProductScheduleService").getscheduleEndTypeOptions();
+	}
+	
+	public array function getRepeatTimeUnitOptions() {
+		return getService("ProductScheduleService").getRepeatTimeUnitOptions();
+	}
+	
+	public array function getSchedulingTypeOptions() {
+		return getService("ProductScheduleService").getSchedulingTypeOptions();
+	}
+	
+	public array function getRecurringTimeUnitOptions() {
+		return getService("ProductScheduleService").getRecurringTimeUnitOptions();
+	}
+	
 }

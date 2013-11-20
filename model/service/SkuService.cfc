@@ -49,11 +49,13 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="skuDAO" type="any";
-	
+	property name="locationService" type="any";
 	property name="optionService" type="any";
 	property name="productService" type="any";
 	property name="subscriptionService" type="any";
 	property name="contentService" type="any";
+	property name="stockService" type="any";
+	property name="settingService" type="any";
 	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
@@ -130,6 +132,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSkuDAO().getSkuStocksDeletableFlag(argumentCollection=arguments);
 	}
 	
+	public boolean function getTransactionExistsFlag() {
+		return getSkuDAO().getTransactionExistsFlag( argumentCollection=arguments );
+	}
+	
 	public any function getSkuBySkuCode( string skuCode ){
 		return getSkuDAO().getSkuBySkuCode(argumentCollection=arguments);
 	}
@@ -137,6 +143,203 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: DAO Passthrough ============================
 	
 	// ===================== START: Process Methods ===========================
+	
+	// Modifies event related start/end dates based on process object data
+	public any function processSku_changeEventDates(required any sku, required any processObject) {
+		
+		if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			
+			if(locationConflictExists(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),arguments.processObject.getLocationConfigurations())) {
+				// There is already an event scheduled at that location in the same date range
+				processObject.addError('locationConfigurations', getHibachiScope().rbKey('validate.eventScheduleConflict'));
+			} else {
+
+				// Update schedule dates/times
+				arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
+				arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
+				arguments.sku.setStartReservationDateTime(arguments.processObject.getEndReservationDateTime());
+				arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
+
+				// Remove deleted location configurations
+				for(var locationConfig in arguments.sku.getLocationConfigurations()) {
+					var lcExistsAt = listFindNoCase(arguments.processObject.getLocationConfigurations(),locationConfig.getLocationConfigurationID(),"," );
+					if(lcExistsAt == 0) {
+						getDAO("SkuDAO").deleteSkuLocationConfiguration(arguments.sku.getSkuID(), locationConfig.getLocationConfigurationID());
+					} else {
+						// remove existing location configurations from processObject so we don't add them again
+						arguments.processObject.setLocationConfigurations(listDeleteAt(arguments.processObject.getLocationConfigurations(),lcExistsAt));
+					}
+				}
+				
+				// Update/add locations
+				var newConfigCount = listLen(arguments.processObject.getLocationConfigurations(),",");
+				if(newConfigCount > 0) {
+					// Add new location configurations
+					for(var lc=1; lc<=newConfigCount; lc++) {
+						var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
+						arguments.sku.addLocationConfiguration( thisLocationConfig );
+					}
+				}
+				
+				// Disconnect this sku from any recurring schedule
+				arguments.sku.setProductSchedule(javaCast("null",""));
+			}
+			
+		
+		} else if(arguments.processObject.getEditScope() == "all"){
+			
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				var lcList = arguments.processObject.getLocationConfigurations();
+				if(thisSku.geteventStartDateTime() > now()) {
+					var newEventStartDateTime = createDateTime(year(thisSku.getEventStartDateTime()),month(thisSku.getEventStartDateTime()),day(thisSku.getEventStartDateTime()),hour(arguments.processObject.getEventStartTime()),minute(arguments.processObject.getEventStartTime()),0);
+					var newEventEndDateTime = createDateTime(year(thisSku.getEventEndDateTime()),month(thisSku.getEventEndDateTime()),day(thisSku.getEventEndDateTime()),hour(arguments.processObject.getEventEndTime()),minute(arguments.processObject.getEventEndTime()),0);
+					var newReservationStartDateTime = createDateTime(year(thisSku.getStartReservationDateTime()),month(thisSku.getStartReservationDateTime()),day(thisSku.getStartReservationDateTime()),hour(arguments.processObject.getReservationStartTime()),minute(arguments.processObject.getReservationStartTime()),0);
+					var newReservationEndDateTime = createDateTime(year(thisSku.getEndReservationDateTime()),month(thisSku.getEndReservationDateTime()),day(thisSku.getEndReservationDateTime()),hour(arguments.processObject.getReservationEndTime()),minute(arguments.processObject.getReservationEndTime()),0);
+					thisSku.setEventStartDateTime(newEventStartDateTime);
+					thisSku.setEventEndDateTime(newEventEndDateTime);
+					thisSku.setStartReservationDateTime(newReservationStartDateTime);
+					thisSku.setEndReservationDateTime(newReservationEndDateTime);
+					
+					// Remove deleted location configurations
+					for(var locationConfig in thisSku.getLocationConfigurations()) {
+						var lcExistsAt = listFindNoCase(lcList,locationConfig.getLocationConfigurationID(),"," );
+						if(lcExistsAt == 0) {
+							getDAO("SkuDAO").deleteSkuLocationConfiguration(thisSku.getSkuID(), locationConfig.getLocationConfigurationID());
+						} else {
+							// remove existing location configurations from processObject so we don't add them again
+							lcList = listDeleteAt(arguments.processObject.getLocationConfigurations(),lcExistsAt);
+						}
+					}
+					
+					// Update/add locations
+					var newConfigCount = listLen(lcList,",");
+					if(newConfigCount > 0) {
+						// Add new location configurations
+						for(var lc=1; lc<=newConfigCount; lc++) {
+							var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(lcList, lc) );
+							thisSku.addLocationConfiguration( thisLocationConfig );
+						}
+					}
+					
+				}
+			}
+			
+		}
+		return arguments.sku;
+	}
+	
+	
+	
+	//@help Takes a sku along with a start datetime, an end datetimem and a list of location configurations, to check for location/date/time conflicts with other event schedules
+	public boolean function locationConflictExists(any sku, any eventStartDateTime, any eventEndDateTime, any locationConfigurations) {
+		var locationIDList = "";
+		var result = false;
+
+		//Build list of locationIDs from locationConfigurations
+		if(listLen(arguments.locationConfigurations,",") == 1) {
+			var locationConfigurationSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
+			locationConfigurationSmartList.addFilter("locationConfigurationID",arguments.locationConfigurations);
+			var locationID = locationConfigurationSmartList.getRecords()[1].getLocation().getLocationID();
+			locationIDList = listAppend(locationIDList,locationID);
+		} else {
+			locationConfigs = listToArray(arguments.locationConfigurations);
+			for(var configID in locationConfigs) {
+				var locationConfigurationSmartList = getService("SkuService").getLocationConfigurationSmartList();
+				locationConfigurationSmartList.addFilter("locationConfigurationID",configID);
+				var locationID = locationConfigurationSmartList.getRecords()[1].getLocation().getLocationID();
+				if(!listFindNoCase(locationIDList,locationID)) {
+					listAppend(locationIDList,locationID);
+				}
+			} 
+		}
+		
+		// Build smartlist of conflicting events schedules
+		var smartlist = getService("SkuService").getSkuSmartList();
+		smartlist.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
+		smartlist.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
+		smartlist.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
+		smartlist.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=arguments.sku.getSkuID()});
+		smartlist.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
+		smartlist.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
+
+		// Do we have conflicts?
+		if(smartList.getRecordsCount() > 0) {
+			result = true;
+		}
+		
+		return result;
+		
+	}
+	
+	// TODO [paul]: makeup / breakup
+	public any function processSku_MakeupBundledSkus(required any sku, required any processObject) {
+		
+		// Create a stockAdjustment
+		var stockAdjustment = getStockService().newStockAdjustment();
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satMakeupBundledSkus') ); 
+		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
+		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
+		
+		var makeupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+
+		var makeupItem = getStockService().newStockAdjustmentItem();
+		makeupItem.setStockAdjustment( stockAdjustment );
+		makeupItem.setQuantity( arguments.processObject.getQuantity() );
+		makeupItem.setToStock( makeupStock );
+		
+		// Loop over every bundledSku
+		for(bundledSku in arguments.entity.getBundledSkus()) {
+			
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+			
+			var makeupItem = getStockService().newStockAdjustmentItem();
+			makeupItem.setStockAdjustment( stockAdjustment );
+			makeupItem.setQuantity( bundledSku.getBundledQuantity() );
+			makeupItem.setFromStock( thisStock );
+			
+		}
+		
+		getStockService().saveStockAdjustment(stockAdjustment);
+		
+		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		
+		return arguments.sku;
+	}
+	
+	public any function processSku_BreakupBundledSkus(required any sku, required any processObject) {
+		
+		// Create a stockAdjustment
+		var stockAdjustment = getStockService().newStockAdjustment();
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satBreakupBundledSkus') ); 
+		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
+		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
+		
+		var breakupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+		
+		var breakupItem = getStockService().newStockAdjustmentItem();
+		breakupItem.setStockAdjustment( stockAdjustment );
+		breakupItem.setQuantity( arguments.processObject.getQuantity() );
+		breakupItem.setFromStock( breakupStock );
+		
+		// Loop over every bundledSku
+		for(bundledSku in arguments.entity.getBundledSkus()) {
+			
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+			
+			var breakupItem = getStockService().newStockAdjustmentItem();
+			breakupItem.setStockAdjustment( stockAdjustment );
+			breakupItem.setQuantity( bundledSku.getBundledQuantity() );
+			breakupItem.setToStock( thisStock );
+			
+		}
+		
+		getStockService().saveStockAdjustment(stockAdjustment);
+		
+		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		
+		return arguments.sku;
+		
+	}
 	
 	// =====================  END: Process Methods ============================
 	

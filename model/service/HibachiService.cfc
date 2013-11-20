@@ -59,7 +59,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
 	public boolean function getEntityHasAttributeByEntityName( required string entityName, required string attributeCode ) {
-		if(listFindNoCase(getService("attributeService").getAttributeCodesListByAttributeSetType( "ast#getProperlyCasedShortEntityName(arguments.entityName)#" ), arguments.attributeCode)) {
+		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.entityName)#"});
+		if(listFindNoCase(attributeCodesList, arguments.attributeCode)) {
 			return true;
 		}
 		return false; 
@@ -95,9 +96,6 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 				var settingsRemoved = getService("settingService").updateAllSettingValuesToRemoveSpecificID( arguments.entity.getPrimaryIDValue() );	
 			}
 			
-			if(settingsRemoved gt 0 || listFindNoCase("Currency,FulfillmentMethod,OrderOrigin,PaymentTerm,PaymentMethod", arguments.entity.getClassName())) {
-				getService("settingService").clearAllSettingsCache();
-			}
 		}
 	
 		return arguments.entity;

@@ -46,44 +46,70 @@
 Notes:
 
 --->
-<cfcomponent extends="HibachiDAO">
+<cfcomponent extends="HibachiDAO" accessors="true" output="false">
 	
-	<cfproperty name="nextOptionGroupSortOrder" type="numeric" />
+	<cfproperty name="hibachiCacheService" type="any" />
 	
+	<cffunction name="deleteSkuLocationConfiguration" returntype="void" output="false">
+		<cfargument name="skuID" /> 
+		<cfargument name="locationConfigurationID" /> 
+		<cftry>
+		<cfquery name="delSkuLC">
+			DELETE 
+			FROM SwSkuLocationConfiguration
+			WHERE skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" >
+			AND locationConfigurationID = <cfqueryparam value="#arguments.locationConfigurationID#" cfsqltype="cf_sql_varchar" >
+		</cfquery>
+		<cfcatch type="any" >
+		<cfrethrow>
+		<cfabort>
+			
+			
+		</cfcatch>
+		</cftry>
+	</cffunction>
 	
-	<cffunction name="getSkuStocksDeletableFlag" returnType="boolean" access="public">
-		<cfargument name="skuID" type="string" required="true" />
+	<cffunction name="getTransactionExistsFlag" returntype="boolean" output="false">
+		<cfargument name="productID" />
+		<cfargument name="skuID" />
 		
-		<cfset var rs = "" />
+		<cfset var hql = "SELECT count(ss.skuID) FROM SlatwallSku ss WHERE " />
 		
-		<cfset var results = ormExecuteQuery("SELECT skuID
-			FROM
-				SlatwallSku ss
-			WHERE
-				ss.skuID = :skuID
-			  AND (
-			  	EXISTS( SELECT a.inventoryID as id FROM SlatwallInventory a WHERE stock.sku.skuID = :skuID )
-			  	  OR
-			  	EXISTS( SELECT a.orderDeliveryItemID as id FROM SlatwallOrderDeliveryItem a WHERE stock.sku.skuID = :skuID )
+		<cfif structKeyExists(arguments, "skuID") && !isNull(arguments.skuID)>
+			<cfset hql &= "ss.skuID = :skuID" />	
+		<cfelse>
+			<cfset hql &= "ss.product.productID = :productID" />
+		</cfif>
+		
+		<cfset hql &= " AND (
+				EXISTS( SELECT a.orderItemID as id FROM SlatwallOrderItem a WHERE sku.skuID = ss.skuID )
 				  OR
-			  	EXISTS( SELECT a.orderItemID as id FROM SlatwallOrderItem a WHERE stock.sku.skuID = :skuID )
+			  	EXISTS( SELECT a.inventoryID as id FROM SlatwallInventory a WHERE stock.sku.skuID = ss.skuID )
+			  	  OR
+			  	EXISTS( SELECT a.orderDeliveryItemID as id FROM SlatwallOrderDeliveryItem a WHERE stock.sku.skuID = ss.skuID )
 				  OR
-			  	EXISTS( SELECT a.physicalCountItemID as id FROM SlatwallPhysicalCountItem a WHERE stock.sku.skuID = :skuID )
+			  	EXISTS( SELECT a.physicalCountItemID as id FROM SlatwallPhysicalCountItem a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockAdjustmentDeliveryItemID as id FROM SlatwallStockAdjustmentDeliveryItem a WHERE stock.sku.skuID = :skuID )
+			  	EXISTS( SELECT a.stockAdjustmentDeliveryItemID as id FROM SlatwallStockAdjustmentDeliveryItem a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockAdjustmentItemID as id FROM SlatwallStockAdjustmentItem a WHERE fromStock.sku.skuID = :skuID )
+			  	EXISTS( SELECT a.stockAdjustmentItemID as id FROM SlatwallStockAdjustmentItem a WHERE fromStock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockAdjustmentItemID as id FROM SlatwallStockAdjustmentItem a WHERE toStock.sku.skuID = :skuID )
+			  	EXISTS( SELECT a.stockAdjustmentItemID as id FROM SlatwallStockAdjustmentItem a WHERE toStock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockHoldID as id FROM SlatwallStockHold a WHERE stock.sku.skuID = :skuID )
+			  	EXISTS( SELECT a.stockHoldID as id FROM SlatwallStockHold a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockReceiverItemID as id FROM SlatwallStockReceiverItem a WHERE stock.sku.skuID = :skuID )
+			  	EXISTS( SELECT a.stockReceiverItemID as id FROM SlatwallStockReceiverItem a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.vendorOrderItemID as id FROM SlatwallVendorOrderItem a WHERE stock.sku.skuID = :skuID )
-			  )", { skuID = arguments.skuID }) />
+			  	EXISTS( SELECT a.vendorOrderItemID as id FROM SlatwallVendorOrderItem a WHERE stock.sku.skuID = ss.skuID )
+			  )" />
 		
-		<cfif arrayLen(results)>
+		<cfif structKeyExists(arguments, "skuID") && !isNull(arguments.skuID)>
+			<cfset var results = ormExecuteQuery(hql, {skuID = arguments.skuID}) />
+		<cfelse>
+			<cfset var results = ormExecuteQuery(hql, {productID = arguments.productID}) />
+		</cfif>
+		
+		<cfif results[1] eq 0>
 			<cfreturn false />
 		</cfif>
 		
@@ -150,6 +176,7 @@ Notes:
 				hql &= "INNER JOIN FETCH sku.options option ";
 			} else if (arguments.product.getBaseProductType() eq "subscription") {
 				hql &= "INNER JOIN sku.subscriptionTerm st ";
+				hql &= "INNER JOIN sku.orderItems oi ";
 				hql &= "INNER JOIN FETCH sku.subscriptionBenefits sb ";
 			}
 		}
@@ -166,6 +193,7 @@ Notes:
 		<cfargument name="productID" type="string" required="true" />
 		
 		<cfset var sorted = "" />
+		<cfset var nextOptionGroupSortOrder = getHibachiCacheService().getOrCacheFunctionValue("skuDAO_getNextOptionGroupSortOrder", this, "getNextOptionGroupSortOrder") />
 		
 		<!--- TODO: test to see if this query works with DB's other than MSSQL and MySQL --->
 		<cfquery name="sorted">
@@ -185,9 +213,9 @@ Notes:
 				SwSku.skuID
 			ORDER BY
 				<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
-					SUM(SwOption.sortOrder * POWER(CAST(10 as bigint), CAST((#getNextOptionGroupSortOrder()# - SwOptionGroup.sortOrder) as bigint))) ASC
+					SUM(SwOption.sortOrder * POWER(CAST(10 as bigint), CAST((#nextOptionGroupSortOrder# - SwOptionGroup.sortOrder) as bigint))) ASC
 				<cfelse>
-					SUM(SwOption.sortOrder * POWER(10, #getNextOptionGroupSortOrder()# - SwOptionGroup.sortOrder)) ASC
+					SUM(SwOption.sortOrder * POWER(10, #nextOptionGroupSortOrder# - SwOptionGroup.sortOrder)) ASC
 				</cfif>
 		</cfquery>
 		
@@ -195,27 +223,17 @@ Notes:
 	</cffunction>
 	
 	<cffunction name="getNextOptionGroupSortOrder" returntype="numeric" access="private">
-		<cfif not structKeyExists(variables, "nextOptionGroupSortOrder")>
-			<cfset variables.nextOptionGroupSortOrder = 1 />
-			
-			<cfset var rs = "" />
-			
-			<cfquery name="rs">
-				SELECT max(SwOptionGroup.sortOrder) as max FROM SwOptionGroup
-			</cfquery>
-			<cfif rs.recordCount>
-				<cfset variables.nextOptionGroupSortOrder = rs.max + 1 />
-			</cfif>
-			
+		<cfset var nogSortOrder = 1 />
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			SELECT max(SwOptionGroup.sortOrder) as max FROM SwOptionGroup
+		</cfquery>
+		<cfif rs.recordCount>
+			<cfset nogSortOrder = rs.max + 1 />
 		</cfif>
 		
-		<cfreturn variables.nextOptionGroupSortOrder />
-	</cffunction>
-	
-	<cffunction name="clearNextOptionGroupSortOrder" returntype="void" access="public">
-		<cfif not structKeyExists(variables, "nextOptionGroupSortOrder")>
-			<cfset structDelete(variables, "nextOptionGroupSortOrder") />
-		</cfif>
+		<cfreturn nogSortOrder />
 	</cffunction>
 	
 </cfcomponent>

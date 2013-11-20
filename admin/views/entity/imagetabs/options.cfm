@@ -46,14 +46,17 @@
 Notes:
 
 --->
-<cfparam name="rc.sku" type="any" />
+<cfset selectedValues = "" >
+<cfloop array="#rc.image.getOptions()#" index="option">
+	<cfset selectedValues = listAppend(selectedValues,option.getOptionID()) />
+</cfloop>
+<!--- Options --->
+<cf_HibachiListingDisplay smartList="#rc.image.getOptionsSmartList()#"
+						  multiselectFieldName="options"
+						  multiselectValues="#selectedValues#"
+						  edit="#rc.edit#">
+	<cf_HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
+	<cf_HibachiListingColumn propertyIdentifier="optionName" />    
+	<cf_HibachiListingColumn propertyIdentifier="optionCode" />    
+</cf_HibachiListingDisplay>
 
-<cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.sku.getOrderItemsSmartList()#">
-		<cf_HibachiListingColumn propertyIdentifier="account.firstName" />
-		<cf_HibachiListingColumn propertyIdentifier="account.lastName" />
-		<cf_HibachiListingColumn propertyIdentifier="account.emailAddress" />
-		<cf_HibachiListingColumn propertyIdentifier="account.phoneNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="orderstatustype.type" />
-	</cf_HibachiListingDisplay>
-</cfoutput>

@@ -46,15 +46,21 @@
 Notes:
 
 --->
-<cfparam name="rc.subscriptionUsage" type="any" />
+<cfparam name="rc.eventRegistration" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
-			recordEditAction="admin:entity.editrenewalsubscriptionusagebenefits">
-			
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionUsageBenefitID" />
+	<cf_HibachiEntityProcessForm entity="#rc.eventRegistration#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventRegistration">
 		
-	</cf_HibachiListingDisplay>
-	
-	<cf_HibachiActionCaller action="admin:entity.createrenewalsubscriptionusagebenefits" class="btn" icon="plus" queryString="SubscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#" />
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.eventRegistration#">
+		</cf_HibachiEntityActionBar>
+		
+		<!---<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				
+				<cfinclude template="preprocesseventRegistration_include/changestatuscomment.cfm" />
+				
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>--->
+		
+	</cf_HibachiEntityProcessForm>
 </cfoutput>

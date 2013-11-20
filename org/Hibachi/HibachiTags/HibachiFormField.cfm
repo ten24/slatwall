@@ -94,7 +94,13 @@
 							<cfset thisOptionValue = option />
 						<cfelse>
 							<cfloop collection="#option#" item="key">
-								<cfdump var="#key#" abort />
+								<cfif key eq "name">
+									<cfset thisOptionName = option[ key ] />
+								<cfelseif key eq "value">
+									<cfset thisOptionValue = option[ key ] />
+								<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
+									<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+								</cfif>
 							</cfloop>
 						</cfif>
 						<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />

@@ -50,7 +50,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 			
 	// Persistent Properties
 	property name="productTypeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="productTypeIDPath" ormtype="string";
+	property name="productTypeIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean" hint="As A ProductType Get Old, They would be marked as Not Active";
 	property name="publishedFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" unique="true" hint="This is the name that is used in the URL string";

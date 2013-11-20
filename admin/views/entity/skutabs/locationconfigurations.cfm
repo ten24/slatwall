@@ -52,8 +52,8 @@ Notes:
 								  multiselectPropertyIdentifier="locationConfigurationID" 
 								  multiselectValues="#selectedLocationConfigurationIDs#"
 								  edit="#rc.edit#">
+			<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
 			<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-			<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
 		</cf_HibachiListingDisplay>
 	<cfelse>
 		<cf_HibachiListingDisplay smartList="#rc.sku.getLocationConfigurationsSmartList()#"

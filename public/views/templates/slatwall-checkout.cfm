@@ -1015,7 +1015,7 @@ Notes:
 													Name on Card: #orderPayment.getNameOnCreditCard()#<br />
 													Card: #orderPayment.getCreditCardType()# ***#orderPayment.getCreditCardLastFour()#<br />
 													Expiration: #orderPayment.getExpirationMonth()# / #orderPayment.getExpirationYear()#<br />
-													Payment Amount: #dollarformat(orderPayment.getAmount())#<br />
+													Payment Amount: #orderPayment.getFormattedValue('amount')#<br />
 													
 													<cfif isNull(orderPayment.getProviderToken()) && !isNull(orderPayment.getSecurityCode())>
 														<input type="hidden" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="#orderPayment.getSecurityCode()#" />
@@ -1031,7 +1031,7 @@ Notes:
 												<cfelse>
 													
 													#orderPayment.getSimpleRepresentation()#<br />
-													Payment Amount: #dollarformat(orderPayment.getAmount())#
+													Payment Amount: #orderPayment.getFormattedValue('amount')#
 													
 												</cfif>
 											</div>
@@ -1040,11 +1040,14 @@ Notes:
 												<div class="span6">
 													<h6>Billing Address:</h6>
 													#orderPayment.getBillingAddress().getName()#<br />
-													<cfif orderPayment.getBillingAddress().getCompany() NEQ "">#orderPayment.getBillingAddress().getCompany()#<br /></cfif>
-													<cfif orderPayment.getBillingAddress().getPhone() NEQ "">#orderPayment.getBillingAddress().getPhone()#<br /></cfif>
+													<cfif isNull(orderPayment.getBillingAddress().getCompany()) && len(orderPayment.getBillingAddress().getCompany())>
+														#orderPayment.getBillingAddress().getCompany()#<br />
+													</cfif>
+													<cfif !isNull(orderPayment.getBillingAddress().getPhoneNumber()) && len(orderPayment.getBillingAddress().getCompany())>
+														#orderPayment.getBillingAddress().getPhoneNumber()#<br />
+													</cfif>
 													#orderPayment.getBillingAddress().getStreetAddress()#<br />
-													
-													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
+													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address()) && len(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
 													#orderPayment.getBillingAddress().getCity()#, #orderPayment.getBillingAddress().getStateCode()# #orderPayment.getBillingAddress().getPostalCode()#<br />
 													#orderPayment.getBillingAddress().getCountryCode()#
 												</div>

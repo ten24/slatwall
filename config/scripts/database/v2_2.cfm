@@ -295,7 +295,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SwSubscriptionUsage
+			SwSubsUsage
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE

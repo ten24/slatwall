@@ -54,6 +54,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService";
 	property name="commentService";
 	property name="emailService";
+	property name="eventRegistrationService";
 	property name="locationService";
 	property name="fulfillmentService";
 	property name="paymentService";
@@ -151,51 +152,88 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
-	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {
-		
+	public any function duplicateOrder(required any order, boolean saveNewFlag=false) {
 		var newOrder = this.newOrder();
-		newOrder.setCurrencyCode( arguments.originalOrder.getCurrencyCode() );
+		
+		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		
 		// Copy Order Items
-		for(var i=1; i<=arrayLen(arguments.originalOrder.getOrderItems()); i++) {
+		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
 			var newOrderItem = this.newOrderItem();
 			
-			newOrderItem.setPrice( arguments.originalOrder.getOrderItems()[i].getPrice() );
-			newOrderItem.setSkuPrice( arguments.originalOrder.getOrderItems()[i].getSkuPrice() );
-			newOrderItem.setCurrencyCode( arguments.originalOrder.getOrderItems()[i].getCurrencyCode() );
-			newOrderItem.setQuantity( arguments.originalOrder.getOrderItems()[i].getQuantity() );
-			newOrderItem.setOrderItemType( arguments.originalOrder.getOrderItems()[i].getOrderItemType() );
-			newOrderItem.setOrderItemStatusType( arguments.originalOrder.getOrderItems()[i].getOrderItemStatusType() );
-			newOrderItem.setSku( arguments.originalOrder.getOrderItems()[i].getSku() );
-			if(!isNull(arguments.originalOrder.getOrderItems()[i].getStock())) {
-				newOrderItem.setStock( arguments.originalOrder.getOrderItems()[i].getStock() );
+			newOrderItem.setPrice( arguments.order.getOrderItems()[i].getPrice() );
+			newOrderItem.setSkuPrice( arguments.order.getOrderItems()[i].getSkuPrice() );
+			newOrderItem.setCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() );
+			newOrderItem.setQuantity( arguments.order.getOrderItems()[i].getQuantity() );
+			newOrderItem.setOrderItemType( arguments.order.getOrderItems()[i].getOrderItemType() );
+			newOrderItem.setOrderItemStatusType( arguments.order.getOrderItems()[i].getOrderItemStatusType() );
+			newOrderItem.setSku( arguments.order.getOrderItems()[i].getSku() );
+			if(!isNull(arguments.order.getOrderItems()[i].getStock())) {
+				newOrderItem.setStock( arguments.order.getOrderItems()[i].getStock() );
 			}
 			
 			// copy order item customization
-			for(var attributeValue in arguments.originalOrder.getOrderItems()[i].getAttributeValues()) {
+			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
 				var av = this.newAttributeValue();
 				av.setAttributeValueType(attributeValue.getAttributeValueType());
 				av.setAttribute(attributeValue.getAttribute());
 				av.setAttributeValue(attributeValue.getAttributeValue());
 				av.setOrderItem(newOrderItem);
 			}
-
+			
+			var orderFulfillmentFound = false;
+			
 			// check if there is a fulfillment method of this type in the order
 			for(var fulfillment in newOrder.getOrderFulfillments()) {
-				if(arguments.originalOrder.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() == fulfillment.getFulfillmentMethod().getFulfillmentMethodID()) {
+				if(arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() == fulfillment.getFulfillmentMethod().getFulfillmentMethodID()) {
 					var newOrderFulfillment = fulfillment;
+					orderFulfillmentFound = true;
 					break;
 				}
 			}
-			if(isNull(newOrderFulfillment)) {
+			if(!orderFulfillmentFound) {
 				var newOrderFulfillment = this.newOrderFulfillment();
-				newOrderFulfillment.setFulfillmentMethod( arguments.originalOrder.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
+				newOrderFulfillment.setFulfillmentMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
 				newOrderFulfillment.setOrder( newOrder );
-				newOrderFulfillment.setCurrencyCode( arguments.originalOrder.getOrderItems()[i].getOrderFulfillment().getCurrencyCode() );
+				newOrderFulfillment.setCurrencyCode( arguments.order.getOrderItems()[i].getOrderFulfillment().getCurrencyCode() );
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod())) {
+					newOrderFulfillment.setShippingMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod() );	
+				}
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
+					newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress() );
+				}
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
+					newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
+				}
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress())) {
+					newOrderFulfillment.setEmailAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress() );
+				}
+				
 			}
 			newOrderItem.setOrder( newOrder );
 			newOrderItem.setOrderFulfillment( newOrderFulfillment );
 
+		}
+		
+		if(!isNull(arguments.order.getAccount())) {
+			newOrder.setAccount( arguments.order.getAccount() );
+		}
+		
+		if(arguments.saveNewFlag) {
+			this.saveOrder( newOrder );
+		}
+		
+		return newOrder;
+	}
+	
+	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {
+		var newOrder = duplicateOrder(arguments.originalOrder, true);
+		
+		// Clear out account specific stuff in fulfillments
+		for(var fulfillment in newOrder.getOrderFulfillments()) {
+			fulfillment.setShippingAddress( javaCast("null", "" ) );
+			fulfillment.setAccountAddress( javaCast("null", "" ) );
+			fulfillment.setEmailAddress( javaCast("null", "" ) );
 		}
 		
 		newOrder.setAccount( arguments.newAccount );
@@ -435,6 +473,56 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
+		// If this is an event then we need to attach accounts and registrations
+		// to match the quantity of the order item. Comes from Order_AddOrderItem.		
+		if(arguments.processObject.getSku().getBaseProductType() == "event"  && arguments.processObject.hasRegistrants()) {
+			
+			// ProcessObject should contain account info in registrants array	
+			for(var registrant in arguments.processObject.getRegistrants()) {
+				
+				// Create new event registration	 record
+				var eventRegistration = this.newEventRegistration();
+				eventRegistration.setOrderItem(newOrderItem);
+				
+				// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
+				if(registrant.newAccountFlag == 0) {
+					eventRegistration.setAccount( getAccountService().getAccount(registrant.accountID) );
+				} else {
+					//Create new account to associate with registration
+					var newAccount = getAccountService().newAccount();
+					if(isDefined("registrant.firstName") && len(registrant.firstName)) {
+						newAccount.setFirstName(registrant.firstName);
+					}
+					if(isDefined("registrant.lastName") && len(registrant.lastName)) {
+						newAccount.setLastName(registrant.lastName);
+					}
+					if(isDefined("registrant.emailAddress") && len(registrant.emailAddress)) {
+						var newEmailAddress = getAccountService().newAccountEmailAddress();
+						newEmailAddress.setEmailAddress(registrant.emailAddress);
+						newAccount.setPrimaryEmailAddress(newEmailAddress);
+						
+					}
+					if(isDefined("registrant.phoneNumber") && len(registrant.phoneNumber)) {
+						var newPhoneNumber = getAccountService().newAccountPhoneNumber();
+						newPhoneNumber.setPhoneNumber(registrant.phoneNumber);
+						newAccount.setPrimaryPhoneNumber(newPhoneNumber);
+					}
+					newAccount = getAccountService().saveAccount(newAccount);
+					eventRegistration.setAccount(newAccount);
+				}
+				
+				// Set registration status
+				if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+				} else {
+					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
+				}
+				
+				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
+					
+			}
+		}
+		
 		// Call save order to place in the hibernate session and re-calculate all of the totals 
 		arguments.order = this.saveOrder( arguments.order );
 		
@@ -588,6 +676,47 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Change the status
 		arguments.order.setOrderStatusType( getSettingService().getTypeBySystemCode("ostCanceled") );
+		
+		return arguments.order;
+	}
+	
+	public any function processOrder_changeCurrencyCode( required any order, required any processObject) {
+		// Update the order
+		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		
+		// Update order promotions
+		for(var appliedPromotion in arguments.order.getAppliedPromotions()) {
+			appliedPromotion.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		}
+		
+		// Update the orderItems
+		for(var orderItem in arguments.order.getOrderItems()) {
+			
+			// Update the orderItem itself
+			orderItem.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			
+			// Update order item promotions
+			for(var appliedPromotion in orderItem.getAppliedPromotions()) {
+				appliedPromotion.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			}
+		}
+		
+		// Update the orderFulfillments
+		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
+			
+			// update the fulfillment itself
+			orderFulfillment.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			
+			// Update fulfillment promotions
+			for(var appliedPromotion in orderFulfillment.getAppliedPromotions()) {
+				appliedPromotion.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			}
+		}
+		
+		// Update the orderPayments
+		for(var orderPayment in arguments.order.getOrderPayments()) {
+			orderFulfillment.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+		}
 		
 		return arguments.order;
 	}
@@ -841,6 +970,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
 							
+							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
+							/*for(var orderitem in arguments.order.getOrderItems()) {
+								if(orderitem.getSku().getBaseProductType() == "event") {
+									for(var eventRegistration in orderitem.getEventRegistrations()) {
+										if(orderItem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+										} else {
+											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
+										}
+									}
+								}
+							}*/
+							
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 								
@@ -863,9 +1005,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 				}
+				
+			} else {
+				arguments.order.addError('duplicate', rbKey('validate.processOrder_PlaceOrder.duplicate'));
 			}
 			
 		}	// END OF LOCK
+		
+		
 		
 		return arguments.order;
 	}
@@ -976,12 +1123,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Get the original order status code
 		var originalOrderStatus = arguments.order.getOrderStatusType().getSystemCode();
 		
-		// First we make sure that this order status is not 'closed', 'canceld', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
+		// First we make sure that this order status is not 'closed', 'canceled', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 			
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
 			if(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
-				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostClosed") );
+				arguments.order.setOrderStatusType( getSettingService().getTypeBySystemCode("ostClosed") );
 				
 			// The default case is just to set it to processing
 			} else {
@@ -1013,6 +1160,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.order;
 	}
+	
 	
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
@@ -1094,7 +1242,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var orderDeliveryItem = this.newOrderDeliveryItem();
 					
 					// Populate with the data
-					orderDeliveryItem.populate( arguments.processObject.getOrderDeliveryItems()[i] );
+					orderDeliveryItem.setOrderItem( this.getOrderItem( arguments.processObject.getOrderDeliveryItems()[i].orderItem.orderItemID ) );
+					orderDeliveryItem.setQuantity( arguments.processObject.getOrderDeliveryItems()[i].quantity );
 					orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
 					orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
 				}	
@@ -1232,6 +1381,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// Process: Order Item
+	public any function processOrderItem_updateEventRegistrationQuantity(required any orderItem,struct data={}) {
+		
+		// We need LESS event registrations due to order adjustment before order has been placed
+		if( arrayLen(orderItem.getActiveEventRegistrations()) > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
+			
+			var removableEvents = [];
+			var numberToRemove = arrayLen(orderItem.getEventRegistrations()) - orderItem.getQuantity();
+			
+			// Create an array of registrations we can safely remove, i.e. not associated with an account
+			for(var eventRegistration in orderItem.getEventRegistrations()) {
+				if(isNull(eventRegistration.getFirstName()) && isNull(eventRegistration.getLastName()) && isNull(eventRegistration.getEmailAddress()) && isNull(eventRegistration().getPhoneNumber())) {
+					arrayAppend(removableEvents, eventRegistration);
+					// Break from loop when we have enough registrations
+					if(arrayLen(removableEvents) == numberToRemove) {
+						break;
+					}
+				}
+			}
+			
+			// Delete extra event registrations
+			if(arrayLen(removableEvents) >= numberToRemove) {
+				for(var eventRegistration in eventsToRemove) {
+					eventRegistration.removeOrderItem();
+				}
+			}
+		
+		}
+		
+		// We need less event registration, but couldn't do it... add error
+		if(arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
+			orderItem.addError('updateRegistrationQuantity', rbKey('validate.orderItem.quantity.tooManyEventRegistrations'));
+		}
+		
+		// We need MORE event registrations due to order adjustment before order has been placed
+		if(arrayLen(orderItem.getEventRegistrations()) < orderItem.getQuantity()) {
+			for(var i=1; i <= orderItem.getQuantity() - arrayLen(orderItem.getEventRegistrations()); i++ ) {
+				var eventRegistration = this.newEventRegistration();
+				eventRegistration.setOrderItem(orderitem);
+				eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstNotPlaced") );
+				eventRegistration.setAccount(arguments.order.getAccount());
+				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );	
+			}
+		}
+		
+		return arguments.orderItem;
+	}
+
+	
 	public any function processOrderItem_updateStatus(required any orderItem) {
 		// First we make sure that this order item is not already fully fulfilled, or onHold because we cannont automatically update those statuses
 		if(!listFindNoCase("oistFulfilled,oistOnHold",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
@@ -1281,16 +1478,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 					var stockReceiverItem = getStockService().newStockReceiverItem();
 				
-					stockreceiverItem.setQuantity( thisRecord.quantity );
-					stockreceiverItem.setStock( stock );
-					stockreceiverItem.setOrderItem( orderReturnItem );
-					stockreceiverItem.setStockReceiver( stockReceiver );
+					stockReceiverItem.setQuantity( thisRecord.quantity );
+					stockReceiverItem.setStock( stock );
+					stockReceiverItem.setOrderItem( orderReturnItem );
+					stockReceiverItem.setStockReceiver( stockReceiver );
 				}
 				
 			}
 		}
 		
-		getStockService().saveStockReceiver( stockReceiver );
+		
+		// Loop over the stockReceiverItems to remove subscriptions and contentAccess
+		for(var stockReceiverItem in stockReceiver.getStockReceiverItems()) {
+			
+			// If there was a subscriptionOrderItem attached to referenced order item, we can cancel that subscription usage
+			var subscriptionOrderItem = getSubscriptionService().getSubscriptionOrderItem({orderItem=stockReceiverItem.getOrderItem().getReferencedOrderItem()}); 
+			if(!isNull(subscriptionOrderItem)) {
+				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
+			}
+			
+			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them
+
+		}
+		
+		
+		stockReceiver = getStockService().saveStockReceiver( stockReceiver );
 		
 		for(var accountLoyalty in arguments.orderReturn.getOrder().getAccount().getAccountLoyalties()) {
 			var orderItemReceivedData = {
@@ -1492,6 +1704,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Make sure the auto-state stuff gets called.
 			arguments.order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+		}
+		
+		// Check for updateEventRegistrationQuantity Needs
+		if(!arguments.order.hasErrors() && !listFindNoCase("ostClosed,ostCanceled", arguments.order.getStatusCode())) {
+			
+			var updateEventRegistrationQuantityError = false;
+			
+			// Loop over the orderItems looking for any skus that are 'event' skus. 
+			for(var orderitem in arguments.order.getOrderItems()) {
+
+				// The number of reg & quantity don't match
+				if(orderItem.getSku().getBaseProductType() == "event" && arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
+
+					orderItem = this.processOrderItem(orderItem, {}, 'updateEventRegistrationQuantity');
+					
+					if(orderItem.hasError('updateEventRegistrationQuantity')) {
+						updateEventRegistrationQuantityError = true;
+					}
+				}
+			}
+			
+			if(updateEventRegistrationQuantityError) {
+				order.addError('orderItems', rbKey('validate.order.orderItems.tooManyEventRegistrations') );
+			}
 		}
 		
 		return arguments.order;

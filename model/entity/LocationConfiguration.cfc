@@ -64,9 +64,26 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
-	
+	//Non-persistent properties
+	property name="locationTree" persistent="false" ;
+	property name="locationPathName" persistent="false" ;
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getLocationTree() {
+		if(!structKeyExists(variables,"locationTree")) {
+			variables.locationTree="";
+			var locationOptions = this.getLocation().getLocationOptions();
+			variables.locationTree = listAppend(variables.locationTree, locationOptions[1].name, ",");
+		}
+		return variables.locationTree; 
+	}
+	public any function getLocationPathName() {
+		if(!structKeyExists(variables,"locationPathName")) {
+			variables.locationPathName = this.getlocation().getLocationPathName();
+		}
+		return variables.locationPathName;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 	

@@ -81,7 +81,8 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// Non-Persistent Properties
 	property name="baseLocation" type="string" persistent="false";
-	property name="parentLocationOptions" persistent="false";
+	property name="parentLocationOptions" persistent="false"; //TODO (Glenn): Pretty sure this is unused. make sure then remove.
+	property name="locationPathName" persistent="false";
 	
 	
 	public boolean function isDeletable() {
@@ -107,8 +108,20 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public any function getLocationPathName() {
+		if(!structKeyExists(variables, "locationPathName")) {
+			variables.locationPathName = "";
+			var	locationOptions = getService("locationService").getLocationOptions(this.getLocationID());
+			if(arrayLen(locationOptions)) {
+				variables.locationPathName = locationOptions[1].name;
+			}
+		}
+		return variables.locationPathName;
+	}
+	
+	// TODO (Glenn): This shouldn't allow an arguments. Should only return this location's options. If we want all options we should use service		
 	public any function getLocationOptions(string locationID="") {
-		if(!structKeyExists(variables, "parentLocationOptions")) {
+		//if(!structKeyExists(variables, "parentLocationOptions")) {
 			
 			var locationOptions = [];
 			
@@ -118,7 +131,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			} else {
 				locationOptions = getService("locationService").getLocationOptions(arguments.locationID);
 			}
-		}
+		//}
 		return locationOptions;
 	}
 	

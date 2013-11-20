@@ -755,22 +755,22 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.attributeValue.removeOrder( this );    
 	}
 	
-	// Refrenced Order (many-to-one)
-	public void function setRefrencedOrder(required any refrencedOrder) {
-		variables.refrencedOrder = arguments.refrencedOrder;
-		if(isNew() or !arguments.refrencedOrder.hasRefrencingOrder( this )) {
-			arrayAppend(arguments.refrencedOrder.getRefrencingOrders(), this);
+	// Referenced Order (many-to-one)
+	public void function setReferencedOrder(required any referencedOrder) {
+		variables.referencedOrder = arguments.referencedOrder;
+		if(isNew() or !arguments.referencedOrder.hasReferencingOrder( this )) {
+			arrayAppend(arguments.referencedOrder.getReferencingOrders(), this);
 		}
 	}
-	public void function removeRefrencedOrder(any refrencedOrder) {
-		if(!structKeyExists(arguments, "refrencedOrder")) {
-			arguments.refrencedOrder = variables.refrencedOrder;
+	public void function removeReferencedOrder(any referencedOrder) {
+		if(!structKeyExists(arguments, "referencedOrder")) {
+			arguments.referencedOrder = variables.referencedOrder;
 		}
-		var index = arrayFind(arguments.refrencedOrder.getRefrencingOrders(), this);
+		var index = arrayFind(arguments.referencedOrder.getReferencingOrders(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.refrencedOrder.getRefrencingOrders(), index);
+			arrayDeleteAt(arguments.referencedOrder.getReferencingOrders(), index);
 		}
-		structDelete(variables, "refrencedOrder");
+		structDelete(variables, "referencedOrder");
 	}
 
 	// Order Items (one-to-many)
@@ -821,12 +821,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.stockReceiver.removeOrder( this );    
 	}
 	
-	// Refrencing Order Items (one-to-many)
-	public void function addRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.setRefrencedOrder( this );
+	// Referencing Order Items (one-to-many)
+	public void function addReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.setReferencedOrder( this );
 	}
-	public void function removeRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.removeRefrencedOrder( this );
+	public void function removeReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.removeReferencedOrder( this );
 	}
 	
 	// Applied Promotions (one-to-many)

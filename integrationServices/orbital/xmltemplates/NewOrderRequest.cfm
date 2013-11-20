@@ -65,22 +65,21 @@ Notes:
 			<CardSecVal>#arguments.requestBean.getSecurityCode()#</CardSecVal>
 		</cfif>
 		<AVSzip>#arguments.requestBean.getBillingPostalCode()#</AVSzip>
-		<AVSaddress1>#arguments.requestBean.getBillingStreetAddress()#</AVSaddress1>
-		<AVSaddress2>#arguments.requestBean.getBillingStreet2Address()#</AVSaddress2>
+		<AVSaddress1>#arguments.requestBean.getBillingStreetAddress()#<cfif !isNull(arguments.requestBean.getBillingStreet2Address())> #arguments.requestBean.getBillingStreet2Address()#</cfif></AVSaddress1>
 		<AVScity>#arguments.requestBean.getBillingCity()#</AVScity>
-		<AVSstate>#arguments.requestBean.getBillingStateCode()#</AVSstate>
+		<cfif len(arguments.requestBean.getBillingStateCode()) lte 2>
+			<AVSstate>#arguments.requestBean.getBillingStateCode()#</AVSstate>
+		</cfif>
 		<AVSphoneNum>#arguments.requestBean.getAccountPrimaryPhoneNumber()#</AVSphoneNum>
 		<AVSname>#arguments.requestBean.getNameOnCreditCard()#</AVSname>
 		<AVScountryCode>#arguments.requestBean.getBillingCountryCode()#</AVScountryCode>
-		<cfif !isNull(arguments.requestBean.getCreditCardNumber())>
-			<CustomerRefNum>#arguments.requestBean.getAccount().getShortReferenceID( true )#</CustomerRefNum>
-		<cfelse>
+		<cfif isNull(arguments.requestBean.getCreditCardNumber())>
 			<CustomerRefNum>#arguments.requestBean.getProviderToken()#</CustomerRefNum>
 		</cfif>
 		<OrderID>#arguments.requestBean.getOrder().getShortReferenceID( true )#</OrderID>
 		<Amount>#arguments.requestBean.getTransactionAmount()*100#</Amount>
 		<cfif arguments.requestBean.getTransactionType() EQ "credit">
-			<TxRefNum>#arguments.requestBean.getProviderTransactionID()#</TxRefNum>
+			<TxRefNum>#arguments.requestBean.getOriginalChargeProviderTransactionID()#</TxRefNum>
 		</cfif>
 		<CustomerEmail>#arguments.requestBean.getAccountPrimaryEmailAddress()#</CustomerEmail>
 		<CustomerIpAddress>#CGI.REMOTE_ADDR#</CustomerIpAddress>

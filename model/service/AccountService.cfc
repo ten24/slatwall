@@ -51,6 +51,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="accountDAO" type="any";
 	
 	property name="emailService" type="any";
+	property name="eventRegistrationService" type="any";
 	property name="paymentService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
@@ -196,7 +197,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 	
-	public any function processAccount_create(required any account, required any processObject) {
+	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 		
 		// Populate the account with the correct values that have been previously validated
 		arguments.account.setFirstName( processObject.getFirstName() );
@@ -219,10 +220,15 @@ component extends="HibachiService" accessors="true" output="false" {
 			var accountEmailAddress = this.newAccountEmailAddress();
 			accountEmailAddress.setAccount( arguments.account );
 			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
+			
+			arguments.account.setPrimaryEmailAddress( accountEmailAddress );
 		}
 		
+		// Save & Populate the account so that custom attributes get set
+		arguments.account = this.saveAccount(arguments.account, arguments.data);
+		
 		// If the createAuthenticationFlag was set to true, the add the authentication
-		if(processObject.getCreateAuthenticationFlag()) {
+		if(!arguments.account.hasErrors() && processObject.getCreateAuthenticationFlag()) {
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setAccount( arguments.account );
 		
@@ -235,6 +241,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
+
+		// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+		var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+	 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+	 		eventRegistration().setFirstName( javaCast("null", "") );
+	 		eventRegistration().setLastName( javaCast("null", "") );
+	 		eventRegistration().setEmailAddress( javaCast("null", "") );
+	 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+	 		eventRegistration().setAccount( arguments.account );
+	 	}
 		
 		return arguments.account;
 	}
@@ -262,6 +278,18 @@ component extends="HibachiService" accessors="true" output="false" {
 				// If the password matches what it should be, then set the account in the session and 
 				if(!isNull(accountAuthentications[i].getPassword()) && len(accountAuthentications[i].getPassword()) && accountAuthentications[i].getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentications[i].getAccountAuthenticationID())) {
 					getHibachiSessionService().loginAccount( accountAuthentications[i].getAccount(), accountAuthentications[i] );
+					
+					// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+					var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+				 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+				 		eventRegistration().setFirstName( javaCast("null", "") );
+				 		eventRegistration().setLastName( javaCast("null", "") );
+				 		eventRegistration().setEmailAddress( javaCast("null", "") );
+				 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+				 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
+				 	}
+					
+					
 					return arguments.account;
 				}
 			}
@@ -395,6 +423,39 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return arguments.account;
 	}	
+	
+	// Account Email Address
+	public any function processAccountEmailAddress_sendVerificationEmail(required any accountEmailAddress, required any processObject) {
+		
+		// Get the site (this will return as a new site if no siteID)
+		var site = getSiteService().getSite(arguments.processObject.getSiteID(), true);
+		
+		if(len(site.setting('siteVerifyAccountEmailAddressEmailTemplate'))) {
+			
+			var email = getEmailService().newEmail();
+			var emailData = {
+				accountEmailAddressID = arguments.accountEmailAddress.getAccountEmailAddressID(),
+				emailTemplateID = site.setting('siteVerifyAccountEmailAddressEmailTemplate')
+			};
+			
+			email = getEmailService().processEmail(email, emailData, 'createFromTemplate');
+			
+			email.setEmailTo( arguments.accountEmailAddress.getEmailAddress() );
+			
+			email = getEmailService().processEmail(email, {}, 'addToQueue');
+			
+		} else {
+			throw("No email template could be found.  Please update the site settings to define a 'Verify Account Email Address Email Template'.");
+		}
+		
+		return arguments.accountEmailAddress;
+	}
+	
+	public any function processAccountEmailAddress_verify(required any accountEmailAddress) {
+		arguments.accountEmailAddress.setVerifiedFlag( 1 );
+		
+		return arguments.accountEmailAddress;
+	}
 	
 	// Account Loyalty
 	public any function processAccountLoyalty_itemFulfilled(required any accountLoyalty, required struct data) {

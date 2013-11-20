@@ -70,7 +70,7 @@ Notes:
 		</cfloop>
 		
 		<cfset thisTag.fieldClass = "" />
-		<cfif attribute.getRequiredFlag()>
+		<cfif !isNull(attribute.getRequiredFlag()) && isBoolean(attribute.getRequiredFlag()) && attribute.getRequiredFlag()>
 			<cfset thisTag.fieldClass = listAppend(thisTag.fieldClass, "required", " ") />
 		</cfif>
 		

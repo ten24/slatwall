@@ -62,6 +62,12 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="productID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</cf_HibachiEntityActionBar>
 		
+		<cfif rc.product.getEventConflictExistsFlag()>
+			<div class="alert alert-error">
+				There are event time and location conflicts with one of this product's events. Review the Skus tab for details.
+			</div>
+		</cfif>
+		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divClass="span6">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
@@ -81,6 +87,12 @@ Notes:
 		<cf_HibachiTabGroup object="#rc.product#">
 			<!--- Skus --->
 			<cf_HibachiTab property="skus" />
+			
+			<!--- Event Registrations --->
+			<cfif rc.product.getBaseProductType() EQ "event">
+				<cf_HibachiTab property="eventregistrations" />
+			</cfif>
+			<cf_HibachiTab view="admin:entity/producttabs/saleshistory" />
 			
 			<!--- Images --->
 			<cf_HibachiTab view="admin:entity/producttabs/images" />

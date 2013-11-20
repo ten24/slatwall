@@ -4,20 +4,29 @@
 	        "baseProductType":	{"eq":"subscription"}
 	    },
 	    "baseProductTypeMerchandise":{
-	        "baseProductType":	{"eq":"subscription"}
+	        "baseProductType":	{"eq":"merchandise"}
 	    },
 	    "baseProductTypeEvent":{
 	        "baseProductType":	{"eq":"event"}
 	    },
 	    "baseProductTypeContentAccess":{
 	        "baseProductType":	{"eq":"contentAccess"}
-	    }
+	    },
+	    "generateSkus":{
+	    		"generateSkusFlag": {"eq":"1"}
+	    	}
 	},
 	"properties":{
 		"subscriptionBenefits":		[{"conditions":"baseProductTypeSubscription","required":true}],
 		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}],
 		"contents":					[{"conditions":"baseProductTypeContentAccess","required":true}],
-		"locationConfigurations":	[{"conditions":"baseProductTypeEvent","required":true}]
+		"locationConfigurations":	[{"conditions":"baseProductTypeEvent","required":true}],
+		"eventStartDateTime": [{"conditions":"generateSkus","required":true}],
+		"eventEndDateTime": [{"conditions":"generateSkus","required":true}],
+		"schedulingType": [{"conditions":"generateSkus","required":true}],
+		"schedulingType": [{"conditions":"price","required":true}],
+		"productName": [{"required":true}],
+		"productCode": [{"required":true}]
 	}
 }
 

@@ -96,6 +96,7 @@ component displayname="Loyalty Redemption" entityname="SlatwallLoyaltyRedemption
 			
 			arrayAppend(variables.redemptionPointTypeOptions,{name=rbKey('entity.loyaltyRedemption.redemptionPointType.lifetime'),value="lifetime"});
 			arrayAppend(variables.redemptionPointTypeOptions,{name=rbKey('entity.loyaltyRedemption.redemptionPointType.current'),value="current"});
+			arrayAppend(variables.redemptionPointTypeOptions,{name=rbKey('entity.loyaltyRedemption.redemptionPointType.monthly'),value="monthly"});
 			
 			for(var loyaltyTerm in smartList.getRecords()) {
 				arrayAppend(variables.redemptionPointTypeOptions,{name=loyaltyTerm.getLoyaltyTermName(),value=loyaltyTerm.getLoyaltyTermName()});
