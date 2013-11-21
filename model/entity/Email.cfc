@@ -72,14 +72,23 @@ component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors
 	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
 	
 	// Non-Persistent Properties
-	property name="logEmailFlag" persistent="false"; 
+	property name="logEmailFlag" persistent="false";
+	property name="voidSendFlag" persistent="false"; 
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
 	public boolean function getLogEmailFlag() {
 		if(!structKeyExists(variables, "logEmailFlag")) {
 			variables.logEmailFlag = false;
 		}
 		return variables.logEmailFlag;
+	}
+	
+	public boolean function getVoidSendFlag() {
+		if(!structKeyExists(variables, "voidSendFlag")) {
+			variables.voidSendFlag = false;
+		}
+		return variables.voidSendFlag;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

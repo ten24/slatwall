@@ -149,7 +149,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	public array function getCountryCodeOptions() {
-		return getService("addressService").getCountryCodeOptions();
+		return getService("hibachiCacheService").getOrCacheFunctionValue("addressService_getCountryCodeOptions", "addressService", "getCountryCodeOptions");
 	}
 	
 	public array function getSalutationOptions() {

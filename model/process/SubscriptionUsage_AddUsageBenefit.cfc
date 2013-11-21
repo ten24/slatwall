@@ -46,29 +46,68 @@
 Notes:
 
 */
-component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="subscriptionUsage";
 	
-	public any function init() {
-		return this;
+	// Lazy / Injected Objects
+	
+	// New Properties
+	
+	// Data Properties (ID's)
+	property name="benefitTermType" hb_formFieldType="select";
+	property name="subscriptionBenefitID" hb_formFieldType="select" hb_rbKey="entity.subscriptionBenefit";
+	
+	// Data Properties (Inputs)
+	
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
+	
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	public array function getSubscriptionBenefitIDOptions() {
+		if(!structKeyExists(variables, "subscriptionBenefitIDOptions")) {
+			var s = getService("subscriptionService").getSubscriptionBenefitSmartList();
+			s.addSelect("subscriptionBenefitName", "name");
+			s.addSelect("subscriptionBenefitID", "value");
+			variables.subscriptionBenefitIDOptions = s.getRecords();
+			arrayPrepend(variables.subscriptionBenefitIDOptions, {name=getHibachiScope().rbKey('define.select'), value=""});
+		}
+		return variables.subscriptionBenefitIDOptions;
 	}
 	
-	public string function getIntegrationTypes() {
-		return "payment";
+	public array function getBenefitTermTypeOptions() {
+		return [
+			{name=getHibachiScope().rbKey('define.both'), value='both'},
+			{name=getHibachiScope().rbKey('define.initial'), value='initial'},
+			{name=getHibachiScope().rbKey('define.renewal'), value='renewal'}
+		];
 	}
 	
-	public string function getDisplayName() {
-		return "Authorize.Net";
-	}
+	// ======================  END: Data Options ===========================
 	
-	public struct function getSettings() {
-		var settings = {
-			duplicateWindow = {fieldType="text", defaultValue=600, validate={dataType="numeric", minValue=0, required=true}},
-			loginID = {fieldType="text"},
-			transKey = {fieldType="text"},
-			testModeFlag = {fieldType="yesno", defaultValue="1"},
-			testServerFlag = {fieldType="yesno", defaultValue="0"}
-		};
-		
-		return settings;
-	}
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
+	
 }
+

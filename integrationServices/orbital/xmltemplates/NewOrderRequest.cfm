@@ -67,7 +67,9 @@ Notes:
 		<AVSzip>#arguments.requestBean.getBillingPostalCode()#</AVSzip>
 		<AVSaddress1>#arguments.requestBean.getBillingStreetAddress()#<cfif !isNull(arguments.requestBean.getBillingStreet2Address())> #arguments.requestBean.getBillingStreet2Address()#</cfif></AVSaddress1>
 		<AVScity>#arguments.requestBean.getBillingCity()#</AVScity>
-		<AVSstate>#arguments.requestBean.getBillingStateCode()#</AVSstate>
+		<cfif len(arguments.requestBean.getBillingStateCode()) lte 2>
+			<AVSstate>#arguments.requestBean.getBillingStateCode()#</AVSstate>
+		</cfif>
 		<AVSphoneNum>#arguments.requestBean.getAccountPrimaryPhoneNumber()#</AVSphoneNum>
 		<AVSname>#arguments.requestBean.getNameOnCreditCard()#</AVSname>
 		<AVScountryCode>#arguments.requestBean.getBillingCountryCode()#</AVScountryCode>
