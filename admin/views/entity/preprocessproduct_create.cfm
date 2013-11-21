@@ -74,6 +74,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 				
 				
 				<cfif rc.processObject.getBaseProductType() eq "event">
@@ -126,7 +127,6 @@ Notes:
 					
 				</cfif>
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 			</cf_HibachiPropertyList>
 			
 			<cfif rc.processObject.getBaseProductType() eq "merchandise">
