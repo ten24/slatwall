@@ -1,0 +1,7 @@
+{
+	"properties":{
+		"eventStartDateTime": [{"required":true}],
+		"eventEndDateTime": [{"required":true,"gtProperty":"eventStartDateTime"}]
+	}
+}
+

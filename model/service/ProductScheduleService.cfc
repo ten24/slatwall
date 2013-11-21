@@ -64,6 +64,15 @@ component  extends="HibachiService" accessors="true" {
 		return options;
 	}
 	
+	public any function getMonthlyRepeatByOptions() {
+		var options = [
+			{name="Day of week", value="dayOfWeek"},
+			{name="Day of month", value="dayOfMonth"}
+		];
+
+		return options;
+	}
+	
 	// Returns a date object of the first occurance of a specified day in the given month and year.
 	// @param day_number			An integer in the range 1 - 7. 1=Sun, 2=Mon, 3=Tue, 4=Wed, 5=Thu, 6=Fri, 7=Sat. (Required)
 	// @param month_number		Month value.  (Required)

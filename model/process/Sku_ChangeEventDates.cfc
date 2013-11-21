@@ -73,6 +73,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public array function getEditScopeOptions() {
 		var options = [
+			{name="Select One", value="none"},
 			{name="This Instance Only", value="single"},
 			{name="All Instances", value="all"}
 		];

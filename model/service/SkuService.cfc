@@ -147,7 +147,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
 		
-		if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
 			
 			if(locationConflictExists(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),arguments.processObject.getLocationConfigurations())) {
 				// There is already an event scheduled at that location in the same date range

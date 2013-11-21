@@ -71,20 +71,25 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Scheduling-related properties
 	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";
 	property name="recurringTimeUnit" hb_formFieldType="select" hint="How often to repeat (daily, weekly, monthly, etc.)"; 
-	//property name="weeklyDaysOfOccurrence" hb_formFieldType="checkboxgroup"; 
-	property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
-	property name="scheduleStartDate" hb_formFieldType="datetime" hint="Date the schedule starts" ;
+	property name="weeklyDaysOfOccurrence" hb_formFieldType="checkboxgroup"; 
+	//property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
+	property name="scheduleStartDate" hb_formFieldType="date" hint="Date the schedule starts" ;
+	property name="monthlyRepeatBy" hb_formFieldType="radiogroup" hint="day of week or day of month"; 
 	property name="scheduleEndType" hb_formFieldType="radiogroup" hint="never, occurrences, or date"; 
 	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
-	property name="scheduleEndDate" hb_formFieldType="datetime" hint="If endsOn=date this will be the date the schedule ends";
+	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
 
 	
 	public array function getDaysOfWeekOptions(boolean includeWeekends=true) {
 		return getService("ProductScheduleService").getDaysOfWeekOptions(arguments.includeWeekends);
 	}
 	
-	public array function getscheduleEndTypeOptions() {
+	public array function getScheduleEndTypeOptions() {
 		return getService("ProductScheduleService").getscheduleEndTypeOptions();
+	}
+
+	public array function getMonthlyRepeatByOptions() {
+		return getService("ProductScheduleService").getMonthlyRepeatByOptions();
 	}
 	
 	public array function getRepeatTimeUnitOptions() {
