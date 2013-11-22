@@ -57,6 +57,8 @@ Notes:
 		<CustomerCity>#arguments.requestBean.getBillingCity()#</CustomerCity>
 		<cfif len(arguments.requestBean.getBillingStateCode()) lte 2>
 			<CustomerState>#arguments.requestBean.getBillingStateCode()#</CustomerState>
+		<cfelse>
+			<CustomerState></CustomerState>
 		</cfif>
 		<CustomerZIP>#arguments.requestBean.getBillingPostalCode()#</CustomerZIP>
 		<CustomerEmail>#arguments.requestBean.getAccountPrimaryEmailAddress()#</CustomerEmail>

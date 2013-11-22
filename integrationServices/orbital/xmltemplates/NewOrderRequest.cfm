@@ -64,15 +64,19 @@ Notes:
 			<CardSecValInd>1</CardSecValInd>
 			<CardSecVal>#arguments.requestBean.getSecurityCode()#</CardSecVal>
 		</cfif>
-		<AVSzip>#arguments.requestBean.getBillingPostalCode()#</AVSzip>
-		<AVSaddress1>#arguments.requestBean.getBillingStreetAddress()#<cfif !isNull(arguments.requestBean.getBillingStreet2Address())> #arguments.requestBean.getBillingStreet2Address()#</cfif></AVSaddress1>
-		<AVScity>#arguments.requestBean.getBillingCity()#</AVScity>
-		<cfif len(arguments.requestBean.getBillingStateCode()) lte 2>
-			<AVSstate>#arguments.requestBean.getBillingStateCode()#</AVSstate>
+		<cfif listFindNoCase("US,CA,GB,UK", arguments.requestBean.getBillingCountryCode())>
+			<AVSzip>#arguments.requestBean.getBillingPostalCode()#</AVSzip>
+			<AVSaddress1>#arguments.requestBean.getBillingStreetAddress()#<cfif !isNull(arguments.requestBean.getBillingStreet2Address())> #arguments.requestBean.getBillingStreet2Address()#</cfif></AVSaddress1>
+			<AVScity>#arguments.requestBean.getBillingCity()#</AVScity>
+			<cfif len(arguments.requestBean.getBillingStateCode()) lte 2>
+				<AVSstate>#arguments.requestBean.getBillingStateCode()#</AVSstate>
+			<cfelse>
+				<AVSstate></AVSstate>
+			</cfif>
+			<AVSphoneNum>#arguments.requestBean.getAccountPrimaryPhoneNumber()#</AVSphoneNum>
+			<AVSname>#arguments.requestBean.getNameOnCreditCard()#</AVSname>
+			<AVScountryCode>#arguments.requestBean.getBillingCountryCode()#</AVScountryCode>
 		</cfif>
-		<AVSphoneNum>#arguments.requestBean.getAccountPrimaryPhoneNumber()#</AVSphoneNum>
-		<AVSname>#arguments.requestBean.getNameOnCreditCard()#</AVSname>
-		<AVScountryCode>#arguments.requestBean.getBillingCountryCode()#</AVScountryCode>
 		<cfif isNull(arguments.requestBean.getCreditCardNumber())>
 			<CustomerRefNum>#arguments.requestBean.getProviderToken()#</CustomerRefNum>
 		</cfif>
