@@ -63,7 +63,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="renewalSubscriptionBenefits";
 	property name="subscriptionTerms";
 	property name="bundleContentAccessFlag" hb_formFieldType="yesno";
-	property name="generateSkusFlag" hb_formFieldType="yesno" default="1" hint="If set to 0 skus will not be create when product is.";
+	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
 	property name="contents";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="locationConfigurations";

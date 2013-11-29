@@ -101,18 +101,22 @@ component extends="HibachiService" accessors="true" {
 	
 	
 	// Generates an event sku stub. Used to replace repetitive code.
-	private any function createEventSkuStub(required processObject, required startDate, required endDate, required qualifier, required locationConfiguration) {
+	private any function createEventSkuStub(required processObject, required startDate, required endDate, required qualifier, locationConfiguration) {
 		var newSku = this.newSku();
-		var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');
-		var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPostReservationTime');
 		
 		newSku.setProduct( arguments.processObject.getproduct() );
 		newSku.setSkuCode( arguments.processObject.getproduct().getProductCode() & "-#arguments.qualifier#");
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( arguments.startDate );
 		newSku.setEventEndDateTime( arguments.endDate );
-		newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.startDate) );
-		newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.endDate) );				
+		
+		if(structKeyExists(arguments,"locationConfiguration")) {
+			var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');
+			var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPostReservationTime');
+			newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.startDate) );
+			newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.endDate) );
+		}				
+		
 		return newSku;
 	}
 	
@@ -699,7 +703,6 @@ component extends="HibachiService" accessors="true" {
 							
 							var todayDay = dayOfWeek(now());
 							var scheduleStartDay = dayOfWeek(arguments.processObject.getScheduleStartDate());
-							//var actualStartDate = arguments.processObject.getScheduleStartDate();
 							var actualScheduleStartDay = scheduleStartDay;
 							var offset = 0;
 							
@@ -723,21 +726,33 @@ component extends="HibachiService" accessors="true" {
 								
 							}
 							
+							// Set initial values for first iteration
 							newSkuStartDateTime = dateAdd("d",offset,newSkuStartDateTime);
 							actualScheduleStartDay = dayOfWeek(newSkuStartDateTime);
 							newProductSchedule.setScheduleStartDate(newSkuStartDateTime);
 							newProductSchedule.setScheduleEndDate(arguments.processObject.getScheduleEndDate());
-							//var newEventStartDateTime = createDateTime(year(thisSku.getEventStartDateTime()),month(thisSku.getEventStartDateTime()),day(thisSku.getEventStartDateTime()),hour(arguments.processObject.getEventStartTime()),minute(arguments.processObject.getEventStartTime()),0);
 							
-							// Calc vars that will be used to control sku creation days						
+							// Used to control sku creation days						
 							var dayListLength = listLen(arguments.processObject.getWeeklyDaysOfOccurrence());
 							var cursorPosition = listFind(arguments.processObject.getWeeklyDaysOfOccurrence(),actualScheduleStartDay);
 							var lastDay = 0;
 							
 							do {
+								
+								var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier);
+								newSku.setProductSchedule(newProductSchedule); 
+								skuQualifier++;
+								
+								// Set first as default sku
+								if(isFirstSku) {
+									arguments.product.setDefaultSku( newSku );	
+									isFirstSku = false;
+								}
+								
+								/*	
 								// Bundled location configuration
 								if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-									var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1)); 
+									 
 									newSku.setProductSchedule(newProductSchedule); 
 									skuQualifier++;
 									// Add location configurations
@@ -766,7 +781,7 @@ component extends="HibachiService" accessors="true" {
 											isFirstSku = false;
 										}
 									}
-								}
+								}*/
 								
 								// Increment Start/End date time based on recurring time unit
 								newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyDaysOfOccurrence(),newSkuStartDateTime,cursorPosition);
@@ -804,6 +819,18 @@ component extends="HibachiService" accessors="true" {
 							newProductSchedule.setScheduleEndDate(arguments.processObject.getScheduleEndDate());
 							
 							do {
+								
+								var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier);
+								newSku.setProductSchedule(newProductSchedule); 
+								skuQualifier++;
+								
+								// Set first as default sku
+								if(isFirstSku) {
+									arguments.product.setDefaultSku( newSku );	
+									isFirstSku = false;
+								}
+								
+								/*
 								// Bundled location configuration
 								if(arguments.processObject.getBundleLocationConfigurationFlag()) {
 									var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1)); 
@@ -835,7 +862,7 @@ component extends="HibachiService" accessors="true" {
 											isFirstSku = false;
 										}
 									}
-								}
+								}*/
 								
 								// Increment Start/End date time based on monthly repeatBy value
 								if(arguments.processObject.getMonthlyRepeatBy() == "dayOfWeek") {
@@ -877,6 +904,17 @@ component extends="HibachiService" accessors="true" {
 							newProductSchedule.setScheduleEndDate(arguments.processObject.getScheduleEndDate());
 							
 							do {
+								var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier);
+								newSku.setProductSchedule(newProductSchedule); 
+								skuQualifier++;
+								
+								// Set first as default sku
+								if(isFirstSku) {
+									arguments.product.setDefaultSku( newSku );	
+									isFirstSku = false;
+								}
+								
+								/*
 								// Bundled location configuration
 								if(arguments.processObject.getBundleLocationConfigurationFlag()) {
 									var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1)); 
@@ -908,7 +946,7 @@ component extends="HibachiService" accessors="true" {
 											isFirstSku = false;
 										}
 									}
-								}
+								}*/
 								
 								newSkuStartDateTime = dateAdd("yyyy",1,newSkuStartDateTime);
 								newSkuEndDateTime = dateAdd("yyyy",1,newSkuEndDateTime);

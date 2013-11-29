@@ -40,8 +40,8 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-
-	<cfif rc.edit>
+	<!--- Prevent modifying locations in tab in case scheduled plus we want this to be a process --->
+	<!---<cfif rc.edit>
 		<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
 		<cfset selectedLocationConfigurationIDs = "" />
 		<cfloop array="#rc.sku.getLocationConfigurations()#" index="lc">
@@ -55,7 +55,7 @@ Notes:
 			<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
 			<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
 		</cf_HibachiListingDisplay>
-	<cfelse>
+	<cfelse>--->
 		<cf_HibachiListingDisplay smartList="#rc.sku.getLocationConfigurationsSmartList()#"
 								  recordEditAction="admin:entity.editlocationconfiguration"
 								  recordDetailAction="admin:entity.detaillocationconfiguration"
@@ -65,6 +65,6 @@ Notes:
 			<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 			
 		</cf_HibachiListingDisplay>
-	</cfif>
-	
+	<!---</cfif>--->
+	<!---<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocesssku" processContext="addlocation" class="btn" icon="plus icon" modal="false" />--->
 </cfoutput>

@@ -71,6 +71,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	public array function getSettingPrefixInOrder() {
 		return [
 			"accountAuthentication",
+			"locationConfiguration",
 			"shippingMethodRate",
 			"fulfillmentMethod",
 			"subscriptionUsage",
@@ -78,7 +79,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			"shippingMethod",
 			"paymentMethod",
 			"productType",
-			"location",
 			"product",
 			"content",
 			"account",
@@ -95,6 +95,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	public struct function getSettingLookupOrder() {
 		return {
 			stock = ["sku.skuID", "sku.product.productID", "sku.product.productType.productTypeIDPath&sku.product.brand.brandID", "sku.product.productType.productTypeIDPath"],
+			locationConfiguration = ["location.locationID"	],
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
