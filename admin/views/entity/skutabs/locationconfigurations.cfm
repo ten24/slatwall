@@ -61,6 +61,7 @@ Notes:
 								  recordDetailAction="admin:entity.detaillocationconfiguration"
 								  edit="false">
 								    
+			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationPathName" />
 			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
 			<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 			

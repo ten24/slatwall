@@ -702,7 +702,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				case "event":
 					var configs = getLocationConfigurations();
 					for(config in configs){
-						variables.skuDefinition = config.getlocationPathName();
+						variables.skuDefinition = config.getlocationPathName() & " (#config.getLocationConfigurationName()#)";
 					}
 					break;
 					
