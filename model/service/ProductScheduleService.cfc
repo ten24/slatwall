@@ -104,6 +104,34 @@ component  extends="HibachiService" accessors="true" {
 		return returnDate;
 	}
 	
+	
+	
+	public array function getProductSchedules(required any product, required boolean sorted, boolean fetchOptions=false) {
+		var schedules = getProductScheduleDAO().getProductSchedules(product=arguments.product, fetchOptions=arguments.fetchOptions);
+		
+		if(arguments.sorted && arrayLen(schedules) gt 1 && arrayLen(schedules[1].getOptions())) {
+			var sortedScheduleIDQuery = getProductScheduleDAO().getSortedProductSchedulesID( productID = arguments.product.getProductID() );
+			var sortedArray = arrayNew(1);
+			var sortedArrayReturn = arrayNew(1);
+			
+			for(var i=1; i<=sortedScheduleIDQuery.recordCount; i++) {
+				arrayAppend(sortedArray, sortedSkuIDQuery.skuID[i]);
+			}
+			
+			arrayResize(sortedArrayReturn, arrayLen(sortedArray));
+			
+			for(var i=1; i<=arrayLen(schedules); i++) {
+				var scheduleID = skus[i].getProductScheduleID();
+				var index = arrayFind(sortedArray, scheduleID);
+				sortedArrayReturn[index] = schedules[i];
+			}
+			
+			schedules = sortedArrayReturn;
+		}
+		
+		return schedules;
+	}
+	
 	public array function getRecurringTimeUnitOptions() {
 		if(!structKeyExists(variables, "recurringTimeUnitTypeOptions")) {
 			var smartList = getService("settingService").getTypeSmartList();

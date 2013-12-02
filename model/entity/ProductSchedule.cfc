@@ -42,14 +42,14 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	// Persistent Properties
 	property name="productScheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
-	property name="scheduleStartDate" hb_formFieldType="date" hint="Date the schedule starts" ;
+	property name="scheduleStartDate" hb_formFieldType="date"  ormtype="timestamp" hint="Date the schedule starts" ;
 	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
-	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
+	property name="scheduleEndDate" hb_formFieldType="date" ormtype="timestamp" hint="If endsOn=date this will be the date the schedule ends";
 
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" fetch="join";
+	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" fetch="join";
 	
 	// Related Object Properties (one-to-many)
 	property name="recurringTimeUnit" cfc="Type" fieldtype="many-to-one" fkcolumn="recurringTimeUnitID" hb_optionsSmartListData="f:parentType.systemCode=recurringTimeUnit";

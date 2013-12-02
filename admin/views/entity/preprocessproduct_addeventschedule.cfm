@@ -57,35 +57,71 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
-				<!--- Schedule --->
-				<cf_HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('schRecurring').getTypeID()#">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
-					
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
-					<!--- Ends on Date --->
-					<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="yes" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
-
-					<!--- Ends after # of occurences --->
-					<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setOccurrences').getTypeID()#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndOccurrences" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
-				
-				</cf_HibachiDisplayToggle>
-				
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
+				
+				<!--- Scheduling --->
+				<div class="row">
+					<div class="span4">
+						<div class="well" style="margin:10px 15px;">
+							<fieldset>
+								<h4>Scheduling Options</h4>
+								<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
+								<!--- Schedule --->
+								<cf_HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="#rc.processObject.getSchedulingType() EQ rc.processObject.getService('SettingService').getTypeBySystemCode('schRecurring').getTypeID()#" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('schRecurring').getTypeID()#">
+									
+									<cf_HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
+									
+									<cf_HibachiPropertyDisplay class="scheduleStartDate" object="#rc.processObject#" property="scheduleStartDate" edit="#rc.edit#">
+									<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
+									
+									<!--- Weekly schedule --->
+									<cf_HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('rtuWeekly').getTypeID()#">
+										<cf_HibachiPropertyDisplay object="#rc.processObject#" property="weeklyDaysOfOccurrence" edit="#rc.edit#" valueOptions="#rc.processObject.getDaysOfWeekOptions()#">
+									</cf_HibachiDisplayToggle>
+									<!--- /Weekly schedule --->
+									
+									<!--- Monthly schedule --->
+									<cf_HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="#rc.processObject.getRecurringTimeUnit() EQ rc.processObject.getService('SettingService').getTypeBySystemCode('rtuMonthly').getTypeID()#" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('rtuMonthly').getTypeID()#">
+									
+										<cf_HibachiPropertyDisplay object="#rc.processObject#" property="monthlyRepeatBy" edit="#rc.edit#" valueOptions="#rc.processObject.getMonthlyRepeatByOptions()#">
+										
+										<cf_HibachiDisplayToggle selector="input[name='monthlyRepeatBy']" loadVisable="yes" showValues="dayOfWeek">
+											<div id="monthlyRepeatByWeekdaySummary"  class="alert alert-block">Select a start date</div>
+										</cf_HibachiDisplayToggle>
+										<cf_HibachiDisplayToggle selector="input[name='monthlyRepeatBy']" loadVisable="no" showValues="dayOfMonth">
+											<div id="monthlyRepeatByMonthdaySummary" class="alert alert-block">Select a start date</div>
+										</cf_HibachiDisplayToggle>
+										
+									</cf_HibachiDisplayToggle>
+									<!--- /Monthly schedule --->
+									
+									<input type="hidden" name="scheduleEndType" value="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#" />
+									
+									<!---
+									<!--- Possible to add occurrences as a schedule end option (instead of an end date)) but seems unnecessary [GG 12/20/2013] --->
+									<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
+									
+									<!--- Ends on Date --->
+									<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="yes" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#">
+										<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
+									</cf_HibachiDisplayToggle>
+			
+									<!--- Ends after # of occurences --->
+									<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setOccurrences').getTypeID()#">
+										<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndOccurrences" edit="#rc.edit#">
+									</cf_HibachiDisplayToggle>
+									--->
+								
+								</cf_HibachiDisplayToggle>
+							</fieldset>
+						</div>
+					</div>
+				</div>
+				
 			</cf_HibachiPropertyList>
-			<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
-			<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
-			<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" multiselectFieldName="locationConfigurations" edit="true">
-				<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-				<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
-			</cf_HibachiListingDisplay>
 	
 		</cf_HibachiPropertyRow>
 		
