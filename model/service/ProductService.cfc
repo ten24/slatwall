@@ -522,7 +522,7 @@ component extends="HibachiService" accessors="true" {
 		
 		// Single event instance (non-recurring)
 		if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schSingle").getTypeID() ) {
-			var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier);
+			var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier);
 		}
 		
 		// Recurring schedule is specified for event
@@ -841,8 +841,14 @@ component extends="HibachiService" accessors="true" {
 				// Single event instance (non-recurring)
 				if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schSingle").getTypeID() ) {
 					
+					var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier);
+					// Set first as default sku
+					if(isFirstSku) {
+						arguments.product.setDefaultSku( newSku );	
+						isFirstSku = false;
+					}
 					// Bundled location configuration
-					if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+					/*if(arguments.processObject.getBundleLocationConfigurationFlag()) {
 						var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
 						// Add location configurations
 						for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
@@ -869,7 +875,7 @@ component extends="HibachiService" accessors="true" {
 								isFirstSku = false;
 							}
 						}
-					}
+					}*/
 				}
 				
 				//==========================================
