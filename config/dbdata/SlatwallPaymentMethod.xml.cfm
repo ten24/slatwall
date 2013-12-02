@@ -5,7 +5,7 @@
 		<column name="paymentMethodName" update="false" />
 		<column name="paymentMethodType" />
 		<column name="activeFlag" update="false" datatype="bit" />
-		<column name="sortOrder" update="false" />
+		<column name="sortOrder" update="false" datatype="integer" />
 	</Columns>
 	<Records>
 		<Record paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a" paymentMethodName="Credit Card" paymentMethodType="creditCard" activeFlag="1" sortOrder="1" />

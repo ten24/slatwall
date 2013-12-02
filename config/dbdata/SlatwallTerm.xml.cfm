@@ -3,11 +3,11 @@
 	<Columns>
 		<column name="termID" fieldtype="id" />
 		<column name="termName" update="false" />
-		<column name="termHours" />
-		<column name="termDays" />
-		<column name="termMonths" />
-		<column name="termYears" />
-		<column name="sortOrder" update="false" />		
+		<column name="termHours" datatype="integer" />
+		<column name="termDays" datatype="integer" />
+		<column name="termMonths" datatype="integer" />
+		<column name="termYears" datatype="integer" />
+		<column name="sortOrder" update="false" datatype="integer" />
 	</Columns>
 	<Records>
 		<Record termID="23c6a8c4e605d0586869d7f3a8b36ba7" termName="10 Days" termDays="10" sortOrder="1" />

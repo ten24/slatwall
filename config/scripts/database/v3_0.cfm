@@ -154,6 +154,8 @@ Notes:
 	<cfquery name="local.allowNull">
 		<cfif getApplicationValue("databaseType") eq "MySQL">
 			ALTER TABLE SwOrderPayment MODIFY COLUMN amount decimal(19,2) NULL
+		<cfelseif getApplicationValue("databaseType") eq "PostgreSQL">
+			ALTER TABLE SwOrderPayment ALTER COLUMN amount TYPE decimal(19,2) NULL
 		<cfelse>
 			ALTER TABLE SwOrderPayment ALTER COLUMN amount decimal(19,2) NULL
 		</cfif>

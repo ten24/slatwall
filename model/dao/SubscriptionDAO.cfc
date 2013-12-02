@@ -70,7 +70,7 @@ Notes:
 
 		<cfset var getsu = "" />
 		<!--- can't figure out top 1 hql so, doing query: Sumit --->
-		<cfif getApplicationValue("databaseType") eq "MySQL">
+		<cfelseif getApplicationValue("databaseType") eq "MySQL" or getApplicationValue("databaseType") eq "PostgreSQL">
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
 				FROM SwSubsUsage su
@@ -107,7 +107,7 @@ Notes:
 
 		<cfset var getsu = "" />
 		<!--- can't figure out top 1 hql so, doing query: Sumit --->
-		<cfif getApplicationValue("databaseType") eq "MySQL">
+		<cfelseif getApplicationValue("databaseType") eq "MySQL" or getApplicationValue("databaseType") eq "PostgreSQL">
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
 				FROM SwSubsUsage su

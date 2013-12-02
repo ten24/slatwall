@@ -840,7 +840,7 @@
 				  LEFT JOIN
 				  	SwContent on tcontent.contentID = SwContent.cmsContentID AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />
 				WHERE
-					tcontent.active = <cfqueryparam cfsqltype="cf_sql_bit" value="1" />
+					tcontent.active = 1
 				  AND
 				  	tcontent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraSiteID#" />
 				  AND
@@ -852,7 +852,7 @@
 				  AND
 				  	SwContent.contentID is null
 				ORDER BY
-					<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL" OR  $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">
+					<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL" OR $.slatwall.getApplicationValue("databaseType") eq "PostgreSQL" OR  $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">
 						LENGTH( tcontent.path )
 					<cfelse>
 						LEN( tcontent.path )
@@ -988,7 +988,7 @@
 				WHERE
 					SwCategory.categoryID is null
 				ORDER BY
-					<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL" OR  $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">
+					<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL" OR $.slatwall.getApplicationValue("databaseType") eq "PostgreSQL" OR  $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">
 						LENGTH(tcontentcategories.path)
 					<cfelse>
 						LEN(tcontentcategories.path)

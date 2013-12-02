@@ -481,6 +481,8 @@ Notes:
 			  INNER JOIN
 			  <cfif getApplicationValue("databaseType") eq "MySQL">
 			  	SwPromoRewardProductType on SwProductType.productTypeIDPath LIKE concat('%', SwPromoRewardProductType.productTypeID, '%')
+			  <cfelseif getApplicationValue("databaseType") eq "PostgreSQL">
+				SwPromoRewardProductType on SwProductType.productTypeIDPath ILIKE ('%' || SwPromoRewardProductType.productTypeID || '%')
 			  <cfelseif getApplicationValue("databaseType") eq "Oracle10g">
 			  	SwPromoRewardProductType on SwProductType.productTypeIDPath LIKE ('%' || SwPromoRewardProductType.productTypeID || '%')
 			  <cfelse>

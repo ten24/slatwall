@@ -5,7 +5,7 @@
 		<column name="activeFlag" datatype="bit" update="false" />
 		<column name="paymentTermName" update="false" />
 		<column name="termID" update="false" />
-		<column name="sortOrder" update="false" />
+		<column name="sortOrder" update="false" datatype="integer" />
 	</Columns>
 	<Records>
 		<Record paymentTermID="27f223d1a5b7cba92e783c926e29efc6" activeFlag="1" paymentTermName="Net 30" termID="23c6a8c6e1bfc7f2c6cc29d467661eb9" sortOrder="1" />
