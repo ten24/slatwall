@@ -106,6 +106,10 @@ Notes:
 					<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
 						RENAME TABLE #local.tables.table_name# TO #local.newTableName#
 					</cfquery>
+				<cfelseif this.ormSettings.dialect eq "PostgreSQL">
+					<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
+						ALTER TABLE #local.tables.table_name# RENAME TO #local.newTableName#
+					</cfquery>
 				<cfelse>
 					<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
 						EXEC sp_rename '#local.tables.table_name#','#local.newTableName#'
@@ -137,6 +141,10 @@ Notes:
 						<cfif this.ormSettings.dialect eq "MySQL">
 							<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
 								ALTER TABLE #listFirst(local.lookupValues[i],'.')# CHANGE #listLast(local.lookupValues[i],'.')# #listLast(local.newValues[i],'.')# <cfif local.columns.TYPE_NAME EQ "varchar">varchar(#local.columns.COLUMN_SIZE#)<cfelse>#local.columns.TYPE_NAME#</cfif>
+							</cfquery>
+						<cfelseif this.ormSettings.dialect eq "PostgreSQL">
+							<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">
+								ALTER TABLE #listFirst(local.lookupValues[i],'.')# RENAME #listLast(local.lookupValues[i],'.')# TO #listLast(local.newValues[i],'.')#
 							</cfquery>
 						<cfelse>
 							<cfquery name="local.qryrenametable" datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#">

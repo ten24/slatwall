@@ -75,6 +75,13 @@
 					WEEK( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeWeek,
 					DAY( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeDay,
 					HOUR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeHour
+				<cfelseif getApplicationValue('databaseType') eq "PostgreSQL">
+					#getReportDateTimeDefinition(getReportDateTime())['dataColumn']# as reportDateTime,
+					EXTRACT( YEAR FROM #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeYear,
+					EXTRACT( MONTH FROM #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeMonth,
+					EXTRACT( WEEK FROM #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeWeek,
+					EXTRACT( DAY FROM #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeDay,
+					EXTRACT( HOUR FROM #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeHour
 				<cfelseif getApplicationValue('databaseType') eq "Oracle10g">
 					#getReportDateTimeDefinition(getReportDateTime())['dataColumn']# as reportDateTime,
 					TO_CHAR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']#, 'YYYY' ) as reportDateTimeYear,
