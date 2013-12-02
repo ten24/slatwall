@@ -251,8 +251,8 @@ component extends="HibachiService" accessors="true" {
 			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
 			isFirstSku = false;
 		}
-		/*var isFirstSku = true;
-		if(arguments.product.hasDefaultSku()) {
+		var isFirstSku = true;
+		/*if(arguments.product.hasDefaultSku()) {
 			isFirstSku = false;
 		}*/
 		
