@@ -131,7 +131,8 @@ component extends="HibachiService" accessors="true" {
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
 		var skuQualifier = 1;
 		var isFirstSku = true;
-		if(arguments.product.hasDefaultSku()) {
+		if(arrayLen(arguments.product.getSkus())) {
+			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
 			isFirstSku = false;
 		}
 		
@@ -167,7 +168,8 @@ component extends="HibachiService" accessors="true" {
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
 		var skuQualifier = 1;
 		var isFirstSku = true;
-		if(arguments.product.hasDefaultSku()) {
+		if(arrayLen(arguments.product.getSkus())) {
+			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
 			isFirstSku = false;
 		}
 		
@@ -230,7 +232,7 @@ component extends="HibachiService" accessors="true" {
 				cursorPosition++;
 			}
 				
-		} while ( newSkuStartDateTime < arguments.processObject.getscheduleEndDate() );
+		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
 		
 		
 	}
@@ -245,10 +247,14 @@ component extends="HibachiService" accessors="true" {
 		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
 		var skuQualifier = 1;
-		var isFirstSku = true;
-		if(arguments.product.hasDefaultSku()) {
+		if(arrayLen(arguments.product.getSkus())) {
+			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
 			isFirstSku = false;
 		}
+		/*var isFirstSku = true;
+		if(arguments.product.hasDefaultSku()) {
+			isFirstSku = false;
+		}*/
 		
 		var nextMonth = month(arguments.processObject.getEventStartDateTime());
 		var nextYear = year(arguments.processObject.getEventStartDateTime());
@@ -300,7 +306,7 @@ component extends="HibachiService" accessors="true" {
 				newSkuEndDateTime = dateAdd("m",1,newSkuEndDateTime);
 			}
 				
-		} while ( newSkuStartDateTime < arguments.processObject.getscheduleEndDate() );
+		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
 		
 		
 	}
@@ -316,10 +322,11 @@ component extends="HibachiService" accessors="true" {
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
 		var skuQualifier = 1;
 		var isFirstSku = true;
-		if(arguments.product.hasDefaultSku()) {
+		if(arrayLen(arguments.product.getSkus())) {
+			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
 			isFirstSku = false;
 		}
-		
+		writelog(file="slatwall",text="QUAL: #skuQualifier#")
 		var nextYear = year(arguments.processObject.getEventStartDateTime());
 		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
@@ -338,12 +345,10 @@ component extends="HibachiService" accessors="true" {
 				isFirstSku = false;
 			}
 			
-			
-			
 			newSkuStartDateTime = dateAdd("yyyy",1,newSkuStartDateTime);
 			newSkuEndDateTime = dateAdd("yyyy",1,newSkuEndDateTime);
 				
-		} while ( newSkuStartDateTime < arguments.processObject.getscheduleEndDate() );
+		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
 		
 	}
 	
@@ -512,91 +517,64 @@ component extends="HibachiService" accessors="true" {
 		var newProductSchedule = this.newProductSchedule();
 		newProductSchedule.setSchedulingType( schedulingType );
 		
-		var SkusToCreate = 1;
-		
 		// Generate next highest sku qualifier
 		var SkuQualifier = getMaxSkuQualifier(arguments.product.getSkus()) + 1; 
 		
-		// Set date and time for first sku
-		newProductSchedule.setScheduleStartDate(createDateTime(year(newSkuStartDateTime),month(newSkuStartDateTime),day(newSkuStartDateTime),0,0,0));
-		newProductSchedule.setScheduleEndDate(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),0,0,0));
-		//var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-		//var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-		
 		// Single event instance (non-recurring)
 		if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schSingle").getTypeID() ) {
-			// For Every locationConfiguration, create a sku with the eventStartDateTime
-			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-				var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-				skuQualifier++;
-				newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-			}
+			var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier);
 		}
-		
 		
 		// Recurring schedule is specified for event
 		else if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schRecurring").getTypeID()) {
 
+			//Create new product schedule
+			var newProductSchedule = this.newProductSchedule();
+			newProductSchedule.setSchedulingType( schedulingType );
+			
 			// How frequently will event occur (Daily, Weekly, etc.)?
 			newProductSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
+			
 			// Is end type based on occurrences or date?
 			newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
 			
-			// Modify date the schedule begins on
-			newProductSchedule.setScheduleStartDate(arguments.processObject.getScheduleStartDate());
+			// Set schedule start/end dates
+			newProductSchedule.setScheduleStartDate(createDateTime(year(arguments.processObject.getScheduleStartDate()),month(arguments.processObject.getScheduleStartDate()),day(arguments.processObject.getScheduleStartDate()),0,0,0));
+			newProductSchedule.setScheduleEndDate(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59));
 			
-			// Schedule ends based on occurrences
-			if(arguments.processObject.getScheduleEndType() == getSettingService().getTypeBySystemCode("setOccurrences").getTypeID()) {
-				newProductSchedule.setScheduleEndOccurrences(arguments.processObject.getScheduleEndOccurrences());
-				SkusToCreate = arguments.processObject.getScheduleEndOccurrences();
+			// Set product association
+			newProductSchedule.setProduct(arguments.product);
+			
+			// Make sure event start date and schedule start date are the same
+			if(dateDiff("d",dateFormat(arguments.processObject.getEventStartDateTime(),"short"),dateFormat(arguments.processObject.getScheduleStartDate(),"short") ) != 0 ){
+				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleStartDate'));
+			} else {
 				
-				//Create SKU(s) for every occurrence
-				for(var i=1;i<=SkusToCreate;i++) {
-					
-					// For Every locationConfiguration, create a sku with the eventStartDateTime
-					for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-						var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-						newSku.setProductSchedule(newProductSchedule); 
-						skuQualifier++;
-						newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-						
-						// Increment Start/End date time based on recurring time unit
-						newSkuStartDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuStartDateTime);
-						newSkuEndDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuEndDateTime);
-						
-					}
-					
+				// DAILY
+				if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Daily") {
+					createDailyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
 				}
-			}
-			
-			else 
-			// Schedule ends based on date
-			{
-				newProductSchedule.setScheduleEndDate(arguments.processObject.getScheduleEndDate());
 				
-				do {
-					
-					// For Every locationConfiguration, create a sku with the eventStartDateTime
-					for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-						var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-						newSku.setProductSchedule(newProductSchedule); 
-						skuQualifier++;
-						newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-					}
-					
-					// Increment Start/End date time based on recurring time unit
-					newSkuStartDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuStartDateTime);
-					newSkuEndDateTime = incrementDateTimeByRecurringTypeID(arguments.processObject.getrecurringTimeUnit(),newSkuEndDateTime);
-					
-						
-				} while ( newSkuEndDateTime < arguments.processObject.getscheduleEndDate() );
+				// WEEKLY
+				else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Weekly") {
+					createWeeklyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+				} 
+				
+				// MONTHLY
+				else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Monthly") {
+					createMonthlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+				} 
+				
+				// YEARLY
+				else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Yearly") {
+					createYearlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+				} 
 				
 			}
-			
+			//Persist new product schedule
+			getProductScheduleService().saveProductSchedule( newProductSchedule );
 		}
-		
-		//Persist new product schedule
-		getProductScheduleService().saveProductSchedule( newProductSchedule );
+			
 		
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');

@@ -127,4 +127,18 @@ Notes:
 		
 	</cf_HibachiEntityProcessForm>
 </cfoutput>
+<script>
+	$("input[name='eventStartDateTime']").change(function() {
+		var dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+		var weeks = ["First","Second","Third","Fourth","Fifth"];
+		var monthDay = ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"];
+		var scheduleStartDate = new Date($("input[name='eventStartDateTime']").val());
+		var dateOnly = $(this).val().substring(0,$(this).val().length-9);
+		$("input[name='scheduleStartDate']").val(dateOnly);
+		var weekdaySummary = "Occurs every " + weeks[Math.ceil(scheduleStartDate.getDate()/7)-1] + " " + dayNames[scheduleStartDate.getDay()];
+		var monthdaySummary = "Occurs on the " + monthDay[scheduleStartDate.getDate()-1] + " of every month";
+		$("#monthlyRepeatByWeekdaySummary").text(weekdaySummary);
+		$("#monthlyRepeatByMonthdaySummary").text(monthdaySummary);
+	});
 
+</script>
