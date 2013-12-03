@@ -189,14 +189,14 @@ Notes:
 							<cf_HibachiListingColumn propertyIdentifier="title" />
 						</cf_HibachiListingDisplay>
 					
-					<!---<cfelseif rc.processObject.getBaseProductType() eq "event">
+					<cfelseif rc.processObject.getBaseProductType() eq "event">
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
 						<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
 						<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
 						<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" multiselectFieldName="locationConfigurations" edit="true">
 							<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
 							<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
-						</cf_HibachiListingDisplay>--->
+						</cf_HibachiListingDisplay>
 			
 					</cfif>
 			
