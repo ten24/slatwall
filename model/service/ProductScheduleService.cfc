@@ -64,6 +64,15 @@ component  extends="HibachiService" accessors="true" {
 		return options;
 	}
 	
+	public any function getMonthlyRepeatByOptions() {
+		var options = [
+			{name="Day of week", value="dayOfWeek"},
+			{name="Day of month", value="dayOfMonth"}
+		];
+
+		return options;
+	}
+	
 	// Returns a date object of the first occurance of a specified day in the given month and year.
 	// @param day_number			An integer in the range 1 - 7. 1=Sun, 2=Mon, 3=Tue, 4=Wed, 5=Thu, 6=Fri, 7=Sat. (Required)
 	// @param month_number		Month value.  (Required)
@@ -93,6 +102,34 @@ component  extends="HibachiService" accessors="true" {
 			default: returnDate = startOfMonth; break;  
 		} 
 		return returnDate;
+	}
+	
+	
+	
+	public array function getProductSchedules(required any product, required boolean sorted, boolean fetchOptions=false) {
+		var schedules = getProductScheduleDAO().getProductSchedules(product=arguments.product, fetchOptions=arguments.fetchOptions);
+		
+		if(arguments.sorted && arrayLen(schedules) gt 1 && arrayLen(schedules[1].getOptions())) {
+			var sortedScheduleIDQuery = getProductScheduleDAO().getSortedProductSchedulesID( productID = arguments.product.getProductID() );
+			var sortedArray = arrayNew(1);
+			var sortedArrayReturn = arrayNew(1);
+			
+			for(var i=1; i<=sortedScheduleIDQuery.recordCount; i++) {
+				arrayAppend(sortedArray, sortedSkuIDQuery.skuID[i]);
+			}
+			
+			arrayResize(sortedArrayReturn, arrayLen(sortedArray));
+			
+			for(var i=1; i<=arrayLen(schedules); i++) {
+				var scheduleID = skus[i].getProductScheduleID();
+				var index = arrayFind(sortedArray, scheduleID);
+				sortedArrayReturn[index] = schedules[i];
+			}
+			
+			schedules = sortedArrayReturn;
+		}
+		
+		return schedules;
 	}
 	
 	public array function getRecurringTimeUnitOptions() {

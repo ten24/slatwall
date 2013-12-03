@@ -36,36 +36,17 @@
 Notes:
 
 --->
-<cfparam name="rc.sku" default="any" >
+<cfparam name="rc.product" default="any" >
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<!--- Prevent modifying locations in tab in case scheduled plus we want this to be a process --->
-	<!---<cfif rc.edit>
-		<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
-		<cfset selectedLocationConfigurationIDs = "" />
-		<cfloop array="#rc.sku.getLocationConfigurations()#" index="lc">
-			<cfset selectedLocationConfigurationIDs = listAppend(selectedLocationConfigurationIDs, lc.getlocationConfigurationID()) />
-		</cfloop>
-		<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" 
-								  multiselectFieldName="locationConfigurations"
-								  multiselectPropertyIdentifier="locationConfigurationID" 
-								  multiselectValues="#selectedLocationConfigurationIDs#"
-								  edit="#rc.edit#">
-			<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
-			<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-		</cf_HibachiListingDisplay>
-	<cfelse>--->
-		<cf_HibachiListingDisplay smartList="#rc.sku.getLocationConfigurationsSmartList()#"
-								  recordEditAction="admin:entity.editlocationconfiguration"
-								  recordDetailAction="admin:entity.detaillocationconfiguration"
-								  edit="false">
+	<cf_HibachiListingDisplay smartList="#rc.product.getProductSchedulesSmartList()#"
+							  recordEditAction="admin:entity.editproductschedule"
+							  recordDetailAction="admin:entity.detailproductschedule"
+							  edit="false">
 								    
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationPathName" />
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
-			<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="scheduleStartDate" />
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="scheduleEndDate" />
 			
-		</cf_HibachiListingDisplay>
-	<!---</cfif>--->
-	<!---<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocesssku" processContext="addlocation" class="btn" icon="plus icon" modal="false" />--->
+	</cf_HibachiListingDisplay>
 </cfoutput>

@@ -90,6 +90,7 @@ Notes:
 			
 			<!--- Event Registrations --->
 			<cfif rc.product.getBaseProductType() EQ "event">
+				<cf_HibachiTab property="productSchedules" />
 				<cf_HibachiTab property="eventregistrations" />
 			</cfif>
 			<cf_HibachiTab view="admin:entity/producttabs/saleshistory" />

@@ -475,7 +475,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// If this is an event then we need to attach accounts and registrations
 		// to match the quantity of the order item. Comes from Order_AddOrderItem.		
-		if(arguments.processObject.getSku().getBaseProductType() == "event"  && arguments.processObject.hasRegistrants()) {
+		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
 			
 			// ProcessObject should contain account info in registrants array	
 			for(var registrant in arguments.processObject.getRegistrants()) {

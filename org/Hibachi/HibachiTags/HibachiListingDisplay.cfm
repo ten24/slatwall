@@ -223,7 +223,7 @@
 						<cfif structKeyExists(thisPropertyMeta, "ormtype") && thisPropertyMeta.ormtype eq 'boolean'>
 							<cfset column.filter = true />
 						</cfif>
-						
+						<!---
 						<cfif !column.filter && listLen(column.propertyIdentifier, '._') gt 1>
 							
 							<cfset oneUpPropertyIdentifier = column.propertyIdentifier />
@@ -235,7 +235,7 @@
 								<cfset column.filter = true />
 							</cfif>
 						</cfif>
-						
+						--->
 					<cfelseif !isBoolean(column.filter)>
 						<cfset column.filter = false />
 					</cfif>

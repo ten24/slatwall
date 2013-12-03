@@ -144,10 +144,69 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
-	// Modifies event related start/end dates based on process object data
+	// @help Adds locations to event skus	
+	public any function processSku_addLocation(required any sku, required any processObject) {
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations(),","); lc++) {
+				var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
+				sku.addLocationConfiguration( thisLocationConfig );
+			}
+		} else if(arguments.processObject.getEditScope() == "all"){
+			
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				var lcList = arguments.processObject.getLocationConfigurations();
+				if(thisSku.geteventStartDateTime() > now()) {
+					for(var lc=1; lc<=listLen(lcList,","); lc++) {
+						var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(lcList, lc) );
+						thisSku.addLocationConfiguration( thisLocationConfig );
+					}
+				}
+			}
+			
+		}
+		return sku;
+	}
+	
+	// @help Removes locations from event skus	
+	public any function processSku_removeLocation(required any sku, required any processObject) {
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations(),","); lc++) {
+				var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
+				sku.removeLocationConfiguration( thisLocationConfig );
+			}
+			// Remove this sku from product schedule
+			if(!isNull(arguments.sku.getProductSchedule())) {
+				arguments.sku.setProductSchedule(javaCast("null", ""));
+			}
+		} else if(arguments.processObject.getEditScope() == "all"){
+			
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				var lcList = arguments.processObject.getLocationConfigurations();
+				if(thisSku.geteventStartDateTime() > now()) {
+					for(var lc=1; lc<=listLen(lcList,","); lc++) {
+						var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(lcList, lc) );
+						thisSku.removeLocationConfiguration( thisLocationConfig );
+					}
+				}
+			}
+			
+		}
+		return sku;
+	}
+	
+	// @help Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
 		
-		if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
 			
 			if(locationConflictExists(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),arguments.processObject.getLocationConfigurations())) {
 				// There is already an event scheduled at that location in the same date range

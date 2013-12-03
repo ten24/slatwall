@@ -52,24 +52,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="sku";
 
 	// Data Properties
-	property name="eventStartTime" hb_formFieldType="time";
-	property name="eventEndTime" hb_formFieldType="time";
-	property name="reservationStartTime" hb_formFieldType="time";
-	property name="reservationEndTime" hb_formFieldType="time";
 	property name="locationConfigurations";
-	
-	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
-	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
-	property name="startReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
-	property name="endReservationDateTime" hb_rbKey="entity.sku.endReservationDateTime" hb_formFieldType="datetime";
 	
 	// Scheduling-related properties
 	property name="editScope" hb_formFieldType="select" hint="Edit this sku schedule or all?";
 	
-	
-	public array function getDaysOfWeekOptions(boolean includeWeekends=true) {
-		return getService("ProductScheduleService").getDaysOfWeekOptions(arguments.includeWeekends);
-	}
 	
 	public array function getEditScopeOptions() {
 		var options = [
@@ -79,6 +66,52 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		];
 
 		return options;
+	}
+	
+	public any function getSelectedLocationsSmartList() {
+		
+		var selectedLocationsList = "";
+		
+		// Don't show locations that are already in sku
+		/*if(sku.hasLocationConfiguration()) {
+			for( var thisLocation in sku.getLocations()) {
+				if(listFind(thisLocation.getLocationID(),selectedLocationsList,"," ) == 0) {
+					if(listLen(selectedLocationsList)) {
+						listAppend(selectedLocationsList,"'#thisLocation.getLocationID()#'",",");
+					} else {
+						selectedLocationsList = thisLocation.getLocationID();
+					}
+				}
+			}
+		}*/
+		
+		if(arrayLen(sku.getLocationConfigurations())) {
+			for( var lc in sku.getLocationConfigurations()) {
+				if(listFind(lc.getLocationConfigurationID(),selectedLocationsList,"," ) == 0) {
+					if(listLen(selectedLocationsList) > 0) {
+						selectedLocationsList = listAppend(selectedLocationsList,lc.getLocationConfigurationID());
+					} else {
+						selectedLocationsList = lc.getLocationConfigurationID();
+					}
+				}
+			}
+		}
+		writelog(file="slatwall", text="selectedLocationsList: #selectedLocationsList#");
+		
+		selectedLocationsList = listQualify(selectedLocationsList,"'",",","char" );
+		var selectedLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
+		if(listLen(selectedLocationsList) > 0) {
+			selectedLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.locationConfigurationID IN (#selectedLocationsList#	)");
+		} else {
+			selectedLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.locationConfigurationID = '-1'");
+		}
+		
+					
+		// Get skus that have datetimes that overlap with current sku
+		//var skuSmartList = getService("SkuService").getSkuSmartList();
+		//skuSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID IN (#selectedLocationsList#)");
+		return selectedLocationsSmartList;
+
 	}
 	
 	public string function getEventStartTime() {
@@ -95,22 +128,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public string function getReservationEndTime() {
 		return timeFormat(this.getsku().getEndReservationDateTime(),"h:mm tt");
-	}
-	
-	public array function getscheduleEndTypeOptions() {
-		return getService("ProductScheduleService").getscheduleEndTypeOptions();
-	}
-	
-	public array function getRepeatTimeUnitOptions() {
-		return getService("ProductScheduleService").getRepeatTimeUnitOptions();
-	}
-	
-	public array function getSchedulingTypeOptions() {
-		return getService("ProductScheduleService").getSchedulingTypeOptions();
-	}
-	
-	public array function getRecurringTimeUnitOptions() {
-		return getService("ProductScheduleService").getRecurringTimeUnitOptions();
 	}
 	
 	public any function getScheduleEndDate() {

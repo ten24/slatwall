@@ -589,7 +589,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getLocations() {
 		if(!structKeyExists(variables,"locations")) {
 			variables.locations = [];
-			if(this.hasLocationConfigurations()) {
+			if(this.hasLocationConfiguration()) {
 				for(var config in this.getLocationConfigurations()) {
 					arrayAppend(variables.locations,config.getLocation());
 				}
@@ -702,7 +702,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				case "event":
 					var configs = getLocationConfigurations();
 					for(config in configs){
-						variables.skuDefinition = config.getlocationPathName();
+						variables.skuDefinition = config.getlocationPathName() & " (#config.getLocationConfigurationName()#)";
 					}
 					break;
 					
