@@ -110,6 +110,12 @@ Notes:
 	</cfif>
 </cfif>
 
+<!--- IMPORTANT: This is here so that the checkout layout is never cached by the browser --->
+<cfheader name="cache-control" value="no-cache, no-store, must-revalidate" /> 
+<cfheader name="cache-control" value="post-check=0, pre-check=0" /> 
+<cfheader name="last-modified" value="#now()#" />
+<cfheader name="pragma"  value="no-cache" />
+
 <!--- We are paraming this variable so that we can use it later to see if a specific step was clicked on.  Using the url.step is just a templating thing and it has nothing to do really with the core of Slatwall.  This could be changed to anything --->
 <cfparam name="url.step" default="" />
 
