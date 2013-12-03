@@ -259,7 +259,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					thisSku.setStartReservationDateTime(newReservationStartDateTime);
 					thisSku.setEndReservationDateTime(newReservationEndDateTime);
 					
-					// Remove deleted location configurations
+					/*// Remove deleted location configurations
 					for(var locationConfig in thisSku.getLocationConfigurations()) {
 						var lcExistsAt = listFindNoCase(lcList,locationConfig.getLocationConfigurationID(),"," );
 						if(lcExistsAt == 0) {
@@ -278,7 +278,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(lcList, lc) );
 							thisSku.addLocationConfiguration( thisLocationConfig );
 						}
-					}
+					}*/
 					
 				}
 			}

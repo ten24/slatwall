@@ -85,7 +85,7 @@ Notes:
 			
 			</cfif>
 			
-			<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
+			<!---<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
 			<cfset selectedLocationConfigurationIDs = "" />
 			<cfloop array="#rc.sku.getLocationConfigurations()#" index="lc">
 				<cfset selectedLocationConfigurationIDs = listAppend(selectedLocationConfigurationIDs, lc.getlocationConfigurationID()) />
@@ -97,7 +97,7 @@ Notes:
 									  edit="#rc.edit#">
 				<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
 				<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-			</cf_HibachiListingDisplay>
+			</cf_HibachiListingDisplay>--->
 			
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>

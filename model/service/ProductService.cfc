@@ -298,14 +298,11 @@ component extends="HibachiService" accessors="true" {
 		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
 		var skuQualifier = 1;
+		var isFirstSku = true;
 		if(arrayLen(arguments.product.getSkus())) {
 			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
 			isFirstSku = false;
 		}
-		var isFirstSku = true;
-		/*if(arguments.product.hasDefaultSku()) {
-			isFirstSku = false;
-		}*/
 		
 		var nextMonth = month(arguments.processObject.getEventStartDateTime());
 		var nextYear = year(arguments.processObject.getEventStartDateTime());
@@ -400,7 +397,6 @@ component extends="HibachiService" accessors="true" {
 			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
 			isFirstSku = false;
 		}
-		writelog(file="slatwall",text="QUAL: #skuQualifier#")
 		var nextYear = year(arguments.processObject.getEventStartDateTime());
 		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
