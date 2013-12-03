@@ -132,6 +132,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="optionsByOptionGroupIDStruct" persistent="false";
 	property name="optionsIDList" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
+	property name="productScheduleSmartList" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
@@ -358,6 +359,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// END: Quantity Helper Methods
+	
 	
 	
 	
@@ -641,6 +643,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 
 		return variables.placedOrderItemsSmartList;
+	}
+	
+		
+	// @help Returns any product schedule this sku is part of
+	public any function getProductScheduleSmartList() {
+		if(!structKeyExists(variables, "productScheduleSmartList")) {
+			variables.productScheduleSmartList = getService("ProductScheduleService").getProductScheduleSmartList();
+			if(!isNull(this.getProductSchedule())) {
+				variables.productScheduleSmartList.addFilter('productScheduleID', this.getProductSchedule().getProductScheduleID());
+			} else {
+				variables.productScheduleSmartList.addFilter('productScheduleID', "-1");
+				
+			}
+		}
+		return variables.productScheduleSmartList;
 	}
 	
 	

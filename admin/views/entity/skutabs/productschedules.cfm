@@ -36,11 +36,11 @@
 Notes:
 
 --->
-<cfparam name="rc.product" default="any" >
+<cfparam name="rc.sku" default="any" >
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.product.getProductSchedulesSmartList()#"
+	<cf_HibachiListingDisplay smartList="#rc.sku.getProductScheduleSmartList()#"
 							  recordEditAction="admin:entity.editproductschedule"
 							  recordDetailAction="admin:entity.detailproductschedule"
 							  edit="false">
