@@ -319,28 +319,24 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			}
 		}
 		
-		if(propertyIsAttribute && listLen(arguments.propertyIdentifier, variables.subEntityDelimiters) eq 1) {
+		for(var i=1; i<listLen(arguments.propertyIdentifier, variables.subEntityDelimiters); i++) {
+			var thisProperty = listGetAt(arguments.propertyIdentifier, i, variables.subEntityDelimiters);
 			if(structKeyExists(arguments,"fetch")){
-				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=arguments.propertyIdentifier,fetch=arguments.fetch,isAttribute=true);
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,fetch=arguments.fetch,isAttribute=false);
 			} else {
-				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=arguments.propertyIdentifier,isAttribute=true);
-			}
-			entityAlias = variables.entities[entityName].entityAlias;
-		} else {
-			for(var i=1; i<listLen(arguments.propertyIdentifier, variables.subEntityDelimiters); i++) {
-				var thisProperty = listGetAt(arguments.propertyIdentifier, i, variables.subEntityDelimiters);
-				var isAttribute = false;
-				if(propertyIsAttribute && listLen(arguments.propertyIdentifier, variables.subEntityDelimiters) == i+1) {
-					isAttribute = true;
-				}
-				if(structKeyExists(arguments,"fetch")){
-					entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,fetch=arguments.fetch,isAttribute=isAttribute);
-				} else {
-					entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,isAttribute=isAttribute);
-				}
-				entityAlias = variables.entities[entityName].entityAlias;
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,isAttribute=false);
 			}
 		}
+		
+		if(propertyIsAttribute) {
+			if(structKeyExists(arguments,"fetch")){
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=listLast(arguments.propertyIdentifier, variables.subEntityDelimiters),fetch=arguments.fetch,isAttribute=true);
+			} else {
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=listLast(arguments.propertyIdentifier, variables.subEntityDelimiters),isAttribute=true);
+			}
+		}
+		
+		entityAlias = variables.entities[entityName].entityAlias;
 		
 		if(propertyIsAttribute) {
 			return "#entityAlias#.attributeValue";	
