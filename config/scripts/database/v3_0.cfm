@@ -112,7 +112,7 @@ Notes:
 		UPDATE
 			SwAccountPaymentMethod
 		SET
-			activeFlag = 1
+			activeFlag = #getApplicationValue("databaseTrue")#
 		WHERE
 			activeFlag is null
 	</cfquery>
@@ -121,7 +121,7 @@ Notes:
 		UPDATE
 			SwSku
 		SET
-			activeFlag = 1
+			activeFlag = #getApplicationValue("databaseTrue")#
 		WHERE
 			activeFlag is null
 	</cfquery>
@@ -138,7 +138,7 @@ Notes:
 		UPDATE
 			SwOrderFulfillment
 		SET
-			manualFulfillmentChargeFlag = 0
+			manualFulfillmentChargeFlag = #getApplicationValue("databaseFalse")#
 		WHERE
 			manualFulfillmentChargeFlag is null
 	</cfquery>

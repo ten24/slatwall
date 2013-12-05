@@ -62,11 +62,11 @@
 			  INNER JOIN
 			  	SwProduct
 			WHERE
-				SwSku.activeFlag = 1
+				SwSku.activeFlag = #getApplicationValue("databaseTrue")#
 			  AND
-			  	SwProduct.activeFlag = 1
+			  	SwProduct.activeFlag = #getApplicationValue("databaseTrue")#
 			  AND
-			  	SwProduct.publishedFlag = 1
+			  	SwProduct.publishedFlag = #getApplicationValue("databaseTrue")#
 			  AND
 			  	SwProduct.calculatedQATS > 0
 		</cfquery>

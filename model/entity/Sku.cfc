@@ -344,7 +344,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.assignedOrderItemAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "skus", "left");
 			
 			var wc = "(";
-			wc &= " aslatwallattributeset.globalFlag = 1";
+			wc &= " aslatwallattributeset.globalFlag = #getApplicationValue("databaseTrue")#";
 			wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";
 			wc &= " OR aslatwallproduct.productID = '#getProduct().getProductID()#'";
 			if(!isNull(getProduct().getBrand())) {
@@ -862,7 +862,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "skus", "left");
 			
 			var wc = "(";
-			wc &= " aslatwallattributeset.globalFlag = 1";
+			wc &= " aslatwallattributeset.globalFlag = #getApplicationValue("databaseTrue")#";
 			wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";
 			wc &= " OR aslatwallproduct.productID = '#getProduct().getProductID()#'";
 			if(!isNull(getProduct().getBrand())) {

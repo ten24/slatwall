@@ -59,9 +59,9 @@ Notes:
 			INNER JOIN 
 				SwTask ON SwTask.taskID = SwTaskSchedule.taskid 
 			WHERE 
-				SwTask.runningflag=0  
+				SwTask.runningflag= #getApplicationValue("databaseFalse")#
 			AND	
-				SwTask.activeflag= 1 
+				SwTask.activeflag= #getApplicationValue("databaseTrue")#
 			AND 
 				(
 				SwTaskSchedule.nextRunDateTime IS NULL

@@ -51,13 +51,13 @@ Notes:
 	<cfscript>
 		public array function getAttributeSets(required array attributeSetTypeCode,required array productTypeIDs){
 			var hql = " FROM SlatwallAttributeSet sas
-						WHERE (exists(FROM sas.attributes sa WHERE sa.activeFlag = 1)
+						WHERE (exists(FROM sas.attributes sa WHERE sa.activeFlag = #getApplicationValue("databaseTrue")#)
 							AND sas.attributeSetType.systemCode IN (:attributeSetTypeCode)) ";
 			if(arrayLen(arguments.productTypeIDs)){
-				hql &= " AND (sas.globalFlag = 1
+				hql &= " AND (sas.globalFlag = #getApplicationValue("databaseTrue")#
 							OR exists(FROM sas.attributeSetAssignments asa WHERE asa.productTypeID IN (:productTypeIDs)))";
 			} else {
-				hql &= " AND sas.globalFlag = 1";
+				hql &= " AND sas.globalFlag = #getApplicationValue("databaseTrue")#";
 			}			 
 			hql &= " ORDER BY sas.attributeSetType.systemCode ASC, sas.sortOrder ASC";
 			

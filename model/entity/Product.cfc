@@ -842,7 +842,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
 			
 			var wc = "(";
-			wc &= " aslatwallattributeset.globalFlag = 1";
+			wc &= " aslatwallattributeset.globalFlag = #getApplicationValue("databaseTrue")#";
 			if(!isNull(getProductType())) {
 				wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProductType().getProductTypeIDPath(),",","','","all")#')";	
 			}
