@@ -110,6 +110,9 @@ Notes:
 					<cf_HibachiTab view="admin:entity/skutabs/options" />
 				</cfif>
 			</cfif>
+			<cfif (rc.sku.getBundleFlag() eq true) and (rc.product.getBaseProductType() neq "merchandise")>
+				<cf_HibachiTab view="admin:entity/skutabs/bundledskus" />
+			</cfif>
 			<cf_HibachiTab property="skuDescription" />
 			<cf_HibachiTab view="admin:entity/skutabs/saleshistory" />
 			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
