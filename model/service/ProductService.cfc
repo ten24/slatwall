@@ -107,14 +107,14 @@ component extends="HibachiService" accessors="true" {
 		newSku.setProduct( arguments.processObject.getproduct() );
 		newSku.setSkuCode( arguments.processObject.getproduct().getProductCode() & "-#arguments.qualifier#");
 		newSku.setPrice( arguments.processObject.getPrice() );
-		newSku.setEventStartDateTime( arguments.startDate );
-		newSku.setEventEndDateTime( arguments.endDate );
+		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
+		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
 		
 		if(structKeyExists(arguments,"locationConfiguration")) {
 			var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');
 			var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPostReservationTime');
-			newSku.setstartReservationDateTime( dateAdd("n",(preEventRegistrationMinutes*-1),arguments.startDate) );
-			newSku.setendReservationDateTime( dateAdd("n",postEventRegistrationMinutes,arguments.endDate) );
+			newSku.setstartReservationDateTime( createODBCDateTime(dateAdd("n",(preEventRegistrationMinutes*-1),arguments.startDate)) );
+			newSku.setendReservationDateTime( createODBCDateTime(dateAdd("n",postEventRegistrationMinutes,arguments.endDate)) );
 		}				
 		
 		return newSku;
@@ -201,6 +201,8 @@ component extends="HibachiService" accessors="true" {
 		
 		// Make sure days are in order
 		arguments.processObject.setWeeklyDaysOfOccurrence(listSort(arguments.processObject.getWeeklyDaysOfOccurrence(),"numeric" ));
+		
+		productSchedule.setRecurringDays(arguments.processObject.getWeeklyDaysOfOccurrence());
 		
 		var todayDay = dayOfWeek(now());
 		var scheduleStartDay = dayOfWeek(arguments.processObject.getScheduleStartDate());
@@ -293,6 +295,7 @@ component extends="HibachiService" accessors="true" {
 		
 		//Create new product schedule
 		productSchedule = arguments.productSchedule;
+		productSchedule.setRepeatByType(arguments.processObject.getMonthlyRepeatBy());
 			
 		// Set initial values for first iteration
 		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
@@ -311,8 +314,12 @@ component extends="HibachiService" accessors="true" {
 		if(arguments.processObject.getMonthlyRepeatBy() == "dayOfWeek") {
 			// Day of week value that event starts on 
 			var repeatDay = dayOfWeek(arguments.processObject.getScheduleStartDate());
+			productSchedule.setRecurringDays(repeatDay);
+			
 			// Week of the month in which the day occurs
-			var dayInstance = ceiling(Day(scheduleStartDate)/7);
+			var dayInstance = ceiling(day(scheduleStartDate)/7);
+		} else {
+			productSchedule.setRecurringDays(day(scheduleStartDate));
 		}
 		
 		productSchedule.setScheduleStartDate(createDateTime(year(newSkuStartDateTime),month(newSkuStartDateTime),day(newSkuStartDateTime),0,0,0));
@@ -936,13 +943,6 @@ component extends="HibachiService" accessors="true" {
 				// Single event instance (non-recurring)
 				if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schSingle").getTypeID() ) {
 					
-					/*var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier);
-					// Set first as default sku
-					if(isFirstSku) {
-						arguments.product.setDefaultSku( newSku );	
-						isFirstSku = false;
-					}*/
-					
 					// Bundled location configuration
 					if(arguments.processObject.getBundleLocationConfigurationFlag()) {
 						var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
@@ -991,8 +991,8 @@ component extends="HibachiService" accessors="true" {
 					newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
 					
 					// Set schedule start/end dates
-					newProductSchedule.setScheduleStartDate(createDateTime(year(arguments.processObject.getScheduleStartDate()),month(arguments.processObject.getScheduleStartDate()),day(arguments.processObject.getScheduleStartDate()),0,0,0));
-					newProductSchedule.setScheduleEndDate(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59));
+					newProductSchedule.setScheduleStartDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleStartDate()),month(arguments.processObject.getScheduleStartDate()),day(arguments.processObject.getScheduleStartDate()),0,0,0)));
+					newProductSchedule.setScheduleEndDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59)));
 					
 					// Set product association
 					newProductSchedule.setProduct(arguments.product);

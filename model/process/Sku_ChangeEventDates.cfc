@@ -81,21 +81,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return options;
 	}
 	
-	public string function getEventStartTime() {
-		return timeFormat(this.getsku().getEventStartDateTime(),"h:mm tt");
+	/*public string function getEventStartTime() {
+		return timeFormat(this.getsku().getEventStartDateTime());
 	}
 	
 	public string function getEventEndTime() {
-		return timeFormat(this.getsku().getEventEndDateTime(),"h:mm tt");
+		writelog(file="slatwall",text="SSSSSSSS: #timeFormat(this.getsku().getEventEndDateTime())#");
+		return timeFormat(this.getsku().getEventEndDateTime());
 	}
 	
 	public string function getReservationStartTime() {
-		return timeFormat(this.getsku().getStartReservationDateTime(),"h:mm tt");
+		return timeFormat(this.getsku().getStartReservationDateTime());
 	}
 	
 	public string function getReservationEndTime() {
-		return timeFormat(this.getsku().getEndReservationDateTime(),"h:mm tt");
-	}
+		return timeFormat(this.getsku().getEndReservationDateTime());
+	}*/
 	
 	public array function getscheduleEndTypeOptions() {
 		return getService("ProductScheduleService").getscheduleEndTypeOptions();

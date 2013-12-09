@@ -44,7 +44,7 @@ Notes:
 							  recordEditAction="admin:entity.editproductschedule"
 							  recordDetailAction="admin:entity.detailproductschedule"
 							  edit="false">
-								    
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="scheduleSummary" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="scheduleStartDate" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="scheduleEndDate" />
 			

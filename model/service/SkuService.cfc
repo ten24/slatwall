@@ -202,7 +202,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// @help Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
-		
+		writelog(file="slatwall",text="======================================");
+		writelog(file="slatwall",text="SCOPE: #arguments.processObject.getEditScope()#");
 		if(arguments.processObject.getEditScope() == "none"  ){
 			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
 		} 
@@ -216,7 +217,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Update schedule dates/times
 				arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
 				arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
-				arguments.sku.setStartReservationDateTime(arguments.processObject.getEndReservationDateTime());
+				arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
 				arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
 
 				// Remove deleted location configurations
@@ -246,8 +247,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		
 		} else if(arguments.processObject.getEditScope() == "all"){
-			
+			writelog(file="slatwall",text="we're getting this far: #arraylen(arguments.sku.getProductSchedule().getSkus())#");
+			writelog(file="slatwall",text="CHANGE END DATE TO: #arguments.processObject.getEventEndTime()#");
 			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+					writelog(file="slatwall",text="we're getting this far too: #thisSku.geteventStartDateTime()#");
 				var lcList = arguments.processObject.getLocationConfigurations();
 				if(thisSku.geteventStartDateTime() > now()) {
 					var newEventStartDateTime = createDateTime(year(thisSku.getEventStartDateTime()),month(thisSku.getEventStartDateTime()),day(thisSku.getEventStartDateTime()),hour(arguments.processObject.getEventStartTime()),minute(arguments.processObject.getEventStartTime()),0);
@@ -258,7 +261,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					thisSku.setEventEndDateTime(newEventEndDateTime);
 					thisSku.setStartReservationDateTime(newReservationStartDateTime);
 					thisSku.setEndReservationDateTime(newReservationEndDateTime);
-					
+					//getStockService().saveStockAdjustment(stockAdjustment);
+					this.saveSku(thisSku);
+					writelog(file="slatwall",text="ENDDATE: #thisSku.getEventEndDateTime()#");
 					/*// Remove deleted location configurations
 					for(var locationConfig in thisSku.getLocationConfigurations()) {
 						var lcExistsAt = listFindNoCase(lcList,locationConfig.getLocationConfigurationID(),"," );

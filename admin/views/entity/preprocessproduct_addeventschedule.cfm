@@ -60,7 +60,7 @@ Notes:
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true"><br>
 				
 				<!--- Scheduling --->
 				<div class="row">

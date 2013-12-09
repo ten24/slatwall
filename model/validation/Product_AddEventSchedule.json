@@ -1,0 +1,8 @@
+{
+	"properties":{
+		"eventStartDateTime": [{"required":true}],
+		"eventEndDateTime": [{"required":true,"gtProperty":"eventStartDateTime"}],		
+		"scheduleStartDate": [{"required":true,"contexts":"scheduled"}],
+		"scheduleEndDate": [{"required":true,"contexts":"scheduled","gtProperty":"scheduleStartDate"}]
+	}
+}
