@@ -48,12 +48,13 @@
 --->
 <cfparam name="attributes.smartList" type="any" />
 <cfparam name="attributes.class" default="pagination" />
+<cfparam name="attributes.ulclass" default="pagination" />
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
 		<cfif attributes.smartList.getTotalPages() gt 1>
 			<div class="#attributes.class#">
-				<ul>
+				<ul class="#attributes.ulclass#">
 					<cfif attributes.smartList.getCurrentPage() gt 1>
 						<li class="prev"><a href="#attributes.smartList.buildURL('P:Current=#attributes.smartList.getCurrentPage() - 1#')#">Prev</a></li>
 					</cfif>
