@@ -67,6 +67,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="contents";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="locationConfigurations";
+	property name="skuAllowWaitlistingFlag" hb_formFieldType="yesno";
 	
 	// Scheduling-related properties
 	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";
@@ -102,6 +103,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public array function getRecurringTimeUnitOptions() {
 		return getService("ProductScheduleService").getRecurringTimeUnitOptions();
+	}
+	
+	public boolean function getSkuAllowWaitlistingFlag() {
+		return getService("SettingService").getSettingValue("skuAllowWaitlistingFlag");
 	}
 	
 }

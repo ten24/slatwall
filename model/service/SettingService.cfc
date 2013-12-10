@@ -218,6 +218,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Sku
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
+			//skuAllowWaitlistingFlag is used as global default only because it has to be modifiable on a schedule level
+			skuAllowWaitlistingFlag = {fieldType="yesno", defaultValue=0},
 			skuBundleAutoMakeupInventoryOnSaleFlag = {fieldType="yesno", defaultValue=0},
 			skuBundleAutoBreakupInventoryOnReturnFlag = {fieldType="yesno", defaultValue=0},
 			skuCurrency = {fieldType="select", defaultValue="USD"},

@@ -109,6 +109,7 @@ component extends="HibachiService" accessors="true" {
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
 		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
+		newSku.setAllowWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
 		
 		if(structKeyExists(arguments,"locationConfiguration")) {
 			var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');

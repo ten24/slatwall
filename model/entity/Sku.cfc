@@ -51,6 +51,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
+	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="publishedFlag" ormtype="boolean" default="0";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";

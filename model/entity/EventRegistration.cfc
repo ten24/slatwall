@@ -54,6 +54,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	property name="lastName";
 	property name="emailAddress";
 	property name="phoneNumber";
+	property name="attendedFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";

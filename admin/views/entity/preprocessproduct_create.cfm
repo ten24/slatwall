@@ -83,6 +83,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 					
 					<cfif rc.processObject.getBaseProductType() eq "event">
+						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuAllowWaitlistingFlag" edit="true">
 						<div class="row">
 							<div class="span4">
 								<div class="well" style="margin:10px 15px;">
