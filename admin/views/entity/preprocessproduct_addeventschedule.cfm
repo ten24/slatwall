@@ -60,7 +60,7 @@ Notes:
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true"><br>
 				
 				<!--- Scheduling --->
 				<div class="row">
@@ -120,6 +120,15 @@ Notes:
 						</div>
 					</div>
 				</div>
+				
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
+				<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
+				<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
+				<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" multiselectFieldName="locationConfigurations" edit="true">
+					<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+					<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
+				</cf_HibachiListingDisplay>
+				
 				
 			</cf_HibachiPropertyList>
 	

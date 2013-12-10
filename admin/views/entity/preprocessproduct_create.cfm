@@ -83,6 +83,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 					
 					<cfif rc.processObject.getBaseProductType() eq "event">
+						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuAllowWaitlistingFlag" edit="true">
 						<div class="row">
 							<div class="span4">
 								<div class="well" style="margin:10px 15px;">
@@ -189,14 +190,14 @@ Notes:
 							<cf_HibachiListingColumn propertyIdentifier="title" />
 						</cf_HibachiListingDisplay>
 					
-					<!---<cfelseif rc.processObject.getBaseProductType() eq "event">
+					<cfelseif rc.processObject.getBaseProductType() eq "event">
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
 						<cfset locationConfigurationSmartList = $.slatwall.getSmartList("LocationConfiguration") />
 						<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
 						<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" multiselectFieldName="locationConfigurations" edit="true">
 							<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
 							<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
-						</cf_HibachiListingDisplay>--->
+						</cf_HibachiListingDisplay>
 			
 					</cfif>
 			

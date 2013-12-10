@@ -170,13 +170,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
         }
         return getService("skuService").getProductSkus(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions);
     }
-
-	/*public array function getProductSchedules(boolean sorted=false, boolean fetchOptions=false) {
-        if(!arguments.sorted && !arguments.fetchOptions) {
-        		return variables.productSchedules;
-        }
-        return getService("productScheduleService").getProductSchedules(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions);
-    }*/
 	
 	public any function getSkuByID(required string skuID) {
 		var skus = getSkus();

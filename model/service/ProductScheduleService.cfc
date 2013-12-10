@@ -104,8 +104,6 @@ component  extends="HibachiService" accessors="true" {
 		return returnDate;
 	}
 	
-	
-	
 	public array function getProductSchedules(required any product, required boolean sorted, boolean fetchOptions=false) {
 		var schedules = getProductScheduleDAO().getProductSchedules(product=arguments.product, fetchOptions=arguments.fetchOptions);
 		

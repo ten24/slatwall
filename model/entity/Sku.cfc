@@ -46,11 +46,12 @@
 Notes:
 
 */
-component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
+component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="changeEventDates,addLocation,removeLocation" {
 	
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
+	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="publishedFlag" ormtype="boolean" default="0";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
@@ -132,6 +133,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="optionsByOptionGroupIDStruct" persistent="false";
 	property name="optionsIDList" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
+	property name="productScheduleSmartList" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
@@ -358,6 +360,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// END: Quantity Helper Methods
+	
 	
 	
 	
@@ -643,6 +646,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.placedOrderItemsSmartList;
 	}
 	
+		
+	// @help Returns any product schedule this sku is part of
+	public any function getProductScheduleSmartList() {
+		if(!structKeyExists(variables, "productScheduleSmartList")) {
+			variables.productScheduleSmartList = getService("ProductScheduleService").getProductScheduleSmartList();
+			if(!isNull(this.getProductSchedule())) {
+				variables.productScheduleSmartList.addFilter('productScheduleID', this.getProductSchedule().getProductScheduleID());
+			} else {
+				variables.productScheduleSmartList.addFilter('productScheduleID', "-1");
+				
+			}
+		}
+		return variables.productScheduleSmartList;
+	}
+	
 	
 	public any function getQATS() {
 		return getQuantity("QATS");
@@ -702,7 +720,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				case "event":
 					var configs = getLocationConfigurations();
 					for(config in configs){
-						variables.skuDefinition = config.getlocationPathName() & " (#config.getLocationConfigurationName()#)";
+						variables.skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
 					}
 					break;
 					

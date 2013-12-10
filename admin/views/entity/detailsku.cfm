@@ -53,9 +53,10 @@ Notes:
 			</cfif>
 			<cf_HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 			<cfif rc.product.getBaseProductType() EQ "event">
-				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="changeeventdates" type="list" modal="false" />
+				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="changeeventdates" type="list" modal="true" />
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addlocation" type="list" modal="true" />
-				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="removelocation" type="list" modal="false" />
+				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="removelocation" type="list" modal="true" />
+				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="editwaitlisting" type="list" modal="true" />
 			</cfif>
 			
 			
@@ -78,6 +79,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="allowEventWaitlistingFlag" edit="false">
 				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
@@ -100,6 +102,7 @@ Notes:
 				</cfif>
 				<cf_HibachiTab view="admin:entity/skutabs/eventconflicts" text="#conflictLabel#" />
 				<cf_HibachiTab view="admin:entity/skutabs/eventregistrations" />
+				<cf_HibachiTab view="admin:entity/skutabs/productschedules" />
 			<cfelseif rc.product.getBaseProductType() eq "subscription">
 				<cf_HibachiTab property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">

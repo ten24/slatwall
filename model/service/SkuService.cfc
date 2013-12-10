@@ -170,6 +170,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return sku;
 	}
 	
+	// @help Modifies waitlisting properties	
+	public any function processSku_editWaitlisting(required any sku, required any processObject) {
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			arguments.sku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+		} else if(arguments.processObject.getEditScope() == "all"){
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				thisSku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+				var newSetting = this.newSetting();
+				newSetting.setSettingName();
+			}
+		}
+		return sku;
+	}
+	
 	// @help Removes locations from event skus	
 	public any function processSku_removeLocation(required any sku, required any processObject) {
 		if(arguments.processObject.getEditScope() == "none"  ){
@@ -202,7 +219,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// @help Modifies event related start/end dates based on process object data
 	public any function processSku_changeEventDates(required any sku, required any processObject) {
-		
 		if(arguments.processObject.getEditScope() == "none"  ){
 			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
 		} 
@@ -216,7 +232,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Update schedule dates/times
 				arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
 				arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
-				arguments.sku.setStartReservationDateTime(arguments.processObject.getEndReservationDateTime());
+				arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
 				arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
 
 				// Remove deleted location configurations
@@ -246,7 +262,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		
 		} else if(arguments.processObject.getEditScope() == "all"){
-			
 			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
 				var lcList = arguments.processObject.getLocationConfigurations();
 				if(thisSku.geteventStartDateTime() > now()) {
@@ -258,28 +273,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					thisSku.setEventEndDateTime(newEventEndDateTime);
 					thisSku.setStartReservationDateTime(newReservationStartDateTime);
 					thisSku.setEndReservationDateTime(newReservationEndDateTime);
-					
-					// Remove deleted location configurations
-					for(var locationConfig in thisSku.getLocationConfigurations()) {
-						var lcExistsAt = listFindNoCase(lcList,locationConfig.getLocationConfigurationID(),"," );
-						if(lcExistsAt == 0) {
-							getDAO("SkuDAO").deleteSkuLocationConfiguration(thisSku.getSkuID(), locationConfig.getLocationConfigurationID());
-						} else {
-							// remove existing location configurations from processObject so we don't add them again
-							lcList = listDeleteAt(arguments.processObject.getLocationConfigurations(),lcExistsAt);
-						}
-					}
-					
-					// Update/add locations
-					var newConfigCount = listLen(lcList,",");
-					if(newConfigCount > 0) {
-						// Add new location configurations
-						for(var lc=1; lc<=newConfigCount; lc++) {
-							var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(lcList, lc) );
-							thisSku.addLocationConfiguration( thisLocationConfig );
-						}
-					}
-					
+					//getStockService().saveStockAdjustment(stockAdjustment);
+					this.saveSku(thisSku);
 				}
 			}
 			
