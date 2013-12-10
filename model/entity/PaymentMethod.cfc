@@ -200,22 +200,6 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Account Payment Methods (one-to-many)
-	public void function addAccountPaymentMethod(required any accountPaymentMethod) {
-		arguments.accountPaymentMethod.setPaymentMethod( this );
-	}
-	public void function removeAccountPaymentMethod(required any accountPaymentMethod) {
-		arguments.accountPaymentMethod.removePaymentMethod( this );
-	}
-	
-	// Order Payments (one-to-many)
-	public void function addOrderPayment(required any orderPayment) {
-		arguments.orderPayment.setPaymentMethod( this );
-	}
-	public void function removeOrderPayment(required any orderPayment) {
-		arguments.orderPayment.removePaymentMethod( this );
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
@@ -228,8 +212,6 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 	
 	// ============== START: Overridden Implicet Getters ===================
 	
-	
-	
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
@@ -241,6 +223,17 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
+	
+	// The setting method is overridden so that any old frontend templates that are based on this will still work.
+	public any function setting( string settingName ) {
+		if(arguments.settingName eq "paymentMethodCheckoutTransactionType") {
+			if( !isNull(getPlaceOrderChargeTransactionType()) ){
+				return getPlaceOrderChargeTransactionType();
+			}
+			return 'none';
+		}
+		return super.setting(argumentcollection=arguments);
+	}
 	
 	public any function getIntegration() {
 		return getPaymentIntegration();

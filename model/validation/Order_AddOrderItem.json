@@ -7,11 +7,11 @@
     	    "orderItemTypeSystemCode":{"eq":"oitReturn"}
     	},
 	    "newOrderFulfillment":{
-	        "orderFulfillmentID":{"eq":""},
+	        "orderFulfillment":{"null":true},
 	        "orderItemTypeSystemCode":{"eq":"oitSale"}
 	    },
 	    "newOrderReturn":{
-	        "orderReturnID":{"eq":""},
+	        "orderReturn":{"null":true},
 	        "orderItemTypeSystemCode":{"eq":"oitReturn"}
 	    },
 	    "newShippingOrderFulfillmentWithNewAddress":{
@@ -20,10 +20,10 @@
 	        "shippingAccountAddressID":{"eq":"new"}
 	    },
 	    "existingOrderFulfillment":{
-	        "orderFulfillmentID":{"neq":""}
+	        "orderFulfillment":{"null":false}
 	    },
 	    "existingOrderReturn":{
-	        "orderReturnID":{"neq":""}
+	        "orderReturn":{"null":false}
 	    },
 	    "customizationsExist":{
 	        "assignedOrderItemAttributeSets":{"minCollection":1}
@@ -35,7 +35,8 @@
 		"orderFulfillmentID":			[],
 		"orderReturnID":				[],
 		"quantity":						[{"required":true,"dataType":"numeric","minValue":1}],
-		"price":						[{"required":true,"dataType":"numeric","minValue":0}]
+		"price":						[{"required":true,"dataType":"numeric","minValue":0}],
+		"emailAddress":					[{"dataType":"email"}]
 		
 	},
 	"populatedPropertyValidation":{

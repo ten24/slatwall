@@ -73,16 +73,21 @@ Notes:
 
 		<cf_HibachiPropertyRow>
 			
-			<cf_HibachiPropertyList divclass="span8">
+			<cf_HibachiPropertyList divclass="span12">
 				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
-				#rc.image.getImage()#
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divclass="span2">
-				<h5>Resize Preview</h5>
+				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.image#">
+			<cf_HibachiTab view="admin:entity/imagetabs/image" />
+			<cfif not isNull(rc.image.getProduct())>
+				<cf_HibachiTab view="admin:entity/imagetabs/options" />
+			</cfif>
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.image.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.image#" attributeSet="#attributeSet#" />
+			</cfloop>
 		</cf_HibachiTabGroup>
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

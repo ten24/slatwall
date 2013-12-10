@@ -207,7 +207,7 @@ Notes:
 						var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
 						
 						local.email = arguments.email;
-						local.emailData = {};
+						local.emailData = arguments.data;
 						local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
 						
 						if(len(templatePath)) {
@@ -235,8 +235,24 @@ Notes:
 		// Populate the email with any data that came in
 		arguments.email.populate( arguments.data );
 		
-		// Append the email to the email queue
-		arrayAppend(getHibachiScope().getEmailQueue(), arguments.email);
+		// Make sure that the email isn't voided, and that it has a To, CC, or BCC, as well as a subject
+		if( ( !isBoolean(arguments.email.getVoidSendFlag()) || !arguments.email.getVoidSendFlag() )
+			&& 
+			(
+				(!isNull(arguments.email.getEmailTo()) && len(arguments.email.getEmailTo()))
+			  ||
+			  	(!isNull(arguments.email.getEmailCC()) && len(arguments.email.getEmailCC()))
+			  ||
+			  	(!isNull(arguments.email.getEmailBCC()) && len(arguments.email.getEmailBCC()))
+			)
+			&&
+			!isNull(arguments.email.getEmailSubject())
+			&&
+			len(arguments.email.getEmailSubject())
+		) {
+			// Append the email to the email queue
+			arrayAppend(getHibachiScope().getEmailQueue(), arguments.email);	
+		}
 		
 		return arguments.email;
 	}

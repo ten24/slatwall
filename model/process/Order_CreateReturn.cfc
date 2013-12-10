@@ -56,14 +56,34 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderItems" type="array" hb_populateArray="true";
 	
 	property name="fulfillmentRefundAmount";
+	property name="refundOrderPaymentID" hb_formFieldType="select";
+	property name="receiveItemsFlag" hb_formFieldType="yesno" hb_sessionDefault="0";
+	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
 	
+
 	variables.orderItems = [];
+
+	
+	public any function setupDefaults() {
+		variables.refundOrderPaymentID = getRefundOrderPaymentIDOptions()[1]['value'];
+	}
 	
 	public array function getLocationOptions() {
 		if(!structKeyExists(variables, "locationOptions")) {
 			variables.locationOptions = getService('locationService').getLocationOptions(); 
 		}
 		return variables.locationOptions;
+	}
+	
+	public array function getRefundOrderPaymentIDOptions() {
+		if(!structKeyExists(variables, "refundOrderPaymentIDOptions")) {
+			variables.refundOrderPaymentIDOptions = [];
+			for(var orderPayment in getOrder().getOrderPayments()) {
+				arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});
+			}
+			arrayAppend(variables.refundOrderPaymentIDOptions, {name=rbKey('define.new'), value=""});
+		}
+		return variables.refundOrderPaymentIDOptions;
 	}
 	
 	public numeric function getFulfillmentRefundAmount() {
@@ -76,4 +96,36 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.fulfillmentRefundAmount;
 	}
 	
+	public boolean function getReceiveItemsFlag() {
+		if(!structKeyExists(variables, "receiveItemsFlag")) {
+			variables.receiveItemsFlag = getPropertySessionDefault("receiveItemsFlag");
+		}
+		return variables.receiveItemsFlag;
+	}
+	
+	public boolean function hasPositiveOrderItemQuantity() {
+		for(var orderItemStruct in getOrderItems()) {
+			if(structKeyExists(orderItemStruct, "quantity") && isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity >= 1) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public array function getOrderTypeCodeOptions() {
+		if(!structKeyExists(variables, "orderTypeOptions")) {
+			variables.orderTypeCodeOptions=[];
+			arrayAppend(variables.orderTypeCodeOptions, {name=rbKey('define.return'), value='otReturnOrder'});
+			arrayAppend(variables.orderTypeCodeOptions, {name=rbKey('define.exchange'), value='otExchangeOrder'});
+			
+		}
+		return variables.orderTypeCodeOptions;
+	}
+
+	public string function getOrderTypeCode(){
+		if(!structKeyExists(variables,"orderTypeCode")){
+			variables.orderTypeCode="otReturnOrder";
+		}
+		return variables.orderTypeCode;
+	}
 }

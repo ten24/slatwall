@@ -105,10 +105,13 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	property name="experationMonthOptions" persistent="false";
 	property name="expirationYearOptions" persistent="false";
 	property name="giftCardNumber" persistent="false";
+	property name="originalAuthorizationCode" persistent="false";
+	property name="originalAuthorizationProviderTransactionID" persistent="false";
+	property name="originalChargeProviderTransactionID" persistent="false";
+	property name="originalProviderTransactionID" persistent="false";
 	property name="paymentMethodType" persistent="false";
 	property name="securityCode" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
-	
 	
 	public any function init() {
 		if(isNull(variables.amount)) {
@@ -240,11 +243,11 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var amountAuthorized = 0;
 			
 		if( getAccountPaymentType().getSystemCode() == "aptCharge" ) {
-			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
+				if(isNull(getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) || !getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) {
+					amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
+				}
 			}
-			
 		}
 		
 		return amountAuthorized;
@@ -296,10 +299,39 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	}
 	
 	public boolean function getCreditCardOrProviderTokenExistsFlag() {
-		if(isNull(getCreditCardNumber()) && isNull(getProviderToken())) {
+		if((isNull(getCreditCardNumber()) || !len(getCreditCardNumber())) && (isNull(getProviderToken()) || !len(getProviderToken()))) {
 			return false;
 		}
 		return true;
+	}
+	
+	public any function getOriginalAuthorizationCode() {
+		if(!structKeyExists(variables,"originalAuthorizationCode")) {
+			variables.originalAuthorizationCode = getService( "paymentService" ).getOriginalAuthorizationCode( accountPaymentID=getAccountPaymentID() );
+		}
+		return variables.originalAuthorizationCode;
+	}
+	
+	
+	public any function getOriginalAuthorizationProviderTransactionID() {
+		if(!structKeyExists(variables,"originalAuthorizationProviderTransactionID")) {
+			variables.originalAuthorizationProviderTransactionID = getService( "paymentService" ).getOriginalAuthorizationProviderTransactionID( accountPaymentID=getAccountPaymentID() );
+		}
+		return variables.originalAuthorizationProviderTransactionID;
+	}
+	
+	public any function getOriginalChargeProviderTransactionID() {
+		if(!structKeyExists(variables,"originalChargeProviderTransactionID")) {
+			variables.originalChargeProviderTransactionID = getService( "paymentService" ).getOriginalChargeProviderTransactionID( accountPaymentID=getAccountPaymentID() );
+		}
+		return variables.originalChargeProviderTransactionID;
+	}
+	
+	public any function getOriginalProviderTransactionID() {
+		if(!structKeyExists(variables,"originalProviderTransactionID")) {
+			variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( accountPaymentID=getAccountPaymentID() );
+		}
+		return variables.originalProviderTransactionID;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

@@ -18,7 +18,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	// @hint Returns the messageBean object, if one hasn't been setup yet it returns a new one
 	public any function getHibachiMessages() {
 		if(!structKeyExists(variables, "hibachiMessages")) {
-			variables.hibachiMessages = getTransient("hibachiMessages");;
+			variables.hibachiMessages = getTransient("hibachiMessages");
 		}
 		return variables.hibachiMessages;
 	}
@@ -156,10 +156,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// ==========================  END: ERRORS / MESSAGES ===========================================
 	// ======================= START: POPULATION & VALIDATION =======================================
+	
+	public any function beforePopulate() {
+		// Left Blank to be overridden by objects
+	}
+	
+	public any function afterPopulate() {
+		// Left Blank to be overridden by objects
+	}
 
 	// @hint Public populate method to utilize a struct of data that follows the standard property form format
 	public any function populate( required struct data={} ) {
 
+		// Call beforePopulate
+		beforePopulate();
 
 		// Get an array of All the properties for this object
 		var properties = getProperties();
@@ -188,10 +198,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 					// If the value isn't blank, or we can't set to null... then we just set the value.
 					} else {
+						/*
 						if( !structKeyExists(currentProperty,'hb_formatType') ){
 							currentProperty.hb_formatType = '';
 						}
 						_setProperty(currentProperty.name, trim(arguments.data[ currentProperty.name ]), currentProperty.hb_formatType);
+						*/
+						_setProperty(currentProperty.name, trim(arguments.data[ currentProperty.name ]));
 
 						// if this property has a sessionDefault defined for it, then we should update that value with what was used
 						if(structKeyExists(currentProperty, "hb_sessionDefault")) {
@@ -378,6 +391,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				}
 			}
 		}
+		
+		// Call afterPopulate
+		afterPopulate();
 
 		// Return this object
 		return this;

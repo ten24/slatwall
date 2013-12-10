@@ -78,9 +78,18 @@ Notes:
 	
 	<cfsilent>
 		<!--- If the value isn't explicitly defined, try to pull it out of the value object if one exists --->
-		<cfif not len(attributes.value) and isObject(attributes.valueObject) and len(attributes.valueObjectProperty) and attributes.valueObject.hasProperty(attributes.valueObjectProperty) and not isNull(attributes.valueObject.invokeMethod("get#attributes.valueObjectProperty#"))>
+		<cfif 	not len(attributes.value)
+				and isObject(attributes.valueObject)
+				and len(attributes.valueObjectProperty)
+				and ( attributes.valueObject.hasProperty(attributes.valueObjectProperty) OR
+						(
+							attributes.valueObject.isPersistent()
+								AND
+							attributes.valueObject.hasAttributeCode( attributes.valueObjectProperty )
+						) 
+					)>
 			<cfset thistag.thisValue = attributes.valueObject.invokeMethod("get#attributes.valueObjectProperty#") />
-			<cfif isSimpleValue(thistag.thisValue)>
+			<cfif not isNull(thistag.thisValue) && isSimpleValue(thistag.thisValue)>
 				<cfset attributes.value = thistag.thisValue />
 			</cfif>
 		</cfif>

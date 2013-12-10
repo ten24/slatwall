@@ -109,6 +109,15 @@ Notes:
 		
 		return arguments.print;
 	}
+	
+	public void function generateAndPrintFromEntityAndPrintTemplateID( required any entity, required any printTemplateID ) {
+		var print = this.newPrint();
+		var printData = {
+			printTemplateID = arguments.printTemplateID
+		};
+		printData[ arguments.entity.getPrimaryIDPropertyName() ] = arguments.entity.getPrimaryIDValue();
+		print = this.processPrint(print, printData, 'addToQueue');
+	}
 		
 	</cfscript>
 	

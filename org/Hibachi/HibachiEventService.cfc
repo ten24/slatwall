@@ -124,9 +124,30 @@ component output="false" update="true" extends="HibachiService" {
 		
 		if(!isNull(object)) {
 			var objectMetaData = getMetaData(object);
-			for(var f=1; f<=arrayLen(objectMetaData.functions); f++) {
-				if(!structKeyExists(objectMetaData.functions[f], "access") || objectMetaData.functions[f].access == "public") {
-					registerEvent(eventName=objectMetaData.functions[f].name, object=object, objectFullname=objectFullname);
+			if(structKeyExists(objectMetaData, "functions")) {
+				for(var f=1; f<=arrayLen(objectMetaData.functions); f++) {
+					if(!structKeyExists(objectMetaData.functions[f], "access") || objectMetaData.functions[f].access == "public") {
+						registerEvent(eventName=objectMetaData.functions[f].name, object=object, objectFullname=objectFullname);
+					}
+				}	
+			}
+		}
+	}
+	
+	public void function registerEventHandlers() {
+		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/model/handler')) {
+			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/model/handler');
+			for(var h=1; h<=arrayLen(dirList); h++) {
+				if(listLast(dirList[h], '.') eq 'cfc') {
+					registerEventHandler( "#getApplicationValue('applicationKey')#.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
+				}
+			}
+		}
+		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/custom/model/handler')) {
+			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/custom/model/handler');
+			for(var h=1; h<=arrayLen(dirList); h++) {
+				if(listLast(dirList[h], '.') eq 'cfc') {
+					registerEventHandler( "#getApplicationValue('applicationKey')#.custom.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
 				}
 			}
 		}
@@ -161,14 +182,6 @@ component output="false" update="true" extends="HibachiService" {
 			arrayAppend(opArr, {name="#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.delete')# #getHibachiScope().rbKey('define.failure')# | after#entityName#DeleteFailure", value="after#entityName#DeleteFailure", entityName=entityName});
 			
 			if(structKeyExists(emd[entityName], "hb_processContexts")) {
-				
-				/*
-				arrayAppend(opArr, {name="#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.before')# #getHibachiScope().rbKey('define.process')# | before#entityName#Process", value="before#entityName#Process", entityName=entityName});
-				arrayAppend(opArr, {name="#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.process')# | after#entityName#Process", value="after#entityName#Process", entityName=entityName});
-				arrayAppend(opArr, {name="#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.process')# #getHibachiScope().rbKey('define.success')# | after#entityName#ProcessSuccess", value="after#entityName#ProcessSuccess", entityName=entityName});
-				arrayAppend(opArr, {name="#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.process')# #getHibachiScope().rbKey('define.failure')# | after#entityName#ProcessFailure", value="after#entityName#ProcessFailure", entityName=entityName});
-				*/
-				
 				for(var c=1; c<=listLen(emd[entityName].hb_processContexts); c++) {
 					var thisContext = listGetAt(emd[entityName].hb_processContexts, c);
 					

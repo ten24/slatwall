@@ -202,6 +202,7 @@ function initUIElements( scopeSelector ) {
 	// Report Sortable
 	jQuery( scopeSelector ).find(jQuery('#hibachi-report-dimension-sort')).sortable({
 		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' );
 			var newDimensionsValue = '';
 			jQuery.each(jQuery('#hibachi-report-dimension-sort').children(), function(i, v){
 				if(i > 0) {
@@ -216,6 +217,7 @@ function initUIElements( scopeSelector ) {
 	// Report Sortable
 	jQuery( scopeSelector ).find(jQuery('#hibachi-report-metric-sort')).sortable({
 		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' );
 			var newMetricsValue = '';
 			jQuery.each(jQuery('#hibachi-report-metric-sort').children(), function(i, v){
 				if(i > 0) {
@@ -1242,7 +1244,7 @@ function tableApplySort(event, ui) {
 	var data = {
 		recordID : jQuery(ui.item).attr('ID'),
 		recordIDColumn : jQuery(ui.item).closest('table').data('idproperty'), 
-		tableName : jQuery(ui.item).closest('table').data('entityname'),
+		entityName : jQuery(ui.item).closest('table').data('entityname'),
 		contextIDColumn : jQuery(ui.item).closest('table').data('sortcontextidcolumn'),
 		contextIDValue : jQuery(ui.item).closest('table').data('sortcontextidvalue'),
 		newSortOrder : 0
@@ -1352,13 +1354,17 @@ function globalSearchHold() {
 	return true;
 }
 
-function globalSearchRelease() {
+function globalSearchRelease( lastKeyword ) {
 	globalSearchCache.onHold = false;
+	if(jQuery('#global-search').val() != lastKeyword) {
+		updateGlobalSearchResults();
+	}
 }
 
 function updateGlobalSearchResults() {
 	
 	if(!globalSearchHold()) {
+		
 		addLoadingDiv( 'search-results' );
 		
 		var data = {
@@ -1410,7 +1416,7 @@ function updateGlobalSearchResults() {
 				}
 				
 				removeLoadingDiv( 'search-results' );
-				globalSearchRelease();
+				globalSearchRelease( data.keywords );
 			}
 			
 		});
@@ -1421,6 +1427,7 @@ function updateReport() {
 	
 	var data = {
 		slatAction: 'admin:report.default',
+		reportID: jQuery('input[name="reportID"]').val(),
 		reportName: jQuery('#hibachi-report').data('reportname'),
 		reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
 		reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),

@@ -17,7 +17,7 @@
 		<cfdirectory action="list" directory="#getApplicationValue('applicationRootMappingPath')#/model/report" name="reportFiles" />
 		
 		<cfloop query="reportFiles">
-			<cfif reportFiles.name neq "HibachiReport.cfc">
+			<cfif listLast(reportFiles.name, '.') eq 'cfc' and reportFiles.name neq "HibachiReport.cfc">
 				<cfset reportsList = listAppend(reportsList, listFirst(reportFiles.name, '.')) />
 			</cfif>
 		</cfloop>
@@ -29,10 +29,12 @@
 		<cfset var reportFiles = "" />
 		<cfset var reportsList = "" />
 		
+		<cfset var builtInReportList = getBuiltInReportsList() />
+		
 		<cfdirectory action="list" directory="#getApplicationValue('applicationRootMappingPath')#/custom/model/report" name="reportFiles" />
 		
 		<cfloop query="reportFiles">
-			<cfif reportFiles.name neq "HibachiReport.cfc">
+			<cfif listLast(reportFiles.name, '.') eq 'cfc' and reportFiles.name neq "HibachiReport.cfc" and not listFindNoCase(builtInReportList, listFirst(reportFiles.name, '.'))>
 				<cfset reportsList = listAppend(reportsList, listFirst(reportFiles.name, '.')) />
 			</cfif>
 		</cfloop>

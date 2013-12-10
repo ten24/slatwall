@@ -51,7 +51,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entity
 	property name="order";
 	
-	// Injected, or lazily loaded by ID
+	// Lazy / Injected Objects
 	property name="stock" hb_rbKey="entity.stock";
 	property name="sku" hb_rbKey="entity.sku";
 	property name="product" hb_rbKey="entity.product";
@@ -60,6 +60,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
 	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
+	
+	// New Properties
 	
 	// Data Properties (ID's)
 	property name="stockID";
@@ -72,6 +74,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderReturnID" hb_formFieldType="select" hb_rbKey="entity.orderReturn";
 	property name="fulfillmentMethodID" hb_formFieldType="select";
 	property name="shippingAccountAddressID" hb_formFieldType="select";
+	property name="pickupLocationID" hb_formFieldType="select" hb_rbKey="entity.orderFulfillment.pickupLocation";
 	
 	// Data Properties (Inputs)
 	property name="price";
@@ -81,16 +84,113 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";
 	property name="saveShippingAccountAddressName";
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
+	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
 	
-	// Data Properties (Related Populate)
+	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
 	
+	// Data Properties (Object / Array Populate)
 	
-	// Helper property
+	// Option Properties
+	property name="fulfillmentMethodIDOptions";
+	property name="locationIDOptions";
+	property name="orderFulfillmentIDOptions";
+	property name="orderReturnIDOptions";
+	property name="pickupLocationIDOptions";
+	property name="returnLocationIDOptions";
+	property name="shippingAccountAddressIDOptions";
+	
+	// Helper Properties
 	property name="assignedOrderItemAttributeSets";
+	property name="fulfillmentMethodType";
 	
 	
-	// =========================================================
+	// ======================== START: Defaults ============================
+	
+	public any function getOrderFulfillmentID() {
+		if(structKeyExists(variables, "orderFulfillmentID")) {
+			return variables.orderFulfillmentID;
+		}
+		return getOrderFulfillmentIDOptions()[1]['value'];
+	}
+	
+	public any function getOrderReturnID() {
+		if(structKeyExists(variables, "orderReturnID")) {
+			return variables.orderReturnID;
+		}
+		return getOrderReturnIDOptions()[1]['value'];
+	}
+	
+	public any function getOrderItemTypeSystemCode() {
+		if(!structKeyExists(variables, 'orderItemTypeSystemCode')) {
+			variables.orderItemTypeSystemCode = "oitSale";
+		}
+		return variables.orderItemTypeSystemCode;
+	}
+	
+	public any function getPrice() {
+		if(!structKeyExists(variables, "price")) {
+			variables.price = 0;
+			if(!isNull(getSku())) {
+				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( getCurrencyCode() );
+				if(!isNull(priceByCurrencyCode)) {
+					variables.price = priceByCurrencyCode;
+				} else {
+					variables.price = "N/A";
+				}
+			}
+		}
+		return variables.price;
+	}
+	
+	public string function getCurrencyCode() {
+		if(!structKeyExists(variables, "currencyCode")) {
+			if(!isNull(getOrder().getCurrencyCode())) {
+				variables.currencyCode = getOrder().getCurrencyCode();
+			} else if (!isNull(getSku()) && len(getSku().setting('skuCurrency')) eq 3) {
+				variables.currencyCode = getSku().setting('skuCurrency');
+			} else {
+				variables.currencyCode = 'USD';
+			}
+		}
+		return variables.currencyCode;
+	}
+	
+	public any function getFulfillmentRefundAmount() {
+		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
+			variables.fulfillmentRefundAmount = 0;
+		}
+		return variables.fulfillmentRefundAmount;
+	}
+	
+	public any function getQuantity() {
+		if(!structKeyExists(variables, "quantity")) {
+			variables.quantity = 1;
+			if(!isNull(getSku()) && getSku().setting('skuOrderMinimumQuantity') > 1) {
+				variables.quantity = getSku().setting('skuOrderMinimumQuantity');
+			}
+		}
+		return variables.quantity;
+	}
+	
+	public any function getShippingAddress() {
+		if(!structKeyExists(variables, "shippingAddress")) {
+			variables.shippingAddress = getService("addressService").newAddress();
+		}
+		return variables.shippingAddress;
+	}
+	
+	public any function getSaveShippingAccountAddressFlag() {
+		if(!structKeyExists(variables, "saveShippingAccountAddressFlag")) {
+			variables.saveShippingAccountAddressFlag = 1;
+		}
+		return variables.saveShippingAccountAddressFlag;
+	}
+	
+	
+	// ========================  END: Defaults =============================
+	
+	// =================== START: Lazy Object Helpers ======================
 	
 	public any function getStock() {
 		
@@ -179,7 +279,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 	}
 	
-	
 	public any function getLocation() {
 		
 		// First we check for a stockID
@@ -202,7 +301,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getOrderFulfillment() {
-		if(!structKeyExists(variables, "orderFulfillment")) {
+		if(!structKeyExists(variables, "orderFulfillment") && !isNull(getOrderFulfillmentID())) {
 			variables.orderFulfillment = getService("orderService").getOrderFulfillment(getOrderFulfillmentID());
 		}
 		if(structKeyExists(variables, "orderFulfillment")) {
@@ -211,7 +310,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getOrderReturn() {
-		if(!structKeyExists(variables, "orderReturn")) {
+		if(!structKeyExists(variables, "orderReturn") && !isNull(getOrderReturnID())) {
 			variables.orderReturn = getService("orderService").getOrderReturn(getOrderReturnID());
 		}
 		if(structKeyExists(variables, "orderReturn")) {
@@ -220,7 +319,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getReturnLocation() {
-		if(!structKeyExists(variables, "returnLocation")) {
+		if(!structKeyExists(variables, "returnLocation") && !isNull(getReturnLocationID())) {
 			variables.returnLocation = getService("locationService").getLocation(getReturnLocationID());
 		}
 		if(structKeyExists(variables, "returnLocation")) {
@@ -229,21 +328,34 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getFulfillmentMethod() {
-		if(!structKeyExists(variables, "fulfillmentMethod")) {
+		if(!structKeyExists(variables, "fulfillmentMethod") && !isNull(getFulfillmentMethodID())) {
 			variables.fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethod(getFulfillmentMethodID());
 		}
-		if(structKeyExists(variables, "orderReturn")) {
+		if(structKeyExists(variables, "fulfillmentMethod")) {
 			return variables.fulfillmentMethod;
 		}
 	}
 	
-	// ====================== OPTIONS
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
 	
 	public array function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
 			variables.locationIDOptions = getService("locationService").getLocationOptions(); 
 		}
 		return variables.locationIDOptions;
+	}
+	
+	public array function getPickupLocationIDOptions() {
+		if(!structKeyExists(variables, "pickupLocationIDOptions")) {
+			variables.pickupLocationIDOptions = getService("locationService").getLocationOptions(); 
+		}
+		return variables.pickupLocationIDOptions;
 	}
 	
 	public array function getReturnLocationIDOptions() {
@@ -264,7 +376,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					}
 				}	
 			}
-			arrayAppend(variables.orderFulfillmentIDOptions, {name=getHibachiScope().rbKey('define.new'), value=""});
+			arrayAppend(variables.orderFulfillmentIDOptions, {name=getHibachiScope().rbKey('define.new'), value="new"});
 		}
 		return variables.orderFulfillmentIDOptions;
 	}
@@ -276,7 +388,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			for(var i=1; i<=arrayLen(arr); i++) {
 				arrayAppend(variables.orderReturnIDOptions, {name=arr[i].getSimpleRepresentation(), value=arr[i].getOrderReturnID()});	
 			}
-			arrayAppend(variables.orderReturnIDOptions, {name=getHibachiScope().rbKey('define.new'), value=""});
+			arrayAppend(variables.orderReturnIDOptions, {name=getHibachiScope().rbKey('define.new'), value="new"});
 		}
 		return variables.orderReturnIDOptions;
 	}
@@ -313,7 +425,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.shippingAccountAddressIDOptions;
 	}
 	
-	// ====================== DEFAULT VALUES
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	public any function getAssignedOrderItemAttributeSets() {
+		if(!isNull(getSkuID()) && !isNull(getSku())) {
+			return getSku().getAssignedOrderItemAttributeSetSmartList().getRecords();	
+		}
+		
+		return [];
+	}
 	
 	public any function getFulfillmentMethodType() {
 		if(!isNull(getFulfillmentMethodID())) {
@@ -326,93 +448,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return "";
 	}
 	
-	public any function getOrderFulfillmentID() {
-		if(!structKeyExists(variables, 'orderFulfillmentID')) {
-			variables.orderFulfillmentID = getOrderFulfillmentIDOptions()[1]['value'];
-		}
-		return variables.orderFulfillmentID;
-	}
-	
-	public any function getOrderReturnID() {
-		if(!structKeyExists(variables, 'orderReturnID')) {
-			variables.orderReturnID = getOrderReturnIDOptions()[1]['value'];
-		}
-		return variables.orderReturnID;
-	}
-	
-	public any function getOrderItemTypeSystemCode() {
-		if(!structKeyExists(variables, 'orderItemTypeSystemCode')) {
-			variables.orderItemTypeSystemCode = "oitSale";
-		}
-		return variables.orderItemTypeSystemCode;
-	}
-	
-	
-	public any function getPrice() {
-		if(!structKeyExists(variables, "price")) {
-			variables.price = 0;
-			if(!isNull(getSku())) {
-				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( getCurrencyCode() );
-				if(!isNull(priceByCurrencyCode)) {
-					variables.price = priceByCurrencyCode;
-				} else {
-					variables.price = "N/A";
-				}
-			}
-		}
-		return variables.price;
-	}
-	
-	public string function getCurrencyCode() {
-		if(!structKeyExists(variables, "currencyCode")) {
-			if(!isNull(getOrder().getCurrencyCode())) {
-				variables.currencyCode = getOrder().getCurrencyCode();
-			} else if (!isNull(getSku()) && len(getSku().setting('skuCurrency')) eq 3) {
-				variables.currencyCode = getSku().setting('skuCurrency');
-			} else {
-				variables.currencyCode = 'USD';
-			}
-		}
-		return variables.currencyCode;
-	}
-	
-	public any function getFulfillmentRefundAmount() {
-		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
-			variables.fulfillmentRefundAmount = 0;
-		}
-		return variables.fulfillmentRefundAmount;
-	}
-	
-	public any function getQuantity() {
-		if(!structKeyExists(variables, "quantity")) {
-			variables.quantity = 1;
-			if(!isNull(getSku()) && getSku().setting('skuOrderMinimumQuantity') > 1) {
-				variables.quantity = getSku().setting('skuOrderMinimumQuantity');
-			}
-		}
-		return variables.quantity;
-	}
-	
-	public any function getShippingAddress() {
-		if(!structKeyExists(variables, "shippingAddress")) {
-			variables.shippingAddress = getService("addressService").newAddress();
-		}
-		return variables.shippingAddress;
-	}
-	
-	public any function getSaveShippingAccountAddressFlag() {
-		if(!structKeyExists(variables, "saveShippingAccountAddressFlag")) {
-			variables.saveShippingAccountAddressFlag = 1;
-		}
-		return variables.saveShippingAccountAddressFlag;
-	}
-	
-	public any function getAssignedOrderItemAttributeSets() {
-		if(!isNull(getSkuID()) && !isNull(getSku())) {
-			return getSku().getAssignedOrderItemAttributeSetSmartList().getRecords();	
-		}
-		
-		return [];
-	}
+	// =====================  END: Helper Methods ==========================
 	
 }

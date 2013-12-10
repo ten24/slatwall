@@ -226,7 +226,7 @@
 						<cfif structKeyExists(thisPropertyMeta, "ormtype") && thisPropertyMeta.ormtype eq 'boolean'>
 							<cfset column.filter = true />
 						</cfif>
-						
+						<!---
 						<cfif !column.filter && listLen(column.propertyIdentifier, '._') gt 1>
 							
 							<cfset oneUpPropertyIdentifier = column.propertyIdentifier />
@@ -238,7 +238,7 @@
 								<cfset column.filter = true />
 							</cfif>
 						</cfif>
-						
+						--->
 					<cfelseif !isBoolean(column.filter)>
 						<cfset column.filter = false />
 					</cfif>
@@ -401,11 +401,11 @@
 					<cfset thistag.loopIndex++ />
 					<!--- If there is a recordProcessEntity then find the processObject and inject the necessary values --->
 					<cfif isObject(attributes.recordProcessEntity)>
-						<cfset thisRecordProcessObject = "" />
-						<cfset thisRecordProcessObject = attributes.hibachiScope.getTransient("#attributes.recordProcessEntity.getClassName()#_#attributes.recordProcessContext#") />
-						<cfset thisRecordProcessObject.invokeMethod("set#record.getClassName()#", {1=record}) />
-						<cfset thisRecordProcessObject.invokeMethod("set#record.getPrimaryIDPropertyName()#", {1=record.getPrimaryIDValue()}) />
-						<cfset thisRecordProcessObject.invokeMethod("set#attributes.recordProcessEntity.getClassName()#", {1=attributes.recordProcessEntity}) />
+						<cfset injectValues = structNew() />
+						<cfset injectValues[ "#record.getClassName()#" ] = record />
+						<cfset injectValues[ "#record.getPrimaryIDPropertyName()#" ] = record.getPrimaryIDValue() />
+						<cfset attributes.recordProcessEntity.clearProcessObject( attributes.recordProcessContext ) />
+						<cfset thisRecordProcessObject = attributes.recordProcessEntity.getProcessObject( attributes.recordProcessContext, injectValues ) />
 					</cfif>
 					<tr id="#record.getPrimaryIDValue()#" <cfif thistag.expandable>idPath="#record.getValueByPropertyIdentifier( propertyIdentifier="#thistag.exampleEntity.getPrimaryIDPropertyName()#Path" )#"</cfif>>
 						<!--- Selectable --->

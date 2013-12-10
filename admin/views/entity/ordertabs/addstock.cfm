@@ -65,8 +65,12 @@ Notes:
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.calculatedQATS" />
-		<cf_HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
+		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
+		<cfif rc.addSkuAddStockType eq "oitSale">
+			<cf_HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
+		<cfelse>
+			<cf_HibachiListingColumn processObjectProperty="orderReturnID" title="#$.slatwall.rbKey('entity.orderReturn')#" fieldClass="span2" />
+		</cfif>
 		<cf_HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
 		<cf_HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 	</cf_HibachiListingDisplay>

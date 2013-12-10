@@ -110,6 +110,12 @@ Notes:
 	</cfif>
 </cfif>
 
+<!--- IMPORTANT: This is here so that the checkout layout is never cached by the browser --->
+<cfheader name="cache-control" value="no-cache, no-store, must-revalidate" /> 
+<cfheader name="cache-control" value="post-check=0, pre-check=0" /> 
+<cfheader name="last-modified" value="#now()#" />
+<cfheader name="pragma"  value="no-cache" />
+
 <!--- We are paraming this variable so that we can use it later to see if a specific step was clicked on.  Using the url.step is just a templating thing and it has nothing to do really with the core of Slatwall.  This could be changed to anything --->
 <cfparam name="url.step" default="" />
 
@@ -591,17 +597,17 @@ Notes:
 											</div>
 											<!--- END: Shipping Method Selection --->
 											
-											<!--- Action Buttons --->
-											<div class="span8">
-												<div class="control-group pull-right">
-													<div class="controls">
-														<!--- Continue, just submits the form --->
-														<button type="submit" class="btn btn-primary">Save & Continue</button>
-													</div>
+										</cfif>
+										
+										<!--- Action Buttons --->
+										<div class="span8">
+											<div class="control-group pull-right">
+												<div class="controls">
+													<!--- Continue, just submits the form --->
+													<button type="submit" class="btn btn-primary">Save & Continue</button>
 												</div>
 											</div>
-											
-										</cfif>
+										</div>
 										
 									</div>
 									
@@ -1015,7 +1021,7 @@ Notes:
 													Name on Card: #orderPayment.getNameOnCreditCard()#<br />
 													Card: #orderPayment.getCreditCardType()# ***#orderPayment.getCreditCardLastFour()#<br />
 													Expiration: #orderPayment.getExpirationMonth()# / #orderPayment.getExpirationYear()#<br />
-													Payment Amount: #dollarformat(orderPayment.getAmount())#<br />
+													Payment Amount: #orderPayment.getFormattedValue('amount')#<br />
 													
 													<cfif isNull(orderPayment.getProviderToken()) && !isNull(orderPayment.getSecurityCode())>
 														<input type="hidden" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="#orderPayment.getSecurityCode()#" />
@@ -1031,7 +1037,7 @@ Notes:
 												<cfelse>
 													
 													#orderPayment.getSimpleRepresentation()#<br />
-													Payment Amount: #dollarformat(orderPayment.getAmount())#
+													Payment Amount: #orderPayment.getFormattedValue('amount')#
 													
 												</cfif>
 											</div>
@@ -1040,11 +1046,14 @@ Notes:
 												<div class="span6">
 													<h6>Billing Address:</h6>
 													#orderPayment.getBillingAddress().getName()#<br />
-													<cfif orderPayment.getBillingAddress().getCompany() NEQ "">#orderPayment.getBillingAddress().getCompany()#<br /></cfif>
-													<cfif orderPayment.getBillingAddress().getPhone() NEQ "">#orderPayment.getBillingAddress().getPhone()#<br /></cfif>
+													<cfif isNull(orderPayment.getBillingAddress().getCompany()) && len(orderPayment.getBillingAddress().getCompany())>
+														#orderPayment.getBillingAddress().getCompany()#<br />
+													</cfif>
+													<cfif !isNull(orderPayment.getBillingAddress().getPhoneNumber()) && len(orderPayment.getBillingAddress().getCompany())>
+														#orderPayment.getBillingAddress().getPhoneNumber()#<br />
+													</cfif>
 													#orderPayment.getBillingAddress().getStreetAddress()#<br />
-													
-													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
+													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address()) && len(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
 													#orderPayment.getBillingAddress().getCity()#, #orderPayment.getBillingAddress().getStateCode()# #orderPayment.getBillingAddress().getPostalCode()#<br />
 													#orderPayment.getBillingAddress().getCountryCode()#
 												</div>

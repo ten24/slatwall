@@ -93,8 +93,8 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		
 		// Clear the setting cache so that it can be reloaded
-		getBeanFactory().getBean("settingService").clearAllSettingsCache();
-		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared");
+		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
+		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
 		
 		// Run Scripts
 		getBeanFactory().getBean("updateService").runScripts();
@@ -102,9 +102,13 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	}
 	
 	public void function onFirstRequestPostUpdate() {
-		// Reload All Integrations
-		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
-		writeLog(file="Slatwall", text="General Log - Integrations have been updated");
+		
+		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
+		var beanFactory = getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory( getBeanFactory() );
+		
+		setBeanFactory( beanFactory );
+		
+		writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
 	}
 	
 	// ===================================== END: HIBACHI HOOKS

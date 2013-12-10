@@ -49,11 +49,11 @@ Notes:
 
 <cfset local.scriptHasErrors = false />
 
-<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Tables" name="local.infoTables" />
+<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Tables" name="local.infoTables" pattern="Sw%" />
 
 <!--- Update payment methods to use the new paymentIntegrationID value instead of provider gateway --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPaymentMethod" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPaymentMethod" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -67,7 +67,7 @@ Notes:
 	<cfif local.hasColumn.recordCount>
 		<cfquery name="local.updateData">
 			UPDATE
-				SlatwallPaymentMethod
+				SwPaymentMethod
 			SET
 				paymentIntegrationID = (SELECT integrationID FROM SlatwallIntegration WHERE SlatwallIntegration.integrationPackage = SlatwallPaymentMethod.providerGateway)
 			WHERE
@@ -119,7 +119,7 @@ Notes:
 		
 		<cfloop query="local.updateData">
 			<cfquery name="local.change">
-				INSERT INTO SlatwallPaymentTransaction (
+				INSERT INTO SwPaymentTransaction (
 					paymentTransactionID,
 					transactionType,
 					providerTransactionID,
@@ -167,7 +167,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallOrder
+			SwOrder
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -183,7 +183,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallOrderFulfillment
+			SwOrderFulfillment
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -199,7 +199,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallOrderReturn
+			SwOrderReturn
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -215,7 +215,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallOrderPayment
+			SwOrderPayment
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -231,7 +231,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallPaymentTransaction
+			SwPaymentTransaction
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -247,7 +247,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallPromotionApplied
+			SwPromotionApplied
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -263,7 +263,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallShippingMethodOption
+			SwShippingMethodOption
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -279,7 +279,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallStockReceiverItem
+			SwStockReceiverItem
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -295,7 +295,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallSubscriptionUsage
+			SwSubsUsage
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -311,7 +311,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallTaxApplied
+			SwTaxApplied
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -327,7 +327,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallVendorOrder
+			SwVendorOrder
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -343,7 +343,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallVendorOrderItem
+			SwVendorOrderItem
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -359,7 +359,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallVendorSkuStock
+			SwVendorSkuStock
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -375,7 +375,7 @@ Notes:
 <cftry>
 	<cfquery name="local.change">
 		UPDATE
-			SlatwallOrderItem
+			SwOrderItem
 		SET
 			currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="USD" />
 		WHERE
@@ -390,7 +390,7 @@ Notes:
 
 <!--- Move amountCharged into amountReceived --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPaymentTransaction" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPaymentTransaction" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -404,7 +404,7 @@ Notes:
 	<cfif local.hasColumn.recordCount>
 		<cfquery name="local.updateData">
 			UPDATE
-				SlatwallPaymentTransaction
+				SwPaymentTransaction
 			SET
 				amountReceived = amountCharged,
 				amountCharged = 0

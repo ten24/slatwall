@@ -10,7 +10,6 @@
 		<cfparam name="thistag.tabs" default="#arrayNew(1)#" />
 		<cfparam name="activeTab" default="tabSystem" />
 		
-		
 		<cfloop array="#thistag.tabs#" index="tab">
 			<!--- Make sure there is a view --->
 			<cfif not len(tab.view) and len(tab.property)>
@@ -19,7 +18,7 @@
 				<cfset propertyMetaData = attributes.object.getPropertyMetaData( tab.property ) />
 				
 				<cfif not len(tab.text)>
-					<cfset tab.text = attributes.hibachiScope.rbKey('entity.#attributes.object.getClassName()#.#tab.property#') />
+					<cfset tab.text = attributes.object.getPropertyTitle( tab.property ) />
 				</cfif>
 				
 				<cfif not len(tab.count) and structKeyExists(propertyMetaData, "fieldtype") and listFindNoCase("many-to-one,one-to-many,many-to-many", propertyMetaData.fieldtype)>
@@ -34,7 +33,7 @@
 			
 			<!--- Make sure there is text for the tab name --->
 			<cfif not len(tab.text)>
-				<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />
+				<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />	
 			</cfif>
 			
 			<cfif not len(tab.tabcontent)>

@@ -50,18 +50,33 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="order";
+	
+	// Lazy / Injected Objects
 
-	// Data Properties
-	property name="accountPaymentMethodID" hb_rbKey="entity.accountPaymentMethod" hb_formFieldType="select";
+	// New Properties
 	property name="newOrderPayment" cfc="OrderPayment" fieldType="many-to-one" persistent="false" fkcolumn="orderPaymentID";
+	
+	// Data Properties (ID's)
+	property name="accountPaymentMethodID" hb_rbKey="entity.accountPaymentMethod" hb_formFieldType="select";
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
+	
+	// Data Properties (Inputs)
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName";
 	
-	// Cached Properties
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
 	property name="accountPaymentMethodIDOptions";
 	property name="paymentMethodIDOptions";
 	property name="accountAddressIDOptions";
+	
+	// Helper Properties
+	
+	
+	// ======================== START: Defaults ============================
 	
 	public any function setupDefaults() {
 		variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
@@ -75,44 +90,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.accountPaymentMethodID;
 	}
 	
-	public array function getAccountPaymentMethodIDOptions() {
-		if(!structKeyExists(variables, "accountPaymentMethodIDOptions")) {
-			variables.accountPaymentMethodIDOptions = [];
-			var pmArr = getOrder().getAccount().getAccountPaymentMethods();
-			for(var i=1; i<=arrayLen(pmArr); i++) {
-				if(!isNull(pmArr[i].getActiveFlag()) && pmArr[i].getActiveFlag()) {
-					arrayAppend(variables.accountPaymentMethodIDOptions, {name=pmArr[i].getSimpleRepresentation(), value=pmArr[i].getAccountPaymentMethodID()});	
-				}
-			}
-			arrayAppend(variables.accountPaymentMethodIDOptions, {name=rbKey('define.new'), value=""});
-		}
-		return variables.accountPaymentMethodIDOptions;
-	}
-	
 	public string function getAccountAddressID() {
 		if(!structKeyExists(variables, "accountAddressID")) {
 			variables.accountAddressID = "";
 		}
 		return variables.accountAddressID;
-	}
-	
-	public array function getAccountAddressIDOptions() {
-		if(!structKeyExists(variables, "accountAddressIDOptions")) {
-			variables.accountAddressIDOptions = [];
-			var aaArr = getOrder().getAccount().getAccountAddresses();
-			for(var i=1; i<=arrayLen(aaArr); i++) {
-				arrayAppend(variables.accountAddressIDOptions, {name=aaArr[i].getSimpleRepresentation(), value=aaArr[i].getAccountAddressID()});
-			}
-			arrayAppend(variables.accountAddressIDOptions, {name=rbKey('define.new'), value=""});
-		}
-		return variables.accountAddressIDOptions;
-	}
-	
-	public any function getNewOrderPayment() {
-		if(!structKeyExists(variables, "newOrderPayment")) {
-			variables.newOrderPayment = getService("orderService").newOrderPayment();
-		}
-		return variables.newOrderPayment;
 	}
 	
 	public boolean function getSaveAccountPaymentMethodFlag() {
@@ -122,15 +104,74 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.saveAccountPaymentMethodFlag;
 	}
 	
+	
+	// ========================  END: Defaults =============================
+	
+	// ====================== START: Data Options ==========================
+	
+	public array function getAccountPaymentMethodIDOptions() {
+		if(!structKeyExists(variables, "accountPaymentMethodIDOptions")) {
+			variables.accountPaymentMethodIDOptions = [];
+			if(!isNull(getOrder().getAccount())) {
+				var pmArr = getOrder().getAccount().getAccountPaymentMethods();
+				for(var i=1; i<=arrayLen(pmArr); i++) {
+					if(!isNull(pmArr[i].getActiveFlag()) && pmArr[i].getActiveFlag()) {
+						arrayAppend(variables.accountPaymentMethodIDOptions, {name=pmArr[i].getSimpleRepresentation(), value=pmArr[i].getAccountPaymentMethodID()});	
+					}
+				}
+			}
+			arrayAppend(variables.accountPaymentMethodIDOptions, {name=rbKey('define.new'), value=""});
+		}
+		return variables.accountPaymentMethodIDOptions;
+	}
+	
+	public array function getAccountAddressIDOptions() {
+		if(!structKeyExists(variables, "accountAddressIDOptions")) {
+			variables.accountAddressIDOptions = [];
+			if(!isNull(getOrder().getAccount())) {
+				var aaArr = getOrder().getAccount().getAccountAddresses();
+				for(var i=1; i<=arrayLen(aaArr); i++) {
+					arrayAppend(variables.accountAddressIDOptions, {name=aaArr[i].getSimpleRepresentation(), value=aaArr[i].getAccountAddressID()});
+				}	
+			}
+			arrayAppend(variables.accountAddressIDOptions, {name=rbKey('define.new'), value=""});
+		}
+		return variables.accountAddressIDOptions;
+	}
+	
 	public array function getPaymentMethodIDOptions() {
 		if(!structKeyExists(variables, "paymentMethodIDOptions")) {
 			variables.paymentMethodIDOptions = [];
 			var epmDetails = getService('paymentService').getEligiblePaymentMethodDetailsForOrder( getOrder() );
 			for(var paymentDetail in epmDetails) {
-				arrayAppend(variables.paymentMethodIDOptions, {name=paymentDetail.paymentMethod.getPaymentMethodName(), value=paymentDetail.paymentMethod.getPaymentMethodID()});
+				arrayAppend(variables.paymentMethodIDOptions, {
+					name = paymentDetail.paymentMethod.getPaymentMethodName(), 
+					value = paymentDetail.paymentMethod.getPaymentMethodID(), 
+					paymentmethodtype = paymentDetail.paymentMethod.getPaymentMethodType(),
+					allowsaveflag = paymentDetail.paymentMethod.getAllowSaveFlag()
+					});
 			}
 		}
 		return variables.paymentMethodIDOptions;
 	}
+	
+	// ======================  END: Data Options ===========================
+	
+	// ================== START: New Property Helpers ======================
+	
+	public any function getNewOrderPayment() {
+		if(!structKeyExists(variables, "newOrderPayment")) {
+			variables.newOrderPayment = getService("orderService").newOrderPayment();
+		}
+		return variables.newOrderPayment;
+	}
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
+	
+	
 	
 }

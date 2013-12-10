@@ -53,7 +53,7 @@ Notes:
 <cftry>
 	<cfquery name="local.oldmurasetting">
 		UPDATE
-			SlatwallSetting
+			SwSetting
 		SET
 			settingName = 'integrationMuraLegacyShoppingCart'
 		WHERE
@@ -61,7 +61,7 @@ Notes:
 	</cfquery>
 	<cfquery name="local.oldmurasetting">
 		UPDATE
-			SlatwallSetting
+			SwSetting
 		SET
 			settingName = 'integrationMuraLegacyOrderStatus'
 		WHERE
@@ -69,7 +69,7 @@ Notes:
 	</cfquery>
 	<cfquery name="local.oldmurasetting">
 		UPDATE
-			SlatwallSetting
+			SwSetting
 		SET
 			settingName = 'integrationMuraLegacyOrderConfirmation'
 		WHERE
@@ -77,7 +77,7 @@ Notes:
 	</cfquery>
 	<cfquery name="local.oldmurasetting">
 		UPDATE
-			SlatwallSetting
+			SwSetting
 		SET
 			settingName = 'integrationMuraLegacyMyAccount'
 		WHERE
@@ -85,7 +85,7 @@ Notes:
 	</cfquery>
 	<cfquery name="local.oldmurasetting">
 		UPDATE
-			SlatwallSetting
+			SwSetting
 		SET
 			settingName = 'integrationMuraLegacyCreateAccount'
 		WHERE
@@ -93,7 +93,7 @@ Notes:
 	</cfquery>
 	<cfquery name="local.oldmurasetting">
 		UPDATE
-			SlatwallSetting
+			SwSetting
 		SET
 			settingName = 'integrationMuraLegacyCheckout'
 		WHERE
@@ -110,7 +110,7 @@ Notes:
 <cftry>
 	<cfquery name="local.activeflag">
 		UPDATE
-			SlatwallAccountPaymentMethod
+			SwAccountPaymentMethod
 		SET
 			activeFlag = 1
 		WHERE
@@ -119,7 +119,7 @@ Notes:
 	
 	<cfquery name="local.activeflag">
 		UPDATE
-			SlatwallSku
+			SwSku
 		SET
 			activeFlag = 1
 		WHERE
@@ -136,7 +136,7 @@ Notes:
 <cftry>
 	<cfquery name="local.flag">
 		UPDATE
-			SlatwallOrderFulfillment
+			SwOrderFulfillment
 		SET
 			manualFulfillmentChargeFlag = 0
 		WHERE
@@ -153,9 +153,9 @@ Notes:
 <cftry>
 	<cfquery name="local.allowNull">
 		<cfif getApplicationValue("databaseType") eq "MySQL">
-			ALTER TABLE SlatwallOrderPayment MODIFY COLUMN amount decimal(19,2) NULL
+			ALTER TABLE SwOrderPayment MODIFY COLUMN amount decimal(19,2) NULL
 		<cfelse>
-			ALTER TABLE SlatwallOrderPayment ALTER COLUMN amount decimal(19,2) NULL
+			ALTER TABLE SwOrderPayment ALTER COLUMN amount decimal(19,2) NULL
 		</cfif>
 	</cfquery>
 	<cfcatch>
@@ -167,22 +167,22 @@ Notes:
 <!--- Move the listing flags from SlatwallSetting to the content --->
 <cftry>
 	<cfquery name="local.listingpagesettings">
-		SELECT cmsContentID FROM SlatwallSetting WHERE settingName = 'contentProductListingFlag' and cmsContentID is not null and settingValue = 1
+		SELECT cmsContentID FROM SwSetting WHERE settingName = 'contentProductListingFlag' and cmsContentID is not null and settingValue = 1
 	</cfquery>
 	
 	<cfloop query="local.listingpagesettings">
 		<cfquery name="local.listingflagupdate">
 			UPDATE
-				SlatwallContent
+				SwContent
 			SET
 				productListingPageFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1">
 			WHERE
-				SlatwallContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.listingpagesettings.cmsContentID#">
+				SwContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.listingpagesettings.cmsContentID#">
 		</cfquery>
 	</cfloop>
 	
 	<cfquery name="local.deletelistingpagesettings">
-		DELETE FROM SlatwallSetting WHERE settingName = 'contentProductListingFlag' and cmsContentID is not null
+		DELETE FROM SwSetting WHERE settingName = 'contentProductListingFlag' and cmsContentID is not null
 	</cfquery>
 	
 	<cfcatch>
@@ -197,7 +197,7 @@ Notes:
 		SELECT DISTINCT
 			cmsSiteID
 		FROM
-			SlatwallContent
+			SwContent
 		WHERE
 			siteID is null
 	</cfquery>
@@ -208,7 +208,7 @@ Notes:
 			SELECT
 				siteID
 			FROM
-				SlatwallSite
+				SwSite
 			WHERE
 				cmsSiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.uniqueCMSSiteID.cmsSiteID#" />
 		</cfquery>
@@ -218,7 +218,7 @@ Notes:
 			<cfset local.slatwallSiteID = replace(lcase(createUUID()), '-', '', 'all') />
 			
 			<cfquery name="local.addSite">
-				INSERT INTO SlatwallSite(
+				INSERT INTO SwSite(
 					siteID,
 					siteName,
 					cmsSiteID
@@ -235,7 +235,7 @@ Notes:
 		
 		<cfquery name="local.findSite">
 			UPDATE
-				SlatwallContent
+				SwContent
 			SET
 				siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.slatwallSiteID#" />
 			WHERE
@@ -253,7 +253,7 @@ Notes:
 <cftry>
 	<cfquery name="local.updateTemplate">
 		UPDATE
-			SlatwallEmailTemplate
+			SwEmailTemplate
 		SET
 			emailTemplateObject = 'Order',
 			emailTemplateFile = 'confirmation.cfm'
@@ -262,7 +262,7 @@ Notes:
 	</cfquery>
 	<cfquery name="local.updateTemplate">
 		UPDATE
-			SlatwallEmailTemplate
+			SwEmailTemplate
 		SET
 			emailTemplateObject = 'OrderDelivery',
 			emailTemplateFile = 'confirmation.cfm'
@@ -279,7 +279,7 @@ Notes:
 <cftry>
 	<cfquery name="local.updateOrderPaymentStatus">
 		UPDATE
-			SlatwallOrderPayment
+			SwOrderPayment
 		SET
 			orderPaymentStatusTypeID = '5accbf57dcf5bb3eb71614febe83a31d'
 		WHERE

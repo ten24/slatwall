@@ -64,12 +64,14 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="subscriptionBenefit" cfc="SubscriptionBenefit" fieldtype="many-to-one" fkcolumn="subscriptionBenefitID";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
 	property name="vendorOrder" cfc="VendorOrder" fieldtype="many-to-one" fkcolumn="vendorOrderID";
 	
@@ -78,6 +80,12 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
+	
+	// Audit properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
@@ -178,6 +186,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.brand.getAttributeValues(), index);
 		}
 		structDelete(variables, "brand");
+	}
+	
+	// Image (many-to-one)    
+	public void function setImage(required any image) {    
+		variables.image = arguments.image;    
+		if(isNew() or !arguments.image.hasAttributeValue( this )) {    
+			arrayAppend(arguments.image.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeImage(any image) {    
+		if(!structKeyExists(arguments, "image")) {    
+			arguments.image = variables.image;    
+		}    
+		var index = arrayFind(arguments.image.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.image.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "image");    
 	}
 	
 	// Order (many-to-one)    
@@ -288,6 +314,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "sku");    
 	}
 	
+	// Subscription Benefit (many-to-one)
+	public void function setSubscriptionBenefit(required any subscriptionBenefit) {
+		variables.subscriptionBenefit = arguments.subscriptionBenefit;
+		if(isNew() or !arguments.subscriptionBenefit.hasAttributeValue( this )) {
+			arrayAppend(arguments.subscriptionBenefit.getAttributeValues(), this);
+		}
+	}
+	public void function removeSubscriptionBenefit(any subscriptionBenefit) {
+		if(!structKeyExists(arguments, "subscriptionBenefit")) {
+			arguments.subscriptionBenefit = variables.subscriptionBenefit;
+		}
+		var index = arrayFind(arguments.subscriptionBenefit.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.subscriptionBenefit.getAttributeValues(), index);
+		}
+		structDelete(variables, "subscriptionBenefit");
+	}
+	
 	// Vendor (many-to-one)
 	public void function setVendor(required any vendor) {
 		variables.vendor = arguments.vendor;
@@ -340,6 +384,10 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		
 		return "";
+	}
+	
+	public void function setAttributeValue( any attributeValue ) {
+		variables.attributeValue = arguments.attributeValue;
 	}
 	
 	// ==============  END: Overridden Implicet Getters ====================

@@ -57,6 +57,7 @@ component entityname="SlatwallSubscriptionBenefit" table="SwSubsBenefit" persist
 	property name="accessType" cfc="Type" fieldtype="many-to-one" fkcolumn="accessTypeID" hb_optionsSmartListData="f:parentType.systemCode=accessType";
 	
 	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="subscriptionBenefitID" inverse="true" cascade="all-delete-orphan";
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="priceGroups" singularname="priceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwSubsBenefitPriceGroup" fkcolumn="subscriptionBenefitID" inversejoincolumn="priceGroupID" cascade="all";
@@ -146,6 +147,14 @@ component entityname="SlatwallSubscriptionBenefit" table="SwSubsBenefit" persist
 	}
 	public void function removeSku(required any sku) {
 		arguments.sku.removeSubscriptionBenefit( this );
+	}
+	
+	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setSubscriptionBenefit( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeSubscriptionBenefit( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

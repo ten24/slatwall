@@ -49,17 +49,23 @@ Notes:
 
 <cfsetting showdebugoutput="no" requesttimeout="200" />
 
-<cfset local.logFile = Server.ColdFusion.RootDir & "/logs/Slatwall.log">
-
-<cfif fileExists(local.logFile)>
-	<cfset local.readFile = fileRead(local.logFile) />
-	<cfset local.fileArray = listToArray(local.readFile, chr(10)) />
-	<cfloop from="#arrayLen(local.fileArray)#" to="1" step="-1" index="local.i">
-		<cfif findNoCase(application.applicationname, local.fileArray[ local.i ])>
-			<cfset writeOutput(replace(replace(local.fileArray[ local.i ],'"Information",',''),'"#UCASE(application.applicationname)#",','')) />
-			<cfset writeOutput("<br />") />
-		</cfif>
-	</cfloop>
+<cfif structKeyExists(server, "railo")>
+	<cfset local.logFile = expandPath('/') & "WEB-INF/railo/logs/Slatwall.log">
 <cfelse>
-    <p class="message failure">No Log File Could Be Found</p>
+	<cfset local.logFile = Server.ColdFusion.RootDir & "/logs/Slatwall.log">
 </cfif>
+
+<cfoutput>
+	<cfif fileExists(local.logFile)>
+		<cfset local.readFile = fileRead(local.logFile) />
+		<cfset local.fileArray = listToArray(local.readFile, chr(10)) />
+		<cfloop from="#arrayLen(local.fileArray)#" to="1" step="-1" index="local.i">
+			<cfif structKeyExists(server, "railo") or findNoCase(application.applicationname, local.fileArray[ local.i ])>
+				<cfset writeOutput(replace(replace(local.fileArray[ local.i ],'"Information",',''),'"#UCASE(application.applicationname)#",','')) />
+				<cfset writeOutput("<br />") />
+			</cfif>
+		</cfloop>
+	<cfelse>
+	    <p class="message failure">No Log File Could Be Found</p>
+	</cfif>
+</cfoutput>

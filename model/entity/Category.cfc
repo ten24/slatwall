@@ -50,11 +50,13 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	
 	// Persistent Properties
 	property name="categoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="categoryIDPath" ormtype="string";
+	property name="categoryIDPath" ormtype="string" length="4000";
 	property name="categoryName" ormtype="string";
-	property name="cmsCategoryID" ormtype="string";
 	property name="restrictAccessFlag" ormtype="boolean";
 	property name="allowProductAssignmentFlag" ormtype="boolean";
+	
+	// CMS Properties
+	property name="cmsCategoryID" ormtype="string" index="RI_CMSCATEGORYID";
 	
 	// Related Object Properties (many-to-one)
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
@@ -111,23 +113,6 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 			arrayDeleteAt(arguments.parentCategory.getChildCategories(), index);
 		}
 		structDelete(variables, "parentCategory");
-	}
-	
-	// Products (many-to-many - inverse)
-	public void function addProduct(required any product) {
-	   arguments.product.addCategory(this);
-	}
-	
-	public void function removeProduct(required any product) {
-	   arguments.product.removeCategory(this);
-	}
-	
-	// Contents (many-to-many - inverse)    
-	public void function addContent(required any content) {    
-		arguments.content.addCategory( this );    
-	}    
-	public void function removeContent(required any content) {    
-		arguments.content.removeCategory( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

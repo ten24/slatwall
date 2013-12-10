@@ -83,16 +83,25 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function copyAddress(required any address, saveNewAddress=false) {
 		var addressCopy = this.newAddress();
-		addressCopy.setName(arguments.address.getName());
-		addressCopy.setCompany(arguments.address.getCompany());
-		addressCopy.setPhone(arguments.address.getPhone());
-		addressCopy.setStreetAddress(arguments.address.getStreetAddress());
-		addressCopy.setStreet2Address(arguments.address.getStreet2Address());
-		addressCopy.setLocality(arguments.address.getLocality());
-		addressCopy.setCity(arguments.address.getCity());
-		addressCopy.setStateCode(arguments.address.getStateCode());
-		addressCopy.setPostalCode(arguments.address.getPostalCode());
-		addressCopy.setCountryCode(arguments.address.getCountryCode());
+		
+		addressCopy.setName( arguments.address.getName() );
+		addressCopy.setCompany( arguments.address.getCompany() );
+		addressCopy.setStreetAddress( arguments.address.getStreetAddress() );
+		addressCopy.setStreet2Address( arguments.address.getStreet2Address() );
+		addressCopy.setLocality( arguments.address.getLocality() );
+		addressCopy.setCity( arguments.address.getCity() );
+		addressCopy.setStateCode( arguments.address.getStateCode() );
+		addressCopy.setPostalCode( arguments.address.getPostalCode() );
+		addressCopy.setCountryCode( arguments.address.getCountryCode() );
+		
+		addressCopy.setSalutation( arguments.address.getSalutation() );
+		addressCopy.setFirstName( arguments.address.getFirstName() );
+		addressCopy.setLastName( arguments.address.getLastName() );
+		addressCopy.setMiddleName( arguments.address.getMiddleName() );
+		addressCopy.setMiddleInitial( arguments.address.getMiddleInitial() );
+	
+		addressCopy.setPhoneNumber( arguments.address.getPhoneNumber() );
+		addressCopy.setEmailAddress( arguments.address.getEmailAddress() );
 		
 		if(arguments.saveNewAddress) {
 			getHibachiDAO().save( addressCopy );
@@ -102,15 +111,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public array function getCountryCodeOptions() {
-		if(!structKeyExists(variables, "countryCodeOptions")) {
-			var smartList = this.getCountrySmartList();
-			smartList.addFilter(propertyIdentifier="activeFlag", value=1);
-			smartList.addSelect(propertyIdentifier="countryName", alias="name");
-			smartList.addSelect(propertyIdentifier="countryCode", alias="value");
-			smartList.addOrder("countryName|ASC");
-			variables.countryCodeOptions = smartList.getRecords();
-		}
-		return variables.countryCodeOptions;
+		
+		var smartList = this.getCountrySmartList();
+		smartList.addFilter(propertyIdentifier="activeFlag", value=1);
+		smartList.addSelect(propertyIdentifier="countryName", alias="name");
+		smartList.addSelect(propertyIdentifier="countryCode", alias="value");
+		smartList.addOrder("countryName|ASC");
+		
+		return smartList.getRecords();
 	}
 	
 	// =====================  END: Logical Methods ============================
@@ -135,7 +143,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.country = save(entity=arguments.country, data=arguments.data, context=arguments.context);
 	
 		// remove the cache of country code options
-		structDelete(variables, "countryCodeOptions");
+		getHibachiCacheService().resetCachedKey("addressService_getCountryCodeOptions");
 		
 		return arguments.country;
 	}

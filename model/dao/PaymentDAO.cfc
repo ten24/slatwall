@@ -82,4 +82,148 @@ Notes:
 		<cfreturn rs.recordcount />
 	</cffunction>
 
+	<cffunction name="getOriginalAuthorizationCode" access="public" returntype="string" output="false">
+		<cfargument name="orderPaymentID" type="string" />
+		<cfargument name="referencedOrderPaymentID" type="string" />
+		<cfargument name="accountPaymentID" type="string" />
+		
+		<cfset var hql = "SELECT NEW MAP(spt.authorizationCode as authorizationCode) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN ( :transactionType ) AND " />
+		<cfset hqlParams = {} />
+		<cfset hqlParams['transactionType'] = ["authorize", "authorizeAndCharge"] />
+		
+		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
+			<cfset hql &= "(spt.orderPayment.orderPaymentID = :orderPaymentID OR spt.orderPayment.orderPaymentID = :referencedOrderPaymentID) " />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+			<cfset hqlParams['referencedOrderPaymentID'] = arguments.referencedOrderPaymentID />
+		<cfelseif structKeyExists(arguments, "orderPaymentID")>
+			<cfset hql &= "spt.orderPayment.orderPaymentID = :orderPaymentID " />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+		<cfelseif structKeyExists(arguments, "accountPaymentID")>
+			<cfset hql &= "spt.accountPayment.accountPaymentID = :accountPaymentID " />
+			<cfset hqlParams['accountPaymentID'] = arguments.accountPaymentID />
+		</cfif>
+		
+		<cfset var results = ormExecuteQuery(hql, hqlParams) />
+		
+		<cfif arrayLen(results)>
+			<cfreturn results[1]['authorizationCode'] />
+		</cfif>
+		
+		<cfreturn "" />	
+	</cffunction>
+	
+	<cffunction name="getOriginalAuthorizationProviderTransactionID" access="public" returntype="string" output="false">
+		<cfargument name="orderPaymentID" type="string" />
+		<cfargument name="referencedOrderPaymentID" type="string" />
+		<cfargument name="accountPaymentID" type="string" />
+		
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
+		<cfset hqlParams = {} />
+		<cfset hqlParams['transactionType'] = ["authorize","authorizeAndCharge"] />
+		
+		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
+			<cfset hql &= "(spt.orderPayment.orderPaymentID = :orderPaymentID OR spt.orderPayment.orderPaymentID = :referencedOrderPaymentID) " />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+			<cfset hqlParams['referencedOrderPaymentID'] = arguments.referencedOrderPaymentID />
+		<cfelseif structKeyExists(arguments, "orderPaymentID")>
+			<cfset hql &= "spt.orderPayment.orderPaymentID = :orderPaymentID " />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+		<cfelseif structKeyExists(arguments, "accountPaymentID")>
+			<cfset hql &= "spt.accountPayment.accountPaymentID = :accountPaymentID " />
+			<cfset hqlParams['accountPaymentID'] = arguments.accountPaymentID />
+		</cfif>
+		
+		<cfset var results = ormExecuteQuery(hql, hqlParams) />
+		
+		<cfif arrayLen(results)>
+			<cfreturn results[1]['providerTransactionID'] />
+		</cfif>
+		
+		<cfreturn "" />	
+	</cffunction>
+	
+	<cffunction name="getOriginalChargeProviderTransactionID" access="public" returntype="string" output="false">
+		<cfargument name="orderPaymentID" type="string" />
+		<cfargument name="referencedOrderPaymentID" type="string" />
+		<cfargument name="accountPaymentID" type="string" />
+		
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
+		<cfset hqlParams = {} />
+		<cfset hqlParams['transactionType'] = ["chargePreAuthorization","authorizeAndCharge"] />
+		
+		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
+			<cfset hql &= "(spt.orderPayment.orderPaymentID = :orderPaymentID OR spt.orderPayment.orderPaymentID = :referencedOrderPaymentID) " />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+			<cfset hqlParams['referencedOrderPaymentID'] = arguments.referencedOrderPaymentID />
+		<cfelseif structKeyExists(arguments, "orderPaymentID")>
+			<cfset hql &= "spt.orderPayment.orderPaymentID = :orderPaymentID " />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+		<cfelseif structKeyExists(arguments, "accountPaymentID")>
+			<cfset hql &= "spt.accountPayment.accountPaymentID = :accountPaymentID " />
+			<cfset hqlParams['accountPaymentID'] = arguments.accountPaymentID />
+		</cfif>
+		
+		<cfset var results = ormExecuteQuery(hql, hqlParams) />
+		
+		<cfif arrayLen(results)>
+			<cfreturn results[1]['providerTransactionID'] />
+		</cfif>
+		
+		<cfreturn "" />	
+	</cffunction>
+	
+	<cffunction name="getOriginalProviderTransactionID" access="public" returntype="string" output="false">
+		<cfargument name="orderPaymentID" type="string" />
+		<cfargument name="referencedOrderPaymentID" type="string" />
+		<cfargument name="accountPaymentID" type="string" />
+		
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND " />
+		<cfset hqlParams = {} />
+		
+		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
+			<cfset hql &= "(spt.orderPayment.orderPaymentID = :orderPaymentID OR spt.orderPayment.orderPaymentID = :referencedOrderPaymentID) " />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+			<cfset hqlParams['referencedOrderPaymentID'] = arguments.referencedOrderPaymentID />
+		<cfelseif structKeyExists(arguments, "orderPaymentID")>
+			<cfset hql &= "spt.orderPayment.orderPaymentID = :orderPaymentID " />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+		<cfelseif structKeyExists(arguments, "accountPaymentID")>
+			<cfset hql &= "spt.accountPayment.accountPaymentID = :accountPaymentID " />
+			<cfset hqlParams['accountPaymentID'] = arguments.accountPaymentID />
+		</cfif>
+		
+		<cfset hql &= " ORDER BY spt.createdDateTime" />
+		
+		<cfset var results = ormExecuteQuery(hql, hqlParams) />
+		
+		<cfif arrayLen(results)>
+			<cfreturn results[1]['providerTransactionID'] />
+		</cfif>
+		
+		<cfreturn "" />
+	</cffunction>
+	
+	<cffunction name="updateInvalidAuthorizationCode" access="public" returntype="any" output="false">
+		<cfargument name="authorizationCode" type="string" required="true" />
+		<cfargument name="orderPaymentID" type="string" />
+		<cfargument name="accountPaymentID" type="string" />
+		
+		<cfset var hql = "UPDATE SlatwallPaymentTransaction SET authorizationCodeInvalidFlag = 1, modifiedDateTime = :now WHERE authorizationCode = :authorizationCode AND transactionType = :transactionType AND " />
+		
+		<cfset hqlParams = {} />
+		<cfset hqlParams['authorizationCode'] = arguments.authorizationCode />
+		<cfset hqlParams['transactionType'] = "authorize" />
+		<cfset hqlParams.now = now() />
+		
+		<cfif structKeyExists(arguments, "orderPaymentID")>
+			<cfset hql &= "orderPayment.orderPaymentID = :orderPaymentID" />
+			<cfset hqlParams['orderPaymentID'] = arguments.orderPaymentID />
+		<cfelseif structKeyExists(arguments, "accountPaymentID")>
+			<cfset hql &= "accountPayment.accountPaymentID = :accountPaymentID" />
+			<cfset hqlParams['accountPaymentID'] = arguments.accountPaymentID />
+		</cfif>
+		
+		<cfset ormExecuteQuery(hql, hqlParams) />
+	</cffunction>
+	
 </cfcomponent>

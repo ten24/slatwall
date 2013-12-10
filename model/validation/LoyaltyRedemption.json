@@ -1,0 +1,12 @@
+{
+	"conditions":{
+	    "redemptionTypePriceGroupAssignment":{
+	        "redemptionType":{"eq":"priceGroupAssignment"}
+	    }
+	},
+	"properties":{
+		"amount":							[{"contexts":"save","dataType":"numeric"}],
+		"minimumPointQuantity":				[{"contexts":"save","dataType":"numeric"}],
+		"priceGroup":						[{"contexts":"save","conditions":"redemptionTypePriceGroupAssignment","required":true}]
+	}
+}

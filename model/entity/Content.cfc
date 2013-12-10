@@ -50,14 +50,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// Persistent Properties
 	property name="contentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="contentIDPath" ormtype="string" length="500";
+	property name="contentIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean";
 	property name="title" ormtype="string";
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
 	
 	// CMS Properties
-	property name="cmsContentID" ormtype="string";
+	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
 	
 	// Related Object Properties (many-to-one)
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
@@ -133,50 +133,12 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		structDelete(variables, "parentContent");
 	}
 	
-	// Site (many-to-one)    
-	public void function setSite(required any site) {    
-		variables.site = arguments.site;    
-		if(isNew() or !arguments.site.hasContent( this )) {    
-			arrayAppend(arguments.site.getContents(), this);    
-		}    
-	}    
-	public void function removeSite(any site) {    
-		if(!structKeyExists(arguments, "site")) {    
-			arguments.site = variables.site;    
-		}    
-		var index = arrayFind(arguments.site.getContents(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.site.getContents(), index);    
-		}    
-		structDelete(variables, "site");    
-	}
-	
 	// Child Contents (one-to-many)    
 	public void function addChildContent(required any childContent) {    
 		arguments.childContent.setParentContent( this );    
 	}    
 	public void function removeChildContent(required any childContent) {    
 		arguments.childContent.removeParentContent( this );    
-	}
-	
-	// Categories (many-to-many - owner)    
-	public void function addCategory(required any category) {    
-		if(arguments.category.isNew() or !hasCategory(arguments.category)) {    
-			arrayAppend(variables.categories, arguments.category);    
-		}    
-		if(isNew() or !arguments.category.hasContent( this )) {    
-			arrayAppend(arguments.category.getContents(), this);    
-		}    
-	}    
-	public void function removeCategory(required any category) {    
-		var thisIndex = arrayFind(variables.categories, arguments.category);    
-		if(thisIndex > 0) {    
-			arrayDeleteAt(variables.categories, thisIndex);    
-		}    
-		var thatIndex = arrayFind(arguments.category.getContents(), this);    
-		if(thatIndex > 0) {    
-			arrayDeleteAt(arguments.category.getContents(), thatIndex);    
-		}    
 	}
 	
 	// Skus (many-to-many - inverse)

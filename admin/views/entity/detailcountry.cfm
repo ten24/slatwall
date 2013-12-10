@@ -54,36 +54,39 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.country#" edit="#rc.edit#" />
 		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+			<cf_HibachiPropertyList divClass="span6">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="countryCode" edit="#rc.country.getNewFlag()#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="countryName" edit="#rc.edit#">
-				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="streetAddressShowFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="streetAddressRequiredFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="streetAddressLabel" edit="#rc.edit#">
-				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="street2AddressShowFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="street2AddressRequiredFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="street2AddressLabel" edit="#rc.edit#">
-				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="localityShowFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="localityRequiredFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="localityLabel" edit="#rc.edit#">
-				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="cityShowFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="cityRequiredFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="cityLabel" edit="#rc.edit#">
-				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="stateCodeShowFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="stateCodeRequiredFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="stateCodeLabel" edit="#rc.edit#">
-				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="postalCodeShowFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.country#" property="postalCodeRequiredFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="postalCodeLabel" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+			<cf_HibachiPropertyList divClass="span3">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="streetAddressShowFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="street2AddressShowFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="localityShowFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="cityShowFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="stateCodeShowFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="postalCodeShowFlag" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+			<cf_HibachiPropertyList divClass="span3">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="streetAddressRequiredFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="street2AddressRequiredFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="localityRequiredFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="cityRequiredFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="stateCodeRequiredFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.country#" property="postalCodeRequiredFlag" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 	</cf_HibachiEntityDetailForm>
+	
+	<cf_HibachiTabGroup object="#rc.country#">
+		<cf_HibachiTab property="states" />
+	</cf_HibachiTabGroup>
+	
 </cfoutput>
 

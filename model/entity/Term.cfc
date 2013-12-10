@@ -60,13 +60,16 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
-	property name="paymentTerms" hb_populateEnabled="false" singularname="paymentTerm" cfc="PaymentTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all" inverse="true" lazy="extra"; 															// Extra Lazy because it is only used for validation
-	property name="initialSubscriptionTerms" hb_populateEnabled="false" singularname="initialSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra"; 						// Extra Lazy because it is only used for validation
-	property name="renewalSubscriptionTerms" hb_populateEnabled="false" singularname="renewalSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra"; 						// Extra Lazy because it is only used for validation
-	property name="gracePeriodSubscriptionTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra"; 			// Extra Lazy because it is only used for validation
-	property name="initialSubscriptionUsageTerms" hb_populateEnabled="false" singularname="initialSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra";				// Extra Lazy because it is only used for validation
-	property name="renewalSubscriptionUsageTerms" hb_populateEnabled="false" singularname="renewalSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra";				// Extra Lazy because it is only used for validation
-	property name="gracePeriodSubscriptionUsageTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra";	// Extra Lazy because it is only used for validation
+	property name="paymentTerms" hb_populateEnabled="false" singularname="paymentTerm" cfc="PaymentTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all" inverse="true" lazy="extra"; 																	// Extra Lazy because it is only used for validation
+	property name="initialSubscriptionTerms" hb_populateEnabled="false" singularname="initialSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra"; 								// Extra Lazy because it is only used for validation
+	property name="renewalSubscriptionTerms" hb_populateEnabled="false" singularname="renewalSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra"; 								// Extra Lazy because it is only used for validation
+	property name="gracePeriodSubscriptionTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra"; 					// Extra Lazy because it is only used for validation
+	property name="initialSubscriptionUsageTerms" hb_populateEnabled="false" singularname="initialSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra";					// Extra Lazy because it is only used for validation
+	property name="renewalSubscriptionUsageTerms" hb_populateEnabled="false" singularname="renewalSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra";					// Extra Lazy because it is only used for validation
+	property name="gracePeriodSubscriptionUsageTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra";		// Extra Lazy because it is only used for validation
+	property name="loyaltyAccruementExpirationTerms" singularname="loyaltyAccruementExpirationTerm" cfc="LoyaltyAccruement" type="array" fieldtype="one-to-many" fkcolumn="expirationTermID" cascade="all" inverse="true" lazy="extra";										// Extra Lazy because it is only used for validation
+	//property name="loyaltyRedemptionAutoRedemptionTerms" singularname="loyaltyRedemptionAutoRedemptionTerm" cfc="LoyaltyRedemption" type="array" fieldtype="one-to-many" fkcolumn="autoRedemptionTermID" cascade="all" inverse="true" lazy="extra";							// Extra Lazy because it is only used for validation
+	property name="loyaltyTerms" singularname="loyaltyTerm" cfc="LoyaltyTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all-delete-orphan" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many)
 	
@@ -81,12 +84,17 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 	
 	// Non-Persistent Properties
 
-	public any function getEndDate(any startDate = now()) {
+	public any function getEndDate(any startDate = now(), boolean multipleIterationsForFutureDateFlag=false) {
 		var endDate = arguments.startDate;
 		endDate = dateAdd('yyyy',val(getTermYears()),endDate);
 		endDate = dateAdd('m',val(getTermMonths()),endDate);
 		endDate = dateAdd('d',val(getTermDays()),endDate);
 		endDate = dateAdd('h',val(getTermHours()),endDate);
+		
+		if(arguments.multipleIterationsForFutureDateFlag && endDate < now()) {
+			return getEndDate(endDate, true);
+		}
+		
 		return endDate;
 	}
 
@@ -97,62 +105,6 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Payment Terms (one-to-many)    
-	public void function addPaymentTerm(required any paymentTerm) {    
-		arguments.paymentTerm.setTerm( this );    
-	}    
-	public void function removePaymentTerm(required any paymentTerm) {    
-		arguments.paymentTerm.removeTerm( this );    
-	}
-	
-	// Initial Subscription Terms (one-to-many)
-	public void function addInitialSubscriptionTerm(required any initialSubscriptionTerm) {
-		arguments.initialSubscriptionTerm.setInitialTerm( this );
-	}
-	public void function removeInitialSubscriptionTerm(required any initialSubscriptionTerm) {
-		arguments.initialSubscriptionTerm.removeInitialTerm( this );
-	}
-	
-	// Renewal Subscription Terms (one-to-many)
-	public void function addRenewalSubscriptionTerm(required any renewalSubscriptionTerm) {
-		arguments.renewalSubscriptionTerm.setRenewalTerm( this );
-	}
-	public void function removeRenewalSubscriptionTerm(required any renewalSubscriptionTerm) {
-		arguments.renewalSubscriptionTerm.removeRenewalTerm( this );
-	}
-
-	// Grace Period Subscription Terms (one-to-many)
-	public void function addGracePeriodSubscriptionTerm(required any gracePeriodSubscriptionTerm) {
-		arguments.gracePeriodSubscriptionTerm.setGracePeriodTerm( this );
-	}
-	public void function removeGracePeriodSubscriptionTerm(required any gracePeriodSubscriptionTerm) {
-		arguments.gracePeriodSubscriptionTerm.removeGracePeriodTerm( this );
-	}
-	
-	// Initial Subscription Usage Terms (one-to-many)
-	public void function addInitialSubscriptionUsageTerm(required any initialSubscriptionUsageTerm) {
-		arguments.initialSubscriptionUsageTerm.setInitialTerm( this );
-	}
-	public void function removeInitialSubscriptionUsageTerm(required any initialSubscriptionUsageTerm) {
-		arguments.initialSubscriptionUsageTerm.removeInitialTerm( this );
-	}
-	
-	// Renewal Subscription Terms (one-to-many)
-	public void function addRenewalSubscriptionUsageTerm(required any renewalSubscriptionUsageTerm) {
-		arguments.renewalSubscriptionUsageTerm.setRenewalTerm( this );
-	}
-	public void function removeRenewalSubscriptionUsageTerm(required any renewalSubscriptionUsageTerm) {
-		arguments.renewalSubscriptionUsageTerm.removeRenewalTerm( this );
-	}
-
-	// Grace Period Subscription Terms (one-to-many)
-	public void function addGracePeriodSubscriptionUsageTerm(required any gracePeriodSubscriptionUsageTerm) {
-		arguments.gracePeriodSubscriptionUsageTerm.setGracePeriodTerm( this );
-	}
-	public void function removeGracePeriodSubscriptionUsageTerm(required any gracePeriodSubscriptionUsageTerm) {
-		arguments.gracePeriodSubscriptionUsageTerm.removeGracePeriodTerm( this );
-	}
-
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================

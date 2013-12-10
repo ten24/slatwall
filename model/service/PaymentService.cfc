@@ -50,10 +50,96 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="paymentDAO" type="any";
 	
+	property name="currencyService" type="any";
 	property name="integrationService" type="any";
 	property name="settingService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public any function getUncapturedPreAuthorizations( required any payment ) {
+		var authorizations = [];
+		var sortedAuths = [];
+		var thisData = {};
+		var thisDataAdded = false;
+		var sortedFound = false;
+		
+		for(var paymentTransaction in arguments.payment.getPaymentTransactions()) {
+			
+			thisData = {};
+			
+			if(paymentTransaction.getTransactionType() eq 'authorize' &&
+				!isNull(paymentTransaction.getAuthorizationCode()) && 
+				len(paymentTransaction.getAuthorizationCode()) && 
+				!isNull(paymentTransaction.getAmountAuthorized()) && 
+				paymentTransaction.getAmountAuthorized() gt 0 &&
+				(isNull(paymentTransaction.getAuthorizationCodeInvalidFlag()) || !paymentTransaction.getAuthorizationCodeInvalidFlag())) {
+				
+					thisData.createdDateTime = paymentTransaction.getCreatedDateTime();
+					thisData.authorizationCode = paymentTransaction.getAuthorizationCode();
+					thisData.amountAuthorized = paymentTransaction.getAmountAuthorized();
+					thisData.amountReceived = 0;
+					thisData.providerTransactionID = "";
+					if(!isNull(paymentTransaction.getProviderTransactionID())) {
+						thisData.providerTransactionID = paymentTransaction.getProviderTransactionID();
+					}
+					
+			} else if(paymentTransaction.getTransactionType() eq 'chargePreAuthorization' &&
+				!isNull(paymentTransaction.getAuthorizationCodeUsed()) && 
+				len(paymentTransaction.getAuthorizationCodeUsed()) && 
+				!isNull(paymentTransaction.getAmountReceived()) && 
+				paymentTransaction.getAmountReceived() gt 0) {
+				
+					thisData.createdDateTime = paymentTransaction.getCreatedDateTime();
+					thisData.providerTransactionID = paymentTransaction.getProviderTransactionID();
+					thisData.authorizationCode = paymentTransaction.getAuthorizationCodeUsed();
+					thisData.amountAuthorized = 0;
+					thisData.amountReceived = paymentTransaction.getAmountReceived();
+					thisData.providerTransactionID = "";
+					if(!isNull(paymentTransaction.getProviderTransactionID())) {
+						thisData.providerTransactionID = paymentTransaction.getProviderTransactionID();
+					}
+				
+			}
+			
+			if(structKeyExists(thisData, "authorizationCode")) {
+				thisDataAdded = false;
+				for(var a=1; a<=arrayLen(authorizations); a++) {
+					if(thisData.authorizationCode eq authorizations[a].authorizationCode) {
+						if(thisData.createdDateTime lt authorizations[a].createdDateTime) {
+							authorizations[a].createdDateTime = thisData.createdDateTime;
+							authorizations[a].providerTransactionID = thisData.providerTransactionID;
+						}
+						authorizations[a].amountAuthorized = precisionEvaluate(authorizations[a].amountAuthorized + thisData.amountAuthorized);
+						authorizations[a].amountReceived = precisionEvaluate(authorizations[a].amountReceived + thisData.amountReceived);
+						thisDataAdded = true;
+						break;
+					}
+				}
+				if(!thisDataAdded) {
+					arrayAppend(authorizations, thisData);
+				}
+			}
+		}
+		
+		for(var a=1; a<=arrayLen(authorizations); a++) {
+			if(authorizations[a].amountAuthorized gt authorizations[a].amountReceived) {
+				sortedFound = false;
+				authorizations[a].chargeableAmount = precisionEvaluate(authorizations[a].amountAuthorized - authorizations[a].amountReceived);
+				for(var s=1; s<=arrayLen(sortedAuths); s++) {
+					if(sortedAuths[s].createdDateTime gt authorizations[a].createdDateTime) {
+						arrayInsertAt(sortedAuths, s, authorizations[a]);
+						sortedFound = true;
+						break;
+					}
+				}
+				if(!sortedFound) {
+					arrayAppend(sortedAuths, authorizations[a]);
+				}
+			}
+		}
+		
+		return sortedAuths;
+	}
 	
 	public any function getEligiblePaymentMethodDetailsForOrder(required any order) {
 		var paymentMethodMaxAmount = {};
@@ -180,6 +266,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: DAO Passthrough ===========================
 	
+	public string function getOriginalAuthorizationCode( string orderPaymentID, string referencedOrderPaymentID, string accountPaymentID ) {
+		return getPaymentDAO().getOriginalAuthorizationCode(argumentcollection=arguments);
+	}
+	
+	public string function getOriginalAuthorizationProviderTransactionID( string orderPaymentID, string referencedOrderPaymentID, string accountPaymentID ) {
+		return getPaymentDAO().getOriginalAuthorizationProviderTransactionID(argumentcollection=arguments);
+	}
+	
+	public string function getOriginalChargeProviderTransactionID( string orderPaymentID, string referencedOrderPaymentID, string accountPaymentID ) {
+		return getPaymentDAO().getOriginalChargeProviderTransactionID(argumentcollection=arguments);
+	}
+	
+	public string function getOriginalProviderTransactionID( string orderPaymentID, string referencedOrderPaymentID, string accountPaymentID ) {
+		return getPaymentDAO().getOriginalProviderTransactionID(argumentcollection=arguments);
+	}
+	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
@@ -207,8 +309,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} else {
 					
 					// Setup the startTickCount & the transactionType
-					arguments.paymentTransaction.setTransactionType( arguments.data.transactionType );
 					arguments.paymentTransaction.setTransactionStartTickCount( getTickCount() );
+					arguments.paymentTransaction.setTransactionType( arguments.data.transactionType );
 					
 					// Add the transaction to the hibernate scope
 					getHibachiDAO().save(arguments.paymentTransaction);
@@ -232,15 +334,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						requestBean.setTransactionID( arguments.paymentTransaction.getPaymentTransactionID() );
 						requestBean.setTransactionType( arguments.data.transactionType );
 						requestBean.setTransactionAmount( arguments.data.amount );
+						if(structKeyExists(arguments.data, "preAuthorizationCode")) {
+							requestBean.setPreAuthorizationCode( arguments.data.preAuthorizationCode );
+						}
+						if(structKeyExists(arguments.data, "preAuthorizationProviderTransactionID")) {
+							requestBean.setPreAuthorizationProviderTransactionID( arguments.data.preAuthorizationProviderTransactionID );
+						}
 						if(listFindNoCase("OrderPayment,AccountPayment", arguments.paymentTransaction.getPayment().getClassName())) {
-							requestBean.setTransactionCurrency( arguments.paymentTransaction.getPayment().getCurrencyCode() );	
+							requestBean.setTransactionCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+							var currency = getCurrencyService().getCurrency( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+							if(!isNull(currency) && !isNull(currency.getCurrencyISONumber())) {
+								requestBean.setTransactionCurrencyISONumber( currency.getCurrencyISONumber() );
+							}
 						}
 						
 						// Move all of the info into the new request bean
 						if(arguments.paymentTransaction.getPayment().getClassName() eq "OrderPayment") {
-							requestBean.populatePaymentInfoWithOrderPayment( arguments.paymentTransaction.getPayment() );	
+							requestBean.populatePaymentInfoWithOrderPayment( arguments.paymentTransaction.getPayment() );
+							arguments.paymentTransaction.setCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );	
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPayment") {
 							requestBean.populatePaymentInfoWithAccountPayment( arguments.paymentTransaction.getPayment() );
+							arguments.paymentTransaction.setCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
 						} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPaymentMethod") {
 							requestBean.populatePaymentInfoWithAccountPaymentMethod( arguments.paymentTransaction.getPayment() );
 						}
@@ -260,9 +374,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// messages
 							arguments.paymentTransaction.setMessage(serializeJSON(response.getMessages()));
 							
-							// TransactionID
-							if(!isNull(response.getTransactionID())) {
-								arguments.paymentTransaction.setProviderTransactionID(response.getTransactionID());	
+							// providerTransactionID
+							if(!isNull(response.getProviderTransactionID())) {
+								arguments.paymentTransaction.setProviderTransactionID( response.getProviderTransactionID() );	
 							}
 							// amountAuthorized
 							if(!isNull(response.getAmountAuthorized())) {
@@ -289,8 +403,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.paymentTransaction.setAVSCode(response.getAVSCode());
 							}
 							
+							// If the reposnse passes back an authorizationCode that was used, then add it to the transaction
+							if(!isNull(response.getAuthorizationCodeUsed()) && len(response.getAuthorizationCodeUsed())) {
+								arguments.paymentTransaction.setAuthorizationCodeUsed( arguments.data.preAuthorizationCode );
+								
+							// If the response didn't pass back an authorizationCode used, then we can check the transactionType, and if we passed in a preAuthorizationCode and then a value was set
+							} else if(listFindNoCase("chargePreAuthorization", arguments.data.transactionType) && structKeyExists(arguments.data, "preAuthorizationCode") && !isNull(response.getAmountReceived()) && isNumeric(response.getAmountReceived()) && response.getAmountReceived() gt 0) {
+								arguments.paymentTransaction.setAuthorizationCodeUsed( arguments.data.preAuthorizationCode );
+								
+							}
+							
+							// If this transaction used an authorizationCode, and the response has told us that the authorizationCode is now invalid then we should update any paymentTransactions with that authorizeCode and set them to now be invalid
+							if(!isNull(response.getAuthorizationCodeInvalidFlag()) && response.getAuthorizationCodeInvalidFlag() && !isNull(arguments.paymentTransaction.getAuthorizationCodeUsed()) && len(arguments.paymentTransaction.getAuthorizationCodeUsed())) {
+								if(arguments.paymentTransaction.getPayment().getClassName() eq "OrderPayment") {
+									getPaymentDAO().updateInvalidAuthorizationCode( autorizationCode=arguments.paymentTransaction.getAuthorizationCodeUsed(), orderPaymentID=arguments.paymentTransaction.getPayment().getOrderPaymentID() );	
+								} else if (arguments.paymentTransaction.getPayment().getClassName() eq "AccountPayment") {
+									getPaymentDAO().updateInvalidAuthorizationCode( autorizationCode=arguments.paymentTransaction.getAuthorizationCodeUsed(), orderPaymentID=arguments.paymentTransaction.getPayment().getOrderPaymentID() );
+								}
+							}
+							
 							// add the providerToken to the orderPayment & accountPayment
-							if(!isNull(response.getProviderToken())) {
+							if(!isNull(response.getProviderToken()) && len(response.getProviderToken())) {
 								
 								// Set the provider token if one was returned
 								arguments.paymentTransaction.getPayment().setProviderToken( response.getProviderToken() );
@@ -302,15 +435,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								
 							}
 							
+							// Set the successFlag in the transaction acordingly
+							arguments.paymentTransaction.setTransactionSuccessFlag( !response.hasErrors() );
+							
 							// Make sure that this transaction with all of it's info gets added to the DB
 							getHibachiDAO().flushORMSession();
 							
-							// If the response had errors then add them to the payment
+							// If the response had errors 
 							if(response.hasErrors()) {
+								// add errors to the paymentTransaction
 								arguments.paymentTransaction.addError('runTransaction', response.getErrors(), true);
 							}
 							
 						} catch (any e) {
+							
+							// Set the successFlag to false
+							arguments.paymentTransaction.setTransactionSuccessFlag( false );
 							
 							// Populate the orderPayment with the processing error and make it persistable
 							arguments.paymentTransaction.addError('runTransaction', rbKey('error.unexpected.checklog'), true);

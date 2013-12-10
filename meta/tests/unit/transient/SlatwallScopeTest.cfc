@@ -52,6 +52,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!isNull(request.slatwallScope.getEntity('SlatwallCountry', 'US')));
 	}
 	
+	public void function getEntity_works_with_struct() {
+		assert(!isNull(request.slatwallScope.getEntity('Country', {countryCode='US'})));
+	}
+	
 }
 
 

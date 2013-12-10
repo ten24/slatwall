@@ -51,7 +51,7 @@ Notes:
 
 <!--- Update SlatwallPromotionQualifierExcludedProduct and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionQualifierExcludedProduct" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoQualExclProduct" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -69,13 +69,13 @@ Notes:
 			FROM
 				information_schema.key_column_usage
 			WHERE
-				TABLE_NAME = 'SlatwallPromotionQualifierExcludedProduct'
+				TABLE_NAME = 'SwPromoQualExclProduct'
 		</cfquery>
 		<cfif local.constraintData.recordCount>
 			<cfloop query="local.constraintData">
 				<cftry>
 					<cfquery name="local.updateData">
-						ALTER TABLE SlatwallPromotionQualifierExcludedProduct DROP
+						ALTER TABLE SwPromoQualExclProduct DROP
 						<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
 							CONSTRAINT
 						<cfelse>
@@ -89,7 +89,7 @@ Notes:
 		</cfif>
 		
 		<cfquery name="local.updateData">
-			ALTER TABLE SlatwallPromotionQualifierExcludedProduct DROP COLUMN priceGroupRateID
+			ALTER TABLE SwPromoQualExclProduct DROP COLUMN priceGroupRateID
 		</cfquery>
 	</cfif>
 	
@@ -102,7 +102,7 @@ Notes:
 
 <!--- Update SlatwallPromotionQualifierExcludedProductType and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionQualifierExcludedProductType" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoQualExclProductType" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -120,13 +120,13 @@ Notes:
 			FROM
 				information_schema.key_column_usage
 			WHERE
-				TABLE_NAME = 'SlatwallPromotionQualifierExcludedProductType'
+				TABLE_NAME = 'SwPromoQualExclProductType'
 		</cfquery>
 		<cfif local.constraintData.recordCount>
 			<cfloop query="local.constraintData">
 				<cftry>
 					<cfquery name="local.updateData">
-						ALTER TABLE SlatwallPromotionQualifierExcludedProductType DROP
+						ALTER TABLE SwPromoQualExclProductType DROP
 						<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
 							CONSTRAINT
 						<cfelse>
@@ -140,7 +140,7 @@ Notes:
 		</cfif>
 		
 		<cfquery name="local.updateData">
-			ALTER TABLE SlatwallPromotionQualifierExcludedProductType DROP COLUMN priceGroupRateID
+			ALTER TABLE SwPromoQualExclProductType DROP COLUMN priceGroupRateID
 		</cfquery>
 	</cfif>
 	
@@ -153,7 +153,7 @@ Notes:
 
 <!--- Update SlatwallPromotionQualifierExcludedSku and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionQualifierExcludedSku" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoQualExclSku" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -171,13 +171,13 @@ Notes:
 			FROM
 				information_schema.key_column_usage
 			WHERE
-				TABLE_NAME = 'SlatwallPromotionQualifierExcludedSku'
+				TABLE_NAME = 'SwPromoQualExclSku'
 		</cfquery>
 		<cfif local.constraintData.recordCount>
 			<cfloop query="local.constraintData">
 				<cftry>
 					<cfquery name="local.updateData">
-						ALTER TABLE SlatwallPromotionQualifierExcludedSku DROP
+						ALTER TABLE SwPromoQualExclSku DROP
 						<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
 							CONSTRAINT
 						<cfelse>
@@ -191,7 +191,7 @@ Notes:
 		</cfif>
 		
 		<cfquery name="local.updateData">
-			ALTER TABLE SlatwallPromotionQualifierExcludedSku DROP COLUMN priceGroupRateID
+			ALTER TABLE SwPromoQualExclSku DROP COLUMN priceGroupRateID
 		</cfquery>
 	</cfif>
 	
@@ -204,7 +204,7 @@ Notes:
 
 <!--- Update SlatwallPromotionRewardExcludedProduct and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionRewardExcludedProduct" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoRewardExclProduct" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -222,13 +222,13 @@ Notes:
 			FROM
 				information_schema.key_column_usage
 			WHERE
-				TABLE_NAME = 'SlatwallPromotionRewardExcludedProduct'
+				TABLE_NAME = 'SwPromoRewardExclProduct'
 		</cfquery>
 		<cfif local.constraintData.recordCount>
 			<cfloop query="local.constraintData">
 				<cftry>
 					<cfquery name="local.updateData">
-						ALTER TABLE SlatwallPromotionRewardExcludedProduct DROP
+						ALTER TABLE SwPromoRewardExclProduct DROP
 						<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
 							CONSTRAINT
 						<cfelse>
@@ -242,7 +242,7 @@ Notes:
 		</cfif>
 		
 		<cfquery name="local.updateData">
-			ALTER TABLE SlatwallPromotionRewardExcludedProduct DROP COLUMN priceGroupRateID
+			ALTER TABLE SwPromoRewardExclProduct DROP COLUMN priceGroupRateID
 		</cfquery>
 	</cfif>
 	
@@ -255,7 +255,7 @@ Notes:
 
 <!--- Update SlatwallPromotionRewardExcludedProductType and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionRewardExcludedProductType" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoRewardExclProductType" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -273,13 +273,13 @@ Notes:
 			FROM
 				information_schema.key_column_usage
 			WHERE
-				TABLE_NAME = 'SlatwallPromotionRewardExcludedProductType'
+				TABLE_NAME = 'SwPromoRewardExclProductType'
 		</cfquery>
 		<cfif local.constraintData.recordCount>
 			<cfloop query="local.constraintData">
 				<cftry>
 					<cfquery name="local.updateData">
-						ALTER TABLE SlatwallPromotionRewardExcludedProductType DROP
+						ALTER TABLE SwPromoRewardExclProductType DROP
 						<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
 							CONSTRAINT
 						<cfelse>
@@ -293,7 +293,7 @@ Notes:
 		</cfif>
 		
 		<cfquery name="local.updateData">
-			ALTER TABLE SlatwallPromotionRewardExcludedProductType DROP COLUMN priceGroupRateID
+			ALTER TABLE SwPromoRewardExclProductType DROP COLUMN priceGroupRateID
 		</cfquery>
 	</cfif>
 	
@@ -307,7 +307,7 @@ Notes:
 
 <!--- Update SlatwallPromotionRewardExcludedSku and drop priceGroupRateID if it exists --->
 <cftry>
-	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SlatwallPromotionRewardExcludedSku" name="local.infoColumns" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwPromoRewardExclSku" name="local.infoColumns" />
 	
 	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
@@ -325,13 +325,13 @@ Notes:
 			FROM
 				information_schema.key_column_usage
 			WHERE
-				TABLE_NAME = 'SlatwallPromotionRewardExcludedSku'
+				TABLE_NAME = 'SwPromoRewardExclSku'
 		</cfquery>
 		<cfif local.constraintData.recordCount>
 			<cfloop query="local.constraintData">
 				<cftry>
 					<cfquery name="local.updateData">
-						ALTER TABLE SlatwallPromotionRewardExcludedSku DROP
+						ALTER TABLE SwPromoRewardExclSku DROP
 						<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
 							CONSTRAINT
 						<cfelse>
@@ -345,7 +345,7 @@ Notes:
 		</cfif>
 		
 		<cfquery name="local.updateData">
-			ALTER TABLE SlatwallPromotionRewardExcludedSku DROP COLUMN priceGroupRateID
+			ALTER TABLE SwPromoRewardExclSku DROP COLUMN priceGroupRateID
 		</cfquery>
 	</cfif>
 	

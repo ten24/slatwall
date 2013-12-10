@@ -60,7 +60,12 @@ Notes:
 			<cf_HibachiPropertyRow>
 				<cf_HibachiPropertyList>
 					<!--- Add the SkuID & orderItemTypeSystemCode --->
-					<input type="hidden" name="skuID" value="#rc.processObject.getSkuID()#" />
+					<cfif not isNull(rc.processObject.getStockID())>
+						<input type="hidden" name="stockID" value="#rc.processObject.getStockID()#" />
+					</cfif>
+					<cfif not isNull(rc.processObject.getSkuID())>
+						<input type="hidden" name="skuID" value="#rc.processObject.getSkuID()#" />
+					</cfif>
 					<input type="hidden" name="orderItemTypeSystemCode" value="#rc.processObject.getOrderItemTypeSystemCode()#" />
 					
 					<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.itemDetails')#</h5>
@@ -87,7 +92,7 @@ Notes:
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderFulfillmentID" edit="#rc.edit#">
 						
 						<!--- New Order Fulfillment --->
-						<cf_HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="" loadVisable="#!len(rc.processObject.getOrderFulfillmentID())#">
+						<cf_HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderFulfillmentID()) && rc.processObject.getOrderFulfillmentID() eq 'new')#">
 							
 							<!--- Fulfillment Method --->
 							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentMethodID" edit="#rc.edit#">
@@ -98,6 +103,20 @@ Notes:
 									<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
 								</cfif> 	
 							</cfloop>
+							
+							<!--- Email Fulfillment Details --->
+							<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="email" loadVisable="#loadFulfillmentMethodType eq 'email'#">
+								
+								<!--- Email Address --->
+								<cf_HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
+							</cf_HibachiDisplayToggle>
+							
+							<!--- Pickup Fulfillment Details --->
+							<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
+								
+								<!--- Pickup Location --->
+								<cf_HibachiPropertyDisplay object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#" />
+							</cf_HibachiDisplayToggle>
 							
 							<!--- Shipping Fulfillment Details --->
 							<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
@@ -131,6 +150,8 @@ Notes:
 								
 							</cf_HibachiDisplayToggle>
 							
+							
+							
 						</cf_HibachiDisplayToggle>
 					<cfelse>
 						<!--- Order Return --->
@@ -139,7 +160,7 @@ Notes:
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderReturnID" edit="#rc.edit#">
 						
 						<!--- New Order Return --->
-						<cf_HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="" loadVisable="#!len(rc.processObject.getOrderReturnID())#">
+						<cf_HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderReturnID()) && rc.processObject.getOrderReturnID() eq 'new')#">
 							
 							<!--- Return Location --->
 							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="returnLocationID" edit="#rc.edit#">

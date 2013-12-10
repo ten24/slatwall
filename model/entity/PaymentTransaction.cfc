@@ -53,9 +53,12 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 	property name="transactionType" ormtype="string";
 	property name="transactionStartTickCount" ormtype="string";
 	property name="transactionEndTickCount" ormtype="string";
+	property name="transactionSuccessFlag" ormtype="boolean";
 	property name="providerTransactionID" ormtype="string";
 	property name="transactionDateTime" ormtype="timestamp";
 	property name="authorizationCode" ormtype="string";
+	property name="authorizationCodeUsed" ormtype="string";
+	property name="authorizationCodeInvalidFlag" ormtype="boolean";
 	property name="amountAuthorized" notnull="true" dbdefault="0" ormtype="big_decimal";
 	property name="amountReceived" notnull="true" dbdefault="0" ormtype="big_decimal";
 	property name="amountCredited" notnull="true" dbdefault="0" ormtype="big_decimal";
@@ -90,6 +93,9 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 	
 	// Non-Persistent Properties
 
+	property name="avsDescription" persistent="false";
+
+
 	public any function init() {
 		setAmountAuthorized(0);
 		setAmountCharged(0);
@@ -106,6 +112,14 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 			return getAccountPayment();
 		} else if (!isNull(getAccountPaymentMethod())) {
 			return getAccountPaymentMethod();
+		}
+	}
+
+	public string function getAVSDescription(){
+		if(!isNull(getAvsCode()) && getAvsCode() !=''){
+			return rbKey('entity.PaymentTransaction.AVSDescription.' & getAvsCode());	
+		}else{
+			return '';
 		}
 	}
 	

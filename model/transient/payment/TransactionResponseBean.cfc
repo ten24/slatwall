@@ -49,20 +49,27 @@ Notes:
 
 component displayname="Gateway Response"  accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
 
-	property name="transactionID" type="string";   
+	property name="providerTransactionID" type="string";
+	property name="providerToken" type="string";   
 	property name="authorizationCode" type="string";
+	property name="authorizationCodeUsed" type="string";
+	property name="authorizationCodeInvalidFlag" type="boolean";
 	property name="amountAuthorized" type="numeric";
 	property name="amountReceived" type="numeric";
 	property name="amountCredited" type="numeric";
 	property name="avsCode" type="string";
 	property name="securityCodeMatchFlag" type="boolean";
 	property name="duplicateFlag" type="boolean";
-	property name="providerToken" type="string";
+	
+	// DEPRECATED
+	property name="transactionID" type="string";	// Use: ProviderTransactionID
 	
 	public function init(){
 		// Set Defaults
 		setTransactionID("");
 		setAuthorizationCode("");
+		setAuthorizationCodeUsed("");
+		setAuthorizationCodeInvalidFlag(false);
 		setAmountAuthorized(0);
 		setAmountReceived(0);
 		setAmountCredited(0);
@@ -71,6 +78,12 @@ component displayname="Gateway Response"  accessors="true" output="false" extend
 		setProviderToken("");
 		
 		return super.init();
+	}
+	
+	// DEPRECATED - Use provider transactionID
+	public void function setTransactionID( required string transactionID ) {
+		variables.transactionID = arguments.transactionID;
+		setProviderTransactionID( arguments.transactionID );
 	}
 	
 	public string function setAVSCode(required string avsCode){

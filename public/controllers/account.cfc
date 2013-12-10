@@ -60,6 +60,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 	}
 	
+	public void function after( required struct rc ) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
+			getFW().redirectExact( url=arguments.rc.fRedirectURL );
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
+			getFW().redirectExact( url=arguments.rc.sRedirectURL );
+		} else if (structKeyExists(arguments.rc, "redirectURL")) {
+			getFW().redirectExact( url=arguments.rc.redirectURL );
+		}
+	}
+	
 	// Account - Login
 	public void function login( required struct rc ) {
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
@@ -113,6 +123,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Account - Create
 	public void function create( required struct rc ) {
+		param name="arguments.rc.createAuthenticationFlag" default="1";
+		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
@@ -136,6 +148,34 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", !deleteOK );
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", true );	
+		}
+	}
+	
+	// Account Email Address - Send Verification Email
+	public void function sendAccountEmailAddressVerificationEmail() {
+		param name="rc.accountEmailAddressID" default="";
+		
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		
+		if(!isNull(accountEmailAddress)) {
+			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, rc, 'sendVerificationEmail' );
+			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", accountEmailAddress.hasErrors() );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
+		}
+	}
+	
+	// Account Email Address - Verify
+	public void function verifyAccountEmailAddress() {
+		param name="rc.accountEmailAddressID" default="";
+		
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		
+		if(!isNull(accountEmailAddress)) {
+			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, rc, 'verify' );
+			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", accountEmailAddress.hasErrors() );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", true );
 		}
 	}
 	
@@ -169,9 +209,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Account Payment Method - Delete
 	public void function deleteAccountPaymentMethod() {
-		param name="rc.accountAddressID" default="";
+		param name="rc.accountPaymentMethodID" default="";
 		
-		var accountPaymentMethod = getAccountService().getAccountPhoneNumber( rc.accountAddressID );
+		var accountPaymentMethod = getAccountService().getAccountPaymentMethod( rc.accountPaymentMethodID );
 		
 		if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
 			var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );

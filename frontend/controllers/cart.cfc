@@ -85,8 +85,6 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 		// Setup the frontend defaults
 		param name="rc.preProcessDisplayedFlag" default="true";
 		param name="rc.saveShippingAccountAddressFlag" default="false";
-		param name="rc.orderFulfillmentID" default="";
-		param name="rc.fulfillmentMethodID" default="";
 		
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addOrderItem');
 		
@@ -129,9 +127,7 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 	public void function removePromotionCode(required struct rc) {
 		param name="rc.promotionCodeID" default="";
 		
-		var pc = getPromotionService().getPromotionCode(rc.promotionCodeID, true);
-		
-		getOrderService().removePromotionCode(order=rc.$.slatwall.cart(), promotionCode=pc);
+		getOrderService().processOrder( rc.$.slatwall.cart(), rc, 'removePromotionCode');
 		
 		getFW().setView("frontend:cart.detail");
 	}

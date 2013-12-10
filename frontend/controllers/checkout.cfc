@@ -104,6 +104,8 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 					rc.orderRequirementsList = listPrepend(rc.orderRequirementsList,"account");
 				}
 			}
+		} else if(rc.account.hasErrors() && !listFindNoCase(rc.orderRequirementsList, "account")) {
+			rc.orderRequirementsList = listPrepend(rc.orderRequirementsList,"account");
 		}
 		
 		// Setup some elements to be used by different views
@@ -155,7 +157,7 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 			if(structKeyExists(accountData, "guestAccount")) {
 				accountData.createAuthenticationFlag = !accountData.guestAccount;
 			} else {
-				accountData.createAuthenticationFlag = 0;
+				accountData.createAuthenticationFlag = 1;
 			}
 		}
 		
@@ -183,32 +185,70 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 				
 			// If there were no errors, then we can create a mura account with the same info
 			} else if (structKeyExists(accountData, "password") && structKeyExists(accountData, "createAuthenticationFlag") && accountData.createAuthenticationFlag) {
-				var newMuraUser = request.muraScope.getBean('userBean');
-				newMuraUser.setFName( nullReplace(rc.$.slatwall.getAccount().getFirstName(), '') );
-				newMuraUser.setLName( nullReplace(rc.$.slatwall.getAccount().getLastName(), '') );
-				newMuraUser.setCompany( nullReplace(rc.$.slatwall.getAccount().getCompany(), '') );
-				newMuraUser.setUsername( rc.$.slatwall.getAccount().getEmailAddress() );
-				newMuraUser.setEmail( rc.$.slatwall.getAccount().getEmailAddress() );
+				
+				// Create the mura user
+				var newMuraUser = rc.$.getBean('userBean');
+				newMuraUser.setFName( nullReplace(arguments.rc.account.getFirstName(), '') );
+				newMuraUser.setLName( nullReplace(arguments.rc.account.getLastName(), '') );
+				newMuraUser.setCompany( nullReplace(arguments.rc.account.getCompany(), '') );
+				newMuraUser.setUsername( arguments.rc.account.getEmailAddress() );
+				newMuraUser.setEmail( arguments.rc.account.getEmailAddress() );
 				newMuraUser.setPassword( accountData.password );
-				newMuraUser.setSiteID( request.muraScope.event('siteID') );
-				newMuraUser.save();
-				rc.$.slatwall.getAccount().setCMSAccountID( newMuraUser.getUserID() );
+				newMuraUser.setSiteID( rc.$.event('siteID') );
+				
+				// Set the CMSAccountID on the slatwall side
+				arguments.rc.account.setCMSAccountID( newMuraUser.getUserID() );
+				
+				// Persist this change
+				ormFlush();
+				
+				// Save the mura user (which will cascade and update the authentication on slatwall side)
+				newMuraUser = newMuraUser.save();
+				
+				// If the mura user had issues saving
+				if(!isNull(newMuraUser.getErrors()) && isStruct(newMuraUser.getErrors()) && structCount(newMuraUser.getErrors()) ) {
+					
+					// Remove the account entity from the database that we persisted
+					getAccountService().deleteAccount( arguments.rc.account );
+					
+					// Create a new version, and populate it with the stuff that was attempted
+					arguments.rc.account = getAccountService().newAccount();
+					arguments.rc.account.setFirstName( newMuraUser.getFName() );
+					arguments.rc.account.setLastName( newMuraUser.getLName() );
+					arguments.rc.account.setCompany( newMuraUser.getCompany() );
+					arguments.rc.account.setPrimaryEmailAddress( arguments.rc.account.getPrimaryEmailAddress() );
+					arguments.rc.account.getPrimaryEmailAddress().setEmailAddress( newMuraUser.getEmail() );
+					
+					// Loop over the errors in the newMuraUser and add those errors to this account entity
+					for(var key in newMuraUser.getErrors()) {
+						arguments.rc.account.addError(key, newMuraUser.getErrors()[key]);
+					}
+					
+				} else {
+					
+					// Loging the current user
+					var loginSuccess = rc.$.getBean('userUtility').login(username=arguments.rc.account.getEmailAddress(), password=accountData.password, siteID=rc.$.event('siteid'));
+					
+				}
 			}	
 		} else {
 			arguments.rc.account = getAccountService().saveAccount( rc.$.slatwall.getAccount(), accountData );
 		}
 		
-		// Get the response in order
-		if( !arguments.rc.account.hasErrors() ) {
-			rc.$.slatwall.getCart().setAccount( arguments.rc.account );
-			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", false );
-		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", true );	
+		// Update the account on the cart.
+		if( !arguments.rc.account.hasErrors() && !rc.$.slatwall.getCart().getNewFlag() ) {
+			if(isNull(rc.$.slatwall.getCart().getAccount())) {
+				rc.$.slatwall.getCart().setAccount( arguments.rc.account );	
+			} else if (rc.$.slatwall.getCart().getAccount().getAccountID() != rc.account.getAccountID()) {
+				rc.$.slatwall.getSession().setOrder( getOrderService().duplicateOrderWithNewAccount( rc.$.slatwall.cart(), rc.account ) );
+			}
 		}
 		
+		if( !arguments.rc.account.hasErrors() ) {
+			rc.guestAccountOK = true;	
+		}
 		
-		rc.guestAccountOK = true;
-		detail(rc);
+		detail( arguments.rc );
 		getFW().setView("frontend:checkout.detail");
 	}
 	
@@ -267,6 +307,13 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 			// Redirect to order Confirmation
 			getFW().redirectExact(rc.$.createHREF(filename='order-confirmation'), false);
 			
+		} else {
+			
+			for(var orderPayment in order.getOrderPayments()){
+				if(orderPayment.hasError('createTransaction')) {
+					orderPayment.addError('processing', orderPayment.getError('createTransaction'), true);
+				}
+			}
 		}
 			
 		detail(rc);
@@ -274,4 +321,3 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 	}
 	
 }
-

@@ -46,9 +46,42 @@
 Notes:
 
 */
-component extends="HibachiService" {
+component output="false" accessors="true" extends="HibachiService" {
+
+	property name="eventTriggerEvents";
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public any function getEventTriggerEvents() {
+		if(!structKeyExists(variables, "eventTriggerEvents")) {
+			
+			var ete = {};
+			
+			var sl = this.getEventTriggerSmartList();
+			sl.addFilter('activeFlag', 1);
+			
+			for(var eventTrigger in sl.getRecords()) {
+				if(!isNull(eventTrigger.getEventName())) {
+					if(!structKeyExists(ete, eventTrigger.getEventName())) {
+						ete[ eventTrigger.getEventName() ] = [];
+					}
+					var thisData = {};
+					thisData[ 'eventTriggerType' ] = eventTrigger.getEventTriggerType();
+					if(!isNull(eventTrigger.getPrintTemplate())) {
+						thisData[ 'printTemplateID' ] = eventTrigger.getPrintTemplate().getPrintTemplateID();	
+					}
+					if(!isNull(eventTrigger.getEmailTemplate())) {
+						thisData[ 'emailTemplateID' ] = eventTrigger.getEmailTemplate().getEmailTemplateID();
+					}
+					arrayAppend(ete[ eventTrigger.getEventName() ], thisData);
+				}
+				
+			}
+			
+			variables.eventTriggerEvents = ete;
+		}
+		return variables.eventTriggerEvents;
+	}
 	
 	// =====================  END: Logical Methods ============================
 	
@@ -62,7 +95,39 @@ component extends="HibachiService" {
 	
 	// ====================== START: Save Overrides ===========================
 	
+	public any function saveEventTrigger(required any eventTrigger, required struct data) {
+		arguments.eventTrigger = super.save(arguments.eventTrigger, arguments.data);
+		
+		if(!arguments.eventTrigger.hasErrors()) {
+			getHibachiDAO().flushORMSession();
+		}
+		
+		// Clear out the event trigger events so that they are reloaded
+		setEventTriggerEvents(javaCast("null", ""));
+		
+		return arguments.eventTrigger;
+	}
+	
 	// ======================  END: Save Overrides ============================
+	
+	// ====================== START: Delete Overrides =========================
+	
+	public boolean function deleteEventTrigger(required any eventTrigger) {
+		// Use the base delete method to check validation
+		var deleteOK = super.delete(arguments.eventTrigger);
+		
+		// If the delete failed, then we just reset the default sku into the product and return false
+		if(deleteOK) {
+			getHibachiDAO().flushORMSession();
+			
+			// Clear out the event trigger events so that they are reloaded
+			setEventTriggerEvents(javaCast("null", ""));
+		}
+	
+		return deleteOK;
+	}
+	
+	// ======================  END: Delete Overrides ==========================
 	
 	// ==================== START: Smart List Overrides =======================
 	

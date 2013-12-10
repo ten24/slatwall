@@ -63,7 +63,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.loginDefaultSubsystem = 'admin';
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
-	
+	variables.framework.hibachi.useCachingEngineFlag = false;
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -105,7 +105,7 @@ component extends="FW1.framework" {
 	this.ormSettings.automanageSession = false;
 	this.ormSettings.savemapping = false;
 	this.ormSettings.skipCFCwitherror = false;
-	this.ormSettings.useDBforMapping = true;
+	this.ormSettings.useDBforMapping = false;
 	this.ormSettings.autogenmap = true;
 	this.ormSettings.logsql = false;
 	
@@ -192,6 +192,15 @@ component extends="FW1.framework" {
 			
 			// setup the success redirect URL as this current page
 			request.context.sRedirectURL = getHibachiScope().getURL();
+			
+			// make sure there are no reload keys in the redirectURL
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "#variables.framework.reload#=#variables.framework.password#", "");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "#variables.framework.hibachi.fullUpdateKey#=#variables.framework.hibachi.fullUpdatePassword#", "");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "&&&", "&", "all");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "&&", "&", "all");
+			if(right(request.context.sRedirectURL, 1) == "?" || right(request.context.sRedirectURL, 1) == "&") {
+				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
+			}
 			
 			// If the current subsytem is a 'login' subsystem, then we can use the current subsystem
 			if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
@@ -386,6 +395,12 @@ component extends="FW1.framework" {
 					
 					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
 					onFirstRequestPostUpdate();
+					
+					//==================== START: EVENT HANDLER SETUP ========================
+					
+					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
+					
+					//===================== END: EVENT HANDLER SETUP =========================
 					
 					// Application Setup Ended
 					getHibachiScope().setApplicationValue("initialized", true);

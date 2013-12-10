@@ -65,13 +65,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			
 			if(getOrderPayment().getPaymentMethod().getPaymentMethodType() eq "creditCard") {
 				arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.credit'), value="credit"});
-				if(getOrderPayment().getAmountAuthorized() gt getOrderPayment().getAmountReceived()) {
-					arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.chargePreAuthorization'), value="chargePreAuthorization"});	
-				}
-				if(getOrderPayment().getCreditCardOrProviderTokenExistsFlag()) {
-					arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.authorizeAndCharge'), value="authorizeAndCharge"});
-					arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.authorize'), value="authorize"});
-					arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.generateToken'), value="generateToken"});	
+				if(getOrderPayment().getOrderPaymentType().getSystemCode() eq "optCharge") {
+					if(getOrderPayment().getAmountAuthorized() gt getOrderPayment().getAmountReceived()) {
+						arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.chargePreAuthorization'), value="chargePreAuthorization"});	
+					}
+					if(getOrderPayment().getCreditCardOrProviderTokenExistsFlag()) {
+						arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.authorizeAndCharge'), value="authorizeAndCharge"});
+						arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.authorize'), value="authorize"});
+						arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.generateToken'), value="generateToken"});	
+					}
 				}
 			} else {
 				arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.credit'), value="credit"});
