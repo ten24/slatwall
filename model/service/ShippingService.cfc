@@ -327,20 +327,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public numeric function calculateShippingRateAdjustment(required numeric originalAmount, required any shippingMethodRate) {
 		var returnAmount = arguments.originalAmount;
+		var shippingMethodRateAdjustmentAmount = arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount');
 		
 		if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
+			
 			switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
 				case "increasePercentage":
-					returnAmount = precisionEvaluate(arguments.originalAmount + (arguments.originalAmount * arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount')));
+					returnAmount = precisionEvaluate('arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount)');
 					break;
 				case "decreasePercentage":
-					returnAmount = precisionEvaluate(arguments.originalAmount - (arguments.originalAmount * arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount')));
+					returnAmount = precisionEvaluate('arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount)');
 					break;
 				case "increaseAmount":
-					returnAmount = precisionEvaluate(arguments.originalAmount + arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount'));
+					returnAmount = precisionEvaluate('arguments.originalAmount + shippingMethodRateAdjustmentAmount');
 					break;
 				case "decreaseAmount":
-					returnAmount = precisionEvaluate(arguments.originalAmount - arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount'));
+					returnAmount = precisionEvaluate('arguments.originalAmount - shippingMethodRateAdjustmentAmount');
 					break;
 			}
 		}
