@@ -224,7 +224,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
 			
-			if(locationConflictExists(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),arguments.processObject.getLocationConfigurations())) {
+			if(locationConflictExistsFlag(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),arguments.processObject.getLocationConfigurations())) {
 				// There is already an event scheduled at that location in the same date range
 				processObject.addError('locationConfigurations', getHibachiScope().rbKey('validate.eventScheduleConflict'));
 			} else {
@@ -285,7 +285,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	//@help Takes a sku along with a start datetime, an end datetimem and a list of location configurations, to check for location/date/time conflicts with other event schedules
-	public boolean function locationConflictExists(any sku, any eventStartDateTime, any eventEndDateTime, any locationConfigurations) {
+	public boolean function locationConflictExistsFlag(any sku, any eventStartDateTime, any eventEndDateTime, any locationConfigurations) {
 		var locationIDList = "";
 		var result = false;
 
@@ -423,6 +423,65 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="alternateSkuCodes.alternateSkuCode", weight=1);
 				
 		return smartList;
+	}
+	
+	// @hint Retrieve Smartlist of available locations based on event sku start and end dates, and locations
+	public any function getAvailableLocationsByEventSmartList(required eventSku) {
+		var unavailableLocationsList = "";
+		
+		// Don't show locations that are already in sku
+		if(arrayLen(eventSku.getLocationConfigurations())) {
+			for( var thisLocation in eventSku.getLocations()) {
+				if(listFind(unavailableLocationsList,thisLocation.getLocationID()) == 0) {
+					if(listLen(unavailableLocationsList)) {
+						unavailableLocationsList = listAppend(unavailableLocationsList,thisLocation.getLocationID());
+					} else {
+						unavailableLocationsList = thisLocation.getLocationID();
+					}
+				}
+			}
+		}
+		
+		return getAvailableLocationsSmartList(eventSku.getEventStartDateTime(), eventSku.getEventEndDateTime(), unavailableLocationsList);
+	}
+	
+	// @hint Retrieve Smartlist of available locations based on event start and end dates, and an optional unavailableLocationsList
+	public any function getAvailableLocationsSmartList(required eventStartDateTime, required eventEndDateTime, string unavailableLocationsList="") {
+		
+		// Get skus that have datetimes that overlap with current sku
+		var skuSmartList = getService("SkuService").getSkuSmartList();
+		//skuSmartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=sku.getSkuID()});
+		skuSmartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
+		skuSmartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
+		
+		// Build list of unavailable locations from sku list
+		var concurrentSkus = skuSmartList.getRecords();
+		for( var thisSku in concurrentSkus ) {
+			if(arrayLen(thisSku.getLocationConfigurations())) {
+				for( var thisLocation in thisSku.getLocations()) {
+					if(listFind(arguments.unavailableLocationsList,thisLocation.getLocationID()) == 0) {
+						if(listLen(arguments.unavailableLocationsList)) {
+							arguments.unavailableLocationsList = listAppend(arguments.unavailableLocationsList,thisLocation.getLocationID() );
+						} else {
+							arguments.unavailableLocationsList = thisLocation.getLocationID();
+						}
+					}
+				}
+			}
+		}
+		
+		arguments.unavailableLocationsList = listQualify(unavailableLocationsList,"'",",","char" );
+		
+		
+		// Get non-conflicting location configurations
+		
+		var availableLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
+		if(listLen(arguments.unavailableLocationsList) > 0) {
+			availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID NOT IN (#arguments.unavailableLocationsList#	)");
+		}
+		
+		return availableLocationsSmartList;
+
 	}
 	
 	// ====================  END: Smart List Overrides ========================
