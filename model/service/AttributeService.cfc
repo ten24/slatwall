@@ -89,7 +89,7 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetType_#arguments.attribute.getAttributeSet().getAttributeSetType().getSystemCode()#");
 		}
 		
-		return arguments.productType;
+		return arguments.attribute;
 	}
 	
 	// ======================  END: Save Overrides ============================

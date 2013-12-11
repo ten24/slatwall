@@ -207,7 +207,7 @@ Notes:
 						var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
 						
 						local.email = arguments.email;
-						local.emailData = {};
+						local.emailData = arguments.data;
 						local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
 						
 						if(len(templatePath)) {
