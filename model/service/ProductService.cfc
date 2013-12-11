@@ -103,13 +103,13 @@ component extends="HibachiService" accessors="true" {
 	// @help Generates an event sku stub. Used to replace repetitive code.
 	private any function createEventSkuStub(required processObject, required startDate, required endDate, required qualifier, locationConfiguration) {
 		var newSku = this.newSku();
-		
 		newSku.setProduct( arguments.processObject.getproduct() );
 		newSku.setSkuCode( arguments.processObject.getproduct().getProductCode() & "-#arguments.qualifier#");
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
 		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
-		newSku.setAllowWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
+		newSku.setAllowEventWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
+		newSku.setEventCapacity(arguments.processObject.getEventCapacity());
 		
 		if(structKeyExists(arguments,"locationConfiguration")) {
 			var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');

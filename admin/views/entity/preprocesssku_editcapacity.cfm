@@ -63,6 +63,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="editScope" property="editScope" edit="#rc.edit#" valueOptions="#rc.processObject.getEditScopeOptions()#">
 			</cfif>
 			
+			<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventCapacity" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.sku#" property="allowEventWaitlistingFlag" edit="#rc.edit#">
 			
 		</cf_HibachiPropertyList>

@@ -176,7 +176,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	
 	// @help Returns text summary of a daily schedule. Used by getScheduleSummary().
 	private string function getDailySummary() {
-		return getSettingService().getTypeByTypeID(this.getrecurringTimeUnit().getTypeID()).getType(); 
+		return getService("SettingService").getTypeByTypeID(this.getrecurringTimeUnit().getTypeID()).getType(); 
 	}
 	
 	// @help Returns text summary of a weekly schedule. Used by getScheduleSummary().

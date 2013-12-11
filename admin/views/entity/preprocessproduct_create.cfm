@@ -73,17 +73,15 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="generateSkusFlag" edit="#rc.edit#" fieldType="yesno">
-				
-				
 				<cf_HibachiDisplayToggle selector="input[name='generateSkusFlag']" loadVisable="no" showValues="1">
-				
 				
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 					
 					<cfif rc.processObject.getBaseProductType() eq "event">
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuAllowWaitlistingFlag" edit="true">
+						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventCapacity" edit="true">
+						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuAllowWaitlistingFlag" edit="true" value="#rc.product.getService("SettingService").getSettingValue("skuAllowWaitlistingFlag")#">
 						<div class="row">
 							<div class="span4">
 								<div class="well" style="margin:10px 15px;">

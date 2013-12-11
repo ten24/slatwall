@@ -387,9 +387,6 @@
 	public boolean function validate_gtDateTimeProperty(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
 		var comparePropertyValue =  arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue ).invokeMethod("get#listLast(arguments.constraintValue,'._')#");
-		writelog(file="slatwall",text="PROPERTY: #propertyValue#");
-		writelog(file="slatwall",text="COMPAREPROPERTY: #comparePropertyValue#");
-		
 		if(!isNull(propertyValue) && (dateCompare(propertyValue, comparePropertyValue)==1)) {
 			return true;
 		}

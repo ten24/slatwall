@@ -170,18 +170,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return sku;
 	}
 	
-	// @help Modifies waitlisting properties	
-	public any function processSku_editWaitlisting(required any sku, required any processObject) {
+	// @help Modifies capacity and waitlisting properties	
+	public any function processSku_editCapacity(required any sku, required any processObject) {
 		if(arguments.processObject.getEditScope() == "none"  ){
 			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
 		} 
 		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
 			arguments.sku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+			arguments.sku.setEventCapacity(arguments.processObject.getEventCapacity());
 		} else if(arguments.processObject.getEditScope() == "all"){
 			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
 				thisSku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
-				var newSetting = this.newSetting();
-				newSetting.setSettingName();
+				thisSku.setEventCapacity(arguments.processObject.getEventCapacity());
 			}
 		}
 		return sku;

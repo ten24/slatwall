@@ -66,6 +66,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="startReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="endReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="bundleFlag" ormtype="boolean";
+	property name="eventCapacity" ormtype="integer";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -83,7 +84,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
-	
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
@@ -123,6 +123,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
 	property name="eventConflictsSmartList" persistent="false";
+	property name="eventReachedCapacity" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
@@ -136,6 +137,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productScheduleSmartList" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
+	property name="registrantCount" type="integer" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
 	property name="salePriceDetails" type="struct" persistent="false";
 	property name="salePrice" type="numeric" hb_formatType="currency" persistent="false";
@@ -502,6 +504,28 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+	
+	
+	public boolean function getEventReachedCapacity() {
+		if(!structKeyExists(variables,"reachedCapacity")) {
+			if(this.hasEventRegistrations() && (this.getEventCapacity() > arrayLen(this.getEventRegistrations())) ) {
+				variables.eventReachedCapacity = true;	
+			} else {
+				variables.eventReachedCapacity = false;	
+			}
+		}
+		return variables.eventReachedCapacity;
+	}
+	
+	public any function getRegistrantCount() {
+		if(!structKeyExists(variables, "registrantCount")) {
+			variables.registrantCount = 0;
+			if(this.hasEventRegistrations()) {
+				variables.registrantCount = arrayLen(this.getEventRegistrations());
+			}
+		}
+		return variables.registrantCount;
 	}
 	
 	public any function getRegistrantEmailList() {

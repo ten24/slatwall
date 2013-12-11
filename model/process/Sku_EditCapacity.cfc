@@ -53,6 +53,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties
 	property name="allowEventWaitlistingFlag";
+	property name="eventCapacity";
 	
 	// Scheduling-related properties
 	property name="editScope" hb_formFieldType="select" hint="Edit this sku or all with same schedule?";
