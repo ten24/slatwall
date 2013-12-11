@@ -98,11 +98,6 @@ Notes:
 			<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" fieldName="newOrderPayment.bankAccountNumber" property="bankAccountNumber" edit="#rc.edit#">
 		</cf_HibachiDisplayToggle>
 		
-		<!--- External --->
-		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="external" loadVisable="#loadPaymentMethodType eq 'external'#">
-			#$.slatwall.getEntity('paymentMethod', '402881c14074533b01407f96c56601ad').getExternalPaymentHTML()#
-		</cf_HibachiDisplayToggle>
-		
 		<!--- Billing Address --->
 		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
 			<h5>#$.slatwall.rbKey('entity.orderPayment.billingAddress')#</h5>
