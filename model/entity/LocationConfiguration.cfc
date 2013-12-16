@@ -67,8 +67,18 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 	//Non-persistent properties
 	property name="locationTree" persistent="false" ;
 	property name="locationPathName" persistent="false" ;
+	property name="locationCapacity" persistent="false" ;
+	
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getLocationCapacity() {
+		if(!structKeyExists(variables,"locationCapacity")) {
+			variables.locationCapacity = this.setting('locationConfigurationCapacity');
+		}
+			writelog(file="slatwall",text="cAPACITY: #variables.locationCapacity#");
+		return variables.locationCapacity;
+	}
 	
 	public any function getLocationTree() {
 		if(!structKeyExists(variables,"locationTree")) {
@@ -78,6 +88,7 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 		}
 		return variables.locationTree; 
 	}
+	
 	public any function getLocationPathName() {
 		if(!structKeyExists(variables,"locationPathName")) {
 			variables.locationPathName = this.getlocation().getLocationPathName();

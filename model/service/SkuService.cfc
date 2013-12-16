@@ -442,11 +442,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		return getAvailableLocationsSmartList(eventSku.getEventStartDateTime(), eventSku.getEventEndDateTime(), unavailableLocationsList);
+		return getAvailableLocationsSmartList(eventSku.getEventStartDateTime(), eventSku.getEventEndDateTime(), eventSku.getEventCapacity(),unavailableLocationsList);
 	}
 	
 	// @hint Retrieve Smartlist of available locations based on event start and end dates, and an optional unavailableLocationsList
-	public any function getAvailableLocationsSmartList(required eventStartDateTime, required eventEndDateTime, string unavailableLocationsList="") {
+	public any function getAvailableLocationsSmartList(required eventStartDateTime, required eventEndDateTime, required quantity=0, string unavailableLocationsList="") {
 		
 		// Get skus that have datetimes that overlap with current sku
 		var skuSmartList = getService("SkuService").getSkuSmartList();
@@ -472,13 +472,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.unavailableLocationsList = listQualify(unavailableLocationsList,"'",",","char" );
 		
-		
 		// Get non-conflicting location configurations
-		
 		var availableLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
+		//availableLocationsSmartList.addKeywordProperty(propertyIdentifier="locationCapacity", weight=1);
+		
 		if(listLen(arguments.unavailableLocationsList) > 0) {
-			availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID NOT IN (#arguments.unavailableLocationsList#	)");
+			availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID NOT IN (#arguments.unavailableLocationsList#)");
 		}
+		//availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.locationCapacity > #arguments.quantity#");
 		
 		return availableLocationsSmartList;
 

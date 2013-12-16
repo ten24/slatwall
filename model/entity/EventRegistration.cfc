@@ -55,6 +55,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	property name="emailAddress";
 	property name="phoneNumber";
 	property name="waitlistQueueDateTime" ormtype="timestamp" hb_formatType="dateTime" hint="Datetime registrant was added to waitlist.";
+	property name="pendingClaimDateTime" ormtype="timestamp" hb_formatType="dateTime" hint="Datetime registrant was changed to pending claim.";
 	
 	
 	// Related Object Properties (many-to-one)

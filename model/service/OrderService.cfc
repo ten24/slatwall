@@ -1496,6 +1496,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
 			}
 			
+			// If this was an event registration run cancellation process
+			var eventRegistrationItem = getEventRegistrationService().getEventRegistrationByOrderItem(stockReceiverItem.getOrderItem().getReferencedOrderItem());
+			if(!isNull(eventRegistrationItem)) {
+				getEventRegistrationService().processEventRegistration(eventRegistrationItem, {}, eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstCancelled")) );
+			}
+			
 			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them
 
 		}
