@@ -68,6 +68,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="endReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="bundleFlag" ormtype="boolean";
 	property name="eventCapacity" ormtype="integer";
+	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="percentPaymentToWaitlist" ormtype="integer" hint="Percentage of payment the registrant must put down in order to be waitlisted";
 	
 	
