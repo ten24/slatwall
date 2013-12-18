@@ -483,6 +483,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Create new event registration	 record
 				var eventRegistration = this.newEventRegistration();
 				eventRegistration.setOrderItem(newOrderItem);
+				eventRegistration.generateAndSetAttendanceCode();
 				
 				// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
 				if(registrant.newAccountFlag == 0) {

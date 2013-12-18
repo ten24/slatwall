@@ -56,6 +56,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="skuCode" ormtype="string" unique="true" length="50";
+	property name="eventAttendanceCode" ormtype="string" unique="true" length="8" hint="Unique code to track event attendance";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
@@ -68,6 +69,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="bundleFlag" ormtype="boolean";
 	property name="eventCapacity" ormtype="integer";
 	property name="percentPaymentToWaitlist" ormtype="integer" hint="Percentage of payment the registrant must put down in order to be waitlisted";
+	
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -365,7 +367,30 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	// END: Quantity Helper Methods
 	
+	//@hint Generates a unique event attendance code and sets it as this sku's code
+	public string function generateAndSetAttendanceCode() {
+		var uniq = false;
+		var code = "";
+		do {
+			code = getService("EventRegistrationService").generateAttendanceCode(8);
+			if(codeIsUnique(code)) {
+				uniq = true;
+			}
+		} while (uniq == false);
+		this.setEventAttendanceCode(code);
+		return code;
+	}
 	
+	// @hint Used to determine uniqueness of generated attendance code
+	private boolean function codeIsUnique(required string code) {
+		var result = false;
+		var smartList =  getService("SkuService").getSkuSmartList();
+		smartList.addFilter("eventAttendanceCode",arguments.code);
+		if(smartList.getRecordsCount > 0) {
+			result = true;
+		}
+		return result;
+	}
 	
 	
 	// ====================  END: Logical Methods ==========================

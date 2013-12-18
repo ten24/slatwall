@@ -50,12 +50,13 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// Persistent Properties
 	property name="eventRegistrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="firstName";
-	property name="lastName";
-	property name="emailAddress";
-	property name="phoneNumber";
+	property name="firstName" ormtype="string" ;
+	property name="lastName" ormtype="string" ;
+	property name="emailAddress" ormtype="string" ;
+	property name="phoneNumber" ormtype="string" ;
 	property name="waitlistQueueDateTime" ormtype="timestamp" hb_formatType="dateTime" hint="Datetime registrant was added to waitlist.";
 	property name="pendingClaimDateTime" ormtype="timestamp" hb_formatType="dateTime" hint="Datetime registrant was changed to pending claim.";
+	property name="registrantAttendanceCode" ormtype="string" unique="true" length="8" hint="Unique code to track registrant attendance";
 	
 	
 	// Related Object Properties (many-to-one)
@@ -79,7 +80,33 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	// Non-Persistent Properties
 	property name="productName"  persistent="false";
 	
+	
 	// ==================== START: Logical Methods =========================
+	
+	//@hint Generates a unique attendance code and sets it as this registrant's code
+	public string function generateAndSetAttendanceCode() {
+		var uniq = false;
+		var code = "";
+		do {
+			code = getService("EventRegistrationService").generateAttendanceCode(8);
+			if(codeIsUnique(code)) {
+				uniq = true;
+			}
+		} while (uniq == false);
+		this.setEventAttendanceCode(code);
+		return code;
+	}
+	
+	// @hint Used to determine uniqueness of generated attendance code
+	private boolean function codeIsUnique(required string code) {
+		var result = false;
+		var smartList =  getService("EventRegistrationService").getEventRegistrationSmartList();
+		smartList.addFilter("registrantAttendanceCode",arguments.code);
+		if(smartList.getRecordsCount > 0) {
+			result = true;
+		}
+		return result;
+	}
 	
 	// ====================  END: Logical Methods ==========================
 	

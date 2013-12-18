@@ -77,7 +77,6 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 		if(!structKeyExists(variables,"locationCapacity")) {
 			variables.locationCapacity = this.setting('locationConfigurationCapacity');
 		}
-			writelog(file="slatwall",text="cAPACITY: #variables.locationCapacity#");
 		return variables.locationCapacity;
 	}
 	

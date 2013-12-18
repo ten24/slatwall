@@ -56,6 +56,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Logical Methods ===========================
 	
+	// @hint Returns a randomly generated code. Takes a codeLength parm which defaults to 8.
+	public string function generateAttendanceCode(required codeLength=8) {
+		var lowerAlpha = "abcdefghjkmnpqrtuvwxyz";
+		var upperAlpha = UCase( lowerAlpha );
+		var numbers = "0123456789";
+		//var strOtherChars = "!@##$%&*";
+		var validChars = (upperAlpha & numbers);
+		var helperArr = [];
+		var attendanceCode = "";
+		
+		helperArr[ 1 ] = Mid(numbers,randRange( 1, len( numbers ) ),1);
+		helperArr[ 2 ] = Mid(lowerAlpha,randRange( 1, len( lowerAlpha ) ),1);
+		helperArr[ 3 ] = Mid(upperAlpha,randRange( 1, len( upperAlpha ) ),1);
+		for(var i=1; i<=arguments.codeLength; i++){
+			helperArr[ i ] = mid(validChars,randRange( 1, len( validChars ) ),1);
+		}
+		createObject( "java", "java.util.Collections" ).Shuffle(helperArr);
+		attendanceCode = arrayToList(helperArr,"");
+		return attendanceCode;
+	}
+	
 	// @hint Updates the eventRegistrationStatusType of a registrant
 	public any function cancelEventRegistration(required any eventRegistration) {
 		if(arguments.eventRegistration.getOrderItem().getSku().setting('skuAllowWaitlistingFlag')) {

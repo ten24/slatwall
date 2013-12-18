@@ -240,8 +240,6 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 		if( !isNull(getCountryCode()) ) {
 			simpleRepresentation = listAppend(simpleRepresentation, " #getCountryCode()#" );
 		}
-		writelog(file="slatwall",text="Here I am yo");
-		writelog(file="slatwall",text="Here I am: #simpleRepresentation#");
 		return simpleRepresentation;
 	}
 	
