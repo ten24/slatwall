@@ -38,7 +38,7 @@ Notes:
 --->
 <cfoutput>
 	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="locationConfigurationCapacity" />
+		<!---<cf_SlatwallSetting settingName="locationConfigurationCapacity" />--->
 		<cf_SlatwallSetting settingName="locationConfigurationAdditionalPreReservationTime" />
 		<cf_SlatwallSetting settingName="locationConfigurationAdditionalPostReservationTime" />
 	</cf_SlatwallSettingTable>

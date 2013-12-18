@@ -41,6 +41,7 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 	// Persistent Properties
 	property name="locationConfigurationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="locationConfigurationName" ormtype="string";
+	property name="locationConfigurationCapacity" ormtype="integer";
 	property name="activeFlag" ormtype="boolean" ;
 	
 	// Related Object Properties (Many-to-One)

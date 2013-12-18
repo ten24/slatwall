@@ -69,6 +69,7 @@ Notes:
 									  edit="#rc.edit#">
 				<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
 				<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+				<cf_HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
 			</cf_HibachiListingDisplay>
 			
 		</cf_HibachiPropertyList>

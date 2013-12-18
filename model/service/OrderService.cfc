@@ -974,7 +974,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							/*for(var orderitem in arguments.order.getOrderItems()) {
 								if(orderitem.getSku().getBaseProductType() == "event") {
 									for(var eventRegistration in orderitem.getEventRegistrations()) {
-										if(orderItem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+										if(orderItem.getSku().setting('skuAllowWaitlistingFlag')) {
 											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
 										} else {
 											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
@@ -1499,7 +1499,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// If this was an event registration run cancellation process
 			var eventRegistrationItem = getEventRegistrationService().getEventRegistrationByOrderItem(stockReceiverItem.getOrderItem().getReferencedOrderItem());
 			if(!isNull(eventRegistrationItem)) {
-				getEventRegistrationService().processEventRegistration(eventRegistrationItem, {}, eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstCancelled")) );
+				getEventRegistrationService().cancelEventRegistration(eventRegistrationItem);
 			}
 			
 			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them
