@@ -135,7 +135,7 @@ component  extends="HibachiService" accessors="true" {
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="recurringTimeUnitType"); 
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="recurringTimeUnitType"); 
 			smartList.addOrder("type|ASC");
 			variables.recurringTimeUnitTypeOptions = smartList.getRecords();
 		}
@@ -155,7 +155,7 @@ component  extends="HibachiService" accessors="true" {
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="schedulingType"); 
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="schedulingType"); 
 			smartList.addOrder("type|D");
 			variables.schedulingTypeOptions = smartList.getRecords();
 		}
@@ -167,7 +167,7 @@ component  extends="HibachiService" accessors="true" {
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="scheduleEndType"); 
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="scheduleEndType"); 
 			smartList.addOrder("type|ASC");
 			variables.scheduleEndTypeOptions = smartList.getRecords();
 		}
