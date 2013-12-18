@@ -484,7 +484,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	// @hint Public method to retrieve a value based on a propertyIdentifier string format
 	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
-		var propertyName = listLast(arguments.propertyIdentifier,'._');
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
 
 		if(!isNull(object) && !isSimpleValue(object)) {
 			if(arguments.formatValue) {
@@ -500,12 +500,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
-		if(listLen(arguments.propertyIdentifier, "._") eq 1) {
+		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 			return this;
 		}
-		var object = invokeMethod("get#listFirst(arguments.propertyIdentifier, '._')#");
+		var object = invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
 		if(!isNull(object) && isObject(object)) {
-			return object.getLastObjectByPropertyIdentifier(listDeleteAt(arguments.propertyIdentifier, 1, "._"));
+			return object.getLastObjectByPropertyIdentifier(listDeleteAt(arguments.propertyIdentifier, 1, "."));
 		}
 	}
 
