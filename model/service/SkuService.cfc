@@ -479,7 +479,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(listLen(arguments.unavailableLocationsList) > 0) {
 			availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID NOT IN (#arguments.unavailableLocationsList#)");
 		}
-		//availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.locationCapacity > #arguments.quantity#");
+		availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.locationConfigurationCapacity >= #arguments.quantity#");
 		
 		return availableLocationsSmartList;
 

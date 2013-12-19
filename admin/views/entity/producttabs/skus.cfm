@@ -95,6 +95,7 @@ Notes:
 			<cfif rc.product.getBaseProductType() eq "event">
 				<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
 				<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
+				<cf_HibachiListingColumn propertyIdentifier="eventAttendanceCode" />
 				<cf_HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
 			</cfif>
 			<cf_HibachiListingColumn propertyIdentifier="imageFile" />

@@ -81,6 +81,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventCapacity" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="allowEventWaitlistingFlag" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="attendedquantity" edit="#rc.edit#">
 				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">

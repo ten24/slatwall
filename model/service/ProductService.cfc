@@ -110,6 +110,7 @@ component extends="HibachiService" accessors="true" {
 		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
 		newSku.setAllowEventWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
 		newSku.setEventCapacity(arguments.processObject.getEventCapacity());
+		newSku.generateAndSetAttendanceCode();
 		
 		if(structKeyExists(arguments,"locationConfiguration")) {
 			var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');
@@ -465,7 +466,6 @@ component extends="HibachiService" accessors="true" {
 				result = qualifier;
 			}
 		}
-		writeLog(file="slatwall",text="Q: #result#");
 		return result;
 	}
 	

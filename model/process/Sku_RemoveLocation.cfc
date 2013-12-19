@@ -96,7 +96,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				}
 			}
 		}
-		writelog(file="slatwall", text="selectedLocationsList: #selectedLocationsList#");
 		
 		selectedLocationsList = listQualify(selectedLocationsList,"'",",","char" );
 		var selectedLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();

@@ -45,6 +45,7 @@ Notes:
 							  recordDetailAction="admin:entity.detaillocationconfiguration">
 							    
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationCapacity" />
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 		
 	</cf_HibachiListingDisplay>

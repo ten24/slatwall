@@ -62,6 +62,8 @@ Notes:
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="locationConfigurationName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="locationConfigurationCapacity" edit="#rc.edit#">
+				
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
