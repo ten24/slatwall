@@ -819,6 +819,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderItem.setOrderReturn( orderReturn );
 					orderItem.setOrder( returnOrder );
 					
+					//if(originalOrderItem.getType() == "event" && structKeyExists(orderItemStruct, "cancelRegistration") && orderItemStruct.cancelRegistration) {
+						// getEventService().processEventRegistration( originalOrderItem.getEventRegistration, {createReturnOrderFlag=false}, 'cancel');
+					//}
+					
 					// Persist the new item
 					getHibachiDAO().save( orderItem );
 					
