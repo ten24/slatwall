@@ -64,6 +64,6 @@ Notes:
 			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
 		</cf_HibachiListingDisplay>
 		
-		<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="false" />
+		<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="true" />
 	
 </cfoutput>
