@@ -80,11 +80,15 @@ Notes:
 					
 					<!--- Add form fields to add registrant accounts --->
 					<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
+						<cfset currentRegistrantCount = getService("EventRegistrationService").getNonWaitlistedCountBySku(rc.processObject.getSku()) />
 						<cfloop from="1" to="#rc.processObject.getQuantity()#" index="i" >
 							<cfset newAccount = rc.processObject.getAccountService().newAccount()/>
 							#newAccount.getfirstName()#
 							<fieldset>
 								<legend>Registrant #i#</legend>
+								<cfif rc.processObject.getSku().getEventCapacity() LT (currentRegistrantCount + i)) >
+									<p class="alert-error">There are not enough seats available. Entering account information here will cause this registrant to be placed on a waitlist. Note that a % deposit will be required to be waitlisted.</p>
+								</cfif>
 								<cf_HibachiFieldDisplay fieldname="registrants[#i#].newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
 								<!--- New Account --->
 								<cf_HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" loadVisable="yes">

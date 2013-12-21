@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,25 +45,21 @@
 
 Notes:
 
---->
-<cfparam name="rc.sku" type="any" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfoutput>
+	// Injected Entity
+	property name="sku";
+
+	// Data Properties (Related Entity Populate)
+	property name="accountID" ;
+	property name="newAccountFlag" type="boolean";
 	
-	<cfset local.eventRegSmartList = rc.sku.geteventRegistrationsSmartlist()/>
+	// Data Properties (Object / Array Populate)
+	property name="registrant" type="array" hb_populateArray="true";
 	
-		<cf_HibachiListingDisplay smartList="#local.eventRegSmartList#"
-				recordEditAction="admin:entity.editeventregistration"
-				recorddetailaction="admin:entity.detaileventregistration">
-			<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
-			<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
-		</cf_HibachiListingDisplay>
-		
-		<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="false" />
 	
-</cfoutput>
+	
+	
+	
+}

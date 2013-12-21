@@ -145,6 +145,53 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 	
 	// @help Adds locations to event skus	
+	public any function processSku_addEventRegistration(required any sku, required any processObject) {
+		// Create new event registration	 record
+		var eventRegistration = this.newEventRegistration();
+		eventRegistration.setSku(arguments.sku);
+		eventRegistration.generateAndSetAttendanceCode();
+		
+		// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
+		if(arguments.processObject.getNewAccountFlag() == 0) {
+			eventRegistration.setAccount( getService("AccountService").getAccount(arguments.processObject.getaccountID()) );
+		} else {
+			//Create new account to associate with registration
+			var newAccount = getAccountService().newAccount();
+			if(isDefined("arguments.processObject.registrant.firstName") && len(arguments.processObject.registrant.firstName)) {
+				newAccount.setFirstName(registrant.firstName);
+			}
+			if(isDefined("arguments.processObject.registrant.lastName") && len(arguments.processObject.registrant.lastName)) {
+				newAccount.setLastName(registrant.lastName);
+			}
+			if(isDefined("arguments.processObject.registrant.emailAddress") && len(arguments.processObject.registrant.emailAddress)) {
+				var newEmailAddress = getAccountService().newAccountEmailAddress();
+				newEmailAddress.setEmailAddress(arguments.processObject.registrant.emailAddress);
+				newAccount.setPrimaryEmailAddress(newEmailAddress);
+				
+			}
+			if(isDefined("arguments.processObject.registrant.phoneNumber") && len(arguments.processObject.registrant.phoneNumber)) {
+				var newPhoneNumber = getAccountService().newAccountPhoneNumber();
+				newPhoneNumber.setPhoneNumber(arguments.processObject.registrant.phoneNumber);
+				newAccount.setPrimaryPhoneNumber(newPhoneNumber);
+			}
+			newAccount = getAccountService().saveAccount(newAccount);
+			eventRegistration.setAccount(newAccount);
+			
+		}
+		
+		eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+		if(arguments.sku.getAvailableSeatCount > 0 ) {
+			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+		} else {
+			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+		}	
+		
+		eventRegistration = getService("EventRegistrationService").saveEventRegistration( eventRegistration );
+		
+		return arguments.sku;
+	}
+	
+	// @help Adds locations to event skus	
 	public any function processSku_addLocation(required any sku, required any processObject) {
 		if(arguments.processObject.getEditScope() == "none"  ){
 			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));

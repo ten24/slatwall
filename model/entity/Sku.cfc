@@ -158,6 +158,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	// ==================== START: Logical Methods =========================
 	
+	
+	public any function getAvailableSeatCount() {
+//		return this.getEventCapacity() - getService("EventRegistrationService").getNonWaitlistedCountBySku(this);
+		return 10;
+	}
+	
 	// START: Image Methods
 	
 	//@hint Generates the image path based upon product code, and image options for this sku
@@ -580,7 +586,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// Retrieve event registrations related to this sku
-	public any function getEventRegistrations() {
+	public any function getEventRegistrationsSmartlist() {
 		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
 			var smartList = getService("eventRegistrationService").getEventRegistrations();
 			variables.eventRegistrationsSmartList = smartList;

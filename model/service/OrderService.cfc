@@ -477,6 +477,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// to match the quantity of the order item. Comes from Order_AddOrderItem.		
 		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
 			
+			currentRegistrantCount = getService("EventRegistrationService").getRegistrantCountBySku(rc.processObject.getSku());
+			var newRegCount = 1;
+			
 			// ProcessObject should contain account info in registrants array	
 			for(var registrant in arguments.processObject.getRegistrants()) {
 				
@@ -510,16 +513,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					newAccount = getAccountService().saveAccount(newAccount);
 					eventRegistration.setAccount(newAccount);
+					
 				}
 				
-				// Set registration status
+				// Set registration status - Should this be done when order is placed instead?
 				if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
 					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
 				} else {
-					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
+					if(rc.processObject.getSku().getEventCapacity() < (currentRegistrantCount + newRegCount) ) {
+						eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+					} else {
+						eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+					}	
 				}
 				
 				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
+				newRegCount++;
 					
 			}
 		}
@@ -820,9 +829,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderItem.setOrderReturn( orderReturn );
 					orderItem.setOrder( returnOrder );
 					
-					//if(originalOrderItem.getType() == "event" && structKeyExists(orderItemStruct, "cancelRegistration") && orderItemStruct.cancelRegistration) {
-						// getEventService().processEventRegistration( originalOrderItem.getEventRegistration, {createReturnOrderFlag=false}, 'cancel');
-					//}
+					if(originalOrderItem.getType() == "event") {
+						// If necessary, initiate the registration cancellation process. 
+						if( !structKeyExists(orderItemStruct, "cancelRegistrationFlag") || (structKeyExists(orderItemStruct, "cancelRegistrationFlag") && orderItemStruct.cancelRegistrationFlag) ) {
+							// Inform cancel process that the return has already been processed
+							originalOrderItem.getEventRegistration().createReturnOrderFlag = true;
+							getEventService().processEventRegistration( originalOrderItem.getEventRegistration(), {}, 'cancel');
+						}
+					}
 					
 					// Persist the new item
 					getHibachiDAO().save( orderItem );
@@ -1502,12 +1516,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var subscriptionOrderItem = getSubscriptionService().getSubscriptionOrderItem({orderItem=stockReceiverItem.getOrderItem().getReferencedOrderItem()}); 
 			if(!isNull(subscriptionOrderItem)) {
 				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
-			}
-			
-			// If this was an event registration run cancellation process
-			var eventRegistrationItem = getEventRegistrationService().getEventRegistrationByOrderItem(stockReceiverItem.getOrderItem().getReferencedOrderItem());
-			if(!isNull(eventRegistrationItem)) {
-				getEventRegistrationService().cancelEventRegistration(eventRegistrationItem);
 			}
 			
 			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them

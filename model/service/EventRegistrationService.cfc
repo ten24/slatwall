@@ -78,7 +78,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// @hint Updates the eventRegistrationStatusType of a registrant
-	public any function cancelEventRegistration(required any eventRegistration) {
+	/*public any function cancelEventRegistration(required any eventRegistration) {
 		if(arguments.eventRegistration.getOrderItem().getSku().setting('skuAllowWaitlistingFlag')) {
 			notifyNextWaitlistedRegistrants(sku=arguments.eventRegistration.getOrderItem().getSku(), quantity=1);
 		}
@@ -88,7 +88,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.eventRegistration.save();
 		
 		return arguments.eventRegistration;
-	}
+	}*/
 	
 	// @hint looks at all pending claims to see if they've expired
 	public any function getPendingClaimsSmartlist() {
@@ -126,6 +126,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return smartList;
 	}
 	
+	public any function getWaitlistedRegistrants(required any sku) {
+		var smartList = this.getEventRegistrationSmartList();			
+		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
+		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
+		smartList.addInFilter('eventRegistrationStatusType.typeID', '#getSettingService().getTypeBySystemCode('erstWaitlisted').getTypeID()#');
+		smartList.addOrder("waitlistQueueDateTime|ASC");
+		return smartList.getRecords();
+	}
+	
 	// @hint Changes next waitlisted registrant to pending claim for specified sku 
 	public any function notifyNextWaitlistedRegistrants(required any sku, integer quantity=1) {
 		var notifiedCount = 0;
@@ -148,6 +157,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
+	public integer function getNonWaitlistedCountBySku(required any sku) {
+		var smartlist = getEventRegistrationSmartList({},false);
+		var waitlistedTypeID = getSettingService().getTypeBySystemCode('erstWaitlisted').getTypeID();
+		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
+		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
+		smartlist.addWhereCondition("eventRegistrationStatusType.typeID <> '#waitlistedTypeID#'");
+		return smartlist.getRecordsCount();		
+	}
+	
+	public integer function getAvailableSeatCountBySku(required any sku) {
+		return arguments.sku.getEventCapacity() - getNonWaitlistedCountBySku(arguments.sku);
+	}
+	
+	// @hint Marks eligible waitlisted registrant as pending confirmation
+	public void function updateEligibleRegistrants(required any sku) {
+		var availableSeatCount = arguments.sku.getAvailableSeatCount();
+		var notifiedCount = 0;
+		if(availableSeatCount > 0) {
+			var waitlistedRegistrants = getWaitlistedRegistrants(arguments.sku);
+			for(registrant in waitlistedRegistrants) {
+				registrant.setRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPendingClaim"));
+				registrant.save();
+				notifiedCount++;
+				if(notifiedCount==availableSeatCount) {
+					break;
+				}
+			}
+		}
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
@@ -160,7 +199,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
-	public any function processEventRegistration_approved(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_approve(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -173,7 +212,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_attended(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_attend(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -186,7 +225,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_registered(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_register(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -199,7 +238,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_waitlisted(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_waitlist(required any eventRegistration, struct data={}) {
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
 			var comment = getCommentService().newComment();
@@ -239,17 +278,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_cancelled(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_cancel(required any eventRegistration, struct data={}) {
+		var createReturnOrder = true;
+		if(structKeyExists(arguments.eventRegistration,"createReturnOrder")) {
+			createReturnOrder = arguments.data.createReturnOrderFlag;
+		}
 		
-		// Change the status
+		// Get the current registration status
 		var regStatus = arguments.eventRegistration.geteventRegistrationStatusType().getSystemCode();
 		
 		// Reduce the quantity of the original orderItem
-		var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1;
+		/*var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1;
 		var order = arguments.eventRegistration.getOrderItem().getOrder();
-		arguments.eventRegistration.getOrderItem().setQuantity(newQuantity);
+		arguments.eventRegistration.getOrderItem().setQuantity(newQuantity);*/
 		
-		// TODO (GG): Refund credit for cancellation
+		if(createReturnOrder) {
+			// Inform order process that the registration has already been cancelled
+			arguments.eventRegistration.getOrderItem().cancelRegistrationFlag = false;
+			getService("OrderService").processOrder(arguments.eventRegistration.getOrderItem().getOrder(), {}, 'createReturn');
+		}
 		
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
@@ -258,10 +305,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Change the status
-		cancelEventRegistration(arguments.eventRegistration);
+		//cancelEventRegistration(arguments.eventRegistration);
+		if(arguments.eventRegistration.getSku().setting('skuAllowWaitlistingFlag')) {
+			notifyNextWaitlistedRegistrants(sku=arguments.eventRegistration.getOrderItem().getSku(), quantity=1);
+		}
+		
+		// Save new code
+		arguments.eventRegistration.setRegistrationStatusType(getSettingService().getTypeBySystemCode("erstCancelled"));
+		arguments.eventRegistration.save();
 		 
 		return arguments.eventRegistration;
-		
 	}
 
 	

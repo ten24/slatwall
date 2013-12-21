@@ -94,7 +94,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 				uniq = true;
 			}
 		} while (uniq == false);
-		this.setEventAttendanceCode(code);
+		this.setRegistrantAttendanceCode(code);
 		return code;
 	}
 	
@@ -200,7 +200,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 		if(len(simpleRep)) {
 			simpleRep &= ": ";
 		}
-		var simpleRep = "#getOrderItem().getSku().getProduct().getProductName()# - #getOrderItem().getSku().getSkuDefinition()# - (#getOrderItem().getSku().getFormattedValue('eventStartDateTime')# - #getOrderItem().getSku().getFormattedValue('eventEndDateTime')#)";
+		var simpleRep = "#getSku().getProduct().getProductName()# - #getSku().getSkuDefinition()# - (#getSku().getFormattedValue('eventStartDateTime')# - #getSku().getFormattedValue('eventEndDateTime')#)";
 		
 		return simpleRep;
 	}
