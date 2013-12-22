@@ -54,6 +54,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Related Entity Populate)
 	property name="accountID" ;
 	property name="newAccountFlag" type="boolean";
+	property name="firstName" type="string";
+	property name="lastName" type="string";
+	property name="emailAddress" type="string";
+	property name="phoneNumber" type="string";
 	
 	// Data Properties (Object / Array Populate)
 	property name="registrant" type="array" hb_populateArray="true";

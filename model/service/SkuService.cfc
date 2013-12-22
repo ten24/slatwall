@@ -156,29 +156,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			eventRegistration.setAccount( getService("AccountService").getAccount(arguments.processObject.getaccountID()) );
 		} else {
 			//Create new account to associate with registration
-			var newAccount = getAccountService().newAccount();
-			if(isDefined("arguments.processObject.registrant.firstName") && len(arguments.processObject.registrant.firstName)) {
-				newAccount.setFirstName(registrant.firstName);
+			var newAccount = getService("AccountService").newAccount();
+			if(len(arguments.processObject.getfirstName())) {
+				newAccount.setFirstName(arguments.processObject.getfirstName());
 			}
-			if(isDefined("arguments.processObject.registrant.lastName") && len(arguments.processObject.registrant.lastName)) {
-				newAccount.setLastName(registrant.lastName);
+			if(len(arguments.processObject.getlastName())) {
+				newAccount.setLastName(arguments.processObject.getlastName());
 			}
-			if(isDefined("arguments.processObject.registrant.emailAddress") && len(arguments.processObject.registrant.emailAddress)) {
-				var newEmailAddress = getAccountService().newAccountEmailAddress();
-				newEmailAddress.setEmailAddress(arguments.processObject.registrant.emailAddress);
+			if(len(arguments.processObject.getemailAddress())) {
+				var newEmailAddress =  getService("AccountService").newAccountEmailAddress();
+				newEmailAddress.setEmailAddress(arguments.processObject.getemailAddress());
 				newAccount.setPrimaryEmailAddress(newEmailAddress);
 				
 			}
-			if(isDefined("arguments.processObject.registrant.phoneNumber") && len(arguments.processObject.registrant.phoneNumber)) {
-				var newPhoneNumber = getAccountService().newAccountPhoneNumber();
-				newPhoneNumber.setPhoneNumber(arguments.processObject.registrant.phoneNumber);
+			if(len(arguments.processObject.getphoneNumber())) {
+				var newPhoneNumber =  getService("AccountService").newAccountPhoneNumber();
+				newPhoneNumber.setPhoneNumber(arguments.processObject.getphoneNumber());
 				newAccount.setPrimaryPhoneNumber(newPhoneNumber);
 			}
-			newAccount = getAccountService().saveAccount(newAccount);
+			newAccount = getService("AccountService").saveAccount(newAccount);
 			eventRegistration.setAccount(newAccount);
 			
 		}
-		
 		eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
 		if(arguments.sku.getAvailableSeatCount > 0 ) {
 			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));

@@ -704,7 +704,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getEventRegistrationsSmartList() {
 		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
 			variables.eventRegistrationsSmartList = getService("EventRegistrationService").getEventRegistrationSmartList();
-			variables.eventRegistrationsSmartList.addFilter('orderitem.sku.product.productID', getProductID());
+			variables.eventRegistrationsSmartList.addFilter('sku.product.productID', getProductID());
 			//variables.eventRegistrationsSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
 		}
 

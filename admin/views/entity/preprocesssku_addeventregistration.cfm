@@ -65,10 +65,10 @@ Notes:
 					<cf_HibachiFieldDisplay fieldname="newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
 					<!--- New Account --->
 					<cf_HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="yes">
-						<cf_HibachiFieldDisplay fieldname="registrant.firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
-						<cf_HibachiFieldDisplay fieldname="registrant.lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
-						<cf_HibachiFieldDisplay fieldname="registrant.emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
-						<cf_HibachiFieldDisplay fieldname="registrants.phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
+						<cf_HibachiFieldDisplay fieldname="firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
+						<cf_HibachiFieldDisplay fieldname="lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
+						<cf_HibachiFieldDisplay fieldname="emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
+						<cf_HibachiFieldDisplay fieldname="phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
 					</cf_HibachiDisplayToggle>
 					<!--- Existing Account --->
 					<cf_HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" >

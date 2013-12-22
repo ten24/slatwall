@@ -349,7 +349,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.entityName = "SlatwallEventRegistration";
 		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
 		if(arguments.orderBySkuCode) {
-			smartList.addOrder("orderitem.sku.skuCode|ASC");
+			smartList.addOrder("sku.skuCode|ASC");
 		}
 		return smartList;
 	}
