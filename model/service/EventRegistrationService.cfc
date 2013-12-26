@@ -77,19 +77,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return attendanceCode;
 	}
 	
-	// @hint Updates the eventRegistrationStatusType of a registrant
-	/*public any function cancelEventRegistration(required any eventRegistration) {
-		if(arguments.eventRegistration.getOrderItem().getSku().setting('skuAllowWaitlistingFlag')) {
-			notifyNextWaitlistedRegistrants(sku=arguments.eventRegistration.getOrderItem().getSku(), quantity=1);
-		}
-		
-		// Save new code
-		arguments.eventRegistration.setRegistrationStatusType(getSettingService().getTypeBySystemCode("erstCancelled"));
-		arguments.eventRegistration.save();
-		
-		return arguments.eventRegistration;
-	}*/
-	
 	// @hint looks at all pending claims to see if they've expired
 	public any function getPendingClaimsSmartlist() {
 		// Get list of all pending claims
@@ -348,9 +335,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getEventRegistrationSmartList(struct data={},orderBySkuCode=true) {
 		arguments.entityName = "SlatwallEventRegistration";
 		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		smartList.addKeywordProperty(propertyIdentifier="registrationStatusTitle", weight=1);
 		if(arguments.orderBySkuCode) {
 			smartList.addOrder("sku.skuCode|ASC");
 		}
+		return smartList;
+	}
+	
+	public any function getRegistrationAttendenceSmartList(struct data={}) {
+		var attendanceTypes = [getSettingService().getTypeBySystemCode("erstRegistered").getTypeID(),getSettingService().getTypeBySystemCode("erstAttended").getTypeID()];
+		var attendanceTypesList = listQualify(arrayToList(attendanceTypes),"'");
+		arguments.entityName = "SlatwallEventRegistration";
+		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		smartlist.addWhereCondition("eventRegistrationStatusTypeID IN (#attendanceTypesList#)");
 		return smartList;
 	}
 	

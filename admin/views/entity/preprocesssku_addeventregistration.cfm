@@ -62,7 +62,7 @@ Notes:
 					<cfif rc.sku.getAvailableSeatCount() LT 1 >
 						<p class="alert-error">There are not enough seats available. Entering account information here will cause this registrant to be placed on a waitlist. Note that a % deposit will be required to be waitlisted.</p>
 					</cfif>
-					<cf_HibachiFieldDisplay fieldname="newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
+					<cf_HibachiFieldDisplay fieldname="newAccountFlag" fieldType="yesno" title="#$.slatwall.rbKey('processObject.Sku_AddEventRegistration.newAccountFlag')#" edit="#rc.edit#" value="1">
 					<!--- New Account --->
 					<cf_HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="yes">
 						<cf_HibachiFieldDisplay fieldname="firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
@@ -75,6 +75,7 @@ Notes:
 						<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
 						<cf_HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
 					</cf_HibachiDisplayToggle>
+					<!---<cf_HibachiFieldDisplay fieldname="createOrderFlag" title="#$.slatwall.rbKey('processObject.Sku_AddEventRegistration.createOrderFlag')#" fieldType="yesno" edit="#rc.edit#" value="1">--->
 				
 				</cf_HibachiPropertyList>
 				

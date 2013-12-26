@@ -62,6 +62,7 @@ Notes:
 			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
 			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
 			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
+			<cf_HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
 		</cf_HibachiListingDisplay>
 		
 		<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="true" />

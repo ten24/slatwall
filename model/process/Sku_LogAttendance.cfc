@@ -52,16 +52,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="sku";
 
 	// Data Properties (Related Entity Populate)
-	property name="accountID" ;
-	property name="newAccountFlag" type="boolean";
-	property name="createOrderFlag" type="boolean";
-	property name="firstName" type="string";
-	property name="lastName" type="string";
-	property name="emailAddress" type="string";
-	property name="phoneNumber" type="string";
+	property name="attendedFlag"  hb_formFieldType="checkbox";
 	
 	// Data Properties (Object / Array Populate)
-	property name="registrant" type="array" hb_populateArray="true";
+	property name="eventRegistrations";
+	
+	
 	
 	
 }

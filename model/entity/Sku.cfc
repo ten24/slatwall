@@ -89,6 +89,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
+	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="eventRegistrationID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
@@ -129,7 +130,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventReachedCapacity" type="boolean" persistent="false";
-	property name="eventRegistrations" type="array" persistent="false";
+	//property name="eventRegistrations" type="array" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
@@ -588,22 +589,35 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Retrieve event registrations related to this sku
 	public any function getEventRegistrationsSmartlist() {
 		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
-			var smartList = getService("eventRegistrationService").getEventRegistrations();
+			var smartList = getService("eventRegistrationService").getEventRegistrationSmartList();
+			smartList.addFilter("skuID",this.getSkuID());
+			//writedump(var="#smartlist#", top="3");abort;
 			variables.eventRegistrationsSmartList = smartList;
-		}
-		var orderItemsArray = [];
-		var orderItemIDList = "";
-		for( var orderItem in getorderItems() ) {
-			arrayAppend(orderItemsArray,orderItem.getorderItemID());
-		}	
-		if(arraylen(orderItemsArray)) {
-			orderItemIDList = arrayToList(orderItemsArray);
-			variables.eventRegistrationsSmartList = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
-		} else {
-			variables.eventRegistrationsSmartList.addFilter('orderItemID','');
+			/*var orderItemsArray = [];
+			var orderItemIDList = "";
+			for( var orderItem in getorderItems() ) {
+				arrayAppend(orderItemsArray,orderItem.getorderItemID());
+			}	
+			if(arraylen(orderItemsArray)) {
+				orderItemIDList = arrayToList(orderItemsArray);
+				variables.eventRegistrationsSmartList = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
+			} else {
+				variables.eventRegistrationsSmartList.addFilter('orderItemID','');
+			}*/
 		}
 				
 		return variables.eventRegistrationsSmartList;
+	}
+	
+	// Retrieve event registrations related to this sku
+	public any function getRegistrationAttendanceSmartlist() {
+		if(!structKeyExists(variables, "registrationAttendanceSmartlist")) {
+			var smartList = getService("eventRegistrationService").getRegistrationAttendenceSmartList();
+			smartlist.addFilter('skuID','this.getSkuID()');
+			variables.registrationAttendanceSmartlist = smartList;
+		}
+				
+		return variables.registrationAttendanceSmartlist;
 	}
 	
 	public string function getNextEstimatedAvailableDate() {

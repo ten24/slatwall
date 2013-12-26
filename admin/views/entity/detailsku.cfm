@@ -57,6 +57,7 @@ Notes:
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addlocation" type="list" modal="true" />
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="removelocation" type="list" modal="true" />
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="editcapacity" type="list" modal="true" />
+				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="logattendance" type="list" modal="false" />
 			</cfif>
 			
 			

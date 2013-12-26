@@ -233,6 +233,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return sku;
 	}
 	
+	// @help Logs attendance for an event	
+	public any function processSku_logAttendance(required any sku, required any processObject) {
+		// Compare the list of all registrants with the list of those that were submitted as having attended.
+		// If in attended list we set registrant as attended otherwise we set registrant to registered. 
+		var attendedList = "";
+		if(len(arguments.processObject.getEventRegistrations())) {
+			attendedList = arguments.processObject.getEventRegistrations();
+		}
+		var registrantsSmartlist = arguments.sku.getRegistrationAttendanceSmartlist();
+		for(registrant in registrantsSmartlist.getRecords()) {
+			if( listFindNoCase(attendedList,registrant.getEventRegistrationID()) > 0 ) {
+				registrant.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstAttended"));
+			} else {
+				registrant.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+			}
+		}
+		return sku;
+	}
+	
 	// @help Removes locations from event skus	
 	public any function processSku_removeLocation(required any sku, required any processObject) {
 		if(arguments.processObject.getEditScope() == "none"  ){

@@ -80,9 +80,25 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// Non-Persistent Properties
 	property name="productName"  persistent="false";
+	property name="attendedFlag"  persistent="false";
+	property name="registrationStatusTitle"  persistent="false";
 	
 	
 	// ==================== START: Logical Methods =========================
+	
+	public boolean function getAttendedFlag() {
+		if(eventRegistrationStatusType.getSystemCode() == "erstAttended") {
+			return true;
+		} 
+		return false;
+	} 
+	
+	public string function getRegistrationStatusTitle() {
+		if(!structKeyExists(variables,"registrationStatusTitle")) {
+			variables.registrationStatusTitle = this.getEventRegistrationStatusType().getType();
+		}
+		return variables.registrationStatusTitle;
+	} 
 	
 	//@hint Generates a unique attendance code and sets it as this registrant's code
 	public string function generateAndSetAttendanceCode() {

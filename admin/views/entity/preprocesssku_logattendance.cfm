@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,23 +45,37 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-	// Injected Entity
-	property name="sku";
+<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
+	
+	<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+	</cf_HibachiEntityActionBar>
+	<cfset selectedEventRegistrationIDs = "" />
+	<cfloop array="#rc.sku.getRegistrationAttendanceSmartlist().getRecords()#" index="er">
+		<cfif er.getAttendedFlag()>
+			<cfset selectedEventRegistrationIDs = listAppend(selectedEventRegistrationIDs, er.getEventRegistrationID()) />
+		</cfif>
+	</cfloop>
+	<cf_HibachiPropertyRow>
+		<cf_HibachiPropertyList>
+			
+			<cf_HibachiListingDisplay smartList="#rc.sku.getRegistrationAttendanceSmartlist()#" 
+									  multiselectFieldName="eventRegistrations"
+									  multiselectPropertyIdentifier="eventRegistrationID" 
+									  multiselectValues="#selectedEventRegistrationIDs#"
+									  edit="#rc.edit#">
+				<!---<cf_HibachiListingColumn propertyIdentifier="attendedFlag" />--->
+				<cf_HibachiListingColumn propertyIdentifier="firstName" />
+				<cf_HibachiListingColumn propertyIdentifier="lastName" />
+				<!---<cf_HibachiListingColumn propertyIdentifier="emailAddress" />--->
+			</cf_HibachiListingDisplay>
+			
+		</cf_HibachiPropertyList>
+	</cf_HibachiPropertyRow>
+	
+</cf_HibachiEntityProcessForm>
 
-	// Data Properties (Related Entity Populate)
-	property name="accountID" ;
-	property name="newAccountFlag" type="boolean";
-	property name="createOrderFlag" type="boolean";
-	property name="firstName" type="string";
-	property name="lastName" type="string";
-	property name="emailAddress" type="string";
-	property name="phoneNumber" type="string";
-	
-	// Data Properties (Object / Array Populate)
-	property name="registrant" type="array" hb_populateArray="true";
-	
-	
-}
