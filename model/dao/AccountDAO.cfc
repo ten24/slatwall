@@ -65,7 +65,7 @@ Notes:
 		
 		<cfquery name="rs">
 			UPDATE
-				SlatwallOrderFulfillment
+				SwOrderFulfillment
 			SET
 				accountAddressID = null 
 			WHERE
