@@ -57,6 +57,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
 	property name="startReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
 	property name="endReservationDateTime" hb_rbKey="entity.sku.endReservationDateTime" hb_formFieldType="datetime";
+	property name="purchaseStartDateTime" hb_formFieldType="datetime" hb_rbKey="entity.sku.purchaseStartDateTime";
+	property name="purchaseEndDateTime" hb_formFieldType="datetime" hb_rbKey="entity.sku.purchaseEndDateTime";
 	property name="price";
 	property name="options";
 	property name="subscriptionBenefits";
@@ -66,9 +68,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
 	property name="contents";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
-	property name="locationConfigurations";
+	property name="locationConfigurations" hb_rbKey="entity.sku.locationConfigurations";
 	property name="skuAllowWaitlistingFlag" hb_formFieldType="yesno";
 	property name="eventCapacity";
+	property name="eventAttendanceType" hb_formFieldType="select" hb_rbKey="entity.sku.eventAttendanceType" ;
 	
 	// Scheduling-related properties
 	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";
@@ -81,6 +84,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
 	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
 
+
+	public array function getAttendanceTypeOptions(boolean includeWeekends=true) {
+		return getService("SkuService").getAttendanceTypeOptions();
+	}
 	
 	public array function getDaysOfWeekOptions(boolean includeWeekends=true) {
 		return getService("ProductScheduleService").getDaysOfWeekOptions(arguments.includeWeekends);

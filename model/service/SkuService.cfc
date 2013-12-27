@@ -494,6 +494,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		smartList.addKeywordProperty(propertyIdentifier="skuCode", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="skuID", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="publishedFlag", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="alternateSkuCodes.alternateSkuCode", weight=1);

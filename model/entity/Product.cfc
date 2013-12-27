@@ -57,8 +57,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="publishedFlag" ormtype="boolean" default="false";
 	property name="sortOrder" ormtype="integer";
-	property name="purchaseStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
-	property name="purchaseEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	/*property name="purchaseStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="purchaseEndDateTime" ormtype="timestamp" hb_formatType="dateTime";*/
 	
 	// Calculated Properties
 	property name="calculatedSalePrice" ormtype="big_decimal";
@@ -156,6 +156,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		
 		return variables.productTypeOptions;
 	}
+	
     
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {

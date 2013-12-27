@@ -73,14 +73,17 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 				
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="generateSkusFlag" edit="#rc.edit#" fieldType="yesno">
-				<cf_HibachiDisplayToggle selector="input[name='generateSkusFlag']" loadVisable="no" showValues="1">
+				<cf_HibachiDisplayToggle selector="input[name='generateSkusFlag']" loadVisable="#rc.processObject.getGenerateSkusFlag()#" showValues="1">
 				
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 					
 					<cfif rc.processObject.getBaseProductType() eq "event">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventCapacity" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventAttendanceType" edit="true" valueOptions="#rc.processObject.getAttendanceTypeOptions()#" >
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="purchaseStartDateTime" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="purchaseEndDateTime" edit="true">
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuAllowWaitlistingFlag" edit="true" value="#rc.product.getService("SettingService").getSettingValue("skuAllowWaitlistingFlag")#">
 						<div class="row">
 							<div class="span4">
@@ -118,21 +121,6 @@ Notes:
 											<!--- /Monthly schedule --->
 											
 											<input type="hidden" name="scheduleEndType" value="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#" />
-											
-											<!---
-											<!--- Possible to add occurrences as a schedule end option (instead of an end date)) but seems unnecessary [GG 12/20/2013] --->
-											<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.processObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
-											
-											<!--- Ends on Date --->
-											<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="yes" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#">
-												<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
-											</cf_HibachiDisplayToggle>
-					
-											<!--- Ends after # of occurences --->
-											<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="no" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('setOccurrences').getTypeID()#">
-												<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndOccurrences" edit="#rc.edit#">
-											</cf_HibachiDisplayToggle>
-											--->
 										
 										</cf_HibachiDisplayToggle>
 									</fieldset>

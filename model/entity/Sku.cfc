@@ -165,8 +165,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public any function getAvailableSeatCount() {
 		return this.getEventCapacity() - getService("EventRegistrationService").getNonWaitlistedCountBySku(this);
-//		return 10;
 	}
+	
+	/*public any function getPurchaseStartDateTime() {
+		if(!this.hasPurchaseStartDateTime()) {
+			return this.getProduct().getPurchaseStartDateTime();
+		}
+		return this.getPurchaseStartDateTime();
+	}
+	
+	public any function getPurchaseEndDateTime() {
+		if(!this.hasPurchaseEndDateTime()) {
+			return this.getProduct().getPurchaseEndDateTime();
+		}
+		return this.getPurchaseEndDateTime();
+	}*/
 	
 	// START: Image Methods
 	
@@ -792,7 +805,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					break;
 					
 				case "event":
-					var configs = getLocationConfigurations();
+					var configs = this.getLocationConfigurations();
 					for(config in configs){
 						variables.skuDefinition = variables.skuDefinition & config.getlocationPathName() & " (#config.getLocationConfigurationName()#) <br>";
 					}

@@ -60,11 +60,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
 	property name="eventAttendanceType" hb_formFieldType="select" hb_rbKey="entity.sku.eventAttendanceType" ;
+	property name="purchaseStartDateTime" hb_formFieldType="datetime" hb_rbKey="entity.sku.purchaseStartDateTime";
+	property name="purchaseEndDateTime" hb_formFieldType="datetime" hb_rbKey="entity.sku.purchaseEndDateTime";
 	property name="options";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="bundleContentAccessFlag" hb_formFieldType="yesno";
 	property name="contents";
-	property name="locationConfigurations";
+	property name="locationConfigurations" hb_rbKey="entity.sku.locationConfigurations";
 	property name="skuAllowWaitlistingFlag" hb_formFieldType="yesno";
 	property name="eventCapacity";
 	
