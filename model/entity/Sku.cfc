@@ -66,6 +66,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="startReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="endReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="purchaseStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="purchaseEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="bundleFlag" ormtype="boolean" default="0";
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
