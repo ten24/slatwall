@@ -57,7 +57,11 @@ Notes:
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addlocation" type="list" modal="true" />
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="removelocation" type="list" modal="true" />
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="editcapacity" type="list" modal="true" />
-				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="logattendance" type="list" modal="false" />
+				<cfif (rc.sku.getEventAttendanceType().getSystemCode() EQ "eatBundle" AND rc.sku.getbundleFlag())
+					OR (rc.sku.getEventAttendanceType().getSystemCode() EQ "eatIndividual" AND !rc.sku.getbundleFlag())
+					OR (rc.sku.getEventAttendanceType().getSystemCode() EQ "eatBoth")>
+						<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="logattendance" type="list" modal="true" />
+				</cfif>
 			</cfif>
 			
 			
@@ -83,6 +87,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventCapacity" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="allowEventWaitlistingFlag" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="attendedquantity" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventAttendanceType" edit="#rc.edit#">
 				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
@@ -132,4 +137,5 @@ Notes:
 		</cf_HibachiTabGroup>
 
 	</cf_HibachiEntityDetailForm>
+	
 </cfoutput>

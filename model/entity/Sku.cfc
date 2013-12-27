@@ -66,7 +66,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="startReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="endReservationDateTime" ormtype="timestamp" hb_formatType="dateTime";
-	property name="bundleFlag" ormtype="boolean";
+	property name="bundleFlag" ormtype="boolean" default="0";
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="percentPaymentToWaitlist" ormtype="integer" hint="Percentage of payment the registrant must put down in order to be waitlisted";
@@ -80,6 +80,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID" cfc="ProductSchedule" hb_cascadeCalculate="true";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitListQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
+	property name="eventAttendanceType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventAttendanceTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventAttendanceType";
 	
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
@@ -161,8 +162,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	
 	public any function getAvailableSeatCount() {
-//		return this.getEventCapacity() - getService("EventRegistrationService").getNonWaitlistedCountBySku(this);
-		return 10;
+		return this.getEventCapacity() - getService("EventRegistrationService").getNonWaitlistedCountBySku(this);
+//		return 10;
 	}
 	
 	// START: Image Methods
@@ -591,7 +592,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
 			var smartList = getService("eventRegistrationService").getEventRegistrationSmartList();
 			smartList.addFilter("skuID",this.getSkuID());
-			//writedump(var="#smartlist#", top="3");abort;
 			variables.eventRegistrationsSmartList = smartList;
 			/*var orderItemsArray = [];
 			var orderItemIDList = "";

@@ -58,9 +58,12 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventAttendanceType" edit="true" valueOptions="#rc.processObject.getAttendanceTypeOptions()#" >
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventCapacity" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true"><br>
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuAllowWaitlistingFlag" edit="true" value="#rc.product.getService("SettingService").getSettingValue("skuAllowWaitlistingFlag")#">
 				
 				<!--- Scheduling --->
 				<div class="row">
