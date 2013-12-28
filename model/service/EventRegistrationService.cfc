@@ -86,13 +86,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return pendingClaimSmartList;
 	}
 	
-	// @hint Sets a 'pending claim' event registration back to waitlist and places at end of queue 
-	public any function expirePendingClaim(required any eventRegistration) {
-		arguments.eventRegistration.setWaitlistQueueDateTime(createODBCDateTime(now()));
-		arguments.eventRegistration.save();
-		notifyNextWaitlistedRegistrants(sku=eventRegistration.getOrderItem().getSku(),quantity=1);
-	}
-	
 	public any function getEventRegistrationByOrderItem(required orderItem) {
 		var smartList = this.getEventRegistrationSmartList();
 		smartlist.addFilter("orderItem",arguments.orderItem);
@@ -223,6 +216,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstRegistered") );
 		
 		return arguments.eventRegistration;
+	}
+	
+	
+	// @hint Sets a 'pending confirmation' event registration back to waitlist and places at end of queue 
+	public any function processEventRegistration_expire(required any eventRegistration) {
+		arguments.eventRegistration.setWaitlistQueueDateTime(createODBCDateTime(now()));
+		arguments.eventRegistration.save();
+		notifyNextWaitlistedRegistrants(sku=eventRegistration.getOrderItem().getSku(),quantity=1);
 	}
 	
 	public any function processEventRegistration_waitlist(required any eventRegistration, struct data={}) {
