@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,12 @@
 
 Notes:
 
---->
-<cfparam name="rc.eventRegistration" type="any" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.eventRegistration#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventRegistration">
-		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.eventRegistration#">
-		</cf_HibachiEntityActionBar>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				
-				<cfinclude template="preprocesseventRegistration_include/changestatuscomment.cfm" />
-				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-	</cf_HibachiEntityProcessForm>
-</cfoutput>
+	// Injected Entity
+	property name="eventRegistration";
+
+	// Data Properties
+	property name="comment";
+}

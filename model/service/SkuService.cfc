@@ -471,6 +471,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
+	
+	// @help Move event registrations from 'waitlisted' to 'pending confirmation' if seats are available
+	public any function processSku_notifyWaitlistOpenings(required any sku, required any processObject) {
+		// Get waitlisted event registrations
+		var waitlistedRegistrants = getService("EventRegistrationService").getWaitlistedRegistrants(arguments.sku);
+		if(isDefined("waitlistedRegistrants") && arrayLen(waitlistedRegistrants)) {
+			var availableSeats = getService("EventRegistrationService").getAvailableSeatCountBySku(arguments.sku);
+			if(availableSeats > 0) {
+				// Calculate the number of registrantions to change
+				var changeToConfirmCount = availableSeats;
+				if(changeToConfirmCount > arrayLen(waitlistedRegistrants)) {
+					changeToConfirmCount = arrayLen(waitlistedRegistrants);
+				}
+				
+				// Process event registration changes to 'pending confirmation' 
+				for(i=1;i<=changeToConfirmCount;i++) {
+					getEventService().processEventRegistration( waitlistedRegistrants[i], {}, "confirm");
+				}
+				
+			}
+		}
+		return sku;
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================

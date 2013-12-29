@@ -66,12 +66,12 @@ Notes:
 								   deleteQueryString="redirectAction=admin:entity.detaileventregistration&eventregistrationID=#rc.eventregistration.geteventregistrationID()#">
 			
 			<!--- Change Status (onHold, close, cancel, offHold) --->
-			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="register" type="list" modal="false" />
-			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="attend" type="list" modal="false" />
-			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="approve" type="list" modal="false" />
-			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="waitlist" type="list" modal="false" />
-			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="pending" type="list" modal="false" />
-			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="cancel" type="list" modal="false" />
+			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="approve" type="list" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="attend" type="list" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="cancel" type="list" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="pending" type="list" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="register" type="list" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="waitlist" type="list" modal="true" />
 			<!---<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="notPlaced" type="list" modal="false" />--->
 			
 			
