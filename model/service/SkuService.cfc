@@ -473,7 +473,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	// @help Move event registrations from 'waitlisted' to 'pending confirmation' if seats are available
-	public any function processSku_notifyWaitlistOpenings(required any sku, required any processObject) {
+	public any function processSku_notifyWaitlistOpenings(required any sku, processObject={}) {
 		// Get waitlisted event registrations
 		var waitlistedRegistrants = getService("EventRegistrationService").getWaitlistedRegistrants(arguments.sku);
 		if(isDefined("waitlistedRegistrants") && arrayLen(waitlistedRegistrants)) {
@@ -584,6 +584,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return availableLocationsSmartList;
 
+	}
+	
+	// @hint Retrieve a smartlist containing valid future event skus that allow waitlisting
+	public any function getFutureWaitlistEventsSmartlist(){
+		arguments.entityName = "SlatwallSku";
+		var smartList = getSkuSmartlist();
+		var currentDateTime = dateFormat(now(),'short');
+		smartlist.addFilter("product.productType.productTypeName","Event");
+		smartlist.addFilter("publishedFlag","1");
+		smartlist.addFilter("allowEventWaitlistingFlag","1");
+		smartlist.addWhereCondition("aslatwallsku.eventStartDateTime > #currentDateTime#");
+		smartlist.addWhereCondition("aslatwallsku.purchaseStartDateTime > #currentDateTime#");
+		return smartList;
 	}
 	
 	// ====================  END: Smart List Overrides ========================
