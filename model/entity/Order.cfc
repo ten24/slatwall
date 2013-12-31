@@ -259,11 +259,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getAddOrderItemSkuOptionsSmartList() {
 		if(!structKeyExists(variables, "addOrderItemSkuOptionsSmartList")) {
+			// Create dates we can use in where condition
+			var currentDate = dateformat(now(),"yyyy-mm-dd") & " " & timeFormat(now(),"HH:mm:ss:l");
+			var yesterday = dateFormat(dateadd("d",-1,now()),"yyyy-mm-dd") & " " & timeFormat(dateadd("d",-1,now()),"HH:mm:ss:l"); //just need a past date here
+			var tomorrow = dateFormat(dateadd("d",1,now()),"yyyy-mm-dd") & " " & timeFormat(dateadd("d",1,now()),"HH:mm:ss:l"); //just need a future date here
+			
 			variables.addOrderItemSkuOptionsSmartList = getService("skuService").getSkuSmartList();
-			variables.addOrderItemSkuOptionsSmartList.addFilter('activeFlag', 1);
-			variables.addOrderItemSkuOptionsSmartList.addFilter('product.activeFlag', 1);
 			variables.addOrderItemSkuOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
 			variables.addOrderItemSkuOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
+			variables.addOrderItemSkuOptionsSmartList.addFilter('activeFlag', 1);
+			variables.addOrderItemSkuOptionsSmartList.addFilter('product.activeFlag', 1);
+			// Now has to be between purchase dates if event product, otherwise if null (not event) we force it to be true
+			variables.addOrderItemSkuOptionsSmartList.addWhereCondition("'#currentDate#' BETWEEN COALESCE(aslatwallsku.purchaseStartDateTime,'#yesterday#') AND COALESCE(aslatwallsku.purchaseEndDateTime,'#tomorrow#')");
 		}
 		return variables.addOrderItemSkuOptionsSmartList;
 	}

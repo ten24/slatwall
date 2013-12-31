@@ -108,6 +108,8 @@ component extends="HibachiService" accessors="true" {
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
 		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
+		newSku.setPurchaseStartDateTime( createODBCDateTime(arguments.processObject.getPurchaseStartDateTime()) );
+		newSku.setPurchaseEndDateTime( createODBCDateTime(arguments.processObject.getPurchaseEndDateTime()) );
 		newSku.setAllowEventWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
 		newSku.setEventCapacity(arguments.processObject.getEventCapacity());
 		newSku.setEventAttendanceType(getService("SettingService").getTypeByTypeID(arguments.processObject.getEventAttendanceType()));
