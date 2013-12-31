@@ -577,7 +577,7 @@ Notes:
 												  					</div>
 																	
 																	<!--- New Address --->
-																	<sw:AddressForm id="newAccountAddress" address="#newAccountAddress.getAddress()#" fieldNamePrefix="accountAddresses[1].address." fieldClass="span3" />
+																	<sw:AddressForm id="newAccountAddress" address="#newAccountAddress.getAddress()#" fieldNamePrefix="accountAddresses[1].address." fieldClass="span3" fieldGroupClass="control-group" fieldLabelClass="control-label" fieldWrapperClass="controls" />
 																	
 																	<!--- Add Button --->
 																	<div class="control-group">
