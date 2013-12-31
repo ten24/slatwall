@@ -811,7 +811,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 				
-				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
+				var thisToCharge = precisionEvaluate('arguments.processObject.getAmount() - totalAmountCharged');
 				
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
@@ -838,7 +838,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
+					precisionEvaluate('totalAmountCharged + paymentTransaction.getAmountReceived()');
 				}
 				
 			}

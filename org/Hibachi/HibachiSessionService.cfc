@@ -27,12 +27,14 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( CGI.REMOTE_ADDR );
 		
-		// Save the session
-		getHibachiDAO().save( getHibachiScope().getSession() );
-		
-		// Save session ID in the session Scope & cookie scope for next request
-		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
-		getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value=getHibachiScope().getSession().getSessionID(), expires="never");
+		if(getHibachiScope().getPersistSessionFlag()) {
+			// Save the session
+			getHibachiDAO().save( getHibachiScope().getSession() );
+			
+			// Save session ID in the session Scope & cookie scope for next request
+			setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
+			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value=getHibachiScope().getSession().getSessionID(), expires="never");
+		}
 		
 		// If the session has an account but no authentication, then remove the account
 		// Check to see if this session has an accountAuthentication, if it does then we need to verify that the authentication shouldn't be auto logged out
