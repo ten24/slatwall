@@ -51,160 +51,178 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
+		<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event" 
+				AND (
+					NOT isNull(rc.processObject.getSku().getPurchaseStartDateTime())  
+					AND	(
+						dateCompare(now(),rc.processObject.getSku().getPurchaseStartDateTime(),"s") NEQ 1	
+						OR dateCompare(now(),rc.processObject.getSku().getPurchaseEndDateTime(),"s") NEQ -1
+						) 
+					)>
+				
+				<p class="alert-error">Seats for #rc.processObject.getSku().getSkuCode()# will be available to purchase from #dateFormat(rc.processObject.getSku().getPurchaseStartDateTime(),"long")# #timeFormat(rc.processObject.getSku().getPurchaseStartDateTime(),"short")# to #dateFormat(rc.processObject.getSku().getPurchaseEndDateTime(),"long")# #timeFormat(rc.processObject.getSku().getPurchaseEndDateTime(),"short")# .</p>
+		
+		<cfelse>
 	<cf_HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
 		
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.order#">
 		</cf_HibachiEntityActionBar>
 		
-		<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())>
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
-					<!--- Add the SkuID & orderItemTypeSystemCode --->
-					<cfif not isNull(rc.processObject.getStockID())>
-						<input type="hidden" name="stockID" value="#rc.processObject.getStockID()#" />
-					</cfif>
-					<cfif not isNull(rc.processObject.getSkuID())>
-						<input type="hidden" name="skuID" value="#rc.processObject.getSkuID()#" />
-					</cfif>
-					<input type="hidden" name="orderItemTypeSystemCode" value="#rc.processObject.getOrderItemTypeSystemCode()#" />
-					
-					<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.itemDetails')#</h5>
-					<!--- Sku Properties --->
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuCode" edit="false">
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getSku().getProduct()#" property="productName" edit="false">
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
-					
-					<!--- Order Item Details --->
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
-					
-					<!--- Add form fields to add registrant accounts --->
-					<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
-						<cfset currentRegistrantCount = getService("EventRegistrationService").getNonWaitlistedCountBySku(rc.processObject.getSku()) />
-						<cfloop from="1" to="#rc.processObject.getQuantity()#" index="i" >
-							<cfset newAccount = rc.processObject.getAccountService().newAccount()/>
-							#newAccount.getfirstName()#
-							<fieldset>
-								<legend>Registrant #i#</legend>
-								<cfif rc.processObject.getSku().getEventCapacity() LT (currentRegistrantCount + i)) >
-									<p class="alert-error">There are not enough seats available. Entering account information here will cause this registrant to be placed on a waitlist. Note that a % deposit will be required to be waitlisted.</p>
-								</cfif>
-								<cf_HibachiFieldDisplay fieldname="registrants[#i#].newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
-								<!--- New Account --->
-								<cf_HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" loadVisable="yes">
-									<cf_HibachiFieldDisplay fieldname="registrants[#i#].firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
-									<cf_HibachiFieldDisplay fieldname="registrants[#i#].lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
-									<cf_HibachiFieldDisplay fieldname="registrants[#i#].emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
-									<cf_HibachiFieldDisplay fieldname="registrants[#i#].phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
-								</cf_HibachiDisplayToggle>
-								<!--- Existing Account --->
-								<cf_HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
-									<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
-									<cf_HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
-								</cf_HibachiDisplayToggle>
-							</fieldset>
-							<br>
-						</cfloop>
-					</cfif>
-					
-					<!--- Order Item Custom Attributes --->
-					<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
-						<hr />
-						<h5>#attributeSet.getAttributeSetName()#</h5>
-						<cf_SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
-					</cfloop>
-					
-					<!--- Order Fulfillment --->
-					<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
-						<hr />
-						<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.fulfillmentDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderFulfillmentID" edit="#rc.edit#">
+		
+		
+			<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())>
+				<cf_HibachiPropertyRow>
+					<cf_HibachiPropertyList>
+						<!--- Add the SkuID & orderItemTypeSystemCode --->
+						<cfif not isNull(rc.processObject.getStockID())>
+							<input type="hidden" name="stockID" value="#rc.processObject.getStockID()#" />
+						</cfif>
+						<cfif not isNull(rc.processObject.getSkuID())>
+							<input type="hidden" name="skuID" value="#rc.processObject.getSkuID()#" />
+						</cfif>
+						<input type="hidden" name="orderItemTypeSystemCode" value="#rc.processObject.getOrderItemTypeSystemCode()#" />
 						
-						<!--- New Order Fulfillment --->
-						<cf_HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderFulfillmentID()) && rc.processObject.getOrderFulfillmentID() eq 'new')#">
-							
-							<!--- Fulfillment Method --->
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentMethodID" edit="#rc.edit#">
-							
-							<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
-							<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
-								<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
-									<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
-								</cfif> 	
+						<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.itemDetails')#</h5>
+						<!--- Sku Properties --->
+						<cf_HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuCode" edit="false">
+						<cf_HibachiPropertyDisplay object="#rc.processObject.getSku().getProduct()#" property="productName" edit="false">
+						<cf_HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
+						
+						<!--- Order Item Details --->
+						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
+						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+						
+						<!--- Add form fields to add registrant accounts --->
+						<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
+							<cfset currentRegistrantCount = rc.processObject.getSku().getService("EventRegistrationService").getUnavailableSeatCountBySku(rc.processObject.getSku()) />
+							<cfloop from="1" to="#rc.processObject.getQuantity()#" index="i" >
+								<cfset newAccount = rc.processObject.getAccountService().newAccount()/>
+								#newAccount.getfirstName()#
+								<fieldset>
+									<legend>Registrant #i#</legend>
+									<cfif rc.processObject.getSku().getEventCapacity() LT (currentRegistrantCount + i) >
+										<p class="alert-error">There are not enough seats available. Entering account information here will cause this registrant to be placed on a waitlist. Note that a % deposit will be required to be waitlisted.</p>
+									</cfif>
+									<cf_HibachiFieldDisplay fieldname="registrants[#i#].newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
+									<!--- New Account --->
+									<cf_HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" loadVisable="yes">
+										<cf_HibachiFieldDisplay fieldname="registrants[#i#].firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
+										<cf_HibachiFieldDisplay fieldname="registrants[#i#].lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
+										<cf_HibachiFieldDisplay fieldname="registrants[#i#].emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
+										<cf_HibachiFieldDisplay fieldname="registrants[#i#].phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
+									</cf_HibachiDisplayToggle>
+									<!--- Existing Account --->
+									<cf_HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
+										<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
+										<cf_HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+									</cf_HibachiDisplayToggle>
+								</fieldset>
+								<br>
 							</cfloop>
+						</cfif>
+						
+						<!--- Order Item Custom Attributes --->
+						<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
+							<hr />
+							<h5>#attributeSet.getAttributeSetName()#</h5>
+							<cf_SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
+						</cfloop>
+						
+						<!--- Order Fulfillment --->
+						<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
+							<hr />
+							<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.fulfillmentDetails')#</h5>
+							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderFulfillmentID" edit="#rc.edit#">
 							
-							<!--- Email Fulfillment Details --->
-							<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="email" loadVisable="#loadFulfillmentMethodType eq 'email'#">
+							<!--- New Order Fulfillment --->
+							<cf_HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderFulfillmentID()) && rc.processObject.getOrderFulfillmentID() eq 'new')#">
 								
-								<!--- Email Address --->
-								<cf_HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
-							</cf_HibachiDisplayToggle>
-							
-							<!--- Pickup Fulfillment Details --->
-							<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
+								<!--- Fulfillment Method --->
+								<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentMethodID" edit="#rc.edit#">
 								
-								<!--- Pickup Location --->
-								<cf_HibachiPropertyDisplay object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#" />
-							</cf_HibachiDisplayToggle>
-							
-							<!--- Shipping Fulfillment Details --->
-							<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
+								<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
+								<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
+									<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
+										<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
+									</cfif> 	
+								</cfloop>
 								
-								<!--- Setup the primary address as the default account address --->
-								<cfset defaultValue = "" />
-								<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
-									<cfset defaultValue = rc.order.getAccount().getPrimaryAddress().getAccountAddressID() />
-								<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
-									<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
-								</cfif>
-								
-								<!--- Account Address --->
-								<cf_HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
-								
-								<!--- New Address --->
-								<cf_HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
+								<!--- Email Fulfillment Details --->
+								<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="email" loadVisable="#loadFulfillmentMethodType eq 'email'#">
 									
-									<!--- Address Display --->
-									<cf_SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+									<!--- Email Address --->
+									<cf_HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
+								</cf_HibachiDisplayToggle>
+								
+								<!--- Pickup Fulfillment Details --->
+								<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
 									
-									<!--- Save New Address --->
-									<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
+									<!--- Pickup Location --->
+									<cf_HibachiPropertyDisplay object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#" />
+								</cf_HibachiDisplayToggle>
+								
+								<!--- Shipping Fulfillment Details --->
+								<cf_HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
 									
-									<!--- Save New Address Name --->
-									<cf_HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
-										<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
+									<!--- Setup the primary address as the default account address --->
+									<cfset defaultValue = "" />
+									<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
+										<cfset defaultValue = rc.order.getAccount().getPrimaryAddress().getAccountAddressID() />
+									<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
+										<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
+									</cfif>
+									
+									<!--- Account Address --->
+									<cf_HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
+									
+									<!--- New Address --->
+									<cf_HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
+										
+										<!--- Address Display --->
+										<cf_SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+										
+										<!--- Save New Address --->
+										<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
+										
+										<!--- Save New Address Name --->
+										<cf_HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
+											<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
+										</cf_HibachiDisplayToggle>
+										
 									</cf_HibachiDisplayToggle>
 									
 								</cf_HibachiDisplayToggle>
 								
+								
+								
 							</cf_HibachiDisplayToggle>
+						<cfelse>
+							<!--- Order Return --->
+							<hr />
+							<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.returnDetails')#</h5>
+							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderReturnID" edit="#rc.edit#">
 							
-							
-							
-						</cf_HibachiDisplayToggle>
-					<cfelse>
-						<!--- Order Return --->
-						<hr />
-						<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.returnDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderReturnID" edit="#rc.edit#">
-						
-						<!--- New Order Return --->
-						<cf_HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderReturnID()) && rc.processObject.getOrderReturnID() eq 'new')#">
-							
-							<!--- Return Location --->
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="returnLocationID" edit="#rc.edit#">
-							
-							<!--- Fulfillment Refund Amount --->
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="#rc.edit#">
-							
-						</cf_HibachiDisplayToggle>
-					</cfif>
-				</cf_HibachiPropertyList>
-				
-			</cf_HibachiPropertyRow>
-		<cfelse>
-			<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>
-		</cfif>
+							<!--- New Order Return --->
+							<cf_HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderReturnID()) && rc.processObject.getOrderReturnID() eq 'new')#">
+								
+								<!--- Return Location --->
+								<cf_HibachiPropertyDisplay object="#rc.processObject#" property="returnLocationID" edit="#rc.edit#">
+								
+								<!--- Fulfillment Refund Amount --->
+								<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="#rc.edit#">
+								
+							</cf_HibachiDisplayToggle>
+						</cfif>
+					</cf_HibachiPropertyList>
+					
+				</cf_HibachiPropertyRow>
+			<cfelse>
+				<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>
+			</cfif>
+		
+		
+	
 	</cf_HibachiEntityProcessForm>
+		</cfif>
 	
 </cfoutput>

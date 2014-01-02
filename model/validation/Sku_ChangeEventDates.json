@@ -1,8 +1,17 @@
 {
+	"conditions":{
+	    "singleEdit":{
+	    		"editScope": {"eq":"single"}
+	    	},
+	    "scheduleEdit":{
+	    		"editScope": {"eq":"all"}
+	    	}
+	},
 	"properties":{
-		
-		"eventStartTime": [{"required":true}],
-		"eventEndTime": [{"required":true,"gtDateTimeProperty":"eventStartTime"}]
+		"eventStartTime": [{"conditions":"singleEdit","required":true}],
+		"eventEndTime": [{"conditions":"singleEdit","required":true,"gtDateTimeProperty":"eventStartTime"}],
+		"eventStartDateTime": [{"conditions":"scheduleEdit","required":true,"dataType":"date","gtNow":true}],
+		"eventEndDateTime": [{"conditions":"scheduleEdit","required":true,"dataType":"date","gtDateTimeProperty":"eventStartDateTime","gtNow":true}]
 	}
 }
 

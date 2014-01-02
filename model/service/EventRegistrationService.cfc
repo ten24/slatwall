@@ -141,7 +141,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var waitlistedTypeID = getSettingService().getTypeBySystemCode('erstWaitlisted').getTypeID();
 		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
 		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
-		smartlist.addWhereCondition("eventRegistrationStatusType.typeID <> '#waitlistedTypeID#'");
+		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.typeID <> '#waitlistedTypeID#'");
+		return smartlist.getRecordsCount();		
+	}
+	
+	public any function getUnavailableSeatCountBySku(required any sku) {
+		var smartlist = getEventRegistrationSmartList({},false);
+		var cancelledTypeID = getSettingService().getTypeBySystemCode('erstCancelled').getTypeID();
+		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
+		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
+		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.typeID <> '#cancelledTypeID#'");
 		return smartlist.getRecordsCount();		
 	}
 	

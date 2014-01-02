@@ -551,12 +551,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Get skus that have datetimes that overlap with current sku
 		var skuSmartList = getService("SkuService").getSkuSmartList();
-		//skuSmartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=sku.getSkuID()});
-		skuSmartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
-		skuSmartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
+		skuSmartList.addWhereCondition("(aslatwallsku.eventStartDateTime BETWEEN :thisStartDateTime AND :thisEndDateTime) OR (aslatwallsku.eventEndDateTime BETWEEN :thisStartDateTime AND :thisEndDateTime)",{thisStartDateTime=arguments.eventStartDateTime,thisEndDateTime=arguments.eventEndDateTime});
 		
 		// Build list of unavailable locations from sku list
 		var concurrentSkus = skuSmartList.getRecords();
+		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
 		for( var thisSku in concurrentSkus ) {
 			if(arrayLen(thisSku.getLocationConfigurations())) {
 				for( var thisLocation in thisSku.getLocations()) {
@@ -571,8 +570,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		arguments.unavailableLocationsList = listQualify(unavailableLocationsList,"'",",","char" );
-		
+		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
 		// Get non-conflicting location configurations
 		var availableLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
 		//availableLocationsSmartList.addKeywordProperty(propertyIdentifier="locationCapacity", weight=1);
