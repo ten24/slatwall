@@ -862,7 +862,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
-			returnOrder = this.processOrder(returnOrder, {}, 'placeOrder');
+			
+			if(arguments.processObject.getOrderTypeCode() eq "otReturnOrder") {
+				returnOrder = this.processOrder(returnOrder, {}, 'placeOrder');
+			}
 		}
 		
 		// If the process object was set to automatically receive these items, then we will do that
@@ -1494,6 +1497,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var subscriptionOrderItem = getSubscriptionService().getSubscriptionOrderItem({orderItem=stockReceiverItem.getOrderItem().getReferencedOrderItem()}); 
 			if(!isNull(subscriptionOrderItem)) {
 				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
+			}
+			
+			// If this was an event registration run cancellation process
+			var eventRegistrationItem = getEventRegistrationService().getEventRegistrationByOrderItem(stockReceiverItem.getOrderItem().getReferencedOrderItem());
+			if(!isNull(eventRegistrationItem)) {
+				getEventRegistrationService().processEventRegistration(eventRegistrationItem, {}, eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstCancelled")) );
 			}
 			
 			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them

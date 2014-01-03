@@ -56,7 +56,7 @@ Notes:
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="changeeventdates" type="list" modal="true" />
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addlocation" type="list" modal="true" />
 				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="removelocation" type="list" modal="true" />
-				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="editwaitlisting" type="list" modal="true" />
+				<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="editcapacity" type="list" modal="true" />
 			</cfif>
 			
 			
@@ -79,6 +79,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventCapacity" edit="false">
 					<cf_HibachiPropertyDisplay object="#rc.sku#" property="allowEventWaitlistingFlag" edit="false">
 				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">

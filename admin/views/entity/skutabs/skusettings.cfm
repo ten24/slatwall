@@ -52,10 +52,8 @@ Notes:
 	<cf_SlatwallSettingTable>
 		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.sku#" />
-		<!--- skuAllowWaitlistingFlag has to be modified as an action because it can be part of a set of scheduled records --->
-		<!---<cfif rc.sku.getProduct().getProductType().getBaseProductType() EQ "event" >
-			<cf_SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
-		</cfif>--->
+		<cf_SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
+		<cf_SlatwallSetting settingName="skuAttendanceType" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />

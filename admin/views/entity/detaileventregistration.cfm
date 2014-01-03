@@ -71,7 +71,7 @@ Notes:
 			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="approved" type="list" modal="false" />
 			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="waitlisted" type="list" modal="false" />
 			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="pending" type="list" modal="false" />
-			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="canceled" type="list" modal="false" />
+			<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="cancelled" type="list" modal="false" />
 			<!---<cf_HibachiProcessCaller action="admin:entity.processEventRegistration" entity="#rc.eventRegistration#" processContext="notPlaced" type="list" modal="false" />--->
 			
 			

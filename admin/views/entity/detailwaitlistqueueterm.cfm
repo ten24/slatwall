@@ -46,29 +46,21 @@
 Notes:
 
 --->
-<cfparam name="rc.product" type="any" />
+<cfparam name="rc.waitlistQueueTerm" type="any">
+<cfparam name="rc.edit" type="boolean">
 
-<cf_SlatwallSettingTable>
-	<cf_SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuAttendanceType" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuCurrency" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.product#" />
-	<cfif rc.product.getProductType().getBaseProductType() eq "merchandise">
-		<!--- Wrap this arround settings if you want to disable them for certain product types --->
-	</cfif>
-</cf_SlatwallSettingTable>
+<cfoutput>
+	<cf_HibachiEntityDetailForm object="#rc.waitlistQueueTerm#" edit="#rc.edit#" saveActionQueryString="waitlistQueueTermID=#rc.waitlistQueueTerm.getwaitlistQueueTermID()#">
+		
+		<cf_HibachiEntityActionBar type="detail" object="#rc.waitlistQueueTerm#" edit="#rc.edit#" />
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.waitlistQueueTerm#" property="waitlistQueueTermName" edit="#rc.edit#">
+				<!---<cf_HibachiPropertyDisplay object="#rc.waitlistQueueTerm#" property="waitlistQueueTermStartDateTime" edit="#rc.edit#">--->
+				<cf_HibachiPropertyDisplay object="#rc.waitlistQueueTerm#" property="term" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityDetailForm>
+</cfoutput>

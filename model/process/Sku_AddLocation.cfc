@@ -69,56 +69,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getAvailableLocationsSmartList() {
-		
-		var unavailableLocationsList = "";
-		
-		// Get skus that have datetimes that overlap with current sku
-		var skuSmartList = getService("SkuService").getSkuSmartList();
-		//skuSmartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=sku.getSkuID()});
-		skuSmartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=sku.getEventEndDateTime()});
-		skuSmartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=sku.getEventStartDateTime()});
-		
-		// Don't show locations that are already in sku
-		if(arrayLen(sku.getLocationConfigurations())) {
-			for( var thisLocation in sku.getLocations()) {
-				if(listFind(thisLocation.getLocationID(),unavailableLocationsList,"," ) == 0) {
-					if(listLen(unavailableLocationsList)) {
-						unavailableLocationsList = listAppend(unavailableLocationsList,thisLocation.getLocationID());
-					} else {
-						unavailableLocationsList = thisLocation.getLocationID();
-					}
-				}
-			}
-		}
-		
-		
-		// Build list of unavailable locations from sku list
-		var concurrentSkus = skuSmartList.getRecords();
-		for( var thisSku in concurrentSkus ) {
-			if(arrayLen(sku.getLocationConfigurations())) {
-				for( var thisLocation in thisSku.getLocations()) {
-					if(listFind(thisLocation.getLocationID(),unavailableLocationsList,"," ) == 0) {
-						if(listLen(unavailableLocationsList)) {
-							unavailableLocationsList = listAppend(unavailableLocationsList,thisLocation.getLocationID() );
-						} else {
-							unavailableLocationsList = thisLocation.getLocationID();
-						}
-					}
-				}
-			}
-		}
-		
-		unavailableLocationsList = listQualify(unavailableLocationsList,"'",",","char" );
-		
-		// Get non-conflicting location configurations
-		
-		var availableLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
-		if(listLen(unavailableLocationsList) > 0) {
-			availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID NOT IN (#unavailableLocationsList#	)");
-		}
-		
-		return availableLocationsSmartList;
-
+		return getService("SkuService").getAvailableLocationsByEventSmartList(this.getSku());
 	}
 	
 	public string function getEventStartTime() {
