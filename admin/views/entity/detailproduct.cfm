@@ -75,6 +75,10 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="urlTitle" edit="#rc.edit#" valueLink="#rc.product.getProductURL()#">
+				<cfif rc.product.getBaseProductType() EQ "event">
+					<cf_HibachiPropertyDisplay object="#rc.product#" property="purchaseStartDateTime" hb_rbKey="entity.product.purchaseStartDateTime" edit="#rc.edit#"/>
+					<cf_HibachiPropertyDisplay object="#rc.product#" property="purchaseEndDateTime" hb_rbKey="entity.product.purchaseEndDateTime" edit="#rc.edit#"/>
+				</cfif>
 			</cf_HibachiPropertyList>
 			<cf_HibachiPropertyList divClass="span6">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">

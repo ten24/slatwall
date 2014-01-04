@@ -58,10 +58,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="reservationEndTime" hb_formFieldType="time";
 	property name="locationConfigurations";
 	
-	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
-	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
-	property name="startReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
-	property name="endReservationDateTime" hb_rbKey="entity.sku.endReservationDateTime" hb_formFieldType="datetime";
+	property name="_eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
+	property name="_eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
+	property name="_startReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
+	property name="_endReservationDateTime" hb_rbKey="entity.sku.endReservationDateTime" hb_formFieldType="datetime";
 	
 	// Scheduling-related properties
 	property name="editScope" hb_formFieldType="select" hint="Edit this sku schedule or all?";
@@ -79,6 +79,43 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		];
 
 		return options;
+	}
+	
+	public any function getEventStartDateTime() {
+		if(len(this.get_eventStartDateTime())) {
+			return dateTimePickerFormat(this.get_eventStartDateTime());
+		} else {
+			return dateTimePickerFormat(this.getSku().getEventStartDateTime());
+		}	
+	}
+	
+	public any function getEventEndDateTime() {
+	writelog(file="slatwall" text="whate #this.get_eventEndDateTime()#")
+		if(len(this.get_eventEndDateTime())) {
+			return dateTimePickerFormat(this.get_eventEndDateTime());
+		} else {
+			return dateTimePickerFormat(this.getSku().getEventEndDateTime());
+		}	
+	}
+	
+	public any function getStartReservationDateTime() {
+		if(len(this.get_startReservationDateTime())) {
+			return dateTimePickerFormat(this.get_startReservationDateTime());
+		} else {
+			return dateTimePickerFormat(this.getSku().getStartReservationDateTime());
+		}	
+	}
+	
+	public any function getEndReservationDateTime() {
+		if(len(this.get_endReservationDateTime())) {
+			return dateTimePickerFormat(this.get_endReservationDateTime());
+		} else {
+			return dateTimePickerFormat(this.getSku().getEndReservationDateTime());
+		}	
+	}
+	
+	public any function dateTimePickerFormat(required theDate) {
+		return "#dateFormat(arguments.theDate,'medium')# #timeFormat(arguments.theDate,'hh:mm tt')#";
 	}
 	
 	public array function getscheduleEndTypeOptions() {

@@ -57,8 +57,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
 	property name="startReservationDateTime" hb_rbKey="entity.sku.startReservationDateTime" hb_formFieldType="datetime";
 	property name="endReservationDateTime" hb_rbKey="entity.sku.endReservationDateTime" hb_formFieldType="datetime";
-	property name="purchaseStartDateTime" hb_formFieldType="datetime" hb_rbKey="entity.sku.purchaseStartDateTime";
-	property name="purchaseEndDateTime" hb_formFieldType="datetime" hb_rbKey="entity.sku.purchaseEndDateTime";
+	property name="purchaseStartDateTime" hb_formFieldType="datetime" hb_rbKey="entity.product.purchaseStartDateTime";
+	property name="purchaseEndDateTime" hb_formFieldType="datetime" hb_rbKey="entity.product.purchaseEndDateTime";
 	property name="price";
 	property name="options";
 	property name="subscriptionBenefits";

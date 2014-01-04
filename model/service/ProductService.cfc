@@ -108,11 +108,18 @@ component extends="HibachiService" accessors="true" {
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
 		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
-		newSku.setPurchaseStartDateTime( createODBCDateTime(arguments.processObject.getPurchaseStartDateTime()) );
-		newSku.setPurchaseEndDateTime( createODBCDateTime(arguments.processObject.getPurchaseEndDateTime()) );
+		// If coming from product creation there will be no skuPurchaseDateTime
+		if(structKeyExists(arguments.processObject,"getSkuPurchaseEndDateTime")) {
+			newSku.setPurchaseStartDateTime( arguments.processObject.getSkuPurchaseStartDateTime() );
+		}
+		if(structKeyExists(arguments.processObject,"getSkuPurchaseEndDateTime")) {
+			newSku.setPurchaseEndDateTime( arguments.processObject.getSkuPurchaseEndDateTime() );
+		}
+		
 		newSku.setAllowEventWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
 		newSku.setEventCapacity(arguments.processObject.getEventCapacity());
 		newSku.setEventAttendanceType(getService("SettingService").getTypeByTypeID(arguments.processObject.getEventAttendanceType()));
+		
 		// Set publishedFlag based on attendance type
 		if( (newSku.getEventAttendanceType().getSystemCode() == "eatBundle" && newSku.getBundleFlag())
 			|| (newSku.getEventAttendanceType().getSystemCode() == "eatIndividual" && !newSku.getBundleFlag())
@@ -121,6 +128,7 @@ component extends="HibachiService" accessors="true" {
 		} else {
 			newSku.setPublishedFlag(0);	
 		}
+		
 		newSku.generateAndSetAttendanceCode();
 		
 		if(structKeyExists(arguments,"locationConfiguration")) {
@@ -978,6 +986,14 @@ component extends="HibachiService" accessors="true" {
 			
 			
 		} else if (arguments.processObject.getBaseProductType() == "event") {
+			
+			// Save purchase dates if defined at product level
+			if(structKeyExists(arguments.processObject,"getpurchaseEndDateTime")) {
+				arguments.product.setPurchaseStartDateTime( arguments.processObject.getpurchaseStartDateTime() );
+			}
+			if(structKeyExists(arguments.processObject,"getpurchaseEndDateTime")) {
+				arguments.product.setPurchaseEndDateTime( arguments.processObject.getpurchaseEndDateTime() );
+			}
 			
 			// ===================================
 			// BEGIN EVENT SKU GENERATION

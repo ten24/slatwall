@@ -8,10 +8,10 @@
 	    	}
 	},
 	"properties":{
-		"eventStartTime": [{"conditions":"singleEdit","required":true}],
-		"eventEndTime": [{"conditions":"singleEdit","required":true,"gtDateTimeProperty":"eventStartTime"}],
-		"eventStartDateTime": [{"conditions":"scheduleEdit","required":true,"dataType":"date","gtNow":true}],
-		"eventEndDateTime": [{"conditions":"scheduleEdit","required":true,"dataType":"date","gtDateTimeProperty":"eventStartDateTime","gtNow":true}]
+		"_eventStartTime": [{"conditions":"singleEdit","required":true}],
+		"_eventEndTime": [{"conditions":"singleEdit","required":true,"gtDateTimeProperty":"eventStartTime"}],
+		"_eventStartDateTime": [{"conditions":"scheduleEdit","required":true,"dataType":"date","gtNow":true}],
+		"_eventEndDateTime": [{"conditions":"scheduleEdit","required":true,"dataType":"date","gtDateTimeProperty":"eventStartDateTime","gtNow":true}]	
 	}
 }
 

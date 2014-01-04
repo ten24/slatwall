@@ -167,19 +167,19 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return this.getEventCapacity() - getService("EventRegistrationService").getNonWaitlistedCountBySku(this);
 	}
 	
-	/*public any function getPurchaseStartDateTime() {
-		if(!this.hasPurchaseStartDateTime()) {
-			return this.getProduct().getPurchaseStartDateTime();
+	public any function getPurchaseStartDateTime() {
+		if(isDefined("purchaseStartDateTime")) {
+			return purchaseStartDateTime;
 		}
-		return this.getPurchaseStartDateTime();
+		return this.getProduct().getPurchaseStartDateTime();
 	}
 	
 	public any function getPurchaseEndDateTime() {
-		if(!this.hasPurchaseEndDateTime()) {
-			return this.getProduct().getPurchaseEndDateTime();
+		if(isDefined("purchaseEndDateTime")) {
+			return purchaseEndDateTime;
 		}
-		return this.getPurchaseEndDateTime();
-	}*/
+		return this.getProduct().getPurchaseStartDateTime();
+	}
 	
 	// START: Image Methods
 	
