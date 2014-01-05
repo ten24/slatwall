@@ -479,7 +479,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// to match the quantity of the order item. Comes from Order_AddOrderItem.		
 		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
 			
-			currentRegistrantCount = getService("EventRegistrationService").getRegistrantCountBySku(rc.processObject.getSku());
+			currentRegistrantCount = arguments.processObject.getSku().getRegistrantCount();
 			var newRegCount = 1;
 			
 			// ProcessObject should contain account info in registrants array	
@@ -522,7 +522,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
 					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
 				} else {
-					if(rc.processObject.getSku().getEventCapacity() < (currentRegistrantCount + newRegCount) ) {
+					if(arguments.processObject.getSku().getEventCapacity() < (currentRegistrantCount + newRegCount) ) {
 						eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
 					} else {
 						eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));

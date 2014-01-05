@@ -572,7 +572,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getRegistrantCount() {
 		if(!structKeyExists(variables, "registrantCount")) {
 			variables.registrantCount = 0;
-			if(this.hasEventRegistrations()) {
+			if(arrayLen(this.getEventRegistrations())) {
 				variables.registrantCount = arrayLen(this.getEventRegistrations());
 			}
 		}
