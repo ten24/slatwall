@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over the orderItems to see if the skuPrice Changed
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-					if(listFindNoCase(arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode(),"oitSale,oitDeposit") && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
+					if(listFindNoCase("oitSale,oitDeposit",arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode()) && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
 						arguments.order.getOrderItems()[i].setPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
 						arguments.order.getOrderItems()[i].setSkuPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
 					}
@@ -282,11 +282,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// If this is a Sale Order Item then we need to setup the fulfillment
-		if(listFindNoCase(arguments.processObject.getOrderItemTypeSystemCode(),"oitSale,oitDeposit")) {
+		if(listFindNoCase("oitSale,oitDeposit",arguments.processObject.getOrderItemTypeSystemCode())) {
 			
 			// First See if we can use an existing order fulfillment
 			var orderFulfillment = processObject.getOrderFulfillment();
-			
 			// Next if orderFulfillment is still null, then we can check the order to see if there is already an orderFulfillment
 			if(isNull(orderFulfillment) && ( isNull(processObject.getOrderFulfillmentID()) || processObject.getOrderFulfillmentID() != 'new' ) && arrayLen(arguments.order.getOrderFulfillments())) {
 				for(var f=1; f<=arrayLen(arguments.order.getOrderFulfillments()); f++) {

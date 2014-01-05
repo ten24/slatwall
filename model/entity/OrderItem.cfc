@@ -119,14 +119,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		if( listFindNoCase(getOrderItemType().getSystemCode(),"oitSale,oitDeposit") ) {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
 			return getQuantity() <= getMaximumOrderQuantity();	
 		}
 		return true;
 	}
 	
 	public boolean function hasQuantityWithinMinOrderQuantity() {
-		if( listFindNoCase(getOrderItemType().getSystemCode(),"oitSale,oitDeposit") ) {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
 			return getQuantity() >= getSku().setting('skuOrderMinimumQuantity');
 		}
 		return true;

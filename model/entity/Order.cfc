@@ -633,7 +633,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalSaleQuantity() {
 		var saleQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase(getOrderItems()[1].getOrderItemType().getSystemCode(),"oitSale,oitDeposit") ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[1].getOrderItemType().getSystemCode()) ) {
 				saleQuantity += getOrderItems()[i].getQuantity();	
 			}
 		}
@@ -704,7 +704,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getSubtotal() {
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase(getOrderItems()[i].getTypeCode(),"oitSale,oitDeposit") ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				subtotal = precisionEvaluate('subtotal + getOrderItems()[i].getExtendedPrice()');	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				subtotal = precisionEvaluate('subtotal - getOrderItems()[i].getExtendedPrice()');
@@ -722,7 +722,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase(getOrderItems()[i].getTypeCode(),"oitSale,oitDeposit") ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				taxTotal = precisionEvaluate('taxTotal + getOrderItems()[i].getTaxAmount()');	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				taxTotal = precisionEvaluate('taxTotal - getOrderItems()[i].getTaxAmount()');
