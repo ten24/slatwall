@@ -51,18 +51,20 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-		<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event" 
-				AND (
-					NOT isNull(rc.processObject.getSku().getPurchaseStartDateTime())  
-					AND	(
-						dateCompare(now(),rc.processObject.getSku().getPurchaseStartDateTime(),"s") NEQ 1	
-						OR dateCompare(now(),rc.processObject.getSku().getPurchaseEndDateTime(),"s") NEQ -1
-						) 
-					)>
-				
-				<p class="alert-error">Seats for #rc.processObject.getSku().getSkuCode()# will be available to purchase from #dateFormat(rc.processObject.getSku().getPurchaseStartDateTime(),"long")# #timeFormat(rc.processObject.getSku().getPurchaseStartDateTime(),"short")# to #dateFormat(rc.processObject.getSku().getPurchaseEndDateTime(),"long")# #timeFormat(rc.processObject.getSku().getPurchaseEndDateTime(),"short")# .</p>
+	<!--- This would prevent adding event order items that do not qualify because they fail purchaseDateTime validations - GG 
 		
-		<cfelse>
+		<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event" 
+			AND (
+				NOT isNull(rc.processObject.getSku().getPurchaseStartDateTime())  
+				AND	(
+					dateCompare(now(),rc.processObject.getSku().getPurchaseStartDateTime(),"s") NEQ 1	
+					OR dateCompare(now(),rc.processObject.getSku().getPurchaseEndDateTime(),"s") NEQ -1
+					) 
+				)>
+			
+			<p class="alert-error">Seats for #rc.processObject.getSku().getSkuCode()# will be available to purchase from #dateFormat(rc.processObject.getSku().getPurchaseStartDateTime(),"long")# #timeFormat(rc.processObject.getSku().getPurchaseStartDateTime(),"short")# to #dateFormat(rc.processObject.getSku().getPurchaseEndDateTime(),"long")# #timeFormat(rc.processObject.getSku().getPurchaseEndDateTime(),"short")# .</p>
+	
+	<cfelse>--->
 	<cf_HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
 		
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.order#">
@@ -223,6 +225,6 @@ Notes:
 		
 	
 	</cf_HibachiEntityProcessForm>
-		</cfif>
+	<!---</cfif>--->
 	
 </cfoutput>
