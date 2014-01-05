@@ -314,8 +314,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// There is already an event scheduled at that location in the same date range
 				processObject.addError('locationConfigurations', getHibachiScope().rbKey('validate.eventScheduleConflict'));
 			} else {
-				writelog(file="slatwall" text="sdfasdf: #arguments.processObject.getEventEndDateTime()#");
-				/*writedump(var="#arguments.processobject#" top="2");abort;*/
 				// Update schedule dates/times
 				arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
 				arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
@@ -393,7 +391,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 			// Do we have conflicts?
 			if(smartList.getRecordsCount() > 0) {
-		writelog(file="slatwall" text="getRecordsCount: #smartList.getRecordsCount()#");
 				result = true;
 			}
 		} else {

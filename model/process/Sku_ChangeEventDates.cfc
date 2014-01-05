@@ -90,7 +90,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getEventEndDateTime() {
-	writelog(file="slatwall" text="whate #this.get_eventEndDateTime()#")
 		if(len(this.get_eventEndDateTime())) {
 			return dateTimePickerFormat(this.get_eventEndDateTime());
 		} else {

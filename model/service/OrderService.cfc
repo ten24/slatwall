@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over the orderItems to see if the skuPrice Changed
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-					if(arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode() == "oitSale" && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
+					if(listFindNoCase(arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode(),"oitSale,oitDeposit") && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
 						arguments.order.getOrderItems()[i].setPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
 						arguments.order.getOrderItems()[i].setSkuPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
 					}
@@ -282,7 +282,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// If this is a Sale Order Item then we need to setup the fulfillment
-		if(arguments.processObject.getOrderItemTypeSystemCode() eq "oitSale") {
+		if(listFindNoCase(arguments.processObject.getOrderItemTypeSystemCode(),"oitSale,oitDeposit")) {
 			
 			// First See if we can use an existing order fulfillment
 			var orderFulfillment = processObject.getOrderFulfillment();
@@ -448,6 +448,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitReturn") {
 				newOrderItem.setOrderReturn( orderReturn );
 				newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitReturn') );
+			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitDeposit") {
+				newOrderItem.setOrderReturn( orderReturn );
+				newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitDeposit') );
 			}
 			
 			// Setup the Sku / Quantity / Price details
