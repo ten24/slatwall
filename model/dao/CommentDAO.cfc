@@ -54,7 +54,7 @@ Notes:
 		<cfargument name="publicFlag" type="boolean" required="false" />
 
 		<cftry>
-			<cfset hqlPrarms = [arguments.primaryIDValue] />
+			<cfset hqlParams = [arguments.primaryIDValue] />
 			
 			<cfset var hql="SELECT NEW MAP(
 				scr.commentRelationshipID as commentRelationshipID,
@@ -74,7 +74,7 @@ Notes:
 				<cfset arrayAppend(hqlParams, arguments.publicFlag) />
 			</cfif>
 
-			<cfset var results = ormExecuteQuery(hql, hqlPrarms) />
+			<cfset var results = ormExecuteQuery(hql, hqlParams) />
 			<cfcatch>
 				<cfthrow message="You have tried to get comments for an entity that does not have a comment relationship setup.  The primaryID column for the entity requesting is #arguments.primaryIDPropertyName# and you may just need to add a Many-To-One property for this entity to CommentRelationship.cfc" />
 			</cfcatch>
