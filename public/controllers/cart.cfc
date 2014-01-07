@@ -107,7 +107,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="rc.preProcessDisplayedFlag" default="true";
 		param name="rc.saveShippingAccountAddressFlag" default="false";
 		
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addOrderItem');
+		var cart = rc.$.slatwall.cart();
+		
+		// Check to see if we can attach the current account to this order, required to apply price group details
+		if( isNull(cart.getAccount()) && rc.$.slatwall.getLoggedInFlag() ) {
+			cart.setAccount( rc.$.slatwall.getAccount() );
+		}
+		
+		getOrderService().processOrder( cart, arguments.rc, 'addOrderItem');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
 		
@@ -117,11 +124,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			// Also make sure that this cart gets set in the session as the order
 			rc.$.slatwall.getSession().setOrder( cart );
-
-			// Check to see if we can attach the current account to this order
-			if( isNull(cart.getAccount()) && rc.$.slatwall.getLoggedInFlag() ) {
-				cart.setAccount( rc.$.slatwall.getAccount() );
-			}
 		}
 	}
 	
