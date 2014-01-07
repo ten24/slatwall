@@ -236,7 +236,11 @@ Notes:
 		  					</div>
 							
 							<!--- Add to Cart Button --->
-							<button type="submit" class="btn">Add To Cart</button>
+							<cfif #$.slatwall.product().getAvailableForPurchaseFlag()#>
+								<button type="submit" class="btn">Add To Cart</button>
+							<cfelse>
+								<p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p> 
+							</cfif>
 						</form>
 						<!--- END: ADD TO CART EXAMPLE 1 --->
 					</div>
@@ -294,7 +298,11 @@ Notes:
 		  					</div>
 							
 							<!--- Add to Cart Button --->
-							<button type="submit" class="btn">Add To Cart</button>
+							<cfif #$.slatwall.product().getAvailableForPurchaseFlag()#>
+								<button type="submit" class="btn">Add To Cart</button>
+							<cfelse>
+								<p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p> 
+							</cfif>
 						</form>
 						<!--- END: ADD TO CART EXAMPLE 2 --->
 							
