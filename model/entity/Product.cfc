@@ -107,6 +107,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	// Non-Persistent Properties
 	property name="allowBackorderFlag" type="boolean" persistent="false";
+	property name="availableForPurchaseFlag" type="boolean" persistent="false";
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
@@ -134,6 +135,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
+	
+	
+	
+	public any function getAvailableForPurchaseFlag() {
+		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
+			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
+			if(	( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) ) 
+				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) ) 
+			{
+				variables.availableToPurchaseFlag = true;
+			} else {
+				variables.availableToPurchaseFlag = false;
+			}
+		}
+		return variables.availableToPurchaseFlag;
+	}
 	
 	public any function getProductTypeOptions( string baseProductType ) {
 		if(!structKeyExists(variables, "productTypeOptions")) {

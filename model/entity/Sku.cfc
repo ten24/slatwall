@@ -125,6 +125,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Non-Persistent Properties
 	property name="adminIcon" persistent="false";
 	property name="assignedOrderItemAttributeSetSmartList" persistent="false";
+	property name="availableForPurchaseFlag" persistent="false";
+	property name="availableSeatCount" persistent="false";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyCode" type="string" persistent="false";
@@ -132,8 +134,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
 	property name="eventConflictsSmartList" persistent="false";
-	property name="eventReachedCapacity" type="boolean" persistent="false";
-	//property name="eventRegistrations" type="array" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
@@ -146,6 +146,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productScheduleSmartList" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
+	property name="registeredUserCount" type="integer" persistent="false";
 	property name="registrantCount" type="integer" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
 	property name="salePriceDetails" type="struct" persistent="false";
@@ -163,10 +164,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================== START: Logical Methods =========================
 	
 	
-	public any function getAvailableSeatCount() {
-		return this.getEventCapacity() - getService("EventRegistrationService").getNonWaitlistedCountBySku(this);
-	}
-	
+	// @hint Returns sku purchaseStartDateTime if defined, or product purchaseStartDateTime if not defined in sku.
 	public any function getPurchaseStartDateTime() {
 		if(isDefined("purchaseStartDateTime")) {
 			return purchaseStartDateTime;
@@ -174,6 +172,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return this.getProduct().getPurchaseStartDateTime();
 	}
 	
+	// @hint Returns sku purchaseEndDateTime if defined, or product purchaseStartDateTime if not defined in sku.
 	public any function getPurchaseEndDateTime() {
 		if(isDefined("purchaseEndDateTime")) {
 			return purchaseEndDateTime;
@@ -454,6 +453,33 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.assignedOrderItemAttributeSetSmartList;
 	}
 	
+	// @hint Returns boolean indication whether this sku is available for purchase based on purchase start/end dates.	
+	public any function getAvailableForPurchaseFlag() {
+		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
+			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
+			if(	( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) ) 
+				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) ) 
+			{
+				variables.availableToPurchaseFlag = true;
+			} else {
+				variables.availableToPurchaseFlag = false;
+			}
+		}
+		return variables.availableToPurchaseFlag;
+	}
+	
+	// @hint Returns the number of seats that are still available for this event
+	public any function getAvailableSeatCount() {
+		if(!structkeyExists(variables,"availableSeatCount")) {
+			if(this.getProduct().getBaseProductType() == "event") {
+				variables.availableSeatCount = this.getEventCapacity() - getService("EventRegistrationService").getNonWaitlistedCountBySku(this);
+			} else {
+				variables.availableSeatCount = "N/A"; 
+			}
+		}
+		return variables.availableSeatCount;
+	}
+	
 	public any function getBaseProductType() {
 		return getProduct().getBaseProductType();
 	}
@@ -557,18 +583,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.eligibleFulfillmentMethods;
 	}
 	
-	
-	public boolean function getEventReachedCapacity() {
-		if(!structKeyExists(variables,"reachedCapacity")) {
-			if(this.hasEventRegistrations() && (this.getEventCapacity() > arrayLen(this.getEventRegistrations())) ) {
-				variables.eventReachedCapacity = true;	
-			} else {
-				variables.eventReachedCapacity = false;	
-			}
-		}
-		return variables.eventReachedCapacity;
-	}
-	
+	// @hint Returns count of registered or waitlisted users associated with this sku
 	public any function getRegistrantCount() {
 		if(!structKeyExists(variables, "registrantCount")) {
 			variables.registrantCount = 0;
@@ -579,6 +594,25 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.registrantCount;
 	}
 	
+	// @hint Returns count of registered or pending confirmation users associated with this sku
+	public any function getRegisteredUserCount() {
+		if(!structKeyExists(variables, "registeredUserCount")) {
+			var ruCount = 0;
+			if(arrayLen(this.getEventRegistrations())) {
+				var statusList = "#getService('settingService').getTypeBySystemCode('erstRegistered').getTypeID()#,#getService('settingService').getTypeBySystemCode('erstPendingConfirmation').getTypeID()#";
+				for(var er in this.getEventRegistrations()) {
+					if( listFindNoCase( statusList, er.getEventRegistrationStatusType().getTypeID() ) ) {
+						ruCount++;
+					}
+				}
+				variables.registeredUserCount = ruCount;
+			}
+		}
+		return variables.registeredUserCount;
+	}
+	
+	
+	// @hint Returns a list of registrant emails for this sku
 	public any function getRegistrantEmailList() {
 		if(!structKeyExists(variables, "registrantEmailList")) {
 			variables.registrantEmailList = [];
@@ -592,6 +626,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.registrantEmailList;
 	}
 	
+	// @hint Returns the status of this event
 	public any function getEventStatus() {
 		if(!structKeyExists(variables, "eventStatus")) {
 			variables.eventStatus = getService("settingService").getTypeBySystemCode('estRegOpen');
@@ -602,23 +637,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.eventStatus;
 	}
 	
-	// Retrieve event registrations related to this sku
+	// @hint Retrieve event registrations related to this sku
 	public any function getEventRegistrationsSmartlist() {
 		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
 			var smartList = getService("eventRegistrationService").getEventRegistrationSmartList();
 			smartList.addFilter("skuID",this.getSkuID());
 			variables.eventRegistrationsSmartList = smartList;
-			/*var orderItemsArray = [];
-			var orderItemIDList = "";
-			for( var orderItem in getorderItems() ) {
-				arrayAppend(orderItemsArray,orderItem.getorderItemID());
-			}	
-			if(arraylen(orderItemsArray)) {
-				orderItemIDList = arrayToList(orderItemsArray);
-				variables.eventRegistrationsSmartList = getService("eventRegistrationService").getEventRegistrations(orderItemIDList);
-			} else {
-				variables.eventRegistrationsSmartList.addFilter('orderItemID','');
-			}*/
 		}
 				
 		return variables.eventRegistrationsSmartList;
@@ -676,6 +700,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.livePrice;
 	}
 	
+	// @hint Returns an array of locations associated with this sku.
 	public any function getLocations() {
 		if(!structKeyExists(variables,"locations")) {
 			variables.locations = [];
