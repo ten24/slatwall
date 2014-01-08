@@ -53,6 +53,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties
 	property name="skuCode";
+	property name="skuName";
 	property name="publishedFlag";
 	property name="activeFlag";
 	property name="price";

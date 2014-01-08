@@ -58,6 +58,7 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuName" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventCapacity" edit="true">

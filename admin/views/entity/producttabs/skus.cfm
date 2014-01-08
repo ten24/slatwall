@@ -58,7 +58,9 @@ Notes:
 							   recordDetailQueryString="productID=#rc.product.getProductID()#"
 							   recordEditAction="admin:entity.editsku"
 							   recordEditQueryString="productID=#rc.product.getProductID()#">
-							      
+			<cfif rc.product.getBaseProductType() eq "event">
+				<cf_HibachiListingColumn propertyIdentifier="skuName" />
+			</cfif>			      
 			<cf_HibachiListingColumn propertyIdentifier="skuCode" />
 			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
 			<cf_HibachiListingColumn propertyIdentifier="imageFile" />
@@ -90,6 +92,9 @@ Notes:
 								   selectValue="#rc.product.getDefaultSku().getSkuID()#"
 								   selectTitle="#$.slatwall.rbKey('define.default')#">
 								      
+			<cfif rc.product.getBaseProductType() eq "event">
+				<cf_HibachiListingColumn propertyIdentifier="skuName" />
+			</cfif>
 			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
 			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
 			<cfif rc.product.getBaseProductType() eq "event">
@@ -97,6 +102,7 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
 				<cf_HibachiListingColumn propertyIdentifier="eventAttendanceCode" />
 				<cf_HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
+				<cf_HibachiListingColumn propertyIdentifier="availableSeatCount" />
 			</cfif>
 			<cf_HibachiListingColumn propertyIdentifier="imageFile" />
 			<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>

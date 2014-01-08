@@ -104,6 +104,11 @@ component extends="HibachiService" accessors="true" {
 	private any function createEventSkuStub(required processObject, required startDate, required endDate, required qualifier, locationConfiguration) {
 		var newSku = this.newSku();
 		newSku.setProduct( arguments.processObject.getproduct() );
+		if(structKeyExists(arguments.processObject,"skuName") && !isNull(srguments.processObject.getSkuName())) {
+			newSku.setSkuName( arguments.processObject.getSkuName() );
+		} else {
+			newSku.setSkuName( arguments.processObject.getproduct().getProductName() );
+		}
 		newSku.setSkuCode( arguments.processObject.getproduct().getProductCode() & "-#arguments.qualifier#");
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
