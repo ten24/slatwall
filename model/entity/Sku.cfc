@@ -135,6 +135,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
+	property name="eventOverbookedFlag" type="boolean" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="livePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="locations" type="array" persistent="false";
@@ -285,6 +286,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public boolean function getEventConflictExistsFlag() {
 		if(getEventConflictsSmartList().getRecordsCount() GT 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean function getEventOverbookedFlag() {
+		if(getRegisteredUserCount() > getEventCapacity() ) {
 			return true;
 		}
 		return false;
@@ -605,8 +613,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 						ruCount++;
 					}
 				}
-				variables.registeredUserCount = ruCount;
 			}
+			variables.registeredUserCount = ruCount;
 		}
 		return variables.registeredUserCount;
 	}

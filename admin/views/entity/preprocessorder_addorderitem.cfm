@@ -51,7 +51,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<!--- This would prevent adding event order items that do not qualify because they fail purchaseDateTime validations - GG 
+	<!--- This would prevent displaying event order items that fail purchaseDateTime validation - GG 
 		
 		<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event" 
 			AND (
@@ -103,7 +103,7 @@ Notes:
 								<fieldset>
 									<legend>Registrant #i#</legend>
 									<cfif rc.processObject.getSku().getEventCapacity() LT (currentRegistrantCount + i) >
-										<p class="alert-error">There are not enough seats available. Entering account information here will cause this registrant to be placed on a waitlist. Note that a % deposit will be required to be waitlisted.</p>
+										<p class="alert-error">#$.slatwall.rbKey('entity.OrderItem.toWaitlist')#</p>
 									</cfif>
 									<cf_HibachiFieldDisplay fieldname="registrants[#i#].newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
 									<!--- New Account --->

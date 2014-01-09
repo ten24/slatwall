@@ -232,16 +232,47 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.processObject.getEditScope() == "none"  ){
 			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
 		} 
+		// Modifying a single event
 		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
-			arguments.sku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
-			arguments.sku.setEventCapacity(arguments.processObject.getEventCapacity());
-		} else if(arguments.processObject.getEditScope() == "all"){
-			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
-				thisSku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
-				thisSku.setEventCapacity(arguments.processObject.getEventCapacity());
+			
+			// Make sure a capacity adjustment won't cause the event to be overbooked
+			if( arguments.sku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
+				// Notify user that the capacity decrease would the event to be overbooked
+				processObject.addError('eventCapacity', getHibachiScope().rbKey('validate.processSku_editCapacity.eventCapacityInvalid.notEnoughSeats'));
+			} else {
+				arguments.sku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+				arguments.sku.setEventCapacity(arguments.processObject.getEventCapacity());
+				
+				// Notify waitlisted registrants here if capacity has increased and waitlisting is allowed
+				if(arguments.processObject.getEventCapacity() > arguments.sku.getEventCapacity() && arguments.sku.getAllowWaitlistingFlag()) {
+					processSku( arguments.sku, {}, 'notifyWaitlistOpenings');
+				}
+				
 			}
+		// Modifying an event schedule	
+		} else if(arguments.processObject.getEditScope() == "all"){
+			var failedCapacityValidation = [];
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				if( thisSku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
+					// Add overbooked skus to array
+					arrayAppend(failedCapacityValidation, thisSku.getSkuID());
+				}
+			}
+			if(arrayIsEmpty(failedCapacityValidation)) {
+				for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+					thisSku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+					thisSku.setEventCapacity(arguments.processObject.getEventCapacity());
+				}
+			} else {
+				// Notify user that the capacity decrease would cause one of the events to be overbooked
+				processObject.addError('eventCapacity', getHibachiScope().rbKey('validate.processSku_editCapacity.eventCapacityInvalid.notEnoughSeats'));
+				// If desired, we can make the error more informative by utilizing the sku IDs in the failedCapacityValidation array
+				// Conversely, we could improve performance a bit by breaking the loop at the first sku that fails validation.
+			}
+		
 		}
-		return sku;
+		
+		return arguments.sku;
 	}
 	
 	// @help Logs attendance for an event	
