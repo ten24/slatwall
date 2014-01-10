@@ -55,6 +55,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderTypeID" hb_rbKey="entity.order.orderType" hb_formFieldType="select";
 	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
 	property name="newAccountFlag";
+	property name="cancelRegistrationFlag" type="boolean" default="yes" hint="Instructs event registration cancel process whether it should cancel the registration.";
 	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="firstName" hb_rbKey="entity.account.firstName";
 	property name="lastName" hb_rbKey="entity.account.lastName";

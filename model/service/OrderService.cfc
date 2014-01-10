@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over the orderItems to see if the skuPrice Changed
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-					if(arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode() == "oitSale" && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
+					if(listFindNoCase("oitSale,oitDeposit",arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode()) && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
 						arguments.order.getOrderItems()[i].setPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
 						arguments.order.getOrderItems()[i].setSkuPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
 					}
@@ -282,11 +282,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// If this is a Sale Order Item then we need to setup the fulfillment
-		if(arguments.processObject.getOrderItemTypeSystemCode() eq "oitSale") {
+		if(listFindNoCase("oitSale,oitDeposit",arguments.processObject.getOrderItemTypeSystemCode())) {
 			
 			// First See if we can use an existing order fulfillment
 			var orderFulfillment = processObject.getOrderFulfillment();
-			
 			// Next if orderFulfillment is still null, then we can check the order to see if there is already an orderFulfillment
 			if(isNull(orderFulfillment) && ( isNull(processObject.getOrderFulfillmentID()) || processObject.getOrderFulfillmentID() != 'new' ) && arrayLen(arguments.order.getOrderFulfillments())) {
 				for(var f=1; f<=arrayLen(arguments.order.getOrderFulfillments()); f++) {
@@ -448,6 +447,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitReturn") {
 				newOrderItem.setOrderReturn( orderReturn );
 				newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitReturn') );
+			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitDeposit") {
+				newOrderItem.setOrderReturn( orderReturn );
+				newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitDeposit') );
 			}
 			
 			// Setup the Sku / Quantity / Price details
@@ -477,12 +479,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// to match the quantity of the order item. Comes from Order_AddOrderItem.		
 		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
 			
+			currentRegistrantCount = arguments.processObject.getSku().getRegistrantCount();
+			var newRegCount = 1;
+			
 			// ProcessObject should contain account info in registrants array	
 			for(var registrant in arguments.processObject.getRegistrants()) {
 				
 				// Create new event registration	 record
 				var eventRegistration = this.newEventRegistration();
 				eventRegistration.setOrderItem(newOrderItem);
+				eventRegistration.setSku(newOrderItem.getSku());
+				eventRegistration.generateAndSetAttendanceCode();
 				
 				// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
 				if(registrant.newAccountFlag == 0) {
@@ -509,16 +516,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					newAccount = getAccountService().saveAccount(newAccount);
 					eventRegistration.setAccount(newAccount);
+					
 				}
 				
-				// Set registration status
+				// Set registration status - Should this be done when order is placed instead?
 				if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
 					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
 				} else {
-					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
+					if(arguments.processObject.getSku().getEventCapacity() < (currentRegistrantCount + newRegCount) ) {
+						eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+					} else {
+						eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+					}	
 				}
 				
 				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
+				newRegCount++;
 					
 			}
 		}
@@ -819,6 +832,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderItem.setOrderReturn( orderReturn );
 					orderItem.setOrder( returnOrder );
 					
+					if(originalOrderItem.getType() == "event") {
+						// If necessary, initiate the registration cancellation process. 
+						if( !structKeyExists(orderItemStruct, "cancelRegistrationFlag") || (structKeyExists(orderItemStruct, "cancelRegistrationFlag") && orderItemStruct.cancelRegistrationFlag) ) {
+							// Inform cancel process that the return has already been processed
+							originalOrderItem.getEventRegistration().createReturnOrderFlag = true;
+							getEventService().processEventRegistration( originalOrderItem.getEventRegistration(), {}, 'cancel');
+						}
+					}
+					
 					// Persist the new item
 					getHibachiDAO().save( orderItem );
 					
@@ -977,7 +999,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							/*for(var orderitem in arguments.order.getOrderItems()) {
 								if(orderitem.getSku().getBaseProductType() == "event") {
 									for(var eventRegistration in orderitem.getEventRegistrations()) {
-										if(orderItem.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+										if(orderItem.getSku().setting('skuAllowWaitlistingFlag')) {
 											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
 										} else {
 											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
@@ -1497,12 +1519,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var subscriptionOrderItem = getSubscriptionService().getSubscriptionOrderItem({orderItem=stockReceiverItem.getOrderItem().getReferencedOrderItem()}); 
 			if(!isNull(subscriptionOrderItem)) {
 				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
-			}
-			
-			// If this was an event registration run cancellation process
-			var eventRegistrationItem = getEventRegistrationService().getEventRegistrationByOrderItem(stockReceiverItem.getOrderItem().getReferencedOrderItem());
-			if(!isNull(eventRegistrationItem)) {
-				getEventRegistrationService().processEventRegistration(eventRegistrationItem, {}, eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstCancelled")) );
 			}
 			
 			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them

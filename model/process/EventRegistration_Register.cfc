@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,32 +45,12 @@
 
 Notes:
 
---->
-<cfparam name="rc.order" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-<cfparam name="rc.addSkuAddStockType" type="string" />
-<cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getAddOrderItemSkuOptionsSmartList()#"
-							  recordProcessAction="admin:entity.processOrder"
-							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
-							  recordProcessContext="addOrderItem"
-							  recordProcessEntity="#rc.order#"
-							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
-							    
-		<cf_HibachiListingColumn propertyIdentifier="publishedFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productCode" />
-		<cf_HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
-		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
-		<cfif rc.addSkuAddStockType eq "oitSale">
-			<cf_HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
-		<cfelse>
-			<cf_HibachiListingColumn processObjectProperty="orderReturnID" title="#$.slatwall.rbKey('entity.orderReturn')#" fieldClass="span2" />
-		</cfif>
-		<cf_HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
-		<cf_HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-	</cf_HibachiListingDisplay>
-</cfoutput>
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="eventRegistration";
+
+	// Data Properties
+	property name="comment";
+}

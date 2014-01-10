@@ -50,6 +50,7 @@ component extends="HibachiService" output="false" accessors="true"{
 
 	property name="emailService" type="any";
 	property name="subscriptionService" type="any";
+	property name="skuService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -242,6 +243,18 @@ component extends="HibachiService" output="false" accessors="true"{
 			setupData["f:sku.activeFlag"] = 1;
 			setupData["f:sku.product.activeFlag"] = 1;
 			updateEntityCalculatedProperties("Stock", setupData);
+		}
+		
+		return arguments.task;
+	}
+	
+	// @hint Moves expired waitlisted registrants to end of waitlist and changes status of next in line to 'pending confirmation'
+	public any function processTask_updateEventWaitlists(required any task) {
+		var smartlist = getService("SkuService").getFutureWaitlistEventsSmartlist();
+		if(arraylen(smartlist.getRecords())) {
+			for(var event in smartlist.getRecords()) {
+				getService("SkuService").processSku(event, {}, 'notifyWaitlistOpenings');
+			}
 		}
 		
 		return arguments.task;

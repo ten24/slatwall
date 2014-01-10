@@ -64,7 +64,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getLocationConfigurationSmartList(struct data={}) {
 		arguments.entityName = "SlatwallLocationConfiguration";
 		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-		smartList.addKeywordProperty(propertyIdentifier="locationCapacity", weight=1);
 		//smartList.joinRelatedProperty("SlatwallLocationConfiguration", "locationCapacity");
 		smartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left", true);
 		return smartList;

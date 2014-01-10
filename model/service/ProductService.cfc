@@ -104,12 +104,37 @@ component extends="HibachiService" accessors="true" {
 	private any function createEventSkuStub(required processObject, required startDate, required endDate, required qualifier, locationConfiguration) {
 		var newSku = this.newSku();
 		newSku.setProduct( arguments.processObject.getproduct() );
+		if(structKeyExists(arguments.processObject,"skuName") && !isNull(srguments.processObject.getSkuName())) {
+			newSku.setSkuName( arguments.processObject.getSkuName() );
+		} else {
+			newSku.setSkuName( arguments.processObject.getproduct().getProductName() );
+		}
 		newSku.setSkuCode( arguments.processObject.getproduct().getProductCode() & "-#arguments.qualifier#");
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
 		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
+		// If coming from product creation there will be no skuPurchaseDateTime
+		if(structKeyExists(arguments.processObject,"getSkuPurchaseEndDateTime")) {
+			newSku.setPurchaseStartDateTime( arguments.processObject.getSkuPurchaseStartDateTime() );
+		}
+		if(structKeyExists(arguments.processObject,"getSkuPurchaseEndDateTime")) {
+			newSku.setPurchaseEndDateTime( arguments.processObject.getSkuPurchaseEndDateTime() );
+		}
+		
 		newSku.setAllowEventWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
 		newSku.setEventCapacity(arguments.processObject.getEventCapacity());
+		newSku.setEventAttendanceType(getService("SettingService").getTypeByTypeID(arguments.processObject.getEventAttendanceType()));
+		
+		// Set publishedFlag based on attendance type
+		if( (newSku.getEventAttendanceType().getSystemCode() == "eatBundle" && newSku.getBundleFlag())
+			|| (newSku.getEventAttendanceType().getSystemCode() == "eatIndividual" && !newSku.getBundleFlag())
+			||	newSku.getEventAttendanceType().getSystemCode() == "eatBoth") {
+			newSku.setPublishedFlag(1);	
+		} else {
+			newSku.setPublishedFlag(0);	
+		}
+		
+		newSku.generateAndSetAttendanceCode();
 		
 		if(structKeyExists(arguments,"locationConfiguration")) {
 			var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');
@@ -465,7 +490,6 @@ component extends="HibachiService" accessors="true" {
 				result = qualifier;
 			}
 		}
-		writeLog(file="slatwall",text="Q: #result#");
 		return result;
 	}
 	
@@ -622,10 +646,54 @@ component extends="HibachiService" accessors="true" {
 		
 		// Generate next highest sku qualifier
 		var SkuQualifier = getMaxSkuQualifier(arguments.product.getSkus()) + 1; 
+		var isFirstSku = true;
+		if(arrayLen(arguments.product.getSkus())) {
+			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
+			isFirstSku = false;
+		}
 		
 		// Single event instance (non-recurring)
 		if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schSingle").getTypeID() ) {
-			var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier);
+			
+			// Bundled location configuration
+			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+				//Create one sku
+				var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
+				
+				// Add all location configurations to same sku
+				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+				}
+				// Set first as default sku
+				if(isFirstSku) {
+					arguments.product.setDefaultSku( newSku );	
+					isFirstSku = false;
+				}
+				skuQualifier++;
+			}
+			
+			// Single location configuration
+			else {
+				// Create separate skus for every selected location configuration
+				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+					var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
+					skuQualifier++;
+					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+					
+					// Set first as default sku
+					if(isFirstSku) {
+						arguments.product.setDefaultSku( newSku );	
+						isFirstSku = false;
+					}
+				}
+			}
+			
+			
+			
+			
+			
+			//var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier,arguments.processObject.getLocationConfigurations());
+			//,listGetAt(arguments.processObject.getLocationConfigurations(), 1)
 		}
 		
 		// Recurring schedule is specified for event
@@ -923,6 +991,14 @@ component extends="HibachiService" accessors="true" {
 			
 			
 		} else if (arguments.processObject.getBaseProductType() == "event") {
+			
+			// Save purchase dates if defined at product level
+			if(structKeyExists(arguments.processObject,"getpurchaseEndDateTime")) {
+				arguments.product.setPurchaseStartDateTime( arguments.processObject.getpurchaseStartDateTime() );
+			}
+			if(structKeyExists(arguments.processObject,"getpurchaseEndDateTime")) {
+				arguments.product.setPurchaseEndDateTime( arguments.processObject.getpurchaseEndDateTime() );
+			}
 			
 			// ===================================
 			// BEGIN EVENT SKU GENERATION

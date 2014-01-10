@@ -70,6 +70,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.publicMethods=listAppend(this.publicMethods, 'forgotPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'resetPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'setupInitialAdmin');
+	this.publicMethods=listAppend(this.publicMethods, 'cancelWaitlist');
 	
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'default');
@@ -243,5 +244,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		login( rc );
 	}
+	
+	public void function expirePendingConfirmation(required struct rc) {
+		param name="rc.eventRegistrationID" default="";
+		var eventRegistration = getEventRegistrationService().getEventRegistration( rc.eventRegistrationID );
+		if(!isNull(eventRegistration)) {
+			var eventRegistration = getEventRegistrationService().processEventRegistration(eventRegistration, rc, "expire");
+		}
+	}
+	
 }
 

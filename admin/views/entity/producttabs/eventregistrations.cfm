@@ -57,10 +57,10 @@ Notes:
 				recorddetailaction="admin:entity.detaileventregistration">
 			<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
 			<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" title="#$.slatwall.rbKey('entity.eventRegistration.skuDefinition')#" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" title="#$.slatwall.rbKey('entity.eventRegistration.skuDefinition')#" />
 			<cf_HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
 		</cf_HibachiListingDisplay>
 	

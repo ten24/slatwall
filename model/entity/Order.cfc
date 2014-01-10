@@ -97,6 +97,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="addOrderItemStockOptionsSmartList" persistent="false";
 	property name="addPaymentRequirementDetails" persistent="false";
 	property name="deliveredItemsAmountTotal" persistent="false";
+	property name="depositItemSmartList" persistent="false";
 	property name="discountTotal" persistent="false" hb_formatType="currency";
 	property name="dynamicChargeOrderPayment" persistent="false";
 	property name="dynamicCreditOrderPayment" persistent="false";
@@ -625,7 +626,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalSaleQuantity() {
 		var saleQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[1].getOrderItemType().getSystemCode() eq "oitSale") {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[1].getOrderItemType().getSystemCode()) ) {
 				saleQuantity += getOrderItems()[i].getQuantity();	
 			}
 		}
@@ -666,6 +667,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return this.getTotalReturnQuantity() - this.getQuantityReceived();
 	}
 	
+	public any function getDepositItemSmartList() {
+		if(!structKeyExists(variables, "depositItemSmartList")) {
+			variables.saleItemSmartList = getService("orderService").getOrderItemSmartList();
+			variables.saleItemSmartList.addFilter('order.orderID', getOrderID());
+			variables.saleItemSmartList.addInFilter('orderItemType.systemCode', 'oitDeposit');
+		}
+		return variables.saleItemSmartList;	
+	}
+	
 	public any function getSaleItemSmartList() {
 		if(!structKeyExists(variables, "saleItemSmartList")) {
 			variables.saleItemSmartList = getService("orderService").getOrderItemSmartList();
@@ -687,7 +697,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getSubtotal() {
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				subtotal = precisionEvaluate('subtotal + getOrderItems()[i].getExtendedPrice()');	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				subtotal = precisionEvaluate('subtotal - getOrderItems()[i].getExtendedPrice()');
@@ -705,7 +715,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				taxTotal = precisionEvaluate('taxTotal + getOrderItems()[i].getTaxAmount()');	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				taxTotal = precisionEvaluate('taxTotal - getOrderItems()[i].getTaxAmount()');

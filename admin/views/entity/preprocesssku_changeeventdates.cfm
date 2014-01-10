@@ -50,6 +50,7 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.edittype" default="single" >
+<cfparam name="rc._eventEndDateTime" default="#rc.processObject.dateTimePickerFormat(rc.sku.getEventEndDateTime())#" >
 
 <cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
 	
@@ -67,10 +68,15 @@ Notes:
 				</cfif>
 				
 				<cf_HibachiDisplayToggle selector="select[name='editScope']" loadVisable="#(rc.processObject.getEditScope() NEQ 'all') AND (rc.edittype NEQ 'all')#" showValues="single">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="#rc.edit#">
+					asdf
+					<!---<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" value="#dateFormat(rc.sku.getEventStartDateTime(),"medium")# #timeFormat(rc.sku.getEventStartDateTime(),"hh:mm tt")#" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" value="#dateFormat(rc.sku.getEventEndDateTime(),"medium")# #timeFormat(rc.sku.getEventEndDateTime(),"hh:mm tt")#"  edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="startReservationDateTime" value="#dateFormat(rc.sku.getstartReservationDateTime(),"medium")# #timeFormat(rc.sku.getstartReservationDateTime(),"hh:mm tt")#"  edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="endReservationDateTime" value="#dateFormat(rc.sku.getEndReservationDateTime(),"medium")# #timeFormat(rc.sku.getEndReservationDateTime(),"hh:mm tt")#"  edit="#rc.edit#">--->
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="_eventStartDateTime" edit="#rc.edit#" value="#rc.processObject.getEventStartDateTime()#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="_eventEndDateTime" edit="#rc.edit#" value="#rc._eventEndDateTime#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="_startReservationDateTime" edit="#rc.edit#" value="#rc.processObject.getStartReservationDateTime()#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="_endReservationDateTime" edit="#rc.edit#" value="#rc.processObject.getEndReservationDateTime()#">
 				</cf_HibachiDisplayToggle>
 				
 				<!--- If editing all instances then only allow to change time --->
@@ -82,11 +88,14 @@ Notes:
 				</cf_HibachiDisplayToggle>
 			
 			<cfelse>
-				
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
+				<!---<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="#rc.edit#">--->
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="_eventStartDateTime" edit="#rc.edit#" value="#rc.processObject.getEventStartDateTime()#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="_eventEndDateTime" edit="#rc.edit#" value="#rc._eventEndDateTime#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="_startReservationDateTime" edit="#rc.edit#" value="#rc.processObject.getStartReservationDateTime()#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="_endReservationDateTime" edit="#rc.edit#" value="#rc.processObject.getEndReservationDateTime()#">
 			
 			</cfif>
 			

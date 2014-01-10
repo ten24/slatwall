@@ -67,6 +67,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}	
 	}
 	
+	public array function getAttendanceTypeOptions() {
+		if(!structKeyExists(variables, "eventAttendanceTypeOptions")) {
+			var smartList = getService("settingService").getTypeSmartList();
+			smartList.addSelect(propertyIdentifier="type", alias="name");
+			smartList.addSelect(propertyIdentifier="typeID", alias="value");
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="eventAttendanceType"); 
+			variables.eventAttendanceTypeOptions = smartList.getRecords();
+		}
+		return variables.eventAttendanceTypeOptions;
+	}
+	
 	public array function getProductSkus(required any product, required boolean sorted, boolean fetchOptions=false) {
 		var skus = getSkuDAO().getProductSkus(product=arguments.product, fetchOptions=arguments.fetchOptions);
 		
@@ -145,6 +156,52 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 	
 	// @help Adds locations to event skus	
+	public any function processSku_addEventRegistration(required any sku, required any processObject) {
+		// Create new event registration	 record
+		var eventRegistration = this.newEventRegistration();
+		eventRegistration.setSku(arguments.sku);
+		eventRegistration.generateAndSetAttendanceCode();
+		
+		// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
+		if(arguments.processObject.getNewAccountFlag() == 0) {
+			eventRegistration.setAccount( getService("AccountService").getAccount(arguments.processObject.getaccountID()) );
+		} else {
+			//Create new account to associate with registration
+			var newAccount = getService("AccountService").newAccount();
+			if(len(arguments.processObject.getfirstName())) {
+				newAccount.setFirstName(arguments.processObject.getfirstName());
+			}
+			if(len(arguments.processObject.getlastName())) {
+				newAccount.setLastName(arguments.processObject.getlastName());
+			}
+			if(len(arguments.processObject.getemailAddress())) {
+				var newEmailAddress =  getService("AccountService").newAccountEmailAddress();
+				newEmailAddress.setEmailAddress(arguments.processObject.getemailAddress());
+				newAccount.setPrimaryEmailAddress(newEmailAddress);
+				
+			}
+			if(len(arguments.processObject.getphoneNumber())) {
+				var newPhoneNumber =  getService("AccountService").newAccountPhoneNumber();
+				newPhoneNumber.setPhoneNumber(arguments.processObject.getphoneNumber());
+				newAccount.setPrimaryPhoneNumber(newPhoneNumber);
+			}
+			newAccount = getService("AccountService").saveAccount(newAccount);
+			eventRegistration.setAccount(newAccount);
+			
+		}
+		eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+		if(arguments.sku.getAvailableSeatCount > 0 ) {
+			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+		} else {
+			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+		}	
+		
+		eventRegistration = getService("EventRegistrationService").saveEventRegistration( eventRegistration );
+		
+		return arguments.sku;
+	}
+	
+	// @help Adds locations to event skus	
 	public any function processSku_addLocation(required any sku, required any processObject) {
 		if(arguments.processObject.getEditScope() == "none"  ){
 			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
@@ -175,13 +232,63 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.processObject.getEditScope() == "none"  ){
 			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
 		} 
+		// Modifying a single event
 		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
-			arguments.sku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
-			arguments.sku.setEventCapacity(arguments.processObject.getEventCapacity());
+			writelog(file="slatwall" text="registered: #arguments.sku.getRegisteredUserCount()# / capacity: #arguments.processObject.getEventCapacity()#");
+			// Make sure a capacity adjustment won't cause the event to be overbooked
+			if( arguments.sku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
+				// Notify user that the capacity decrease would the event to be overbooked
+				processObject.addError('eventCapacity', getHibachiScope().rbKey('validate.processSku_editCapacity.eventCapacityInvalid.notEnoughSeats'));
+			} else {
+				arguments.sku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+				arguments.sku.setEventCapacity(arguments.processObject.getEventCapacity());
+				
+				// Notify waitlisted registrants here if capacity has increased and waitlisting is allowed
+				if(arguments.processObject.getEventCapacity() > arguments.sku.getEventCapacity() && arguments.sku.getAllowWaitlistingFlag()) {
+					processSku( arguments.sku, {}, 'notifyWaitlistOpenings');
+				}
+				
+			}
+		// Modifying an event schedule	
 		} else if(arguments.processObject.getEditScope() == "all"){
+			var failedCapacityValidation = [];
+			var eventList = "";
 			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
-				thisSku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
-				thisSku.setEventCapacity(arguments.processObject.getEventCapacity());
+				if( thisSku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
+					eventList = "#eventList# #thisSku.getSkuName()# #thisSku.getSkuCode()# #thisSku.getEventStartDateTime()# #thisSku.getEventEndDateTime()#<br>";
+					// Add overbooked skus to array
+					arrayAppend(failedCapacityValidation, thisSku.getSkuID());
+				}
+			}
+			if(arrayIsEmpty(failedCapacityValidation)) {
+				for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+					thisSku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+					thisSku.setEventCapacity(arguments.processObject.getEventCapacity());
+				}
+			} else {
+				// Notify user that the capacity decrease would cause one of the events to be overbooked
+				processObject.addError('eventCapacity', "#getHibachiScope().rbKey('validate.processSku_editCapacity.eventCapacityInvalid.notEnoughSeats')#<br>#eventList#");
+			}
+		
+		}
+		
+		return arguments.sku;
+	}
+	
+	// @help Logs attendance for an event	
+	public any function processSku_logAttendance(required any sku, required any processObject) {
+		// Compare the list of all registrants with the list of those that were submitted as having attended.
+		// If in attended list we set registrant as attended otherwise we set registrant to registered. 
+		var attendedList = "";
+		if(len(arguments.processObject.getEventRegistrations())) {
+			attendedList = arguments.processObject.getEventRegistrations();
+		}
+		var registrantsSmartlist = arguments.sku.getRegistrationAttendanceSmartlist();
+		for(registrant in registrantsSmartlist.getRecords()) {
+			if( listFindNoCase(attendedList,registrant.getEventRegistrationID()) > 0 ) {
+				registrant.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstAttended"));
+			} else {
+				registrant.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
 			}
 		}
 		return sku;
@@ -223,39 +330,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
 		} 
 		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			skuLocationsList = "";
+			if(arrayLen(arguments.sku.getLocations())) {
+				if(arrayLen(arguments.sku.getLocations())==1) {
+					skuLocationsList = arguments.sku.getLocations()[1].getLocationID(); 
+				} else {
+					for(var loc in arguments.sku.getLocations()) {
+						skuLocationsList = listAppend(skuLocationsList,loc.getLocationID());
+					}
+				}
+			}
 			
-			if(locationConflictExistsFlag(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),arguments.processObject.getLocationConfigurations())) {
+			if(locationConflictExistsFlag(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),skuLocationsList) ) {
 				// There is already an event scheduled at that location in the same date range
 				processObject.addError('locationConfigurations', getHibachiScope().rbKey('validate.eventScheduleConflict'));
 			} else {
-
 				// Update schedule dates/times
 				arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
 				arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
 				arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
 				arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
 
-				// Remove deleted location configurations
-				for(var locationConfig in arguments.sku.getLocationConfigurations()) {
-					var lcExistsAt = listFindNoCase(arguments.processObject.getLocationConfigurations(),locationConfig.getLocationConfigurationID(),"," );
-					if(lcExistsAt == 0) {
-						getDAO("SkuDAO").deleteSkuLocationConfiguration(arguments.sku.getSkuID(), locationConfig.getLocationConfigurationID());
-					} else {
-						// remove existing location configurations from processObject so we don't add them again
-						arguments.processObject.setLocationConfigurations(listDeleteAt(arguments.processObject.getLocationConfigurations(),lcExistsAt));
-					}
-				}
-				
-				// Update/add locations
-				var newConfigCount = listLen(arguments.processObject.getLocationConfigurations(),",");
-				if(newConfigCount > 0) {
-					// Add new location configurations
-					for(var lc=1; lc<=newConfigCount; lc++) {
-						var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
-						arguments.sku.addLocationConfiguration( thisLocationConfig );
-					}
-				}
-				
 				// Disconnect this sku from any recurring schedule
 				arguments.sku.setProductSchedule(javaCast("null",""));
 			}
@@ -285,18 +380,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	//@help Takes a sku along with a start datetime, an end datetimem and a list of location configurations, to check for location/date/time conflicts with other event schedules
-	public boolean function locationConflictExistsFlag(any sku, any eventStartDateTime, any eventEndDateTime, any locationConfigurations) {
-		var locationIDList = "";
+	public boolean function locationConflictExistsFlag(any sku, any eventStartDateTime, any eventEndDateTime, string locationList="") {
+		var locationIDList = arguments.locationList;
 		var result = false;
 
 		//Build list of locationIDs from locationConfigurations
-		if(listLen(arguments.locationConfigurations,",") == 1) {
+		/*if(listLen(arguments.locationList,",") == 1) {
 			var locationConfigurationSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
 			locationConfigurationSmartList.addFilter("locationConfigurationID",arguments.locationConfigurations);
 			var locationID = locationConfigurationSmartList.getRecords()[1].getLocation().getLocationID();
 			locationIDList = listAppend(locationIDList,locationID);
 		} else {
-			locationConfigs = listToArray(arguments.locationConfigurations);
+			locationConfigs = listToArray(arguments.locationList);
 			for(var configID in locationConfigs) {
 				var locationConfigurationSmartList = getService("SkuService").getLocationConfigurationSmartList();
 				locationConfigurationSmartList.addFilter("locationConfigurationID",configID);
@@ -305,20 +400,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					listAppend(locationIDList,locationID);
 				}
 			} 
+		}*/
+		
+		for(var i=1;i<=listLen(locationIDList);i++) {
+			var location = getService("LocationService").getLocation(listGetAt(locationIDList,i));
+			if(location.getLocationName() == "TBD") {
+				listDeleteAt(locationIDList,i);
+				break;
+			}
 		}
 		
-		// Build smartlist of conflicting events schedules
-		var smartlist = getService("SkuService").getSkuSmartList();
-		smartlist.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
-		smartlist.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
-		smartlist.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
-		smartlist.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=arguments.sku.getSkuID()});
-		smartlist.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
-		smartlist.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
-
-		// Do we have conflicts?
-		if(smartList.getRecordsCount() > 0) {
-			result = true;
+		if(listLen(locationIDList)) {
+			// Build smartlist of conflicting events schedules
+			var smartlist = getService("SkuService").getSkuSmartList();
+			smartlist.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
+			smartlist.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
+			smartlist.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
+			smartlist.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=arguments.sku.getSkuID()});
+			smartlist.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
+			smartlist.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
+	
+			// Do we have conflicts?
+			if(smartList.getRecordsCount() > 0) {
+				result = true;
+			}
+		} else {
+			result = false;
 		}
 		
 		return result;
@@ -395,6 +502,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
+	
+	// @help Move event registrations from 'waitlisted' to 'pending confirmation' if seats are available
+	public any function processSku_notifyWaitlistOpenings(required any sku, processObject={}) {
+		// Get waitlisted event registrations
+		var waitlistedRegistrants = getService("EventRegistrationService").getWaitlistedRegistrants(arguments.sku);
+		if(isDefined("waitlistedRegistrants") && arrayLen(waitlistedRegistrants)) {
+			var availableSeats = getService("EventRegistrationService").getAvailableSeatCountBySku(arguments.sku);
+			if(availableSeats > 0) {
+				// Calculate the number of registrantions to change
+				var changeToConfirmCount = availableSeats;
+				if(changeToConfirmCount > arrayLen(waitlistedRegistrants)) {
+					changeToConfirmCount = arrayLen(waitlistedRegistrants);
+				}
+				
+				// Process event registration changes to 'pending confirmation' 
+				for(i=1;i<=changeToConfirmCount;i++) {
+					getEventService().processEventRegistration( waitlistedRegistrants[i], {}, "confirm");
+				}
+				
+			}
+		}
+		return sku;
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================
@@ -418,6 +549,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		smartList.addKeywordProperty(propertyIdentifier="skuCode", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="skuID", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="publishedFlag", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="alternateSkuCodes.alternateSkuCode", weight=1);
@@ -450,12 +582,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Get skus that have datetimes that overlap with current sku
 		var skuSmartList = getService("SkuService").getSkuSmartList();
-		//skuSmartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=sku.getSkuID()});
-		skuSmartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
-		skuSmartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
+		skuSmartList.addWhereCondition("(aslatwallsku.eventStartDateTime BETWEEN :thisStartDateTime AND :thisEndDateTime) OR (aslatwallsku.eventEndDateTime BETWEEN :thisStartDateTime AND :thisEndDateTime)",{thisStartDateTime=arguments.eventStartDateTime,thisEndDateTime=arguments.eventEndDateTime});
 		
 		// Build list of unavailable locations from sku list
 		var concurrentSkus = skuSmartList.getRecords();
+		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
 		for( var thisSku in concurrentSkus ) {
 			if(arrayLen(thisSku.getLocationConfigurations())) {
 				for( var thisLocation in thisSku.getLocations()) {
@@ -470,8 +601,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		arguments.unavailableLocationsList = listQualify(unavailableLocationsList,"'",",","char" );
-		
+		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
 		// Get non-conflicting location configurations
 		var availableLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
 		//availableLocationsSmartList.addKeywordProperty(propertyIdentifier="locationCapacity", weight=1);
@@ -479,10 +609,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(listLen(arguments.unavailableLocationsList) > 0) {
 			availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID NOT IN (#arguments.unavailableLocationsList#)");
 		}
-		//availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.locationCapacity > #arguments.quantity#");
+		availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.locationConfigurationCapacity >= #arguments.quantity#");
 		
 		return availableLocationsSmartList;
 
+	}
+	
+	// @hint Retrieve a smartlist containing valid future event skus that allow waitlisting
+	public any function getFutureWaitlistEventsSmartlist(){
+		arguments.entityName = "SlatwallSku";
+		var smartList = getSkuSmartlist();
+		var currentDateTime = dateFormat(now(),'short');
+		smartlist.addFilter("product.productType.productTypeName","Event");
+		smartlist.addFilter("publishedFlag","1");
+		smartlist.addFilter("allowEventWaitlistingFlag","1");
+		smartlist.addWhereCondition("aslatwallsku.eventStartDateTime > #currentDateTime#");
+		smartlist.addWhereCondition("aslatwallsku.purchaseStartDateTime > #currentDateTime#");
+		return smartList;
 	}
 	
 	// ====================  END: Smart List Overrides ========================

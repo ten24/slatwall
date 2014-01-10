@@ -51,6 +51,40 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="commentService";
 	property name="settingService";
 	
+
+	
+	
+	// ===================== START: Logical Methods ===========================
+	
+	// @hint Returns a randomly generated code. Takes a codeLength parm which defaults to 8.
+	public string function generateAttendanceCode(required codeLength=8) {
+		var lowerAlpha = "abcdefghjkmnpqrtuvwxyz";
+		var upperAlpha = UCase( lowerAlpha );
+		var numbers = "0123456789";
+		//var strOtherChars = "!@##$%&*";
+		var validChars = (upperAlpha & numbers);
+		var helperArr = [];
+		var attendanceCode = "";
+		
+		helperArr[ 1 ] = Mid(numbers,randRange( 1, len( numbers ) ),1);
+		helperArr[ 2 ] = Mid(lowerAlpha,randRange( 1, len( lowerAlpha ) ),1);
+		helperArr[ 3 ] = Mid(upperAlpha,randRange( 1, len( upperAlpha ) ),1);
+		for(var i=1; i<=arguments.codeLength; i++){
+			helperArr[ i ] = mid(validChars,randRange( 1, len( validChars ) ),1);
+		}
+		createObject( "java", "java.util.Collections" ).Shuffle(helperArr);
+		attendanceCode = arrayToList(helperArr,"");
+		return attendanceCode;
+	}
+	
+	// @hint looks at all pending confirmations to see if they've expired
+	public any function getPendingConfirmationsSmartlist() {
+		// Get list of all pending confirmations
+		var pendingConfirmationsSmartlist = getEventRegistrationSmartList();
+		pendingConfirmationsSmartlist.joinRelatedProperty("SlatwallType", "eventRegistrationStatusType", "left", true) ;
+		pendingConfirmationsSmartlist.addFilter("eventRegistrationStatusType.typeID","#getSettingService().getTypeBySystemCode('erstPendingConfirmation')#");
+		return pendingConfirmationsSmartlist;
+	}
 	
 	public any function getEventRegistrationByOrderItem(required orderItem) {
 		var smartList = this.getEventRegistrationSmartList();
@@ -69,20 +103,77 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(len(arguments.orderItemIDList)) {
 			smartList.addInFilter('orderItem.orderItemID', '#arguments.orderItemIDList#');
 		}
-		//smartList.addOrder("orderitem.sku.skuCode|ASC");
-		return smartList;
-	}
-
-	public any function getEventRegistrationSmartList(struct data={},orderBySkuCode=true) {
-		arguments.entityName = "SlatwallEventRegistration";
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-		if(arguments.orderBySkuCode) {
-			smartList.addOrder("orderitem.sku.skuCode|ASC");
-		}
 		return smartList;
 	}
 	
-	// ===================== START: Logical Methods ===========================
+	public any function getWaitlistedRegistrants(required any sku) {
+		var smartList = this.getEventRegistrationSmartList();			
+		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
+		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
+		smartList.addInFilter('eventRegistrationStatusType.typeID', '#getSettingService().getTypeBySystemCode('erstWaitlisted').getTypeID()#');
+		smartList.addOrder("waitlistQueueDateTime|ASC");
+		return smartList.getRecords();
+	}
+	
+	// @hint Changes next waitlisted registrant to pending claim for specified sku 
+	/*public any function notifyNextWaitlistedRegistrants(required any sku, integer quantity=1) {
+		var notifiedCount = 0;
+		// Retrieve waitlisted event registrations for the sku
+		var smartlist = getEventRegistrationSmartList({},false);
+		smartList.joinRelatedProperty("SlatwallOrderItem", "sku", "left", true) ;
+		smartList.addFilter("skuID", "#arguments.sku.getSkuID()#");
+		smartList.addFilter("eventRegistrationStatusTypeID", "#getSettingService().getTypeBySystemCode("erstWaitlisted").getTypeID()#");
+		smartList.addOrder("waitlistQueueDateTime|ASC");
+		if(smartlist.getRecordsCount()){
+			var registrants = smartlist.getRecords();
+			for(registrant in registrants) {
+					registrant.setRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPendingConfirmation"));
+					registrant.save();
+					if(notifiedCount==arguments.quantity) {
+						break;
+					}
+			}
+		}
+	}*/
+	
+	public any function getNonWaitlistedCountBySku(required any sku) {
+		var smartlist = getEventRegistrationSmartList({},false);
+		var waitlistedTypeID = getSettingService().getTypeBySystemCode('erstWaitlisted').getTypeID();
+		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
+		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
+		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.typeID <> '#waitlistedTypeID#'");
+		return smartlist.getRecordsCount();		
+	}
+	
+	public any function getUnavailableSeatCountBySku(required any sku) {
+		var smartlist = getEventRegistrationSmartList({},false);
+		var cancelledTypeID = getSettingService().getTypeBySystemCode('erstCancelled').getTypeID();
+		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
+		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
+		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.typeID <> '#cancelledTypeID#'");
+		return smartlist.getRecordsCount();		
+	}
+	
+	public any function getAvailableSeatCountBySku(required any sku) {
+		return arguments.sku.getEventCapacity() - getNonWaitlistedCountBySku(arguments.sku);
+	}
+	
+	// @hint Marks eligible waitlisted registrant as pending confirmation
+	public void function updateEligibleRegistrants(required any sku) {
+		var availableSeatCount = arguments.sku.getAvailableSeatCount();
+		var notifiedCount = 0;
+		if(availableSeatCount > 0) {
+			var waitlistedRegistrants = getWaitlistedRegistrants(arguments.sku);
+			for(registrant in waitlistedRegistrants) {
+				registrant.setRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPendingConfirmation"));
+				registrant.save();
+				notifiedCount++;
+				if(notifiedCount==availableSeatCount) {
+					break;
+				}
+			}
+		}
+	}
 	
 	// =====================  END: Logical Methods ============================
 	
@@ -96,11 +187,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
-	public any function processEventRegistration_approved(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_approve(required any eventRegistration, required any processObject) {
 		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
 			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
+			comment = getCommentService().saveComment(comment, arguments.processObject);
 		}
 		
 		// Change the status
@@ -109,11 +200,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_attended(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_attend(required any eventRegistration, required any processObject) {
 		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
 			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
+			comment = getCommentService().saveComment(comment, arguments.processObject);
 		}
 		
 		// Change the status
@@ -122,38 +213,72 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_registered(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_cancel(required any eventRegistration, required any processObject) {
+		var createReturnOrder = true;
+		if(structKeyExists(arguments.processObject,"createReturnOrderFlag")) {
+			createReturnOrder = arguments.processObject.getCreateReturnOrderFlag();
+		}
+		
+		// Get the current registration status
+		var regStatus = arguments.eventRegistration.geteventRegistrationStatusType().getSystemCode();
+		
+		// Reduce the quantity of the original orderItem
+		/*var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1;
+		var order = arguments.eventRegistration.getOrderItem().getOrder();
+		arguments.eventRegistration.getOrderItem().setQuantity(newQuantity);*/
+		
+		if(createReturnOrder) {
+			// Inform order process that the registration has already been cancelled
+			var data = structNew();
+			data.cancelRegistrationFlag = false;
+			if(arguments.eventRegistration.hasOrderItem()) {
+				getService("OrderService").processOrder(arguments.eventRegistration.getOrderItem().getOrder(), data, 'createReturn');
+			}
+		}
+		
 		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
 			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
+			comment = getCommentService().saveComment(comment, arguments.processObject);
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstRegistered") );
+		if(arguments.eventRegistration.getSku().setting('skuAllowWaitlistingFlag')) {
+			notifyNextWaitlistedRegistrants(sku=arguments.eventRegistration.getOrderItem().getSku(), quantity=1);
+			processEventRegistration( arguments.eventRegistration, {}, "confirm");
+		}
+		
+		// Save new code
+		arguments.eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstCancelled"));
+		 
+		return arguments.eventRegistration;
+	}
+	
+	// @hint Changes event registration status to pending confirmation 
+	public any function processEventRegistration_confirm(required any eventRegistration, processObject={}) {
+		// Set up the comment if someone typed in the box
+		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
+			var comment = getCommentService().newComment();
+			comment = getCommentService().saveComment(comment, arguments.processObject);
+		}
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstPendingConfirmation") );
 		
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_waitlisted(required any eventRegistration, struct data={}) {
-		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
-			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
-		}
-		
-		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstWaitListed") );
-		
-		return arguments.eventRegistration;
 	
+	// @hint Sets a 'pending confirmation' event registration back to waitlist and places at end of queue 
+	public any function processEventRegistration_expire(required any eventRegistration,processObject={}) {
+		arguments.eventRegistration.setWaitlistQueueDateTime(createODBCDateTime(now()));
+		arguments.eventRegistration.save();
+		processEventRegistration( eventRegistration, {}, "confirm");
 	}
 	
-	public any function processEventRegistration_pending(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_pending(required any eventRegistration, required any processObject) {
 		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
 			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
+			comment = getCommentService().saveComment(comment, arguments.processObject);
 		}
 		
 		// Change the status
@@ -162,92 +287,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_notplaced(required any eventRegistration, struct data={}) {
+	public any function processEventRegistration_register(required any eventRegistration, required any processObject) {
 		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
 			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
+			comment = getCommentService().saveComment(comment, arguments.processObject);
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstNotPlaced") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstRegistered") );
 		
 		return arguments.eventRegistration;
 	}
 	
-	public any function processEventRegistration_cancelled(required any eventRegistration, struct data={}) {
-		
-		// Change the status
-		var regStatus = arguments.eventRegistration.geteventRegistrationStatusType().getSystemCode();
-		//if(!)
-		// Reduce the quantity of the original orderItem
-		var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1;
-		var order = arguments.eventRegistration.getOrderItem().getOrder();
-		arguments.eventRegistration.getOrderItem().setQuantity(newQuantity);
-		
-		// TODO: Add option in admin to refund credit for cancelation
-		
+	public any function processEventRegistration_waitlist(required any eventRegistration, required any processObject) {
 		// Set up the comment if someone typed in the box
-		if(structKeyExists(arguments.data, "comment") && len(trim(arguments.data.comment))) {
+		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
 			var comment = getCommentService().newComment();
-			comment = getCommentService().saveComment(comment, arguments.data);
+			comment = getCommentService().saveComment(comment, arguments.processObject);
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstCancelled") );
-		// TODO Check for waitlisted registrants and change their registration type to "Pending Claim"
-		 
-		return arguments.eventRegistration;
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstWaitListed") );
 		
+		return arguments.eventRegistration;
+	
 	}
 
-	// @hint Updates the eventRegistrationStatusType of a registrant
-	public any function updateRegistrationStatus(required any eventRegistration, required any newEventRegistrationStatusType) {
-		
-		// Get the original eventRegistration status code
-		var originalEventRegistrationStatus = arguments.eventRegistration.geteventRegistrationStatusType().getSystemCode();
-		
-		if(newEventRegistrationStatusType.geteventRegistrationStatusType().getSystemCode() == "erstCancelled") {
-			flagNextWaitlistRegistrant(arguments.eventRegistration.getOrderItem().getSku());
-		}
-		
-		// Save new code
-		arguments.eventRegistration.seteventRegistrationStatusType( newEventRegistrationStatusType );
-		
-		return arguments.eventRegistration;
-	}
 	
-	// @hint Changes next waitlisted registrant to pending claim for specified sku 
-	public any function flagNextWaitlistRegistrant(required any sku) {
-		var smartlist = getEventRegistrationSmartList({},false);
-		smartList.joinRelatedProperty("SlatwallEventRegistration", "orderItem", "left", true) ;
-		smartList.joinRelatedProperty("SlatwallOrderItem", "sku", "left", true) ;
-		smartList.addInFilter('orderItem.sku.skuID', '#arguments.sku.getSkuID()#');
-		smartList.addOrder("waitlistQueueDateTime|ASC");
-		var registrants = smartlist.getRecords();
-		for(registrant in registrants) {
-			if(registrant.getEventRegistrationStatusType().getSystemCode() == "erstWaitListed") {
-				registrant.setRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPendingClaim"));
-				registrant.save();
-				break;
-			}
-		}
-	}
-	
-	// @hint looks at all pending claims to see if they've expired
-	public any function checkPendingClaims() {
-		// Get list of all pending claims
-		var pendingClaimSmartList = getEventRegistrationSmartList();
-		pendingClaimSmartList.joinRelatedProperty("SlatwallType", "eventRegistrationStatusType", "left", true) ;
-		pendingClaimSmartList.addFilter("eventRegistrationStatusType.typeID","#getSettingService().getTypeBySystemCode('erstPendingClaim')#");
-	}
-	
-	// @hint Sets a 'pending claim' event registration back to waitlist and places at end of queue 
-	public any function expirePendingClaim(required any eventRegistration) {
-		arguments.eventRegistration.setWaitlistQueueDateTime(createODBCDateTime(now()));
-		arguments.eventRegistration.save();
-		flagNextWaitlistRegistrant(eventRegistration.getOrderItem().getSku());
-	}
 	
 	// =====================  END: Process Methods ============================
 	
@@ -274,6 +341,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
+	
+	public any function getEventRegistrationSmartList(struct data={},orderBySkuCode=true) {
+		arguments.entityName = "SlatwallEventRegistration";
+		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		smartList.addKeywordProperty(propertyIdentifier="registrationStatusTitle", weight=1);
+		if(arguments.orderBySkuCode) {
+			smartList.addOrder("sku.skuCode|ASC");
+		}
+		return smartList;
+	}
+	
+	public any function getRegistrationAttendenceSmartList(struct data={}) {
+		var attendanceTypes = [getSettingService().getTypeBySystemCode("erstRegistered").getTypeID(),getSettingService().getTypeBySystemCode("erstAttended").getTypeID()];
+		var attendanceTypesList = listQualify(arrayToList(attendanceTypes),"'");
+		arguments.entityName = "SlatwallEventRegistration";
+		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		smartlist.addWhereCondition("eventRegistrationStatusTypeID IN (#attendanceTypesList#)");
+		return smartList;
+	}
 	
 	// ====================  END: Smart List Overrides ========================
 	

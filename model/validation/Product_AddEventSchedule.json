@@ -1,8 +1,13 @@
 {
 	"properties":{
-		"eventStartDateTime": [{"required":true}],
-		"eventEndDateTime": [{"required":true,"gtProperty":"eventStartDateTime"}],		
-		"scheduleStartDate": [{"required":true,"contexts":"scheduled"}],
-		"scheduleEndDate": [{"required":true,"contexts":"scheduled","gtProperty":"scheduleStartDate"}]
+		"eventStartDateTime": [{"required":true,"dataType":"date","gtNow":true}],
+		"eventEndDateTime": [{"required":true,"dataType":"date","gtDateTimeProperty":"eventStartDateTime","gtNow":true}],
+		"locationConfigurations":[{"required":true}],
+		"purchaseStartDateTime": [{"conditions":"generateEventSkus","dataType":"date","gtNow":true,"ltDateTimeProperty":"eventStartDateTime"}],
+		"purchaseEndDateTime": [{"required":true,"dataType":"date","gtDateTimeProperty":"purchaseStartDateTime","gtNow":true}],
+		"schedulingType": [{"required":true}],
+		"price": [{"required":true}],
+		"eventCapacity": [{"required":true}]
+		
 	}
 }

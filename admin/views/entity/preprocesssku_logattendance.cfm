@@ -46,31 +46,36 @@
 Notes:
 
 --->
-<cfparam name="rc.order" type="any" />
+<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-<cfparam name="rc.addSkuAddStockType" type="string" />
-<cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getAddOrderItemSkuOptionsSmartList()#"
-							  recordProcessAction="admin:entity.processOrder"
-							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
-							  recordProcessContext="addOrderItem"
-							  recordProcessEntity="#rc.order#"
-							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
-							    
-		<cf_HibachiListingColumn propertyIdentifier="publishedFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productCode" />
-		<cf_HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
-		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
-		<cfif rc.addSkuAddStockType eq "oitSale">
-			<cf_HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
-		<cfelse>
-			<cf_HibachiListingColumn processObjectProperty="orderReturnID" title="#$.slatwall.rbKey('entity.orderReturn')#" fieldClass="span2" />
+
+<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
+	
+	<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+	</cf_HibachiEntityActionBar>
+	<cfset selectedEventRegistrationIDs = "" />
+	<cfloop array="#rc.sku.getRegistrationAttendanceSmartlist().getRecords()#" index="er">
+		<cfif er.getAttendedFlag()>
+			<cfset selectedEventRegistrationIDs = listAppend(selectedEventRegistrationIDs, er.getEventRegistrationID()) />
 		</cfif>
-		<cf_HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
-		<cf_HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-	</cf_HibachiListingDisplay>
-</cfoutput>
+	</cfloop>
+	<cf_HibachiPropertyRow>
+		<cf_HibachiPropertyList>
+			
+			<cf_HibachiListingDisplay smartList="#rc.sku.getRegistrationAttendanceSmartlist()#" 
+									  multiselectFieldName="eventRegistrations"
+									  multiselectPropertyIdentifier="eventRegistrationID" 
+									  multiselectValues="#selectedEventRegistrationIDs#"
+									  edit="#rc.edit#">
+				<!---<cf_HibachiListingColumn propertyIdentifier="attendedFlag" />--->
+				<cf_HibachiListingColumn propertyIdentifier="firstName" />
+				<cf_HibachiListingColumn propertyIdentifier="lastName" />
+				<!---<cf_HibachiListingColumn propertyIdentifier="emailAddress" />--->
+			</cf_HibachiListingDisplay>
+			
+		</cf_HibachiPropertyList>
+	</cf_HibachiPropertyRow>
+	
+</cf_HibachiEntityProcessForm>
+

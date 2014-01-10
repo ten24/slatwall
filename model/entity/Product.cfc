@@ -57,6 +57,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="publishedFlag" ormtype="boolean" default="false";
 	property name="sortOrder" ormtype="integer";
+	property name="purchaseStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="purchaseEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	
 	// Calculated Properties
 	property name="calculatedSalePrice" ormtype="big_decimal";
@@ -105,6 +107,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	// Non-Persistent Properties
 	property name="allowBackorderFlag" type="boolean" persistent="false";
+	property name="availableForPurchaseFlag" type="boolean" persistent="false";
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
@@ -133,6 +136,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
+	
+	
+	public any function getAvailableForPurchaseFlag() {
+		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
+			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
+			if(	( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) ) 
+				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) ) 
+			{
+				variables.availableToPurchaseFlag = true;
+			} else {
+				variables.availableToPurchaseFlag = false;
+			}
+		}
+		return variables.availableToPurchaseFlag;
+	}
+	
 	public any function getProductTypeOptions( string baseProductType ) {
 		if(!structKeyExists(variables, "productTypeOptions")) {
 			if(!structKeyExists(arguments, "baseProductType")) {
@@ -154,6 +173,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		
 		return variables.productTypeOptions;
 	}
+	
     
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
@@ -704,7 +724,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getEventRegistrationsSmartList() {
 		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
 			variables.eventRegistrationsSmartList = getService("EventRegistrationService").getEventRegistrationSmartList();
-			variables.eventRegistrationsSmartList.addFilter('orderitem.sku.product.productID', getProductID());
+			variables.eventRegistrationsSmartList.addFilter('sku.product.productID', getProductID());
 			//variables.eventRegistrationsSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
 		}
 

@@ -370,7 +370,7 @@
 	
 	public boolean function validate_gtNow(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now())) {
+		if(!isNull(propertyValue) && dateCompare(propertyValue, now()) eq 1) {
 			return true;
 		}
 		return false;
@@ -387,8 +387,7 @@
 	public boolean function validate_gtDateTimeProperty(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
 		var comparePropertyValue =  arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue ).invokeMethod("get#listLast(arguments.constraintValue,'._')#");
-
-		if(!isNull(propertyValue) && (dateCompare(propertyValue, comparePropertyValue)==1)) {
+		if(!isNull(propertyValue) && (dateCompare(propertyValue, comparePropertyValue,"n")==1)) {
 			return true;
 		}
 		return false;

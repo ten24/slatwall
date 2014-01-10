@@ -50,18 +50,21 @@ Notes:
 
 <cfoutput>
 	
-	<cfset local.eventRegSmartList = rc.sku.geteventRegistrations()/>
+	<cfset local.eventRegSmartList = rc.sku.geteventRegistrationsSmartlist()/>
 	
 		<cf_HibachiListingDisplay smartList="#local.eventRegSmartList#"
 				recordEditAction="admin:entity.editeventregistration"
 				recorddetailaction="admin:entity.detaileventregistration">
 			<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
 			<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.product.productName" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
+			<cf_HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
 		</cf_HibachiListingDisplay>
+		
+		<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="true" />
 	
 </cfoutput>
