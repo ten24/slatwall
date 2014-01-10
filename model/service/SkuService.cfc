@@ -234,7 +234,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 		// Modifying a single event
 		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
-			
+			writelog(file="slatwall" text="registered: #arguments.sku.getRegisteredUserCount()# / capacity: #arguments.processObject.getEventCapacity()#");
 			// Make sure a capacity adjustment won't cause the event to be overbooked
 			if( arguments.sku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
 				// Notify user that the capacity decrease would the event to be overbooked
@@ -252,8 +252,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Modifying an event schedule	
 		} else if(arguments.processObject.getEditScope() == "all"){
 			var failedCapacityValidation = [];
+			var eventList = "";
 			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
 				if( thisSku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
+					eventList = "#eventList# #thisSku.getSkuName()# #thisSku.getSkuCode()# #thisSku.getEventStartDateTime()# #thisSku.getEventEndDateTime()#<br>";
 					// Add overbooked skus to array
 					arrayAppend(failedCapacityValidation, thisSku.getSkuID());
 				}
@@ -265,9 +267,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			} else {
 				// Notify user that the capacity decrease would cause one of the events to be overbooked
-				processObject.addError('eventCapacity', getHibachiScope().rbKey('validate.processSku_editCapacity.eventCapacityInvalid.notEnoughSeats'));
-				// If desired, we can make the error more informative by utilizing the sku IDs in the failedCapacityValidation array
-				// Conversely, we could improve performance a bit by breaking the loop at the first sku that fails validation.
+				processObject.addError('eventCapacity', "#getHibachiScope().rbKey('validate.processSku_editCapacity.eventCapacityInvalid.notEnoughSeats')#<br>#eventList#");
 			}
 		
 		}

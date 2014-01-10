@@ -92,7 +92,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
-	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="eventRegistrationID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
+	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
@@ -606,8 +606,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getRegisteredUserCount() {
 		if(!structKeyExists(variables, "registeredUserCount")) {
 			var ruCount = 0;
+				writelog(file="slatwall" text="getEventRegistrations: #arraylen(getEventRegistrations())#");
 			if(arrayLen(this.getEventRegistrations())) {
 				var statusList = "#getService('settingService').getTypeBySystemCode('erstRegistered').getTypeID()#,#getService('settingService').getTypeBySystemCode('erstPendingConfirmation').getTypeID()#";
+				writelog(file="slatwall" text="statusList: #statusList#");
 				for(var er in this.getEventRegistrations()) {
 					if( listFindNoCase( statusList, er.getEventRegistrationStatusType().getTypeID() ) ) {
 						ruCount++;
