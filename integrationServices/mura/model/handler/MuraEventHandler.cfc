@@ -871,6 +871,11 @@
 			
 			<cfset var parentMappingCache = {} />
 			<cfset var missingContentQuery = "" />
+			<cfset var updateMissingSiteID = "" />
+			
+			<cfquery name="updateMissingSiteID">
+				UPDATE SwContent SET siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" /> WHERE siteID is null
+			</cfquery>
 		
 			<cfquery name="missingContentQuery">
 				SELECT

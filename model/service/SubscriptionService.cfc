@@ -369,7 +369,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// add order item to order
 			var itemData = {
 				preProcessDisplayedFlag=1,
-				skuID=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID()
+				skuID=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID(),
+				currencyCode=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrder().getCurrencyCode()
 			};
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			
@@ -412,14 +413,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var orderPayment = getOrderService().newOrderPayment();
 					
 					orderPayment.copyFromAccountPaymentMethod( arguments.processObject.getAccountPaymentMethod() );
-					
+					orderPayment.setCurrencyCode( order.getCurrencyCode() );
 					orderPayment.setOrder( order );
 					
 				} else if (arguments.processObject.getRenewalPaymentType() eq 'orderPayment') {
 					var orderPayment = getOrderService().newOrderPayment();
 					
 					orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
-					
+					orderPayment.setCurrencyCode( order.getCurrencyCode() );
 					orderPayment.setOrder( order );
 					
 				} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
