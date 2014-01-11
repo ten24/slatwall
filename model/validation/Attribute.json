@@ -1,6 +1,6 @@
 {
 	"properties":{
-		"attributeName":		[{"contexts":"save","required":true,"regex":"^[a-zA-Z0-9-_|:~^]+$"}],
+		"attributeName":		[{"contexts":"save","required":true,"regex":"^[a-zA-Z0-9-_|/ :~^]+$"}],
 		"attributeCode":		[{"contexts":"save","required":true,"unique":true}],
 		"attributeType":		[{"contexts":"save","required":true}]
 	}

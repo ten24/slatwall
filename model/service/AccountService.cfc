@@ -146,7 +146,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				newAccountPaymentMethod.copyFromAccountPayment( newAccountPayment );
 				newAccountPaymentMethod.setAccount( arguments.account );
 				
-				newAccountPaymentMethod = this.saveAccountPaymentMethod();
+				newAccountPaymentMethod = this.saveAccountPaymentMethod(newAccountPaymentMethod);
 			}
 
 		}

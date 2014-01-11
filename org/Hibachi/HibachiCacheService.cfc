@@ -2,14 +2,19 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	property name="cache" type="struct";
 	property name="internalCacheFlag" type="boolean";
+	property name="railoFlag" type="boolean";
 	
 	public any function init() {
 		setCache( {} );
 		setInternalCacheFlag( true );
+		setRailoFlag( false );
 		
 		var hibachiConfig = getApplicationValue('hibachiConfig');
 		if(structKeyExists(hibachiConfig, "useCachingEngineFlag") && hibachiConfig.useCachingEngineFlag) {
 			setInternalCacheFlag( false );
+		}
+		if(structKeyExists(server,"railo")) {
+			setRailoFlag( true );	
 		}
 		
 		return super.init();
@@ -21,7 +26,10 @@ component accessors="true" output="false" extends="HibachiService" {
 			return true;
 			
 		// If using the external cache, then check there
-		} else if (!getInternalCacheFlag() && arrayFindNoCase(cacheGetAllIDs(), arguments.key) && !cacheGet( arguments.key ).reset ) {
+		} else if (!getInternalCacheFlag() && getRailoFlag() && cacheKeyExists(arguments.key) && !cacheGet( arguments.key ).reset) {
+			return true;
+			
+		} else if (!getInternalCacheFlag() && !isNull(cacheGet( arguments.key )) && !cacheGet( arguments.key ).reset ) {
 			return true;
 			
 		}
@@ -36,7 +44,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			return getCache()[ arguments.key ].value;
 			
 		// If using the external cache, then check there
-		} else if (!getInternalCacheFlag() && arrayFindNoCase(cacheGetAllIDs(), key) ) {
+		} else if (!getInternalCacheFlag() && !isNull(cacheGet( arguments.key )) ) {
 			return cacheGet( arguments.key ).value;
 			
 		}
