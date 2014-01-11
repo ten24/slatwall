@@ -117,6 +117,7 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="address.city" />
 				<cf_HibachiListingColumn propertyIdentifier="address.stateCode" />
 				<cf_HibachiListingColumn propertyIdentifier="address.postalCode" />
+				<cf_HibachiListingColumn propertyIdentifier="address.countryCode" />
 			</cf_HibachiListingDisplay>
 			
 			<cf_HibachiActionCaller action="admin:entity.createaccountaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />

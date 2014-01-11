@@ -66,7 +66,8 @@ Notes:
 		</cfif>
 		<cfif listFindNoCase("US,CA,GB,UK", arguments.requestBean.getBillingCountryCode())>
 			<AVSzip>#arguments.requestBean.getBillingPostalCode()#</AVSzip>
-			<AVSaddress1>#arguments.requestBean.getBillingStreetAddress()#<cfif !isNull(arguments.requestBean.getBillingStreet2Address())> #arguments.requestBean.getBillingStreet2Address()#</cfif></AVSaddress1>
+			<AVSaddress1>#left(arguments.requestBean.getBillingStreetAddress(), 30)#</AVSaddress1>
+			<AVSaddress2>#left(arguments.requestBean.getBillingStreet2Address(), 30)#</AVSaddress2>
 			<AVScity>#arguments.requestBean.getBillingCity()#</AVScity>
 			<cfif len(arguments.requestBean.getBillingStateCode()) lte 2>
 				<AVSstate>#arguments.requestBean.getBillingStateCode()#</AVSstate>

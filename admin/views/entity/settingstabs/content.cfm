@@ -48,14 +48,13 @@ Notes:
 --->
 <cfoutput>
 	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="globalEncryptionAlgorithm" />
-		<cf_SlatwallSetting settingName="globalEncryptionEncoding" />
-		<cf_SlatwallSetting settingName="globalEncryptionKeySize" />
-		<cf_SlatwallSetting settingName="globalEncryptionKeyLocation" />
-		<cf_SlatwallSetting settingName="globalEncryptionService" />
-		<cf_SlatwallSetting settingName="globalNoSessionIPRegex" />
-		<cf_SlatwallSetting settingName="globalRemoteIDShowFlag" />
-		<cf_SlatwallSetting settingName="globalRemoteIDEditFlag" />
+		<cf_SlatwallSetting settingName="contentRestrictAccessFlag" />
+		<cf_SlatwallSetting settingName="contentRequirePurchaseFlag" />
+		<cf_SlatwallSetting settingName="contentRequireSubscriptionFlag" />
+		<cf_SlatwallSetting settingName="contentIncludeChildContentProductsFlag" />
+		<cf_SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" />
+		<cf_SlatwallSetting settingName="contentHTMLTitleString" />
+		<cf_SlatwallSetting settingName="contentMetaDescriptionString" />
+		<cf_SlatwallSetting settingName="contentMetaKeywordsString" />
 	</cf_SlatwallSettingTable>
 </cfoutput>
-

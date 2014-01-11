@@ -64,8 +64,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="loyaltyService" type="any";
 	
 	this.publicMethods='';
+	
 	this.anyAdminMethods='';
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'saveSetting');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'deleteSetting');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'detailSetting');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'editSetting');
+	
 	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'settings');
 	
 	// Address Zone Location
 	public void function createAddressZoneLocation(required struct rc) {

@@ -53,9 +53,9 @@ Notes:
 		<cfargument name="accountID" type="string" />
 		
 		<cfif structKeyExists(arguments, "accountID")>
-			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE pea.emailAddress=:emailAddress AND a.accountID <> :accountID", {emailAddress=arguments.emailAddress, accountID=arguments.accountID})) />
+			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
 		</cfif>
-		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE pea.emailAddress=:emailAddress", {emailAddress=arguments.emailAddress})) />
+		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
 	</cffunction>
 	
 	<cffunction name="removeAccountAddressFromOrderFulfillments">
@@ -76,7 +76,7 @@ Notes:
 	<cffunction name="getInternalAccountAuthenticationsByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		
-		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND pea.emailAddress=:emailAddress", {emailAddress=arguments.emailAddress}) />
+		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)}) />
 	</cffunction>
 	
 	<cffunction name="getAccountAuthenticationExists" returntype="any" access="public">
@@ -87,7 +87,7 @@ Notes:
 	<cffunction name="getAccountWithAuthenticationByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		
-		<cfset var accounts = ormExecuteQuery("SELECT a FROM SlatwallAccount a INNER JOIN a.primaryEmailAddress pea WHERE pea.emailAddress = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM SlatwallAccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=arguments.emailAddress}) />
+		<cfset var accounts = ormExecuteQuery("SELECT a FROM SlatwallAccount a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress) = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM SlatwallAccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=lcase(arguments.emailAddress)}) />
 		<cfif arrayLen(accounts)>
 			<cfreturn accounts[1] />
 		</cfif>
