@@ -56,7 +56,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="skuCode" ormtype="string" unique="true" length="50";
-	property name="eventAttendanceCode" ormtype="string" unique="true" length="8" hint="Unique code to track event attendance";
+	property name="eventAttendanceCode" ormtype="string" length="8" hint="Unique code to track event attendance";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
@@ -91,8 +91,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
+	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; 
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
-	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
@@ -606,10 +606,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getRegisteredUserCount() {
 		if(!structKeyExists(variables, "registeredUserCount")) {
 			var ruCount = 0;
-				writelog(file="slatwall" text="getEventRegistrations: #arraylen(getEventRegistrations())#");
 			if(arrayLen(this.getEventRegistrations())) {
 				var statusList = "#getService('settingService').getTypeBySystemCode('erstRegistered').getTypeID()#,#getService('settingService').getTypeBySystemCode('erstPendingConfirmation').getTypeID()#";
-				writelog(file="slatwall" text="statusList: #statusList#");
 				for(var er in this.getEventRegistrations()) {
 					if( listFindNoCase( statusList, er.getEventRegistrationStatusType().getTypeID() ) ) {
 						ruCount++;
