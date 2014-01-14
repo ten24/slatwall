@@ -185,6 +185,13 @@
 						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaDescriptionString') ) );
 						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaKeywordsString') ) );
 						
+						// Set Path and ContentID to the values of the listing page instead of the Mura product template page. This should be wrapped in a settings check. ListingPageFilename variable is called below in the crumblist code, so that is also refa
+						var listingPageFilename = left($.event('path'), find("/#$.slatwall.setting('globalURLKeyProduct')#/", $.event('path'))-1);
+						listingPageFilename = replace(listingPageFilename, "/#$.event('siteID')#/", "", "all");
+						var listingPageContentBean = $.getBean("content").loadBy( filename=listingPageFilename, siteID=$.slatwall.getContent().getSite().getCMSSiteID() );
+						$.content().setPath(listingPageContentBean.getPath());
+						$.content().setContentID(listingPageContentBean.getContentID());
+						
 						// DEPRECATED*** If LegacyInjectFlag is set to true then add the body
 						if($.slatwall.setting('integrationMuraLegacyInjectFlag')) {
 							$.content('body', $.content('body') & $.slatwall.doAction('frontend:product.detail'));
@@ -192,8 +199,9 @@
 						
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
-							var listingPageFilename = left($.event('path'), find("/#$.slatwall.setting('globalURLKeyProduct')#/", $.event('path'))-1);
-							listingPageFilename = replace(listingPageFilename, "/#$.event('siteID')#/", "", "all");
+							// these are set above, so do not need to be set again.
+							//var listingPageFilename = left($.event('path'), find("/#$.slatwall.setting('globalURLKeyProduct')#/", $.event('path'))-1);
+							//listingPageFilename = replace(listingPageFilename, "/#$.event('siteID')#/", "", "all");
 							var crumbDataArray = $.getBean("contentManager").getActiveContentByFilename(listingPageFilename, $.event('siteid'), true).getCrumbArray();
 						} else {
 							var crumbDataArray = $.getBean("contentManager").getCrumbList(contentID="00000000000000000000000000000000001", siteID=$.event('siteID'), setInheritance=false, path="00000000000000000000000000000000001", sort="asc");
@@ -742,7 +750,7 @@
 				};
 				
 				// Kick of a thread for the rest of all the syncing
-				thread action="run" name="slatwallMuraAppLoadSync_#cmsSiteID#" threadData=threadData {
+				thread action="run" name="slatwallMuraAppLoadSync_#createUUID()#" threadData=threadData {
 					
 					var $ = createObject("mura.event").init( {siteID=threadData.cmsSiteID} ).getValue('MuraScope');
 					
