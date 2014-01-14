@@ -750,7 +750,7 @@
 				};
 				
 				// Kick of a thread for the rest of all the syncing
-				thread action="run" name="slatwallMuraAppLoadSync_#cmsSiteID#" threadData=threadData {
+				thread action="run" name="slatwallMuraAppLoadSync_#createUUID()#" threadData=threadData {
 					
 					var $ = createObject("mura.event").init( {siteID=threadData.cmsSiteID} ).getValue('MuraScope');
 					
