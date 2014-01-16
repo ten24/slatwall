@@ -47,10 +47,9 @@ Notes:
 
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
-	
 	property name="commentService";
 	property name="settingService";
-	
+	property name="orderService" type="any";
 
 	
 	
@@ -215,44 +214,40 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processEventRegistration_cancel(required any eventRegistration, required any processObject) {
 		var createReturnOrder = true;
-		if(structKeyExists(arguments.processObject,"createReturnOrderFlag")) {
+		if(isDefined("arguments.processObject.getcreateReturnOrderFlag")) {
 			createReturnOrder = arguments.processObject.getCreateReturnOrderFlag();
 		}
-		
-		// Get the current registration status
-		var regStatus = arguments.eventRegistration.geteventRegistrationStatusType().getSystemCode();
-		
-		// Reduce the quantity of the original orderItem
-		/*var newQuantity = arguments.eventRegistration.getOrderItem().getQuantity() - 1;
-		var order = arguments.eventRegistration.getOrderItem().getOrder();
-		arguments.eventRegistration.getOrderItem().setQuantity(newQuantity);*/
-		
-		if(createReturnOrder) {
-			// Inform order process that the registration has already been cancelled
-			var data = structNew();
-			data.cancelRegistrationFlag = false;
-			if(arguments.eventRegistration.hasOrderItem()) {
-				getService("OrderService").processOrder(arguments.eventRegistration.getOrderItem().getOrder(), data, 'createReturn');
-			}
-		}
-		
 		// Set up the comment if someone typed in the box
 		if(structKeyExists(arguments.processObject, "comment") && len(trim(arguments.processObject.getComment()))) {
 			var comment = getCommentService().newComment();
 			comment = getCommentService().saveComment(comment, arguments.processObject);
 		}
-		
-		// Change the status
-		if(arguments.eventRegistration.getSku().setting('skuAllowWaitlistingFlag')) {
-			notifyNextWaitlistedRegistrants(sku=arguments.eventRegistration.getOrderItem().getSku(), quantity=1);
-			processEventRegistration( arguments.eventRegistration, {}, "confirm");
+		// Create return order if order is closed 
+		if(createReturnOrder && arguments.eventRegistration.hasOrderItem()) {
+			var processData = structNew();
+			// Create order item to give to return process
+			var newOrderItem = getService("OrderService").newOrderItem();
+			// Inform return process that the registration has already been cancelled
+			newOrderItem.cancelRegistrationFlag = false;
+			newOrderItem.setPrice(referencedOrderItem.getPrice());
+			newOrderItem.setQuantity(1);
+			newOrderItem.setReferencedOrderItem(arguments.eventRegistration.getOrderItem());
+			processData.orderItems = [newOrderItem];
+			getOrderService().processOrder(arguments.eventRegistration.getOrderItem().getOrder(), processData, 'createReturn');
+		} else {
+			// If order is not closed then subtract order item quantity by 1
+			if(arguments.eventRegistration.hasOrderItem()) {
+				arguments.eventRegistration.getOrderItem().setQuantity(arguments.eventRegistration.getOrderItem().getQuantity()-1);
+			}
 		}
 		
-		// Save new code
-		arguments.eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstCancelled"));
-		 
+		// Change the status
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstCancelled") );
+		getService("SkuService").processOrder(arguments.eventRegistration.getSku(), {}, 'notifyWaitlistOpenings');
+		
 		return arguments.eventRegistration;
 	}
+	
 	
 	// @hint Changes event registration status to pending confirmation 
 	public any function processEventRegistration_confirm(required any eventRegistration, processObject={}) {

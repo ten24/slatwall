@@ -790,7 +790,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrder_createReturn(required any order, required any processObject) {
-		
 		// Create a new return order
 		var returnOrder = this.newOrder();
 		returnOrder.setAccount( arguments.order.getAccount() );
@@ -831,7 +830,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderItem.setReferencedOrderItem( originalOrderItem );
 					orderItem.setOrderReturn( orderReturn );
 					orderItem.setOrder( returnOrder );
-					
+
 					if(originalOrderItem.getType() == "event") {
 						// If necessary, initiate the registration cancellation process. 
 						if( !structKeyExists(orderItemStruct, "cancelRegistrationFlag") || (structKeyExists(orderItemStruct, "cancelRegistrationFlag") && orderItemStruct.cancelRegistrationFlag) ) {
@@ -849,7 +848,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		// Persit the new order
+		// Persist the new order
 		getHibachiDAO().save( returnOrder );
 		
 		// Recalculate the order amounts for tax and promotions

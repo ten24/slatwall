@@ -52,6 +52,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="eventRegistration";
 
 	// Data Properties
-	property name="createReturnOrderFlag" type="boolean" default="yes" hint="Instructs order return process whether it should perform return.";
+	property name="createReturnOrderFlag" type="boolean" hint="Instructs order return process whether it should perform return.";
 	property name="comment";
+	
+	public boolean function getCreateReturnOrderFlag() {
+		var result = false;
+		if(getEventRegistration().hasOrderItem()) {
+			var order = getEventRegistration().getOrderItem().getOrder();
+			var orderStatus = order.getOrderStatusType().getSystemCode();
+			if(orderStatus == "ostClosed") {
+				result = true;
+			}
+		}
+		return result;
+	} 
 }

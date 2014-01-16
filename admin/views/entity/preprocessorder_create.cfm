@@ -50,11 +50,6 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<!---<cfif rc.processObject.hasErrors()>
-	<cfdump var="#rc.processObject.getErrors()#" /><cfabort>
-</cfif>--->
-
-
 <cf_HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder">
 	
 	<cf_HibachiEntityActionBar type="preprocess" object="#rc.order#">

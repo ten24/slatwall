@@ -234,7 +234,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 		// Modifying a single event
 		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
-			writelog(file="slatwall" text="registered: #arguments.sku.getRegisteredUserCount()# / capacity: #arguments.processObject.getEventCapacity()#");
 			// Make sure a capacity adjustment won't cause the event to be overbooked
 			if( arguments.sku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
 				// Notify user that the capacity decrease would the event to be overbooked
@@ -243,7 +242,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.sku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
 				arguments.sku.setEventCapacity(arguments.processObject.getEventCapacity());
 				
-				// Notify waitlisted registrants here if capacity has increased and waitlisting is allowed
+				// Notify waitlisted registrants if capacity has increased and waitlisting is allowed
 				if(arguments.processObject.getEventCapacity() > arguments.sku.getEventCapacity() && arguments.sku.getAllowWaitlistingFlag()) {
 					processSku( arguments.sku, {}, 'notifyWaitlistOpenings');
 				}
@@ -264,6 +263,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
 					thisSku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
 					thisSku.setEventCapacity(arguments.processObject.getEventCapacity());
+					// Notify waitlisted registrants if capacity has increased and waitlisting is allowed
+					if(arguments.processObject.getEventCapacity() > thisSku.getEventCapacity() && thisSku.getAllowWaitlistingFlag()) {
+						processSku( thisSku, {}, 'notifyWaitlistOpenings');
+					}
 				}
 			} else {
 				// Notify user that the capacity decrease would cause one of the events to be overbooked
@@ -505,22 +508,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// @help Move event registrations from 'waitlisted' to 'pending confirmation' if seats are available
 	public any function processSku_notifyWaitlistOpenings(required any sku, processObject={}) {
-		// Get waitlisted event registrations
-		var waitlistedRegistrants = getService("EventRegistrationService").getWaitlistedRegistrants(arguments.sku);
-		if(isDefined("waitlistedRegistrants") && arrayLen(waitlistedRegistrants)) {
-			var availableSeats = getService("EventRegistrationService").getAvailableSeatCountBySku(arguments.sku);
-			if(availableSeats > 0) {
-				// Calculate the number of registrantions to change
-				var changeToConfirmCount = availableSeats;
-				if(changeToConfirmCount > arrayLen(waitlistedRegistrants)) {
-					changeToConfirmCount = arrayLen(waitlistedRegistrants);
+		if(arguments.sku.getAllowEventWaitlistingFlag()) {
+			// Get waitlisted event registrations
+			var waitlistedRegistrants = getService("EventRegistrationService").getWaitlistedRegistrants(arguments.sku);
+			if(isDefined("waitlistedRegistrants") && arrayLen(waitlistedRegistrants)) {
+				var availableSeats = getService("EventRegistrationService").getAvailableSeatCountBySku(arguments.sku);
+				if(availableSeats > 0) {
+					// Calculate the number of registrantions to change
+					var changeToConfirmCount = availableSeats;
+					if(changeToConfirmCount > arrayLen(waitlistedRegistrants)) {
+						changeToConfirmCount = arrayLen(waitlistedRegistrants);
+					}
+					
+					// Process event registration changes to 'pending confirmation' 
+					for(i=1;i<=changeToConfirmCount;i++) {
+						getEventService().processEventRegistration( waitlistedRegistrants[i], {}, "confirm");
+					}
+					
 				}
-				
-				// Process event registration changes to 'pending confirmation' 
-				for(i=1;i<=changeToConfirmCount;i++) {
-					getEventService().processEventRegistration( waitlistedRegistrants[i], {}, "confirm");
-				}
-				
 			}
 		}
 		return sku;

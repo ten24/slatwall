@@ -463,17 +463,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	// @hint Returns boolean indication whether this sku is available for purchase based on purchase start/end dates.	
 	public any function getAvailableForPurchaseFlag() {
-		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
+		if(!structKeyExists(variables, "availableForPurchaseFlag")) {
 			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
-			if(	( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) ) 
+			if(	getActiveFlag() && getPublishedFlag()
+				&& (
+				( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) ) 
 				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) ) 
+				) 
 			{
-				variables.availableToPurchaseFlag = true;
+				variables.availableForPurchaseFlag = true;
 			} else {
-				variables.availableToPurchaseFlag = false;
+				variables.availableForPurchaseFlag = false;
 			}
 		}
-		return variables.availableToPurchaseFlag;
+		return variables.availableForPurchaseFlag;
 	}
 	
 	// @hint Returns the number of seats that are still available for this event
