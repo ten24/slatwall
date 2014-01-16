@@ -74,7 +74,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			legacyOrderConfirmation = {fieldType="text", defaultValue="order-confirmation"},
 			legacyMyAccount = {fieldType="text", defaultValue="my-account"},
 			legacyCreateAccount = {fieldType="text", defaultValue="create-account"},
-			legacyCheckout = {fieldType="text", defaultValue="checkout"}
+			legacyCheckout = {fieldType="text", defaultValue="checkout"},
+			lookupListingContentObjects = {fieldType="yesno", defaultValue=0}
 		};
 	}
 	
