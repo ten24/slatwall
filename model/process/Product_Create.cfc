@@ -71,7 +71,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="locationConfigurations" hb_rbKey="entity.sku.locationConfigurations";
 	property name="skuAllowWaitlistingFlag" hb_formFieldType="yesno";
 	property name="eventCapacity";
-	property name="eventAttendanceType" hb_formFieldType="select" hb_rbKey="entity.sku.eventAttendanceType" ;
 	
 	// Scheduling-related properties
 	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";
@@ -85,10 +84,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
 
 
-	public array function getAttendanceTypeOptions(boolean includeWeekends=true) {
-		return getService("SkuService").getAttendanceTypeOptions();
-	}
-	
 	public array function getDaysOfWeekOptions(boolean includeWeekends=true) {
 		return getService("ProductScheduleService").getDaysOfWeekOptions(arguments.includeWeekends);
 	}

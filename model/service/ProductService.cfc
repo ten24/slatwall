@@ -123,16 +123,6 @@ component extends="HibachiService" accessors="true" {
 		
 		newSku.setAllowEventWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
 		newSku.setEventCapacity(arguments.processObject.getEventCapacity());
-		newSku.setEventAttendanceType(getService("SettingService").getTypeByTypeID(arguments.processObject.getEventAttendanceType()));
-		
-		// Set publishedFlag based on attendance type
-		if( (newSku.getEventAttendanceType().getSystemCode() == "eatBundle" && newSku.getBundleFlag())
-			|| (newSku.getEventAttendanceType().getSystemCode() == "eatIndividual" && !newSku.getBundleFlag())
-			||	newSku.getEventAttendanceType().getSystemCode() == "eatBoth") {
-			newSku.setPublishedFlag(1);	
-		} else {
-			newSku.setPublishedFlag(0);	
-		}
 		
 		newSku.generateAndSetAttendanceCode();
 		

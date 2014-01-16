@@ -67,16 +67,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}	
 	}
 	
-	public array function getAttendanceTypeOptions() {
-		if(!structKeyExists(variables, "eventAttendanceTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
-			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="eventAttendanceType"); 
-			variables.eventAttendanceTypeOptions = smartList.getRecords();
-		}
-		return variables.eventAttendanceTypeOptions;
-	}
 	
 	public array function getProductSkus(required any product, required boolean sorted, boolean fetchOptions=false) {
 		var skus = getSkuDAO().getProductSkus(product=arguments.product, fetchOptions=arguments.fetchOptions);

@@ -60,7 +60,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
-	property name="eventAttendanceType" hb_formFieldType="select" hb_rbKey="entity.sku.eventAttendanceType" ;
 	property name="skuPurchaseStartDateTime" hb_formFieldType="datetime" hb_rbKey="entity.product.purchaseStartDateTime";
 	property name="skuPurchaseEndDateTime" hb_formFieldType="datetime" hb_rbKey="entity.product.purchaseEndDateTime";
 	property name="options";
@@ -82,9 +81,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
 
 
-	public array function getAttendanceTypeOptions(boolean includeWeekends=true) {
-		return getService("SkuService").getAttendanceTypeOptions();
-	}
 	
 	public array function getDaysOfWeekOptions(boolean includeWeekends=true) {
 		return getService("ProductScheduleService").getDaysOfWeekOptions(arguments.includeWeekends);
