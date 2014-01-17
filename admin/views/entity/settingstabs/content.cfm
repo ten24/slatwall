@@ -46,27 +46,15 @@
 Notes:
 
 --->
-<cfparam name="rc.subscriptionUsage" type="any" />
-
 <cfoutput>
-	<div class="span6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.benefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
-		
-		
-	</div>
-	<div class="span6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
-	</div>
+	<cf_SlatwallSettingTable showInheritance="false">
+		<cf_SlatwallSetting settingName="contentRestrictAccessFlag" />
+		<cf_SlatwallSetting settingName="contentRequirePurchaseFlag" />
+		<cf_SlatwallSetting settingName="contentRequireSubscriptionFlag" />
+		<cf_SlatwallSetting settingName="contentIncludeChildContentProductsFlag" />
+		<cf_SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" />
+		<cf_SlatwallSetting settingName="contentHTMLTitleString" />
+		<cf_SlatwallSetting settingName="contentMetaDescriptionString" />
+		<cf_SlatwallSetting settingName="contentMetaKeywordsString" />
+	</cf_SlatwallSettingTable>
 </cfoutput>

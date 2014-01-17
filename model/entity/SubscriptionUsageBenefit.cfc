@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSubscriptionUsageBenefit" table="SwSubsUsageBenefit" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" {
+component entityname="SlatwallSubscriptionUsageBenefit" table="SwSubsUsageBenefit" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" hb_permission="subscriptionUsage.subscriptionUsageBenefits" {
 	
 	// Persistent Properties
 	property name="subscriptionUsageBenefitID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -205,6 +205,10 @@ component entityname="SlatwallSubscriptionUsageBenefit" table="SwSubsUsageBenefi
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentation() {
+		return getSubscriptionBenefit().getSubscriptionBenefitName();
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

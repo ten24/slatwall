@@ -46,48 +46,68 @@
 Notes:
 
 */
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+component output="false" accessors="true" extends="HibachiProcess" {
 
-	property name="adminNavbarHTML";
+	// Injected Entity
+	property name="subscriptionUsage";
 	
-	public string function getIntegrationTypes() {
-		return "authentication,fw1";
-	}
+	// Lazy / Injected Objects
 	
-	public string function getDisplayName() {
-		return "Mura";
-	}
+	// New Properties
 	
-	public struct function getSettings() {
-		return {
-			accountSyncType = {fieldType="select", valueOptions=[
-				{name="Mura System Users Only",value="systemUserOnly"},
-				{name="Mura Site Members Only",value="siteUserOnly"},
-				{name="All Users",value="all"},
-				{name="None",value="none"}
-			]},
-			createDefaultPages = {fieldType="yesno", defaultValue=1},
-			superUserSyncFlag = {fieldType="yesno", defaultValue=1},
-			legacyInjectFlag = {fieldType="yesno", defaultValue=0},
-			legacyShoppingCart = {fieldType="text", defaultValue="shopping-cart"},
-			legacyOrderStatus = {fieldType="text", defaultValue="order-status"},
-			legacyOrderConfirmation = {fieldType="text", defaultValue="order-confirmation"},
-			legacyMyAccount = {fieldType="text", defaultValue="my-account"},
-			legacyCreateAccount = {fieldType="text", defaultValue="create-account"},
-			legacyCheckout = {fieldType="text", defaultValue="checkout"},
-			lookupListingContentObjects = {fieldType="yesno", defaultValue=0}
-		};
-	}
+	// Data Properties (ID's)
+	property name="benefitTermType" hb_formFieldType="select";
+	property name="subscriptionBenefitID" hb_formFieldType="select" hb_rbKey="entity.subscriptionBenefit";
 	
-	public array function getEventHandlers() {
-		return ["Slatwall.integrationServices.mura.model.handler.SlatwallEventHandler"];
-	}
+	// Data Properties (Inputs)
 	
-	public string function getAdminNavbarHTML() {
-		if(!structKeyExists(variables, "adminNavbarHTML")) {
-			variables.adminNavbarHTML = '<a href="#replace(request.slatwallScope.getSlatwallRootURL(), '/Slatwall', '')#/admin" class="brand"><img src="#request.slatwallScope.getSlatwallRootPath()#/assets/images/mura.logo.png" style="width:25px;heigh:26px;" title="Mura" /></a>'; 
+	// Data Properties (Related Entity Populate)
+	
+	// Data Properties (Object / Array Populate)
+	
+	// Option Properties
+	
+	// Helper Properties
+	
+	
+	// ======================== START: Defaults ============================
+	
+	// ========================  END: Defaults =============================
+	
+	// =================== START: Lazy Object Helpers ======================
+	
+	// ===================  END: Lazy Object Helpers =======================
+	
+	// ================== START: New Property Helpers ======================
+	
+	// ==================  END: New Property Helpers =======================
+	
+	// ====================== START: Data Options ==========================
+	
+	public array function getSubscriptionBenefitIDOptions() {
+		if(!structKeyExists(variables, "subscriptionBenefitIDOptions")) {
+			var s = getService("subscriptionService").getSubscriptionBenefitSmartList();
+			s.addSelect("subscriptionBenefitName", "name");
+			s.addSelect("subscriptionBenefitID", "value");
+			variables.subscriptionBenefitIDOptions = s.getRecords();
+			arrayPrepend(variables.subscriptionBenefitIDOptions, {name=getHibachiScope().rbKey('define.select'), value=""});
 		}
-		return variables.adminNavbarHTML;
+		return variables.subscriptionBenefitIDOptions;
 	}
+	
+	public array function getBenefitTermTypeOptions() {
+		return [
+			{name=getHibachiScope().rbKey('define.both'), value='both'},
+			{name=getHibachiScope().rbKey('define.initial'), value='initial'},
+			{name=getHibachiScope().rbKey('define.renewal'), value='renewal'}
+		];
+	}
+	
+	// ======================  END: Data Options ===========================
+	
+	// ===================== START: Helper Methods =========================
+	
+	// =====================  END: Helper Methods ==========================
 	
 }
+

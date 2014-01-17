@@ -6,6 +6,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInFlag" type="boolean";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
+	property name="persistSessionFlag" type="boolean";
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
 	property name="sucessfulActions" type="array";
@@ -20,6 +21,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
+		setPersistSessionFlag( true );
 		
 		return super.init();
 	}

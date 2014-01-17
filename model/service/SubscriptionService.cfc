@@ -369,7 +369,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// add order item to order
 			var itemData = {
 				preProcessDisplayedFlag=1,
-				skuID=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID()
+				skuID=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID(),
+				currencyCode=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrder().getCurrencyCode()
 			};
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			
@@ -412,14 +413,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var orderPayment = getOrderService().newOrderPayment();
 					
 					orderPayment.copyFromAccountPaymentMethod( arguments.processObject.getAccountPaymentMethod() );
-					
+					orderPayment.setCurrencyCode( order.getCurrencyCode() );
 					orderPayment.setOrder( order );
 					
 				} else if (arguments.processObject.getRenewalPaymentType() eq 'orderPayment') {
 					var orderPayment = getOrderService().newOrderPayment();
 					
 					orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
-					
+					orderPayment.setCurrencyCode( order.getCurrencyCode() );
 					orderPayment.setOrder( order );
 					
 				} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
@@ -520,6 +521,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
+		return arguments.subscriptionUsage;
+	}
+	
+	public any function processSubscriptionUsage_addUsageBenefit(required any subscriptionUsage, required any processObject) {
+		
+		var subscriptionBenefit = this.getSubscriptionBenefit(processObject.getSubscriptionBenefitID());
+		
+		if(listFindNoCase("both,initial", arguments.processObject.getBenefitTermType())) {
+			var subscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
+			subscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
+			
+			var subscriptionUsageBenefitAccount = this.newSubscriptionUsageBenefitAccount();
+			subscriptionUsageBenefitAccount.setSubscriptionUsageBenefit( subscriptionUsageBenefit );
+			subscriptionUsageBenefitAccount.setAccount( arguments.subscriptionUsage.getAccount() );
+			
+			arguments.subscriptionUsage.addSubscriptionUsageBenefit( subscriptionUsageBenefit );	
+		}
+		if(listFindNoCase("both,renewal", arguments.processObject.getBenefitTermType())) {
+			var renewalSubscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
+			
+			renewalSubscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
+			
+			arguments.subscriptionUsage.addRenewalSubscriptionUsageBenefit( renewalSubscriptionUsageBenefit );
+		}
+			
 		return arguments.subscriptionUsage;
 	}
 	

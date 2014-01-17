@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSubscriptionUsageBenefitAccount" table="SwSubsUsageBenefitAccount" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" {
+component entityname="SlatwallSubscriptionUsageBenefitAccount" table="SwSubsUsageBenefitAccount" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" hb_permission="subscriptionUsageBenefit.subscriptionUsageBenefitAccounts" {
 	
 	// Persistent Properties
 	property name="subsUsageBenefitAccountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

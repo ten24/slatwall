@@ -46,27 +46,36 @@
 Notes:
 
 --->
-<cfparam name="rc.subscriptionUsage" type="any" />
+<cfparam name="rc.subscriptionUsageBenefit" type="any">
+<cfparam name="rc.edit" type="boolean">
+
+<cfset selectedCategories = rc.subscriptionUsageBenefit.getCategories() />
+<cfset selectedCategoryIDs = "" />
+<cfloop array="#selectedCategories#" index="i">
+	<cfset selectedCategoryIDs = listAppend(selectedCategoryIDs, i.getCategoryID()) />
+</cfloop>
+
+<cfset selectedExcludedCategories = rc.subscriptionUsageBenefit.getExcludedCategories() />
+<cfset selectedExcludedCategoryIDs = "" />
+
+<cfloop array="#selectedExcludedCategories#" index="i">
+	<cfset selectedExcludedCategoryIDs = listAppend(selectedExcludedCategoryIDs, i.getCategoryID()) />
+</cfloop>
 
 <cfoutput>
 	<div class="span6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.benefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
+		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.categories')#</h5>
+		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getCategoriesOptionsSmartList()#" multiselectFieldName="categories" multiselectValues="#selectedCategoryIDs#" edit="#rc.edit#">
+			<cf_HibachiListingColumn propertyIdentifier="categoryName" tdclass="primary" />
+			<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
 		</cf_HibachiListingDisplay>
-		
-		
 	</div>
+	
 	<div class="span6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
+		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.excludedcategories')#</h5>
+		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getExcludedCategoriesOptionsSmartList()#" multiselectFieldName="excludedCategories" multiselectValues="#selectedExcludedCategoryIDs#" edit="#rc.edit#">
+			<cf_HibachiListingColumn propertyIdentifier="categoryName" tdclass="primary" />
+			<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
+		</cf_HibachiListingDisplay>	
 	</div>
 </cfoutput>

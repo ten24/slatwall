@@ -61,18 +61,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
 				
-				// Get this items fulfillment
-				var fulfillment = orderItem.getOrderFulfillment();
+				// Get this sku's taxCategory
+				var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
 				
-				// If the method is shipping then apply taxes
-				if(!isNull(fulfillment) && fulfillment.getFulfillmentMethodType() == "shipping" && !isNull(fulfillment.getShippingAddress())) {
+				if(!isNull(taxCategory)) {
 					
-					var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
-					var address = fulfillment.getShippingAddress();
+					var taxAddress = "";
 					
-					if(!isNull(taxCategory)) {
+					if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress()) && !orderItem.getOrderFulfillment().getAddress().getNewFlag()) {
+						var taxAddress = orderItem.getOrderFulfillment().getShippingAddress();
+					} else if (arrayLen(orderItem.getOrder().getOrderPayments()) eq 1 and !isNull(orderItem.getOrder().getOrderPayments()[1].getBillingAddress())) {
+						var taxAddress = orderItem.getOrder().getOrderPayments()[1].getBillingAddress();
+					}
+					
+					if(isObject(taxAddress)) {
 						for(var r=1; r<= arrayLen(taxCategory.getTaxCategoryRates()); r++) {
-							if(isNull(taxCategory.getTaxCategoryRates()[r].getAddressZone()) || (!isNull(address) && getAddressService().isAddressInZone(address=address, addressZone=taxCategory.getTaxCategoryRates()[r].getAddressZone()))) {
+							if(isNull(taxCategory.getTaxCategoryRates()[r].getAddressZone()) || (getAddressService().isAddressInZone(address=taxAddress, addressZone=taxCategory.getTaxCategoryRates()[r].getAddressZone()))) {
 								var newAppliedTax = this.newTaxApplied();
 								newAppliedTax.setAppliedType("orderItem");
 								newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxCategory.getTaxCategoryRates()[r].getTaxRate()) / 100);
@@ -82,6 +86,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
+					
 				}
 				
 			} else if (orderItem.getOrderItemType().getSystemCode() == "oitReturn") {
