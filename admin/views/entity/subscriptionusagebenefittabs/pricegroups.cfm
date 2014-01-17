@@ -46,27 +46,9 @@
 Notes:
 
 --->
-<cfparam name="rc.subscriptionUsage" type="any" />
+<cfparam name="rc.subscriptionUsageBenefit" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<div class="span6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.benefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
-		
-		
-	</div>
-	<div class="span6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
-	</div>
+	<cf_HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="pricegroups" edit="#rc.edit#" displaytype="plain" />
 </cfoutput>

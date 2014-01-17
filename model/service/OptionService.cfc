@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="HibachiService" accessors="true" {
+component extends="HibachiService" accessors="true" output="false" {
 
 	property name="optionDAO" type="any";
 
@@ -84,6 +84,19 @@ component extends="HibachiService" accessors="true" {
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveOptionGroup(required any optionGroup, struct data={}) {
+		var wasNew = optionGroup.getNewFlag();
+				
+		arguments.optionGroup = super.save(arguments.optionGroup, arguments.data);
+		
+		if(!arguments.optionGroup.hasErrors() && wasNew) {
+			getHibachiCacheService().resetCachedKey("skuDAO_getNextOptionGroupSortOrder");
+		}
+		
+		return arguments.productType;
+	}
+	
 	
 	// ======================  END: Save Overrides ============================
 	
