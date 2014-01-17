@@ -51,24 +51,17 @@ component  extends="HibachiService" accessors="true" {
 
 	property name="attributeDAO";
 	
-	variables.attributeCodesListByAttributeSetType = {};
-	
 	// ===================== START: Logical Methods ===========================
 	
 	public string function getAttributeCodesListByAttributeSetType( required string attributeSetType ) {
-		if(!structKeyExists(variables.attributeCodesListByAttributeSetType, arguments.attributeSetType)) {
-			
-			var attributeCodeList = ""; 
-			var rs = getAttributeDAO().getAttributeCodesQueryByAttributeSetType( arguments.attributeSetType );
-			
-			for(var i=1; i<=rs.recordCount; i++) {
-				attributeCodeList = listAppend(attributeCodeList, rs[ "attributeCode" ][i]);			
-			}
-			
-			variables.attributeCodesListByAttributeSetType[ arguments.attributeSetType ] = attributeCodeList;
+		var attributeCodeList = ""; 
+		var rs = getAttributeDAO().getAttributeCodesQueryByAttributeSetType( arguments.attributeSetType );
+		
+		for(var i=1; i<=rs.recordCount; i++) {
+			attributeCodeList = listAppend(attributeCodeList, rs[ "attributeCode" ][i]);			
 		}
 		
-		return variables.attributeCodesListByAttributeSetType[ arguments.attributeSetType ];
+		return attributeCodeList;
 	}
 	
 	// =====================  END: Logical Methods ============================
@@ -87,7 +80,41 @@ component  extends="HibachiService" accessors="true" {
 	
 	// ====================== START: Save Overrides ===========================
 	
+	public any function saveAttribute(required any attribute, struct data={}) {
+		arguments.attribute = super.save(arguments.attribute, arguments.data);
+		
+		if(!arguments.attribute.hasErrors() && !isNull(arguments.attribute.getAttributeSet())) {
+			getHibachiDAO().flushORMSession();
+			
+			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetType_#arguments.attribute.getAttributeSet().getAttributeSetType().getSystemCode()#");
+		}
+		
+		return arguments.attribute;
+	}
+	
 	// ======================  END: Save Overrides ============================
+	
+	// ====================== START: Delete Overrides =========================
+	
+	public boolean function deleteAttribute(required any attribute) {
+		
+		if(!isNull(arguments.attribute.getAttributeSet())) {
+			var attributeSetCode = arguments.attribute.getAttributeSet().getAttributeSetType().getSystemCode();	
+		}
+		
+		var deleteOK = super.delete(arguments.attribute);
+		  
+		// Clear the cached value of acceptable
+		if(deleteOK && len(attributeSetCode)) {
+			getHibachiDAO().flushORMSession();
+			
+			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetType_#attributeSetCode#");
+		}
+
+		return deleteOK;
+	}
+	
+	// ======================  END: Delete Overrides ==========================
 	
 	// ==================== START: Smart List Overrides =======================
 	

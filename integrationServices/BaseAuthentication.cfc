@@ -64,4 +64,22 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	public string function getPublicLoginHTML() {
 		return '';
 	}
+	
+	// @hint helper function to return a Setting
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+		}
+		return super.setting(argumentcollection=arguments);
+	}
+	
+	// @hint helper function to return the integration entity that this belongs to
+	public any function getIntegration() {
+		return getService("integrationService").getIntegrationByIntegrationPackage(getPackageName());
+	}
+	
+	// @hint helper function to return the packagename of this integration
+	public any function getPackageName() {
+		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	}
 }

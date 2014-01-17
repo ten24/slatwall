@@ -57,7 +57,8 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				
+				<!--- Order Type --->
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeCode"  edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />

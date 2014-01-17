@@ -60,13 +60,16 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
-	property name="paymentTerms" hb_populateEnabled="false" singularname="paymentTerm" cfc="PaymentTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all" inverse="true" lazy="extra"; 																// Extra Lazy because it is only used for validation
-	property name="initialSubscriptionTerms" hb_populateEnabled="false" singularname="initialSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra"; 							// Extra Lazy because it is only used for validation
-	property name="renewalSubscriptionTerms" hb_populateEnabled="false" singularname="renewalSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra"; 							// Extra Lazy because it is only used for validation
-	property name="gracePeriodSubscriptionTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra"; 				// Extra Lazy because it is only used for validation
-	property name="initialSubscriptionUsageTerms" hb_populateEnabled="false" singularname="initialSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra";				// Extra Lazy because it is only used for validation
-	property name="renewalSubscriptionUsageTerms" hb_populateEnabled="false" singularname="renewalSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra";				// Extra Lazy because it is only used for validation
-	property name="gracePeriodSubscriptionUsageTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra";	// Extra Lazy because it is only used for validation
+	property name="paymentTerms" hb_populateEnabled="false" singularname="paymentTerm" cfc="PaymentTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all" inverse="true" lazy="extra"; 																	// Extra Lazy because it is only used for validation
+	property name="initialSubscriptionTerms" hb_populateEnabled="false" singularname="initialSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra"; 								// Extra Lazy because it is only used for validation
+	property name="renewalSubscriptionTerms" hb_populateEnabled="false" singularname="renewalSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra"; 								// Extra Lazy because it is only used for validation
+	property name="gracePeriodSubscriptionTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionTerm" cfc="SubscriptionTerm" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra"; 					// Extra Lazy because it is only used for validation
+	property name="initialSubscriptionUsageTerms" hb_populateEnabled="false" singularname="initialSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="initialTermID" cascade="all" inverse="true" lazy="extra";					// Extra Lazy because it is only used for validation
+	property name="renewalSubscriptionUsageTerms" hb_populateEnabled="false" singularname="renewalSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="renewalTermID" cascade="all" inverse="true" lazy="extra";					// Extra Lazy because it is only used for validation
+	property name="gracePeriodSubscriptionUsageTerms" hb_populateEnabled="false" singularname="gracePeriodSubscriptionUsageTerm" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="gracePeriodTermID" cascade="all" inverse="true" lazy="extra";		// Extra Lazy because it is only used for validation
+	property name="loyaltyAccruementExpirationTerms" singularname="loyaltyAccruementExpirationTerm" cfc="LoyaltyAccruement" type="array" fieldtype="one-to-many" fkcolumn="expirationTermID" cascade="all" inverse="true" lazy="extra";										// Extra Lazy because it is only used for validation
+	//property name="loyaltyRedemptionAutoRedemptionTerms" singularname="loyaltyRedemptionAutoRedemptionTerm" cfc="LoyaltyRedemption" type="array" fieldtype="one-to-many" fkcolumn="autoRedemptionTermID" cascade="all" inverse="true" lazy="extra";							// Extra Lazy because it is only used for validation
+	property name="loyaltyTerms" singularname="loyaltyTerm" cfc="LoyaltyTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all-delete-orphan" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many)
 	
@@ -81,12 +84,17 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 	
 	// Non-Persistent Properties
 
-	public any function getEndDate(any startDate = now()) {
+	public any function getEndDate(any startDate = now(), boolean multipleIterationsForFutureDateFlag=false) {
 		var endDate = arguments.startDate;
 		endDate = dateAdd('yyyy',val(getTermYears()),endDate);
 		endDate = dateAdd('m',val(getTermMonths()),endDate);
 		endDate = dateAdd('d',val(getTermDays()),endDate);
 		endDate = dateAdd('h',val(getTermHours()),endDate);
+		
+		if(arguments.multipleIterationsForFutureDateFlag && endDate < now()) {
+			return getEndDate(endDate, true);
+		}
+		
 		return endDate;
 	}
 

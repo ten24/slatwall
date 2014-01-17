@@ -67,17 +67,64 @@
 			// Call any public slatAction methods that are found
 			if(len($.event('slatAction')) && listFirst($.event('slatAction'), ":") != "frontend") {
 				
+				// We need to pull out any redirectURL's for the form & url so they don't automatically get called
+				var redirectFormDetails = {};
+				var redirectURLDetails = {};
+				
+				if(structKeyExists(form, "fRedirectURL")) {
+					redirectFormDetails.fRedirectURL = form.fRedirectURL;
+					structDelete(form, "fRedirectURL");
+				} else if (structKeyExists(url, "fRedirectURL")) {
+					redirectURLDetails.fRedirectURL = url.fRedirectURL;
+					structDelete(url, "fRedirectURL");
+				}
+				if(structKeyExists(form, "sRedirectURL")) {
+					redirectFormDetails.sRedirectURL = form.sRedirectURL;
+					structDelete(form, "sRedirectURL");
+				} else if (structKeyExists(url, "sRedirectURL")) {
+					redirectURLDetails.sRedirectURL = url.sRedirectURL;
+					structDelete(url, "sRedirectURL");
+				}
+				if(structKeyExists(form, "redirectURL")) {
+					redirectFormDetails.redirectURL = form.redirectURL;
+					structDelete(form, "redirectURL");
+				} else if (structKeyExists(url, "redirectURL")) {
+					redirectURLDetails.redirectURL = url.redirectURL;
+					structDelete(url, "redirectURL");
+				}
+				
+				var allRedirects = redirectURLDetails;
+				structAppend(allRedirects, redirectFormDetails, true);
+				
 				// This allows for multiple actions to be called
 				var actionsArray = listToArray( $.event('slatAction') );
 				
 				// This loops over the actions that were passed in
 				for(var a=1; a<=arrayLen(actionsArray); a++) {
-				
+					
 					// Call the correct public controller
 					$.slatwall.doAction( actionsArray[a] );
 					
+					// If the action failed, break out of the loop so that we don't continue to try processing
+					if($.slatwall.hasFailureAction(actionsArray[a])) {
+						break;
+					}
 				}
 				
+				if(structKeyExists(allRedirects, "fRedirectURL") && arrayLen($.slatwall.getFailureActions())) {
+					endSlatwallRequest();
+					location(url=allRedirects.fRedirectURL, addtoken=false);
+				} else if (structKeyExists(allRedirects, "sRedirectURL") && !arrayLen($.slatwall.getFailureActions())) {
+					endSlatwallRequest();
+					location(url=allRedirects.sRedirectURL, addtoken=false);
+				} else if (structKeyExists(allRedirects, "redirectURL")) {
+					endSlatwallRequest();
+					location(url=allRedirects.redirectURL, addtoken=false);
+				}
+				
+				// Replace the form & url with the correct values
+				structAppend(form, redirectFormDetails);
+				structAppend(url, redirectURLDetails);
 			}
 			
 			// If we aren't on the homepage we can do our own URL inspection
@@ -145,9 +192,18 @@
 						
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
+							
 							var listingPageFilename = left($.event('path'), find("/#$.slatwall.setting('globalURLKeyProduct')#/", $.event('path'))-1);
 							listingPageFilename = replace(listingPageFilename, "/#$.event('siteID')#/", "", "all");
+							
+							if($.slatwall.setting('integrationMuraLookupListingContentObjects')) {
+								var listingPageContentBean = $.getBean("content").loadBy( filename=listingPageFilename, siteID=$.slatwall.getContent().getSite().getCMSSiteID() );
+								$.content().setPath(listingPageContentBean.getPath());
+								$.content().setContentID(listingPageContentBean.getContentID());	
+							}
+							
 							var crumbDataArray = $.getBean("contentManager").getActiveContentByFilename(listingPageFilename, $.event('siteid'), true).getCrumbArray();
+							
 						} else {
 							var crumbDataArray = $.getBean("contentManager").getCrumbList(contentID="00000000000000000000000000000000001", siteID=$.event('siteID'), setInheritance=false, path="00000000000000000000000000000000001", sort="asc");
 						}
@@ -505,14 +561,12 @@
 				param name="contentData.contentRestrictedContentDisplayTemplate" default="";
 				param name="contentData.contentRequirePurchaseFlag" default="";
 				param name="contentData.contentRequireSubscriptionFlag" default="";
+				
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentIncludeChildContentProductsFlag", settingValue=contentData.contentIncludeChildContentProductsFlag);
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentRestrictAccessFlag", settingValue=contentData.contentRestrictAccessFlag);
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentRestrictedContentDisplayTemplate", settingValue=contentData.contentRestrictedContentDisplayTemplate);
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentRequirePurchaseFlag", settingValue=contentData.contentRequirePurchaseFlag);
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentRequireSubscriptionFlag", settingValue=contentData.contentRequireSubscriptionFlag);
-				
-				// Clear the settings cache (in the future this needs to be targeted)
-				$.slatwall.getService("settingService").clearAllSettingsCache();
 				
 				// If the "Add Sku" was selected, then we call that process method
 				if(structKeyExists(contentData, "addSku") && contentData.addSku && structKeyExists(contentData, "addSkuDetails")) {
@@ -646,9 +700,6 @@
 			syncMuraPluginSetting( $=$, settingName="accountSyncType", settingValue=getMuraPluginConfig().getSetting("accountSyncType") );
 			syncMuraPluginSetting( $=$, settingName="createDefaultPages", settingValue=getMuraPluginConfig().getSetting("createDefaultPages") );
 			syncMuraPluginSetting( $=$, settingName="superUserSyncFlag", settingValue=getMuraPluginConfig().getSetting("superUserSyncFlag") );
-			
-			// Clear the setting cache so that these new setting values get pulled in
-			$.slatwall.getService("settingService").clearAllSettingsCache();
 			
 			for(var i=1; i<=assignedSitesQuery.recordCount; i++) {
 				
@@ -1346,18 +1397,24 @@
 		<cfargument name="settingValue" default="" />
 		
 		<cfset var rs = "" />
+		<cfset var rs2 = "" />
 		<cfset var rsResult = "" />
 		
 		<cfif len(arguments.settingValue)>
-			<cfquery name="rs" result="rsResult">
-				UPDATE
+			
+			<cfquery name="rs">
+				SELECT
+					settingID,
+					settingValue
+				FROM
 					SwSetting
-				SET
-					settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
 				WHERE
-					contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#" />
+					LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#" />
+				  AND
+				  	contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" />
 			</cfquery>
-			<cfif not rsResult.recordCount>
+			
+			<cfif not rs.recordCount>
 				<cfquery name="rs">
 					INSERT INTO SwSetting (
 						settingID,
@@ -1371,11 +1428,26 @@
 						<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" />
 					)
 				</cfquery>
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+			<cfelseif rs.settingValue neq arguments.settingValue>
+				<cfquery name="rs2" result="rsResult">
+					UPDATE
+						SwSetting
+					SET
+						settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
+					WHERE
+						settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingID#" />
+				</cfquery>
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
 			</cfif>
+			
 		<cfelse>
-			<cfquery name="rs">
-				DELETE FROM SwSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#" />
+			<cfquery name="rs" result="rsResult">
+				DELETE FROM SwSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#" />
 			</cfquery>
+			<cfif rsResult.recordCount>
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+			</cfif>
 		</cfif> 
 	</cffunction>
 	
@@ -1386,16 +1458,18 @@
 		
 		<cfset var rs = "" />
 		<cfset var rs2 = "" />
+		<cfset var fullSettingName = "integrationMura#arguments.settingName#" />
 		
 		<cfquery name="rs">
-			SELECT settingID, settingValue FROM SwSetting WHERE settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="integrationMura#arguments.settingName#" />
+			SELECT settingID, settingValue FROM SwSetting WHERE LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(fullSettingName)#" />
 		</cfquery>
 		
-		<cfif rs.recordCount>
+		<cfif rs.recordCount and rs.settingValue neq arguments.settingValue>
 			<cfquery name="rs2">
 				UPDATE SwSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" /> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" /> 
 			</cfquery>
-		<cfelse>
+			<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+		<cfelseif not rs.recordCount>
 			<cfquery name="rs2">
 				INSERT INTO SwSetting (
 					settingID,
@@ -1403,10 +1477,11 @@
 					settingValue
 				) VALUES (
 					<cfqueryparam cfsqltype="cf_sql_varchar" value="#$.slatwall.createHibachiUUID()#" />,
-					 <cfqueryparam cfsqltype="cf_sql_varchar" value="integrationMura#arguments.settingName#" />,
-					 <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#fullSettingName#" />,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
 				) 
 			</cfquery>
+			<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
 		</cfif>
 
 	</cffunction>

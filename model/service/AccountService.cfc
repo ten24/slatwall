@@ -56,6 +56,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
+	property name="loyaltyService" type="any";
 	property name="validationService" type="any";
 	
 	
@@ -98,6 +99,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function getAccountWithAuthenticationByEmailAddress( required string emailAddress ) {
 		return getAccountDAO().getAccountWithAuthenticationByEmailAddress( argumentcollection=arguments );
+	}
+	
+	public any function getNewAccountLoyaltyNumber( required string loyaltyID ) {
+		return getAccountDAO().getNewAccountLoyaltyNumber( argumentcollection=arguments );
 	}
 	
 	// =====================  END: DAO Passthrough ============================
@@ -191,7 +196,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 	
-	public any function processAccount_create(required any account, required any processObject) {
+	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 		
 		// Populate the account with the correct values that have been previously validated
 		arguments.account.setFirstName( processObject.getFirstName() );
@@ -214,10 +219,15 @@ component extends="HibachiService" accessors="true" output="false" {
 			var accountEmailAddress = this.newAccountEmailAddress();
 			accountEmailAddress.setAccount( arguments.account );
 			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
+			
+			arguments.account.setPrimaryEmailAddress( accountEmailAddress );
 		}
 		
+		// Save & Populate the account so that custom attributes get set
+		arguments.account = this.saveAccount(arguments.account, arguments.data);
+		
 		// If the createAuthenticationFlag was set to true, the add the authentication
-		if(processObject.getCreateAuthenticationFlag()) {
+		if(!arguments.account.hasErrors() && processObject.getCreateAuthenticationFlag()) {
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setAccount( arguments.account );
 		
@@ -227,9 +237,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Set the password
 			accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );	
 		}
-		
-		// Call save on the account now that it is all setup
-		arguments.account = this.saveAccount(arguments.account);
 		
 		return arguments.account;
 	}
@@ -372,7 +379,426 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return arguments.account;
 	}
+
+	public any function processAccount_addAccountLoyalty(required any account, required any processObject) {
+		
+		// Get the populated AccountLoyalty out of the processObject
+		var newAccountLoyalty = this.newAccountLoyalty();
+
+		newAccountLoyalty.setAccount( arguments.account );
+		newAccountLoyalty.setLoyalty( arguments.processObject.getLoyalty() );
+		newAccountLoyalty.setAccountLoyaltyNumber( getNewAccountLoyaltyNumber( arguments.processObject.getLoyaltyID() ));
+
+		newAccountLoyalty = this.saveAccountLoyalty( newAccountLoyalty );
+		
+		if(!newAccountLoyalty.hasErrors()) {
+			newAccountLoyalty = this.processAccountLoyalty(newAccountLoyalty, {}, 'enrollment');
+		}
+		
+		return arguments.account;
+	}	
 	
+	// Account Email Address
+	public any function processAccountEmailAddress_sendVerificationEmail(required any accountEmailAddress, required any processObject) {
+		
+		// Get the site (this will return as a new site if no siteID)
+		var site = getSiteService().getSite(arguments.processObject.getSiteID(), true);
+		
+		if(len(site.setting('siteVerifyAccountEmailAddressEmailTemplate'))) {
+			
+			var email = getEmailService().newEmail();
+			var emailData = {
+				accountEmailAddressID = arguments.accountEmailAddress.getAccountEmailAddressID(),
+				emailTemplateID = site.setting('siteVerifyAccountEmailAddressEmailTemplate')
+			};
+			
+			email = getEmailService().processEmail(email, emailData, 'createFromTemplate');
+			
+			email.setEmailTo( arguments.accountEmailAddress.getEmailAddress() );
+			
+			email = getEmailService().processEmail(email, {}, 'addToQueue');
+			
+		} else {
+			throw("No email template could be found.  Please update the site settings to define a 'Verify Account Email Address Email Template'.");
+		}
+		
+		return arguments.accountEmailAddress;
+	}
+	
+	public any function processAccountEmailAddress_verify(required any accountEmailAddress) {
+		arguments.accountEmailAddress.setVerifiedFlag( 1 );
+		
+		return arguments.accountEmailAddress;
+	}
+	
+	// Account Loyalty
+	public any function processAccountLoyalty_itemFulfilled(required any accountLoyalty, required struct data) {
+		
+		// Loop over arguments.accountLoyalty.getLoyaltyAccruements() as 'loyaltyAccruement'
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {	
+			
+			// If loyaltyAccruement eq 'fulfillItem' as the type, then based on the amount create a new transaction and apply that amount
+			if (loyaltyAccruement.getAccruementType() eq 'itemFulfilled') {
+				
+				// Loop over the orderDeliveryItems in arguments.data.orderDelivery
+				for(var orderDeliveryItem in arguments.data.orderDelivery.getOrderDeliveryItems()) {
+
+					// START: Check Exclusions
+					var itemExcluded = false;
+					
+					// Check all of the exclusions for an excluded product type
+					if(arrayLen(loyaltyAccruement.getExcludedProductTypes())) {
+						var excludedProductTypeIDList = "";
+						for(var i=1; i<=arrayLen(loyaltyAccruement.getExcludedProductTypes()); i++) {
+							excludedProductTypeIDList = listAppend(excludedProductTypeIDList, loyaltyAccruement.getExcludedProductTypes()[i].getProductTypeID());
+						}
+					
+						for(var ptid=1; ptid<=listLen(orderDeliveryItem.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+							if(listFindNoCase(excludedProductTypeIDList, listGetAt(orderDeliveryItem.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+								itemExcluded = true;
+								break;
+							}	
+						}
+					}
+					
+					// If anything is excluded then we return false
+					if(	itemExcluded
+						||
+						loyaltyAccruement.hasExcludedProduct( orderDeliveryItem.getOrderItem().getSku().getProduct() )
+						||
+						loyaltyAccruement.hasExcludedSku( orderDeliveryItem.getOrderItem().getSku() )
+						||
+						( arrayLen( loyaltyAccruement.getExcludedBrands() ) && ( isNull( orderDeliveryItem.getOrderItem().getSku().getProduct().getBrand() ) || loyaltyAccruement.hasExcludedBrand( orderDeliveryItem.getOrderItem().getSku().getProduct().getBrand() ) ) )
+						) {
+						itemExcluded = true;
+					}
+					
+					
+					// START: Check Inclusions
+					var itemIncluded = false;
+					
+					if(arrayLen(loyaltyAccruement.getProductTypes())) {
+						var includedPropertyTypeIDList = "";
+						
+						for(var i=1; i<=arrayLen(loyaltyAccruement.getProductTypes()); i++) {
+							includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, loyaltyAccruement.getProductTypes()[i].getProductTypeID());
+						}
+						
+						for(var ptid=1; ptid<=listLen(orderDeliveryItem.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+							if(listFindNoCase(includedPropertyTypeIDList, listGetAt(orderDeliveryItem.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+								itemIncluded = true;
+								break;
+							}	
+						}
+					}
+						
+					// Verify that this orderDeliveryItem product is in the products, or skus for the accruement
+					if ( itemIncluded 
+						|| loyaltyAccruement.hasProduct(orderDeliveryItem.getOrderItem().getSku().getProduct()) 
+						|| loyaltyAccruement.hasSku(orderDeliveryItem.getOrderItem().getSku()) 
+						|| (!isNull(orderDeliveryItem.getOrderItem().getSku().getProduct().getBrand()) && loyaltyAccruement.hasBrand(orderDeliveryItem.getOrderItem().getSku().getProduct().getBrand())) 
+						){
+						 
+						// Create a new transaction
+						var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+						
+						// Setup the transaction data
+						var transactionData = {
+							accruementType = "itemFulfilled",
+							accountLoyalty = arguments.accountLoyalty,
+							loyaltyAccruement = loyaltyAccruement,
+							orderDeliveryItem = orderDeliveryItem,
+							order = orderDeliveryItem.getOrderItem().getOrder(),
+							orderItem = orderDeliveryItem.getOrderItem(),
+							pointAdjustmentType = "pointsIn"
+						};
+
+						// Process the transaction
+						accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+						
+					}
+				}
+			}
+		}
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_orderClosed(required any accountLoyalty, required struct data) {
+		
+		// Loop over account loyalty accruements
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {	
+			
+			// If loyaltyAccruement eq 'orderClosed' as the type
+			if (loyaltyAccruement.getAccruementType() eq 'orderClosed') {
+
+				// If order satus is closed
+				if ( listFindNoCase("ostClosed",arguments.data.order.getorderStatusType().getSystemCode()) ){
+					
+					// Create a new transaction
+					var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+					
+					// Setup the transaction data
+					var transactionData = {
+						accruementType = "orderClosed",
+						accountLoyalty = arguments.accountLoyalty,
+						loyaltyAccruement = loyaltyAccruement,
+						order = arguments.data.order,
+						pointAdjustmentType = "pointsIn"
+					};
+					
+					// Process the transaction
+					accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+					
+				}	
+			}
+		}
+		
+		
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_fulfillmentMethodUsed(required any accountLoyalty, required struct data) {
+		
+		// Loop over loyalty Accruements
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {	
+			
+			// If loyaltyAccruement eq 'fulfillmentMetodUsed' as the type
+			if (loyaltyAccruement.getAccruementType() eq 'fulfillmentMethodUsed') {
+					
+				// Create and setup a new transaction 
+				var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+				
+				// Setup the transaction data
+				var transactionData = {
+					accruementType = "fulfillmentMethodUsed",
+					accountLoyalty = arguments.accountLoyalty,
+					loyaltyAccruement = loyaltyAccruement,
+					orderFulfillment = arguments.data.orderFulfillment,
+					pointAdjustmentType = "pointsIn"
+				};
+				
+				// Process the transaction
+				accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+				
+			}
+		}
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_enrollment(required any accountLoyalty) {
+
+	
+		// Loop over arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements() as 'loyaltyAccruement'
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {
+		
+			// If loyaltyAccruement eq 'enrollment' as the type
+			if (loyaltyAccruement.getAccruementType() eq 'enrollment') {
+				
+				var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+				
+				// Setup the transaction data
+				var transactionData = {
+					accruementType = "enrollment",
+					accountLoyalty = arguments.accountLoyalty,
+					loyaltyAccruement = loyaltyAccruement,
+					pointAdjustmentType = "pointsIn"
+				};
+				
+				// Process the transaction
+				accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+				
+			}
+		}
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_orderItemReceived(required any accountLoyalty, required struct data) {
+		
+		// Loop over the account loyalty Accruements
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {	
+			
+			// If loyaltyAccruement is of type 'itemFulfilled'
+			if (loyaltyAccruement.getAccruementType() eq 'itemFulfilled') {
+				
+				// Loop over the items in the stockReceiver
+				for(var orderItemReceived in arguments.data.stockReceiver.getStockReceiverItems()) {
+					
+					// START: Check Exclusions
+					var itemExcluded = false;
+					
+					// Check all of the exclusions for an excluded product type
+					if(arrayLen(loyaltyAccruement.getExcludedProductTypes())) {
+						var excludedProductTypeIDList = "";
+						for(var i=1; i<=arrayLen(loyaltyAccruement.getExcludedProductTypes()); i++) {
+							excludedProductTypeIDList = listAppend(excludedProductTypeIDList, loyaltyAccruement.getExcludedProductTypes()[i].getProductTypeID());
+						}
+					
+						for(var ptid=1; ptid<=listLen(orderItemReceived.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+							if(listFindNoCase(excludedProductTypeIDList, listGetAt(orderItemReceived.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+								itemExcluded = true;
+								break;
+							}	
+						}
+					}
+					
+					// If anything is excluded then we return false
+					if(	itemExcluded
+						||
+						loyaltyAccruement.hasExcludedProduct( orderItemReceived.getOrderItem().getSku().getProduct() )
+						||
+						loyaltyAccruement.hasExcludedSku( orderItemReceived.getOrderItem().getSku() )
+						||
+						( arrayLen( loyaltyAccruement.getExcludedBrands() ) && ( isNull( orderItemReceived.getOrderItem().getSku().getProduct().getBrand() ) || loyaltyAccruement.hasExcludedBrand( orderItemReceived.getOrderItem().getSku().getProduct().getBrand() ) ) )
+						) {
+						itemExcluded = true;
+					}
+					
+					
+					// START: Check Inclusions
+					var itemIncluded = false;
+					
+					if(arrayLen(loyaltyAccruement.getProductTypes())) {
+						var includedPropertyTypeIDList = "";
+						
+						for(var i=1; i<=arrayLen(loyaltyAccruement.getProductTypes()); i++) {
+							includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, loyaltyAccruement.getProductTypes()[i].getProductTypeID());
+						}
+						
+						for(var ptid=1; ptid<=listLen(orderItemReceived.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+							if(listFindNoCase(includedPropertyTypeIDList, listGetAt(orderItemReceived.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+								itemIncluded = true;
+								break;
+							}	
+						}
+					}
+						
+					// Verify that this orderItemReceived product is in the products, or skus for the accruement
+					if ( itemIncluded 
+						|| loyaltyAccruement.hasProduct(orderItemReceived.getOrderItem().getSku().getProduct()) 
+						|| loyaltyAccruement.hasSku(orderItemReceived.getOrderItem().getSku()) 
+						|| (!isNull(orderItemReceived.getOrderItem().getSku().getProduct().getBrand()) && loyaltyAccruement.hasBrand(orderItemReceived.getOrderItem().getSku().getProduct().getBrand())) 
+						){
+					
+						// Create a new accountLoyalty transaction	
+						var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+						
+						// Setup the transaction data
+						var transactionData = {
+							accruementType = "itemFulfilled",
+							accountLoyalty = arguments.accountLoyalty,
+							loyaltyAccruement = loyaltyAccruement,
+							orderItemReceived = orderItemReceived,
+							order = orderItemReceived.getOrderItem().getOrder(),
+							orderItem = orderItemReceived.getOrderItem(),
+							pointAdjustmentType = "pointsOut"
+						};
+						
+						// Process the transaction
+						accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+						
+					}
+				}
+			}
+		}
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_manualTransaction(required any accountLoyalty, required any processObject) {
+		
+		// Create a new transaction
+		var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+		
+		accountLoyaltyTransaction.setAccountLoyalty( arguments.accountLoyalty );
+		accountLoyaltyTransaction.setAccruementType( processObject.getManualAdjustmentType() );
+		
+		if (processObject.getManualAdjustmentType() eq "manualIn"){
+			accountLoyaltyTransaction.setPointsIn( processObject.getPoints() );
+			if (!isNull(processObject.getExpirationDateTime())) { accountLoyaltyTransaction.setExpirationDateTime( processObject.getExpirationDateTime() ); }
+		} else {
+			accountLoyaltyTransaction.setPointsOut( processObject.getPoints() );
+		}
+
+		return arguments.accountLoyalty;	
+	}
+	
+	// Account Loyalty Transaction
+	public any function processAccountLoyaltyTransaction_create(required any accountLoyaltyTransaction, required struct data) {
+		
+		// Process only the 'active' loyalty programs
+		if ( arguments.data.accountLoyalty.getLoyalty().getActiveFlag() ) {
+			
+			// Setup the transaction
+			arguments.accountLoyaltyTransaction.setAccruementType( arguments.data.accruementType );
+			arguments.accountLoyaltyTransaction.setAccountLoyalty( arguments.data.accountLoyalty );
+			arguments.accountLoyaltyTransaction.setLoyaltyAccruement( arguments.data.loyaltyAccruement );
+			
+			// Set the order, orderItem and orderFulfillment if they exist 
+			if(structKeyExists(arguments.data, "order")) {
+				arguments.accountLoyaltyTransaction.setOrder( arguments.data.order );
+			}
+			
+			if(structKeyExists(arguments.data, "orderItem")) {
+				arguments.accountLoyaltyTransaction.setOrderItem( arguments.data.orderItem );
+			}
+			
+			if(structKeyExists(arguments.data, "orderFulfillment")) {
+				arguments.accountLoyaltyTransaction.setOrderFulfillment( arguments.data.orderFulfillment );
+			}
+			
+			// Set up loyalty program expiration date / time based upon the expiration term
+			if( !isNull(arguments.data.loyaltyAccruement.getExpirationTerm()) ){
+			    arguments.accountLoyaltyTransaction.setExpirationDateTime( arguments.data.loyaltyAccruement.getExpirationTerm().getEndDate() );
+			}
+			
+			
+			if ( arguments.data.pointAdjustmentType eq "pointsIn" ) {
+				
+				if ( arguments.data.loyaltyAccruement.getPointType() eq 'fixed' ){
+					arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() );
+				} 
+				else if ( arguments.data.loyaltyAccruement.getPointType() eq 'pointPerDollar' ) {
+					
+					if (arguments.data.accruementType eq 'itemFulfilled') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * (arguments.data.orderDeliveryItem.getQuantity() * arguments.data.orderDeliveryItem.getOrderItem().getPrice()) );
+					} else if (arguments.data.accruementType eq 'orderClosed') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * arguments.data.order.getTotal() );
+					} else if (arguments.data.accruementType eq 'fulfillmentMethodUsed') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * arguments.data.orderFulfillment.getFulFillmentCharge() );
+					}	
+				}
+				
+			} else {			
+				if ( arguments.data.loyaltyAccruement.getPointType() eq 'fixed' ){
+					arguments.accountLoyaltyTransaction.setPointsOut( arguments.data.loyaltyAccruement.getPointQuantity() );
+				} 
+				else if ( arguments.data.loyaltyAccruement.getPointType() eq 'pointPerDollar' ) {
+					arguments.accountLoyaltyTransaction.setPointsOut( arguments.data.loyaltyAccruement.getPointQuantity() * (arguments.data.orderItemReceived.getQuantity() * arguments.data.orderItemReceived.getOrderItem().getPrice()) );
+				}
+			}
+				
+			// Loop over account loyalty redemptions
+			for(var loyaltyRedemption in arguments.data.accountLoyalty.getLoyalty().getLoyaltyRedemptions()) {	
+				
+				// If loyalty auto redemption eq 'pointsAdjusted' as the type
+				if (loyaltyRedemption.getAutoRedemptionType() eq 'pointsAdjusted') {
+	
+					redemptionData = { 
+						account = arguments.data.accountLoyalty.getAccount(), 
+						accountLoyalty = arguments.data.accountLoyalty
+					};
+				
+					loyaltyRedemption = getLoyaltyService().processLoyaltyRedemption( loyaltyRedemption, redemptionData, 'redeem' );	
+				}
+			}
+		
+		}
+		return arguments.accountLoyaltyTransaction;
+	}
 	
 	// Account Payment
 	public any function processAccountPayment_createTransaction(required any accountPayment, required any processObject) {

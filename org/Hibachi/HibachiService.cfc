@@ -3,6 +3,7 @@
 	<!--- Import all of the Hibachi services and DAO's --->
 	<cfproperty name="hibachiDAO" type="any">
 	<cfproperty name="hibachiAuthenticationService" type="any">
+	<cfproperty name="hibachiCacheService" type="any">
 	<cfproperty name="hibachiEventService" type="any">
 	<cfproperty name="hibachiRBService" type="any">
 	<cfproperty name="hibachiSessionService" type="any">
@@ -277,7 +278,7 @@
 				return onMissingProcessMethod( missingMethodName, missingMethodArguments );
 			}
 
-			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
+			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# service.');
 		}
 		
 	
@@ -640,15 +641,12 @@
 		
 		public any function getEntitiesMetaData() {
 			if(!structCount(variables.entitiesMetaData)) {
-				var entityDirectoryArray = directoryList(expandPath('/#getApplicationValue('applicationKey')#/model/entity'));
-				for(var e=1; e<=arrayLen(entityDirectoryArray); e++) {
-					if(listLast(entityDirectoryArray[e], '.') eq 'cfc') {
-						var entityShortName = listFirst(listLast(replace(entityDirectoryArray[e], '\', '/', 'all'), '/'), '.');
-						var entityMetaData = createObject('component', '#getApplicationValue('applicationKey')#.model.entity.#entityShortName#').getThisMetaData();
-						
-						if(structKeyExists(entityMetaData, "persistent") && entityMetaData.persistent) {
-							 variables.entitiesMetaData[ entityShortName ] = entityMetaData;
-						}
+				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+				for(var entityName in entityNamesArr) {
+					var entityMetaData = entityNew(entityName).getThisMetaData();
+					var entityShortName = listLast(entityMetaData.fullname, '.');
+					if(structKeyExists(entityMetaData, "persistent") && entityMetaData.persistent) {
+						 variables.entitiesMetaData[ entityShortName ] = entityMetaData;
 					}
 				}
 			}

@@ -156,7 +156,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					thisSku.setPrice(arguments.data.price);
 					thisSku.setRenewalPrice(arguments.data.price);
 					thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.data.subscriptionTerms, i)) );
-					thisSku.setSkuCode(arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+					thisSku.setSkuCode(arguments.product.getProductCode() & "-#i#");
 					for(var b=1; b <= listLen(arguments.data.subscriptionBenefits); b++) {
 						thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.data.subscriptionBenefits, b) ) );
 					}

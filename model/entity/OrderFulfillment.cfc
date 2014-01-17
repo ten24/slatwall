@@ -68,7 +68,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
 	property name="fulfillmentShippingMethodOptions" singularname="fulfillmentShippingMethodOption" cfc="ShippingMethodOption" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
-
+	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
+	
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
@@ -442,7 +443,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		
     		getShippingAddress().setName( getAccountAddress().getAddress().getName() );
 			getShippingAddress().setCompany( getAccountAddress().getAddress().getCompany() );
-			getShippingAddress().setPhone( getAccountAddress().getAddress().getPhone() );
 			getShippingAddress().setStreetAddress( getAccountAddress().getAddress().getStreetAddress() );
 			getShippingAddress().setStreet2Address( getAccountAddress().getAddress().getStreet2Address() );
 			getShippingAddress().setLocality( getAccountAddress().getAddress().getLocality() );
@@ -450,6 +450,15 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			getShippingAddress().setStateCode( getAccountAddress().getAddress().getStateCode() );
 			getShippingAddress().setPostalCode( getAccountAddress().getAddress().getPostalCode() );
 			getShippingAddress().setCountryCode( getAccountAddress().getAddress().getCountryCode() );
+		
+			getShippingAddress().setSalutation( getAccountAddress().getAddress().getSalutation() );
+			getShippingAddress().setFirstName( getAccountAddress().getAddress().getFirstName() );
+			getShippingAddress().setLastName( getAccountAddress().getAddress().getLastName() );
+			getShippingAddress().setMiddleName( getAccountAddress().getAddress().getMiddleName() );
+			getShippingAddress().setMiddleInitial( getAccountAddress().getAddress().getMiddleInitial() );
+		
+			getShippingAddress().setPhoneNumber( getAccountAddress().getAddress().getPhoneNumber() );
+			getShippingAddress().setEmailAddress( getAccountAddress().getAddress().getEmailAddress() );
 		
 		// If there is an accountAddress, and no shippingAddress, then create a shipping address
 		} else if ( !isNull(getAccountAddress()) && isNull(getShippingAddress()) ) {

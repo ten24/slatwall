@@ -55,7 +55,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var addon = 1;
 		
 		var urlTitle = reReplace(lcase(trim(arguments.titleString)), "[^a-z0-9 \-]", "", "all");
-		urlTitle = reReplace(urlTitle, "[ ]+", "-", "all");
+		urlTitle = reReplace(urlTitle, "[-\s]+", "-", "all");
 		
 		var returnTitle = urlTitle;
 		
@@ -181,6 +181,10 @@ component output="false" accessors="true" extends="HibachiService" {
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
+	
+	public string function getShortReferenceID() {
+		return getDataDAO().getShortReferenceID(argumentcollection=arguments);
+	}
 	
 	// ===================== START: DAO Passthrough ===========================
 	
