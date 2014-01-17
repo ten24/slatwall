@@ -47,7 +47,7 @@ Notes:
 	
 	<cffunction name="getMetricDefinitions">
 		<cfreturn [
-			{alias='revenue', calculation='(SUM(salePreDiscount) - SUM(itemDiscount)) + (SUM(returnPreDiscount) - SUM(itemDiscount))', formatType="currency"},
+			{alias='revenue', calculation='SUM(salePreDiscount) - SUM(returnPreDiscount) - SUM(itemDiscount)', formatType="currency"},
 			{alias='salePreDiscount', function='sum', formatType="currency"},
 			{alias='returnPreDiscount', function='sum', formatType="currency"},
 			{alias='quantity', calculation='SUM(quantitySold) + SUM(quantityReturned)', title=rbKey('entity.orderItem.quantity')},
@@ -130,8 +130,8 @@ Notes:
     					ELSE
     						0
 					END as returnPreDiscount,
-					( SELECT COALESCE(SUM(swpa.discountAmount), 0) FROM SwPromotionApplied swpa WHERE swpa.orderItemID = SwOrderItem.orderItemID ) as itemDiscount,
-					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID ) as itemTax,
+					( SELECT COALESCE(SUM(swpa.discountAmount), 0) FROM SwPromotionApplied swpa WHERE swpa.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' ) - ( SELECT COALESCE(SUM(swpa.discountAmount), 0) FROM SwPromotionApplied swpa WHERE swpa.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' ) as itemDiscount,
+					( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2e9a6622ad1614ea75cd5b982ce' ) - ( SELECT COALESCE(SUM(swta.taxAmount), 0) FROM SwTaxApplied swta WHERE swta.orderItemID = SwOrderItem.orderItemID AND SwOrderItem.orderItemTypeID = '444df2eac18fa589af0f054442e12733' ) as itemTax,
 					#getReportDateTimeSelect()#
 				FROM
 					SwOrderItem

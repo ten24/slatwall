@@ -162,6 +162,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEncryptionService = {fieldType="select",defaultValue="internal"},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
+			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},

@@ -192,9 +192,18 @@
 						
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
+							
 							var listingPageFilename = left($.event('path'), find("/#$.slatwall.setting('globalURLKeyProduct')#/", $.event('path'))-1);
 							listingPageFilename = replace(listingPageFilename, "/#$.event('siteID')#/", "", "all");
+							
+							if($.slatwall.setting('integrationMuraLookupListingContentObjects')) {
+								var listingPageContentBean = $.getBean("content").loadBy( filename=listingPageFilename, siteID=$.slatwall.getContent().getSite().getCMSSiteID() );
+								$.content().setPath(listingPageContentBean.getPath());
+								$.content().setContentID(listingPageContentBean.getContentID());	
+							}
+							
 							var crumbDataArray = $.getBean("contentManager").getActiveContentByFilename(listingPageFilename, $.event('siteid'), true).getCrumbArray();
+							
 						} else {
 							var crumbDataArray = $.getBean("contentManager").getCrumbList(contentID="00000000000000000000000000000000001", siteID=$.event('siteID'), setInheritance=false, path="00000000000000000000000000000000001", sort="asc");
 						}
@@ -871,6 +880,11 @@
 			
 			<cfset var parentMappingCache = {} />
 			<cfset var missingContentQuery = "" />
+			<cfset var updateMissingSiteID = "" />
+			
+			<cfquery name="updateMissingSiteID">
+				UPDATE SwContent SET siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" /> WHERE siteID is null
+			</cfquery>
 		
 			<cfquery name="missingContentQuery">
 				SELECT

@@ -182,13 +182,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
 	public numeric function getChargeAfterDiscount() {
-		return precisionEvaluate(getFulfillmentCharge() - getDiscountAmount());
+		return precisionEvaluate('getFulfillmentCharge() - getDiscountAmount()');
 	}
 	
 	public numeric function getDiscountAmount() {
 		discountAmount = 0;
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
+			discountAmount = precisionEvaluate('discountAmount + getAppliedPromotions()[i].getDiscountAmount()');
 		}
 		return discountAmount;
 	}
@@ -198,14 +198,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
     public numeric function getFulfillmentTotal() {
-    	return precisionEvaluate(getSubtotalAfterDiscountsWithTax() + getChargeAfterDiscount());
+    	return precisionEvaluate('getSubtotalAfterDiscountsWithTax() + getChargeAfterDiscount()');
     }
         
    	public numeric function getItemDiscountAmountTotal() {
    		if(!structKeyExists(variables, "itemDiscountAmountTotal")) {
    			variables.itemDiscountAmountTotal = 0;
    			for(var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++) {
-				variables.itemDiscountAmountTotal = precisionEvaluate(variables.itemDiscountAmountTotal + getOrderFulfillmentItems()[i].getDiscountAmount());
+				variables.itemDiscountAmountTotal = precisionEvaluate('variables.itemDiscountAmountTotal + getOrderFulfillmentItems()[i].getDiscountAmount()');
 			}
    		}
 		return variables.itemDiscountAmountTotal;
@@ -291,25 +291,25 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
   		if( !structKeyExists(variables,"subtotal") ) {
 	    	variables.subtotal = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    		variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());
+	    		variables.subtotal = precisionEvaluate('variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice()');
 	    	}
   		}
     	return variables.subtotal;
     }
     
     public numeric function getSubtotalAfterDiscounts() {
-    	return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal());
+    	return precisionEvaluate('getSubtotal() - getItemDiscountAmountTotal()');
     }
     
     public numeric function getSubtotalAfterDiscountsWithTax() {
-    	return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal() + getTaxAmount());
+    	return precisionEvaluate('getSubtotal() - getItemDiscountAmountTotal() + getTaxAmount()');
     }
     
     public numeric function getTaxAmount() {
     	if( !structkeyExists(variables, "taxAmount") ) {
     		variables.taxAmount = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    		variables.taxAmount = precisionEvaluate(variables.taxAmount + getOrderFulfillmentItems()[i].getTaxAmount());
+	    		variables.taxAmount = precisionEvaluate('variables.taxAmount + getOrderFulfillmentItems()[i].getTaxAmount()');
 	    	}
     	}
     	return variables.taxAmount;
@@ -320,7 +320,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	
     	for( var orderItem in getOrderFulfillmentItems()) {
     		var convertedWeight = getService("measurementService").convertWeightToGlobalWeightUnit(orderItem.getSku().setting('skuShippingWeight'), orderItem.getSku().setting('skuShippingWeightUnitCode'));
-    		totalShippingWeight = precisionEvaluate( totalShippingWeight + (convertedWeight * orderItem.getQuantity()) );
+    		totalShippingWeight = precisionEvaluate('totalShippingWeight + (convertedWeight * orderItem.getQuantity())');
     	}			
   		
     	return totalShippingWeight;
@@ -479,7 +479,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// ================== START: Deprecated Methods ========================
 	
 	public numeric function getDiscountTotal() {
-		return precisionEvaluate(getDiscountAmount() + getItemDiscountAmountTotal());
+		return precisionEvaluate('getDiscountAmount() + getItemDiscountAmountTotal()');
 	}
     
 	public numeric function getShippingCharge() {

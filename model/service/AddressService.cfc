@@ -111,15 +111,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public array function getCountryCodeOptions() {
-		if(!structKeyExists(variables, "countryCodeOptions")) {
-			var smartList = this.getCountrySmartList();
-			smartList.addFilter(propertyIdentifier="activeFlag", value=1);
-			smartList.addSelect(propertyIdentifier="countryName", alias="name");
-			smartList.addSelect(propertyIdentifier="countryCode", alias="value");
-			smartList.addOrder("countryName|ASC");
-			variables.countryCodeOptions = smartList.getRecords();
-		}
-		return variables.countryCodeOptions;
+		
+		var smartList = this.getCountrySmartList();
+		smartList.addFilter(propertyIdentifier="activeFlag", value=1);
+		smartList.addSelect(propertyIdentifier="countryName", alias="name");
+		smartList.addSelect(propertyIdentifier="countryCode", alias="value");
+		smartList.addOrder("countryName|ASC");
+		
+		return smartList.getRecords();
 	}
 	
 	// =====================  END: Logical Methods ============================
@@ -144,7 +143,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.country = save(entity=arguments.country, data=arguments.data, context=arguments.context);
 	
 		// remove the cache of country code options
-		structDelete(variables, "countryCodeOptions");
+		getHibachiCacheService().resetCachedKey("addressService_getCountryCodeOptions");
 		
 		return arguments.country;
 	}

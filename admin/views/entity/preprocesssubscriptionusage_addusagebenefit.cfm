@@ -47,26 +47,21 @@ Notes:
 
 --->
 <cfparam name="rc.subscriptionUsage" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<div class="span6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.benefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
+	<cf_HibachiEntityProcessForm entity="#rc.subscriptionUsage#" edit="#rc.edit#">
 		
+		<cf_HibachiEntityActionBar type="preprocess" object="#rc.subscriptionUsage#">
+		</cf_HibachiEntityActionBar>
 		
-	</div>
-	<div class="span6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
-	</div>
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="benefitTermType" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="subscriptionBenefitID" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityProcessForm>
 </cfoutput>

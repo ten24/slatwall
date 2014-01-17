@@ -52,10 +52,14 @@ Notes:
 		<cfelseif !isNull(arguments.requestBean.getAccountPaymentMethod())>
 			<CustomerRefNum>#arguments.requestBean.getAccountPaymentMethod().getShortReferenceID( true )#</CustomerRefNum>
 		</cfif>
-		<CustomerAddress1>#arguments.requestBean.getBillingStreetAddress()#</CustomerAddress1>
-		<CustomerAddress2>#arguments.requestBean.getBillingStreet2Address()#</CustomerAddress2>
+		<CustomerAddress1>#left(arguments.requestBean.getBillingStreetAddress(), 30)#</CustomerAddress1>
+		<CustomerAddress2>#left(arguments.requestBean.getBillingStreet2Address(), 30)#</CustomerAddress2>
 		<CustomerCity>#arguments.requestBean.getBillingCity()#</CustomerCity>
-		<CustomerState>#arguments.requestBean.getBillingStateCode()#</CustomerState>
+		<cfif len(arguments.requestBean.getBillingStateCode()) lte 2>
+			<CustomerState>#arguments.requestBean.getBillingStateCode()#</CustomerState>
+		<cfelse>
+			<CustomerState></CustomerState>
+		</cfif>
 		<CustomerZIP>#arguments.requestBean.getBillingPostalCode()#</CustomerZIP>
 		<CustomerEmail>#arguments.requestBean.getAccountPrimaryEmailAddress()#</CustomerEmail>
 		<CustomerPhone>#arguments.requestBean.getAccountPrimaryPhoneNumber()#</CustomerPhone>

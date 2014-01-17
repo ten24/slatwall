@@ -386,6 +386,10 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		return "";
 	}
 	
+	public void function setAttributeValue( any attributeValue ) {
+		variables.attributeValue = arguments.attributeValue;
+	}
+	
 	// ==============  END: Overridden Implicet Getters ====================
 	
 	// ================== START: Overridden Methods ========================
