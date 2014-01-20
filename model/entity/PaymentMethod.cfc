@@ -51,7 +51,7 @@ Notes:
 		creditCard		
 		external		
 		giftCard		
-		paymentTerm		
+		termPayment		
 						
 	paymentTransactionTypes
 		credit					
