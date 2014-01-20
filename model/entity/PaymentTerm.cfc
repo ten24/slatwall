@@ -55,9 +55,10 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	property name="sortOrder" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
-	property name="term" cfc="Term" fieldtype="many-to-one" fkcolumn="termID";
+	property name="term" cfc="Term" fieldtype="many-to-one" fkcolumn="termID";	
 	
 	// Related Object Properties (one-to-many)
+	property name="orderPayments" hb_populateEnabled="false" singularname="orderPayment" fieldType="one-to-many" type="array" fkColumn="paymentTermID" cfc="OrderPayment" inverse="true" orderby="createdDateTime desc";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -79,7 +80,15 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
-
+	
+	// Order Payment (one-to-many)    
+	public void function addOrderPayment(required any orderPayment) {    
+		arguments.orderPayment.setPaymentTerm( this );    
+	}    
+	public void function removeOrderPayment(required any orderPayment) {    
+		arguments.orderPayment.removePaymentTerm( this );    
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
