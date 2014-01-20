@@ -222,7 +222,7 @@ Notes:
 		<cfreturn sorted />
 	</cffunction>
 	
-	<cffunction name="getNextOptionGroupSortOrder" returntype="numeric" access="private">
+	<cffunction name="getNextOptionGroupSortOrder" returntype="numeric" access="public">
 		<cfset var nogSortOrder = 1 />
 		<cfset var rs = "" />
 		

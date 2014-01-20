@@ -231,7 +231,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
 							var integrationBF = new Slatwall.org.Hibachi.DI1.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
-								transients=["entity", "process", "transient", "report"]
+								transients=["process", "transient", "report"],
+								exclude=["entity"]
 							});
 							
 							var integrationBFBeans = integrationBF.getBeanInfo();

@@ -1520,8 +1520,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
 			}
 			
-			// TODO: If there are accessContents associated with the referenced orderItem then we need to remove them
-
+			// If there was an accountContentAccess associated with the referenced orderItem then we need to remove it.
+			var accountContentAccess = getAccountService().getAccountContentAccess({orderItem=stockReceiverItem.getOrderItem().getReferencedOrderItem()});
+			if(!isNull(accountContentAccess)) {
+				getAccountService().deleteAccountContentAccess( accountContentAccess );
+			}
 		}
 		
 		

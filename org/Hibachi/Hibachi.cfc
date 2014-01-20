@@ -166,7 +166,11 @@ component extends="FW1.framework" {
 	
 	public void function setupGlobalRequest() {
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
-			request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
+            if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
+                request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
+            } else {
+                request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
+            }
 			
 			// Verify that the application is setup
 			verifyApplicationSetup();
@@ -355,7 +359,8 @@ component extends="FW1.framework" {
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
 						var customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
-							transients=["entity", "process", "transient", "report"]
+							transients=["process", "transient", "report"],
+							exclude=["entity"]
 						});
 						
 						customBF.setParent( coreBF );
