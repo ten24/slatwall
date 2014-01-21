@@ -17,10 +17,11 @@ component accessors="true" output="false" {
 		}
 		
 		if(listFindNoCase('init', arguments.rc.updateType)) {
-			rc.ajaxResponse[ 'collectionObjectOptions' ] = getCollectionService().getCollectionObjectOptions();	
+			rc.ajaxResponse[ 'collectionObjectOptions' ] = getCollectionService().getCollectionObjectOptions();
 		}
 		if(listFindNoCase('init,collectionObjectChange', arguments.rc.updateType) && len(arguments.rc.collectionObject)) {
 			rc.ajaxResponse[ 'collectionIDOptions' ] = getCollectionService().getCollectionOptionsByCollectionObject( collectionObject=arguments.rc.collectionObject );
+			rc.ajaxResponse[ 'collectionObjectColumnProperties' ] = getCollectionService().getCollectionObjectColumnProperties( collectionObject=arguments.rc.collectionObject );
 		}
 		
 		var collection = getCollectionService().getCollection( arguments.rc.collectionID, true );

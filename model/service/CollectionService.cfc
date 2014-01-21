@@ -81,6 +81,58 @@ component extends="HibachiService" accessors="true" output="false" {
 		return options;
 	}
 	
+	public any function getCollectionObjectColumnProperties( required string collectionObject ) {
+		var returnArray = getCollectionObjectProperties( arguments.collectionObject );
+		for(var i=arrayLen(returnArray); i>=1; i--) {
+			if(listFindNoCase('one-to-many,many-to-many', returnArray[i].fieldType)) {
+				arrayDeleteAt(returnArray, i);	
+			}
+		}
+		return returnArray;
+	}
+	
+	public any function getCollectionObjectProperties( required string collectionObject ) {
+		var returnArray = [];
+		var sortArray = [];
+		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.collectionObject)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.collectionObject)#"});
+		var properties = getPropertiesStructByEntityName(arguments.collectionObject);
+		
+		for(var attributeCode in listToArray(attributeCodesList)) {
+			arrayAppend(sortArray, attributeCode);
+			arraySort(sortArray, "textnocase");
+			
+			var add = {};
+			add['propertyIdentifier'] = attributeCode;
+			add['fieldType'] = 'column';
+			
+			arrayInsertAt(returnArray, arrayFindNoCase(sortArray, attributeCode), add);
+		}
+		
+		for(var property in properties) {
+			
+			if(!structKeyExists(properties[property], "persistent") || properties[property].persistent) {
+				arrayAppend(sortArray, property);
+				arraySort(sortArray, "textnocase");
+				
+				var add = {};
+				add['propertyIdentifier'] = property;
+				if(structKeyExists(properties[property], "fieldtype")) {
+					add['fieldType'] = properties[property].fieldType;
+					if(structKeyExists(properties[property], "cfc")) {
+						add['entityName'] = listLast(properties[property].cfc, '.');	
+					}
+				} else {
+					add['fieldType'] = 'column';
+				}
+				
+				arrayInsertAt(returnArray, arrayFindNoCase(sortArray, property), add);	
+			}
+			
+		}
+		
+		return returnArray;
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
