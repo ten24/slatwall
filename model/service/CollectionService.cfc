@@ -41,6 +41,46 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
+	public array function getCollectionObjectOptions() {
+		var emd = getEntitiesMetaData();
+		var enArr = listToArray(structKeyList(emd));
+		arraySort(enArr,"text");
+		
+		var options = [];
+		for(var value in enArr) {
+			var option = {};
+			option["name"] = rbKey('entity.#value#');
+			option["value"] = value; 
+			arrayAppend(options, option);
+		}
+		
+		var option = {};
+		option["name"] = rbKey('define.select');
+		option["value"] = ""; 
+		
+		arrayPrepend(options, option);
+		
+		return options;
+	}
+	
+	public array function getCollectionOptionsByCollectionObject( required string collectionObject ) {
+		var smartList = this.getCollectionSmartList();
+		
+		smartList.addSelect('collectionName', 'name');
+		smartList.addSelect('collectionID', 'value');
+		smartList.addOrder('collectionName|ASC');
+		
+		var option = {};
+		option["name"] = rbKey('define.new');
+		option["value"] = ""; 
+		
+		var options = smartList.getRecords(); 
+		
+		arrayPrepend(options, option);
+		
+		return options;
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================

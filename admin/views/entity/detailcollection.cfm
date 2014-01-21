@@ -60,7 +60,7 @@ Notes:
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
-		<table class="table" sw-collection-display="{collectionID: '#rc.collection.getCollectionID()#'}">
+		<table class="sw-collection-display table" sw-collection-display="{'collectionObject': '#rc.collection.getCollectionObject()#', 'collectionID': '#rc.collection.getCollectionID()#'}">
 			<tr>
 				<th ng-repeat="pi in collection.propertyIdentifiers">{{pi}}</th>
 			</tr>
@@ -68,7 +68,6 @@ Notes:
 				<td ng-repeat="pi in collection.propertyIdentifiers"><a ng-click="addFilter( pi )">{{r[pi]}}</a></td>
 			</tr>
 		</table>
-		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
 

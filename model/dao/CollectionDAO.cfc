@@ -38,4 +38,10 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO">
 	
+	<cffunction name="getCollectionPageRecords">
+		<cfargument name="collection" />
+		
+		
+	</cffunction>
+	
 </cfcomponent>

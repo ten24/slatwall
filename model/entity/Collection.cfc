@@ -65,17 +65,17 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-	property name="config" persistent="false";
 	property name="pageRecords" persistent="false";
 	property name="collectionObjectOptions" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
 	public array function getCollectionObjectOptions() {
 		if(!structKeyExists(variables, "collectionObjectOptions")) {
 			var emd = getService("hibachiService").getEntitiesMetaData();
 			var enArr = listToArray(structKeyList(emd));
 			arraySort(enArr,"text");
-			variables.collectionObjectOptions = [{name=getHibachiScope().rbKey('define.select'), value=''}];
+			variables.collectionObjectOptions = [];
 			for(var i=1; i<=arrayLen(enArr); i++) {
 				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
 			}
@@ -83,24 +83,38 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return variables.collectionObjectOptions;
 	}
 	
-	public any function getConfig() {
-		if(!structKeyExists(variables, "config")) {
-			variables.config = {};
-			variables.config['columns'] = [];
-			var column = {};
-			column['propertyIdentifier'] = 'brandName';
-			arrayAppend(variables.config['columns'], column);
+	public any function getCollectionConfig() {
+		if(!structKeyExists(variables, "collectionConfig")) {
 			
-			var column2 = {};
-			column2['propertyIdentifier'] = 'brandWebsite';
-			arrayAppend(variables.config['columns'], column2);
+			variables.collectionConfig = {};
+			variables.collectionConfig['columns'] = [];
 			
-			
-			if(!isNull(getCollectionConfig()) && isJSON(getCollectionConfig())) {
-				variables.config = deserializeJSON(getCollectionConfig());
+			if(!isNull(getCollectionObject())) {
+				
+				// Setup Default Columns
+				var column = {};
+				column['propertyIdentifier'] = 'brandName';
+				column['title'] = 'Brand Name';
+				arrayAppend(variables.collectionConfig['columns'], column);
+				
+				var column2 = {};
+				column2['propertyIdentifier'] = 'brandWebsite';
+				column2['title'] = 'Brand Website';
+				arrayAppend(variables.collectionConfig['columns'], column2);
+				
+				var column3 = {};
+				column3['propertyIdentifier'] = 'thirdColumn';
+				column3['title'] = 'Third Column';
+				arrayAppend(variables.collectionConfig['columns'], column3);
+				
+				var column4 = {};
+				column4['propertyIdentifier'] = 'fourthColumn';
+				column4['title'] = 'Fourth Column';
+				arrayAppend(variables.collectionConfig['columns'], column4);
 			}
 		}
-		return variables.config;
+		
+		return variables.collectionConfig;
 	}
 	
 	public any function getPageRecords() {
@@ -110,11 +124,15 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			var record = {};
 			record['brandName'] = "Nike";
 			record['brandWebsite'] = "http://www.nike.com/";
+			record['thirdColumn'] = "Tons of Data goes here";
+			record['fourthColumn'] = "Tons of Data goes here";
 			
 			arrayAppend(variables.pageRecords, record);
 			
 			record2['brandName'] = "Etnies";
 			record2['brandWebsite'] = "http://www.etnies.com/";
+			record2['thirdColumn'] = "Tons of Data goes here";
+			record2['fourthColumn'] = "Tons of Data goes here";
 			
 			arrayAppend(variables.pageRecords, record2);
 		}
