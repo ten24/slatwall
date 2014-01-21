@@ -50,6 +50,8 @@ component displayname="Country" entityname="SlatwallCountry" table="SwCountry" p
 	
 	// Persistent Properties
 	property name="countryCode" length="2" ormtype="string" fieldtype="id";
+	property name="countryCode3Digit" ormtype="string";
+	property name="countryISONumber" ormtype="string";
 	property name="countryName" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
 	
