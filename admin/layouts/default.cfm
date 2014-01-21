@@ -49,7 +49,7 @@ Notes:
 
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en" ng-app="slatwall">
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>#rc.pageTitle# &##124; Slatwall</title>
@@ -332,12 +332,6 @@ Notes:
 				<a href="##" class="btn btn-primary"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
 			</div>
 		</div>
-
-		
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/scripts/slatwall.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/scripts/directives/swCollectionDisplay.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/scripts/controllers/main.js"></script>
 		
 		<!---
 		<cfif $.slatwall.setting('globalUsageStats') and getSubsystem(request.context.slatAction) eq "admin">
