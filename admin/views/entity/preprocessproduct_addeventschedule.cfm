@@ -62,8 +62,6 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventCapacity" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuPurchaseStartDateTime" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuPurchaseEndDateTime" edit="true">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true"><br>
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuAllowWaitlistingFlag" edit="true" value="#rc.product.getService("SettingService").getSettingValue("skuAllowWaitlistingFlag")#">
 				
