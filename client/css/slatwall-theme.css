@@ -750,6 +750,11 @@
   text-decoration: none;
 }
 
+/* --------- Angular Classes ----------*/
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 /* --------- Overrides ------------ */
 .pagination {
 	margin:0px;

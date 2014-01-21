@@ -10,12 +10,6 @@ component accessors="true" output="false" {
 		
 		rc.ajaxResponse[ 'collectionObject' ] = arguments.rc.collectionObject;
 		
-		if(isJSON(arguments.rc.collectionConfig)) {
-			var collectionConfig = deserializeJSON( arguments.rc.collectionConfig );
-		} else {
-			var collectionConfig = {};
-		}
-		
 		if(listFindNoCase('init', arguments.rc.updateType)) {
 			rc.ajaxResponse[ 'collectionObjectOptions' ] = getCollectionService().getCollectionObjectOptions();
 		}
@@ -25,6 +19,13 @@ component accessors="true" output="false" {
 		}
 		
 		var collection = getCollectionService().getCollection( arguments.rc.collectionID, true );
+		
+		if(isJSON(arguments.rc.collectionConfig)) {
+			var collectionConfig = deserializeJSON( arguments.rc.collectionConfig );
+			if(structKeyExists(collectionConfig, "columns") && isArray(collectionConfig.columns) && arrayLen(collectionConfig.columns)) {
+				collection.setCollectionConfig( collectionConfig );
+			}
+		}
 		
 		if(len(arguments.rc.collectionObject)) {
 			collection.setCollectionObject( arguments.rc.collectionObject );	

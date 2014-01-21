@@ -88,6 +88,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				arrayDeleteAt(returnArray, i);	
 			}
 		}
+		var noneOption = {};
+		noneOption["propertyIdentifier"] = "";
+		noneOption["title"] = "#rbKey('define.add')# / #rbKey('define.remove')#";
+		arrayPrepend(returnArray, noneOption);
 		return returnArray;
 	}
 	
@@ -116,6 +120,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				var add = {};
 				add['propertyIdentifier'] = property;
+				add['title'] = rbKey("entity.#arguments.collectionObject#.#property#");
 				if(structKeyExists(properties[property], "fieldtype")) {
 					add['fieldType'] = properties[property].fieldType;
 					if(structKeyExists(properties[property], "cfc")) {
@@ -125,7 +130,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					add['fieldType'] = 'column';
 				}
 				
-				arrayInsertAt(returnArray, arrayFindNoCase(sortArray, property), add);	
+				arrayInsertAt(returnArray, arrayFindNoCase(sortArray, property), add);
 			}
 			
 		}

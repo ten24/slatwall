@@ -89,28 +89,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			variables.collectionConfig = {};
 			variables.collectionConfig['columns'] = [];
 			
-			if(!isNull(getCollectionObject())) {
-				
-				// Setup Default Columns
-				var column = {};
-				column['propertyIdentifier'] = 'brandName';
-				column['title'] = 'Brand Name';
-				arrayAppend(variables.collectionConfig['columns'], column);
-				
-				var column2 = {};
-				column2['propertyIdentifier'] = 'brandWebsite';
-				column2['title'] = 'Brand Website';
-				arrayAppend(variables.collectionConfig['columns'], column2);
-				
-				var column3 = {};
-				column3['propertyIdentifier'] = 'thirdColumn';
-				column3['title'] = 'Third Column';
-				arrayAppend(variables.collectionConfig['columns'], column3);
-				
-				var column4 = {};
-				column4['propertyIdentifier'] = 'fourthColumn';
-				column4['title'] = 'Fourth Column';
-				arrayAppend(variables.collectionConfig['columns'], column4);
+			if(!isNull(getCollectionObject()) && len(getCollectionObject())) {
+				arrayAppend(variables.collectionConfig['columns'], getService('collectionService').getCollectionObjectColumnProperties(getCollectionObject())[2]);
 			}
 		}
 		
@@ -121,20 +101,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		if(!structKeyExists(variables, "pageRecords")) {
 			variables.pageRecords = [];
 			
-			var record = {};
-			record['brandName'] = "Nike";
-			record['brandWebsite'] = "http://www.nike.com/";
-			record['thirdColumn'] = "Tons of Data goes here";
-			record['fourthColumn'] = "Tons of Data goes here";
-			
-			arrayAppend(variables.pageRecords, record);
-			
-			record2['brandName'] = "Etnies";
-			record2['brandWebsite'] = "http://www.etnies.com/";
-			record2['thirdColumn'] = "Tons of Data goes here";
-			record2['fourthColumn'] = "Tons of Data goes here";
-			
-			arrayAppend(variables.pageRecords, record2);
+			if(!isNull(getCollectionObject()) && len(getCollectionObject()) && arrayLen(getCollectionConfig().columns)) {
+				var sl = getHibachiScope().getSmartList(getCollectionObject());
+				
+				for(var column in getCollectionConfig().columns) {
+					sl.addSelect(column.propertyIdentifier, column.propertyIdentifier);
+				}
+				variables.pageRecords = sl.getPageRecords();
+			}
 		}
 		return variables.pageRecords;
 	}

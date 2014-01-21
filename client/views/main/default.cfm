@@ -3,7 +3,7 @@
 		<div id="content" class="col-lg-12">
 			<br />
 			<br />
-			<table class="table table-striped table-bordered table-responsive sw-collection-display" sw-collection-display>
+			<table class="table table-striped table-bordered table-responsive ng-cloak sw-collection-display" sw-collection-display>
 				<thead>
 					<tr class="controls">
 						<td colspan="{{collectionConfig.columns.length}}">
@@ -23,14 +23,12 @@
 							<div class="row">
 								<div class="form-group col-sm-4">
 									<label>Collection Object</label>
-									<select class="form-control col-sm-4" ng-change="updateSwCollectionDisplay( 'collectionObjectChange' )" ng-model="collectionObject">
-										<option value="{{option.value}}" ng-repeat="option in collectionObjectOptions" ng-selected="option.value == collectionObject">{{option.name}}</option>
+									<select class="form-control col-sm-4" ng-change="updateCollectionObject()" ng-model="collectionObject" ng-options="option.value as option.name for option in collectionObjectOptions">
 									</select>
 								</div>
 								<div class="form-group col-sm-4" ng-show="collectionObject != ''">
 									<label>Collection</label>
-									<select class="form-control col-sm-4" ng-change="updateSwCollectionDisplay( 'collectionChange' )" ng-model="collectionID">
-										<option value="{{option.value}}" ng-repeat="option in collectionIDOptions" ng-selected="option.value == collectionID">{{option.name}}</option>
+									<select class="form-control col-sm-4" ng-change="updateSwCollectionDisplay( 'collectionChange' )" ng-model="collectionID" ng-options="option.value as option.name for option in collectionIDOptions">
 									</select>
 								</div>
 								<div class="form-group col-sm-4" ng-show="collectionObject != ''" ng-model="collectionName">
@@ -46,7 +44,11 @@
 						</td>
 					</tr>
 					<tr class="headers" ng-show="collectionConfig.columns.length">
-						<th ng-repeat="column in collectionConfig.columns">{{column.title}}</th>
+						<th ng-repeat="column in collectionConfig.columns">
+							<span ng-show="!showConfig">{{column.title}}</span>
+							<select class="form-control" ng-show="showConfig" ng-change="updateColumn( $index )" ng-model="collectionConfig.columns[$index].propertyIdentifier" ng-options="option.propertyIdentifier as option.title for option in getColumnPropertyOptions( $index )">
+							</select>
+						</th>
 					</tr>
 				</thead>
 				<tbody ng-show="collectionConfig.columns.length">
