@@ -190,9 +190,9 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 			for(var i=1;i<=listLen(this.getRecurringDays());i++) {
 				if(i==listLen(this.getRecurringDays())) {
 					summary = summary & " and";
-					summary = summary & " #dayNames[this.getRecurringDays()[i]]#";
+					summary = summary & " #dayNames[listGetAt(this.getRecurringDays(),i)]#";
 				} else {
-					summary = summary & " #dayNames[this.getRecurringDays()[i]]#,";
+					summary = summary & " #dayNames[listGetAt(this.getRecurringDays(),i)]#,";
 				}
 			}
 		}
