@@ -319,7 +319,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getItemDiscountAmountTotal() {
 		var discountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				discountTotal = precisionEvaluate('discountTotal + getOrderItems()[i].getDiscountAmount()');
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				discountTotal = precisionEvaluate('discountTotal - getOrderItems()[i].getDiscountAmount()');

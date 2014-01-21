@@ -272,7 +272,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// Process: Order
 	public any function processOrder_addOrderItem(required any order, required any processObject) {
-		
 		// Setup a boolean to see if we were able to just att this order item to an existing one
 		var foundItem = false;
 		
@@ -448,7 +447,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.setOrderReturn( orderReturn );
 				newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitReturn') );
 			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitDeposit") {
-				newOrderItem.setOrderReturn( orderReturn );
 				newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitDeposit') );
 			}
 			
@@ -475,65 +473,156 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		// If this is an event then we need to attach accounts and registrations
-		// to match the quantity of the order item. Comes from Order_AddOrderItem.		
+		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item. 		
 		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
 			
-			currentRegistrantCount = arguments.processObject.getSku().getRegistrantCount();
-			var newRegCount = 1;
+			var depositsOnlyFlag = false;
+			var salesOnlyFlag = false;
+			var orderItemsToCreateCount = 1;
+			var salesCount = 0;
+			var depositsCount = 0;
+			var currentRegistrantCount = arguments.processObject.getSku().getRegistrantCount();
+			var hasSaleFlag = false;
+			var hasDepositFlag = false;
 			
-			// ProcessObject should contain account info in registrants array	
+			// If order item contains both sales orders AND deposits we'll create the sale order item, then we'll create a separate deposit order item.	
 			for(var registrant in arguments.processObject.getRegistrants()) {
-				
-				// Create new event registration	 record
-				var eventRegistration = this.newEventRegistration();
-				eventRegistration.setOrderItem(newOrderItem);
-				eventRegistration.setSku(newOrderItem.getSku());
-				eventRegistration.generateAndSetAttendanceCode();
-				
-				// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
-				if(registrant.newAccountFlag == 0) {
-					eventRegistration.setAccount( getAccountService().getAccount(registrant.accountID) );
+				if(registrant.toWaitlistFlag == "1")	{
+					hasDepositFlag = true;
 				} else {
-					//Create new account to associate with registration
-					var newAccount = getAccountService().newAccount();
-					if(isDefined("registrant.firstName") && len(registrant.firstName)) {
-						newAccount.setFirstName(registrant.firstName);
-					}
-					if(isDefined("registrant.lastName") && len(registrant.lastName)) {
-						newAccount.setLastName(registrant.lastName);
-					}
-					if(isDefined("registrant.emailAddress") && len(registrant.emailAddress)) {
-						var newEmailAddress = getAccountService().newAccountEmailAddress();
-						newEmailAddress.setEmailAddress(registrant.emailAddress);
-						newAccount.setPrimaryEmailAddress(newEmailAddress);
-						
-					}
-					if(isDefined("registrant.phoneNumber") && len(registrant.phoneNumber)) {
-						var newPhoneNumber = getAccountService().newAccountPhoneNumber();
-						newPhoneNumber.setPhoneNumber(registrant.phoneNumber);
-						newAccount.setPrimaryPhoneNumber(newPhoneNumber);
-					}
-					newAccount = getAccountService().saveAccount(newAccount);
-					eventRegistration.setAccount(newAccount);
-					
+					hasSaleFlag = true;
 				}
-				
-				// Set registration status - Should this be done when order is placed instead?
-				if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
-					eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
-				} else {
-					if(arguments.processObject.getSku().getEventCapacity() < (currentRegistrantCount + newRegCount) ) {
-						eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
-					} else {
-						eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
-					}	
+				if(hasDepositFlag && hasSaleFlag) {
+					// Setup iterator to make 2 passes, the first for sales only
+					orderItemsToCreateCount = 2;
+					salesOnlyFlag = true;
+					break;
 				}
-				
-				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
-				newRegCount++;
-					
 			}
+			
+			for( var i=1;i<=orderItemsToCreateCount;i++) {
+				
+				if(i==2) {
+					// If we're here it means we had to split the order item into two and we're done with the first.
+					
+					// Create a separate order Item for deposits
+					var depositOrderItem = this.newOrderItem();
+					
+					// Set Header Info
+					depositOrderItem.setOrder( arguments.order );
+					depositOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitDeposit') );
+					
+					// Setup the Sku / Quantity / Price details
+					depositOrderItem.setSku( arguments.processObject.getSku() );
+					depositOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+					depositOrderItem.setQuantity( arguments.processObject.getQuantity() );
+					depositOrderItem.setPrice( arguments.processObject.getPrice() );
+					depositOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( depositOrderItem.getCurrencyCode() ) );
+					
+					// Set any customizations
+					depositOrderItem.populate( arguments.data );
+					
+					// Save the deposit order items
+					depositOrderItem = this.saveOrderItem( depositOrderItem );
+					
+					if(depositOrderItem.hasErrors()) {
+						arguments.order.addError('addOrderItem', depositOrderItem.getErrors());
+					}
+				
+					// Update the quantities to reflect the sales/deposit split.
+					newOrderItem.setQuantity( salesCount );
+					depositOrderItem.setQuantity( arguments.processObject.getQuantity() - salesCount );
+					
+					// Update the flags that drive sales/deposit related specifics
+					salesOnlyFlag = false;
+					depositsOnlyFlag = true;
+				}
+				
+				// ProcessObject should contain account info in registrants array	
+				for(var registrant in arguments.processObject.getRegistrants()) {
+					
+					// Make sure we put the registrants in the right order item
+					if( (orderItemsToCreateCount == 1) || (salesOnlyFlag && registrant.toWaitlistFlag == "0") || (depositsOnlyFlag && registrant.toWaitlistFlag == "1") ) {
+						
+						// Create new event registration	 record
+						var eventRegistration = this.newEventRegistration();
+						if(depositsOnlyFlag) {
+							eventRegistration.setOrderItem(depositOrderItem);
+							eventRegistration.setSku(depositOrderItem.getSku());
+						} else {
+							eventRegistration.setOrderItem(newOrderItem);
+							eventRegistration.setSku(newOrderItem.getSku());
+						}
+						eventRegistration.generateAndSetAttendanceCode();
+						
+						// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
+						if(registrant.newAccountFlag == 0) {
+							eventRegistration.setAccount( getAccountService().getAccount(registrant.accountID) );
+						} else {
+							//Create new account to associate with registration
+							var newAccount = getAccountService().newAccount();
+							if(isDefined("registrant.firstName") && len(registrant.firstName)) {
+								newAccount.setFirstName(registrant.firstName);
+							}
+							if(isDefined("registrant.lastName") && len(registrant.lastName)) {
+								newAccount.setLastName(registrant.lastName);
+							}
+							if(isDefined("registrant.emailAddress") && len(registrant.emailAddress)) {
+								var newEmailAddress = getAccountService().newAccountEmailAddress();
+								newEmailAddress.setEmailAddress(registrant.emailAddress);
+								newAccount.setPrimaryEmailAddress(newEmailAddress);
+								
+							}
+							if(isDefined("registrant.phoneNumber") && len(registrant.phoneNumber)) {
+								var newPhoneNumber = getAccountService().newAccountPhoneNumber();
+								newPhoneNumber.setPhoneNumber(registrant.phoneNumber);
+								newAccount.setPrimaryPhoneNumber(newPhoneNumber);
+							}
+							newAccount = getAccountService().saveAccount(newAccount);
+							eventRegistration.setAccount(newAccount);
+							
+						}
+						
+						// Set registration status - Should this be done when order is placed instead?
+						if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+							eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+						} else {
+							if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {
+								depositsCount++;
+								eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+							} else {
+								if( (arguments.processObject.getSku().getEventCapacity() > (currentRegistrantCount + salesCount) )  ) {
+									salesCount++;
+									eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+									
+								} else {
+									// If we have an unexprected waitlister due to event filling before order item was created
+									// check to see if there were any sales that went through. If there were then move the registrant
+									// to a waitlist/deposit order item. If not then change the order item type to deposit and waitlist registrant. 
+									if( !salesOnlyFlag && salesCount > 0 ) {
+										registrant.toWaitlistFlag = "1";
+										orderItemsToCreateCount = 2;
+										salesOnlyFlag = true;
+									} else {
+										newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitDeposit') );
+										eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+									}
+										
+								}
+							}
+							
+						}
+						
+						eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
+							
+					}
+				
+				
+				}
+				
+				
+			}
+		
 		}
 		
 		// Call save order to place in the hibernate session and re-calculate all of the totals 

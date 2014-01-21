@@ -51,26 +51,10 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<!--- This would prevent displaying event order items that fail purchaseDateTime validation - GG 
-		
-		<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event" 
-			AND (
-				NOT isNull(rc.processObject.getSku().getPurchaseStartDateTime())  
-				AND	(
-					dateCompare(now(),rc.processObject.getSku().getPurchaseStartDateTime(),"s") NEQ 1	
-					OR dateCompare(now(),rc.processObject.getSku().getPurchaseEndDateTime(),"s") NEQ -1
-					) 
-				)>
-			
-			<p class="alert-error">Seats for #rc.processObject.getSku().getSkuCode()# will be available to purchase from #dateFormat(rc.processObject.getSku().getPurchaseStartDateTime(),"long")# #timeFormat(rc.processObject.getSku().getPurchaseStartDateTime(),"short")# to #dateFormat(rc.processObject.getSku().getPurchaseEndDateTime(),"long")# #timeFormat(rc.processObject.getSku().getPurchaseEndDateTime(),"short")# .</p>
-	
-	<cfelse>--->
 	<cf_HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
 		
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.order#">
 		</cf_HibachiEntityActionBar>
-		
-		
 		
 			<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())>
 				<cf_HibachiPropertyRow>
@@ -103,7 +87,10 @@ Notes:
 								<fieldset>
 									<legend>Registrant #i#</legend>
 									<cfif rc.processObject.getSku().getEventCapacity() LT (currentRegistrantCount + i) >
+										<input type="hidden" id="registrants[#i#].toWaitlistFlag" name="registrants[#i#].toWaitlistFlag" value="1" />
 										<p class="alert-error">#$.slatwall.rbKey('entity.OrderItem.toWaitlist')#</p>
+									<cfelse>
+										<input type="hidden" id="registrants[#i#].toWaitlistFlag" name="registrants[#i#].toWaitlistFlag" value="0" />
 									</cfif>
 									<cf_HibachiFieldDisplay fieldname="registrants[#i#].newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
 									<!--- New Account --->
@@ -222,9 +209,6 @@ Notes:
 				<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>
 			</cfif>
 		
-		
-	
 	</cf_HibachiEntityProcessForm>
-	<!---</cfif>--->
 	
 </cfoutput>

@@ -650,11 +650,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// @hint Retrieve event registrations related to this sku
 	public any function getEventRegistrationsSmartlist() {
 		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
-			var smartList = getService("eventRegistrationService").getEventRegistrationSmartList();
-			smartList.addFilter("skuID",this.getSkuID());
-			variables.eventRegistrationsSmartList = smartList;
+			variables.eventRegistrationsSmartList = getService("EventRegistrationService").getEventRegistrationSmartList();
+			variables.eventRegistrationsSmartList.addFilter('sku.skuID', "#getSkuID()#");
 		}
-				
 		return variables.eventRegistrationsSmartList;
 	}
 	
@@ -662,7 +660,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getRegistrationAttendanceSmartlist() {
 		if(!structKeyExists(variables, "registrationAttendanceSmartlist")) {
 			var smartList = getService("eventRegistrationService").getRegistrationAttendenceSmartList();
-			smartlist.addFilter('skuID','this.getSkuID()');
+			smartlist.addFilter('skuID','#this.getSkuID()#');
 			variables.registrationAttendanceSmartlist = smartList;
 		}
 				

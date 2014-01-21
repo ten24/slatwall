@@ -27,8 +27,6 @@
 		"eventStartDateTime": [{"conditions":"generateEventSkus","required":true,"dataType":"date","gtNow":true}],
 		"eventEndDateTime": [{"conditions":"generateEventSkus","required":true,"dataType":"date","gtDateTimeProperty":"eventStartDateTime","gtNow":true}],
 		"locationConfigurations":[{"conditions":"generateEventSkus","required":true}],
-		"purchaseStartDateTime": [{"conditions":"generateEventSkus","dataType":"date","gtNow":true,"ltDateTimeProperty":"eventEndDateTime"}],
-		"purchaseEndDateTime": [{"conditions":"generateEventSkus","dataType":"date","gtDateTimeProperty":"purchaseStartDateTime","gtNow":true}],
 		"schedulingType": [{"conditions":"generateEventSkus","required":true}],
 		"eventCapacity": [{"conditions":"generateEventSkus","required":true}],
 		"productName": [{"required":true}],

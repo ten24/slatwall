@@ -64,11 +64,6 @@ Notes:
 				<!--- Select Product Type --->
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product.productType.productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
 				
-					<cfif rc.processObject.getBaseProductType() eq "event">
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="purchaseStartDateTime" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="purchaseEndDateTime" edit="#rc.edit#">
-					</cfif>
-				
 					<cfif rc.processObject.getBaseProductType() eq "merchandise">
 						<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
 					</cfif>
