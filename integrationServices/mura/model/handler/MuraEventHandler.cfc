@@ -451,18 +451,25 @@
 			// Setup the mura scope
 			var $ = request.muraScope;
 			
-			// Place Slatwall content entity in the slatwall scope
-			$.slatwall.setContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.content('contentID'), $.event('siteID') ) );
-			if($.slatwall.getContent().isNew()) {
-				$.slatwall.getContent().setParentContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.event('parentID'), $.event('siteID') ) );
-			}
+			// Make sure that this hasn't been run twice
+			if(!len($.event('slatwallEditTabDisplaed'))) {
 			
-			// if the site is null, then we can get it out of the request.muraScope
-			if(isNull($.slatwall.getContent().getSite())) {
-				$.slatwall.getContent().setSite( $.slatwall.getService("siteService").getSiteByCMSSiteID( request.muraScope.event('siteID') ));
-			}
+				$.event('slatwallEditTabDisplaed', 'yes');
 			
-			include "../../views/muraevent/oncontentedit.cfm";
+				// Place Slatwall content entity in the slatwall scope
+				$.slatwall.setContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.content('contentID'), $.event('siteID') ) );
+				if($.slatwall.getContent().isNew()) {
+					$.slatwall.getContent().setParentContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.event('parentID'), $.event('siteID') ) );
+				}
+				
+				// if the site is null, then we can get it out of the request.muraScope
+				if(isNull($.slatwall.getContent().getSite())) {
+					$.slatwall.getContent().setSite( $.slatwall.getService("siteService").getSiteByCMSSiteID( request.muraScope.event('siteID') ));
+				}
+				
+				include "../../views/muraevent/oncontentedit.cfm";
+			
+			}
 		}
 		
 		// SAVE / DELETE EVENTS ===== CATEGORY
