@@ -83,6 +83,16 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return variables.comments;
 	}
+	
+	// @hint Returns an array of comments related to this entity
+	public array function getFiles() {
+		if(!structKeyExists(variables, "files")) {
+			//arguments.primaryIDPropertyName = getPrimaryIDPropertyName();
+			var filterCriteria = {baseObject = getClassName(), baseID = getPrimaryIDValue()};
+			variables.files = getService("fileService").listFile( filterCriteria=filterCriteria );
+		}
+		return variables.files;
+	}
 
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
