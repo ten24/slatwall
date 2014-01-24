@@ -59,6 +59,7 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
 			</cf_HibachiPropertyList>

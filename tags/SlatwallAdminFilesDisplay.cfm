@@ -63,6 +63,7 @@
 			<table class="table table-striped table-bordered table-condensed">
 				<tr>
 					<th class="primary">#attributes.hibachiScope.rbKey("entity.file.fileName")#</th>
+					<th>#attributes.hibachiScope.rbKey("entity.file.fileType")#</th>
 					<th>#attributes.hibachiScope.rbKey("entity.file.fileDescription")#</th>
 					<th>#attributes.hibachiScope.rbKey("entity.define.createdByAccount")#</th>
 					<th>#attributes.hibachiScope.rbKey("entity.define.createdDateTime")#</th>
@@ -71,6 +72,7 @@
 				<cfloop array="#attributes.object.getFiles()#" index="objectFile">
 					<tr>
 						<td class="primary" style="white-space:normal;">#objectFile.getFileName()#</td>
+						<td>#objectFile.getFileType()#</td>
 						<td>#objectFile.getFileDescription()#</td>
 						<td><cfif !isNull(objectFile.getCreatedByAccount())>#objectFile.getCreatedByAccount().getFullName()#</cfif></td>
 						<td>#attributes.hibachiScope.formatValue(objectFile.getCreatedDateTime(), "datetime")#</td>

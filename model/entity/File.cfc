@@ -51,8 +51,8 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	// Persistent Properties    
 	property name="fileID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormType="boolean";
-	property name="fileType" ormType="string" hint="jpg|png|pdf";
-	property name="fileName" ormtype="string" hb_formFieldType="file" hb_fileUpload="true" hb_fileAcceptMIMEType="image/gif,image/jpeg,image/pjpeg,image/png,image/x-png,application/pdf"; // hb_fileAcceptMIMEType="image/gif,image/jpeg,image/pjpeg,image/png,image/x-png" hb_fileAcceptExtension=".jpeg,.jpg,.png,.gif"
+	property name="fileType" ormType="string";
+	property name="fileName" ormtype="string";
 	property name="fileDescription" ormtype="string" length="4000" hb_formFieldType="textarea";
 	property name="urlTitle" ormType="string";
 	property name="baseObject" ormType="string";
@@ -78,6 +78,7 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";    
 	    
 	// Non-Persistent Properties    
+	property name="fileUpload" type="string" persistent="false" hb_formFieldType="file";
 	    
 	// Deprecated Properties    
 	
