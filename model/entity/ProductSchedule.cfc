@@ -159,7 +159,6 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	}
 	
 	public string function getScheduleSummary() {
-		//var summary = "Occurring ";
 		var summary = "";
 		if(this.getRecurringTimeUnitName() == "Daily") {
 			summary = summary & getDailySummary();
@@ -170,7 +169,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 		} else if (this.getRecurringTimeUnitName() == "Yearly") {
 			summary = summary & getYearlySummary();
 		}
-		summary = summary & " from " & dateFormat(this.getScheduleStartDate(),"long") & " through " & dateFormat(this.getScheduleEndDate(),"long") & ".";
+		summary = summary & " #rbKey('define.from')# " & dateFormat(this.getScheduleStartDate(),"long") & " #rbKey('define.through')# " & dateFormat(this.getScheduleEndDate(),"long") & ".";
 		return summary;
 	}
 	
@@ -181,15 +180,15 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	
 	// @help Returns text summary of a weekly schedule. Used by getScheduleSummary().
 	private string function getWeeklySummary() {
-		var dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+		var dayNames = [rbKey('define.sunday'),rbKey('define.monday'),rbKey('define.tuesday'),rbKey('define.wednesday'),rbKey('define.thursday'),rbKey('define.friday'),rbKey('define.saturday')];
 		var summary = getService("SettingService").getTypeByTypeID(this.getRecurringTimeUnit().getTypeID()).getType();
-		var summary = summary & " every";
+		var summary = summary & " #rbKey('define.every')#";
 		if(listLen(this.getRecurringDays()) == 1) {
 			summary = summary & " #dayNames[this.getRecurringDays()]#";
 		} else {
 			for(var i=1;i<=listLen(this.getRecurringDays());i++) {
 				if(i==listLen(this.getRecurringDays())) {
-					summary = summary & " and";
+					summary = summary & " #rbKey('define.and')#";
 					summary = summary & " #dayNames[listGetAt(this.getRecurringDays(),i)]#";
 				} else {
 					summary = summary & " #dayNames[listGetAt(this.getRecurringDays(),i)]#,";
@@ -201,11 +200,11 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	
 	// @help Returns text summary of a monthly schedule. Used by getScheduleSummary().
 	private string function getMonthlySummary() {
-		var dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+		var dayNames = [rbKey('define.sunday'),rbKey('define.monday'),rbKey('define.tuesday'),rbKey('define.wednesday'),rbKey('define.thursday'),rbKey('define.friday'),rbKey('define.saturday')];
 		var weeks = ["First","Second","Third","Fourth","Fifth"];
 		var monthDay = ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"];
 		var summary = getService("SettingService").getTypeByTypeID(this.getrecurringTimeUnit().getTypeID()).getType();
-		summary = summary & " on the ";
+		summary = summary & " #rbKey('define.onThe')# ";
 		if(this.getRepeatByType()=="dayOfWeek") {
 			var formattedDayOfMonth = weeks[ceiling( day( this.getScheduleStartDate() ) / 7 )];
 			var dayName = dayNames[ datePart( "w", this.getScheduleStartDate() )];
@@ -215,7 +214,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 			var dayName = dayNames[ datePart( "w", this.getScheduleStartDate() )];
 			summary = summary & monthDay[day(this.getScheduleStartDate())];	
 		}
-		summary = summary & " of the month";
+		summary = summary & " #rbKey('define.ofTheMonth')#";
 		return summary; 
 	}
 	
@@ -223,7 +222,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	private string function getYearlySummary() {
 		var monthDay = ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"];
 		var summary = getService("SettingService").getTypeByTypeID(this.getrecurringTimeUnit().getTypeID()).getType();
-		summary = summary & " on #monthAsString(month(this.getScheduleStartDate()))# #monthDay[day(this.getScheduleStartDate())]#";
+		summary = summary & " #rbKey('define.on')# #monthAsString(month(this.getScheduleStartDate()))# #monthDay[day(this.getScheduleStartDate())]#";
 		return summary; 
 	}
 	
