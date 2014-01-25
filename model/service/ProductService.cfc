@@ -815,6 +815,16 @@ component extends="HibachiService" accessors="true" {
 		if(isNull(arguments.product.getURLTitle())) {
 			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
 		}
+		if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schRecurring").getTypeID() ) {
+			if(!isDefined("arguments.processObject.getScheduleEndDate") ) {
+				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_defined'));
+				return product;
+			} else if(!isDate(arguments.processObject.getScheduleEndDate()) || dateCompare(arguments.processObject.getScheduleStartDate(),arguments.processObject.getScheduleEndDate()) eq 1) {
+				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_valid'));
+				return product;
+				
+			}
+		}
 		
 		// Create Merchandise Product Skus Based On Options
 		if(arguments.processObject.getBaseProductType() == "merchandise") {

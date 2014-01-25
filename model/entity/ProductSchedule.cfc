@@ -201,7 +201,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	// @help Returns text summary of a monthly schedule. Used by getScheduleSummary().
 	private string function getMonthlySummary() {
 		var dayNames = [rbKey('define.sunday'),rbKey('define.monday'),rbKey('define.tuesday'),rbKey('define.wednesday'),rbKey('define.thursday'),rbKey('define.friday'),rbKey('define.saturday')];
-		var weeks = ["First","Second","Third","Fourth","Fifth"];
+		var weeks = [rbKey('define.first'),rbKey('define.second'),rbKey('define.third'),rbKey('define.fourth'),rbKey('define.fifth')];
 		var monthDay = ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"];
 		var summary = getService("SettingService").getTypeByTypeID(this.getrecurringTimeUnit().getTypeID()).getType();
 		summary = summary & " #rbKey('define.onThe')# ";
