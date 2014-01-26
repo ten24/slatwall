@@ -63,6 +63,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Status Methods ===========================
+	
+	// ======================  END: Status Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
 	public any function saveFile(required any file, struct data, string context="save") {
 		arguments.file = save(entity=arguments.file, data=arguments.data, context=arguments.context);
 		
@@ -84,14 +93,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.file;
 	}
 	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Status Methods ===========================
-	
-	// ======================  END: Status Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
@@ -103,6 +104,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 	
 	// ===================== START: Delete Overrides ==========================
+	
+	public any function deleteFile(required any file) {
+		var deleteOK = delete(entity=arguments.file);
+		
+		// only delete file if entity successfully deleted
+		if (deleteOK)
+		{
+			var filePath = getService("settingService").getSettingValue('globalAssetsFileFolderPath') & "/#arguments.file.getFileID()#.cfm";
+			if (fileExists(filePath))
+			{
+				fileDelete(filepath);
+			}
+		}
+		
+		return deleteOK;
+	}
 	
 	// =====================  END: Delete Overrides ===========================
 	
