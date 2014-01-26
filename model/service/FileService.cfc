@@ -76,14 +76,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.file = save(entity=arguments.file, data=arguments.data, context=arguments.context);
 		
 		// only execute file operations when a file is submitted
-		if (isSimpleValue(file.getFileUpload()) && len(file.getFileUpload()) && structKeyExists(form, 'fileUpload'))
-		{
+		if (isSimpleValue(file.getFileUpload()) && len(file.getFileUpload()) && structKeyExists(form, 'fileUpload')) {
 			// rename file with .cfm extension in order to control file access
 			var destinationFilePath = getService("settingService").getSettingValue('globalAssetsFileFolderPath') & "/#arguments.file.getFileID()#.cfm";
 			var uploadData = fileUpload(destinationFilePath, 'fileUpload', '*', 'overwrite');
 			
-			if (uploadData.filewasSaved)
-			{
+			if (uploadData.filewasSaved) {
 				// extract and retain uploaded file's original extension and resave
 				arguments.file.setFileType(uploadData.clientFileExt);
 				save(entity=arguments.file, context=arguments.context);
@@ -109,11 +107,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var deleteOK = delete(entity=arguments.file);
 		
 		// only delete file if entity successfully deleted
-		if (deleteOK)
-		{
+		if (deleteOK) {
 			var filePath = getService("settingService").getSettingValue('globalAssetsFileFolderPath') & "/#arguments.file.getFileID()#.cfm";
-			if (fileExists(filePath))
-			{
+			if (fileExists(filePath)) {
 				fileDelete(filepath);
 			}
 		}
