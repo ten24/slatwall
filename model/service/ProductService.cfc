@@ -104,7 +104,7 @@ component extends="HibachiService" accessors="true" {
 	private any function createEventSkuStub(required processObject, required startDate, required endDate, required qualifier, locationConfiguration) {
 		var newSku = this.newSku();
 		newSku.setProduct( arguments.processObject.getproduct() );
-		if(structKeyExists(arguments.processObject,"skuName") && !isNull(srguments.processObject.getSkuName())) {
+		if(isDefined("arguments.processObject.getskuName") && !isNull(arguments.processObject.getSkuName())) {
 			newSku.setSkuName( arguments.processObject.getSkuName() );
 		} else {
 			newSku.setSkuName( arguments.processObject.getproduct().getProductName() );
@@ -626,6 +626,18 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function processProduct_addEventSchedule(required any product, required any processObject) {
+		
+		// Make sure end date was specified and occurs after start date if recurring schedule
+		if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schRecurring").getTypeID() ) {
+			if(!isDefined("arguments.processObject.getScheduleEndDate") ) {
+				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_defined'));
+				return product;
+			} else if(!isDate(arguments.processObject.getScheduleEndDate()) || dateCompare(arguments.processObject.getScheduleStartDate(),arguments.processObject.getScheduleEndDate()) eq 1) {
+				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_valid'));
+				return product;
+				
+			}
+		}
 		
 		// Single or recurring?
 		var schedulingType = getSettingService().getTypeByTypeID(arguments.processObject.getSchedulingType());
