@@ -2,6 +2,7 @@
 	"properties":{
 		"amount":					[{"contexts":"save","required":true,"dataType":"numeric","minValue":0}],
 		"paymentMethod":			[{"contexts":"save","required":true}],
+		"paymentMethodType":		[{"contexts":"save","required":true,inList="cash,check,creditCard,external,giftCard"}],
 		"accountPaymentType":		[{"contexts":"save","required":true}],
 		"paymentTransactions":		[{"contexts":"delete","maxCollection":0}]
 	}
