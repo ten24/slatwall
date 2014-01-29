@@ -50,6 +50,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="order";
+	property name="accountService";
 	
 	// Lazy / Injected Objects
 	property name="stock" hb_rbKey="entity.stock";
@@ -85,6 +86,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveShippingAccountAddressName";
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
 	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
+	property name="registrants" type="array" hb_populateArray="true"; 
 	
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
@@ -106,6 +108,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	
 	// ======================== START: Defaults ============================
+	
+	public any function getRegistrantAccounts() {
+		if(structKeyExists(variables, "registrantAccounts")) {
+			return variables.registrantAccounts;
+		}
+		variables.registrantAccounts = [];
+		for(i=1;i<=quantity;i++) {
+			var account = getAccountService().newAccount();
+			arrayAppend(variables.registrantAccounts,account);
+		}
+		return variables.registrantAccounts;
+	}
 	
 	public any function getOrderFulfillmentID() {
 		if(structKeyExists(variables, "orderFulfillmentID")) {

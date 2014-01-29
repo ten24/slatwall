@@ -97,6 +97,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="addOrderItemStockOptionsSmartList" persistent="false";
 	property name="addPaymentRequirementDetails" persistent="false";
 	property name="deliveredItemsAmountTotal" persistent="false";
+	property name="depositItemSmartList" persistent="false";
 	property name="discountTotal" persistent="false" hb_formatType="currency";
 	property name="dynamicChargeOrderPayment" persistent="false";
 	property name="dynamicCreditOrderPayment" persistent="false";
@@ -318,7 +319,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getItemDiscountAmountTotal() {
 		var discountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				discountTotal = precisionEvaluate('discountTotal + getOrderItems()[i].getDiscountAmount()');
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				discountTotal = precisionEvaluate('discountTotal - getOrderItems()[i].getDiscountAmount()');
@@ -625,7 +626,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalSaleQuantity() {
 		var saleQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[1].getOrderItemType().getSystemCode() eq "oitSale") {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[1].getOrderItemType().getSystemCode()) ) {
 				saleQuantity += getOrderItems()[i].getQuantity();	
 			}
 		}
@@ -666,6 +667,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return this.getTotalReturnQuantity() - this.getQuantityReceived();
 	}
 	
+	public any function getDepositItemSmartList() {
+		if(!structKeyExists(variables, "depositItemSmartList")) {
+			variables.saleItemSmartList = getService("orderService").getOrderItemSmartList();
+			variables.saleItemSmartList.addFilter('order.orderID', getOrderID());
+			variables.saleItemSmartList.addInFilter('orderItemType.systemCode', 'oitDeposit');
+		}
+		return variables.saleItemSmartList;	
+	}
+	
 	public any function getSaleItemSmartList() {
 		if(!structKeyExists(variables, "saleItemSmartList")) {
 			variables.saleItemSmartList = getService("orderService").getOrderItemSmartList();
@@ -687,7 +697,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getSubtotal() {
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				subtotal = precisionEvaluate('subtotal + getOrderItems()[i].getExtendedPrice()');	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				subtotal = precisionEvaluate('subtotal - getOrderItems()[i].getExtendedPrice()');
@@ -705,7 +715,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				taxTotal = precisionEvaluate('taxTotal + getOrderItems()[i].getTaxAmount()');	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				taxTotal = precisionEvaluate('taxTotal - getOrderItems()[i].getTaxAmount()');
@@ -755,22 +765,22 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.attributeValue.removeOrder( this );    
 	}
 	
-	// Refrenced Order (many-to-one)
-	public void function setRefrencedOrder(required any refrencedOrder) {
-		variables.refrencedOrder = arguments.refrencedOrder;
-		if(isNew() or !arguments.refrencedOrder.hasRefrencingOrder( this )) {
-			arrayAppend(arguments.refrencedOrder.getRefrencingOrders(), this);
+	// Referenced Order (many-to-one)
+	public void function setReferencedOrder(required any referencedOrder) {
+		variables.referencedOrder = arguments.referencedOrder;
+		if(isNew() or !arguments.referencedOrder.hasReferencingOrder( this )) {
+			arrayAppend(arguments.referencedOrder.getReferencingOrders(), this);
 		}
 	}
-	public void function removeRefrencedOrder(any refrencedOrder) {
-		if(!structKeyExists(arguments, "refrencedOrder")) {
-			arguments.refrencedOrder = variables.refrencedOrder;
+	public void function removeReferencedOrder(any referencedOrder) {
+		if(!structKeyExists(arguments, "referencedOrder")) {
+			arguments.referencedOrder = variables.referencedOrder;
 		}
-		var index = arrayFind(arguments.refrencedOrder.getRefrencingOrders(), this);
+		var index = arrayFind(arguments.referencedOrder.getReferencingOrders(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.refrencedOrder.getRefrencingOrders(), index);
+			arrayDeleteAt(arguments.referencedOrder.getReferencingOrders(), index);
 		}
-		structDelete(variables, "refrencedOrder");
+		structDelete(variables, "referencedOrder");
 	}
 
 	// Order Items (one-to-many)
@@ -821,12 +831,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.stockReceiver.removeOrder( this );    
 	}
 	
-	// Refrencing Order Items (one-to-many)
-	public void function addRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.setRefrencedOrder( this );
+	// Referencing Order Items (one-to-many)
+	public void function addReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.setReferencedOrder( this );
 	}
-	public void function removeRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.removeRefrencedOrder( this );
+	public void function removeReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.removeReferencedOrder( this );
 	}
 	
 	// Applied Promotions (one-to-many)

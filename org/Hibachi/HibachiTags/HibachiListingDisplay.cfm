@@ -24,7 +24,7 @@
 	<cfparam name="attributes.recordProcessButtonDisplayFlag" type="any" default="true" />
 	
 	<!--- Hierarchy Expandable --->
-	<cfparam name="attributes.parentPropertyName" type="string" default="" />  <!--- Setting this value will turn on Expanable --->
+	<cfparam name="attributes.parentPropertyName" type="string" default="" />  <!--- Setting this value will turn on Expandable --->
 	
 	<!--- Sorting --->
 	<cfparam name="attributes.sortProperty" type="string" default="" />  			<!--- Setting this value will turn on Sorting --->
@@ -203,7 +203,7 @@
 					
 					<!--- Get the entity object to get property metaData --->
 					<cfset thisEntityName = attributes.hibachiScope.getService("hibachiService").getLastEntityNameInPropertyIdentifier( attributes.smartList.getBaseEntityName(), column.propertyIdentifier ) />
-					<cfset thisPropertyName = listLast( column.propertyIdentifier, "._" ) />
+					<cfset thisPropertyName = listLast( column.propertyIdentifier, "." ) />
 					<cfset thisPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( thisEntityName, thisPropertyName ) />
 					
 					<!--- Setup automatic search, sort, filter & range --->

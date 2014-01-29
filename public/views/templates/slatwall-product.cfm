@@ -192,51 +192,56 @@ Notes:
 																																	
 							--->
 							<cfset local.skus = $.slatwall.product().getSkus(sorted=true, fetchOptions=true) />
+							
+							<cfif #$.slatwall.product().getAvailableForPurchaseFlag()#>
 								
-							<!--- Check to see if there are more than 1 skus, if so then display the options dropdown --->
-							<cfif arrayLen(local.skus) gt 1>
+								<!--- Check to see if there are more than 1 skus, if so then display the options dropdown --->
+								<cfif arrayLen(local.skus) gt 1>
+									
+									<!--- Sku Selector --->
+									<div class="control-group">
+				    					<label class="control-label">Select Options</label>
+				    					<div class="controls">
+				    						
+											<!--- Sku Select Dropdown --->
+											<select name="skuID" class="required">
+												
+												<!--- Blank option to force user to select (this is optional) --->	
+												<option value="">Select Option</option>
+												
+												<!--- Loop over the skus to display options --->
+												<cfloop array="#local.skus#" index="local.sku">
+													<!--- This provides an option for each sku, with the 'displayOptions' method to show the optionGroup / option names --->
+													<option value="#local.sku.getSkuID()#">#local.sku.displayOptions()#</option>
+												</cfloop>
+												
+											</select>
+											<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="sku" />
+											
+				    					</div>
+				  					</div>
+									
+								<!--- If there are only 1 skus, then add a hidden field --->
+								<cfelse> 
+									<input type="hidden" name="skuID" value="#$.slatwall.product().getDefaultSku().getSkuID()#" />
+								</cfif>
 								
-								<!--- Sku Selector --->
+								<!--- Quantity --->
 								<div class="control-group">
-			    					<label class="control-label">Select Options</label>
+			    					<label class="control-label" for="quantity">Quantity</label>
 			    					<div class="controls">
 			    						
-										<!--- Sku Select Dropdown --->
-										<select name="skuID" class="required">
-											
-											<!--- Blank option to force user to select (this is optional) --->	
-											<option value="">Select Option</option>
-											
-											<!--- Loop over the skus to display options --->
-											<cfloop array="#local.skus#" index="local.sku">
-												<!--- This provides an option for each sku, with the 'displayOptions' method to show the optionGroup / option names --->
-												<option value="#local.sku.getSkuID()#">#local.sku.displayOptions()#</option>
-											</cfloop>
-											
-										</select>
-										<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="sku" />
+										<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
+										<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
 										
 			    					</div>
 			  					</div>
-								
-							<!--- If there are only 1 skus, then add a hidden field --->
-							<cfelse> 
-								<input type="hidden" name="skuID" value="#$.slatwall.product().getDefaultSku().getSkuID()#" />
-							</cfif>
-							
-							<!--- Quantity --->
-							<div class="control-group">
-		    					<label class="control-label" for="quantity">Quantity</label>
-		    					<div class="controls">
-		    						
-									<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
-									<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
-									
-		    					</div>
-		  					</div>
 							
 							<!--- Add to Cart Button --->
-							<button type="submit" class="btn">Add To Cart</button>
+								<button type="submit" class="btn">Add To Cart</button>
+							<cfelse>
+								<p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p>
+							</cfif>
 						</form>
 						<!--- END: ADD TO CART EXAMPLE 1 --->
 					</div>
@@ -250,51 +255,55 @@ Notes:
 							<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
 							<input type="hidden" name="productID" value="#$.slatwall.product().getProductID()#" />
 							
-							<!--- First we get all the option groups this product uses --->
-							<cfset optionGroupsArr = $.slatwall.product().getOptionGroups() />
-							<cfset defaultSelectedOptions = $.slatwall.product().getDefaultSku().getOptionsIDList() />
-							
-							<!--- Loop over all options groups --->
-							<cfloop array="#optionGroupsArr#" index="optionGroup">
+							<cfif #$.slatwall.product().getAvailableForPurchaseFlag()#>
+								<!--- First we get all the option groups this product uses --->
+								<cfset optionGroupsArr = $.slatwall.product().getOptionGroups() />
+								<cfset defaultSelectedOptions = $.slatwall.product().getDefaultSku().getOptionsIDList() />
 								
-								<!--- Then we get the options for used by each option group for this product --->
-								<cfset optionsArr = $.slatwall.product().getOptionsByOptionGroup( optionGroup.getOptionGroupID() ) />
+								<!--- Loop over all options groups --->
+								<cfloop array="#optionGroupsArr#" index="optionGroup">
+									
+									<!--- Then we get the options for used by each option group for this product --->
+									<cfset optionsArr = $.slatwall.product().getOptionsByOptionGroup( optionGroup.getOptionGroupID() ) />
+									
+									
+									<!--- Option Selector --->
+									<div class="control-group">
+				    					<label class="control-label">#optionGroup.getOptionGroupName()#</label>
+				    					<div class="controls">
+				    						
+											<!--- Option Select Dropdown --->
+											<select name="selectedOptionIDList">
+										
+												<cfloop array="#optionsArr#" index="option">
+													<option value="#option.getOptionID()#" <cfif listFindNoCase(defaultSelectedOptions, option.getOptionID())> selected="selected"</cfif>>#option.getOptionName()#</option>
+												</cfloop>
+												
+											</select>
+											
+											
+				    					</div>
+				  					</div>
+								</cfloop>
 								
+								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="selectedOptionIDList" />
 								
-								<!--- Option Selector --->
+								<!--- Quantity --->
 								<div class="control-group">
-			    					<label class="control-label">#optionGroup.getOptionGroupName()#</label>
+			    					<label class="control-label" for="quantity">Quantity</label>
 			    					<div class="controls">
 			    						
-										<!--- Option Select Dropdown --->
-										<select name="selectedOptionIDList">
-									
-											<cfloop array="#optionsArr#" index="option">
-												<option value="#option.getOptionID()#" <cfif listFindNoCase(defaultSelectedOptions, option.getOptionID())> selected="selected"</cfif>>#option.getOptionName()#</option>
-											</cfloop>
-											
-										</select>
-										
+										<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
+										<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
 										
 			    					</div>
 			  					</div>
-							</cfloop>
-							
-							<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="selectedOptionIDList" />
-							
-							<!--- Quantity --->
-							<div class="control-group">
-		    					<label class="control-label" for="quantity">Quantity</label>
-		    					<div class="controls">
-		    						
-									<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
-									<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
-									
-		    					</div>
-		  					</div>
-							
-							<!--- Add to Cart Button --->
-							<button type="submit" class="btn">Add To Cart</button>
+								
+								<!--- Add to Cart Button --->
+								<button type="submit" class="btn">Add To Cart</button>
+							<cfelse>
+								<p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p> 
+							</cfif>
 						</form>
 						<!--- END: ADD TO CART EXAMPLE 2 --->
 							

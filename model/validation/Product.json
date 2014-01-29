@@ -2,7 +2,9 @@
 	"properties":{
 		"baseProductType":					[
 		    	{"contexts":"addOptionGroup,addOption","inList":"merchandise"},
-		    	{"contexts":"addSubscriptionSku","inList":"subscription"}
+		    	{"contexts":"addSubscriptionSku","inList":"subscription"},
+		    	{"contexts":"addEventSchedule","inList":"event"},
+		    	{"contexts":"addSku","inList":"event"}
 		 ],
 		"physicalCounts":					[{"contexts":"delete","maxCollection":0}],
 		"price":							[{"contexts":"save","required":true,"dataType":"numeric"}],

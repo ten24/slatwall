@@ -29,7 +29,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	property name="pageRecords" type="array";
 	
 	// Delimiter Settings
-	variables.subEntityDelimiters = "._";
+	variables.subEntityDelimiters = ".";
 	variables.valueDelimiter = ",";
 	variables.orderDirectionDelimiter = "|";
 	variables.orderPropertyDelimiter = ",";

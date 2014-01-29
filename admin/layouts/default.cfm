@@ -124,6 +124,7 @@ Notes:
 							<cf_HibachiDividerHider>
 								<cf_HibachiActionCaller action="admin:entity.listorder" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listcartandquote" type="list">
+								<cf_HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderitem" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderpayment" type="list">
@@ -180,6 +181,7 @@ Notes:
 								<cf_HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listterm" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listtype" type="list">
+								<cf_HibachiActionCaller action="admin:entity.listwaitlistqueueterm" type="list">
 							</cf_HibachiDividerHider>
 						</cf_HibachiActionCallerDropdown>
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">

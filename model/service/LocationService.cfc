@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
 	property name="locationDAO" type="any";
+	property name="stockDAO" type="any";
 	
 	public boolean function isLocationBeingUsed(required any location) {
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
@@ -58,13 +59,57 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getLocationDAO().getLocationCount();
 	}
 	
-	public array function getLocationOptions() {
+	// Returns array of leaf locations, i.e. locations that can have stock
+	// @locationID string If specified will be used as top level location
+	public array function getLocationOptions( string locationID ) {
+		var locationOptions = [];
 		var smartList = this.getLocationSmartList();
+		if(structKeyExists(arguments,"locationID")) {
+			smartList.addFilter("locationID",arguments.locationID);
+		}
+		smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
+		smartList.addOrder("locationIDPath");
+		var locations = smartList.getRecords();
 		
-		smartList.addSelect('locationID', 'value');
-		smartList.addSelect('locationName', 'name');
+		for(var i=1;i<=arrayLen(locations);i++) {
+			arrayAppend(locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+		}
 		
-		return smartList.getRecords(); 
+		return locationOptions;
+	}
+	
+	// Returns array including all locations
+	// @includeNone Boolean If true then 'None' will be included as an option
+	public array function getLocationParentOptions(boolean includeNone=true) {
+		var locationParentOptions = [];
+		
+		var smartList = this.getLocationSmartList();
+		smartList.addOrder("locationName,locationIDPath");
+		var locations = smartList.getRecords();
+		
+		if( includeNone ) { 
+			arrayAppend(locationParentOptions, {name="None", value=""}); 
+		}
+		
+		for(var i=1;i<=arrayLen(locations);i++) {
+			arrayAppend(locationParentOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+		}
+		
+		return locationParentOptions;
+
+	}
+	
+	// Returns array of a location and all of its children
+	// @locationID String Top level location 
+	public array function getLocationAndChildren( required string locationID ) {
+		var locAndChildren = [];
+		var smartList = this.getLocationSmartList();
+		smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
+		var locations = smartList.getRecords();
+		for(var i=1;i<=arrayLen(locations);i++) {
+			arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+		}
+		return locAndChildren;
 	}
 	
 	// ===================== START: Logical Methods ===========================
@@ -73,6 +118,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: DAO Passthrough ===========================
 	
+	public any function updateStockLocation(required string fromLocationID, required string toLocationID) {
+		getStockDAO().updateStockLocation( argumentCollection=arguments );
+	}
+	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
@@ -80,6 +129,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveLocation(required any location, required struct data) {
+		
+		arguments.location = super.save(arguments.location, arguments.data);
+		
+		if(!location.hasErrors()){
+			
+			// We need to persist the state here, so that we can have the locationID in the database
+			getHibachiDAO().flushORMSession();
+			
+			// If this location has any stocks then we need to update them
+			if( arrayLen(arguments.location.getStocks()) ) {
+				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(), toLocationID=arguments.location.getlocationID());
+			}
+		} 
+		
+		return arguments.location;
+	}
 	
 	// ======================  END: Save Overrides ============================
 	

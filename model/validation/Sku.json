@@ -7,6 +7,7 @@
 			{"contexts":"save","method":"hasOneOptionPerOptionGroup"}
 		],
 		"price":			   		[{"contexts":"save","required":true,"dataType":"numeric","minValue":0}],
+		"product":					[{"contexts":"save","required":true}],
 		"renewalPrice":				[{"contexts":"save","dataType":"numeric","minValue":0}],
 		"skuCode":					[{"contexts":"save","required":true,"unique":true}],
 		"transactionExistsFlag":	[{"contexts":"delete","eq":false}],

@@ -141,7 +141,7 @@ Notes:
 		<cfreturn xmlResponse />
 	</cffunction>
 	
-	<!--- socialize.setUID --->
+	<!--- socialize.notifyRegistration --->
 	<cffunction name="socializeSetUID">
 		<cfargument name="oldUID" type="struct" required="true" />
 		<cfargument name="newUID" type="struct" required="true" />
@@ -180,7 +180,7 @@ Notes:
 	</cffunction>
 	
 	<!--- socialize.logout --->
-	<cffunction name="socializeNotifyLogout">
+	<cffunction name="socializeLogout">
 		<cfargument name="account" type="any" required="true" />
 		
 		<cfset var rawResponse = "" />
