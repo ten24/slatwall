@@ -81,7 +81,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="product" fieldtype="many-to-one" fkcolumn="productID" cfc="Product" hb_cascadeCalculate="true";
 	property name="productSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID" cfc="ProductSchedule" hb_cascadeCalculate="true";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
-	property name="waitListQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
+	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
 	
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
