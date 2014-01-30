@@ -1299,17 +1299,19 @@
 					<cfif len(missingUsersQuery.Email)>
 						<cfquery name="rs">
 							SELECT
-								accountEmailAddressID,
-								accountID
+								SwAccountEmailAddress.accountEmailAddressID,
+								SwAccountEmailAddress.accountID
 							FROM
 								SwAccountEmailAddress
 							WHERE
-								emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Email#" />
+								SwAccountEmailAddress.emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Email#" />
+							  AND
+							    SwAccountEmailAddress.accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />	
 							  AND
 							  	EXISTS ( SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccountEmailAddress.accountID)
 						</cfquery>
 						
-						<cfif rs.recordCount and rs.accountID eq slatwallAccountID>
+						<cfif rs.recordCount>
 							
 							<cfset primaryEmailAddressID = rs.accountEmailAddressID />
 							
@@ -1336,17 +1338,19 @@
 					<cfif len(missingUsersQuery.MobilePhone)>
 						<cfquery name="rs">
 							SELECT
-								accountPhoneNumberID,
-								accountID
+								SwAccountPhoneNumber.accountPhoneNumberID,
+								SwAccountPhoneNumber.accountID
 							FROM
 								SwAccountPhoneNumber
 							WHERE
-								phoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.MobilePhone#" />
+								SwAccountPhoneNumber.phoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.MobilePhone#" />
+							  AND
+							  	SwAccountPhoneNumber.accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />
 							  AND
 							  	EXISTS ( SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccountPhoneNumber.accountID)
 						</cfquery>
 						
-						<cfif rs.recordCount and rs.accountID eq slatwallAccountID>
+						<cfif rs.recordCount>
 							
 							<cfset primaryPhoneNumberID = rs.accountPhoneNumberID />
 							
@@ -1443,7 +1447,7 @@
 					SET
 						settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
 					WHERE
-						settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingID#" />
+						settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" />
 				</cfquery>
 				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
 			</cfif>
