@@ -52,8 +52,9 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	property name="fileID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormType="boolean";
 	property name="fileType" ormType="string";
+	property name="mimeType" ormType="string";
 	property name="fileName" ormtype="string";
-	property name="fileDescription" ormtype="string" length="4000" hb_formFieldType="textarea";
+	property name="fileDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="urlTitle" ormType="string";
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
@@ -79,6 +80,7 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	    
 	// Non-Persistent Properties    
 	property name="fileUpload" type="string" persistent="false" hb_formFieldType="file";
+	property name="filePath" type="string" persistent="false" setter="false";
 	    
 	// Deprecated Properties    
 	
@@ -92,7 +94,12 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	// ====================  END: Logical Methods ==========================    
 	    
 	// ============ START: Non-Persistent Property Methods =================    
-	    
+	
+	public string function getFilePath()
+	{
+		return setting('globalAssetsFileFolderPath') & "/#getFileID()#.cfm";
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================    
 		    
 	// ============= START: Bidirectional Helper Methods ===================    

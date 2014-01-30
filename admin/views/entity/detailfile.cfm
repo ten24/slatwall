@@ -46,26 +46,38 @@
 Notes:
 
 --->
-<cfcomponent extends="HibachiDAO">
-	
-	<cffunction name="deleteAllRelatedFiles" returntype="boolean" access="public">
-		<cfargument name="primaryIDPropertyName" type="string" required="true" />
-		<cfargument name="primaryIDValue" type="string" required="true" />
-		
-		<cfthrow message="Method FileDAO.deleteAllRelatedFiles() needs to be implemented." />
-		
-		<cfset var relatedComments = getRelatedCommentsForEntity(argumentcollection=arguments) />
-		<cfset var relatedComment = "" />
-		
-		<cfloop array="#relatedComments#" index="relatedComment" >
-			<cfset var results = ormExecuteQuery("DELETE SlatwallCommentRelationship WHERE commentRelationshipID = ?", [relatedComment["commentRelationshipID"]]) />
+<cfparam name="rc.file" type="any">
+<cfparam name="rc.edit" type="boolean">
+
+<cfset backAction = rc.entityActionDetails.backAction />
+<cfset backQueryString = "" />
+
+<cfoutput>
+	<cf_HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.file#" edit="#rc.edit#" />
+
+		<cf_HibachiPropertyRow>
 			
-			<cfif not relatedComment["referencedRelationshipFlag"]>
-				<cfset var results = ormExecuteQuery("DELETE SlatwallComment WHERE commentID = ?", [relatedComment["comment"].getCommentID()]) />
-			</cfif>
-		</cfloop>
+			<cf_HibachiPropertyList divclass="span12">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
 		
-		<cfreturn true />
-	</cffunction>
-	
-</cfcomponent>
+		<cf_HibachiTabGroup object="#rc.file#">
+			<!---<cf_HibachiTab view="admin:entity/filetabs/file" />--->
+			<!---
+			<cfif not isNull(rc.file.getProduct())>
+				<cf_HibachiTab view="admin:entity/filetabs/options" />
+			</cfif>
+			--->
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.file.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.file#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</cf_HibachiTabGroup>
+	</cf_HibachiEntityDetailForm>
+</cfoutput>
+

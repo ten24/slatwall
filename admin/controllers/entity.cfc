@@ -51,6 +51,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="addressService" type="any";
 	property name="currencyService" type="any";
 	property name="emailService" type="any";
+	property name="fileService" type="any";
 	property name="imageService" type="any";
 	property name="measurementService" type="any";
 	property name="optionService" type="any";
@@ -120,6 +121,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function detailCurrency(required struct rc) {
 		rc.currency = getCurrencyService().getCurrency(rc.currencyCode);
+	}
+	
+	// File
+	public void function downloadFile(required struct rc) {
+		var downloadOK = getFileService().downloadFile(fileID=rc.fileID);
+		
+		if (!downloadOK)
+		{
+			// redirect and show errors
+			//getFW().redirect()
+		}
+		//getFW().setView("admin:entity.listproduct");
+		//getFileService().downloadFile(fileID=rc.fileID);
 	}
 	
 	// Email

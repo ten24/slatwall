@@ -49,6 +49,22 @@ Notes:
 
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
+	property name="fileDAO" type="any";
+	
+	public any function downloadFile(required string fileID) {
+		var downloadOK = true;
+		
+		var file = super.getFile(arguments.fileID);
+		if (!isNull(file) && fileExists(file.getFilePath())) {
+			// download file
+			getService("hibachiUtilityService").downloadFile(fileName=file.getFileName(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);
+		} else {
+			downloadOK = false;
+		}
+		
+		return downloadOK;
+	}
+		
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
@@ -57,7 +73,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public array function getFilesForEntity( required string baseObject, required string baseID, boolean publicflag ) {
 		var filterCriteria = arguments;
-		return listFile(filterCriteria=filterCriteria);
+		return super.listFile(filterCriteria=filterCriteria);
+	}
+	
+	public boolean function removeAllEntityRelatedFiles(required any entity)
+	{
+		//throw(message="Method FileService.getFilesForEntity() needs to be implemented.");
+		if (arguments.entity.getClassName() != 'File')
+		{
+			getFileDAO().deleteAllRelatedFiles();
+		}
+		
+		return true;
 	}
 	
 	// ===================== START: DAO Passthrough ===========================
@@ -78,12 +105,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// only execute file operations when a file is submitted
 		if (isSimpleValue(file.getFileUpload()) && len(file.getFileUpload()) && structKeyExists(form, 'fileUpload')) {
 			// rename file with .cfm extension in order to control file access
-			var destinationFilePath = getService("settingService").getSettingValue('globalAssetsFileFolderPath') & "/#arguments.file.getFileID()#.cfm";
-			var uploadData = fileUpload(destinationFilePath, 'fileUpload', '*', 'overwrite');
+			var uploadData = fileUpload(file.getFilePath(), 'fileUpload', '*', 'overwrite');
 			
-			if (uploadData.filewasSaved) {
-				// extract and retain uploaded file's original extension and resave
+			if (uploadData.fileWasSaved) {
+				// extract and retain uploaded file's original extension and mime type then resave
 				arguments.file.setFileType(uploadData.clientFileExt);
+				arguments.file.setMimeType("#uploadData.contenttype#/#uploadData.contentsubtype#");
 				save(entity=arguments.file, context=arguments.context);
 			}
 		}
@@ -108,9 +135,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// only delete file if entity successfully deleted
 		if (deleteOK) {
-			var filePath = getService("settingService").getSettingValue('globalAssetsFileFolderPath') & "/#arguments.file.getFileID()#.cfm";
-			if (fileExists(filePath)) {
-				fileDelete(filepath);
+			if (fileExists(file.getFilePath())) {
+				fileDelete(file.getFilePath());
 			}
 		}
 		
