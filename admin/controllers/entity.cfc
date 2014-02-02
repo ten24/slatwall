@@ -125,15 +125,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// File
 	public void function downloadFile(required struct rc) {
-		var downloadOK = getFileService().downloadFile(fileID=rc.fileID);
+		populateRenderAndRedirectFailureValues(arguments.rc);
+		var file = getFileService().downloadFile(fileID=rc.fileID);
 		
-		if (!downloadOK)
+		if (file.hasErrors())
 		{
-			// redirect and show errors
-			//getFW().redirect()
+			file.showErrorsAndMessages();
+			renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 		}
-		//getFW().setView("admin:entity.listproduct");
-		//getFileService().downloadFile(fileID=rc.fileID);
 	}
 	
 	// Email

@@ -52,17 +52,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="fileDAO" type="any";
 	
 	public any function downloadFile(required string fileID) {
-		var downloadOK = true;
-		
 		var file = super.getFile(arguments.fileID);
+		
 		if (!isNull(file) && fileExists(file.getFilePath())) {
 			// download file
-			getService("hibachiUtilityService").downloadFile(fileName=file.getFileName(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);
+			try {
+				getService("hibachiUtilityService").downloadFile(fileName=file.getFileName(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);
+			} catch (any error) {
+				file.addError("fileDownload", rbKey("entity.file.download.fileDownloadError"));
+			}
 		} else {
-			downloadOK = false;
+			// file does not exist
+			file.addError("fileDownload", rbKey("entity.file.download.fileMissingError"));
 		}
 		
-		return downloadOK;
+		return file;
 	}
 		
 	// ===================== START: Logical Methods ===========================
