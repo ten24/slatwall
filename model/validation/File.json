@@ -1,0 +1,11 @@
+{
+	"conditions":{
+	    "isNewFile":{
+	        "newFlag":	{"eq":true}
+	    }
+	},
+	"properties":{
+		"fileUpload": 	[{"contexts":"save","conditions":"isNewFile","required":true}],
+		"fileName":		[{"contexts":"save","required":true}]
+	}
+}

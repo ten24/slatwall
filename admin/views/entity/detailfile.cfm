@@ -49,30 +49,32 @@ Notes:
 <cfparam name="rc.file" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cfset backAction = rc.entityActionDetails.backAction />
-<cfset backQueryString = "" />
+<cfif rc.file.isNew()>
+	<cfparam name="rc.baseObject" type="string">
+	<cfset saveActionQueryString="#rc.baseObject#ID=#rc['#baseObject#ID']#" />
+<cfelse>
+	<cfset saveActionQueryString="#rc.file.getBaseObject()#ID=#rc.file.getBaseID()#" />
+</cfif>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data">
+	<cf_HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#saveActionQueryString#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.file#" edit="#rc.edit#" />
-
+		
+		<cfif rc.file.isNew()>
+			<input type="hidden" name="baseObject" value="#baseObject#" />
+			<input type="hidden" name="baseID" value="#rc['#baseObject#ID']#" />
+		</cfif>
+		
 		<cf_HibachiPropertyRow>
-			
 			<cf_HibachiPropertyList divclass="span12">
-				<cf_HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.file#">
-			<!---<cf_HibachiTab view="admin:entity/filetabs/file" />--->
-			<!---
-			<cfif not isNull(rc.file.getProduct())>
-				<cf_HibachiTab view="admin:entity/filetabs/options" />
-			</cfif>
-			--->
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.file.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.file#" attributeSet="#attributeSet#" />
