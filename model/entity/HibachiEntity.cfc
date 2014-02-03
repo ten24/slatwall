@@ -84,12 +84,11 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.comments;
 	}
 	
-	// @hint Returns an array of comments related to this entity
+	// @hint Returns an array of files related to this entity
 	public array function getFiles() {
 		if(!structKeyExists(variables, "files")) {
-			//arguments.primaryIDPropertyName = getPrimaryIDPropertyName();
-			var filterCriteria = {baseObject = getClassName(), baseID = getPrimaryIDValue()};
-			variables.files = getService("fileService").listFile( filterCriteria=filterCriteria );
+			arguments.baseID = getPrimaryIDValue();
+			variables.files = getService("fileService").getRelatedFilesForEntity(argumentCollection=arguments);
 		}
 		return variables.files;
 	}

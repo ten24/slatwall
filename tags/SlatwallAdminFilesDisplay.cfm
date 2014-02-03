@@ -68,18 +68,18 @@
 					<th>#attributes.hibachiScope.rbKey("entity.define.createdDateTime")#</th>
 					<cfif attributes.adminFiles><th class="admin admin2">&nbsp;</th></cfif>
 				</tr>
-				<cfloop array="#attributes.object.getFiles()#" index="objectFile">
+				<cfloop array="#attributes.object.getFiles()#" index="fileRelation">
 					<tr>
-						<td class="primary" style="white-space:normal;">#objectFile.getFileName()#</td>
-						<td>#objectFile.getFileType()#</td>
-						<td><cfif !isNull(objectFile.getCreatedByAccount())>#objectFile.getCreatedByAccount().getFullName()#</cfif></td>
-						<td>#attributes.hibachiScope.formatValue(objectFile.getCreatedDateTime(), "datetime")#</td>
+						<td class="primary" style="white-space:normal;">#fileRelation.getFile().getFileName()#</td>
+						<td>#fileRelation.getFile().getFileType()#</td>
+						<td><cfif !isNull(fileRelation.getFile().getCreatedByAccount())>#fileRelation.getFile().getCreatedByAccount().getFullName()#</cfif></td>
+						<td>#attributes.hibachiScope.formatValue(fileRelation.getFile().getCreatedDateTime(), "datetime")#</td>
 						<cfif attributes.adminFiles>
 						<td class="admin admin2">
-							<cf_HibachiActionCaller action="admin:entity.downloadfile" queryString="fileID=#objectFile.getFileID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#&backAction=#request.context.slatAction#&redirectQS=#attributes.object.getPrimaryIDPropertyName()#" modal="false" class="btn btn-mini" icon="download" iconOnly="true" />
-							<cf_HibachiActionCaller action="admin:entity.detailfile" queryString="fileID=#objectFile.getFileID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#&backAction=#request.context.slatAction#&redirectQS=#attributes.object.getPrimaryIDPropertyName()#" modal="false" class="btn btn-mini" icon="eye-open" iconOnly="true" />
-							<cf_HibachiActionCaller action="admin:entity.editfile" queryString="fileID=#objectFile.getFileID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#&backAction=#request.context.slatAction#&redirectQS=#attributes.object.getPrimaryIDPropertyName()#" modal="true" class="btn btn-mini" icon="pencil" iconOnly="true" />
-							<cf_HibachiActionCaller action="admin:entity.deletefile" querystring="fileID=#objectFile.getFileID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#&backAction=#request.context.slatAction#&redirectQS=#attributes.object.getPrimaryIDPropertyName()#" class="btn btn-mini" iconOnly="true" icon="trash" confirm="true" />
+							<cf_HibachiActionCaller action="admin:entity.downloadfile" queryString="fileID=#fileRelation.getFile().getFileID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#&backAction=#request.context.slatAction#&redirectQS=#attributes.object.getPrimaryIDPropertyName()#" modal="false" class="btn btn-mini" icon="download" iconOnly="true" />
+							<cf_HibachiActionCaller action="admin:entity.detailfile" queryString="fileID=#fileRelation.getFile().getFileID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#&backAction=#request.context.slatAction#&redirectQS=#attributes.object.getPrimaryIDPropertyName()#" modal="false" class="btn btn-mini" icon="eye-open" iconOnly="true" />
+							<cf_HibachiActionCaller action="admin:entity.editfile" queryString="fileID=#fileRelation.getFile().getFileID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#&backAction=#request.context.slatAction#&redirectQS=#attributes.object.getPrimaryIDPropertyName()#" modal="true" class="btn btn-mini" icon="pencil" iconOnly="true" />
+							<cf_HibachiActionCaller action="admin:entity.deletefilerelationship" querystring="fileRelationshipID=#fileRelation.getFileRelationshipID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#&backAction=#request.context.slatAction#&redirectQS=#attributes.object.getPrimaryIDPropertyName()#" class="btn btn-mini" iconOnly="true" icon="trash" confirm="true" />
 						</td>
 						</cfif>
 					</tr>

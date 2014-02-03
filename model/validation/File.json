@@ -5,7 +5,8 @@
 	    }
 	},
 	"properties":{
-		"fileUpload": 	[{"contexts":"save","conditions":"isNewFile","required":true}],
-		"fileName":		[{"contexts":"save","required":true}]
+		"fileUpload": 			[{"contexts":"save","conditions":"isNewFile","required":true}],
+		"fileName":				[{"contexts":"save","required":true}],
+		"fileRelationships":	[{"contexts":"delete","maxCollection":0}]
 	}
 }

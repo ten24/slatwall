@@ -52,7 +52,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="fileDAO" type="any";
 	
 	public any function downloadFile(required string fileID) {
-		var file = super.getFile(arguments.fileID);
+		var file = this.getFile(arguments.fileID);
 		
 		if (!isNull(file) && fileExists(file.getFilePath())) {
 			// download file
@@ -75,17 +75,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: DAO Passthrough ===========================
 	
-	public array function getFilesForEntity( required string baseObject, required string baseID, boolean publicflag ) {
-		var filterCriteria = arguments;
-		return super.listFile(filterCriteria=filterCriteria);
+	public array function getRelatedFilesForEntity( required string baseID ) {
+		// find file relationships for base object entity
+		return this.listFileRelationship(arguments);
 	}
 	
 	public boolean function removeAllEntityRelatedFiles(required any entity)
 	{
-		//throw(message="Method FileService.getFilesForEntity() needs to be implemented.");
-		if (arguments.entity.getClassName() != 'File')
-		{
-			getFileDAO().deleteAllRelatedFiles();
+		for (var fileRelationshipEntity in arguments.entity.getFiles()) {
+			deleteFileRelationship(fileRelationshipEntity);
 		}
 		
 		return true;
@@ -104,7 +102,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveFile(required any file, struct data, string context="save") {
+		var isNewFile = arguments.file.getNewFlag();
+		
 		arguments.file = save(entity=arguments.file, data=arguments.data, context=arguments.context);
+		
+		if (isNewFile && !isNull(arguments.file.getBaseObject()) && !isNull(arguments.file.getBaseID()))
+		{
+			// create file relationship
+			var newFileRelationship = this.newFileRelationship();
+			newFileRelationship.setFile(arguments.file);
+			newFileRelationship.setBaseObject(arguments.file.getBaseObject());
+			newFileRelationship.setBaseID(arguments.file.getBaseID());
+			this.saveFileRelationship(newFileRelationship);
+		}
 		
 		// only execute file operations when a file is submitted
 		if (isSimpleValue(file.getFileUpload()) && len(file.getFileUpload()) && structKeyExists(form, 'fileUpload')) {
@@ -137,11 +147,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function deleteFile(required any file) {
 		var deleteOK = delete(entity=arguments.file);
 		
-		// only delete file if entity successfully deleted
+		// Only delete file if entity successfully deleted
 		if (deleteOK) {
 			if (fileExists(file.getFilePath())) {
 				fileDelete(file.getFilePath());
 			}
+		}
+		
+		return deleteOK;
+	}
+	
+	public any function deleteFileRelationship(required any fileRelationship)
+	{
+		var deleteOK = delete(entity=arguments.fileRelationship);
+		
+		var relatedFile = fileRelationship.getFile();
+		fileRelationship.removeFile(relatedFile);
+		
+		// Automatically delete file if it no longer has any entity relationships
+		if (!relatedFile.hasFileRelationship()) {
+			deleteFile(relatedFile);
 		}
 		
 		return deleteOK;
