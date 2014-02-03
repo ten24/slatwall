@@ -69,7 +69,7 @@ Notes:
 	<cf_HibachiListingDisplay smartList="#rc.productTypeSmartList#" 
 								recordEditAction="admin:entity.editproducttype"
 								recordDetailAction="admin:entity.detailproducttype">
-		<cf_HibachiListingColumn propertyIdentifier="productTypeName" />
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="productTypeName" />
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 </cfoutput>
