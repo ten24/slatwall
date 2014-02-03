@@ -53,7 +53,7 @@ Notes:
 	<cf_HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
 		
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></cf_HibachiEntityActionBar>
-		<cfdump var="#rc.processObject.getSchedulingType()#">
+		
 		<!--- Submit the baseProductType as well in case of a validation error --->
 		<input type="hidden" name="baseProductType" value="#rc.processObject.getBaseProductType()#" />
 		
