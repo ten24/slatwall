@@ -136,7 +136,7 @@ Notes:
 				FROM
 					SwOrderItem
 				  INNER JOIN
-				  	SwType ort on SwOrderItem.orderItemTypeID = ort.typeID
+				  	SwType oit on SwOrderItem.orderItemTypeID = oit.typeID
 				  LEFT JOIN
 				  	SwOrderFulfillment on SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
 				  INNER JOIN
