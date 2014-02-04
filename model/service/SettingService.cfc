@@ -236,7 +236,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuQATSIncludesQNROVOFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROSAFlag = {fieldType="yesno", defaultValue=0},
 			skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
-			skuRegistrationAutoApprovalAccountCollection = {fieldType="yesno", defaultValue=0},
 			skuShippingWeight = {fieldType="text", defaultValue=1},
 			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
