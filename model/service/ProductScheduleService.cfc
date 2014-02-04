@@ -74,7 +74,7 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	// Returns a date object of the first occurance of a specified day in the given month and year.
-	// @param day_number			An integer in the range 1 - 7. 1=Sun, 2=Mon, 3=Tue, 4=Wed, 5=Thu, 6=Fri, 7=Sat. (Required)
+	// @param day_number @hint An integer in the range 1 - 7. 1=Sun, 2=Mon, 3=Tue, 4=Wed, 5=Thu, 6=Fri, 7=Sat. (Required)
 	// @param month_number		Month value.  (Required)
 	// @param year				Year value. (Required)
 	// @return					Returns a date object. 
@@ -151,15 +151,10 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	public any function getSchedulingTypeOptions() {
-		if(!structKeyExists(variables, "schedulingTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
-			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="schedulingType"); 
-			smartList.addOrder("type|D");
-			variables.schedulingTypeOptions = smartList.getRecords();
-		}
-		return variables.schedulingTypeOptions;
+		return [
+			{name=rbKey('define.once'), value="once"},
+			{name=rbKey('define.recurring'), value="recurring"}
+		];
 	}
 	
 	public any function getScheduleEndTypeOptions() {

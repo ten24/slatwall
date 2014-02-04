@@ -143,10 +143,6 @@
 		<Record typeID="5aa9b6a1cc981ac60af5bcdb8bb31f68" typeIDPath="5aa9b69fffa293d49f2a2d01d45a3974,5aa9b6a1cc981ac60af5bcdb8bb31f68" parentTypeID="5aa9b69fffa293d49f2a2d01d45a3974" type="Occurrences" systemCode="setOccurrences" />
 		<Record typeID="5aa9b6a2f19c5c99f3802f26a99f1d4f" typeIDPath="5aa9b69fffa293d49f2a2d01d45a3974,5aa9b6a2f19c5c99f3802f26a99f1d4f" parentTypeID="5aa9b69fffa293d49f2a2d01d45a3974" type="Date" systemCode="setDate" />
 		
-		<Record typeID="5aa9b696f3819f428ce8213c47c0bd61" typeIDPath="5aa9b696f3819f428ce8213c47c0bd61" parentTypeID="NULL" type="Scheduling Types" systemCode="schedulingType" />
-		<Record typeID="5aa9b697d4557858ae893b77f9e27085" typeIDPath="5aa9b696f3819f428ce8213c47c0bd61,5aa9b697d4557858ae893b77f9e27085" parentTypeID="5aa9b696f3819f428ce8213c47c0bd61" type="Single Instance" systemCode="schSingle" />
-		<Record typeID="5aa9b698cdf9886f1cfb22195966681f" typeIDPath="5aa9b696f3819f428ce8213c47c0bd61,5aa9b698cdf9886f1cfb22195966681f" parentTypeID="5aa9b696f3819f428ce8213c47c0bd61" type="Recurring Schedule" systemCode="schRecurring" />
-		
 		<Record typeID="444df2e4e0ec725f718318de5bd3b973" typeIDPath="444df2e4e0ec725f718318de5bd3b973" parentTypeID="NULL" type="Stock Adjustment Types" systemCode="stockAdjustmentType" />
 		<Record typeID="444df2e5cb27169f418279f3f859a4f7" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e5cb27169f418279f3f859a4f7" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Location Transfer" systemCode="satLocationTransfer" />
 		<Record typeID="444df2e60db81c12589c9b39346009f2" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e60db81c12589c9b39346009f2" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Manual In" systemCode="satManualIn" />

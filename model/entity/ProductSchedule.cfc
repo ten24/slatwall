@@ -36,8 +36,7 @@
 Notes:
 
 */
-component displayname="ProductSchedule" entityname="SlatwallProductSchedule" table="SwProductSchedule" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productScheduleService" hb_permission="this" 
-{
+component displayname="ProductSchedule" entityname="SlatwallProductSchedule" table="SwProductSchedule" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productScheduleService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="productScheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

@@ -66,19 +66,11 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	//Non-persistent properties
-	property name="locationTree" persistent="false" ;
-	property name="locationPathName" persistent="false" ;
-	property name="locationCapacity" persistent="false" ;
+	property name="locationTree" persistent="false";
+	property name="locationPathName" persistent="false";
 	
 	
 	// ============ START: Non-Persistent Property Methods =================
-	
-	public any function getLocationCapacity() {
-		if(!structKeyExists(variables,"locationCapacity")) {
-			variables.locationCapacity = this.setting('locationConfigurationCapacity');
-		}
-		return variables.locationCapacity;
-	}
 	
 	public any function getLocationTree() {
 		if(!structKeyExists(variables,"locationTree")) {

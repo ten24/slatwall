@@ -628,7 +628,7 @@ component extends="HibachiService" accessors="true" {
 	public any function processProduct_addEventSchedule(required any product, required any processObject) {
 		
 		// Make sure end date was specified and occurs after start date if recurring schedule
-		if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schRecurring").getTypeID() ) {
+		if(arguments.processObject.getSchedulingType() == "recurring" ) {
 			if(!isDefined("arguments.processObject.getScheduleEndDate") ) {
 				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_defined'));
 				return product;
@@ -639,12 +639,9 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 		
-		// Single or recurring?
-		var schedulingType = getSettingService().getTypeByTypeID(arguments.processObject.getSchedulingType());
-		
 		//Create new product schedule
 		var newProductSchedule = this.newProductSchedule();
-		newProductSchedule.setSchedulingType( schedulingType );
+		newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
 		
 		// Generate next highest sku qualifier
 		var SkuQualifier = getMaxSkuQualifier(arguments.product.getSkus()) + 1; 
@@ -655,10 +652,11 @@ component extends="HibachiService" accessors="true" {
 		}
 		
 		// Single event instance (non-recurring)
-		if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schSingle").getTypeID() ) {
+		if(arguments.processObject.getSchedulingType() == "once" ) {
 			
 			// Bundled location configuration
 			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+				
 				//Create one sku
 				var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
 				
@@ -672,10 +670,9 @@ component extends="HibachiService" accessors="true" {
 					isFirstSku = false;
 				}
 				skuQualifier++;
-			}
-			
+				
 			// Single location configuration
-			else {
+			} else {
 				// Create separate skus for every selected location configuration
 				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 					var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
@@ -690,20 +687,12 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 			
-			
-			
-			
-			
-			//var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier,arguments.processObject.getLocationConfigurations());
-			//,listGetAt(arguments.processObject.getLocationConfigurations(), 1)
-		}
-		
 		// Recurring schedule is specified for event
-		else if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schRecurring").getTypeID()) {
+		} else if( arguments.processObject.getSchedulingType() == "recurring" ) {
 
 			//Create new product schedule
 			var newProductSchedule = this.newProductSchedule();
-			newProductSchedule.setSchedulingType( schedulingType );
+			newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
 			
 			// How frequently will event occur (Daily, Weekly, etc.)?
 			newProductSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
@@ -824,18 +813,9 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function processProduct_create(required any product, required any processObject) {
+		
 		if(isNull(arguments.product.getURLTitle())) {
-			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
-		}
-		if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schRecurring").getTypeID() ) {
-			if(!isDefined("arguments.processObject.getScheduleEndDate") ) {
-				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_defined'));
-				return product;
-			} else if(!isDate(arguments.processObject.getScheduleEndDate()) || dateCompare(arguments.processObject.getScheduleStartDate(),arguments.processObject.getScheduleEndDate()) eq 1) {
-				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_valid'));
-				return product;
-				
-			}
+			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.processObject.getTitle(), tableName="SwProduct"));
 		}
 		
 		// Create Merchandise Product Skus Based On Options
@@ -997,7 +977,7 @@ component extends="HibachiService" accessors="true" {
 			}
 			
 			// ===================================
-			// END CONTENT ACCESS SKU GENERATION
+			// END CONTENT ACCESS SKU GENERATION  
 			// ===================================
 			
 			
@@ -1013,13 +993,10 @@ component extends="HibachiService" accessors="true" {
 			}
 			
 			// ===================================
-			// BEGIN EVENT SKU GENERATION
+			// BEGIN EVENT SKU GENERATION		  
 			// ===================================
 				
 			if(arguments.processObject.getGenerateSkusFlag() == 1) {
-				
-				// Single or recurring?
-				var schedulingType = getSettingService().getTypeByTypeID(arguments.processObject.getSchedulingType());
 				
 				var SkusToCreate = 1; // Increments with each new sku
 				var isFirstSku = true; // Used to set default sku
@@ -1030,7 +1007,7 @@ component extends="HibachiService" accessors="true" {
 				var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
 				
 				// Single event instance (non-recurring)
-				if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schSingle").getTypeID() ) {
+				if(arguments.processObject.getSchedulingType() == "once" ) {
 					
 					// Bundled location configuration
 					if(arguments.processObject.getBundleLocationConfigurationFlag()) {
@@ -1067,11 +1044,11 @@ component extends="HibachiService" accessors="true" {
 				// Recurring schedule is specified for event
 				//==========================================
 				
-				else if(arguments.processObject.getSchedulingType() == getSettingService().getTypeBySystemCode("schRecurring").getTypeID()) {
+				else if(arguments.processObject.getSchedulingType() == "recurring" ) {
 					
 					//Create new product schedule
 					var newProductSchedule = this.newProductSchedule();
-					newProductSchedule.setSchedulingType( schedulingType );
+					newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
 					
 					// How frequently will event occur (Daily, Weekly, etc.)?
 					newProductSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
