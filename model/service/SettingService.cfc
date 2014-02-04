@@ -220,7 +220,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowWaitlistingFlag = {fieldType="yesno", defaultValue=0},
-			skuAttendanceType = {fieldType="select", defaultValue="All"},
 			skuBundleAutoMakeupInventoryOnSaleFlag = {fieldType="yesno", defaultValue=0},
 			skuBundleAutoBreakupInventoryOnReturnFlag = {fieldType="yesno", defaultValue=0},
 			skuCurrency = {fieldType="select", defaultValue="USD"},
@@ -357,8 +356,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "shippingMethodRateAdjustmentType" :
 				return [{name='Increase Percentage', value='increasePercentage'}, {name='Decrease Percentage', value='decreasePercentage'}, {name='Increase Amount', value='increaseAmount'}, {name='Decrease Amount', value='decreaseAmount'}];
-			case "skuAttendanceType" :
-				return [{name='All', value='all'}, {name='Individually', value='individual'}, {name='Both', value='both'}];
 			case "skuCurrency" :
 				return getCurrencyService().getCurrencyOptions();
 			case "skuTaxCategory":
