@@ -128,7 +128,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
 	property name="currencyCode" persistent="false";
 	property name="defaultProductImageFiles" persistent="false";
-	property name="eventStatus" type="any" persistent="false";
 	property name="price" hb_formatType="currency" persistent="false";
 	property name="renewalPrice" hb_formatType="currency" persistent="false";
 	property name="listPrice" hb_formatType="currency" persistent="false";
@@ -730,15 +729,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return variables.eventRegistrationsSmartList;
 	}
-	
-	// Canceled, Confirmed, Open or Closed
-	public any function getEventStatus() {
-		if(!structKeyExists(variables, "eventStatus")) {
-			variables.eventStatus = getDefaultSku.getEventStatus();
-		}
-		return variables.eventStatus;
-	}
-	
 
 	// ============  END:  Non-Persistent Property Methods =================
 		
