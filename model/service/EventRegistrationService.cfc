@@ -194,7 +194,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstApproved") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstRegistered") );
 		
 		return arguments.eventRegistration;
 	}

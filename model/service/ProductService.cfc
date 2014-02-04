@@ -815,7 +815,7 @@ component extends="HibachiService" accessors="true" {
 	public any function processProduct_create(required any product, required any processObject) {
 		
 		if(isNull(arguments.product.getURLTitle())) {
-			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.processObject.getTitle(), tableName="SwProduct"));
+			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
 		}
 		
 		// Create Merchandise Product Skus Based On Options

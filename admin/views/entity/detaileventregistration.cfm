@@ -48,11 +48,10 @@ Notes:
 	Event Registration Status Types			
 	__________________			
 	erstRegistered
-	erstApproved
-	erstWaitListed
-	erstPending
+	erstPendingApproval
+	erstWaitlisted
+	erstPendingConfirmation
 	erstAttended
-	erstCancelled
 
 --->
 <cfparam name="rc.eventregistration" type="any" />

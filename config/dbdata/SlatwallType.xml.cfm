@@ -71,14 +71,13 @@
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8b" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8b" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Product Type" systemCode="cttProductType" />
 
 		<Record typeID="bb6fd9cff5afa5112ad66560b6a887dd" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd" parentTypeID="NULL" type="Event Registration Status Types" systemCode="eventRegistrationStatusType" />
-		<Record typeID="b8861693e7abb9a80d7ce2ae027fb824" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b8861693e7abb9a80d7ce2ae027fb824" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Registered" systemCode="erstRegistered" />
-		<Record typeID="b8861694a4f61e898b24171c5adae7fc" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b8861694a4f61e898b24171c5adae7fc" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Approved" systemCode="erstApproved" />
-		<Record typeID="b88616959d221ab71e82321fdd8f1fc9" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b88616959d221ab71e82321fdd8f1fc9" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Wait Listed" systemCode="erstWaitListed" />
-		<Record typeID="b8861696d93259be4d3d03a85b9bc520" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b8861696d93259be4d3d03a85b9bc520" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Pending" systemCode="erstPending" />
-		<Record typeID="4cd8b68f0d9f5064c28b089805835927" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,4cd8b68f0d9f5064c28b089805835927" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Pending Claim" systemCode="erstPendingConfirmation" />
-		<Record typeID="bba2b415099a7b84b6c7c5992ddabbbb" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,bba2b415099a7b84b6c7c5992ddabbbb" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Cancelled" systemCode="erstCancelled" />
 		<Record typeID="b89ae134f66e795e53c858b92360ded7" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b89ae134f66e795e53c858b92360ded7" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Attended" systemCode="erstAttended" />
+		<Record typeID="bba2b415099a7b84b6c7c5992ddabbbb" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,bba2b415099a7b84b6c7c5992ddabbbb" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Cancelled" systemCode="erstCancelled" />
 		<Record typeID="d31c40b6fd5adfd1662a23becc0888fb" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,d31c40b6fd5adfd1662a23becc0888fb" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Not Placed" systemCode="erstNotPlaced" />
+		<Record typeID="b8861696d93259be4d3d03a85b9bc520" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b8861696d93259be4d3d03a85b9bc520" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Pending Approval" systemCode="erstPendingApproval" />
+		<Record typeID="4cd8b68f0d9f5064c28b089805835927" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,4cd8b68f0d9f5064c28b089805835927" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Pending Confirmation" systemCode="erstPendingConfirmation" />
+		<Record typeID="b8861693e7abb9a80d7ce2ae027fb824" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b8861693e7abb9a80d7ce2ae027fb824" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Registered" systemCode="erstRegistered" />
+		<Record typeID="b88616959d221ab71e82321fdd8f1fc9" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b88616959d221ab71e82321fdd8f1fc9" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" type="Waitlisted" systemCode="erstWaitlisted" />
 		
 		<Record typeID="444df2ce9c74fa886435c08706d343db" typeIDPath="444df2ce9c74fa886435c08706d343db" parentTypeID="NULL" type="Image Types" systemCode="imageType" />
 		

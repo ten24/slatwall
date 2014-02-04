@@ -585,7 +585,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						// Set registration status - Should this be done when order is placed instead?
 						if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
-							eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+							eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPendingApproval"));
 						} else {
 							if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {
 								depositsCount++;
