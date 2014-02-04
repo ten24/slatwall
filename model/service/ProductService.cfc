@@ -102,27 +102,15 @@ component extends="HibachiService" accessors="true" {
 	
 	// @help Generates an event sku stub. Used to replace repetitive code.
 	private any function createEventSkuStub(required processObject, required startDate, required endDate, required qualifier, locationConfiguration) {
+		
 		var newSku = this.newSku();
-		newSku.setProduct( arguments.processObject.getproduct() );
-		if(isDefined("arguments.processObject.getskuName") && !isNull(arguments.processObject.getSkuName())) {
-			newSku.setSkuName( arguments.processObject.getSkuName() );
-		} else {
-			newSku.setSkuName( arguments.processObject.getproduct().getProductName() );
-		}
-		newSku.setSkuCode( arguments.processObject.getproduct().getProductCode() & "-#arguments.qualifier#");
+		newSku.setProduct( arguments.processObject.getProduct() );
+		newSku.setSkuCode( arguments.processObject.getProduct().getProductCode() & "-#arguments.qualifier#");
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
 		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
-		// If coming from product creation there will be no skuPurchaseDateTime
-		if(structKeyExists(arguments.processObject,"getSkuPurchaseEndDateTime")) {
-			newSku.setPurchaseStartDateTime( arguments.processObject.getSkuPurchaseStartDateTime() );
-		}
-		if(structKeyExists(arguments.processObject,"getSkuPurchaseEndDateTime")) {
-			newSku.setPurchaseEndDateTime( arguments.processObject.getSkuPurchaseEndDateTime() );
-		}
 		
-		newSku.setAllowEventWaitlistingFlag(arguments.processObject.getSkuAllowWaitlistingFlag());
-		newSku.setEventCapacity(arguments.processObject.getEventCapacity());
+		//newSku.setEventCapacity(arguments.processObject.getEventCapacity());
 		
 		newSku.generateAndSetAttendanceCode();
 		
@@ -818,304 +806,219 @@ component extends="HibachiService" accessors="true" {
 			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
 		}
 		
-		// Create Merchandise Product Skus Based On Options
-		if(arguments.processObject.getBaseProductType() == "merchandise") {
+		// GENERATE - CONTENT ACCESS SKUS
+		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "merchandise") {
+			
+			// Bundle Content Into A Single Sku
+			if( arguments.processObject.getBundleContentAccessFlag() ) {
+				
+				var newSku = this.newSku();
+				newSku.setPrice(arguments.processObject.getPrice());
+				newSku.setSkuCode(arguments.product.getProductCode() & "-1");
+				newSku.setProduct(arguments.product);
+				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
+				}
+				product.setDefaultSku(newSku);
+				
+			// Create Sku for each piece of Content
+			} else {
+				
+				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
+					var newSku = this.newSku();
+					newSku.setPrice(arguments.product.getPrice());
+					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
+					newSku.setProduct(arguments.product);
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
+					if(c==1) {
+						arguments.product.setDefaultSku(newSku);	
+					}
+				}
+				
+			}
+		
+		// GENERATE - EVENT SKUS	
+		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "event") {
+				
+			var skusToCreate = 1; 		// Increments with each new sku
+			var skuQualifier = 1;		// Gets incremented and appended to each sku to make unique
+			
+			// Set date and time for first sku
+			var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
+			var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
+			
+			// Single event instance (non-recurring)
+			if(arguments.processObject.getSchedulingType() == "once" ) {
+				
+				// Bundled location configuration
+				if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+					
+					var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
+					
+					// Add location configurations
+					for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+						newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+					}
+					
+					
+				// Single location configuration
+				} else {
+					
+					// For Every locationConfiguration, create a sku with the eventStartDateTime
+					for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+						var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
+						skuQualifier++;
+						newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
+					}
+				}
+				
+			// Recurring event
+			} else if( arguments.processObject.getSchedulingType() == "recurring" ) {
+				
+				//Create new product schedule
+				var newProductSchedule = this.newProductSchedule();
+				newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
+				
+				// How frequently will event occur (Daily, Weekly, etc.)?
+				newProductSchedule.setRecurringTimeUnit( getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()) ); 
+				
+				// Is end type based on occurrences or date?
+				newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
+				
+				// Set schedule start/end dates
+				newProductSchedule.setScheduleStartDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleStartDate()),month(arguments.processObject.getScheduleStartDate()),day(arguments.processObject.getScheduleStartDate()),0,0,0)));
+				newProductSchedule.setScheduleEndDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59)));
+				
+				// Set product association
+				newProductSchedule.setProduct(arguments.product);
+				
+				// Make sure event start date and schedule start date are the same
+				if(dateDiff("d",dateFormat(arguments.processObject.getEventStartDateTime(),"short"),dateFormat(arguments.processObject.getScheduleStartDate(),"short") ) != 0 ){
+					processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleStartDate'));
+				} else {
+					
+					// DAILY
+					if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Daily") {
+						createDailyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+					}
+					
+					// WEEKLY
+					else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Weekly") {
+						createWeeklyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+					} 
+					
+					// MONTHLY
+					else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Monthly") {
+						createMonthlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+					} 
+					
+					// YEARLY
+					else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Yearly") {
+						createYearlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+					} 
+					
+				}
+				//Persist new product schedule
+				getProductScheduleService().saveProductSchedule( newProductSchedule );
+			}
+		
+			
+			
+			
+			
+			
+			
+			
+		
+		// GENERATE - MERCHANDISE SKUS
+		} else if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "merchandise") {
 			
 			// If options were passed in create multiple skus
 			if(!isNull(arguments.processObject.getOptions()) && len(arguments.processObject.getOptions())) {
 				
-				var optionGroups = {};
-				var totalCombos = 1;
-				var indexedKeys = [];
-				var currentIndexesByKey = {};
-				var keyToChange = "";
-				
-				// Loop over all the options to put them into a struct by groupID
-				for(var i=1; i<=listLen(arguments.processObject.getOptions()); i++) {
-					var option = getOptionService().getOption( listGetAt(arguments.processObject.getOptions(), i) );
-					if(!structKeyExists(optionGroups, option.getOptionGroup().getOptionGroupID())) {
-						optionGroups[ option.getOptionGroup().getOptionGroupID() ] = [];
+				// Create a sku with 1 option from each group, and then update the indexes properly for the next loop
+				for(var i = 1; i<=totalCombos; i++) {
+					
+					// Setup the New Sku
+					var newSku = this.newSku();
+					newSku.setPrice(arguments.processObject.getPrice());
+					if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+						newSku.setListPrice(arguments.product.getlistPrice());	
 					}
-					arrayAppend(optionGroups[ option.getOptionGroup().getOptionGroupID() ], option);
-				}
-				
-				// Loop over the groups to see how many we will be creating and to setup the option indexes to use
-				for(var key in optionGroups) {
-					arrayAppend(indexedKeys, key);
-					currentIndexesByKey[ key ] = 1;
-					totalCombos = totalCombos * arrayLen(optionGroups[key]);
-				}
-				
-
-				// ==============================================
-				// BEGIN MERCHANDISE SKU GENERATION (OPTIONS)
-				// ==============================================
-				if(arguments.processObject.getGenerateSkusFlag() == 1) {
-					// Create a sku with 1 option from each group, and then update the indexes properly for the next loop
-					for(var i = 1; i<=totalCombos; i++) {
-						
-						// Setup the New Sku
-						var newSku = this.newSku();
-						newSku.setPrice(arguments.processObject.getPrice());
-						if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-							newSku.setListPrice(arguments.product.getlistPrice());	
-						}
-						newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
-						
-						// Add the Sku to the product, and if the product doesn't have a default, then also set as default
-						arguments.product.addSku(newSku);
-						if(isNull(arguments.product.getDefaultSku())) {
-							arguments.product.setDefaultSku(newSku);
-						}
-						
-						// Add each of the options
-						for(var key in optionGroups) {
-							newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);	
-						}
-						if(i < totalCombos) {
-							var indexesUpdated = false;
-							var changeKeyIndex = 1;
-							while(indexesUpdated == false) {
-								if(currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] < arrayLen(optionGroups[ indexedKeys[ changeKeyIndex ] ])) {
-									currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ]++;
-									indexesUpdated = true;
-								} else {
-									currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] = 1;
-									changeKeyIndex++;
-								}
+					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+					
+					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
+					arguments.product.addSku(newSku);
+					if(isNull(arguments.product.getDefaultSku())) {
+						arguments.product.setDefaultSku(newSku);
+					}
+					
+					// Add each of the options
+					for(var key in optionGroups) {
+						newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);	
+					}
+					if(i < totalCombos) {
+						var indexesUpdated = false;
+						var changeKeyIndex = 1;
+						while(indexesUpdated == false) {
+							if(currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] < arrayLen(optionGroups[ indexedKeys[ changeKeyIndex ] ])) {
+								currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ]++;
+								indexesUpdated = true;
+							} else {
+								currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] = 1;
+								changeKeyIndex++;
 							}
 						}
 					}
 				}
-				// ==============================================
-				// END MERCHANDISE SKU GENERATION (OPTIONS)
-				// ==============================================
 				
 			// If no options were passed in we will just create a single sku
 			} else {
-				// ==============================================
-				// BEGIN MERCHANDISE SKU GENERATION (NO OPTIONS)
-				// ==============================================
-				if(arguments.processObject.getGenerateSkusFlag() == 1) {
-					var thisSku = this.newSku();
-					thisSku.setProduct(arguments.product);
-					thisSku.setPrice(arguments.processObject.getPrice()); 
-					if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-						thisSku.setListPrice(arguments.product.getlistPrice());	
-					}
-					thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
-					arguments.product.setDefaultSku( thisSku );
-				}
-				// ==============================================
-				// END MERCHANDISE SKU GENERATION (NO OPTIONS)
-				// ==============================================
 				
+				var thisSku = this.newSku();
+				thisSku.setProduct(arguments.product);
+				thisSku.setPrice(arguments.processObject.getPrice()); 
+				if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+					thisSku.setListPrice(arguments.product.getlistPrice());	
+				}
+				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+				arguments.product.setDefaultSku( thisSku );
+					
 			}
 			
-		// Create Subscription Product Skus Based On SubscriptionTerm and SubscriptionBenifit
-		} else if (arguments.processObject.getBaseProductType() == "subscription") {
+		// GENERATE - SUBSCRIPTION SKUS
+		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "subscription") {
 			
-			// ===================================
-			// BEGIN SUBSCRIPTION SKU GENERATION
-			// ===================================
-			if(arguments.processObject.getGenerateSkusFlag() == 1) {
-				for(var i=1; i <= listLen(arguments.processObject.getSubscriptionTerms()); i++){
-					var thisSku = this.newSku();
-					thisSku.setProduct(arguments.product);
-					thisSku.setPrice(arguments.processObject.getPrice());
-					thisSku.setRenewalPrice(arguments.processObject.getPrice());
-					thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
-					thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
-					for(var b=1; b <= listLen(arguments.processObject.subscriptionBenefits); b++) {
-						thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.subscriptionBenefits, b) ) );
-					}
-					for(var b=1; b <= listLen(arguments.processObject.renewalSubscriptionBenefits); b++) {
-						thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.renewalSubscriptionBenefits, b) ) );
-					}
-					if(i==1) {
-						product.setDefaultSku( thisSku );	
-					}
+			for(var i=1; i <= listLen(arguments.processObject.getSubscriptionTerms()); i++){
+				var thisSku = this.newSku();
+				thisSku.setProduct(arguments.product);
+				thisSku.setPrice(arguments.processObject.getPrice());
+				thisSku.setRenewalPrice(arguments.processObject.getPrice());
+				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
+				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+				for(var b=1; b <= listLen(arguments.processObject.subscriptionBenefits); b++) {
+					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.subscriptionBenefits, b) ) );
+				}
+				for(var b=1; b <= listLen(arguments.processObject.renewalSubscriptionBenefits); b++) {
+					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.renewalSubscriptionBenefits, b) ) );
+				}
+				if(i==1) {
+					product.setDefaultSku( thisSku );	
 				}
 			}
-			
-			// ===================================
-			// END SUBSCRIPTION GENERATION
-			// ===================================
-			
-			
-		// Create Content Access Product Skus Based On Pages
-		} else if (arguments.processObject.getBaseProductType() == "contentAccess") {
-			
-			// ===================================
-			// BEGIN CONTENT ACCESS SKU GENERATION
-			// ===================================
-				
-			if(arguments.processObject.getGenerateSkusFlag() == 1) {
-			
-				if(structKeyExists(arguments.processObject, "bundleContentAccess") && arguments.processObject.bundleContentAccess) {
-					var newSku = this.newSku();
-					newSku.setPrice(arguments.processObject.getPrice());
-					newSku.setSkuCode(arguments.product.getProductCode() & "-1");
-					newSku.setProduct(arguments.product);
-					for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
-						newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
-					}
-					product.setDefaultSku(newSku);
-				} else {
-					for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
-						var newSku = this.newSku();
-						newSku.setPrice(arguments.product.getPrice());
-						newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
-						newSku.setProduct(arguments.product);
-						newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
-						if(c==1) {
-							arguments.product.setDefaultSku(newSku);	
-						}
-					}
-				}
-			
-			}
-			
-			// ===================================
-			// END CONTENT ACCESS SKU GENERATION  
-			// ===================================
-			
-			
-			
-		} else if (arguments.processObject.getBaseProductType() == "event") {
-			
-			// Save purchase dates if defined at product level
-			if(structKeyExists(arguments.processObject,"getpurchaseEndDateTime")) {
-				arguments.product.setPurchaseStartDateTime( arguments.processObject.getpurchaseStartDateTime() );
-			}
-			if(structKeyExists(arguments.processObject,"getpurchaseEndDateTime")) {
-				arguments.product.setPurchaseEndDateTime( arguments.processObject.getpurchaseEndDateTime() );
-			}
-			
-			// ===================================
-			// BEGIN EVENT SKU GENERATION		  
-			// ===================================
-				
-			if(arguments.processObject.getGenerateSkusFlag() == 1) {
-				
-				var SkusToCreate = 1; // Increments with each new sku
-				var isFirstSku = true; // Used to set default sku
-				var SkuQualifier = 1; // Gets incremented and appended to each sku to make unique
-				
-				// Set date and time for first sku
-				var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-				var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-				
-				// Single event instance (non-recurring)
-				if(arguments.processObject.getSchedulingType() == "once" ) {
-					
-					// Bundled location configuration
-					if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-						var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
-						// Add location configurations
-						for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-							newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-						}
-						// Set first as default sku
-						if(isFirstSku) {
-							arguments.product.setDefaultSku( newSku );	
-							isFirstSku = false;
-						}
-					}
-					
-					// Single location configuration
-					else {
-						// For Every locationConfiguration, create a sku with the eventStartDateTime
-						for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-							var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-							skuQualifier++;
-							newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-							
-							// Set first as default sku
-							if(isFirstSku) {
-								arguments.product.setDefaultSku( newSku );	
-								isFirstSku = false;
-							}
-						}
-					}
-				}
-				
-				//==========================================
-				// Recurring schedule is specified for event
-				//==========================================
-				
-				else if(arguments.processObject.getSchedulingType() == "recurring" ) {
-					
-					//Create new product schedule
-					var newProductSchedule = this.newProductSchedule();
-					newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
-					
-					// How frequently will event occur (Daily, Weekly, etc.)?
-					newProductSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
-					
-					// Is end type based on occurrences or date?
-					newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
-					
-					// Set schedule start/end dates
-					newProductSchedule.setScheduleStartDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleStartDate()),month(arguments.processObject.getScheduleStartDate()),day(arguments.processObject.getScheduleStartDate()),0,0,0)));
-					newProductSchedule.setScheduleEndDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59)));
-					
-					// Set product association
-					newProductSchedule.setProduct(arguments.product);
-					
-					// Make sure event start date and schedule start date are the same
-					if(dateDiff("d",dateFormat(arguments.processObject.getEventStartDateTime(),"short"),dateFormat(arguments.processObject.getScheduleStartDate(),"short") ) != 0 ){
-						processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleStartDate'));
-					} else {
-						
-						// DAILY
-						if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Daily") {
-							createDailyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-						}
-						
-						// WEEKLY
-						else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Weekly") {
-							createWeeklyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-						} 
-						
-						// MONTHLY
-						else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Monthly") {
-							createMonthlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-						} 
-						
-						// YEARLY
-						else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Yearly") {
-							createYearlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-						} 
-						
-					}
-					//Persist new product schedule
-					getProductScheduleService().saveProductSchedule( newProductSchedule );
-				}
-			
-			}
-				
-			// ===================================
-			// END EVENT SKU GENERATION
-			// ===================================
-					
-		} else {
-			throw("There was an unexpected error when creating this product");
 		}
 		
+		// If some skus were created, then set the default sku to the first one
+		if(arrayLen(arguments.product.getSkus())) {
+			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
+		}
 		
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-		//arguments.product = this.saveProduct(arguments.product,arguments.processObject.getProductProperties());
-        
-        // validate the product
-		arguments.product.validate( context="save" );
 		
-		// If the product passed validation then call save in the DAO, otherwise set the errors flag
-        if(!product.hasErrors()) {
-        		arguments.product = getHibachiDAO().save(target=arguments.product);
-        }
-        
+		// Call save on the product
+		arguments.product = this.saveProduct(arguments.product);
+		
         // Return the product
 		return arguments.product;
 	}
