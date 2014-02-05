@@ -62,7 +62,7 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	// Related Object Properties (many-to-one)    
 	    
 	// Related Object Properties (one-to-many)
-	property name="fileRelationships" singularname="FileRelationship" cfc="FileRelationship" type="array" fieldtype="one-to-many" fkcolumn="fileID" inverse="true" fetch="join"  cascade="all-delete-orphan";    
+	property name="fileRelationships" singularname="FileRelationship" cfc="FileRelationship" type="array" fieldtype="one-to-many" fkcolumn="fileID" inverse="true" fetch="join" cascade="all-delete-orphan";    
 	    
 	// Related Object Properties (many-to-many - owner)    
 	
@@ -80,8 +80,6 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	// Non-Persistent Properties    
 	property name="fileUpload" type="string" persistent="false" hb_formFieldType="file";
 	property name="filePath" type="string" persistent="false" setter="false";
-	property name="baseObject" ormType="string" persistent="false";
-	property name="baseID" ormType="string" persistent="false";
 	
 	// Deprecated Properties    
 	

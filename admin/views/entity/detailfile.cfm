@@ -63,6 +63,10 @@ Notes:
 		<cfif rc.file.isNew()>
 			<input type="hidden" name="baseObject" value="#rc.baseObject#" />
 			<input type="hidden" name="baseID" value="#rc.baseID#" />
+			
+			<input type="hidden" name="fileRelationships[1].fileRelationshipID" value="" />
+			<input type="hidden" name="fileRelationships[1].baseObject" value="#rc.baseObject#" />
+			<input type="hidden" name="fileRelationships[1].baseID" value="#rc.baseID#" />
 		</cfif>
 		
 		<cf_HibachiPropertyRow>

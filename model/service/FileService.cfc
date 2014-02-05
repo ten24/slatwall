@@ -106,16 +106,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.file = save(entity=arguments.file, data=arguments.data, context=arguments.context);
 		
-		if (isNewFile && !isNull(arguments.file.getBaseObject()) && !isNull(arguments.file.getBaseID()))
-		{
-			// create file relationship
-			var newFileRelationship = this.newFileRelationship();
-			newFileRelationship.setFile(arguments.file);
-			newFileRelationship.setBaseObject(arguments.file.getBaseObject());
-			newFileRelationship.setBaseID(arguments.file.getBaseID());
-			this.saveFileRelationship(newFileRelationship);
-		}
-		
 		// only execute file operations when a file is submitted
 		if (isSimpleValue(file.getFileUpload()) && len(file.getFileUpload()) && structKeyExists(form, 'fileUpload')) {
 			// rename file with .cfm extension in order to control file access
