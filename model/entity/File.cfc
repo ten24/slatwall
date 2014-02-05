@@ -102,6 +102,14 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	// ============  END:  Non-Persistent Property Methods =================    
 		    
 	// ============= START: Bidirectional Helper Methods ===================    
+	
+	// File Relationships (one-to-many)    
+	public void function addFileRelationship(required any fileRelationship) {    
+		arguments.fileRelationship.setFile( this );    
+	}    
+	public void function removeFileRelationship(required any fileRelationship) {    
+		arguments.fileRelationship.removeFile( this );    
+	}
 	    
 	// =============  END:  Bidirectional Helper Methods ===================    
 	
