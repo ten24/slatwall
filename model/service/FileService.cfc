@@ -55,14 +55,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var file = this.getFile(arguments.fileID);
 		
 		if (!isNull(file) && fileExists(file.getFilePath())) {
-			// download file
+			// Download file
 			try {
 				getService("hibachiUtilityService").downloadFile(fileName=file.getFileName(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);
 			} catch (any error) {
 				file.addError("fileDownload", rbKey("entity.file.download.fileDownloadError"));
 			}
 		} else {
-			// file does not exist
+			// File does not exist
 			file.addError("fileDownload", rbKey("entity.file.download.fileMissingError"));
 		}
 		
@@ -76,7 +76,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	public array function getRelatedFilesForEntity( required string baseID ) {
-		// find file relationships for base object entity
+		// Find file relationships for base object entity
 		return this.listFileRelationship(arguments);
 	}
 	
@@ -104,15 +104,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function saveFile(required any file, struct data, string context="save") {
 		var isNewFile = arguments.file.getNewFlag();
 		
+		// Create urlTitle
+		if (isNull(arguments.file.getURLTitle())) {   
+			var titleString = "";
+			
+			if (!isNull(arguments.data))
+			{
+				// Check data argument for urlTitle value
+				var hasUrlTitle = structKeyExists(arguments.data, "urlTitle") && isSimpleValue(arguments.data.urlTitle) && len(arguments.data.urlTitle);
+				if (!hasUrlTitle) {
+					titleString = arguments.data.fileName;
+				}
+			} else if (!isNull(arguments.file.getFileName())) {
+				titleString = arguments.file.getFileName();
+			}
+			
+			if (len(titleString)) {
+				arguments.file.setURLTitle(getService("dataService").createUniqueURLTitle(titleString=titleString, tableName=getMetaData(arguments.file).table));
+			}
+			
+		}
+		
 		arguments.file = save(entity=arguments.file, data=arguments.data, context=arguments.context);
 		
-		// only execute file operations when a file is submitted
+		// Only execute file operations when a file is submitted
 		if (isSimpleValue(file.getFileUpload()) && len(file.getFileUpload()) && structKeyExists(form, 'fileUpload')) {
-			// rename file with .cfm extension in order to control file access
+			// Rename file with .cfm extension in order to control file access
 			var uploadData = fileUpload(file.getFilePath(), 'fileUpload', '*', 'overwrite');
 			
 			if (uploadData.fileWasSaved) {
-				// extract and retain uploaded file's original extension and mime type then resave
+				// Extract and retain uploaded file's original extension and mime type then resave
 				arguments.file.setFileType(uploadData.clientFileExt);
 				arguments.file.setMimeType("#uploadData.contenttype#/#uploadData.contentsubtype#");
 				save(entity=arguments.file, context=arguments.context);
