@@ -48,21 +48,21 @@ Notes:
 --->
 <cfparam name="rc.file" type="any">
 <cfparam name="rc.edit" type="boolean">
-
-<cfif rc.file.isNew()>
-	<cfparam name="rc.baseObject" type="string">
-	<cfset saveActionQueryString="#rc.baseObject#ID=#rc['#baseObject#ID']#" />
-<cfelse>
-	<cfset saveActionQueryString="#rc.file.getBaseObject()#ID=#rc.file.getBaseID()#" />
-</cfif>
+<cfparam name="rc.baseObject" type="string">
+<cfparam name="rc.baseID" type="string">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#saveActionQueryString#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.file#" edit="#rc.edit#" />
+	<cf_HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#rc.baseObject#ID=#rc.baseID#">
+	
+		<cf_HibachiEntityActionBar type="detail" object="#rc.file#" edit="#rc.edit#"
+								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
+								   cancelQueryString="#rc.baseObject#ID=#rc.baseID#"
+								   backAction="#request.context.entityActionDetails.sRedirectAction#"
+								   backQueryString="#rc.baseObject#ID=#rc.baseID#" />
 		
 		<cfif rc.file.isNew()>
-			<input type="hidden" name="baseObject" value="#baseObject#" />
-			<input type="hidden" name="baseID" value="#rc['#baseObject#ID']#" />
+			<input type="hidden" name="baseObject" value="#rc.baseObject#" />
+			<input type="hidden" name="baseID" value="#rc.baseID#" />
 		</cfif>
 		
 		<cf_HibachiPropertyRow>
