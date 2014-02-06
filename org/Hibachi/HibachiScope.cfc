@@ -57,7 +57,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(!structKeyExists(variables, "url")) {
 			variables.url = getPageContext().getRequest().GetRequestUrl().toString();
 			if( len( CGI.QUERY_STRING ) ) {
-				variables.url &= "?#QUERY_STRING#";
+				variables.url &= "?#CGI.QUERY_STRING#";
 			}
 		}
 		return variables.url;
