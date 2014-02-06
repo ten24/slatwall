@@ -112,7 +112,7 @@ Notes:
 		UPDATE
 			SwAccountPaymentMethod
 		SET
-			activeFlag = 1
+			activeFlag = #getApplicationValue("databaseTrue")#
 		WHERE
 			activeFlag is null
 	</cfquery>
@@ -121,7 +121,7 @@ Notes:
 		UPDATE
 			SwSku
 		SET
-			activeFlag = 1
+			activeFlag = #getApplicationValue("databaseTrue")#
 		WHERE
 			activeFlag is null
 	</cfquery>
@@ -138,7 +138,7 @@ Notes:
 		UPDATE
 			SwOrderFulfillment
 		SET
-			manualFulfillmentChargeFlag = 0
+			manualFulfillmentChargeFlag = #getApplicationValue("databaseFalse")#
 		WHERE
 			manualFulfillmentChargeFlag is null
 	</cfquery>
@@ -154,6 +154,8 @@ Notes:
 	<cfquery name="local.allowNull">
 		<cfif getApplicationValue("databaseType") eq "MySQL">
 			ALTER TABLE SwOrderPayment MODIFY COLUMN amount decimal(19,2) NULL
+		<cfelseif getApplicationValue("databaseType") eq "PostgreSQL">
+			ALTER TABLE SwOrderPayment ALTER COLUMN amount TYPE decimal(19,2) NULL
 		<cfelse>
 			ALTER TABLE SwOrderPayment ALTER COLUMN amount decimal(19,2) NULL
 		</cfif>

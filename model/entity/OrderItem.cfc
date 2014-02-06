@@ -456,7 +456,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "skus", "left");
 			
 			var wc = "(";
-			wc &= " aslatwallattributeset.globalFlag = 1";
+			wc &= " aslatwallattributeset.globalFlag = #getApplicationValue("databaseTrue")#";
 			wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getSku().getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";
 			wc &= " OR aslatwallproduct.productID = '#getSku().getProduct().getProductID()#'";
 			if(!isNull(getSku().getProduct().getBrand())) {

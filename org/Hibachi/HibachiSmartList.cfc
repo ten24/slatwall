@@ -363,7 +363,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			var aliasedProperty = getAliasedProperty(propertyIdentifier=arguments.propertyIdentifier);
 		}
 		if(len(aliasedProperty)) {
-			variables.whereGroups[arguments.whereGroup].filters[aliasedProperty] = arguments.value;	
+			var translatedValue = arguments.value;
+			if (getApplicationValue("databaseType") eq "PostgreSQL" and right(arguments.propertyIdentifier,4) eq "Flag") {
+				translatedValue = (isBoolean(arguments.value) and arguments.value) ? true : false ;
+			}
+			variables.whereGroups[arguments.whereGroup].filters[aliasedProperty] = translatedValue;
 		}
 	}
 	

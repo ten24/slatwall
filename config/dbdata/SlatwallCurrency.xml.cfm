@@ -9,7 +9,7 @@
 <Table tableName="SwCurrency">
 	<Columns>
 		<column name="currencyCode" fieldtype="id" />
-		<column name="currencyISONumber" />
+		<column name="currencyISONumber" datatype="integer"/>
 		<column name="activeFlag" datatype="bit" update="false" />
 		<column name="currencyName" />
 		<column name="currencySymbol" />

@@ -85,6 +85,15 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		
 		// SET Database Type
 		request.slatwallScope.setApplicationValue("databaseType", this.ormSettings.dialect);
+
+		// SET Database Boolean value constants
+		if (this.ormSettings.dialect eq "PostgreSQL") {
+			request.slatwallScope.setApplicationValue("databaseTrue", true);
+			request.slatwallScope.setApplicationValue("databaseFalse", false);
+		} else {
+			request.slatwallScope.setApplicationValue("databaseTrue", 1);
+			request.slatwallScope.setApplicationValue("databaseFalse", 0);
+		}
 	}
 	
 	public void function onUpdateRequest() {

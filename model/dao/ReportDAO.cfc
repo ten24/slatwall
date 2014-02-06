@@ -294,7 +294,7 @@ Notes:
 		
 		<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
 			<cfreturn "DATEPART(#arguments.datePart#, #arguments.dateColumn#)" />
-		<cfelseif getApplicationValue("databaseType") eq "MySQL">
+		<cfelseif getApplicationValue("databaseType") eq "MySQL" or getApplicationValue("databaseType") eq "PostgreSQL">
 			
 			<cfif arguments.datePart eq "DD">
 				<cfset arguments.datePart = "DAY" />

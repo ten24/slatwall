@@ -51,13 +51,13 @@ Notes:
 	<cfscript>
 		public array function getAttributeSets(required array attributeSetTypeCode,required array productTypeIDs){
 			var hql = " FROM SlatwallAttributeSet sas
-						WHERE (exists(FROM sas.attributes sa WHERE sa.activeFlag = 1)
+						WHERE (exists(FROM sas.attributes sa WHERE sa.activeFlag = #getApplicationValue("databaseTrue")#)
 							AND sas.attributeSetType.systemCode IN (:attributeSetTypeCode)) ";
 			if(arrayLen(arguments.productTypeIDs)){
-				hql &= " AND (sas.globalFlag = 1
+				hql &= " AND (sas.globalFlag = #getApplicationValue("databaseTrue")#
 							OR exists(FROM sas.attributeSetAssignments asa WHERE asa.productTypeID IN (:productTypeIDs)))";
 			} else {
-				hql &= " AND sas.globalFlag = 1";
+				hql &= " AND sas.globalFlag = #getApplicationValue("databaseTrue")#";
 			}			 
 			hql &= " ORDER BY sas.attributeSetType.systemCode ASC, sas.sortOrder ASC";
 			
@@ -291,7 +291,15 @@ Notes:
 					SET defaultSkuID = (SELECT skuID FROM SlatwallSku WHERE SlatwallSku.productID = SlatwallProduct.productID LIMIT 1)
 					WHERE SlatwallProduct.defaultSkuID IS NULL
 				");
-			} else {	
+			} else if(getApplicationValue("databaseType") eq "PostgreSQL") {
+				dataQuery.setSql("
+					UPDATE SlatwallProduct
+					SET defaultSkuID = (SELECT top 1 skuID FROM SlatwallSku WHERE SlatwallSku.productID = SlatwallProduct.productID)
+					FROM SlatwallSku
+					WHERE SlatwallProduct.productID = SlatwallSku.productID
+					AND SlatwallProduct.defaultSkuID IS NULL
+				");
+			} else {
 				dataQuery.setSql("
 					UPDATE SlatwallProduct
 					SET defaultSkuID = (SELECT top 1 skuID FROM SlatwallSku WHERE SlatwallSku.productID = SlatwallProduct.productID)
@@ -307,7 +315,15 @@ Notes:
 					SET imageFile = (SELECT concat(productCode, '.#setting("globalImageExtension")#') FROM SlatwallProduct WHERE SlatwallSku.productID = SlatwallProduct.productID)
 					WHERE SlatwallSku.imageFile IS NULL
 				");
-			} else if(getApplicationValue("databaseType") eq "Oracle10g") {	
+			} else if(getApplicationValue("databaseType") eq "PostgreSQL") {
+				dataQuery.setSql("
+					UPDATE SlatwallSku
+					SET imageFile = (SELECT productCode || '.' || '#setting("globalImageExtension")#' FROM SlatwallProduct WHERE SlatwallSku.productID = SlatwallProduct.productID)
+					FROM SlatwallProduct
+					WHERE SlatwallProduct.productID = SlatwallSku.productID
+					AND SlatwallSku.imageFile IS NULL
+				");
+			} else if(getApplicationValue("databaseType") eq "Oracle10g") {
 				dataQuery.setSql("
 					UPDATE SlatwallSku
 					SET imageFile = (SELECT productCode || '.' || '#setting("globalImageExtension")#' FROM SlatwallProduct WHERE SlatwallSku.productID = SlatwallProduct.productID)
