@@ -3,7 +3,7 @@
 		"paymentTypeCreditCard":{
 		    "paymentMethod.paymentMethodType":{"eq":"creditCard"}
 		},
-		"newCreditCard":{
+		"paymentTypeCreditCardAndNew":{
 			"paymentMethod.paymentMethodType":{"eq":"creditCard"},
 			"newFlag":{"eq":true}
 		},
@@ -16,7 +16,7 @@
 	"properties":{
 	    "paymentMethod":		[{"contexts":"save","required":true}],
 		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
-		"creditCardNumber":		[{"contexts":"save","conditions":"newCreditCard,editExistingCreditCardNumber","required":true,"dataType":"creditCard"}],
+		"creditCardNumber":		[{"contexts":"save","conditions":"paymentTypeCreditCardAndNew,editExistingCreditCardNumber","required":true,"dataType":"creditCard"}],
 		"expirationMonth":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
 		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
 		"orderPayments":		[{"contexts":"delete","maxCollection":0}],
