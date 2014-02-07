@@ -81,7 +81,7 @@ Notes:
 						<th>#$.slatwall.rbKey('entity.orderitem.quantity')#</th>
 						<th>#$.slatwall.rbKey('entity.orderItem.quantityUndelivered')#</th>
 						<th>#$.slatwall.rbKey('entity.orderitem.quantityDelivered')#</th>
-						<th>Quantity</th>
+						<th>#$.slatwall.rbKey('define.Quantity')#</th>
 					</tr>
 					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.orderFulfillment.getOrderFulfillmentItems()#" index="orderItem">
