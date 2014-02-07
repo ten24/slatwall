@@ -75,9 +75,12 @@ Notes:
 				<!--- Items Selector --->
 				<table class="table table-striped table-bordered table-condensed">
 					<tr>
-						<th>Sku Code</th>
-						<th class="primary">Product Title</th>
-						<th>Options</th>
+						<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
+						<th class="primary">#$.slatwall.rbKey('entity.product.title')#</th>
+						<th>#$.slatwall.rbKey('entity.sku.options')#</th>
+						<th>#$.slatwall.rbKey('entity.orderitem.quantity')#</th>
+						<th>#$.slatwall.rbKey('entity.orderItem.quantityUndelivered')#</th>
+						<th>#$.slatwall.rbKey('entity.orderitem.quantityDelivered')#</th>
 						<th>Quantity</th>
 					</tr>
 					<cfset orderItemIndex = 0 />
@@ -90,6 +93,9 @@ Notes:
 							<td>#orderItem.getSku().getSkuCode()#</td>
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							<td>#orderItem.getSku().displayOptions()#</td>
+							<td>#orderItem.getQuantity()#</td>
+							<td>#orderItem.getQuantityUndelivered()#</td>
+							<td>#orderItem.getQuantityDelivered()#</td>
 							<td><input type="text" name="orderDeliveryItems[#orderItemIndex#].quantity" value="" class="span1" /></td>
 						</tr>
 					</cfloop>
