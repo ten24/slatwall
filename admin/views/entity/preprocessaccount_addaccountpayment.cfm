@@ -79,7 +79,7 @@ Notes:
 					<cfif !isNull(rc.processObject.getNewAccountPayment().getPaymentMethod())>
 						<cfset loadVisable = rc.processObject.getNewAccountPayment().getPaymentMethod().getAllowSaveFlag() />
 					</cfif>
-					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsave" showValues="YES" loadVisable="#loadVisable#">
+					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsave" showValues="true" loadVisable="#loadVisable#">
 						
 						<!--- Save New Payment Method --->
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodFlag" edit="#rc.edit#" />
