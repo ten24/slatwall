@@ -130,8 +130,8 @@ Notes:
 					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
 						<h5>#$.slatwall.rbKey('entity.accountPayment.billingAddress')#</h5>
 						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountAddressID" edit="#rc.edit#">
-						<cf_HibachiDisplayToggle selector="select[name='accountAddressID']" showValues="">
-							<cf_SlatwallAdminAddressDisplay address="#rc.processObject.getNewAccountPayment().getBillingAddress()#" filedNamePrefix="newAccountPayment.billingAddresss." edit="#rc.edit#" />
+						<cf_HibachiDisplayToggle selector="select[name='accountAddressID']" showValues="*" loadVisible="#!len(rc.processObject.getAccountAddressID())#">
+							<cf_SlatwallAdminAddressDisplay address="#rc.processObject.getNewAccountPayment().getBillingAddress()#" fieldNamePrefix="newAccountPayment.billingAddresss." edit="#rc.edit#" />
 						</cf_HibachiDisplayToggle>	
 					</cf_HibachiDisplayToggle>
 				</cf_HibachiDisplayToggle>
