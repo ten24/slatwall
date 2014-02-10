@@ -93,6 +93,7 @@ Notes:
 					</tr>
 					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.processObject.getOrderDeliveryItems()#" index="recordData">
+						<cfif IsNumeric(recordData.quantity) AND recordData.quantity gt 0 >
 						<tr>
 							
 							<cfset orderItemIndex++ />
@@ -114,6 +115,7 @@ Notes:
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].orderItem.orderItemID" value="#recordData.orderItem.orderItemID#" />
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].quantity" value="#thisQuantity#" />
 						</tr>
+						</cfif>
 					</cfloop>
 				</table>
 			</cf_HibachiPropertyList>
