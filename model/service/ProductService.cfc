@@ -101,7 +101,72 @@ component extends="HibachiService" accessors="true" {
 	
 	
 	// @help Generates an event sku stub. Used to replace repetitive code.
-	private any function createEventSkuStub(required processObject, required startDate, required endDate, required qualifier, locationConfiguration) {
+	private void function createEventSkuOrSkus(required processObject, required startDate, required endDate) {
+		
+		// Bundled location configuration
+		if(arguments.processObject.getBundleLocationConfigurationFlag()) {
+			
+			var newSku = this.newSku();
+			newSku.setProduct( arguments.processObject.getProduct() );
+			newSku.setSkuCode( arguments.processObject.getProduct().getProductCode() & "-#getMaxSkuQualifier(arguments.processObject.getProduct().getSkus())#");
+			newSku.setPrice( arguments.processObject.getPrice() );
+			newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
+			newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
+			
+			// Get the event capacity and 
+			var eventCapacity = 0;
+			var preEventRegistrationMinutes = 0;
+			var postEventRegistrationMinutes = 0;
+			
+			// Add location configurations
+			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+				
+				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
+				
+				eventCapacity += locationConfiguration.setting('locationConfigurationCapacity');
+				if(preEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) {
+					preEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime');
+				}
+				if(postEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime')){
+					postEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime');
+				}
+				
+				newSku.addLocationConfiguration( locationConfiguration );
+			}
+			
+			newSku.setEventCapacity( eventCapacity );
+			newSku.setStartReservationDateTime( preEventRegistrationMinutes );
+			newSku.setEndReservationDateTime( postEventRegistrationMinutes );
+			newSku.generateAndSetAttendanceCode();
+			
+		// Single location configuration
+		} else {
+			
+			// For Every locationConfiguration, create a sku with the eventStartDateTime
+			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
+				
+				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
+				var newSku = this.newSku();
+				newSku.setProduct( arguments.processObject.getProduct() );
+				newSku.setSkuCode( arguments.processObject.getProduct().getProductCode() & "-#getMaxSkuQualifier(arguments.processObject.getProduct().getSkus())#");
+				newSku.setPrice( arguments.processObject.getPrice() );
+				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
+				newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
+				
+				newSku.addLocationConfiguration( locationConfiguration );
+				newSku.setEventCapacity( locationConfiguration.setting('locationConfigurationCapacity') );
+				newSku.setStartReservationDateTime( locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime') );
+				newSku.setEndReservationDateTime( locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime') );
+				
+				newSku.generateAndSetAttendanceCode();
+				
+			}
+		}
+
+	}
+	
+	// @help Generates an event sku stub. Used to replace repetitive code.
+	private any function createEventSkuStub(required processObject, required startDate, required endDate) {
 		
 		var newSku = this.newSku();
 		newSku.setProduct( arguments.processObject.getProduct() );
@@ -840,37 +905,10 @@ component extends="HibachiService" accessors="true" {
 		// GENERATE - EVENT SKUS	
 		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "event") {
 				
-			var skusToCreate = 1; 		// Increments with each new sku
-			var skuQualifier = 1;		// Gets incremented and appended to each sku to make unique
-			
-			// Set date and time for first sku
-			var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-			var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-			
 			// Single event instance (non-recurring)
 			if(arguments.processObject.getSchedulingType() == "once" ) {
 				
-				// Bundled location configuration
-				if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-					
-					var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
-					
-					// Add location configurations
-					for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-						newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-					}
-					
-					
-				// Single location configuration
-				} else {
-					
-					// For Every locationConfiguration, create a sku with the eventStartDateTime
-					for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-						var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-						skuQualifier++;
-						newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-					}
-				}
+				createEventSkuOrSkus(arguments.processObject, arguments.processObject.getEventStartDateTime(), arguments.processObject.getEventEndDateTime());
 				
 			// Recurring event
 			} else if( arguments.processObject.getSchedulingType() == "recurring" ) {
@@ -883,7 +921,7 @@ component extends="HibachiService" accessors="true" {
 				newProductSchedule.setRecurringTimeUnit( getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()) ); 
 				
 				// Is end type based on occurrences or date?
-				newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
+				newProductSchedule.setScheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
 				
 				// Set schedule start/end dates
 				newProductSchedule.setScheduleStartDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleStartDate()),month(arguments.processObject.getScheduleStartDate()),day(arguments.processObject.getScheduleStartDate()),0,0,0)));
@@ -892,43 +930,26 @@ component extends="HibachiService" accessors="true" {
 				// Set product association
 				newProductSchedule.setProduct(arguments.product);
 				
-				// Make sure event start date and schedule start date are the same
-				if(dateDiff("d",dateFormat(arguments.processObject.getEventStartDateTime(),"short"),dateFormat(arguments.processObject.getScheduleStartDate(),"short") ) != 0 ){
-					processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleStartDate'));
-				} else {
+				// DAILY
+				if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Daily") {
+					createDailyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
 					
-					// DAILY
-					if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Daily") {
-						createDailyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-					}
+				// WEEKLY
+				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Weekly") {
+					createWeeklyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
 					
-					// WEEKLY
-					else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Weekly") {
-						createWeeklyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-					} 
+				// MONTHLY
+				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Monthly") {
+					createMonthlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
 					
-					// MONTHLY
-					else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Monthly") {
-						createMonthlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-					} 
-					
-					// YEARLY
-					else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Yearly") {
-						createYearlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-					} 
-					
+				// YEARLY
+				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Yearly") {
+					createYearlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
 				}
+				
 				//Persist new product schedule
 				getProductScheduleService().saveProductSchedule( newProductSchedule );
 			}
-		
-			
-			
-			
-			
-			
-			
-			
 		
 		// GENERATE - MERCHANDISE SKUS
 		} else if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "merchandise") {
@@ -1089,23 +1110,16 @@ component extends="HibachiService" accessors="true" {
 	
 	// ====================== START: Save Overrides ===========================
 	
-	public any function saveProduct(required any product, required struct data) {
+	public any function saveProduct(required any product,  struct data={}) {
 		
-		// populate bean from values in the data Struct
-		arguments.product.populate(arguments.data);
+		// Do the standard Save logic
+		arguments.product = super.save(arguments.product, arguments.data);
 		
+		// If for some reason the URLTitle is null... generate it.
 		if(isNull(arguments.product.getURLTitle())) {
 			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
 		}
 		
-		// validate the product
-		arguments.product.validate( context="save" );
-		
-		// If the product passed validation then call save in the DAO, otherwise set the errors flag
-        if(!arguments.product.hasErrors()) {
-        		arguments.product = getHibachiDAO().save(target=arguments.product);
-        }
-        
         // Return the product
 		return arguments.product;
 	}

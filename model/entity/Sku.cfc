@@ -416,7 +416,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		var result = false;
 		var smartList =  getService("SkuService").getSkuSmartList();
 		smartList.addFilter("eventAttendanceCode",arguments.code);
-		if(smartList.getRecordsCount > 0) {
+		if(smartList.getRecordsCount() == 0) {
 			result = true;
 		}
 		return result;
