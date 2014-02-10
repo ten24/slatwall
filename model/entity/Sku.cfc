@@ -766,22 +766,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.placedOrderItemsSmartList;
 	}
 	
-		
-	// @help Returns any product schedule this sku is part of
-	public any function getProductScheduleSmartList() {
-		if(!structKeyExists(variables, "productScheduleSmartList")) {
-			variables.productScheduleSmartList = getService("ProductScheduleService").getProductScheduleSmartList();
-			if(!isNull(this.getProductSchedule())) {
-				variables.productScheduleSmartList.addFilter('productScheduleID', this.getProductSchedule().getProductScheduleID());
-			} else {
-				variables.productScheduleSmartList.addFilter('productScheduleID', "-1");
-				
-			}
-		}
-		return variables.productScheduleSmartList;
-	}
-	
-	
 	public any function getQATS() {
 		return getQuantity("QATS");
 	}

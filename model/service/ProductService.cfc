@@ -82,26 +82,8 @@ component extends="HibachiService" accessors="true" {
 		return AvailableOptions;
 	}
 	
-	private any function buildSkuCombinations(Array storage, numeric position, any data, String currentOption){
-		var keys = StructKeyList(arguments.data);
-		var i = 1;
-		
-		if(listlen(keys)){
-			for(i=1; i<= arrayLen(arguments.data[listGetAt(keys,position)]); i++){
-				if(arguments.position eq listlen(keys)){
-					arrayAppend(arguments.storage,arguments.currentOption & '|' & arguments.data[listGetAt(keys,position)][i].value) ;
-				}else{
-					arguments.storage = buildSkuCombinations(arguments.storage,arguments.position + 1, arguments.data, arguments.currentOption & '|' & arguments.data[listGetAt(keys,position)][i].value);
-				}
-			}
-		}
-		
-		return arguments.storage;
-	}
-	
-	
 	// @help Generates an event sku stub. Used to replace repetitive code.
-	private void function createEventSkuOrSkus(required processObject, required startDate, required endDate) {
+	private void function createEventSkuOrSkus(required processObject, required startDate, required endDate, any productSchedule) {
 		
 		// Bundled location configuration
 		if(arguments.processObject.getBundleLocationConfigurationFlag()) {
@@ -137,6 +119,11 @@ component extends="HibachiService" accessors="true" {
 			newSku.setEventCapacity( eventCapacity );
 			newSku.setStartReservationDateTime( preEventRegistrationMinutes );
 			newSku.setEndReservationDateTime( postEventRegistrationMinutes );
+			
+			if(structKeyExists(arguments, "productSchedule")) {
+				newSku.setProductSchedule( arguments.productSchedule );
+			}
+			
 			newSku.generateAndSetAttendanceCode();
 			
 		// Single location configuration
@@ -165,115 +152,37 @@ component extends="HibachiService" accessors="true" {
 
 	}
 	
-	// @help Generates an event sku stub. Used to replace repetitive code.
-	private any function createEventSkuStub(required processObject, required startDate, required endDate) {
-		
-		var newSku = this.newSku();
-		newSku.setProduct( arguments.processObject.getProduct() );
-		newSku.setSkuCode( arguments.processObject.getProduct().getProductCode() & "-#arguments.qualifier#");
-		newSku.setPrice( arguments.processObject.getPrice() );
-		newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
-		newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
-		
-		//newSku.setEventCapacity(arguments.processObject.getEventCapacity());
-		
-		newSku.generateAndSetAttendanceCode();
-		
-		if(structKeyExists(arguments,"locationConfiguration")) {
-			var preEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPreReservationTime');
-			var postEventRegistrationMinutes = getLocationService().getLocationConfiguration( locationConfiguration ).setting('locationConfigurationAdditionalPostReservationTime');
-			newSku.setstartReservationDateTime( createODBCDateTime(dateAdd("n",(preEventRegistrationMinutes*-1),arguments.startDate)) );
-			newSku.setendReservationDateTime( createODBCDateTime(dateAdd("n",postEventRegistrationMinutes,arguments.endDate)) );
-		}				
-		
-		return newSku;
-	}
-	
 	// @help Utilized by scheduled sku creation processes to create daily skus
 	private void function createDailyScheduledSkus(required product, required processObject, required productSchedule) {
 		
-		//Create new product schedule
-		productSchedule = arguments.productSchedule;
-			
 		// Set initial values for first iteration
 		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-		var skuQualifier = 1;
-		var isFirstSku = true;
-		if(arrayLen(arguments.product.getSkus())) {
-			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
-			isFirstSku = false;
-		}
 		
 		// Create sku for every day from start date to end date
 		do {
 			
-			// Bundled location configuration
-			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-				//Create one sku
-				var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
-				newSku.setProductSchedule(productSchedule);
-				
-				// Add all location configurations to same sku
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-				}
-				// Set first as default sku
-				if(isFirstSku) {
-					arguments.product.setDefaultSku( newSku );	
-					isFirstSku = false;
-				}
-				skuQualifier++;
-			}
-			
-			// Single location configuration
-			else {
-				// Create separate skus for every selected location configuration
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-					skuQualifier++;
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-					newSku.setProductSchedule(productSchedule);
-					
-					// Set first as default sku
-					if(isFirstSku) {
-						arguments.product.setDefaultSku( newSku );	
-						isFirstSku = false;
-					}
-				}
-			}
+			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule);
 			
 			// Increment Start/End date time based on recurring time unit
-			newSkuStartDateTime = dateAdd("d",1,newSkuStartDateTime);
-			newSkuEndDateTime = dateAdd("d",1,newSkuEndDateTime);
-			skuQualifier++;
+			newSkuStartDateTime = dateAdd("d", 1, newSkuStartDateTime);
+			newSkuEndDateTime = dateAdd("d", 1, newSkuEndDateTime);
 				
-		} while ( newSkuStartDateTime < productSchedule.getScheduleEndDate() );
+		} while ( newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
 		
 	}
 	
 	// @help Utilized by scheduled sku creation processes to create weekly skus
 	private void function createWeeklyScheduledSkus(required product, required processObject, required productSchedule) {
 		
-		//Create new product schedule
-		productSchedule = arguments.productSchedule;
+		// Make sure days are in order
+		arguments.processObject.setWeeklyDaysOfOccurrence(listSort(arguments.processObject.getWeeklyDaysOfOccurrence(),"numeric" ));
+		arguments.productSchedule.setRecurringDays( arguments.processObject.getWeeklyDaysOfOccurrence() );
 			
 		// Set initial values for first iteration
 		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-		var skuQualifier = 1;
-		var isFirstSku = true;
-		if(arrayLen(arguments.product.getSkus())) {
-			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
-			isFirstSku = false;
-		}
 		
-		// Make sure days are in order
-		arguments.processObject.setWeeklyDaysOfOccurrence(listSort(arguments.processObject.getWeeklyDaysOfOccurrence(),"numeric" ));
-		
-		productSchedule.setRecurringDays(arguments.processObject.getWeeklyDaysOfOccurrence());
-		
-		var todayDay = dayOfWeek(now());
 		var scheduleStartDay = dayOfWeek(arguments.processObject.getScheduleStartDate());
 		var actualScheduleStartDay = scheduleStartDay;
 		var offset = 0;
@@ -302,79 +211,37 @@ component extends="HibachiService" accessors="true" {
 		newSkuStartDateTime = dateAdd("d",offset,newSkuStartDateTime);
 		actualScheduleStartDay = dayOfWeek(newSkuStartDateTime);
 		
-		// Used to control sku creation days						
+		// Used to control sku creation days
 		var dayListLength = listLen(arguments.processObject.getWeeklyDaysOfOccurrence());
 		var cursorPosition = listFind(arguments.processObject.getWeeklyDaysOfOccurrence(),actualScheduleStartDay);
 		var lastDay = 0;
 		
 		do {
 			
-			// Bundled location configuration
-			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-				//Create one sku
-				var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
-				newSku.setProductSchedule(productSchedule);
-				
-				// Add all location configurations to same sku
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-				}
-				// Set first as default sku
-				if(isFirstSku) {
-					arguments.product.setDefaultSku( newSku );	
-					isFirstSku = false;
-				}
-				skuQualifier++;
-			}
-			
-			// Single location configuration
-			else {
-				// Create separate skus for every selected location configuration
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-					skuQualifier++;
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-					newSku.setProductSchedule(productSchedule);
-					
-					// Set first as default sku
-					if(isFirstSku) {
-						arguments.product.setDefaultSku( newSku );	
-						isFirstSku = false;
-					}
-				}
-			}
-			
+			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 			
 			// Increment Start/End date time based on recurring time unit
 			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyDaysOfOccurrence(),newSkuStartDateTime,cursorPosition);
 			newSkuEndDateTime = nextScheduleDate(arguments.processObject.getWeeklyDaysOfOccurrence(),newSkuEndDateTime,cursorPosition);
+			
 			if(cursorPosition == listLen(arguments.processObject.getWeeklyDaysOfOccurrence())) {
 				cursorPosition = 1;
 			} else {
 				cursorPosition++;
 			}
 				
-		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
-		
+		} while ( newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
 		
 	}
 	
 	// @help Utilized by scheduled sku creation processes to create monthly skus
 	private void function createMonthlyScheduledSkus(required product, required processObject, required productSchedule) {
 		
-		//Create new product schedule
-		productSchedule = arguments.productSchedule;
-		productSchedule.setRepeatByType(arguments.processObject.getMonthlyRepeatBy());
-			
+		arguments.productSchedule.setRepeatByType( arguments.processObject.getMonthlyRepeatBy() );
+		
 		// Set initial values for first iteration
 		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-		var skuQualifier = 1;
-		var isFirstSku = true;
-		if(arrayLen(arguments.product.getSkus())) {
-			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
-			isFirstSku = false;
-		}
 		
 		var nextMonth = month(arguments.processObject.getEventStartDateTime());
 		var nextYear = year(arguments.processObject.getEventStartDateTime());
@@ -391,45 +258,9 @@ component extends="HibachiService" accessors="true" {
 			productSchedule.setRecurringDays(day(scheduleStartDate));
 		}
 		
-		productSchedule.setScheduleStartDate(createDateTime(year(newSkuStartDateTime),month(newSkuStartDateTime),day(newSkuStartDateTime),0,0,0));
-		productSchedule.setScheduleEndDate(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59));
-		
 		do {
 			
-			// Bundled location configuration
-			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-				//Create one sku
-				var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
-				newSku.setProductSchedule(productSchedule);
-				
-				// Add all location configurations to same sku
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-				}
-				// Set first as default sku
-				if(isFirstSku) {
-					arguments.product.setDefaultSku( newSku );	
-					isFirstSku = false;
-				}
-				skuQualifier++;
-			}
-			
-			// Single location configuration
-			else {
-				// Create separate skus for every selected location configuration
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-					skuQualifier++;
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-					newSku.setProductSchedule(productSchedule);
-					
-					// Set first as default sku
-					if(isFirstSku) {
-						arguments.product.setDefaultSku( newSku );	
-						isFirstSku = false;
-					}
-				}
-			}
+			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 			
 			// Increment Start/End date time based on monthly repeatBy value
 			if(arguments.processObject.getMonthlyRepeatBy() == "dayOfWeek") {
@@ -461,60 +292,15 @@ component extends="HibachiService" accessors="true" {
 	// @help Utilized by scheduled sku creation processes to create yearly skus
 	private void function createYearlyScheduledSkus(required product, required processObject, required productSchedule) {
 		
-		//Create new product schedule
-		productSchedule = arguments.productSchedule;
-			
 		// Set initial values for first iteration
-		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
-		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
-		var skuQualifier = 1;
-		var isFirstSku = true;
-		if(arrayLen(arguments.product.getSkus())) {
-			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
-			isFirstSku = false;
-		}
-		var nextYear = year(arguments.processObject.getEventStartDateTime());
 		var newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		var newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
 		
-		productSchedule.setScheduleStartDate(createDateTime(year(newSkuStartDateTime),month(newSkuStartDateTime),day(newSkuStartDateTime),0,0,0));
-		productSchedule.setScheduleEndDate(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59));
+		var nextYear = year(arguments.processObject.getEventStartDateTime());
 		
 		do {
-			// Bundled location configuration
-			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-				//Create one sku
-				var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
-				newSku.setProductSchedule(productSchedule);
-				
-				// Add all location configurations to same sku
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-				}
-				// Set first as default sku
-				if(isFirstSku) {
-					arguments.product.setDefaultSku( newSku );	
-					isFirstSku = false;
-				}
-				skuQualifier++;
-			}
 			
-			// Single location configuration
-			else {
-				// Create separate skus for every selected location configuration
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					var newSku = createEventSkuStub(arguments.processObject,newSkuStartDateTime,newSkuEndDateTime,SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-					skuQualifier++;
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-					newSku.setProductSchedule(productSchedule);
-					
-					// Set first as default sku
-					if(isFirstSku) {
-						arguments.product.setDefaultSku( newSku );	
-						isFirstSku = false;
-					}
-				}
-			}
+			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 			
 			newSkuStartDateTime = dateAdd("yyyy",1,newSkuStartDateTime);
 			newSkuEndDateTime = dateAdd("yyyy",1,newSkuEndDateTime);
@@ -522,8 +308,7 @@ component extends="HibachiService" accessors="true" {
 		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
 		
 	}
-	
-	
+		
 	// Returns the highest sku code qualifier of a product's skus
 	private string function getMaxSkuQualifier(required array skus) {
 		var result = 0;
@@ -575,36 +360,7 @@ component extends="HibachiService" accessors="true" {
 		return result;
 	}
 	
-	/**
-	 * Returns the day of the month(1-31) of an Nth Occurrence of a day (1-sunday,2-monday etc.)in a given month.
-	 * 
-	 * @param n      A number representing the nth occurrence.1-5. 
-	 * @param theDayOfWeek      A number representing the day of the week (1=Sunday, 2=Monday, etc.). 
-	 * @param theMonth      A number representing the Month (1=January, 2=February, etc.). 
-	 * @param theYear      The year. 
-	 * @return Returns a numeric value. 
-	 * @author Ken McCafferty (mccjdk@yahoo.com) 
-	 * @version 1, August 28, 2001 
-	 * @updatedBy Glenn Gervais 11/2013 
-	 */
-	private any function getNthOccOfDayInMonth(n,theDayOfWeek,theMonth,theYear) {
-		var theDayInMonth=0;
-		if(theDayOfWeek lt dayOfWeek(createDate(theYear,theMonth,1))){
-			theDayInMonth= 1 + n * 7  + (theDayOfWeek - dayOfWeek(createDate(theYear,theMonth,1))) % 7;
-		}
-		else {
-			theDayInMonth= 1 + (n-1) * 7  + (theDayOfWeek - dayOfWeek(createDate(theYear,theMonth,1))) % 7;
-		}
-		//If the result is greater than days in month or less than 1, return -1
-		if(theDayInMonth > daysInMonth(createDate(theYear,theMonth,1)) || theDayInMonth < 1){
-			return -1;
-		}
-		else {
-			return theDayInMonth;
-		}
-	}
-	
-	
+
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
@@ -786,6 +542,7 @@ component extends="HibachiService" accessors="true" {
 				} 
 				
 			}
+			
 			//Persist new product schedule
 			getProductScheduleService().saveProductSchedule( newProductSchedule );
 		}
@@ -918,33 +675,33 @@ component extends="HibachiService" accessors="true" {
 				newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
 				
 				// How frequently will event occur (Daily, Weekly, etc.)?
-				newProductSchedule.setRecurringTimeUnit( getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()) ); 
+				newProductSchedule.setRecurringTimeUnit( getSettingService().getTypeByTypeID(arguments.processObject.getRecurringTimeUnit()) ); 
 				
 				// Is end type based on occurrences or date?
 				newProductSchedule.setScheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
 				
 				// Set schedule start/end dates
-				newProductSchedule.setScheduleStartDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleStartDate()),month(arguments.processObject.getScheduleStartDate()),day(arguments.processObject.getScheduleStartDate()),0,0,0)));
-				newProductSchedule.setScheduleEndDate(createODBCDateTime(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59)));
+				newProductSchedule.setScheduleStartDate( arguments.processObject.getEventStartDateTime() );
+				newProductSchedule.setScheduleEndDate( arguments.processObject.getScheduleEndDate() );
 				
 				// Set product association
 				newProductSchedule.setProduct(arguments.product);
 				
 				// DAILY
 				if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Daily") {
-					createDailyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+					createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 					
 				// WEEKLY
 				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Weekly") {
-					createWeeklyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+					createWeeklyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 					
 				// MONTHLY
 				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Monthly") {
-					createMonthlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+					createMonthlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 					
 				// YEARLY
 				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Yearly") {
-					createYearlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
+					createYearlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 				}
 				
 				//Persist new product schedule
@@ -1195,6 +952,37 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Get Overrides ============================
 	
 	// ======================  END: Get Overrides =============================
+	
+	// ====================== START: Private Helper ===========================
+	
+		
+	// Returns the day of the month(1-31) of an Nth Occurrence of a day (1-sunday,2-monday etc.)in a given month.
+	// @param n      A number representing the nth occurrence.1-5. 
+	// @param theDayOfWeek      A number representing the day of the week (1=Sunday, 2=Monday, etc.). 
+	// @param theMonth      A number representing the Month (1=January, 2=February, etc.). 
+	// @param theYear      The year. 
+	// @return Returns a numeric value. 
+	// @author Ken McCafferty (mccjdk@yahoo.com) 
+	// @version 1, August 28, 2001 
+	// @updatedBy Glenn Gervais 11/2013 
+	private any function getNthOccOfDayInMonth(n,theDayOfWeek,theMonth,theYear) {
+		var theDayInMonth=0;
+		if(theDayOfWeek lt dayOfWeek(createDate(theYear,theMonth,1))){
+			theDayInMonth= 1 + n * 7  + (theDayOfWeek - dayOfWeek(createDate(theYear,theMonth,1))) % 7;
+		}
+		else {
+			theDayInMonth= 1 + (n-1) * 7  + (theDayOfWeek - dayOfWeek(createDate(theYear,theMonth,1))) % 7;
+		}
+		//If the result is greater than days in month or less than 1, return -1
+		if(theDayInMonth > daysInMonth(createDate(theYear,theMonth,1)) || theDayInMonth < 1){
+			return -1;
+		}
+		else {
+			return theDayInMonth;
+		}
+	}
+	
+	// ======================  END: Private Helper ============================
 	
 }
 

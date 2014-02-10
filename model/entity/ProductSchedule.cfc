@@ -40,12 +40,12 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	
 	// Persistent Properties
 	property name="productScheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
-	property name="scheduleStartDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="Date the schedule starts" ;
-	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
-	property name="scheduleEndDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="If endsOn=date this will be the date the schedule ends";
 	property name="recurringDays" hint="List containing days of the week on which the schedule occurs.";
 	property name="repeatByType" hint="Whether recurrence is repeated based on day of month or day of week.";
+	property name="scheduleStartDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="Date the schedule starts" ;
+	property name="scheduleEndDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="If endsOn=date this will be the date the schedule ends";
+	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
+	property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
 
 	// Calculated Properties
 
@@ -56,6 +56,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	property name="recurringTimeUnit" cfc="Type" fieldtype="many-to-one" fkcolumn="recurringTimeUnitID" hb_optionsSmartListData="f:parentType.systemCode=recurringTimeUnit";
 	property name="schedulingType" cfc="Type" fieldtype="many-to-one" fkcolumn="schedulingTypeID" hb_optionsSmartListData="f:parentType.systemCode=schedulingType";
 	property name="scheduleEndType" cfc="Type" fieldtype="many-to-one" fkcolumn="scheduleEndTypeID" hb_optionsSmartListData="f:parentType.systemCode=scheduleEndType";
+	
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all-delete-orphan" inverse="true" orderby="eventStartDateTime" ;
 	
 	// Related Object Properties (many-to-many - owner)
