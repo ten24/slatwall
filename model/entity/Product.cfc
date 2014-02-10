@@ -147,6 +147,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
 			var smartList = getService("contentService").getContentSmartList();
 			smartList.addOrder("title|ASC");
+			smartList.addFilter("activeFlag", 1);
 			variables.listingPagesOptionsSmartList = smartList;
 		}
 		return variables.listingPagesOptionsSmartList;
