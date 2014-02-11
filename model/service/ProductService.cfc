@@ -163,6 +163,10 @@ component extends="HibachiService" accessors="true" {
 				newSku.setStartReservationDateTime( startResDateTime );
 				newSku.setEndReservationDateTime( endResDateTime );
 				
+				if(structKeyExists(arguments, "productSchedule")) {
+					newSku.setProductSchedule( arguments.productSchedule );
+				}
+				
 				newSku.generateAndSetAttendanceCode();
 				
 			}
