@@ -49,164 +49,14 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="skuDAO" type="any";
-	
+	property name="locationService" type="any";
 	property name="optionService" type="any";
 	property name="productService" type="any";
 	property name="subscriptionService" type="any";
 	property name="contentService" type="any";
+	property name="stockService" type="any";
+	property name="settingService" type="any";
 	
-	public boolean function createSkus(required any product, required struct data ) {
-		
-		// Create Merchandise Propduct Skus Based On Options
-		if(arguments.product.getProductType().getBaseProductType() == "merchandise") {
-			
-			// If options were passed in create multiple skus
-			if(structKeyExists(arguments.data, "options") && len(arguments.data.options)) {
-				
-				var optionGroups = {};
-				var totalCombos = 1;
-				var indexedKeys = [];
-				var currentIndexesByKey = {};
-				var keyToChange = "";
-				
-				// Loop over all the options to put them into a struct by groupID
-				for(var i=1; i<=listLen(arguments.data.options); i++) {
-					var option = getOptionService().getOption( listGetAt(arguments.data.options, i) );
-					if(!structKeyExists(optionGroups, option.getOptionGroup().getOptionGroupID())) {
-						optionGroups[ option.getOptionGroup().getOptionGroupID() ] = [];
-					}
-					arrayAppend(optionGroups[ option.getOptionGroup().getOptionGroupID() ], option);
-				}
-				
-				// Loop over the groups to see how many we will be creating and to setup the option indexes to use
-				for(var key in optionGroups) {
-					arrayAppend(indexedKeys, key);
-					currentIndexesByKey[ key ] = 1;
-					totalCombos = totalCombos * arrayLen(optionGroups[key]);
-				}
-								
-				// Create a sku with 1 option from each group, and then update the indexes properly for the next loop
-				for(var i = 1; i<=totalCombos; i++) {
-					
-					// Setup the New Sku
-					var newSku = this.newSku();
-					newSku.setPrice(arguments.data.price);
-					if(structKeyExists(arguments.data, "listPrice") && isNumeric(arguments.data.listPrice) && arguments.data.listPrice > 0) {
-						newSku.setListPrice(arguments.data.listPrice);	
-					}
-					newSku.setSkuCode(arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
-					
-					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
-					arguments.product.addSku(newSku);
-					if(isNull(arguments.product.getDefaultSku())) {
-						arguments.product.setDefaultSku(newSku);
-					}
-					
-					// Add each of the options
-					for(var key in optionGroups) {
-						newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);	
-					}
-					if(i < totalCombos) {
-						var indexesUpdated = false;
-						var changeKeyIndex = 1;
-						while(indexesUpdated == false) {
-							if(currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] < arrayLen(optionGroups[ indexedKeys[ changeKeyIndex ] ])) {
-								currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ]++;
-								indexesUpdated = true;
-							} else {
-								currentIndexesByKey[ indexedKeys[ changeKeyIndex ] ] = 1;
-								changeKeyIndex++;
-							}
-						}
-					}
-				}
-				
-			// If no options were passed in we will just create a single sku
-			} else {
-				
-				var thisSku = this.newSku();
-				thisSku.setProduct(arguments.product);
-				thisSku.setPrice(arguments.data.price);
-				if(structKeyExists(arguments.data, "listPrice") && isNumeric(arguments.data.listPrice) && arguments.data.listPrice > 0) {
-					thisSku.setListPrice(arguments.data.listPrice);	
-				}
-				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
-				arguments.product.setDefaultSku( thisSku );
-				
-			}
-			
-		// Create Subscription Product Skus Based On SubscriptionTerm and SubscriptionBenifit
-		} else if (arguments.product.getProductType().getBaseProductType() == "subscription") {
-						
-			// Make sure there was at least one subscription benifit
-			if(!structKeyExists(arguments.data, "subscriptionBenefits") || !listLen(arguments.data.subscriptionBenefits)) {
-				arguments.product.addError("subscriptionBenefits", rbKey('entity.product.subscriptionbenifitsrequired'));
-			}
-			
-			// Make sure there was at least one subscription term passed in
-			if(!structKeyExists(arguments.data, "subscriptionTerms") || !listLen(arguments.data.subscriptionTerms)) {
-				arguments.product.addError("subscriptionTerms", rbKey('entity.product.subscriptiontermsrequired'));
-			}
-			
-			// If the product still doesn't have any errors then we can create the skus
-			if(!arguments.product.hasErrors()) {
-				for(var i=1; i <= listLen(arguments.data.subscriptionTerms); i++){
-					var thisSku = this.newSku();
-					thisSku.setProduct(arguments.product);
-					thisSku.setPrice(arguments.data.price);
-					thisSku.setRenewalPrice(arguments.data.price);
-					thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.data.subscriptionTerms, i)) );
-					thisSku.setSkuCode(arguments.product.getProductCode() & "-#i#");
-					for(var b=1; b <= listLen(arguments.data.subscriptionBenefits); b++) {
-						thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.data.subscriptionBenefits, b) ) );
-					}
-					for(var b=1; b <= listLen(arguments.data.renewalSubscriptionBenefits); b++) {
-						thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.data.renewalSubscriptionBenefits, b) ) );
-					}
-					if(i==1) {
-						arguments.product.setDefaultSku( thisSku );	
-					}
-				}
-			}
-			
-		// Create Content Access Product Skus Based On Pages
-		} else if (arguments.product.getProductType().getBaseProductType() == "contentAccess") {
-			// Make sure there was at least one contentAccess Product
-			if(!structKeyExists(arguments.data, "accessContents") || !listLen(arguments.data.accessContents)) {
-				arguments.product.addError("accessContents", rbKey('validate.product.accesscontentsrequired'));
-			}
-			
-			// If the product still doesn't have any errors then we can create the skus
-			if(!arguments.product.hasErrors()) {
-				if(structKeyExists(arguments.data, "bundleContentAccess") && arguments.data.bundleContentAccess) {
-					var newSku = this.newSku();
-					newSku.setPrice(arguments.data.price);
-					newSku.setSkuCode(arguments.product.getProductCode() & "-1");
-					newSku.setProduct(arguments.product);
-					for(var c=1; c<=listLen(arguments.data.accessContents); c++) {
-						newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.data.accessContents, c) ) );
-					}
-					arguments.product.setDefaultSku(newSku);
-				} else {
-					for(var c=1; c<=listLen(arguments.data.accessContents); c++) {
-						var newSku = this.newSku();
-						newSku.setPrice(arguments.data.price);
-						newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
-						newSku.setProduct(arguments.product);
-						newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.data.accessContents, c) ) );
-						if(c==1) {
-							arguments.product.setDefaultSku(newSku);	
-						}
-					}
-				}
-			}
-		} else {
-			throw("There was an unexpected error when creating this product");
-		}
-		
-		return true;
-	}
-
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
 		var imageSaved = getService("imageService").saveImageFile(uploadResult=arguments.imageUploadResult,filePath=imagePath,allowedExtensions="jpg,jpeg,png,gif");
@@ -216,6 +66,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return false;
 		}	
 	}
+	
 	
 	public array function getProductSkus(required any product, required boolean sorted, boolean fetchOptions=false) {
 		var skus = getSkuDAO().getProductSkus(product=arguments.product, fetchOptions=arguments.fetchOptions);
@@ -294,6 +145,382 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	// @help Adds locations to event skus	
+	public any function processSku_addEventRegistration(required any sku, required any processObject) {
+		// Create new event registration	 record
+		var eventRegistration = this.newEventRegistration();
+		eventRegistration.setSku(arguments.sku);
+		eventRegistration.generateAndSetAttendanceCode();
+		
+		// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
+		if(arguments.processObject.getNewAccountFlag() == 0) {
+			eventRegistration.setAccount( getService("AccountService").getAccount(arguments.processObject.getaccountID()) );
+		} else {
+			//Create new account to associate with registration
+			var newAccount = getService("AccountService").newAccount();
+			if(len(arguments.processObject.getfirstName())) {
+				newAccount.setFirstName(arguments.processObject.getfirstName());
+			}
+			if(len(arguments.processObject.getlastName())) {
+				newAccount.setLastName(arguments.processObject.getlastName());
+			}
+			if(len(arguments.processObject.getemailAddress())) {
+				var newEmailAddress =  getService("AccountService").newAccountEmailAddress();
+				newEmailAddress.setEmailAddress(arguments.processObject.getemailAddress());
+				newAccount.setPrimaryEmailAddress(newEmailAddress);
+				
+			}
+			if(len(arguments.processObject.getphoneNumber())) {
+				var newPhoneNumber =  getService("AccountService").newAccountPhoneNumber();
+				newPhoneNumber.setPhoneNumber(arguments.processObject.getphoneNumber());
+				newAccount.setPrimaryPhoneNumber(newPhoneNumber);
+			}
+			newAccount = getService("AccountService").saveAccount(newAccount);
+			eventRegistration.setAccount(newAccount);
+			
+		}
+		
+		if(arguments.sku.getAvailableSeatCount > 0 ) {
+			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+		} else {
+			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+		}	
+		
+		eventRegistration = getService("EventRegistrationService").saveEventRegistration( eventRegistration );
+		
+		return arguments.sku;
+	}
+	
+	// @help Adds locations to event skus	
+	public any function processSku_addLocation(required any sku, required any processObject) {
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations(),","); lc++) {
+				var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
+				sku.addLocationConfiguration( thisLocationConfig );
+			}
+		} else if(arguments.processObject.getEditScope() == "all"){
+			
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				var lcList = arguments.processObject.getLocationConfigurations();
+				if(thisSku.geteventStartDateTime() > now()) {
+					for(var lc=1; lc<=listLen(lcList,","); lc++) {
+						var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(lcList, lc) );
+						thisSku.addLocationConfiguration( thisLocationConfig );
+					}
+				}
+			}
+			
+		}
+		return sku;
+	}
+	
+	// @help Modifies capacity and waitlisting properties	
+	public any function processSku_editCapacity(required any sku, required any processObject) {
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		// Modifying a single event
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			// Make sure a capacity adjustment won't cause the event to be overbooked
+			if( arguments.sku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
+				// Notify user that the capacity decrease would the event to be overbooked
+				processObject.addError('eventCapacity', getHibachiScope().rbKey('validate.processSku_editCapacity.eventCapacityInvalid.notEnoughSeats'));
+			} else {
+				arguments.sku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+				arguments.sku.setEventCapacity(arguments.processObject.getEventCapacity());
+				
+				// Notify waitlisted registrants if capacity has increased and waitlisting is allowed
+				if(arguments.processObject.getEventCapacity() > arguments.sku.getEventCapacity() && arguments.sku.getAllowWaitlistingFlag()) {
+					processSku( arguments.sku, {}, 'notifyWaitlistOpenings');
+				}
+				
+			}
+		// Modifying an event schedule	
+		} else if(arguments.processObject.getEditScope() == "all"){
+			var failedCapacityValidation = [];
+			var eventList = "";
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				if( thisSku.getRegisteredUserCount() > arguments.processObject.getEventCapacity() ) {
+					eventList = "#eventList# #thisSku.getSkuName()# #thisSku.getSkuCode()# #thisSku.getEventStartDateTime()# #thisSku.getEventEndDateTime()#<br>";
+					// Add overbooked skus to array
+					arrayAppend(failedCapacityValidation, thisSku.getSkuID());
+				}
+			}
+			if(arrayIsEmpty(failedCapacityValidation)) {
+				for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+					thisSku.setAllowEventWaitlistingFlag(arguments.processObject.getAllowEventWaitlistingFlag());
+					thisSku.setEventCapacity(arguments.processObject.getEventCapacity());
+					// Notify waitlisted registrants if capacity has increased and waitlisting is allowed
+					if(arguments.processObject.getEventCapacity() > thisSku.getEventCapacity() && thisSku.getAllowWaitlistingFlag()) {
+						processSku( thisSku, {}, 'notifyWaitlistOpenings');
+					}
+				}
+			} else {
+				// Notify user that the capacity decrease would cause one of the events to be overbooked
+				processObject.addError('eventCapacity', "#getHibachiScope().rbKey('validate.processSku_editCapacity.eventCapacityInvalid.notEnoughSeats')#<br>#eventList#");
+			}
+		
+		}
+		
+		return arguments.sku;
+	}
+	
+	// @help Logs attendance for an event	
+	public any function processSku_logAttendance(required any sku, required any processObject) {
+		// Compare the list of all registrants with the list of those that were submitted as having attended.
+		// If in attended list we set registrant as attended otherwise we set registrant to registered. 
+		var attendedList = "";
+		if(len(arguments.processObject.getEventRegistrations())) {
+			attendedList = arguments.processObject.getEventRegistrations();
+		}
+		var registrantsSmartlist = arguments.sku.getRegistrationAttendanceSmartlist();
+		for(registrant in registrantsSmartlist.getRecords()) {
+			if( listFindNoCase(attendedList,registrant.getEventRegistrationID()) > 0 ) {
+				registrant.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstAttended"));
+			} else {
+				registrant.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+			}
+		}
+		return sku;
+	}
+	
+	// @help Removes locations from event skus	
+	public any function processSku_removeLocation(required any sku, required any processObject) {
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations(),","); lc++) {
+				var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
+				sku.removeLocationConfiguration( thisLocationConfig );
+			}
+			// Remove this sku from product schedule
+			if(!isNull(arguments.sku.getProductSchedule())) {
+				arguments.sku.setProductSchedule(javaCast("null", ""));
+			}
+		} else if(arguments.processObject.getEditScope() == "all"){
+			
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				var lcList = arguments.processObject.getLocationConfigurations();
+				if(thisSku.geteventStartDateTime() > now()) {
+					for(var lc=1; lc<=listLen(lcList,","); lc++) {
+						var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(lcList, lc) );
+						thisSku.removeLocationConfiguration( thisLocationConfig );
+					}
+				}
+			}
+			
+		}
+		return sku;
+	}
+	
+	// @help Modifies event related start/end dates based on process object data
+	public any function processSku_changeEventDates(required any sku, required any processObject) {
+		if(arguments.processObject.getEditScope() == "none"  ){
+			processObject.addError('editScope', getHibachiScope().rbKey('validate.processSku_changeEventDates.editScope'));
+		} 
+		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
+			skuLocationsList = "";
+			if(arrayLen(arguments.sku.getLocations())) {
+				if(arrayLen(arguments.sku.getLocations())==1) {
+					skuLocationsList = arguments.sku.getLocations()[1].getLocationID(); 
+				} else {
+					for(var loc in arguments.sku.getLocations()) {
+						skuLocationsList = listAppend(skuLocationsList,loc.getLocationID());
+					}
+				}
+			}
+			
+			if(locationConflictExistsFlag(arguments.sku,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),skuLocationsList) ) {
+				// There is already an event scheduled at that location in the same date range
+				processObject.addError('locationConfigurations', getHibachiScope().rbKey('validate.eventScheduleConflict'));
+			} else {
+				// Update schedule dates/times
+				arguments.sku.setEventStartDateTime(arguments.processObject.getEventStartDateTime());
+				arguments.sku.setEventEndDateTime(arguments.processObject.getEventEndDateTime());
+				arguments.sku.setStartReservationDateTime(arguments.processObject.getStartReservationDateTime());
+				arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
+
+				// Disconnect this sku from any recurring schedule
+				arguments.sku.setProductSchedule(javaCast("null",""));
+			}
+			
+		
+		} else if(arguments.processObject.getEditScope() == "all"){
+			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
+				var lcList = arguments.processObject.getLocationConfigurations();
+				if(thisSku.geteventStartDateTime() > now()) {
+					var newEventStartDateTime = createDateTime(year(thisSku.getEventStartDateTime()),month(thisSku.getEventStartDateTime()),day(thisSku.getEventStartDateTime()),hour(arguments.processObject.getEventStartTime()),minute(arguments.processObject.getEventStartTime()),0);
+					var newEventEndDateTime = createDateTime(year(thisSku.getEventEndDateTime()),month(thisSku.getEventEndDateTime()),day(thisSku.getEventEndDateTime()),hour(arguments.processObject.getEventEndTime()),minute(arguments.processObject.getEventEndTime()),0);
+					var newReservationStartDateTime = createDateTime(year(thisSku.getStartReservationDateTime()),month(thisSku.getStartReservationDateTime()),day(thisSku.getStartReservationDateTime()),hour(arguments.processObject.getReservationStartTime()),minute(arguments.processObject.getReservationStartTime()),0);
+					var newReservationEndDateTime = createDateTime(year(thisSku.getEndReservationDateTime()),month(thisSku.getEndReservationDateTime()),day(thisSku.getEndReservationDateTime()),hour(arguments.processObject.getReservationEndTime()),minute(arguments.processObject.getReservationEndTime()),0);
+					thisSku.setEventStartDateTime(newEventStartDateTime);
+					thisSku.setEventEndDateTime(newEventEndDateTime);
+					thisSku.setStartReservationDateTime(newReservationStartDateTime);
+					thisSku.setEndReservationDateTime(newReservationEndDateTime);
+					//getStockService().saveStockAdjustment(stockAdjustment);
+					this.saveSku(thisSku);
+				}
+			}
+			
+		}
+		return arguments.sku;
+	}
+	
+	
+	
+	//@help Takes a sku along with a start datetime, an end datetimem and a list of location configurations, to check for location/date/time conflicts with other event schedules
+	public boolean function locationConflictExistsFlag(any sku, any eventStartDateTime, any eventEndDateTime, string locationList="") {
+		var locationIDList = arguments.locationList;
+		var result = false;
+
+		//Build list of locationIDs from locationConfigurations
+		/*if(listLen(arguments.locationList,",") == 1) {
+			var locationConfigurationSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
+			locationConfigurationSmartList.addFilter("locationConfigurationID",arguments.locationConfigurations);
+			var locationID = locationConfigurationSmartList.getRecords()[1].getLocation().getLocationID();
+			locationIDList = listAppend(locationIDList,locationID);
+		} else {
+			locationConfigs = listToArray(arguments.locationList);
+			for(var configID in locationConfigs) {
+				var locationConfigurationSmartList = getService("SkuService").getLocationConfigurationSmartList();
+				locationConfigurationSmartList.addFilter("locationConfigurationID",configID);
+				var locationID = locationConfigurationSmartList.getRecords()[1].getLocation().getLocationID();
+				if(!listFindNoCase(locationIDList,locationID)) {
+					listAppend(locationIDList,locationID);
+				}
+			} 
+		}*/
+		
+		for(var i=1;i<=listLen(locationIDList);i++) {
+			var location = getService("LocationService").getLocation(listGetAt(locationIDList,i));
+			if(location.getLocationName() == "TBD") {
+				listDeleteAt(locationIDList,i);
+				break;
+			}
+		}
+		
+		if(listLen(locationIDList)) {
+			// Build smartlist of conflicting events schedules
+			var smartlist = getService("SkuService").getSkuSmartList();
+			smartlist.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
+			smartlist.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
+			smartlist.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
+			smartlist.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=arguments.sku.getSkuID()});
+			smartlist.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
+			smartlist.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
+	
+			// Do we have conflicts?
+			if(smartList.getRecordsCount() > 0) {
+				result = true;
+			}
+		} else {
+			result = false;
+		}
+		
+		return result;
+		
+	}
+	
+	// TODO [paul]: makeup / breakup
+	public any function processSku_MakeupBundledSkus(required any sku, required any processObject) {
+		
+		// Create a stockAdjustment
+		var stockAdjustment = getStockService().newStockAdjustment();
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satMakeupBundledSkus') ); 
+		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
+		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
+		
+		var makeupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+
+		var makeupItem = getStockService().newStockAdjustmentItem();
+		makeupItem.setStockAdjustment( stockAdjustment );
+		makeupItem.setQuantity( arguments.processObject.getQuantity() );
+		makeupItem.setToStock( makeupStock );
+		
+		// Loop over every bundledSku
+		for(bundledSku in arguments.entity.getBundledSkus()) {
+			
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+			
+			var makeupItem = getStockService().newStockAdjustmentItem();
+			makeupItem.setStockAdjustment( stockAdjustment );
+			makeupItem.setQuantity( bundledSku.getBundledQuantity() );
+			makeupItem.setFromStock( thisStock );
+			
+		}
+		
+		getStockService().saveStockAdjustment(stockAdjustment);
+		
+		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		
+		return arguments.sku;
+	}
+	
+	public any function processSku_BreakupBundledSkus(required any sku, required any processObject) {
+		
+		// Create a stockAdjustment
+		var stockAdjustment = getStockService().newStockAdjustment();
+		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satBreakupBundledSkus') ); 
+		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
+		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
+		
+		var breakupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
+		
+		var breakupItem = getStockService().newStockAdjustmentItem();
+		breakupItem.setStockAdjustment( stockAdjustment );
+		breakupItem.setQuantity( arguments.processObject.getQuantity() );
+		breakupItem.setFromStock( breakupStock );
+		
+		// Loop over every bundledSku
+		for(bundledSku in arguments.entity.getBundledSkus()) {
+			
+			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+			
+			var breakupItem = getStockService().newStockAdjustmentItem();
+			breakupItem.setStockAdjustment( stockAdjustment );
+			breakupItem.setQuantity( bundledSku.getBundledQuantity() );
+			breakupItem.setToStock( thisStock );
+			
+		}
+		
+		getStockService().saveStockAdjustment(stockAdjustment);
+		
+		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		
+		return arguments.sku;
+		
+	}
+	
+	
+	// @help Move event registrations from 'waitlisted' to 'pending confirmation' if seats are available
+	public any function processSku_notifyWaitlistOpenings(required any sku, processObject={}) {
+		if(arguments.sku.getAllowEventWaitlistingFlag()) {
+			// Get waitlisted event registrations
+			var waitlistedRegistrants = getService("EventRegistrationService").getWaitlistedRegistrants(arguments.sku);
+			if(isDefined("waitlistedRegistrants") && arrayLen(waitlistedRegistrants)) {
+				var availableSeats = getService("EventRegistrationService").getAvailableSeatCountBySku(arguments.sku);
+				if(availableSeats > 0) {
+					// Calculate the number of registrantions to change
+					var changeToConfirmCount = availableSeats;
+					if(changeToConfirmCount > arrayLen(waitlistedRegistrants)) {
+						changeToConfirmCount = arrayLen(waitlistedRegistrants);
+					}
+					
+					// Process event registration changes to 'pending confirmation' 
+					for(i=1;i<=changeToConfirmCount;i++) {
+						getEventService().processEventRegistration( waitlistedRegistrants[i], {}, "confirm");
+					}
+					
+				}
+			}
+		}
+		return sku;
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================
@@ -317,10 +544,82 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		smartList.addKeywordProperty(propertyIdentifier="skuCode", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="skuID", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="publishedFlag", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="alternateSkuCodes.alternateSkuCode", weight=1);
 				
+		return smartList;
+	}
+	
+	// @hint Retrieve Smartlist of available locations based on event sku start and end dates, and locations
+	public any function getAvailableLocationsByEventSmartList(required eventSku) {
+		var unavailableLocationsList = "";
+		
+		// Don't show locations that are already in sku
+		if(arrayLen(eventSku.getLocationConfigurations())) {
+			for( var thisLocation in eventSku.getLocations()) {
+				if(listFind(unavailableLocationsList,thisLocation.getLocationID()) == 0) {
+					if(listLen(unavailableLocationsList)) {
+						unavailableLocationsList = listAppend(unavailableLocationsList,thisLocation.getLocationID());
+					} else {
+						unavailableLocationsList = thisLocation.getLocationID();
+					}
+				}
+			}
+		}
+		
+		return getAvailableLocationsSmartList(eventSku.getEventStartDateTime(), eventSku.getEventEndDateTime(), eventSku.getEventCapacity(),unavailableLocationsList);
+	}
+	
+	// @hint Retrieve Smartlist of available locations based on event start and end dates, and an optional unavailableLocationsList
+	public any function getAvailableLocationsSmartList(required eventStartDateTime, required eventEndDateTime, required quantity=0, string unavailableLocationsList="") {
+		
+		// Get skus that have datetimes that overlap with current sku
+		var skuSmartList = getService("SkuService").getSkuSmartList();
+		skuSmartList.addWhereCondition("(aslatwallsku.eventStartDateTime BETWEEN :thisStartDateTime AND :thisEndDateTime) OR (aslatwallsku.eventEndDateTime BETWEEN :thisStartDateTime AND :thisEndDateTime)",{thisStartDateTime=arguments.eventStartDateTime,thisEndDateTime=arguments.eventEndDateTime});
+		
+		// Build list of unavailable locations from sku list
+		var concurrentSkus = skuSmartList.getRecords();
+		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
+		for( var thisSku in concurrentSkus ) {
+			if(arrayLen(thisSku.getLocationConfigurations())) {
+				for( var thisLocation in thisSku.getLocations()) {
+					if(listFind(arguments.unavailableLocationsList,thisLocation.getLocationID()) == 0) {
+						if(listLen(arguments.unavailableLocationsList)) {
+							arguments.unavailableLocationsList = listAppend(arguments.unavailableLocationsList,thisLocation.getLocationID() );
+						} else {
+							arguments.unavailableLocationsList = thisLocation.getLocationID();
+						}
+					}
+				}
+			}
+		}
+		
+		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
+		// Get non-conflicting location configurations
+		var availableLocationsSmartList = getService("LocationConfigurationService").getLocationConfigurationSmartList();
+		//availableLocationsSmartList.addKeywordProperty(propertyIdentifier="locationCapacity", weight=1);
+		
+		if(listLen(arguments.unavailableLocationsList) > 0) {
+			availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.location.locationID NOT IN (#arguments.unavailableLocationsList#)");
+		}
+		availableLocationsSmartList.addWhereCondition("aslatwalllocationconfiguration.locationConfigurationCapacity >= #arguments.quantity#");
+		
+		return availableLocationsSmartList;
+
+	}
+	
+	// @hint Retrieve a smartlist containing valid future event skus that allow waitlisting
+	public any function getFutureWaitlistEventsSmartlist(){
+		arguments.entityName = "SlatwallSku";
+		var smartList = getSkuSmartlist();
+		var currentDateTime = dateFormat(now(),'short');
+		smartlist.addFilter("product.productType.productTypeName","Event");
+		smartlist.addFilter("publishedFlag","1");
+		smartlist.addFilter("allowEventWaitlistingFlag","1");
+		smartlist.addWhereCondition("aslatwallsku.eventStartDateTime > #currentDateTime#");
+		smartlist.addWhereCondition("aslatwallsku.purchaseStartDateTime > #currentDateTime#");
 		return smartList;
 	}
 	

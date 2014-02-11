@@ -71,6 +71,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	public array function getSettingPrefixInOrder() {
 		return [
 			"accountAuthentication",
+			"locationConfiguration",
 			"shippingMethodRate",
 			"fulfillmentMethod",
 			"subscriptionUsage",
@@ -94,6 +95,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	public struct function getSettingLookupOrder() {
 		return {
 			stock = ["sku.skuID", "sku.product.productID", "sku.product.productType.productTypeIDPath&sku.product.brand.brandID", "sku.product.productType.productTypeIDPath"],
+			locationConfiguration = ["location.locationID"	],
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
@@ -176,6 +178,11 @@ component extends="HibachiService" output="false" accessors="true" {
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
 			
+			// Location Configuration
+			locationConfigurationCapacity = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
+			locationConfigurationAdditionalPreReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
+			locationConfigurationAdditionalPostReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
+
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 			
@@ -212,17 +219,23 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Sku
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
+			skuAllowWaitlistingFlag = {fieldType="yesno", defaultValue=0},
+			skuBundleAutoMakeupInventoryOnSaleFlag = {fieldType="yesno", defaultValue=0},
+			skuBundleAutoBreakupInventoryOnReturnFlag = {fieldType="yesno", defaultValue=0},
 			skuCurrency = {fieldType="select", defaultValue="USD"},
 			skuEligibleCurrencies = {fieldType="listingMultiselect", listingMultiselectEntityName="Currency", defaultValue=getCurrencyService().getAllActiveCurrencyIDList()},
 			skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
+			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
+			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},
 			skuOrderMinimumQuantity = {fieldType="text", defaultValue=1},
 			skuOrderMaximumQuantity = {fieldType="text", defaultValue=1000},
 			skuQATSIncludesQNROROFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROVOFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROSAFlag = {fieldType="yesno", defaultValue=0},
+			skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingWeight = {fieldType="text", defaultValue=1},
 			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
@@ -822,4 +835,3 @@ component extends="HibachiService" output="false" accessors="true" {
 	// ======================  END: Get Overrides =============================
 
 }
-

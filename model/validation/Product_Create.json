@@ -1,0 +1,33 @@
+{
+	"conditions":{
+	    "generateContentAccessSkus":{
+    	    "generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"contentAccess"}
+    	},
+	    "generateEventSkus":{
+    		"generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"event"}
+    	},
+    	"generateEventSkusRecurring":{
+    		"generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"event"},
+    		"schedulingType":	{"eq":"recurring"}
+    	},
+    	"generateMerchandiseSkus":{
+    	    "generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"merchandise"}
+    	},
+    	"generateSubscriptionSkus":{
+    	    "generateSkusFlag": {"eq":1},
+    		"baseProductType":	{"eq":"subscription"}
+    	}
+	},
+	"properties":{
+	    "productName": 				[{"required":true}],
+		"productCode": 				[{"required":true}],
+		"contents": 				[{"conditions":"generateContentAccessSkus","required":true}],
+		"subscriptionBenefits": 	[{"conditions":"baseProductTypeSubscription","required":true}],
+		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}]
+	}
+}
+

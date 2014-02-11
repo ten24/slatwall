@@ -50,6 +50,9 @@ Notes:
 	<cf_SlatwallSettingTable showInheritance="false">
 		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />
 		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" />
+		<cf_SlatwallSetting settingName="skuAllowWaitlistingFlag" />
+		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
+		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
 		<cf_SlatwallSetting settingName="skuCurrency" />
 		<cf_SlatwallSetting settingName="skuEligibleCurrencies" />
 		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
@@ -58,6 +61,7 @@ Notes:
 		<cf_SlatwallSetting settingName="skuHoldBackQuantity" />
 		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" />
 		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" />
+		<cf_SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
 		<cf_SlatwallSetting settingName="skuShippingWeight" />
 		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" />
 		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" />

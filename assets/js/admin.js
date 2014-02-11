@@ -70,4 +70,79 @@ $(document).ready(function(e){
 			
 		}
 	});
+	
+	$(function () {
+        $("[data-toggle='tooltip']").tooltip();
+    });
+	
+	// Used on sku inventory page to collapse sub location hierarchy
+	 $( 'body' ).delegate('.update-inventory-minus','click',function() {
+	 	$(this).unbind('click');  
+		var currentTableRow = $(this).parent().parent();
+		var parentLocationID = $(this).data('locationid');
+		if($('tr[data-parentlocationid="'+parentLocationID+'"]').length) {
+		 	$(this).children(".icon-minus").removeClass("icon-minus").addClass("icon-plus");
+			$('tr[data-parentlocationid="'+parentLocationID+'"]').remove();
+		 	$(this).removeClass("update-inventory-minus").addClass("update-inventory-plus");
+		}
+	 });
+		
+	// Used on sku inventory page to expand sub location hierarchy
+	 $( 'body' ).delegate('.update-inventory-plus','click',function() {
+	 	$(this).unbind('click');  
+	 	$(this).removeClass("update-inventory-plus").addClass("update-inventory-minus");
+	 	$(this).children(".icon-plus").removeClass("icon-plus").addClass("icon-minus");
+		var parentLocationID = $(this).data('locationid');	
+		var currentTableRow = $(this).parent().parent();
+		
+		var data = {
+			slatAction: 'admin:ajax.updateInventoryTable',
+			locationID: $(this).data('locationid'),
+			skuID: $(this).data('skuid')
+		};
+		
+		var currentDepth = $(this).data('depth');
+		var newDepth = 0;
+		if(String(currentDepth).length) {
+			var newDepth = Number(currentDepth) + 1;
+		}
+		
+		var jqxhr = $.ajax({
+			url: $(this).attr('href'),
+			data: data,
+			dataType: 'json',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) }
+		}).done(function(r){
+			var invDataArr = r.inventoryData;
+			if (invDataArr.length) {
+				for(var i=0;i<invDataArr.length;i++) {
+					var invData = invDataArr[i];
+					var newTR = ["<tr class='stock' data-parentlocationid='"+parentLocationID+"'>", 
+						"<td><a href='#' class='update-inventory-plus depth"+newDepth+"' data-depth='"+newDepth+"' data-locationid='"+invData.locationID+"' data-skuid='"+invData.skuID+"'><i class='icon-plus'></i></a> <strong>"+invData.locationName+"</strong></td>",
+						"<td>"+invData.QOH+"</td>",
+						"<td>"+invData.QOSH+"</td>",
+						"<td>"+invData.QNDOO+"</td>",
+						"<td>"+invData.QNDORVO+"</td>",
+						"<td>"+invData.QNDOSA+"</td>",
+						"<td>"+invData.QNRORO+"</td>",
+						"<td>"+invData.QNROVO+"</td>",
+						"<td>"+invData.QNROSA+"</td>",
+						"<td>"+invData.QC+"</td>",
+						"<td>"+invData.QE+"</td>",
+						"<td>"+invData.QNC+"</td>",
+						"<td>"+invData.QATS+"</td>",
+						"<td>"+invData.QIATS+"</td>",
+					"</tr>"].join('\n');
+					$(currentTableRow).after(newTR);
+				}
+			}
+			
+		}).fail(function(r){
+			alert("An Unexpected error occurred.");
+		});
+		
+	});
+	
+	
+	
 });

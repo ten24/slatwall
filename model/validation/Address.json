@@ -22,7 +22,7 @@
 	"properties":{
 		"country":			[{"contexts":"save,full","required":true}],
 		"name":				[{"contexts":"full","required":true}],
-		"streetAddress":	[{"contexts":"full,location","conditions":"streetAddressRequired","required":true}],
+		"streetAddress":		[{"contexts":"full,location","conditions":"streetAddressRequired","required":true}],
 		"street2Address":	[{"contexts":"full,location","conditions":"street2AddressRequired","required":true}],
 		"locality":			[{"contexts":"full,location","conditions":"localityRequired","required":true}],
 		"city":				[{"contexts":"full,location","conditions":"cityRequired","required":true}],

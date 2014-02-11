@@ -432,7 +432,11 @@ component output="false" accessors="true" extends="HibachiController" {
 			rc.processObject = entity.getProcessObject( arguments.rc.processContext );
 			
 			// Populate the processObject
-			rc.processObject.populate(arguments.rc);
+			rc.processObject.populate( arguments.rc );
+			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.data[arguments.entityName])) {
+				entity.populate( arguments.rc[arguments.entityName] );
+				rc.processObject.addPopulatedSubProperty( arguments.entityName, entity );
+			}
 			
 			// hibachiValidationService
 			var errorBean = getService("hibachiValidationService").validate(arguments.rc.processObject, arguments.rc.processContext, false);

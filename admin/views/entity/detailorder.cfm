@@ -158,6 +158,11 @@ Notes:
 				<cf_HibachiTab view="admin:entity/ordertabs/saleorderitems" count="#rc.order.getSaleItemSmartList().getRecordsCount()#" />
 			</cfif>
 			
+			<!--- Deposit Items --->
+			<cfif listFindNoCase("otSalesOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>
+				<cf_HibachiTab view="admin:entity/ordertabs/depositorderitems" count="#rc.order.getDepositItemSmartList().getRecordsCount()#" />
+			</cfif>
+			
 			<!--- Return Items --->
 			<cfif listFindNoCase("otReturnOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>
 				<cf_HibachiTab view="admin:entity/ordertabs/returnorderitems" count="#rc.order.getReturnItemSmartList().getRecordsCount()#" />
