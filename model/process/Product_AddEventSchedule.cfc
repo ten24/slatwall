@@ -52,7 +52,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="product";
 
 	// Data Properties
-	property name="skuName";
+	property name="skuName" hb_rbKey="entity.sku.skuName";
 	property name="price";
 	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";

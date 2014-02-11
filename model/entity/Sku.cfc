@@ -51,7 +51,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
-	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="publishedFlag" ormtype="boolean" default="0";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
@@ -71,8 +70,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="bundleFlag" ormtype="boolean" default="0";
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
-	//property name="percentPaymentToWaitlist" ormtype="integer" hint="Percentage of payment the registrant must put down in order to be waitlisted";
-	
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -864,6 +861,24 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arrayDeleteAt(arguments.product.getSkus(), index);
 		}
 		structDelete(variables, "product");
+	}
+	
+	// Product Schedule (many-to-one)    
+	public void function setProductSchedule(required any productSchedule) {    
+		variables.productSchedule = arguments.productSchedule;    
+		if(isNew() or !arguments.productSchedule.hasSku( this )) {    
+			arrayAppend(arguments.productSchedule.getSkus(), this);    
+		}    
+	}    
+	public void function removeProductSchedule(any productSchedule) {    
+		if(!structKeyExists(arguments, "productSchedule")) {    
+			arguments.productSchedule = variables.productSchedule;    
+		}    
+		var index = arrayFind(arguments.productSchedule.getSkus(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.productSchedule.getSkus(), index);    
+		}    
+		structDelete(variables, "productSchedule");    
 	}
 	
 	// SubscriptionTerm (many-to-one)    

@@ -451,15 +451,11 @@ component extends="HibachiService" accessors="true" {
 			// How frequently will event occur (Daily, Weekly, etc.)?
 			newProductSchedule.setRecurringTimeUnit( arguments.processObject.getRecurringTimeUnit() ); 
 			
-			// Is end type based on occurrences or date?
-			newProductSchedule.setScheduleEndType( arguments.processObject.getScheduleEndType() );
-			
 			// Set schedule start/end dates
-			newProductSchedule.setScheduleStartDate(createDateTime(year(arguments.processObject.getEventStartDateTime()),month(arguments.processObject.getEventStartDateTime()),day(arguments.processObject.getEventStartDateTime()),0,0,0));
 			newProductSchedule.setScheduleEndDate(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59));
 			
 			// Set product association
-			newProductSchedule.setProduct(arguments.product);
+			newProductSchedule.setProduct( arguments.product );
 			
 			// DAILY
 			if( arguments.processObject.getRecurringTimeUnit() == "Daily" ) {

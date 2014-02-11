@@ -43,10 +43,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	property name="recurringTimeUnit" ormtype="string" hint="Daily, Weekly, Monthly, Yearly";
 	property name="weeklyRepeatDays" ormtype="string" hint="List containing days of the week on which the schedule occurs.";
 	property name="monthlyRepeatByType" ormtype="string" hint="Whether recurrence is repeated based on day of month or day of week.";
-	property name="scheduleStartDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="Date the schedule starts";
-	property name="scheduleEndDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="If endsOn=date this will be the date the schedule ends";
-	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
-	property name="scheduleEndType" hint="Does this end by date or occurences";
+	property name="scheduleEndDate" ormtype="timestamp" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
 	
 	// Calculated Properties
 
@@ -54,7 +51,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" fetch="join";
 	
 	// Related Object Properties (one-to-many)
-	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all-delete-orphan" inverse="true" orderby="eventStartDateTime" ;
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all" inverse="true" orderby="eventStartDateTime";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -236,31 +233,15 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
-		
+	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	/**
-	 * Calls both DateFormat and TimeFormat on a data object.
-	 * 
-	 * @param time      A data object. 
-	 * @param dateFormat      The string to use to format dates. Defaults to  
-	 * @param timeFormat      The string to use to format time. Defaults to  
-	 * @param joinStr      This string is placed between the date and time. Defaults to one space character. 
-	 * @return This function returns a string. 
-	 * @author Raymond Camden (ray@camdenfamily.com) 
-	 * @version 1, November 26, 2001 
-	 */
-	public any function dateAndTimeFormat(time) {
-	    var str = "";
-	    var dateFormat = "mmmm d, yyyy";
-	    var timeFormat = "h:mm tt";
-	    var joinStr = " ";
-	    
-	    if(ArrayLen(Arguments) gte 2) dateFormat = Arguments[2];
-	    if(ArrayLen(Arguments) gte 3) timeFormat = Arguments[3];
-	    if(ArrayLen(Arguments) gte 4) joinStr = Arguments[4];
-	
-	    return DateFormat(time, dateFormat) & joinStr & TimeFormat(time, timeFormat);
+	// Skus (one-to-many)    
+	public void function addSku(required any sku) {    
+		arguments.sku.setProductSchedule( this );    
+	}    
+	public void function removeSku(required any sku) {    
+		arguments.sku.removeProductSchedule( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

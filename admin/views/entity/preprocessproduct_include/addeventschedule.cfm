@@ -79,24 +79,6 @@ Notes:
 		
 		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="scheduleEndDate" edit="#rc.edit#">
 		
-		<input type="hidden" name="scheduleEndType" value="#rc.addEventScheduleProcessObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#" />
-		
-		
-		<!---
-		<!--- Possible to add occurrences as a schedule end option (instead of an end date)) but seems unnecessary [GG 12/20/2013] --->
-		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" fieldname="scheduleEndType" property="scheduleEndType" valueOptions="#rc.addEventScheduleProcessObject.getscheduleEndTypeOptions()#" edit="#rc.edit#">
-		
-		<!--- Ends on Date --->
-		<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="yes" showValues="#rc.addEventScheduleProcessObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#">
-			<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="scheduleEndDate" edit="#rc.edit#">
-		</cf_HibachiDisplayToggle>
-	
-		<!--- Ends after # of occurences --->
-		<cf_HibachiDisplayToggle selector="input[name='scheduleEndType']" loadVisable="no" showValues="#rc.addEventScheduleProcessObject.getService('SettingService').getTypeBySystemCode('setOccurrences').getTypeID()#">
-			<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="scheduleEndOccurrences" edit="#rc.edit#">
-		</cf_HibachiDisplayToggle>
-		--->
-	
 	</cf_HibachiDisplayToggle>
 	
 	<script type="text/javascript">
