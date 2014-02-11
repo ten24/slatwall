@@ -26,12 +26,8 @@
 	    "productName": 				[{"required":true}],
 		"productCode": 				[{"required":true}],
 		"contents": 				[{"conditions":"generateContentAccessSkus","required":true}],
-		"locationConfigurations":	[{"conditions":"generateEventSkus","required":true}],
 		"subscriptionBenefits": 	[{"conditions":"baseProductTypeSubscription","required":true}],
-		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}],
-		"eventStartDateTime": 		[{"conditions":"generateEventSkus","required":true,"dataType":"date","gtNow":true}],
-		"eventEndDateTime": 		[{"conditions":"generateEventSkus","required":true,"dataType":"date","gtDateTimeProperty":"eventStartDateTime","gtNow":true}],
-		"scheduleEndDate": 			[{"conditions":"generateEventSkusRecurring","required":true,"dataType":"date","gtDateTimeProperty":"eventEndDateTime"}],
+		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}]
 	}
 }
 

@@ -67,17 +67,17 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-	property name="eventStartDateTime" hb_formFieldType="datetime" persistent="false" ;  
-	property name="eventEndDateTime" hb_formFieldType="datetime" persistent="false" ;  
-	property name="eventStartTime" hb_formFieldType="time" persistent="false" ;  
-	property name="eventEndTime" hb_formFieldType="time" persistent="false" ;  
-	property name="firstScheduledSku" persistent="false" ;  
+	property name="eventStartDateTime" hb_formFieldType="datetime" persistent="false";  
+	property name="eventEndDateTime" hb_formFieldType="datetime" persistent="false";  
+	property name="eventStartTime" hb_formFieldType="time" persistent="false";  
+	property name="eventEndTime" hb_formFieldType="time" persistent="false";  
+	property name="firstScheduledSku" persistent="false";
 	property name="recurringTimeUnitName" persistent="false" ;  
-	property name="scheduleStartDateWithoutTime" hb_formFieldType="date" persistent="false" ;  
-	property name="scheduleEndDateWithoutTime" hb_formFieldType="date" persistent="false" ;  
-	property name="scheduleSummary" persistent="false" ; 
-	property name="reservationEndTime" hb_formFieldType="time" persistent="false" ;  
-	property name="reservationStartTime" hb_formFieldType="time" persistent="false" ;  
+	property name="scheduleStartDateWithoutTime" hb_formFieldType="date" persistent="false";  
+	property name="scheduleEndDateWithoutTime" hb_formFieldType="date" persistent="false";  
+	property name="scheduleSummary" persistent="false"; 
+	property name="reservationEndTime" hb_formFieldType="time" persistent="false";  
+	property name="reservationStartTime" hb_formFieldType="time" persistent="false";  
 
 	
 	// ============ START: Non-Persistent Property Methods =================

@@ -90,7 +90,7 @@ component extends="HibachiService" accessors="true" {
 			
 			var newSku = getSkuService().newSku();
 			newSku.setProduct( arguments.processObject.getProduct() );
-			newSku.setSkuCode( arguments.processObject.getProduct().getProductCode() & "-#getMaxSkuQualifier(arguments.processObject.getProduct().getSkus())#");
+			newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
 			newSku.setPrice( arguments.processObject.getPrice() );
 			newSku.setEventStartDateTime( arguments.startDateTime );
 			newSku.setEventEndDateTime( arguments.endDateTime );
@@ -144,7 +144,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
-				newSku.setSkuCode( arguments.processObject.getProduct().getProductCode() & "-#getMaxSkuQualifier(arguments.processObject.getProduct().getSkus())#");
+				newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
 				newSku.setEventEndDateTime( createODBCDateTime(arguments.endDateTime) );
@@ -324,18 +324,6 @@ component extends="HibachiService" accessors="true" {
 				
 		} while ( newSkuStartDateTime < productSchedule.getscheduleEndDate() );
 		
-	}
-		
-	// Returns the highest sku code qualifier of a product's skus
-	private string function getMaxSkuQualifier(required array skus) {
-		var result = 0;
-		for(var sku in arguments.skus) {
-			var qualifier = listlast(sku.getSkuCode(),"-");
-			if(isDefined("qualifier") && isNumeric(qualifier) && qualifier > result) {
-				result = qualifier;
-			}
-		}
-		return result;
 	}
 	
 	// Create new incremented datetime based on recurring type (daily, weekly, monthly, etc.)

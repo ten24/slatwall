@@ -115,6 +115,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
+	property name="nextSkuCodeCount" persisten="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
@@ -134,7 +135,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	
 	
 	
 	public any function getAvailableForPurchaseFlag() {
@@ -575,6 +575,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var options = getPropertyOptions( "brand" );
 		options[1].name = rbKey('define.none');
 		return options;
+	}
+	
+	public string function getNextSkuCodeCount() {
+		var highestResult = 0;
+		
+		for(var sku in getSkus()) {
+			if(!isNull(sku.getSkuCode())) {
+				var thisCount = listLast(sku.getSkuCode(),"-");
+				if(isNumeric(thisCount) && thisCount > highestResult) {
+					highestResult = thisCount;
+				}
+			}
+		}
+		
+		return highestResult+1;
 	}
 	
 	public string function getTitle() {
