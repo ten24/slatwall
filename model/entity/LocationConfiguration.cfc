@@ -91,14 +91,6 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Attribute Values (one-to-many)    
-    	public void function addAttributeValue(required any attributeValue) {    
-    		arguments.attributeValue.setLocationConfiguration( this );    
-    	}    
-    	public void function removeAttributeValue(required any attributeValue) {    
-    		arguments.attributeValue.removeLocationConfiguration( this );    
-    	}
-	
 	// Location (many-to-one)    
 	public void function setLocation(required any location) {    
 		variables.location = arguments.location;    
@@ -115,6 +107,22 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 			arrayDeleteAt(arguments.location.getLocationConfigurations(), index);    
 		}    
 		structDelete(variables, "location");    
+	}
+	
+	// Attribute Values (one-to-many)    
+	public void function addAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.setLocationConfiguration( this );    
+	}    
+	public void function removeAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.removeLocationConfiguration( this );    
+	}
+	
+	// Skus (many-to-many - inverse)    
+	public void function addSku(required any sku) {    
+		arguments.sku.addLocationConfiguration( this );    
+	}    
+	public void function removeSku(required any sku) {    
+		arguments.sku.removeLocationConfiguration( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

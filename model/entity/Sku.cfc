@@ -939,38 +939,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		arguments.bundledSku.removeSku( this );
 	}	
 	
-	// Promotion Rewards (many-to-many - inverse)
-	public void function addPromotionReward(required any promotionReward) {
-		arguments.promotionReward.addSku( this );
-	}
-	public void function removePromotionReward(required any promotionReward) {
-		arguments.promotionReward.removeSku( this );
-	}
-
-	// Promotion Reward Exclusions (many-to-many - inverse)    
-	public void function addPromotionRewardExclusion(required any promotionReward) {    
-		arguments.promotionReward.addExcludedSku( this );    
-	}
-	public void function removePromotionRewardExclusion(required any promotionReward) {    
-		arguments.promotionReward.removeExcludedSku( this );    
-	}
-	
-	// Promotion Qualifiers (many-to-many - inverse)
-	public void function addPromotionQualifier(required any promotionQualifier) {
-		arguments.promotionQualifier.addSku( this );
-	}
-	public void function removePromotionQualifier(required any promotionQualifier) {
-		arguments.promotionQualifier.removeSku( this );
-	}
-	
-	// Promotion Qualifier Exclusions (many-to-many - inverse)    
-	public void function addPromotionQualifierExclusion(required any promotionQualifier) {    
-		arguments.promotionQualifier.addExcludedSku( this );    
-	}    
-	public void function removePromotionQualifierExclusion(required any promotionQualifier) {    
-		arguments.promotionQualifier.removeExcludedSku( this );    
-	}
-	
 	// Access Contents (many-to-many - owner)    
 	public void function addAccessContent(required any accessContent) {    
 		if(isNew() or !hasAccessContent(arguments.accessContent)) {    
@@ -1008,6 +976,26 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		var thatIndex = arrayFind(arguments.subscriptionBenefit.getSkus(), this);    
 		if(thatIndex > 0) {    
 			arrayDeleteAt(arguments.subscriptionBenefit.getSkus(), thatIndex);    
+		}    
+	}
+	
+	// Location Configurations (many-to-many - owner)    
+	public void function addLocationConfiguration(required any locationConfiguration) {    
+		if(arguments.locationConfiguration.isNew() or !hasLocationConfiguration(arguments.locationConfiguration)) {    
+			arrayAppend(variables.locationConfigurations, arguments.locationConfiguration);    
+		}    
+		if(isNew() or !arguments.locationConfiguration.hasSku( this )) {    
+			arrayAppend(arguments.locationConfiguration.getSkus(), this);    
+		}    
+	}    
+	public void function removeLocationConfiguration(required any locationConfiguration) {    
+		var thisIndex = arrayFind(variables.locationConfigurations, arguments.locationConfiguration);    
+		if(thisIndex > 0) {    
+			arrayDeleteAt(variables.locationConfigurations, thisIndex);    
+		}    
+		var thatIndex = arrayFind(arguments.locationConfiguration.getSkus(), this);    
+		if(thatIndex > 0) {    
+			arrayDeleteAt(arguments.locationConfiguration.getSkus(), thatIndex);    
 		}    
 	}
 	
@@ -1050,6 +1038,38 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function removeLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
 		arguments.loyaltyRedemptionExclusion.removeSku( this );
 	}	
+	
+	// Promotion Rewards (many-to-many - inverse)
+	public void function addPromotionReward(required any promotionReward) {
+		arguments.promotionReward.addSku( this );
+	}
+	public void function removePromotionReward(required any promotionReward) {
+		arguments.promotionReward.removeSku( this );
+	}
+
+	// Promotion Reward Exclusions (many-to-many - inverse)    
+	public void function addPromotionRewardExclusion(required any promotionReward) {    
+		arguments.promotionReward.addExcludedSku( this );    
+	}
+	public void function removePromotionRewardExclusion(required any promotionReward) {    
+		arguments.promotionReward.removeExcludedSku( this );    
+	}
+	
+	// Promotion Qualifiers (many-to-many - inverse)
+	public void function addPromotionQualifier(required any promotionQualifier) {
+		arguments.promotionQualifier.addSku( this );
+	}
+	public void function removePromotionQualifier(required any promotionQualifier) {
+		arguments.promotionQualifier.removeSku( this );
+	}
+	
+	// Promotion Qualifier Exclusions (many-to-many - inverse)    
+	public void function addPromotionQualifierExclusion(required any promotionQualifier) {    
+		arguments.promotionQualifier.addExcludedSku( this );    
+	}    
+	public void function removePromotionQualifierExclusion(required any promotionQualifier) {    
+		arguments.promotionQualifier.removeExcludedSku( this );    
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
