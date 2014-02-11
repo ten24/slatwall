@@ -48,7 +48,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" fetch="join";
+	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	
 	// Related Object Properties (one-to-many)
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all" inverse="true" orderby="eventStartDateTime";

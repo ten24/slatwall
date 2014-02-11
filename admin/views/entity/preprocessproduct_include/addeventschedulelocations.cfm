@@ -52,7 +52,7 @@ Notes:
 <br />
 <cf_SlatwallErrorDisplay object="#rc.addEventScheduleProcessObject#" errorName="locationConfigurations" />
 <cf_HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.addEventScheduleProcessObject.getLocationConfigurations()#" edit="true">
+	<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
 	<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
 	<cf_HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
-	<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
 </cf_HibachiListingDisplay>

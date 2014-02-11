@@ -83,17 +83,17 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	// @help Generates an event sku stub. Used to replace repetitive code.
-	private void function createEventSkuOrSkus(required processObject, required startDate, required endDate, any productSchedule) {
+	private void function createEventSkuOrSkus(required processObject, required startDateTime, required endDateTime, any productSchedule) {
 		
 		// Bundled location configuration
 		if(arguments.processObject.getBundleLocationConfigurationFlag()) {
 			
-			var newSku = this.newSku();
+			var newSku = getSkuService().newSku();
 			newSku.setProduct( arguments.processObject.getProduct() );
 			newSku.setSkuCode( arguments.processObject.getProduct().getProductCode() & "-#getMaxSkuQualifier(arguments.processObject.getProduct().getSkus())#");
 			newSku.setPrice( arguments.processObject.getPrice() );
-			newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
-			newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
+			newSku.setEventStartDateTime( arguments.startDateTime );
+			newSku.setEventEndDateTime( arguments.endDateTime );
 			
 			// Get the event capacity and 
 			var eventCapacity = 0;
@@ -117,8 +117,17 @@ component extends="HibachiService" accessors="true" {
 			}
 			
 			newSku.setEventCapacity( eventCapacity );
-			newSku.setStartReservationDateTime( preEventRegistrationMinutes );
-			newSku.setEndReservationDateTime( postEventRegistrationMinutes );
+			
+			var startResDateTime = arguments.startDateTime;
+			var endResDateTime = arguments.endDateTime;
+			if(isNumeric(preEventRegistrationMinutes) && preEventRegistrationMinutes gt 0) {
+				startResDateTime = dateAdd("m", preEventRegistrationMinutes*-1, startResDateTime);
+			}
+			if(isNumeric(postEventRegistrationMinutes) && postEventRegistrationMinutes gt 0) {
+				endResDateTime = dateAdd("m", postEventRegistrationMinutes, endResDateTime);
+			}
+			newSku.setStartReservationDateTime( startResDateTime );
+			newSku.setEndReservationDateTime( endResDateTime );
 			
 			if(structKeyExists(arguments, "productSchedule")) {
 				newSku.setProductSchedule( arguments.productSchedule );
@@ -133,17 +142,26 @@ component extends="HibachiService" accessors="true" {
 			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 				
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
-				var newSku = this.newSku();
+				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
 				newSku.setSkuCode( arguments.processObject.getProduct().getProductCode() & "-#getMaxSkuQualifier(arguments.processObject.getProduct().getSkus())#");
 				newSku.setPrice( arguments.processObject.getPrice() );
-				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDate) );
-				newSku.setEventEndDateTime( createODBCDateTime(arguments.endDate) );
+				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
+				newSku.setEventEndDateTime( createODBCDateTime(arguments.endDateTime) );
 				
 				newSku.addLocationConfiguration( locationConfiguration );
 				newSku.setEventCapacity( locationConfiguration.getLocationConfigurationCapacity() );
-				newSku.setStartReservationDateTime( locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime') );
-				newSku.setEndReservationDateTime( locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime') );
+				
+				var startResDateTime = arguments.startDateTime;
+				var endResDateTime = arguments.endDateTime;
+				if(isNumeric(locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) && locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime') gt 0) {
+					startResDateTime = dateAdd("m", locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')*-1, startResDateTime);
+				}
+				if(isNumeric(locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime')) && locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime') gt 0) {
+					endResDateTime = dateAdd("m", locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime'), endResDateTime);
+				}
+				newSku.setStartReservationDateTime( startResDateTime );
+				newSku.setEndReservationDateTime( endResDateTime );
 				
 				newSku.generateAndSetAttendanceCode();
 				
@@ -169,7 +187,6 @@ component extends="HibachiService" accessors="true" {
 			newSkuEndDateTime = dateAdd("d", 1, newSkuEndDateTime);
 				
 		} while ( newSkuStartDateTime < arguments.productSchedule.getScheduleEndDate() );
-		
 	}
 	
 	// @help Utilized by scheduled sku creation processes to create weekly skus
@@ -439,7 +456,7 @@ component extends="HibachiService" accessors="true" {
 		// Single event instance (non-recurring)
 		if(arguments.processObject.getSchedulingType() == "once" ) {
 			
-			//Create one sku
+			// Create one sku
 			createEventSkuOrSkus(arguments.processObject, arguments.processObject.getEventStartDateTime(), arguments.processObject.getEventEndDateTime());
 			
 		// Recurring schedule is specified for event
