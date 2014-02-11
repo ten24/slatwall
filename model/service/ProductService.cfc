@@ -271,7 +271,7 @@ component extends="HibachiService" accessors="true" {
 				} else {
 					nextMonth = month(newSkuStartDateTime)+1;
 				}
-				monthDay = getNthOccOfDayInMonth(dayInstance,repeatDay,nextMonth,nextYear);
+				monthDay = getProductScheduleService().getNthOccOfDayInMonth(dayInstance,repeatDay,nextMonth,nextYear);
 				// Set next start date in a temporary var so we can use it in a calculation with the original
 				var nextStartDateTime = createDateTime(nextYear,nextMonth,monthDay,hour(newSkuStartDateTime),minute(newSkuStartDateTime),0);
 				// Calc day difference between last and next startdate and apply it to the end date
@@ -481,15 +481,6 @@ component extends="HibachiService" accessors="true" {
 			// Persist new product schedule
 			newProductSchedule = getProductScheduleService().saveProductSchedule( newProductSchedule );
 		}
-			
-		
-		// validate the product
-		arguments.product.validate( context="save" );
-		
-		// If the product passed validation then call save in the DAO, otherwise set the errors flag
-        if(!product.hasErrors()) {
-        		arguments.product = getHibachiDAO().save(target=arguments.product);
-        }
 		
 		// Return the product
 		return arguments.product;
@@ -693,6 +684,9 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 		
+		// Generate the URL Title
+		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		
 		// If some skus were created, then set the default sku to the first one
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
@@ -774,20 +768,6 @@ component extends="HibachiService" accessors="true" {
 	
 	// ====================== START: Save Overrides ===========================
 	
-	public any function saveProduct(required any product,  struct data={}) {
-		
-		// Do the standard Save logic
-		arguments.product = super.save(arguments.product, arguments.data);
-		
-		// If for some reason the URLTitle is null... generate it.
-		if(isNull(arguments.product.getURLTitle())) {
-			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
-		}
-		
-        // Return the product
-		return arguments.product;
-	}
-	
 	public any function saveProductType(required any productType, required struct data) {
 		if( (isNull(arguments.productType.getURLTitle()) || !len(arguments.productType.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productTypeName") && len(arguments.data.productTypeName)) {
@@ -861,33 +841,6 @@ component extends="HibachiService" accessors="true" {
 	// ======================  END: Get Overrides =============================
 	
 	// ====================== START: Private Helper ===========================
-	
-		
-	// Returns the day of the month(1-31) of an Nth Occurrence of a day (1-sunday,2-monday etc.)in a given month.
-	// @param n      A number representing the nth occurrence.1-5. 
-	// @param theDayOfWeek      A number representing the day of the week (1=Sunday, 2=Monday, etc.). 
-	// @param theMonth      A number representing the Month (1=January, 2=February, etc.). 
-	// @param theYear      The year. 
-	// @return Returns a numeric value. 
-	// @author Ken McCafferty (mccjdk@yahoo.com) 
-	// @version 1, August 28, 2001 
-	// @updatedBy Glenn Gervais 11/2013 
-	private any function getNthOccOfDayInMonth(n,theDayOfWeek,theMonth,theYear) {
-		var theDayInMonth=0;
-		if(theDayOfWeek lt dayOfWeek(createDate(theYear,theMonth,1))){
-			theDayInMonth= 1 + n * 7  + (theDayOfWeek - dayOfWeek(createDate(theYear,theMonth,1))) % 7;
-		}
-		else {
-			theDayInMonth= 1 + (n-1) * 7  + (theDayOfWeek - dayOfWeek(createDate(theYear,theMonth,1))) % 7;
-		}
-		//If the result is greater than days in month or less than 1, return -1
-		if(theDayInMonth > daysInMonth(createDate(theYear,theMonth,1)) || theDayInMonth < 1){
-			return -1;
-		}
-		else {
-			return theDayInMonth;
-		}
-	}
 	
 	// ======================  END: Private Helper ============================
 	

@@ -61,12 +61,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Scheduling-related properties
 	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";
-	property name="recurringTimeUnit" hb_formFieldType="select" hint="How often to repeat (daily, weekly, monthly, etc.)"; 
-	property name="weeklyRepeatDays" hb_formFieldType="checkboxgroup"; 
-	property name="monthlyRepeatByType" hb_formFieldType="radiogroup" hint="day of week or day of month"; 
-	property name="scheduleEndType" hb_formFieldType="radiogroup" hint="never, occurrences, or date"; 
-	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
-	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
+	property name="recurringTimeUnit" hb_formFieldType="select" hb_rbKey="entity.productSchedule.recurringTimeUnit" hint="How often to repeat (daily, weekly, monthly, etc.)"; 
+	property name="weeklyRepeatDays" hb_formFieldType="checkboxgroup" hb_rbKey="entity.productSchedule.weeklyRepeatDays"; 
+	property name="monthlyRepeatByType" hb_formFieldType="select" hb_rbKey="entity.productSchedule.monthlyRepeatByType" hint="day of week or day of month"; 
+	property name="scheduleEndType" hb_formFieldType="radiogroup" hb_rbKey="entity.productSchedule.scheduleEndType" hint="never, occurrences, or date"; 
+	property name="scheduleEndOccurrences" hb_rbKey="entity.productSchedule.scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
+	property name="scheduleEndDate" hb_formFieldType="date" hb_rbKey="entity.productSchedule.scheduleEndDate" hint="If endsOn=date this will be the date the schedule ends";
 	
 	public array function getWeeklyRepeatDaysOptions() {
 		return getService("ProductScheduleService").getWeeklyRepeatDaysOptions();

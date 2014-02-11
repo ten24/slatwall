@@ -77,6 +77,32 @@ component  extends="HibachiService" accessors="true" {
 		return returnDate;
 	}
 	
+	// Returns the day of the month(1-31) of an Nth Occurrence of a day (1-sunday,2-monday etc.)in a given month.
+	// @param n      A number representing the nth occurrence.1-5. 
+	// @param theDayOfWeek      A number representing the day of the week (1=Sunday, 2=Monday, etc.). 
+	// @param theMonth      A number representing the Month (1=January, 2=February, etc.). 
+	// @param theYear      The year. 
+	// @return Returns a numeric value. 
+	// @author Ken McCafferty (mccjdk@yahoo.com) 
+	// @version 1, August 28, 2001 
+	// @updatedBy Glenn Gervais 11/2013 
+	public any function getNthOccOfDayInMonth(n,theDayOfWeek,theMonth,theYear) {
+		var theDayInMonth=0;
+		if(theDayOfWeek lt dayOfWeek(createDate(theYear,theMonth,1))){
+			theDayInMonth= 1 + n * 7  + (theDayOfWeek - dayOfWeek(createDate(theYear,theMonth,1))) % 7;
+		}
+		else {
+			theDayInMonth= 1 + (n-1) * 7  + (theDayOfWeek - dayOfWeek(createDate(theYear,theMonth,1))) % 7;
+		}
+		//If the result is greater than days in month or less than 1, return -1
+		if(theDayInMonth > daysInMonth(createDate(theYear,theMonth,1)) || theDayInMonth < 1){
+			return -1;
+		}
+		else {
+			return theDayInMonth;
+		}
+	}
+	
 	public any function getWeeklyRepeatDaysOptions() {
 		var options = [
 			{name=getHibachiScope().rbKey('define.Sunday'), value="1"},
@@ -102,8 +128,8 @@ component  extends="HibachiService" accessors="true" {
 	
 	public any function getMonthlyRepeatByTypeOptions() {
 		var options = [
-			{name=getHibachiScope().rbKey('define.dayOfTheWeek'), value="dayOfWeekOfMonth"},
-			{name=getHibachiScope().rbKey('define.dayOfTheMonth'), value="dayOfMonth"}
+			{name=getHibachiScope().rbKey('define.dayOfTheMonth'), value="dayOfMonth"},
+			{name=getHibachiScope().rbKey('define.weekOfTheMonth'), value="weekOfTheMonth"}
 		];
 		return options;
 	}
