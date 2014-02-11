@@ -452,9 +452,9 @@
 			var $ = request.muraScope;
 			
 			// Make sure that this hasn't been run twice
-			if(!len($.event('slatwallEditTabDisplaed'))) {
+			if(!len($.event('slatwallEditTabDisplayed')) && $.getBean('permUtility').getModulePerm($.getPlugin('slatwall-mura').getModuleID(),$.event('siteid'))) {
 			
-				$.event('slatwallEditTabDisplaed', 'yes');
+				$.event('slatwallEditTabDisplayed', 'yes');
 			
 				// Place Slatwall content entity in the slatwall scope
 				$.slatwall.setContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.content('contentID'), $.event('siteID') ) );
