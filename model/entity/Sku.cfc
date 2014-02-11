@@ -51,7 +51,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
-	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="publishedFlag" ormtype="boolean" default="0";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
@@ -71,17 +70,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="bundleFlag" ormtype="boolean" default="0";
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
-	//property name="percentPaymentToWaitlist" ormtype="integer" hint="Percentage of payment the registrant must put down in order to be waitlisted";
-	
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
-	property name="product" fieldtype="many-to-one" fkcolumn="productID" cfc="Product" hb_cascadeCalculate="true";
-	property name="productSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID" cfc="ProductSchedule" hb_cascadeCalculate="true";
+	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
+	property name="productSchedule" cfc="ProductSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
-	property name="waitListQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
+	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
 	
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
@@ -416,7 +413,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		var result = false;
 		var smartList =  getService("SkuService").getSkuSmartList();
 		smartList.addFilter("eventAttendanceCode",arguments.code);
-		if(smartList.getRecordsCount > 0) {
+		if(smartList.getRecordsCount() == 0) {
 			result = true;
 		}
 		return result;
@@ -766,22 +763,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.placedOrderItemsSmartList;
 	}
 	
-		
-	// @help Returns any product schedule this sku is part of
-	public any function getProductScheduleSmartList() {
-		if(!structKeyExists(variables, "productScheduleSmartList")) {
-			variables.productScheduleSmartList = getService("ProductScheduleService").getProductScheduleSmartList();
-			if(!isNull(this.getProductSchedule())) {
-				variables.productScheduleSmartList.addFilter('productScheduleID', this.getProductSchedule().getProductScheduleID());
-			} else {
-				variables.productScheduleSmartList.addFilter('productScheduleID', "-1");
-				
-			}
-		}
-		return variables.productScheduleSmartList;
-	}
-	
-	
 	public any function getQATS() {
 		return getQuantity("QATS");
 	}
@@ -882,6 +863,24 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		structDelete(variables, "product");
 	}
 	
+	// Product Schedule (many-to-one)    
+	public void function setProductSchedule(required any productSchedule) {    
+		variables.productSchedule = arguments.productSchedule;    
+		if(isNew() or !arguments.productSchedule.hasSku( this )) {    
+			arrayAppend(arguments.productSchedule.getSkus(), this);    
+		}    
+	}    
+	public void function removeProductSchedule(any productSchedule) {    
+		if(!structKeyExists(arguments, "productSchedule")) {    
+			arguments.productSchedule = variables.productSchedule;    
+		}    
+		var index = arrayFind(arguments.productSchedule.getSkus(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.productSchedule.getSkus(), index);    
+		}    
+		structDelete(variables, "productSchedule");    
+	}
+	
 	// SubscriptionTerm (many-to-one)    
 	public void function setSubscriptionTerm(required any subscriptionTerm) {    
 		variables.subscriptionTerm = arguments.subscriptionTerm;    
@@ -940,38 +939,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		arguments.bundledSku.removeSku( this );
 	}	
 	
-	// Promotion Rewards (many-to-many - inverse)
-	public void function addPromotionReward(required any promotionReward) {
-		arguments.promotionReward.addSku( this );
-	}
-	public void function removePromotionReward(required any promotionReward) {
-		arguments.promotionReward.removeSku( this );
-	}
-
-	// Promotion Reward Exclusions (many-to-many - inverse)    
-	public void function addPromotionRewardExclusion(required any promotionReward) {    
-		arguments.promotionReward.addExcludedSku( this );    
-	}
-	public void function removePromotionRewardExclusion(required any promotionReward) {    
-		arguments.promotionReward.removeExcludedSku( this );    
-	}
-	
-	// Promotion Qualifiers (many-to-many - inverse)
-	public void function addPromotionQualifier(required any promotionQualifier) {
-		arguments.promotionQualifier.addSku( this );
-	}
-	public void function removePromotionQualifier(required any promotionQualifier) {
-		arguments.promotionQualifier.removeSku( this );
-	}
-	
-	// Promotion Qualifier Exclusions (many-to-many - inverse)    
-	public void function addPromotionQualifierExclusion(required any promotionQualifier) {    
-		arguments.promotionQualifier.addExcludedSku( this );    
-	}    
-	public void function removePromotionQualifierExclusion(required any promotionQualifier) {    
-		arguments.promotionQualifier.removeExcludedSku( this );    
-	}
-	
 	// Access Contents (many-to-many - owner)    
 	public void function addAccessContent(required any accessContent) {    
 		if(isNew() or !hasAccessContent(arguments.accessContent)) {    
@@ -1009,6 +976,26 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		var thatIndex = arrayFind(arguments.subscriptionBenefit.getSkus(), this);    
 		if(thatIndex > 0) {    
 			arrayDeleteAt(arguments.subscriptionBenefit.getSkus(), thatIndex);    
+		}    
+	}
+	
+	// Location Configurations (many-to-many - owner)    
+	public void function addLocationConfiguration(required any locationConfiguration) {    
+		if(arguments.locationConfiguration.isNew() or !hasLocationConfiguration(arguments.locationConfiguration)) {    
+			arrayAppend(variables.locationConfigurations, arguments.locationConfiguration);    
+		}    
+		if(isNew() or !arguments.locationConfiguration.hasSku( this )) {    
+			arrayAppend(arguments.locationConfiguration.getSkus(), this);    
+		}    
+	}    
+	public void function removeLocationConfiguration(required any locationConfiguration) {    
+		var thisIndex = arrayFind(variables.locationConfigurations, arguments.locationConfiguration);    
+		if(thisIndex > 0) {    
+			arrayDeleteAt(variables.locationConfigurations, thisIndex);    
+		}    
+		var thatIndex = arrayFind(arguments.locationConfiguration.getSkus(), this);    
+		if(thatIndex > 0) {    
+			arrayDeleteAt(arguments.locationConfiguration.getSkus(), thatIndex);    
 		}    
 	}
 	
@@ -1051,6 +1038,38 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function removeLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
 		arguments.loyaltyRedemptionExclusion.removeSku( this );
 	}	
+	
+	// Promotion Rewards (many-to-many - inverse)
+	public void function addPromotionReward(required any promotionReward) {
+		arguments.promotionReward.addSku( this );
+	}
+	public void function removePromotionReward(required any promotionReward) {
+		arguments.promotionReward.removeSku( this );
+	}
+
+	// Promotion Reward Exclusions (many-to-many - inverse)    
+	public void function addPromotionRewardExclusion(required any promotionReward) {    
+		arguments.promotionReward.addExcludedSku( this );    
+	}
+	public void function removePromotionRewardExclusion(required any promotionReward) {    
+		arguments.promotionReward.removeExcludedSku( this );    
+	}
+	
+	// Promotion Qualifiers (many-to-many - inverse)
+	public void function addPromotionQualifier(required any promotionQualifier) {
+		arguments.promotionQualifier.addSku( this );
+	}
+	public void function removePromotionQualifier(required any promotionQualifier) {
+		arguments.promotionQualifier.removeSku( this );
+	}
+	
+	// Promotion Qualifier Exclusions (many-to-many - inverse)    
+	public void function addPromotionQualifierExclusion(required any promotionQualifier) {    
+		arguments.promotionQualifier.addExcludedSku( this );    
+	}    
+	public void function removePromotionQualifierExclusion(required any promotionQualifier) {    
+		arguments.promotionQualifier.removeExcludedSku( this );    
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

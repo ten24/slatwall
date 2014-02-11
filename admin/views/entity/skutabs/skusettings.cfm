@@ -53,7 +53,6 @@ Notes:
 		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuAttendanceType" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" settingObject="#rc.sku#" />
 		<cf_SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />

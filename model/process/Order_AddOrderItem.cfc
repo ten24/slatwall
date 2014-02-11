@@ -50,7 +50,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="order";
-	property name="accountService";
 	
 	// Lazy / Injected Objects
 	property name="stock" hb_rbKey="entity.stock";
@@ -115,7 +114,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		variables.registrantAccounts = [];
 		for(i=1;i<=quantity;i++) {
-			var account = getAccountService().newAccount();
+			var account = getService("accountService").newAccount();
 			arrayAppend(variables.registrantAccounts,account);
 		}
 		return variables.registrantAccounts;

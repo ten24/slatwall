@@ -81,7 +81,6 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// Non-Persistent Properties
 	property name="baseLocation" type="string" persistent="false";
-	property name="parentLocationOptions" persistent="false"; //TODO (Glenn): Pretty sure this is unused. make sure then remove.
 	property name="locationPathName" persistent="false";
 	
 	
@@ -117,22 +116,6 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			}
 		}
 		return variables.locationPathName;
-	}
-	
-	// TODO (Glenn): This shouldn't allow an arguments. Should only return this location's options. If we want all options we should use service		
-	public any function getLocationOptions(string locationID="") {
-		//if(!structKeyExists(variables, "parentLocationOptions")) {
-			
-			var locationOptions = [];
-			
-			// If no base location defined return all
-			if( !len(arguments.locationID) ) {
-				locationOptions = getService("locationService").getLocationOptions();
-			} else {
-				locationOptions = getService("locationService").getLocationOptions(arguments.locationID);
-			}
-		//}
-		return locationOptions;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

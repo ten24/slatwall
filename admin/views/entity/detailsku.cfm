@@ -109,7 +109,6 @@ Notes:
 				</cfif>
 				<cf_HibachiTab view="admin:entity/skutabs/eventconflicts" text="#conflictLabel#" />
 				<cf_HibachiTab view="admin:entity/skutabs/eventregistrations" />
-				<cf_HibachiTab view="admin:entity/skutabs/productschedules" />
 			<cfelseif rc.product.getBaseProductType() eq "subscription">
 				<cf_HibachiTab property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">

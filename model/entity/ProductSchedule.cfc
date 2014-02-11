@@ -36,28 +36,22 @@
 Notes:
 
 */
-component displayname="ProductSchedule" entityname="SlatwallProductSchedule" table="SwProductSchedule" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productScheduleService" hb_permission="this" 
-{
+component displayname="ProductSchedule" entityname="SlatwallProductSchedule" table="SwProductSchedule" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productScheduleService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="productScheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
-	property name="scheduleStartDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="Date the schedule starts" ;
-	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
-	property name="scheduleEndDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="If endsOn=date this will be the date the schedule ends";
-	property name="recurringDays" hint="List containing days of the week on which the schedule occurs.";
-	property name="repeatByType" hint="Whether recurrence is repeated based on day of month or day of week.";
-
+	property name="recurringTimeUnit" ormtype="string" hint="Daily, Weekly, Monthly, Yearly";
+	property name="weeklyRepeatDays" ormtype="string" hint="List containing days of the week on which the schedule occurs.";
+	property name="monthlyRepeatByType" ormtype="string" hint="Whether recurrence is repeated based on day of month or day of week.";
+	property name="scheduleEndDate" ormtype="timestamp" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" fetch="join";
+	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	
 	// Related Object Properties (one-to-many)
-	property name="recurringTimeUnit" cfc="Type" fieldtype="many-to-one" fkcolumn="recurringTimeUnitID" hb_optionsSmartListData="f:parentType.systemCode=recurringTimeUnit";
-	property name="schedulingType" cfc="Type" fieldtype="many-to-one" fkcolumn="schedulingTypeID" hb_optionsSmartListData="f:parentType.systemCode=schedulingType";
-	property name="scheduleEndType" cfc="Type" fieldtype="many-to-one" fkcolumn="scheduleEndTypeID" hb_optionsSmartListData="f:parentType.systemCode=scheduleEndType";
-	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all-delete-orphan" inverse="true" orderby="eventStartDateTime" ;
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -73,110 +67,9 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-	property name="eventStartDateTime" hb_formFieldType="datetime" persistent="false" ;  
-	property name="eventEndDateTime" hb_formFieldType="datetime" persistent="false" ;  
-	property name="eventStartTime" hb_formFieldType="time" persistent="false" ;  
-	property name="eventEndTime" hb_formFieldType="time" persistent="false" ;  
-	property name="firstScheduledSku" persistent="false" ;  
-	property name="recurringTimeUnitName" persistent="false" ;  
-	property name="scheduleStartDateWithoutTime" hb_formFieldType="date" persistent="false" ;  
-	property name="scheduleEndDateWithoutTime" hb_formFieldType="date" persistent="false" ;  
-	property name="scheduleSummary" persistent="false" ; 
-	property name="reservationEndTime" hb_formFieldType="time" persistent="false" ;  
-	property name="reservationStartTime" hb_formFieldType="time" persistent="false" ;  
-
+	property name="firstScheduledSku" persistent="false";
+	property name="scheduleSummary" persistent="false";
 	
-	// ============ START: Non-Persistent Property Methods =================
-	
-	// @hint Return eventEndDateTime from one of the skus
-	public function getEventEndDateTime() {
-		if(!structKeyExists(variables,"eventEndDateTime")) {
-			variables.eventEndDateTime = "";
-			if(arrayLen(this.getSkus())) {
-				variables.eventEndDateTime = this.getSkus()[1].getEventEndDateTime();
-			}
-		}
-		return variables.eventEndDateTime;
-	}
-	
-	// @hint Return eventStartDateTime from one of the skus
-	public function getEventStartDateTime() {
-		if(!structKeyExists(variables,"eventStartDateTime")) {
-			variables.eventStartDateTime = "";
-			if(arrayLen(this.getSkus())) {
-				variables.eventStartDateTime = this.getSkus()[1].getEventStartDateTime();
-			}
-		}
-		return variables.eventStartDateTime;
-	}
-	
-	// @hint Return eventEndDateTime from one of the skus as time only
-	public function getEventEndTime() {
-		if(!structKeyExists(variables,"eventEndDateTime")) {
-			variables.eventEndDateTime = "";
-			if(arrayLen(this.getSkus())) {
-				variables.eventEndDateTime = timeFormat(this.getSkus()[1].getEventEndDateTime());
-			}
-		}
-		return variables.eventEndDateTime;
-	}
-	
-	// @hint Return eventStartDateTime from one of the skus as time only
-	public function getEventStartTime() {
-		if(!structKeyExists(variables,"eventStartDateTime")) {
-			variables.eventStartDateTime = "";
-			if(arrayLen(this.getSkus())) {
-				variables.eventStartDateTime = timeFormat(this.getSkus()[1].getEventStartDateTime());
-			}
-		}
-		return variables.eventStartDateTime;
-	}
-	
-	// @hint Return reservationEndTime from one of the skus as time only
-	public function getReservationEndTime() {
-		if(!structKeyExists(variables,"reservationEndTime")) {
-			variables.reservationEndTime = "";
-			if(arrayLen(this.getSkus())) {
-				variables.reservationEndTime = timeFormat(this.getSkus()[1].getEndReservationDateTime());
-			}
-		}
-		return variables.reservationEndTime;
-	}
-	
-	// @hint Return reservationStartTime from one of the skus as time only
-	public function getReservationStartTime() {
-		if(!structKeyExists(variables,"reservationStartTime")) {
-			variables.reservationStartTime = "";
-			if(arrayLen(this.getSkus())) {
-				variables.reservationStartTime = timeFormat(this.getSkus()[1].getStartReservationDateTime());
-			}
-		}
-		return variables.reservationStartTime;
-	}
-	
-	public string function getSimpleRepresentationPropertyName() {
-		return "scheduleSummary";
-	}
-	
-	public string function getScheduleSummary() {
-		var summary = "";
-		if(this.getRecurringTimeUnitName() == "Daily") {
-			summary = summary & getDailySummary();
-		} else if (this.getRecurringTimeUnitName() == "Weekly") {
-			summary = summary & getWeeklySummary();
-		} else if (this.getRecurringTimeUnitName() == "Monthly") {
-			summary = summary & getMonthlySummary();
-		} else if (this.getRecurringTimeUnitName() == "Yearly") {
-			summary = summary & getYearlySummary();
-		}
-		summary = summary & " #rbKey('define.from')# " & dateFormat(this.getScheduleStartDate(),"long") & " #rbKey('define.through')# " & dateFormat(this.getScheduleEndDate(),"long") & ".";
-		return summary;
-	}
-	
-	// @help Returns text summary of a daily schedule. Used by getScheduleSummary().
-	private string function getDailySummary() {
-		return getService("SettingService").getTypeByTypeID(this.getrecurringTimeUnit().getTypeID()).getType(); 
-	}
 	
 	// @help Returns text summary of a weekly schedule. Used by getScheduleSummary().
 	private string function getWeeklySummary() {
@@ -226,10 +119,23 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 		return summary; 
 	}
 	
-	public any function getRecurringTimeUnitName() {
-		var typeName = getService("SettingService").getTypeByTypeID(this.getRecurringTimeUnit().getTypeID()).getType();
-		return typeName;
+	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getScheduleSummary() {
+		var summary = "";
+		if(getRecurringTimeUnit() == "daily") {
+			summary &= "#rbKey('define.daily')#";
+		} else if (getRecurringTimeUnit() == "weekly") {
+			summary &= summary & getWeeklySummary();
+		} else if (getRecurringTimeUnit() == "monthly") {
+			summary &= summary & getMonthlySummary();
+		} else if (getRecurringTimeUnit() == "yearly") {
+			summary &= summary & getYearlySummary();
+		}
+		summary = summary & " #rbKey('define.from')# " & dateFormat(getFirstScheduledSku().getEventStartDateTime(),"long") & " #rbKey('define.through')# " & dateFormat(this.getScheduleEndDate(),"long") & ".";
+		return summary;
 	}
+	
 	
 	public any function getFirstScheduledSku() {
 		if(!structKeyExists(variables,"firstScheduledSku")) {
@@ -239,31 +145,15 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
-		
+	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	/**
-	 * Calls both DateFormat and TimeFormat on a data object.
-	 * 
-	 * @param time      A data object. 
-	 * @param dateFormat      The string to use to format dates. Defaults to  
-	 * @param timeFormat      The string to use to format time. Defaults to  
-	 * @param joinStr      This string is placed between the date and time. Defaults to one space character. 
-	 * @return This function returns a string. 
-	 * @author Raymond Camden (ray@camdenfamily.com) 
-	 * @version 1, November 26, 2001 
-	 */
-	public any function dateAndTimeFormat(time) {
-	    var str = "";
-	    var dateFormat = "mmmm d, yyyy";
-	    var timeFormat = "h:mm tt";
-	    var joinStr = " ";
-	    
-	    if(ArrayLen(Arguments) gte 2) dateFormat = Arguments[2];
-	    if(ArrayLen(Arguments) gte 3) timeFormat = Arguments[3];
-	    if(ArrayLen(Arguments) gte 4) joinStr = Arguments[4];
-	
-	    return DateFormat(time, dateFormat) & joinStr & TimeFormat(time, timeFormat);
+	// Skus (one-to-many)
+	public void function addSku(required any sku) {    
+		arguments.sku.setProductSchedule( this );    
+	}    
+	public void function removeSku(required any sku) {    
+		arguments.sku.removeProductSchedule( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
@@ -273,14 +163,6 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	// ===============  END: Custom Validation Methods =====================
 	
 	// =============== START: Custom Formatting Methods ====================
-	
-	public function getScheduleEndDateWithoutTime() {
-		return dateFormat(this.getScheduleEndDate(),"medium");
-	}
-	
-	public function getScheduleStartDateWithoutTime() {
-		return dateFormat(this.getScheduleStartDate(),"medium");
-	}
 	
 	// ===============  END: Custom Formatting Methods =====================
 	
@@ -293,6 +175,10 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentationPropertyName() {
+		return "scheduleSummary";
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

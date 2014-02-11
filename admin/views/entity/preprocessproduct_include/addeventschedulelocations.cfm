@@ -46,20 +46,13 @@
 Notes:
 
 --->
-<cfparam name="rc.waitlistQueueTermSmartList" type="any" />
+<cfparam name="rc.addEventScheduleProcessObject" type="any" />
 
-<cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.waitlistQueueTermSmartList#" createmodal="true" />
-	
-	<cf_HibachiListingDisplay smartList="#rc.waitlistQueueTermSmartList#"
-							  recordEditAction="admin:entity.editwaitlistqueueTerm"
-							  recordEditQueryString="redirectAction=admin:entity.listwaitlistqueueterm"
-							  recordEditModal="true"
-							  recordDetailAction="admin:entity.detailwaitlistqueueTerm"
-							  recordDetailModal="true"
-							  recordDeleteAction="admin:entity.detailwaitlistqueueTerm"
-							  recordDeleteQueryString="redirectAction=admin:entity.listwaitlistqueueterm">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="waitlistQueueTermName" />
-		<cf_HibachiListingColumn propertyIdentifier="term.termName" />
-	</cf_HibachiListingDisplay>
-</cfoutput>
+<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="bundleLocationConfigurationFlag" edit="true" />
+<br />
+<cf_SlatwallErrorDisplay object="#rc.addEventScheduleProcessObject#" errorName="locationConfigurations" />
+<cf_HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.addEventScheduleProcessObject.getLocationConfigurations()#" edit="true">
+	<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
+	<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+	<cf_HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
+</cf_HibachiListingDisplay>

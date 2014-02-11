@@ -50,25 +50,6 @@ Notes:
 	
 	<cfproperty name="hibachiCacheService" type="any" />
 	
-	<cffunction name="deleteSkuLocationConfiguration" returntype="void" output="false">
-		<cfargument name="skuID" /> 
-		<cfargument name="locationConfigurationID" /> 
-		<cftry>
-		<cfquery name="delSkuLC">
-			DELETE 
-			FROM SwSkuLocationConfiguration
-			WHERE skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" >
-			AND locationConfigurationID = <cfqueryparam value="#arguments.locationConfigurationID#" cfsqltype="cf_sql_varchar" >
-		</cfquery>
-		<cfcatch type="any" >
-		<cfrethrow>
-		<cfabort>
-			
-			
-		</cfcatch>
-		</cftry>
-	</cffunction>
-	
 	<cffunction name="getTransactionExistsFlag" returntype="boolean" output="false">
 		<cfargument name="productID" />
 		<cfargument name="skuID" />

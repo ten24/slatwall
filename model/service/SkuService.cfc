@@ -179,7 +179,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			eventRegistration.setAccount(newAccount);
 			
 		}
-		eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+		
 		if(arguments.sku.getAvailableSeatCount > 0 ) {
 			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
 		} else {

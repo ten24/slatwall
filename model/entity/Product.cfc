@@ -57,8 +57,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="publishedFlag" ormtype="boolean" default="false";
 	property name="sortOrder" ormtype="integer";
-	property name="purchaseStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
-	property name="purchaseEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
+	property name="purchaseStartDateTime" ormtype="timestamp";
+	property name="purchaseEndDateTime" ormtype="timestamp";
 	
 	// Calculated Properties
 	property name="calculatedSalePrice" ormtype="big_decimal";
@@ -115,6 +115,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
+	property name="nextSkuCodeCount" persisten="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
@@ -128,14 +129,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
 	property name="currencyCode" persistent="false";
 	property name="defaultProductImageFiles" persistent="false";
-	property name="eventStatus" type="any" persistent="false";
 	property name="price" hb_formatType="currency" persistent="false";
 	property name="renewalPrice" hb_formatType="currency" persistent="false";
 	property name="listPrice" hb_formatType="currency" persistent="false";
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	
 	
 	
 	public any function getAvailableForPurchaseFlag() {
@@ -578,6 +577,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return options;
 	}
 	
+	public string function getNextSkuCodeCount() {
+		var highestResult = 0;
+		
+		for(var sku in getSkus()) {
+			if(!isNull(sku.getSkuCode())) {
+				var thisCount = listLast(sku.getSkuCode(),"-");
+				if(isNumeric(thisCount) && thisCount > highestResult) {
+					highestResult = thisCount;
+				}
+			}
+		}
+		
+		return highestResult+1;
+	}
+	
 	public string function getTitle() {
 		if(!structKeyExists(variables, "title")) {
 			variables.title = getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this);
@@ -730,15 +744,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return variables.eventRegistrationsSmartList;
 	}
-	
-	// Canceled, Confirmed, Open or Closed
-	public any function getEventStatus() {
-		if(!structKeyExists(variables, "eventStatus")) {
-			variables.eventStatus = getDefaultSku.getEventStatus();
-		}
-		return variables.eventStatus;
-	}
-	
 
 	// ============  END:  Non-Persistent Property Methods =================
 		
