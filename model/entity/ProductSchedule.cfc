@@ -51,7 +51,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	
 	// Related Object Properties (one-to-many)
-	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all" inverse="true" orderby="eventStartDateTime";
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productScheduleID" cascade="all" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -236,7 +236,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Skus (one-to-many)    
+	// Skus (one-to-many)
 	public void function addSku(required any sku) {    
 		arguments.sku.setProductSchedule( this );    
 	}    
