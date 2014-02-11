@@ -126,16 +126,6 @@
 		<Record typeID="5accbf4cb81693960a8cf9c6ada9d220" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4cb81693960a8cf9c6ada9d220" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" type="Open" systemCode="pstOpen" />
 		<Record typeID="5accbf4db8ff07fa9b37d3285919ecc3" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4db8ff07fa9b37d3285919ecc3" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" type="Closed" systemCode="pstClosed" />
 		
-		<Record typeID="5aa9b699efd2a28d7b6f723c0e8f2b02" typeIDPath="5aa9b699efd2a28d7b6f723c0e8f2b02," parentTypeID="NULL" type="Recurring Time Unit Types" systemCode="recurringTimeUnitType" />
-		<Record typeID="5aa9b69adbc9675fe15680a4efa68d71" typeIDPath="5aa9b699efd2a28d7b6f723c0e8f2b02,5aa9b69adbc9675fe15680a4efa68d71" parentTypeID="5aa9b699efd2a28d7b6f723c0e8f2b02" type="Daily" systemCode="rtuDaily" />
-		<Record typeID="5aa9b69badd827c05731539f7c0311b9" typeIDPath="5aa9b699efd2a28d7b6f723c0e8f2b02,5aa9b69badd827c05731539f7c0311b9" parentTypeID="5aa9b699efd2a28d7b6f723c0e8f2b02" type="Weekly" systemCode="rtuWeekly" />
-		<Record typeID="5aa9b69da27049accc9ea7eaa6f79190" typeIDPath="5aa9b699efd2a28d7b6f723c0e8f2b02,5aa9b69da27049accc9ea7eaa6f79190" parentTypeID="5aa9b699efd2a28d7b6f723c0e8f2b02" type="Monthly" systemCode="rtuMonthly" />
-		<Record typeID="5aa9b69ec3cc479f5142b2023e01b8b8" typeIDPath="5aa9b699efd2a28d7b6f723c0e8f2b02,5aa9b69ec3cc479f5142b2023e01b8b8" parentTypeID="5aa9b699efd2a28d7b6f723c0e8f2b02" type="Yearly" systemCode="rtuYearly" />
-
-		<Record typeID="5aa9b69fffa293d49f2a2d01d45a3974" typeIDPath="5aa9b69fffa293d49f2a2d01d45a3974" parentTypeID="NULL" type="Schedule End Types" systemCode="scheduleEndType" />
-		<Record typeID="5aa9b6a1cc981ac60af5bcdb8bb31f68" typeIDPath="5aa9b69fffa293d49f2a2d01d45a3974,5aa9b6a1cc981ac60af5bcdb8bb31f68" parentTypeID="5aa9b69fffa293d49f2a2d01d45a3974" type="Occurrences" systemCode="setOccurrences" />
-		<Record typeID="5aa9b6a2f19c5c99f3802f26a99f1d4f" typeIDPath="5aa9b69fffa293d49f2a2d01d45a3974,5aa9b6a2f19c5c99f3802f26a99f1d4f" parentTypeID="5aa9b69fffa293d49f2a2d01d45a3974" type="Date" systemCode="setDate" />
-		
 		<Record typeID="444df2e4e0ec725f718318de5bd3b973" typeIDPath="444df2e4e0ec725f718318de5bd3b973" parentTypeID="NULL" type="Stock Adjustment Types" systemCode="stockAdjustmentType" />
 		<Record typeID="444df2e5cb27169f418279f3f859a4f7" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e5cb27169f418279f3f859a4f7" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Location Transfer" systemCode="satLocationTransfer" />
 		<Record typeID="444df2e60db81c12589c9b39346009f2" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e60db81c12589c9b39346009f2" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Manual In" systemCode="satManualIn" />

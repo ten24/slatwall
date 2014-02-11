@@ -436,122 +436,54 @@ component extends="HibachiService" accessors="true" {
 	
 	public any function processProduct_addEventSchedule(required any product, required any processObject) {
 		
-		// Make sure end date was specified and occurs after start date if recurring schedule
-		if(arguments.processObject.getSchedulingType() == "recurring" ) {
-			if(!isDefined("arguments.processObject.getScheduleEndDate") ) {
-				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_defined'));
-				return product;
-			} else if(!isDate(arguments.processObject.getScheduleEndDate()) || dateCompare(arguments.processObject.getScheduleStartDate(),arguments.processObject.getScheduleEndDate()) eq 1) {
-				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleEndDate_valid'));
-				return product;
-				
-			}
-		}
-		
-		//Create new product schedule
-		var newProductSchedule = this.newProductSchedule();
-		newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
-		
-		// Generate next highest sku qualifier
-		var SkuQualifier = getMaxSkuQualifier(arguments.product.getSkus()) + 1; 
-		var isFirstSku = true;
-		if(arrayLen(arguments.product.getSkus())) {
-			skuQualifier = 1 + getMaxSkuQualifier(arguments.product.getSkus());
-			isFirstSku = false;
-		}
-		
 		// Single event instance (non-recurring)
 		if(arguments.processObject.getSchedulingType() == "once" ) {
 			
-			// Bundled location configuration
-			if(arguments.processObject.getBundleLocationConfigurationFlag()) {
-				
-				//Create one sku
-				var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), 1));
-				
-				// Add all location configurations to same sku
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-				}
-				// Set first as default sku
-				if(isFirstSku) {
-					arguments.product.setDefaultSku( newSku );	
-					isFirstSku = false;
-				}
-				skuQualifier++;
-				
-			// Single location configuration
-			} else {
-				// Create separate skus for every selected location configuration
-				for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
-					var newSku = createEventSkuStub(arguments.processObject,arguments.processObject.getEventStartDateTime(),arguments.processObject.getEventEndDateTime(),SkuQualifier,listGetAt(arguments.processObject.getLocationConfigurations(), lc));
-					skuQualifier++;
-					newSku.addLocationConfiguration( getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) ) );
-					
-					// Set first as default sku
-					if(isFirstSku) {
-						arguments.product.setDefaultSku( newSku );	
-						isFirstSku = false;
-					}
-				}
-			}
+			//Create one sku
+			createEventSkuOrSkus(arguments.processObject, arguments.processObject.getEventStartDateTime(), arguments.processObject.getEventEndDateTime());
 			
 		// Recurring schedule is specified for event
 		} else if( arguments.processObject.getSchedulingType() == "recurring" ) {
-
+			
 			//Create new product schedule
 			var newProductSchedule = this.newProductSchedule();
-			newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
 			
 			// How frequently will event occur (Daily, Weekly, etc.)?
-			newProductSchedule.setrecurringTimeUnit(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit())); 
+			newProductSchedule.setRecurringTimeUnit( arguments.processObject.getRecurringTimeUnit() ); 
 			
 			// Is end type based on occurrences or date?
-			newProductSchedule.setscheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
+			newProductSchedule.setScheduleEndType( arguments.processObject.getScheduleEndType() );
 			
 			// Set schedule start/end dates
-			newProductSchedule.setScheduleStartDate(createDateTime(year(arguments.processObject.getScheduleStartDate()),month(arguments.processObject.getScheduleStartDate()),day(arguments.processObject.getScheduleStartDate()),0,0,0));
+			newProductSchedule.setScheduleStartDate(createDateTime(year(arguments.processObject.getEventStartDateTime()),month(arguments.processObject.getEventStartDateTime()),day(arguments.processObject.getEventStartDateTime()),0,0,0));
 			newProductSchedule.setScheduleEndDate(createDateTime(year(arguments.processObject.getScheduleEndDate()),month(arguments.processObject.getScheduleEndDate()),day(arguments.processObject.getScheduleEndDate()),23,59,59));
 			
 			// Set product association
 			newProductSchedule.setProduct(arguments.product);
 			
-			// Make sure event start date and schedule start date are the same
-			if(dateDiff("d",dateFormat(arguments.processObject.getEventStartDateTime(),"short"),dateFormat(arguments.processObject.getScheduleStartDate(),"short") ) != 0 ){
-				processObject.addError('editScope', getHibachiScope().rbKey('validate.processProduct_create.scheduleStartDate'));
-			} else {
+			// DAILY
+			if( arguments.processObject.getRecurringTimeUnit() == "Daily" ) {
+				createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 				
-				// DAILY
-				if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Daily") {
-					createDailyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-				}
+			// WEEKLY
+			} else if( arguments.processObject.getRecurringTimeUnit() == "Weekly" ) {
+				createWeeklyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 				
-				// WEEKLY
-				else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Weekly") {
-					createWeeklyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-				} 
+			// MONTHLY
+			} else if( arguments.processObject.getRecurringTimeUnit() == "Monthly" ) {
+				createMonthlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 				
-				// MONTHLY
-				else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Monthly") {
-					createMonthlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-				} 
-				
-				// YEARLY
-				else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Yearly") {
-					createYearlyScheduledSkus(arguments.product,arguments.processObject,newProductSchedule);
-				} 
-				
+			// YEARLY
+			} else if( arguments.processObject.getrecurringTimeUnit() == "Yearly" ) {
+				createYearlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
 			}
 			
-			//Persist new product schedule
-			getProductScheduleService().saveProductSchedule( newProductSchedule );
+			// Persist new product schedule
+			newProductSchedule = getProductScheduleService().saveProductSchedule( newProductSchedule );
 		}
 			
 		
-		// Generate Image Files
-		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-        
-        // validate the product
+		// validate the product
 		arguments.product.validate( context="save" );
 		
 		// If the product passed validation then call save in the DAO, otherwise set the errors flag
@@ -624,10 +556,6 @@ component extends="HibachiService" accessors="true" {
 	
 	public any function processProduct_create(required any product, required any processObject) {
 		
-		if(isNull(arguments.product.getURLTitle())) {
-			arguments.product.setURLTitle(getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct"));
-		}
-		
 		// GENERATE - CONTENT ACCESS SKUS
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "merchandise") {
 			
@@ -661,58 +589,37 @@ component extends="HibachiService" accessors="true" {
 		
 		// GENERATE - EVENT SKUS	
 		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "event") {
-				
-			// Single event instance (non-recurring)
-			if(arguments.processObject.getSchedulingType() == "once" ) {
-				
-				createEventSkuOrSkus(arguments.processObject, arguments.processObject.getEventStartDateTime(), arguments.processObject.getEventEndDateTime());
-				
-			// Recurring event
-			} else if( arguments.processObject.getSchedulingType() == "recurring" ) {
-				
-				//Create new product schedule
-				var newProductSchedule = this.newProductSchedule();
-				newProductSchedule.setSchedulingType( arguments.processObject.getSchedulingType() );
-				
-				// How frequently will event occur (Daily, Weekly, etc.)?
-				newProductSchedule.setRecurringTimeUnit( getSettingService().getTypeByTypeID(arguments.processObject.getRecurringTimeUnit()) ); 
-				
-				// Is end type based on occurrences or date?
-				newProductSchedule.setScheduleEndType(getSettingService().getTypeByTypeID(arguments.processObject.getscheduleEndType()));
-				
-				// Set schedule start/end dates
-				newProductSchedule.setScheduleStartDate( arguments.processObject.getEventStartDateTime() );
-				newProductSchedule.setScheduleEndDate( arguments.processObject.getScheduleEndDate() );
-				
-				// Set product association
-				newProductSchedule.setProduct(arguments.product);
-				
-				// DAILY
-				if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Daily") {
-					createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
-					
-				// WEEKLY
-				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Weekly") {
-					createWeeklyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
-					
-				// MONTHLY
-				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Monthly") {
-					createMonthlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
-					
-				// YEARLY
-				} else if(getSettingService().getTypeByTypeID(arguments.processObject.getrecurringTimeUnit()).getType()=="Yearly") {
-					createYearlyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
-				}
-				
-				//Persist new product schedule
-				getProductScheduleService().saveProductSchedule( newProductSchedule );
-			}
+			
+			arguments.product = this.processProduct(arguments.product, arguments.data, 'addEventSchedule');
+			
 		
 		// GENERATE - MERCHANDISE SKUS
 		} else if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "merchandise") {
 			
 			// If options were passed in create multiple skus
 			if(!isNull(arguments.processObject.getOptions()) && len(arguments.processObject.getOptions())) {
+				
+				var optionGroups = {};
+				var totalCombos = 1;
+				var indexedKeys = [];
+				var currentIndexesByKey = {};
+				var keyToChange = "";
+
+				// Loop over all the options to put them into a struct by groupID
+				for(var i=1; i<=listLen(arguments.processObject.getOptions()); i++) {
+					var option = getOptionService().getOption( listGetAt(arguments.processObject.getOptions(), i) );
+					if(!structKeyExists(optionGroups, option.getOptionGroup().getOptionGroupID())) {
+						optionGroups[ option.getOptionGroup().getOptionGroupID() ] = [];
+					}
+					arrayAppend(optionGroups[ option.getOptionGroup().getOptionGroupID() ], option);
+				}
+
+				// Loop over the groups to see how many we will be creating and to setup the option indexes to use
+				for(var key in optionGroups) {
+					arrayAppend(indexedKeys, key);
+					currentIndexesByKey[ key ] = 1;
+					totalCombos = totalCombos * arrayLen(optionGroups[key]);
+				}
 				
 				// Create a sku with 1 option from each group, and then update the indexes properly for the next loop
 				for(var i = 1; i<=totalCombos; i++) {

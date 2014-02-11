@@ -77,22 +77,37 @@ component  extends="HibachiService" accessors="true" {
 		return returnDate;
 	}
 	
-	public array function getRecurringTimeUnitOptions() {
-		if(!structKeyExists(variables, "recurringTimeUnitTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
-			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="recurringTimeUnitType"); 
-			smartList.addOrder("type|ASC");
-			variables.recurringTimeUnitTypeOptions = smartList.getRecords();
+	public any function getDaysOfWeekOptions(boolean includeWeekends=true) {
+		var options = [
+			{name=getHibachiScope().rbKey('define.Monday'), value="2"},
+			{name=getHibachiScope().rbKey('define.Tuesday'), value="3"},
+			{name=getHibachiScope().rbKey('define.Wednesday'), value="4"},
+			{name=getHibachiScope().rbKey('define.Thursday'), value="5"},
+			{name=getHibachiScope().rbKey('define.Friday'), value="6"}
+		];
+
+		if(arguments.includeWeekends) {
+			arrayPrepend(options,{name=getHibachiScope().rbKey('define.Sunday'), value="1"});		
+			arrayAppend(options,{name=getHibachiScope().rbKey('define.Saturday'), value="7"});		
 		}
-		return variables.recurringTimeUnitTypeOptions;
+
+		return options;
 	}
 	
-	public any function getRepeatTimeUnitOptions() {
+	public array function getRecurringTimeUnitOptions() {
 		var options = [
-			{name="Day of the week", value="week"},
-			{name="Day of the month", value="month"}
+			{name=getHibachiScope().rbKey('define.daily'), value="daily"},
+			{name=getHibachiScope().rbKey('define.weekly'), value="weekly"},
+			{name=getHibachiScope().rbKey('define.monthly'), value="monthly"},
+			{name=getHibachiScope().rbKey('define.yearly'), value="yearly"}
+		];
+		return options;
+	}
+	
+	public any function getRepeatByTypeOptions() {
+		var options = [
+			{name=getHibachiScope().rbKey('define.dayOfTheWeek'), value="dayOfWeekOfMonth"},
+			{name=getHibachiScope().rbKey('define.dayOfTheMonth'), value="dayOfMonth"}
 		];
 		return options;
 	}
@@ -105,15 +120,11 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	public any function getScheduleEndTypeOptions() {
-		if(!structKeyExists(variables, "scheduleEndTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
-			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="scheduleEndType"); 
-			smartList.addOrder("type|ASC");
-			variables.scheduleEndTypeOptions = smartList.getRecords();
-		}
-		return variables.scheduleEndTypeOptions;
+		var options = [
+			{name=getHibachiScope().rbKey('define.occurrences'), value="occurrences"},
+			{name=getHibachiScope().rbKey('define.date'), value="date"}
+		];
+		return options;
 	}
 	
 	// =====================  END: Logical Methods ============================
