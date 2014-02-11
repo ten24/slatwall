@@ -54,54 +54,16 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="baseProductType";
 	property name="bundleContentAccessFlag" hb_formFieldType="yesno";
-	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="contents";
-	property name="eventStartDateTime" hb_rbKey="entity.sku.eventStartDateTime" hb_formFieldType="datetime";
-	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
 	property name="options";
 	property name="price";
 	property name="renewalSubscriptionBenefits";
 	property name="subscriptionBenefits";
 	property name="subscriptionTerms";
 	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
-	property name="locationConfigurations" hb_rbKey="entity.sku.locationConfigurations";
-	property name="skuAllowWaitlistingFlag" hb_formFieldType="yesno";
 	
-	// Scheduling-related properties
-	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";
-	property name="recurringTimeUnit" hb_formFieldType="select" hint="How often to repeat (daily, weekly, monthly, etc.)"; 
-	property name="weeklyDaysOfOccurrence" hb_formFieldType="checkboxgroup"; 
-	property name="repeatByType" hb_formFieldType="radiogroup" hint="day of week or day of month"; 
-	property name="scheduleEndType" hb_formFieldType="radiogroup" hint="never, occurrences, or date"; 
-	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
-	property name="scheduleEndDate" hb_formFieldType="date" hint="If endsOn=date this will be the date the schedule ends";
-
 	public any function setupDefaults() {
 		variables.generateSkusFlag = true;
-	}
-
-	public array function getDaysOfWeekOptions(boolean includeWeekends=true) {
-		return getService("ProductScheduleService").getDaysOfWeekOptions(arguments.includeWeekends);
-	}
-	
-	public array function getScheduleEndTypeOptions() {
-		return getService("ProductScheduleService").getscheduleEndTypeOptions();
-	}
-
-	public array function getMonthlyRepeatByOptions() {
-		return getService("ProductScheduleService").getMonthlyRepeatByOptions();
-	}
-	
-	public array function getRepeatTimeUnitOptions() {
-		return getService("ProductScheduleService").getRepeatTimeUnitOptions();
-	}
-	
-	public array function getSchedulingTypeOptions() {
-		return getService("ProductScheduleService").getSchedulingTypeOptions();
-	}
-	
-	public array function getRecurringTimeUnitOptions() {
-		return getService("ProductScheduleService").getRecurringTimeUnitOptions();
 	}
 	
 }

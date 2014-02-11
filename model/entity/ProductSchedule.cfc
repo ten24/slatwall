@@ -40,15 +40,14 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	
 	// Persistent Properties
 	property name="productScheduleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="recurringDays" ormtype="string" hint="List containing days of the week on which the schedule occurs.";
 	property name="recurringTimeUnit" ormtype="string" hint="Daily, Weekly, Monthly, Yearly";
-	property name="repeatByType" ormtype="string" hint="Whether recurrence is repeated based on day of month or day of week.";
+	property name="weeklyRepeatDays" ormtype="string" hint="List containing days of the week on which the schedule occurs.";
+	property name="monthlyRepeatByType" ormtype="string" hint="Whether recurrence is repeated based on day of month or day of week.";
 	property name="scheduleStartDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="Date the schedule starts";
 	property name="scheduleEndDate" hb_formFieldType="date" ormtype="timestamp" hb_populateValidationContext="scheduled" hint="If endsOn=date this will be the date the schedule ends";
 	property name="scheduleEndOccurrences" hint="If endsOn=occurrences this will be how many times to repeat";
 	property name="scheduleEndType" hint="Does this end by date or occurences";
-	property name="timeUnitStep" hint="How often to repeat (i.e., every timeUnitStep months)"; 
-
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)

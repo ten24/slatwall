@@ -77,20 +77,16 @@ component  extends="HibachiService" accessors="true" {
 		return returnDate;
 	}
 	
-	public any function getDaysOfWeekOptions(boolean includeWeekends=true) {
+	public any function getWeeklyRepeatDaysOptions() {
 		var options = [
+			{name=getHibachiScope().rbKey('define.Sunday'), value="1"},
 			{name=getHibachiScope().rbKey('define.Monday'), value="2"},
 			{name=getHibachiScope().rbKey('define.Tuesday'), value="3"},
 			{name=getHibachiScope().rbKey('define.Wednesday'), value="4"},
 			{name=getHibachiScope().rbKey('define.Thursday'), value="5"},
-			{name=getHibachiScope().rbKey('define.Friday'), value="6"}
+			{name=getHibachiScope().rbKey('define.Friday'), value="6"},
+			{name=getHibachiScope().rbKey('define.Saturday'), value="7"}
 		];
-
-		if(arguments.includeWeekends) {
-			arrayPrepend(options,{name=getHibachiScope().rbKey('define.Sunday'), value="1"});		
-			arrayAppend(options,{name=getHibachiScope().rbKey('define.Saturday'), value="7"});		
-		}
-
 		return options;
 	}
 	
@@ -104,7 +100,7 @@ component  extends="HibachiService" accessors="true" {
 		return options;
 	}
 	
-	public any function getRepeatByTypeOptions() {
+	public any function getMonthlyRepeatByTypeOptions() {
 		var options = [
 			{name=getHibachiScope().rbKey('define.dayOfTheWeek'), value="dayOfWeekOfMonth"},
 			{name=getHibachiScope().rbKey('define.dayOfTheMonth'), value="dayOfMonth"}

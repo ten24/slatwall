@@ -46,31 +46,13 @@
 Notes:
 
 --->
-<cfparam name="rc.product" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.addEventScheduleProcessObject" type="any" />
 
-<cfset rc.addEventScheduleProcessObject = rc.processObject />
-
-<cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
-		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#"></cf_HibachiEntityActionBar>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuName" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
-				
-				<cfinclude template="preprocessproduct_include/addeventschedule.cfm" />
-				
-				<hr />
-				
-				<cfinclude template="preprocessproduct_include/addeventschedulelocations.cfm" />
-				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-	</cf_HibachiEntityProcessForm>
-</cfoutput>
+<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="bundleLocationConfigurationFlag" edit="true" />
+<br />
+<cf_SlatwallErrorDisplay object="#rc.addEventScheduleProcessObject#" errorName="locationConfigurations" />
+<cf_HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.addEventScheduleProcessObject.getLocationConfigurations()#" edit="true">
+	<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+	<cf_HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
+	<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
+</cf_HibachiListingDisplay>

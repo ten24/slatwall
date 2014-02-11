@@ -46,6 +46,7 @@
 Notes:
 
 --->
+<cfparam name="rc.product" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -80,6 +81,10 @@ Notes:
 				<!--- EVENT --->
 				<cfif rc.processObject.getBaseProductType() eq "event">
 					
+					<cfset rc.addEventScheduleProcessObject = rc.product.getProcessObject('addEventSchedule') />
+					<cfinclude template="preprocessproduct_include/addeventschedule.cfm" />
+					
+					<!---
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 					
@@ -101,7 +106,7 @@ Notes:
 						<!--- Monthly schedule --->
 						<cf_HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="#rc.processObject.getRecurringTimeUnit() EQ rc.processObject.getService('SettingService').getTypeBySystemCode('rtuMonthly').getTypeID()#" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('rtuMonthly').getTypeID()#">
 						
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="monthlyRepeatBy" edit="#rc.edit#" valueOptions="#rc.processObject.getMonthlyRepeatByOptions()#">
+							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="monthlyRepeatByType" edit="#rc.edit#" valueOptions="#rc.processObject.getMonthlyRepeatByOptions()#">
 							
 							<cf_HibachiDisplayToggle selector="input[name='monthlyRepeatBy']" loadVisable="yes" showValues="dayOfWeek">
 								<div id="monthlyRepeatByWeekdaySummary"  class="alert alert-block">Select a start date</div>
@@ -118,6 +123,7 @@ Notes:
 						<input type="hidden" name="scheduleEndType" value="#rc.processObject.getService('SettingService').getTypeBySystemCode('setDate').getTypeID()#" />
 					
 					</cf_HibachiDisplayToggle>
+					--->
 					
 				<!--- SUBSCRIPTION --->
 				<cfelseif rc.processObject.getBaseProductType() eq "subscription">
@@ -158,6 +164,7 @@ Notes:
 			<cf_HibachiPropertyRow>
 				<cf_HibachiPropertyList>
 					
+					<!---
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
 					<br />
 					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
@@ -166,9 +173,13 @@ Notes:
 						<cf_HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
 						<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
 					</cf_HibachiListingDisplay>
+					--->
+					
+					<cfinclude template="preprocessproduct_include/addeventschedulelocations.cfm" />
 					
 				</cf_HibachiPropertyList>
 			</cf_HibachiPropertyRow>
+			
 		<!--- Merchandise --->
 		<cfelseif rc.processObject.getBaseProductType() eq "merchandise">
 			
@@ -223,40 +234,4 @@ Notes:
 		</cfif>
 		
 	</cf_HibachiEntityProcessForm>
-	
-	
-	<script>
-		$("input[name='scheduleStartDate']").change(function() {
-			updateSummaries();
-		});
-		
-		$("input[name='eventStartDateTime']").change(function() {
-			var dateOnly = $(this).val().substring(0,$(this).val().length-9);
-			$("input[name='scheduleStartDate']").val(dateOnly);
-			updateSummaries();
-		});
-		
-		
-		$(document).ready(function () {
-			if($("input[name='eventStartDateTime']").val() && $("input[name='eventStartDateTime']").val().length > 8) {
-				var dateOnly =$("input[name='eventStartDateTime']").val().substring(0,$("input[name='eventStartDateTime']").val().length-9);
-				$("input[name='scheduleStartDate']").val(dateOnly);
-			}
-			updateSummaries();
-			
-		});
-
-		function updateSummaries() {
-			var dayNames = ["#$.slatwall.rbKey('define.sunday')#","#$.slatwall.rbKey('define.monday')#","#$.slatwall.rbKey('define.tuesday')#","#$.slatwall.rbKey('define.wednesday')#","#$.slatwall.rbKey('define.thursday')#","#$.slatwall.rbKey('define.friday')#","#$.slatwall.rbKey('define.saturday')#"];
-			var weeks = ["#$.slatwall.rbKey('define.first')#","#$.slatwall.rbKey('define.second')#","#$.slatwall.rbKey('define.third')#","#$.slatwall.rbKey('define.fourth')#","#$.slatwall.rbKey('define.fifth')#"];
-			var monthDay = ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"];
-			var scheduleStartDate = new Date($("input[name='eventStartDateTime']").val());
-			var weekdaySummary = "#$.slatwall.rbKey('define.occurs')# #$.slatwall.rbKey('define.every')# " + weeks[Math.ceil(scheduleStartDate.getDate()/7)-1] + " " + dayNames[scheduleStartDate.getDay()];
-			var monthdaySummary = "#$.slatwall.rbKey('define.occurs')# #$.slatwall.rbKey('define.onThe')# " + monthDay[scheduleStartDate.getDate()-1] + " #$.slatwall.rbKey('define.ofTheMonth')#";
-			$("##monthlyRepeatByWeekdaySummary").text(weekdaySummary);
-			$("##monthlyRepeatByMonthdaySummary").text(monthdaySummary);
-		}
-	
-	</script>
-	
 </cfoutput>
