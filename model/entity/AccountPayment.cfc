@@ -157,8 +157,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if(!structKeyExists(variables, "paymentMethodOptions")) {
 			var sl = getService("paymentService").getPaymentMethodSmartList();
 			
+			var eligiblePaymentMethodIDs = this.setting('accountEligiblePaymentMethods');
+			if (!isNull(this.getAccount())) {
+				eligiblePaymentMethodIDs = this.getAccount().setting('accountEligiblePaymentMethods');
+			}
+			
 			// Prevent 'termPayment' from displaying as account payment method option
 			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			sl.addInFilter('paymentMethodID', eligiblePaymentMethodIDs);
 			sl.addFilter('activeFlag', 1);
 			sl.addSelect('paymentMethodID', 'value');
 			sl.addSelect('paymentMethodName', 'name');
