@@ -75,7 +75,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.accountPaymentMethodIDOptions = [];
 			var pmArr = getAccount().getAccountPaymentMethods();
 			for(var i=1; i<=arrayLen(pmArr); i++) {
-				if(!isNull(pmArr[i].getActiveFlag()) && pmArr[i].getActiveFlag()) {
+				if(!isNull(pmArr[i].getActiveFlag()) && pmArr[i].getActiveFlag() && !isNull(pmArr[i].getPaymentMethodType()) && pmArr[i].getPaymentMethodType() != "termPayment") {
 					arrayAppend(variables.accountPaymentMethodIDOptions, {name=pmArr[i].getSimpleRepresentation(), value=pmArr[i].getAccountPaymentMethodID()});	
 				}
 			}
