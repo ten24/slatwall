@@ -1439,7 +1439,7 @@
 						<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" />
 					)
 				</cfquery>
-				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
 			<cfelseif rs.settingValue neq arguments.settingValue>
 				<cfquery name="rs2" result="rsResult">
 					UPDATE
@@ -1449,7 +1449,7 @@
 					WHERE
 						settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" />
 				</cfquery>
-				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
 			</cfif>
 			
 		<cfelse>
@@ -1457,7 +1457,7 @@
 				DELETE FROM SwSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#" />
 			</cfquery>
 			<cfif rsResult.recordCount>
-				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
 			</cfif>
 		</cfif> 
 	</cffunction>
