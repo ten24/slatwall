@@ -133,6 +133,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
 				setCreditCardNumber( arguments.orderPayment.getCreditCardNumber() );	
 			}
+			if(!isNull(arguments.orderPayment.getSecurityCode())) {
+				setSecurityCode( arguments.orderPayment.getSecurityCode() );	
+			}
 			setNameOnCreditCard( arguments.orderPayment.getNameOnCreditCard() );
 			setExpirationMonth( arguments.orderPayment.getExpirationMonth() );
 			setExpirationYear( arguments.orderPayment.getExpirationYear() );
@@ -166,6 +169,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		if(listFindNoCase("creditCard", arguments.accountPayment.getPaymentMethod().getPaymentMethodType())) {
 			if(!isNull(arguments.accountPayment.getCreditCardNumber())) {
 				setCreditCardNumber( arguments.accountPayment.getCreditCardNumber() );	
+			}
+			if(!isNull(arguments.accountPayment.getSecurityCode())) {
+				setSecurityCode( arguments.accountPayment.getSecurityCode() );	
 			}
 			setNameOnCreditCard( arguments.accountPayment.getNameOnCreditCard() );
 			setExpirationMonth( arguments.accountPayment.getExpirationMonth() );
