@@ -278,9 +278,9 @@ component output="false" accessors="true" extends="HibachiService" {
 				
 			} // End Subsytem Loop
 			
-			variables.actionPermissions = allPermissions;
+			variables.actionPermissionDetails = allPermissions;
 		}
-		return variables.actionPermissions;
+		return variables.actionPermissionDetails;
 	}
 	
 	public void function clearEntityPermissionDetails(){
