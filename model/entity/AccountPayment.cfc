@@ -121,6 +121,13 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		return super.init();
 	}
 	
+	public any function getCurrencyCode() {
+		if( !structKeyExists(variables, "currencyCode") ) {
+			variables.currencyCode = "USD";
+		}
+		return variables.currencyCode;
+	}
+	
 	public string function getPaymentMethodType() {
 		if(!isNull(getPaymentMethod())) {
 			return getPaymentMethod().getPaymentMethodType();	
