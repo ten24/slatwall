@@ -121,13 +121,6 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		return super.init();
 	}
 	
-	public any function getCurrencyCode() {
-		if( !structKeyExists(variables, "currencyCode") ) {
-			variables.currencyCode = "USD";
-		}
-		return variables.currencyCode;
-	}
-	
 	public string function getPaymentMethodType() {
 		if(!isNull(getPaymentMethod())) {
 			return getPaymentMethod().getPaymentMethodType();	
@@ -406,9 +399,29 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		return variables.billingAddress;
 	}
 	
+	public any function getCurrencyCode() {
+		if( !structKeyExists(variables, "currencyCode") ) {
+			variables.currencyCode = "USD";
+		}
+		return variables.currencyCode;
+	}
+	
 	// ==============  END: Overridden Implicet Getters ====================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public void function setCreditCardNumber(required string creditCardNumber) {
+		if(len(arguments.creditCardNumber)) {
+			variables.creditCardNumber = arguments.creditCardNumber;
+			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
+			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
+		} else {
+			structDelete(variables, "creditCardNumber");
+			setCreditCardLastFour(javaCast("null", ""));
+			setCreditCardType(javaCast("null", ""));
+			setCreditCardNumberEncrypted(javaCast("null", ""));
+		}
+	}
 	
 	public any function getSimpleRepresentation() {
 		if(isNew()) {
