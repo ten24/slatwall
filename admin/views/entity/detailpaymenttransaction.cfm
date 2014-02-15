@@ -66,7 +66,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="statusCode">
 				<cfset messagesStruct = deserializeJSON(rc.paymentTransaction.getMessage()) />
 				<cfif isStruct(messagesStruct)>
-				<dt>Message</dt>
+				<dt>#$.slatwall.rbKey('entity.paymentTransaction.message')#</dt>
 					<dl>
 					<table class="table table-striped table-bordered table-condensed">
 						<tbody>
