@@ -754,7 +754,6 @@ Notes:
 											
 											<!--- Hidden value to identify the type of payment method this is --->
 											<input type="hidden" name="newOrderPayment.orderPaymentID" value="#addOrderPaymentObj.getNewOrderPayment().getOrderPaymentID()#" />
-											<input type="hidden" name="newOrderPayment.order.orderID" value="#$.slatwall.cart().getOrderID()#" />
 											<input type="hidden" name="newOrderPayment.paymentMethod.paymentMethodID" value="#paymentDetails.paymentMethod.getPaymentMethodID()#" />
 											
 											<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderPayment" />

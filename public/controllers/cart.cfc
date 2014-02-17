@@ -124,7 +124,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			cart.setAccount( rc.$.slatwall.getAccount() );
 		}
 		
-		getOrderService().processOrder( cart, arguments.rc, 'addOrderItem');
+		cart = getOrderService().processOrder( cart, arguments.rc, 'addOrderItem');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
 		
@@ -139,6 +139,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Guest Account
 	public void function guestAccount(required any rc) {
+		param name="arguments.rc.createAuthenticationFlag" default="0";
+		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
 		
 		if( !account.hasErrors() ) {
