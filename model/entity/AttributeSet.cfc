@@ -52,7 +52,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributeSetID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="attributeSetName" ormtype="string";
-	property name="attributeSetCode" ormtype="string";
+	property name="attributeSetCode" ormtype="string" index="PI_ATTRIBUTESETCODE";
 	property name="attributeSetDescription" ormtype="string" length="2000" ;
 	property name="globalFlag" ormtype="boolean" default="1";
 	property name="requiredFlag" ormtype="boolean";

@@ -53,7 +53,7 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	property name="priceGroupIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean";
 	property name="priceGroupName" ormtype="string";
-	property name="priceGroupCode" ormtype="string";
+	property name="priceGroupCode" ormtype="string" index="PI_PRICEGROUPCODE";
 	
 	// Related Object Properties (Many-To-One)
 	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" hb_optionsNullRBKey="define.none";
