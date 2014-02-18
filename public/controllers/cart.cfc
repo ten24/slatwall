@@ -157,6 +157,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
+	// Save Guest Account
+	public void function guestAccountCreatePassword ( required struct rc ) {
+		param name="arguments.rc.orderID" default="";
+		param name="arguments.rc.accountID" default="";
+
+		var order = getOrderService().getOrder( arguments.rc.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == arguments.rc.accountID && order.getAccount().getGuestAccountFlag()) {
+			var account = getAccountService().processAccount( order.getAccount(), arguments.rc, "createPassword" );
+			arguments.rc.$.slatwall.addActionResult( "public:cart.addGuestAccountCreatePassword", account.hasErrors() );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:cart.addGuestAccountCreatePassword", true );
+		}
+		
+	}
+	
 	// Remove Order Item
 	public void function removeOrderItem(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removeOrderItem');

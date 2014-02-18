@@ -1179,7 +1179,59 @@ Notes:
 			<cfset order = $.slatwall.getService('orderService').getOrder( $.slatwall.getSessionValue('confirmationOrderID') ) />
 			
 			<!--- Overview & Status --->
-			<h5>Your Order Has Been Placed!</h5>
+			<h4>Your Order Has Been Placed!</h4>
+			
+			
+			<!---START SAVE GUEST ACCOUNT --->
+				<cfif $.slatwall.hasSuccessfulAction( "public:cart.addGuestAccountCreatePassword" )>
+					<div class="alert alert-success">
+						Account saved successfully.
+					</div>
+				<cfelseif order.getAccount().getGuestAccountFlag()>
+					<div class="well">
+						<h5>Your order was placed as a guest account.
+						Enter a password now so that you can access your order history at a later time from my account.</h5>
+						
+						<form action="?s=1" method="post" id="frmCreateFromGuest">
+							<input type="hidden" name="slatAction" value="public:cart.guestAccountCreatePassword" />
+							<input type="hidden" name="orderID" value="#order.getOrderID()#" />
+							<input type="hidden" name="accountID" value="#order.getAccount().getAccountID()#" />
+							<cfset createPasswordObj = order.getAccount().getProcessObject("createPassword") />
+							
+							<!--- Password --->
+							<div id="password-details" >
+								<div class="control-group">
+									<label class="control-label" for="rating">Password</label>
+									<div class="controls">
+										<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="password" class="span6" />
+										<sw:ErrorDisplay object="#createPasswordObj#" errorName="password" />
+									</div>
+								</div>
+								
+								<!--- Password Confirm --->
+								<div class="control-group">
+									<label class="control-label" for="rating">Confirm Password</label>
+									<div class="controls">
+										<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="passwordConfirm" class="span6" />
+										<sw:ErrorDisplay object="#createPasswordObj#" errorName="password" />
+									</div>
+								</div>
+							</div>
+							
+							<!--- Create Button --->
+							<div class="control-group pull-left">
+								<div class="controls">
+										<button type="submit" class="btn btn-primary">Save Account Password</button>
+								</div>
+							</div>
+						</form>
+						<br />
+					</div>
+
+				</cfif>
+			
+			<!---END SAVE GUEST ACCOUNT --->
+				
 			<div class="row">
 				
 				<div class="span4">
