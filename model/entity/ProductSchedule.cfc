@@ -74,17 +74,17 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	// @help Returns text summary of a weekly schedule. Used by getScheduleSummary().
 	private string function getWeeklySummary() {
 		var dayNames = [rbKey('define.sunday'),rbKey('define.monday'),rbKey('define.tuesday'),rbKey('define.wednesday'),rbKey('define.thursday'),rbKey('define.friday'),rbKey('define.saturday')];
-		var summary = getService("SettingService").getTypeByTypeID(this.getRecurringTimeUnit().getTypeID()).getType();
+		var summary = this.getRecurringTimeUnit();
 		var summary = summary & " #rbKey('define.every')#";
-		if(listLen(this.getRecurringDays()) == 1) {
-			summary = summary & " #dayNames[this.getRecurringDays()]#";
+		if(listLen(this.getWeeklyRepeatDays()) == 1) {
+			summary = summary & " #dayNames[this.getWeeklyRepeatDays()]#";
 		} else {
-			for(var i=1;i<=listLen(this.getRecurringDays());i++) {
-				if(i==listLen(this.getRecurringDays())) {
+			for(var i=1;i<=listLen(this.getWeeklyRepeatDays());i++) {
+				if(i==listLen(this.getWeeklyRepeatDays())) {
 					summary = summary & " #rbKey('define.and')#";
-					summary = summary & " #dayNames[listGetAt(this.getRecurringDays(),i)]#";
+					summary = summary & " #dayNames[listGetAt(this.getWeeklyRepeatDays(),i)]#";
 				} else {
-					summary = summary & " #dayNames[listGetAt(this.getRecurringDays(),i)]#,";
+					summary = summary & " #dayNames[listGetAt(this.getWeeklyRepeatDays(),i)]#,";
 				}
 			}
 		}
@@ -96,16 +96,16 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 		var dayNames = [rbKey('define.sunday'),rbKey('define.monday'),rbKey('define.tuesday'),rbKey('define.wednesday'),rbKey('define.thursday'),rbKey('define.friday'),rbKey('define.saturday')];
 		var weeks = [rbKey('define.first'),rbKey('define.second'),rbKey('define.third'),rbKey('define.fourth'),rbKey('define.fifth')];
 		var monthDay = ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"];
-		var summary = getService("SettingService").getTypeByTypeID(this.getrecurringTimeUnit().getTypeID()).getType();
+		var summary = this.getRecurringTimeUnit();
 		summary = summary & " #rbKey('define.onThe')# ";
-		if(this.getRepeatByType()=="dayOfWeek") {
-			var formattedDayOfMonth = weeks[ceiling( day( this.getScheduleStartDate() ) / 7 )];
-			var dayName = dayNames[ datePart( "w", this.getScheduleStartDate() )];
+		if(this.getMonthlyRepeatByType()=="dayOfWeek") {
+			var formattedDayOfMonth = weeks[ceiling( day( getFirstScheduledSku().getEventStartDateTime() ) / 7 )];
+			var dayName = dayNames[ datePart( "w", getFirstScheduledSku().getEventStartDateTime() )];
 			summary = summary & "#formattedDayOfMonth# #dayName#";	
-		} else if(this.getRepeatByType()=="dayOfMonth") {
-			var formattedDayOfMonth = weeks[ceiling( day( this.getScheduleStartDate() ) / 7 )];
-			var dayName = dayNames[ datePart( "w", this.getScheduleStartDate() )];
-			summary = summary & monthDay[day(this.getScheduleStartDate())];	
+		} else if(this.getMonthlyRepeatByType()=="dayOfMonth") {
+			var formattedDayOfMonth = weeks[ceiling( day( getFirstScheduledSku().getEventStartDateTime() ) / 7 )];
+			var dayName = dayNames[ datePart( "w", getFirstScheduledSku().getEventStartDateTime() )];
+			summary = summary & monthDay[day(getFirstScheduledSku().getEventStartDateTime())];	
 		}
 		summary = summary & " #rbKey('define.ofTheMonth')#";
 		return summary; 
@@ -114,8 +114,8 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	// @help Returns text summary of a yearly schedule. Used by getScheduleSummary().
 	private string function getYearlySummary() {
 		var monthDay = ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"];
-		var summary = getService("SettingService").getTypeByTypeID(this.getrecurringTimeUnit().getTypeID()).getType();
-		summary = summary & " #rbKey('define.on')# #monthAsString(month(this.getScheduleStartDate()))# #monthDay[day(this.getScheduleStartDate())]#";
+		var summary = this.getRecurringTimeUnit();
+		summary = summary & " #rbKey('define.on')# #monthAsString(month(getFirstScheduledSku().getEventStartDateTime()))# #monthDay[day(getFirstScheduledSku().getEventStartDateTime())]#";
 		return summary; 
 	}
 	
