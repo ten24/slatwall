@@ -893,7 +893,6 @@ Notes:
 <!--- ============= ORDER REVIEW ============================================== --->
 					<cfelseif not len(orderRequirementsList) or url.step eq 'review'>
 						
-						
 						<h4>Step 4 - Order Review</h4>
 
 						<form action="?s=1" method="post">
@@ -1182,55 +1181,70 @@ Notes:
 			<h4>Your Order Has Been Placed!</h4>
 			
 			
-			<!---START SAVE GUEST ACCOUNT --->
-				<cfif $.slatwall.hasSuccessfulAction( "public:cart.addGuestAccountCreatePassword" )>
-					<div class="alert alert-success">
-						Account saved successfully.
-					</div>
-				<cfelseif order.getAccount().getGuestAccountFlag()>
-					<div class="well">
-						<h5>Your order was placed as a guest account.
-						Enter a password now so that you can access your order history at a later time from my account.</h5>
-						
-						<form action="?s=1" method="post" id="frmCreateFromGuest">
-							<input type="hidden" name="slatAction" value="public:cart.guestAccountCreatePassword" />
-							<input type="hidden" name="orderID" value="#order.getOrderID()#" />
-							<input type="hidden" name="accountID" value="#order.getAccount().getAccountID()#" />
-							<cfset createPasswordObj = order.getAccount().getProcessObject("createPassword") />
-							
-							<!--- Password --->
-							<div id="password-details" >
-								<div class="control-group">
-									<label class="control-label" for="rating">Password</label>
-									<div class="controls">
-										<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="password" class="span6" />
-										<sw:ErrorDisplay object="#createPasswordObj#" errorName="password" />
-									</div>
-								</div>
-								
-								<!--- Password Confirm --->
-								<div class="control-group">
-									<label class="control-label" for="rating">Confirm Password</label>
-									<div class="controls">
-										<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="passwordConfirm" class="span6" />
-										<sw:ErrorDisplay object="#createPasswordObj#" errorName="password" />
-									</div>
-								</div>
-							</div>
-							
-							<!--- Create Button --->
-							<div class="control-group pull-left">
-								<div class="controls">
-										<button type="submit" class="btn btn-primary">Save Account Password</button>
-								</div>
-							</div>
-						</form>
-						<br />
-					</div>
-
-				</cfif>
+			<!--- START: SAVE GUEST ACCOUNT --->
+				
+			<!---[DEVELOPER NOTES]																		
+																										
+				The below code allows for users to checkout as a guest, and then later once their		
+				order has been placed they can create just the password so that the my-account section	
+				just works.  Some website opt to never give the option to create a password up front	
+				and to only create the password once the order is placed.  It is totally fine to		
+				remove this functionality all together from the confirmation page						
+																										
+			--->
 			
-			<!---END SAVE GUEST ACCOUNT --->
+			<!--- If the createPassword form has been submitted sucessfully display message --->
+			<cfif $.slatwall.hasSuccessfulAction( "public:cart.guestAccountCreatePassword" )>
+				<div class="alert alert-success">
+					Account saved successfully.
+				</div>
+				
+			<!--- If the form has not been submitted and the account on the order is a guest account, then display the form to create a password --->
+			<cfelseif order.getAccount().getGuestAccountFlag()>
+				<div class="well">
+					<h5>Your order was placed as a guest account.
+					Enter a password now so that you can access your order history at a later time from my account.</h5>
+					
+					<!--- Setup the createPassword object to be used by form for errors --->
+					<cfset createPasswordObj = order.getAccount().getProcessObject("createPassword") />
+					
+					<form action="?s=1" method="post">
+						<input type="hidden" name="slatAction" value="public:cart.guestAccountCreatePassword" />
+						<input type="hidden" name="orderID" value="#order.getOrderID()#" />
+						<input type="hidden" name="accountID" value="#order.getAccount().getAccountID()#" />
+						
+						<!--- Password --->
+						<div class="control-group">
+							<label class="control-label" for="rating">Password</label>
+							<div class="controls">
+								<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="password" class="span4" />
+								<sw:ErrorDisplay object="#createPasswordObj#" errorName="password" />
+							</div>
+						</div>
+						
+						<!--- Password Confirm --->
+						<div class="control-group">
+							<label class="control-label" for="rating">Confirm Password</label>
+							<div class="controls">
+								<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="passwordConfirm" class="span4" />
+								<sw:ErrorDisplay object="#createPasswordObj#" errorName="passwordConfirm" />
+							</div>
+						</div>
+						
+						<!--- Save Account Password --->
+						<div class="control-group pull-left">
+							<div class="controls">
+									<button type="submit" class="btn btn-primary">Save Account Password</button>
+							</div>
+						</div>
+						
+					</form>
+					
+					<br />
+				</div>
+
+			</cfif>
+			<!--- END: SAVE GUEST ACCOUNT --->
 				
 			<div class="row">
 				
