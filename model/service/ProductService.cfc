@@ -260,7 +260,7 @@ component extends="HibachiService" accessors="true" {
 	// @help Utilized by scheduled sku creation processes to create monthly skus
 	private void function createMonthlyScheduledSkus(required product, required processObject, required productSchedule) {
 		
-		arguments.productSchedule.setRepeatByType( arguments.processObject.getMonthlyRepeatBy() );
+		arguments.productSchedule.setMonthlyRepeatByType( arguments.processObject.getMonthlyRepeatByType() );
 		
 		// Set initial values for first iteration
 		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
@@ -270,15 +270,15 @@ component extends="HibachiService" accessors="true" {
 		var nextYear = year(arguments.processObject.getEventStartDateTime());
 		var monthDay = 0;
 		
-		if(arguments.processObject.getMonthlyRepeatBy() == "dayOfWeek") {
+		if(arguments.processObject.getMonthlyRepeatByType() == "dayOfWeek") {
 			// Day of week value that event starts on 
-			var repeatDay = dayOfWeek(arguments.processObject.getScheduleStartDate());
-			productSchedule.setRecurringDays(repeatDay);
+			var repeatDay = dayOfWeek(arguments.processObject.getEventStartDateTime());
+			productSchedule.getWeeklyRepeatDays(repeatDay);
 			
 			// Week of the month in which the day occurs
-			var dayInstance = ceiling(day(scheduleStartDate)/7);
+			var dayInstance = ceiling(day(arguments.processObject.getEventStartDateTime())/7);
 		} else {
-			productSchedule.setRecurringDays(day(scheduleStartDate));
+			productSchedule.getWeeklyRepeatDays(day(arguments.processObject.getEventStartDateTime()));
 		}
 		
 		do {
@@ -286,7 +286,7 @@ component extends="HibachiService" accessors="true" {
 			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 			
 			// Increment Start/End date time based on monthly repeatBy value
-			if(arguments.processObject.getMonthlyRepeatBy() == "dayOfWeek") {
+			if(arguments.processObject.getMonthlyRepeatByType() == "dayOfWeek") {
 				//Day of week
 				if(month(newSkuStartDateTime) == 12) {
 					nextMonth = 1;
