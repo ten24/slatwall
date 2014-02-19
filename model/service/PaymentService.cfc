@@ -224,7 +224,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				return 'JCB';
 			} else if ( l == 15 && (left(n,4) == 2014 || left(n,4) == 2149) ) {
 				return 'EnRoute';
-			} else if ( l == 16 && left(n,4) == 6011) {
+			} else if ( l == 16 && (left(n,4) == 6011 || left(n,2) == 65)) {
 				return 'Discover';
 			} else if ( l == 14 && left(n,3) >= 300 && left(n,3) <= 305) {
 				return 'CarteBlanche';
