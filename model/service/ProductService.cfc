@@ -91,6 +91,7 @@ component extends="HibachiService" accessors="true" {
 			var newSku = getSkuService().newSku();
 			newSku.setProduct( arguments.processObject.getProduct() );
 			newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
+			newSku.setSkuName( arguments.processObject.getSkuName() );
 			newSku.setPrice( arguments.processObject.getPrice() );
 			newSku.setEventStartDateTime( arguments.startDateTime );
 			newSku.setEventEndDateTime( arguments.endDateTime );
@@ -145,6 +146,7 @@ component extends="HibachiService" accessors="true" {
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
 				newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
+				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
 				newSku.setEventEndDateTime( createODBCDateTime(arguments.endDateTime) );
@@ -197,29 +199,29 @@ component extends="HibachiService" accessors="true" {
 	private void function createWeeklyScheduledSkus(required product, required processObject, required productSchedule) {
 		
 		// Make sure days are in order
-		arguments.processObject.setWeeklyDaysOfOccurrence(listSort(arguments.processObject.getWeeklyDaysOfOccurrence(),"numeric" ));
-		arguments.productSchedule.setRecurringDays( arguments.processObject.getWeeklyDaysOfOccurrence() );
+		arguments.processObject.setWeeklyRepeatDays(listSort(arguments.processObject.getWeeklyRepeatDays(),"numeric" ));
+		arguments.productSchedule.setWeeklyRepeatDays( arguments.processObject.getWeeklyRepeatDays() );
 			
 		// Set initial values for first iteration
 		newSkuStartDateTime = arguments.processObject.getEventStartDateTime();
 		newSkuEndDateTime = arguments.processObject.getEventEndDateTime();
 		
-		var scheduleStartDay = dayOfWeek(arguments.processObject.getScheduleStartDate());
+		var scheduleStartDay = dayOfWeek(arguments.processObject.getEventStartDateTime());
 		var actualScheduleStartDay = scheduleStartDay;
 		var offset = 0;
 		
 		// Default to day of start date, or 0 (start date doesn't match one of the selected days)
-		var firstDaySelected = listFind(arguments.processObject.getWeeklyDaysOfOccurrence(),scheduleStartDay,",");
+		var firstDaySelected = listFind(arguments.processObject.getWeeklyRepeatDays(),scheduleStartDay,",");
 		
 		// If start date doesn't match one of the selected days pick the closest future day that does
 		if(firstDaySelected == 0) {
 			
 			// If first start day ends up being in the following week this calc will provide the days we have to add to get to it
-			var offset = 7 - (scheduleStartDay - listGetAt(arguments.processObject.getWeeklyDaysOfOccurrence(),1,",")) ;
+			var offset = 7 - (scheduleStartDay - listGetAt(arguments.processObject.getWeeklyRepeatDays(),1,",")) ;
 			
 			// Calculate offset if first day occurrs in current week
-			for(var i=1;i<=listLen(arguments.processObject.getWeeklyDaysOfOccurrence());i++) {
-				currentDay = listGetAt(arguments.processObject.getWeeklyDaysOfOccurrence(),i);
+			for(var i=1;i<=listLen(arguments.processObject.getWeeklyRepeatDays());i++) {
+				currentDay = listGetAt(arguments.processObject.getWeeklyRepeatDays(),i);
 				if( currentDay >= scheduleStartDay ) {
 					offset = (currentDay - scheduleStartDay);
 					break;
@@ -233,8 +235,8 @@ component extends="HibachiService" accessors="true" {
 		actualScheduleStartDay = dayOfWeek(newSkuStartDateTime);
 		
 		// Used to control sku creation days
-		var dayListLength = listLen(arguments.processObject.getWeeklyDaysOfOccurrence());
-		var cursorPosition = listFind(arguments.processObject.getWeeklyDaysOfOccurrence(),actualScheduleStartDay);
+		var dayListLength = listLen(arguments.processObject.getWeeklyRepeatDays());
+		var cursorPosition = listFind(arguments.processObject.getWeeklyRepeatDays(),actualScheduleStartDay);
 		var lastDay = 0;
 		
 		do {
@@ -242,10 +244,10 @@ component extends="HibachiService" accessors="true" {
 			createEventSkuOrSkus( arguments.processObject, newSkuStartDateTime, newSkuEndDateTime, arguments.productSchedule );
 			
 			// Increment Start/End date time based on recurring time unit
-			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyDaysOfOccurrence(),newSkuStartDateTime,cursorPosition);
-			newSkuEndDateTime = nextScheduleDate(arguments.processObject.getWeeklyDaysOfOccurrence(),newSkuEndDateTime,cursorPosition);
+			newSkuStartDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuStartDateTime,cursorPosition);
+			newSkuEndDateTime = nextScheduleDate(arguments.processObject.getWeeklyRepeatDays(),newSkuEndDateTime,cursorPosition);
 			
-			if(cursorPosition == listLen(arguments.processObject.getWeeklyDaysOfOccurrence())) {
+			if(cursorPosition == listLen(arguments.processObject.getWeeklyRepeatDays())) {
 				cursorPosition = 1;
 			} else {
 				cursorPosition++;
