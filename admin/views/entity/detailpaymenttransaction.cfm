@@ -67,7 +67,29 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="avsCode">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="avsDescription">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="statusCode">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="message">
+				<cfset messagesStruct = deserializeJSON(rc.paymentTransaction.getMessage()) />
+				<cfif isStruct(messagesStruct)>
+				<dt>#$.slatwall.rbKey('entity.paymentTransaction.message')#</dt>
+					<dl>
+					<table class="table table-striped table-bordered table-condensed">
+						<tbody>
+							<cfloop collection="#messagesStruct#" item="messageKey">
+								<cfset messages = messagesStruct[messageKey] />
+								<cfloop from="1" to="#arraylen(messages)#" index="m">
+								<tr>
+									<cfif m eq 1>
+										<td class="title" rowspan="#arraylen(messages)#"><label>#messageKey#</label></td>
+									</cfif>
+									<td class="value">#messages[m]#</td>
+								</tr>
+								</cfloop>
+							</cfloop>
+						</tbody>
+					</table>
+					</dl>
+				<cfelse>
+					<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="message">
+				</cfif>
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
