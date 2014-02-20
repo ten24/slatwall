@@ -138,6 +138,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(arguments.processObject.getSaveAccountPaymentMethodFlag()) {
 				var newAccountPaymentMethod = this.newAccountPaymentMethod();
 				newAccountPaymentMethod.copyFromAccountPayment( newAccountPayment );
+				newAccountPaymentMethod.setAccountPaymentMethodName(arguments.processObject.getSaveAccountPaymentMethodName());
 				newAccountPaymentMethod.setAccount( arguments.account );
 				
 				newAccountPaymentMethod = this.saveAccountPaymentMethod(newAccountPaymentMethod);
