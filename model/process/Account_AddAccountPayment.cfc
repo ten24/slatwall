@@ -63,11 +63,23 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="paymentMethodIDOptions";
 	property name="accountAddressIDOptions";
 	
+	public any function setupDefaults() {
+		variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
+		variables.accountPaymentMethodID = getAccountPaymentMethodIDOptions()[1]['value'];
+	}
+	
 	public string function getAccountPaymentMethodID() {
 		if(!structKeyExists(variables, "accountPaymentMethodID")) {
-			variables.accountPaymentMethodID = getAccountPaymentMethodIDOptions()[1]['value'];
+			variables.accountPaymentMethodID = "";
 		}
 		return variables.accountPaymentMethodID;
+	}
+	
+	public string function getAccountAddressID() {
+		if(!structKeyExists(variables, "accountAddressID")) {
+			variables.accountAddressID = "";
+		}
+		return variables.accountAddressID;
 	}
 	
 	public array function getAccountPaymentMethodIDOptions() {
@@ -94,13 +106,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.paymentMethodIDOptions = pmsl.getRecords();
 		}
 		return variables.paymentMethodIDOptions;
-	}
-	
-	public string function getAccountAddressID() {
-		if(!structKeyExists(variables, "accountAddressID")) {
-			variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
-		}
-		return variables.accountAddressID;
 	}
 	
 	public array function getAccountAddressIDOptions() {
