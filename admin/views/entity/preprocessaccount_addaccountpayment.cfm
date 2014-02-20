@@ -72,7 +72,7 @@ Notes:
 					<input type="hidden" name="newAccountPayment.accountPaymentID" value="" />
 					
 					<!--- New Payment Type --->
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="paymentMethod" fieldName="newAccountPayment.paymentMethod.paymentMethodID" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="paymentMethod" fieldName="newAccountPayment.paymentMethod.paymentMethodID" valueOptions="#rc.processObject.getPaymentMethodIDOptions()#" edit="#rc.edit#">
 					
 					<!--- Save Account Payment as Account Payment Method --->
 					<cfset loadVisable = rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1]['allowsave'] />

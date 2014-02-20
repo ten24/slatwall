@@ -84,6 +84,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.accountPaymentMethodIDOptions;
 	}
 	
+	public array function getPaymentMethodIDOptions() {
+		if(!structKeyExists(variables, "paymentMethodIDOptions")) {
+			var pmsl = getAccount().getEligibleAccountPaymentMethodsSmartList();
+			pmsl.addSelect('paymentMethodID', 'value');
+			pmsl.addSelect('paymentMethodName', 'name');
+			pmsl.addSelect('paymentMethodType', 'paymentmethodtype');
+			pmsl.addSelect('allowSaveFlag', 'allowsave');
+			variables.paymentMethodIDOptions = pmsl.getRecords();
+		}
+		return variables.paymentMethodIDOptions;
+	}
+	
 	public string function getAccountAddressID() {
 		if(!structKeyExists(variables, "accountAddressID")) {
 			variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
