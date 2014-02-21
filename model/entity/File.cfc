@@ -63,6 +63,7 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	    
 	// Related Object Properties (one-to-many)
 	property name="fileRelationships" singularname="FileRelationship" cfc="FileRelationship" type="array" fieldtype="one-to-many" fkcolumn="fileID" inverse="true" fetch="join" cascade="all-delete-orphan";    
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="fileID" inverse="true" cascade="all-delete-orphan";
 	    
 	// Related Object Properties (many-to-many - owner)    
 	
@@ -111,6 +112,14 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 		arguments.fileRelationship.removeFile( this );    
 	}
 	    
+	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setFile( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeFile( this );
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================    
 	
 	// =============== START: Custom Validation Methods ====================    
