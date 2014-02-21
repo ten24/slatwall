@@ -362,16 +362,16 @@ component extends="FW1.framework" {
 						
 						// Build the aggregate bean factory by manually declaring the beans
 						for (var bf in beanFactories) {
-							var beanInfoStruct = bf.getBeanInfo();
-							for (var beanName in beanInfoStruct.beanInfo) {
+							var beanInfo = bf.getBeanInfo().beanInfo;
+							for (var beanName in beanInfo) {
 								// Manually declare all beans from current bean factory except for the automatically generated beanFactory self reference
 								if (beanName != "beanFactory") {
-									if (structKeyExists(beanInfoStruct.beanInfo[beanName], "cfc")) {
+									if (structKeyExists(beanInfo[beanName], "cfc")) {
 										// Adding bean by class name
-										aggregateBF.declareBean(beanName, beanInfoStruct.beanInfo[beanName].cfc, beanInfoStruct.beanInfo[beanName].isSingleton);
-									} elseif (structKeyExists(beanInfoStruct.beanInfo[beanName], "value")) {
+										aggregateBF.declareBean(beanName, beanInfo[beanName].cfc, beanInfo[beanName].isSingleton);
+									} elseif (structKeyExists(beanInfo[beanName], "value")) {
 										// Adding bean by instantiated value
-										aggregateBF.addBean(beanName, beanInfoStruct.beanInfo[beanName].value);
+										aggregateBF.addBean(beanName, beanInfo[beanName].value);
 									}
 								}
 							}
