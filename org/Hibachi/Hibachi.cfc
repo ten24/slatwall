@@ -344,16 +344,12 @@ component extends="FW1.framework" {
 					}
 					
 					// Setup the custom bean factory
-					var customBF = "";
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
-						customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
+						var customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"]
 						});
-					}
-					
-					// Determine whether we need to aggregate the bean factories (due to DI/1 design limitation for parent/child injection)
-					if (isObject(customBF)) {
+						
 						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
 						var aggregateBF = new DI1.ioc("");
 						
@@ -369,7 +365,7 @@ component extends="FW1.framework" {
 									if (structKeyExists(beanInfo[beanName], "cfc")) {
 										// Adding bean by class name
 										aggregateBF.declareBean(beanName, beanInfo[beanName].cfc, beanInfo[beanName].isSingleton);
-									} elseif (structKeyExists(beanInfo[beanName], "value")) {
+									} else if (structKeyExists(beanInfo[beanName], "value")) {
 										// Adding bean by instantiated value
 										aggregateBF.addBean(beanName, beanInfo[beanName].value);
 									}
