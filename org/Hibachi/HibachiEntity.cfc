@@ -510,6 +510,23 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	public array function getAuditableProperties() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
+			var properties = getProperties();
+			var auditableProperties = [];
+			for (var property in properties) {
+				// TODO make sure the property is persistent also
+				if (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) {
+					arrayAppend(auditableProperties, property);
+				}
+			}
+
+			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
+		}
+
+		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+	}
+	
 	
 	
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
@@ -690,23 +707,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 		
 		collectPropertyAuditData(arguments.oldData);
-	}
-	
-	public array function getAuditableProperties() {
-		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
-			var properties = getProperties();
-			var auditableProperties = [];
-			for (var property in properties) {
-				// TODO make sure the property is persistent also
-				if (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) {
-					arrayAppend(auditableProperties, property);
-				}
-			}
-
-			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
-		}
-
-		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
 	}
 	
 	public any function collectPropertyAuditData(struct oldData)
