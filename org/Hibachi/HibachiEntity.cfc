@@ -240,6 +240,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return true;
 	}
 	
+	// @hint public method to determine if this entity is audited
+	public any function isAuditable() {
+		var metaData = getThisMetaData();
+		if(!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable)) {
+			return true;
+		}
+		return false;
+	}
+	
 	// @hint public method that returns the value from the primary ID of this entity
 	public string function getPrimaryIDValue() {
 		return this.invokeMethod("get#getPrimaryIDPropertyName()#");
@@ -646,6 +655,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				setSortOrder( topSortOrder + 1 );
 			}
 		}
+		
+		collectPropertyAuditData();
 	}
 	
 	public void function preUpdate(struct oldData){
@@ -675,6 +686,24 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// Set modifiedByAccount
 			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 				setModifiedByAccount(getHibachiScope().getAccount());
+			}
+		}
+		
+		collectPropertyAuditData(arguments.oldData);
+	}
+	
+	public any function collectPropertyAuditData(struct oldData)
+	{
+		if (isAuditable()) {
+			
+			// type create when no data or no previous audit data exists
+			if (isNull(arguments.oldData)) {
+				
+				// add all auditable properties
+				
+			// type update
+			} else {
+				// determine the auditable property changes comparing against the old data
 			}
 		}
 	}
