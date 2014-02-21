@@ -344,17 +344,42 @@ component extends="FW1.framework" {
 					}
 					
 					// Setup the custom bean factory
+					var customBF = "";
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
-						var customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
+						customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"]
 						});
+					}
+					
+					// Determine whether we need to aggregate the bean factories (due to DI/1 design limitation for parent/child injection)
+					if (isObject(customBF)) {
+						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
+						var aggregateBF = new DI1.ioc("");
 						
-						customBF.setParent( coreBF );
+						// Process factories, last takes precendence
+						var beanFactories = [coreBF, customBF];
 						
-						setBeanFactory( customBF );
+						// Build the aggregate bean factory by manually declaring the beans
+						for (var bf in beanFactories) {
+							var beanInfoStruct = bf.getBeanInfo();
+							for (var beanName in beanInfoStruct.beanInfo) {
+								// Manually declare all beans from current bean factory except for the automatically generated beanFactory self reference
+								if (beanName != "beanFactory") {
+									if (structKeyExists(beanInfoStruct.beanInfo[beanName], "cfc")) {
+										// Adding bean by class name
+										aggregateBF.declareBean(beanName, beanInfoStruct.beanInfo[beanName].cfc, beanInfoStruct.beanInfo[beanName].isSingleton);
+									} elseif (structKeyExists(beanInfoStruct.beanInfo[beanName], "value")) {
+										// Adding bean by instantiated value
+										aggregateBF.addBean(beanName, beanInfoStruct.beanInfo[beanName].value);
+									}
+								}
+							}
+						}
+						
+						setBeanFactory(aggregateBF);
 					} else {
-						setBeanFactory( coreBF );
+						setBeanFactory(coreBF);
 					}
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 					
