@@ -51,6 +51,7 @@ component entityname="Audit" table="SwAudit" persistent="true" accessors="true" 
 	// Persistent Properties
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="auditType" ormType="string";
+	property name="auditDateTime" ormtype="timestamp";
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
 	property name="data" ormType="string";
@@ -59,6 +60,7 @@ component entityname="Audit" table="SwAudit" persistent="true" accessors="true" 
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="sessionAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="sessionAccountID";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -67,13 +69,8 @@ component entityname="Audit" table="SwAudit" persistent="true" accessors="true" 
 	// Related Object Properties (many-to-many - inverse)
 	
 	// Remote Properties
-	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
-	property name="createdDateTime" ormtype="timestamp";
-	property name="createdByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
-	property name="modifiedDateTime" ormtype="timestamp";
-	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
 	
