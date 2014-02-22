@@ -241,7 +241,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 	
 	// @hint public method to determine if this entity is audited
-	public any function isAuditable() {
+	public any function getAuditableFlag() {
 		var metaData = getThisMetaData();
 		if(!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable)) {
 			return true;
@@ -711,7 +711,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	public any function collectPropertyAuditData(struct oldData)
 	{
-		if (isAuditable()) {
+		if (getAuditableFlag()) {
 			
 			// type create when no data or no previous audit data exists
 			if (isNull(arguments.oldData)) {
