@@ -64,6 +64,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
@@ -189,8 +190,26 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "brand");
 	}
-
-	// Image (many-to-one)
+	
+	// File (many-to-one)    
+	public void function setFile(required any file) {    
+		variables.file = arguments.file;    
+		if(isNew() or !arguments.file.hasAttributeValue( this )) {    
+			arrayAppend(arguments.file.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeFile(any file) {    
+		if(!structKeyExists(arguments, "file")) {    
+			arguments.file = variables.file;    
+		}    
+		var index = arrayFind(arguments.file.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.file.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "file");    
+	}
+	
+	// Image (many-to-one)    
 	public void function setImage(required any image) {    
 		variables.image = arguments.image;    
 		if(isNew() or !arguments.image.hasAttributeValue( this )) {    

@@ -157,8 +157,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if(!structKeyExists(variables, "paymentMethodOptions")) {
 			var sl = getService("paymentService").getPaymentMethodSmartList();
 			
+			var eligiblePaymentMethodIDs = this.setting('accountEligiblePaymentMethods');
+			if (!isNull(this.getAccount())) {
+				eligiblePaymentMethodIDs = this.getAccount().setting('accountEligiblePaymentMethods');
+			}
+			
 			// Prevent 'termPayment' from displaying as account payment method option
 			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			sl.addInFilter('paymentMethodID', eligiblePaymentMethodIDs);
 			sl.addFilter('activeFlag', 1);
 			sl.addSelect('paymentMethodID', 'value');
 			sl.addSelect('paymentMethodName', 'name');
@@ -393,9 +399,29 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		return variables.billingAddress;
 	}
 	
+	public any function getCurrencyCode() {
+		if( !structKeyExists(variables, "currencyCode") ) {
+			variables.currencyCode = "USD";
+		}
+		return variables.currencyCode;
+	}
+	
 	// ==============  END: Overridden Implicet Getters ====================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public void function setCreditCardNumber(required string creditCardNumber) {
+		if(len(arguments.creditCardNumber)) {
+			variables.creditCardNumber = arguments.creditCardNumber;
+			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
+			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
+		} else {
+			structDelete(variables, "creditCardNumber");
+			setCreditCardLastFour(javaCast("null", ""));
+			setCreditCardType(javaCast("null", ""));
+			setCreditCardNumberEncrypted(javaCast("null", ""));
+		}
+	}
 	
 	public any function getSimpleRepresentation() {
 		if(isNew()) {

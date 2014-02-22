@@ -115,6 +115,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="passwordResetID" persistent="false";
 	property name="phoneNumber" persistent="false";
 	property name="saveablePaymentMethodsSmartList" persistent="false";
+	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
 	property name="slatwallAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
@@ -153,6 +154,21 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			}
 		}
 		return variables.saveablePaymentMethodsSmartList;
+	}
+	
+	public any function getEligibleAccountPaymentMethodsSmartList() {
+		// These are the payment methods that are allowed only when adding an account payment
+		if(!structKeyExists(variables, "eligibleAccountPaymentMethodsSmartList")) {
+			var sl = getService("paymentService").getPaymentMethodSmartList();
+			
+			// Prevent 'termPayment' from displaying as account payment method option
+			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			sl.addInFilter('paymentMethodID', setting('accountEligiblePaymentMethods'));
+			sl.addFilter('activeFlag', 1);
+				
+			variables.eligibleAccountPaymentMethodsSmartList = sl;
+		}
+		return variables.eligibleAccountPaymentMethodsSmartList;
 	}
 	
 	public any function getActiveSubscriptionUsageBenefitsSmartList() {
