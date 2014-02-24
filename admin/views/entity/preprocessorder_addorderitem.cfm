@@ -82,8 +82,6 @@ Notes:
 						<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
 							<cfset currentRegistrantCount = rc.processObject.getSku().getService("EventRegistrationService").getUnavailableSeatCountBySku(rc.processObject.getSku()) />
 							<cfloop from="1" to="#rc.processObject.getQuantity()#" index="i" >
-								<cfset newAccount = $.slatwall.getService('accountService').newAccount()/>
-								
 								<fieldset>
 									<legend>Registrant #i#</legend>
 									<cfif rc.processObject.getSku().getEventCapacity() LT (currentRegistrantCount + i) >
