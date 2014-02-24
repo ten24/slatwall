@@ -82,7 +82,7 @@ Notes:
 						<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
 							<cfset currentRegistrantCount = rc.processObject.getSku().getService("EventRegistrationService").getUnavailableSeatCountBySku(rc.processObject.getSku()) />
 							<cfloop from="1" to="#rc.processObject.getQuantity()#" index="i" >
-								<cfset newAccount = rc.processObject.getAccountService().newAccount()/>
+								<cfset newAccount = rc.processObject.getSku().getService("AccountService").newAccount()/>
 								#newAccount.getfirstName()#
 								<fieldset>
 									<legend>Registrant #i#</legend>
