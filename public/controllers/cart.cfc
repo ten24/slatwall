@@ -52,6 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	property name="accountService" type="any";
 	property name="orderService" type="any";
+	property name="hibachiSessionService" type="any";
 
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -134,6 +135,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			// Also make sure that this cart gets set in the session as the order
 			rc.$.slatwall.getSession().setOrder( cart );
+			
+			// Make sure that the session is persisted
+			//getHibachiSessionService().persistSession();
 		}
 	}
 	
