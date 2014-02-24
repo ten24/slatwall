@@ -303,7 +303,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	public numeric function getAmountUnassigned() {
 		// This is temporary until we get the assignment of accountPayments to orderPayments
-		return getAmountReceived();
+		return precisionEvaluate(getAmountReceived()-getAmountCredited());
 	}
 	
 	public boolean function getCreditCardOrProviderTokenExistsFlag() {
