@@ -22,19 +22,19 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public any function hasCachedValue( required string key ) {
 		// If using the internal cache, then check there
-		if(getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && structKeyExists(getCache()[ arguments.key ], "reset") && !getCache()[ arguments.key ].reset ) {
+		if( getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && structKeyExists(getCache()[ arguments.key ], "reset") && !getCache()[ arguments.key ].reset ) {
 			return true;
 			
 		// If using the external cache, then check there
-		} else if (!getInternalCacheFlag() && getRailoFlag() && cacheKeyExists(arguments.key)) {
+		} else if ( !getInternalCacheFlag() && getRailoFlag() && cacheKeyExists(arguments.key) ) {
 			var fullValue = cacheGet( arguments.key );
-			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset) {
+			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
 				return true;	
 			}
 			
-		} else if (!getInternalCacheFlag() && !isNull(cacheGet( arguments.key )) ) {
+		} else if ( !getInternalCacheFlag() ) {
 			var fullValue = cacheGet( arguments.key );
-			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset) {
+			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
 				return true;
 			}
 			
