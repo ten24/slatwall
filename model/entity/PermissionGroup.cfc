@@ -136,7 +136,7 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 					}
 					
 					if(!isNull( thisPermission.getSubsystem() ) && !isNull( thisPermission.getSection()) && !isNull(thisPermission.getItem())) {
-						variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].items[ thisPermsission.getItem() ] = thisPermission;	
+						variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].items[ thisPermission.getItem() ] = thisPermission;	
 					} else if (!isNull( thisPermission.getSubsystem() ) && !isNull( thisPermission.getSection())) {
 						variables.permissionsByDetails.action.subsystems[ thisPermission.getSubsystem() ].sections[ thisPermission.getSection() ].permission = thisPermission;
 					} else {
