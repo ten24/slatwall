@@ -46,19 +46,18 @@
 Notes:
 
 */
-component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwPaymentTerm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" hb_permission="this" {
+component entityname="SlatwallFileRelationship" table="SwFileRelationship" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="fileService" {
 	
 	// Persistent Properties
-	property name="paymentTermID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean";
-	property name="paymentTermName" ormtype="string";
-	property name="sortOrder" ormtype="integer";
-	
+	property name="fileRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="baseObject" ormType="string";
+	property name="baseID" ormType="string";
+	// Calculated Properties
+
 	// Related Object Properties (many-to-one)
-	property name="term" cfc="Term" fieldtype="many-to-one" fkcolumn="termID";	
+	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	
 	// Related Object Properties (one-to-many)
-	property name="orderPayments" hb_populateEnabled="false" singularname="orderPayment" fieldType="one-to-many" type="array" fkColumn="paymentTermID" cfc="OrderPayment" inverse="true" orderby="createdDateTime desc";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -68,12 +67,19 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="createdDateTime" ormtype="timestamp";
+	property name="createdByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="modifiedDateTime" ormtype="timestamp";
+	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
+	
+	// Deprecated Properties
+
+
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -81,12 +87,22 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Order Payment (one-to-many)    
-	public void function addOrderPayment(required any orderPayment) {    
-		arguments.orderPayment.setPaymentTerm( this );    
+	// File (many-to-one)    
+	public void function setFile(required any file) {    
+		variables.file = arguments.file;    
+		if(isNew() or !arguments.file.hasFileRelationship( this )) {    
+			arrayAppend(arguments.file.getFileRelationships(), this);    
+		}    
 	}    
-	public void function removeOrderPayment(required any orderPayment) {    
-		arguments.orderPayment.removePaymentTerm( this );    
+	public void function removeFile(any file) {    
+		if(!structKeyExists(arguments, "file")) {    
+			arguments.file = variables.file;    
+		}    
+		var index = arrayFind(arguments.file.getFileRelationships(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.file.getFileRelationships(), index);    
+		}    
+		structDelete(variables, "file");    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
@@ -98,6 +114,14 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	// =============== START: Custom Formatting Methods ====================
 	
 	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
 	
@@ -110,4 +134,5 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================
+	
 }

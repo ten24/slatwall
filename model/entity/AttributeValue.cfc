@@ -64,6 +64,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
@@ -186,6 +187,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.brand.getAttributeValues(), index);
 		}
 		structDelete(variables, "brand");
+	}
+	
+	// File (many-to-one)    
+	public void function setFile(required any file) {    
+		variables.file = arguments.file;    
+		if(isNew() or !arguments.file.hasAttributeValue( this )) {    
+			arrayAppend(arguments.file.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeFile(any file) {    
+		if(!structKeyExists(arguments, "file")) {    
+			arguments.file = variables.file;    
+		}    
+		var index = arrayFind(arguments.file.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.file.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "file");    
 	}
 	
 	// Image (many-to-one)    

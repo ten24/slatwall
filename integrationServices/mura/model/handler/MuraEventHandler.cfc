@@ -192,9 +192,18 @@
 						
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
+							
 							var listingPageFilename = left($.event('path'), find("/#$.slatwall.setting('globalURLKeyProduct')#/", $.event('path'))-1);
 							listingPageFilename = replace(listingPageFilename, "/#$.event('siteID')#/", "", "all");
+							
+							if($.slatwall.setting('integrationMuraLookupListingContentObjects')) {
+								var listingPageContentBean = $.getBean("content").loadBy( filename=listingPageFilename, siteID=$.slatwall.getContent().getSite().getCMSSiteID() );
+								$.content().setPath(listingPageContentBean.getPath());
+								$.content().setContentID(listingPageContentBean.getContentID());	
+							}
+							
 							var crumbDataArray = $.getBean("contentManager").getActiveContentByFilename(listingPageFilename, $.event('siteid'), true).getCrumbArray();
+							
 						} else {
 							var crumbDataArray = $.getBean("contentManager").getCrumbList(contentID="00000000000000000000000000000000001", siteID=$.event('siteID'), setInheritance=false, path="00000000000000000000000000000000001", sort="asc");
 						}
@@ -442,18 +451,25 @@
 			// Setup the mura scope
 			var $ = request.muraScope;
 			
-			// Place Slatwall content entity in the slatwall scope
-			$.slatwall.setContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.content('contentID'), $.event('siteID') ) );
-			if($.slatwall.getContent().isNew()) {
-				$.slatwall.getContent().setParentContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.event('parentID'), $.event('siteID') ) );
-			}
+			// Make sure that this hasn't been run twice
+			if(!len($.event('slatwallEditTabDisplayed')) && $.getBean('permUtility').getModulePerm($.getPlugin('slatwall-mura').getModuleID(),$.event('siteid'))) {
 			
-			// if the site is null, then we can get it out of the request.muraScope
-			if(isNull($.slatwall.getContent().getSite())) {
-				$.slatwall.getContent().setSite( $.slatwall.getService("siteService").getSiteByCMSSiteID( request.muraScope.event('siteID') ));
-			}
+				$.event('slatwallEditTabDisplayed', 'yes');
 			
-			include "../../views/muraevent/oncontentedit.cfm";
+				// Place Slatwall content entity in the slatwall scope
+				$.slatwall.setContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.content('contentID'), $.event('siteID') ) );
+				if($.slatwall.getContent().isNew()) {
+					$.slatwall.getContent().setParentContent( $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( $.event('parentID'), $.event('siteID') ) );
+				}
+				
+				// if the site is null, then we can get it out of the request.muraScope
+				if(isNull($.slatwall.getContent().getSite())) {
+					$.slatwall.getContent().setSite( $.slatwall.getService("siteService").getSiteByCMSSiteID( request.muraScope.event('siteID') ));
+				}
+				
+				include "../../views/muraevent/oncontentedit.cfm";
+			
+			}
 		}
 		
 		// SAVE / DELETE EVENTS ===== CATEGORY
@@ -871,6 +887,11 @@
 			
 			<cfset var parentMappingCache = {} />
 			<cfset var missingContentQuery = "" />
+			<cfset var updateMissingSiteID = "" />
+			
+			<cfquery name="updateMissingSiteID">
+				UPDATE SwContent SET siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" /> WHERE siteID is null
+			</cfquery>
 		
 			<cfquery name="missingContentQuery">
 				SELECT
@@ -1278,17 +1299,19 @@
 					<cfif len(missingUsersQuery.Email)>
 						<cfquery name="rs">
 							SELECT
-								accountEmailAddressID,
-								accountID
+								SwAccountEmailAddress.accountEmailAddressID,
+								SwAccountEmailAddress.accountID
 							FROM
 								SwAccountEmailAddress
 							WHERE
-								emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Email#" />
+								SwAccountEmailAddress.emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.Email#" />
+							  AND
+							    SwAccountEmailAddress.accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />	
 							  AND
 							  	EXISTS ( SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccountEmailAddress.accountID)
 						</cfquery>
 						
-						<cfif rs.recordCount and rs.accountID eq slatwallAccountID>
+						<cfif rs.recordCount>
 							
 							<cfset primaryEmailAddressID = rs.accountEmailAddressID />
 							
@@ -1315,17 +1338,19 @@
 					<cfif len(missingUsersQuery.MobilePhone)>
 						<cfquery name="rs">
 							SELECT
-								accountPhoneNumberID,
-								accountID
+								SwAccountPhoneNumber.accountPhoneNumberID,
+								SwAccountPhoneNumber.accountID
 							FROM
 								SwAccountPhoneNumber
 							WHERE
-								phoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.MobilePhone#" />
+								SwAccountPhoneNumber.phoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#missingUsersQuery.MobilePhone#" />
+							  AND
+							  	SwAccountPhoneNumber.accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#slatwallAccountID#" />
 							  AND
 							  	EXISTS ( SELECT SwAccountAuthentication.accountAuthenticationID FROM SwAccountAuthentication WHERE SwAccountAuthentication.accountID = SwAccountPhoneNumber.accountID)
 						</cfquery>
 						
-						<cfif rs.recordCount and rs.accountID eq slatwallAccountID>
+						<cfif rs.recordCount>
 							
 							<cfset primaryPhoneNumberID = rs.accountPhoneNumberID />
 							
@@ -1414,7 +1439,8 @@
 						<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" />
 					)
 				</cfquery>
-				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKey('setting_#arguments.settingName#_#arguments.contentID#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
 			<cfelseif rs.settingValue neq arguments.settingValue>
 				<cfquery name="rs2" result="rsResult">
 					UPDATE
@@ -1422,9 +1448,10 @@
 					SET
 						settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
 					WHERE
-						settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingID#" />
+						settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" />
 				</cfquery>
-				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKey('setting_#arguments.settingName#_#arguments.contentID#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
 			</cfif>
 			
 		<cfelse>
@@ -1432,7 +1459,8 @@
 				DELETE FROM SwSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#" />
 			</cfquery>
 			<cfif rsResult.recordCount>
-				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKey('setting_#arguments.settingName#_#arguments.contentID#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
 			</cfif>
 		</cfif> 
 	</cffunction>

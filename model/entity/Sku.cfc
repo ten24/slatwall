@@ -53,7 +53,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="activeFlag" ormtype="boolean" default="1";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
-	property name="skuCode" ormtype="string" unique="true" length="50";
+	property name="skuCode" ormtype="string" unique="true" length="50" index="PI_SKUCODE";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";

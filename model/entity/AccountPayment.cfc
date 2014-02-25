@@ -157,6 +157,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if(!structKeyExists(variables, "paymentMethodOptions")) {
 			var sl = getService("paymentService").getPaymentMethodSmartList();
 			
+			var eligiblePaymentMethodIDs = this.setting('accountEligiblePaymentMethods');
+			if (!isNull(this.getAccount())) {
+				eligiblePaymentMethodIDs = this.getAccount().setting('accountEligiblePaymentMethods');
+			}
+			
+			// Prevent 'termPayment' from displaying as account payment method option
+			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			sl.addInFilter('paymentMethodID', eligiblePaymentMethodIDs);
 			sl.addFilter('activeFlag', 1);
 			sl.addSelect('paymentMethodID', 'value');
 			sl.addSelect('paymentMethodName', 'name');
@@ -215,7 +223,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCharge" ) {
 			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountReceived = precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived());
+				amountReceived = precisionEvaluate('amountReceived + getPaymentTransactions()[i].getAmountReceived()');
 			}
 			
 		}
@@ -230,7 +238,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCredit" ) {
 			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountCredited = precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited());
+				amountCredited = precisionEvaluate('amountCredited + getPaymentTransactions()[i].getAmountCredited()');
 			}
 			
 		}
@@ -245,7 +253,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCharge" ) {
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 				if(isNull(getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) || !getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) {
-					amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
+					amountAuthorized = precisionEvaluate('amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized()');
 				}
 			}
 		}
@@ -257,7 +265,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var unauthroized = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate(getAmount() - getAmountReceived() - getAmountAuthorized());
+			unauthroized = precisionEvaluate('getAmount() - getAmountReceived() - getAmountAuthorized()');
 		}
 		
 		return unauthroized;
@@ -267,7 +275,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var uncaptured = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncaptured = precisionEvaluate(getAmountAuthorized() - getAmountReceived());
+			uncaptured = precisionEvaluate('getAmountAuthorized() - getAmountReceived()');
 		}
 		
 		return uncaptured;
@@ -277,7 +285,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var unreceived = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unreceived = precisionEvaluate(getAmount() - getAmountReceived());
+			unreceived = precisionEvaluate('getAmount() - getAmountReceived()');
 		}
 		
 		return unreceived;
@@ -287,7 +295,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var uncredited = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = precisionEvaluate(getAmount() - getAmountCredited());
+			uncredited = precisionEvaluate('getAmount() - getAmountCredited()');
 		}
 		
 		return uncredited;
@@ -295,7 +303,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	public numeric function getAmountUnassigned() {
 		// This is temporary until we get the assignment of accountPayments to orderPayments
-		return getAmountReceived();
+		return precisionEvaluate(getAmountReceived()-getAmountCredited());
 	}
 	
 	public boolean function getCreditCardOrProviderTokenExistsFlag() {
@@ -391,9 +399,29 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		return variables.billingAddress;
 	}
 	
+	public any function getCurrencyCode() {
+		if( !structKeyExists(variables, "currencyCode") ) {
+			variables.currencyCode = "USD";
+		}
+		return variables.currencyCode;
+	}
+	
 	// ==============  END: Overridden Implicet Getters ====================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public void function setCreditCardNumber(required string creditCardNumber) {
+		if(len(arguments.creditCardNumber)) {
+			variables.creditCardNumber = arguments.creditCardNumber;
+			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
+			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
+		} else {
+			structDelete(variables, "creditCardNumber");
+			setCreditCardLastFour(javaCast("null", ""));
+			setCreditCardType(javaCast("null", ""));
+			setCreditCardNumberEncrypted(javaCast("null", ""));
+		}
+	}
 	
 	public any function getSimpleRepresentation() {
 		if(isNew()) {

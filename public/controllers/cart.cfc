@@ -52,6 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	property name="accountService" type="any";
 	property name="orderService" type="any";
+	property name="hibachiSessionService" type="any";
 
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -117,7 +118,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="rc.preProcessDisplayedFlag" default="true";
 		param name="rc.saveShippingAccountAddressFlag" default="false";
 		
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addOrderItem');
+		var cart = rc.$.slatwall.cart();
+		
+		// Check to see if we can attach the current account to this order, required to apply price group details
+		if( isNull(cart.getAccount()) && rc.$.slatwall.getLoggedInFlag() ) {
+			cart.setAccount( rc.$.slatwall.getAccount() );
+		}
+		
+		cart = getOrderService().processOrder( cart, arguments.rc, 'addOrderItem');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
 		
@@ -127,16 +135,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			// Also make sure that this cart gets set in the session as the order
 			rc.$.slatwall.getSession().setOrder( cart );
-
-			// Check to see if we can attach the current account to this order
-			if( isNull(cart.getAccount()) && rc.$.slatwall.getLoggedInFlag() ) {
-				cart.setAccount( rc.$.slatwall.getAccount() );
-			}
+			
+			// Make sure that the session is persisted
+			getHibachiSessionService().persistSession();
 		}
 	}
 	
 	// Guest Account
 	public void function guestAccount(required any rc) {
+		param name="arguments.rc.createAuthenticationFlag" default="0";
+		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
 		
 		if( !account.hasErrors() ) {
@@ -149,6 +157,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", false );
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", true );	
+		}
+		
+	}
+	
+	// Save Guest Account
+	public void function guestAccountCreatePassword( required struct rc ) {
+		param name="arguments.rc.orderID" default="";
+		param name="arguments.rc.accountID" default="";
+
+		var order = getOrderService().getOrder( arguments.rc.orderID );
+		
+		// verify that the orderID passed in was in fact the last confirmationOrderID from the session, that the order & account match up, and that the account is in fact a guest account right now
+		if(!isNull(order) && arguments.rc.orderID == arguments.rc.$.slatwall.getSessionValue('confirmationOrderID') && order.getAccount().getAccountID() == arguments.rc.accountID && order.getAccount().getGuestAccountFlag()) {
+			
+			var account = getAccountService().processAccount( order.getAccount(), arguments.rc, "createPassword" );
+			arguments.rc.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", account.hasErrors() );
+			
+		} else {
+			
+			arguments.rc.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", true );
 		}
 		
 	}

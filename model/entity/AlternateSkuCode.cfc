@@ -50,7 +50,7 @@ component displayname="Alternate Sku Code" entityname="SlatwallAlternateSkuCode"
 	
 	// Persistent Properties
 	property name="alternateSkuCodeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="alternateSkuCode" ormtype="string";
+	property name="alternateSkuCode" ormtype="string" index="PI_ALTERNATESKUCODE";
 	
 	// Related Object Properties (Many-To-One)
 	property name="alternateSkuCodeType" cfc="Type" fieldtype="many-to-one" fkcolumn="skuTypeID" hb_optionsSmartListData="f:parentType.systemCode=alternateSkuCodeType";

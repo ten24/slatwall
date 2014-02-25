@@ -2,14 +2,19 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	property name="cache" type="struct";
 	property name="internalCacheFlag" type="boolean";
+	property name="railoFlag" type="boolean";
 	
 	public any function init() {
 		setCache( {} );
 		setInternalCacheFlag( true );
+		setRailoFlag( false );
 		
 		var hibachiConfig = getApplicationValue('hibachiConfig');
 		if(structKeyExists(hibachiConfig, "useCachingEngineFlag") && hibachiConfig.useCachingEngineFlag) {
 			setInternalCacheFlag( false );
+		}
+		if(structKeyExists(server,"railo")) {
+			setRailoFlag( true );	
 		}
 		
 		return super.init();
@@ -17,12 +22,21 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public any function hasCachedValue( required string key ) {
 		// If using the internal cache, then check there
-		if(getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && !getCache()[ arguments.key ].reset ) {
+		if( getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && structKeyExists(getCache()[ arguments.key ], "reset") && !getCache()[ arguments.key ].reset ) {
 			return true;
 			
 		// If using the external cache, then check there
-		} else if (!getInternalCacheFlag() && arrayFindNoCase(cacheGetAllIDs(), arguments.key) && !cacheGet( arguments.key ).reset ) {
-			return true;
+		} else if ( !getInternalCacheFlag() && getRailoFlag() && cacheKeyExists(arguments.key) ) {
+			var fullValue = cacheGet( arguments.key );
+			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
+				return true;	
+			}
+			
+		} else if ( !getInternalCacheFlag() ) {
+			var fullValue = cacheGet( arguments.key );
+			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
+				return true;
+			}
 			
 		}
 		
@@ -36,7 +50,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			return getCache()[ arguments.key ].value;
 			
 		// If using the external cache, then check there
-		} else if (!getInternalCacheFlag() && arrayFindNoCase(cacheGetAllIDs(), key) ) {
+		} else if (!getInternalCacheFlag() && !isNull(cacheGet( arguments.key )) ) {
 			return cacheGet( arguments.key ).value;
 			
 		}
@@ -80,18 +94,28 @@ component accessors="true" output="false" extends="HibachiService" {
 	public any function resetCachedKeyByPrefix( required string keyPrefix ) {
 		// Because there could be lots of keys potentially we do this in a thread
 		thread name="hibachiCacheService_resetCachedKeyByPrefix_#createUUID()#" keyPrefix=arguments.keyPrefix {
-			var allKeysArray = [];
+			
 			if(getInternalCacheFlag()) {
-				allKeysArray = listToArray(structKeyList(getCache()));
+				
+				var allKeysArray = listToArray(structKeyList(getCache()));
+				
+				var prefixLen = len(keyPrefix);
+				
+				for(var key in allKeysArray) {
+					if(left(key, prefixLen) eq keyPrefix) {
+						getCache()[ key ].reset = true;
+					}
+				}
 			} else {
-				allKeysArray = cacheGetAllIDs();
-			}
-			var prefixLen = len(keyPrefix);
-			for(var key in allKeysArray) {
-				if(left(key, prefixLen) eq keyPrefix) {
-					resetCachedKey( key );
+				var allKeysArray = cacheGetAllIDs( '#keyPrefix#*' );
+				
+				for(var key in allKeysArray) {
+					var tuple = cacheGet( key );
+					tuple.reset = true;
+					cachePut( key, tuple );
 				}
 			}
+			
 		}
 	}
 	

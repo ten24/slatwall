@@ -62,7 +62,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="creditCardType" type="string"; 
 	property name="expirationMonth" type="numeric";   
 	property name="expirationYear" type="numeric";
-	property name="securityCode" type="numeric";
+	property name="securityCode" type="string";
 	property name="providerToken" type="string";
 	
 	// Account Info

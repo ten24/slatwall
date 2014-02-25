@@ -71,18 +71,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.capturableAmount = 0;
 			
 			for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
-				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
-				var thisQuantity = getOrderDeliveryItems()[i].quantity;
-				if(thisQuantity > orderItem.getQuantityUndelivered()) {
-					thisQuantity = orderItem.getQuantityUndelivered();
+				if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
+					var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
+					var thisQuantity = getOrderDeliveryItems()[i].quantity;
+					if(thisQuantity > orderItem.getQuantityUndelivered()) {
+						thisQuantity = orderItem.getQuantityUndelivered();
+					}
+					variables.capturableAmount = precisionEvaluate('variables.capturableAmount + ((orderItem.getQuantityUndelivered() / thisQuantity) * orderItem.getExtendedPriceAfterDiscount())');
 				}
-				variables.capturableAmount = precisionEvaluate(variables.capturableAmount + ((orderItem.getQuantityUndelivered() / thisQuantity) * orderItem.getExtendedPriceAfterDiscount()));
 			}
 			
 			if(getOrder().getPaymentAmountReceivedTotal() eq 0) {
-				variables.capturableAmount = precisionEvaluate(variables.capturableAmount + getOrderFulfillment().getChargeAfterDiscount());
+				variables.capturableAmount = precisionEvaluate('variables.capturableAmount + getOrderFulfillment().getChargeAfterDiscount()');
 			} else {
-				variables.capturableAmount = precisionEvaluate(variables.capturableAmount - precisionEvaluate(getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal()));
+				variables.capturableAmount = precisionEvaluate('variables.capturableAmount - (getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal())');
 			}
 			
 			if(variables.capturableAmount lt 0) {

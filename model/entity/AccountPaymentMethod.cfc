@@ -133,6 +133,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
 				setCreditCardNumber( arguments.orderPayment.getCreditCardNumber() );	
 			}
+			if(!isNull(arguments.orderPayment.getSecurityCode())) {
+				setSecurityCode( arguments.orderPayment.getSecurityCode() );	
+			}
 			setNameOnCreditCard( arguments.orderPayment.getNameOnCreditCard() );
 			setExpirationMonth( arguments.orderPayment.getExpirationMonth() );
 			setExpirationYear( arguments.orderPayment.getExpirationYear() );
@@ -155,7 +158,44 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			setBillingAddress( arguments.orderPayment.getBillingAddress().copyAddress( true ) );
 		}
 		
-	}	
+	}
+	
+	public void function copyFromAccountPayment(required any accountPayment) {
+		
+		// Make sure the payment method matches
+		setPaymentMethod( arguments.accountPayment.getPaymentMethod() );
+		
+		// Credit Card
+		if(listFindNoCase("creditCard", arguments.accountPayment.getPaymentMethod().getPaymentMethodType())) {
+			if(!isNull(arguments.accountPayment.getCreditCardNumber())) {
+				setCreditCardNumber( arguments.accountPayment.getCreditCardNumber() );	
+			}
+			if(!isNull(arguments.accountPayment.getSecurityCode())) {
+				setSecurityCode( arguments.accountPayment.getSecurityCode() );	
+			}
+			setNameOnCreditCard( arguments.accountPayment.getNameOnCreditCard() );
+			setExpirationMonth( arguments.accountPayment.getExpirationMonth() );
+			setExpirationYear( arguments.accountPayment.getExpirationYear() );
+			setCreditCardLastFour( arguments.accountPayment.getCreditCardLastFour() );
+			setCreditCardType( arguments.accountPayment.getCreditCardType() );
+		}
+		
+		// Gift Card
+		if(listFindNoCase("giftCard", arguments.accountPayment.getPaymentMethod().getPaymentMethodType())) {
+			setGiftCardNumber( arguments.accountPayment.getGiftCardNumber() );
+		}
+		
+		// Credit Card & Gift Card
+		if(listFindNoCase("creditCard,giftCard", arguments.accountPayment.getPaymentMethod().getPaymentMethodType())) {
+			setProviderToken( arguments.accountPayment.getProviderToken() );
+		}
+		
+		// Credit Card & Term Payment
+		if(listFindNoCase("creditCard,termPayment", arguments.accountPayment.getPaymentMethod().getPaymentMethodType())) {
+			setBillingAddress( arguments.accountPayment.getBillingAddress().copyAddress( true ) );
+		}
+		
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

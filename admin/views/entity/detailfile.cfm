@@ -46,17 +46,44 @@
 Notes:
 
 --->
+<cfparam name="rc.file" type="any">
+<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.baseObject" type="string">
+<cfparam name="rc.baseID" type="string">
+
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="globalEncryptionAlgorithm" />
-		<cf_SlatwallSetting settingName="globalEncryptionEncoding" />
-		<cf_SlatwallSetting settingName="globalEncryptionKeySize" />
-		<cf_SlatwallSetting settingName="globalEncryptionKeyLocation" />
-		<cf_SlatwallSetting settingName="globalEncryptionService" />
-		<cf_SlatwallSetting settingName="globalNoSessionIPRegex" />
-		<cf_SlatwallSetting settingName="globalNoSessionPersistDefault" />
-		<cf_SlatwallSetting settingName="globalRemoteIDShowFlag" />
-		<cf_SlatwallSetting settingName="globalRemoteIDEditFlag" />
-	</cf_SlatwallSettingTable>
+	<cf_HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#rc.baseObject#ID=#rc.baseID#">
+	
+		<cf_HibachiEntityActionBar type="detail" object="#rc.file#" edit="#rc.edit#"
+								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
+								   cancelQueryString="#rc.baseObject#ID=#rc.baseID#"
+								   backAction="#request.context.entityActionDetails.sRedirectAction#"
+								   backQueryString="#rc.baseObject#ID=#rc.baseID#" />
+		
+		<cfif rc.file.isNew()>
+			<input type="hidden" name="baseObject" value="#rc.baseObject#" />
+			<input type="hidden" name="baseID" value="#rc.baseID#" />
+			
+			<input type="hidden" name="fileRelationships[1].fileRelationshipID" value="" />
+			<input type="hidden" name="fileRelationships[1].baseObject" value="#rc.baseObject#" />
+			<input type="hidden" name="fileRelationships[1].baseID" value="#rc.baseID#" />
+		</cfif>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList divclass="span12">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+		<cf_HibachiTabGroup object="#rc.file#">
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.file.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.file#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</cf_HibachiTabGroup>
+	</cf_HibachiEntityDetailForm>
 </cfoutput>
 

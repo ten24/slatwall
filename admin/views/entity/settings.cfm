@@ -59,6 +59,7 @@ Notes:
 		<cf_HibachiTab view="admin:entity/settingstabs/globaladvanced" />
 		<cf_HibachiTab view="admin:entity/settingstabs/account" />
 		<cf_HibachiTab view="admin:entity/settingstabs/brand" />
+		<cf_HibachiTab view="admin:entity/settingstabs/content" />
 		<cf_HibachiTab view="admin:entity/settingstabs/email" />
 		<cf_HibachiTab view="admin:entity/settingstabs/fulfillmentmethod" />
 		<cf_HibachiTab view="admin:entity/settingstabs/image" />

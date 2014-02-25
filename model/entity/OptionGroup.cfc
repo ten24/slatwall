@@ -51,7 +51,7 @@ component displayname="Option Group" entityname="SlatwallOptionGroup" table="SwO
 	// Persistent Properties
 	property name="optionGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="optionGroupName" ormtype="string";
-	property name="optionGroupCode" ormtype="string";
+	property name="optionGroupCode" ormtype="string" index="PI_OPTIONGROUPCODE";
 	property name="optionGroupImage" ormtype="string";
 	property name="optionGroupDescription" ormtype="string" length="4000";
 	property name="imageGroupFlag" ormtype="boolean" default="0";

@@ -80,6 +80,7 @@ Notes:
 		<!--- Term Payment Details --->
 		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
 			<h5>#$.slatwall.rbKey('admin.define.termPaymentDetails')#</h5>
+			<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="paymentTerm" fieldName="newOrderPayment.paymentTerm.paymentTermID" valueOptions="#rc.addOrderPaymentProcessObject.getPaymentTermIDOptions()#" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="termAccountBalance" edit="false">
 			<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="termAccountAvailableCredit" edit="false">
 		</cf_HibachiDisplayToggle>
@@ -96,11 +97,6 @@ Notes:
 			<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" fieldName="newOrderPayment.checkNumber" property="checkNumber" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" fieldName="newOrderPayment.bankRoutingNumber" property="bankRoutingNumber" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" fieldName="newOrderPayment.bankAccountNumber" property="bankAccountNumber" edit="#rc.edit#">
-		</cf_HibachiDisplayToggle>
-		
-		<!--- External --->
-		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="external" loadVisable="#loadPaymentMethodType eq 'external'#">
-			#$.slatwall.getEntity('paymentMethod', '402881c14074533b01407f96c56601ad').getExternalPaymentHTML()#
 		</cf_HibachiDisplayToggle>
 		
 		<!--- Billing Address --->
@@ -120,7 +116,7 @@ Notes:
 		<cfif !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod()) AND !isNUll(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod().getAllowSaveFlag())>
 			<cfset loadVisable = rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod().getAllowSaveFlag() />
 		</cfif>
-		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsaveflag" showValues="YES" loadVisable="#loadVisable#">
+		<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsaveflag" showValues="true" loadVisable="#loadVisable#">
 			
 			<hr />
 			

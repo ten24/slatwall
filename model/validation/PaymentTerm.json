@@ -1,0 +1,5 @@
+{
+	"properties":{
+		"orderPayments":	[{contexts="delete","maxCollection":0}]
+	}
+}

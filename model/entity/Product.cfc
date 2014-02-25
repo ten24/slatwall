@@ -53,7 +53,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="activeFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" unique="true";
 	property name="productName" ormtype="string" notNull="true";
-	property name="productCode" ormtype="string" unique="true";
+	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE";
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="publishedFlag" ormtype="boolean" default="false";
 	property name="sortOrder" ormtype="integer";
@@ -151,6 +151,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
 			var smartList = getService("contentService").getContentSmartList();
 			smartList.addOrder("title|ASC");
+			smartList.addFilter("activeFlag", 1);
 			variables.listingPagesOptionsSmartList = smartList;
 		}
 		return variables.listingPagesOptionsSmartList;
