@@ -137,7 +137,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.$.slatwall.getSession().setOrder( cart );
 			
 			// Make sure that the session is persisted
-			//getHibachiSessionService().persistSession();
+			getHibachiSessionService().persistSession();
 		}
 	}
 	
