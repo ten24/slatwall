@@ -882,8 +882,15 @@
 		<cfargument name="$" />
 		<cfargument name="slatwallSiteID" type="any" required="true" />
 		<cfargument name="muraSiteID" type="string" required="true" />
+		<cfargument name="lastUpdateOnlyFlag" type="boolean" default="true" />
 		
 		<cflock name="slatwallSyncMuraContent_#arguments.muraSiteID#" timeout="60" throwontimeout="true">
+			
+			<cfset var lastUpdate = "" />
+			<cfif arguments.$.slatwall.getService('hibachiCacheService').hasCachedValue('integrationMura_contentSyncLastUpdate')>
+				<cfset lastUpdate = arguments.$.slatwall.getService('hibachiCacheService').getCachedValue('integrationMura_contentSyncLastUpdate') />
+			</cfif>
+			<cfset arguments.$.slatwall.getService('hibachiCacheService').setCachedValue('integrationMura_contentSyncLastUpdate', now()) />
 			
 			<cfset var parentMappingCache = {} />
 			<cfset var missingContentQuery = "" />
@@ -903,6 +910,10 @@
 				  LEFT JOIN
 				  	SwContent on tcontent.contentID = SwContent.cmsContentID AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />
 				WHERE
+				<cfif len(lastUpdate) and arguments.lastUpdateOnlyFlag>
+					tcontent.lastupdate > <cfqueryparam cfsqltype="cf_sql_timestamp" value="#lastUpdate#" />
+				  AND
+				</cfif>
 					tcontent.active = <cfqueryparam cfsqltype="cf_sql_bit" value="1" />
 				  AND
 				  	tcontent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraSiteID#" />
