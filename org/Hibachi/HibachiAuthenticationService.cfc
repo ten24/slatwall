@@ -332,7 +332,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 		
 		if(structKeyExists(permissions.action.subsystems, arguments.subsystem) && structKeyExists(permissions.action.subsystems[arguments.subsystem].sections, arguments.section) && structKeyExists(permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items, arguments.item) ) {
-			if( !isNull(permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items.getAllowActionFlag()) && permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items.getAllowActionFlag()) {
+			if( !isNull(permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items[arguments.item].getAllowActionFlag()) && permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items[arguments.item].getAllowActionFlag()) {
 				return true;
 			} else {
 				return false;
