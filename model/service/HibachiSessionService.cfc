@@ -74,6 +74,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	public void function setPropperSession() {
 		if(len(getHibachiScope().setting('globalNoSessionIPRegex')) && reFindNoCase(getHibachiScope().setting('globalNoSessionIPRegex'), cgi.remote_addr)) {
 			getHibachiScope().setPersistSessionFlag( false );
+		} else if (getHibachiScope().setting('globalNoSessionPersistDefault')) {
+			getHibachiScope().setPersistSessionFlag( false );
 		}
 		
 		super.setPropperSession();
