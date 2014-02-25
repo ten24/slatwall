@@ -583,7 +583,7 @@
 			}
 			
 			// Sync all content category assignments
-			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID') );
+			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID'), muraContentID=$.event('contentBean').getContentID() );
 			
 			endSlatwallRequest();
 		}
@@ -1134,6 +1134,7 @@
 	
 	<cffunction name="syncMuraContentCategoryAssignment">
 		<cfargument name="muraSiteID" type="string" required="true" />
+		<cfargument name="muraContentID" type="string" default="" />
 		
 		<cflock name="slatwallSyncMuraContentCategoryAssignment_#arguments.muraSiteID#" timeout="60" throwontimeout="true">
 			
@@ -1153,6 +1154,10 @@
 				  LEFT JOIN
 				  	SwContentCategory on SwContentCategory.contentID = SwContent.contentID AND SwContentCategory.categoryID = SwCategory.categoryID
 				WHERE
+				<cfif len(arguments.muraContentID)>
+					tcontentcategoryassign.contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraContentID#" />
+				  AND
+				</cfif>
 					SwContentCategory.contentID is null AND SwContentCategory.categoryID is null
 			</cfquery>
 			
@@ -1194,21 +1199,18 @@
 				    count(SwContentCategory.contentID) as extraCount
 				FROM
 				    SwContentCategory
+				  INNER JOIN
+				  	SwContent on SwContentCategory.contentID = SwContent.contentID
+				  INNER JOIN
+				  	SwCategory on SwContentCategory.categoryID = SwCategory.categoryID
+				  LEFT JOIN
+				  	tcontentcategoryassign on SwContent.cmsContentID = tcontentcategoryassign.contentID AND SwCategory.cmsCategoryID = tcontentcategoryassign.categoryID
 				WHERE
-				    NOT EXISTS(
-				        SELECT
-				            tcontentcategoryassign.contentID
-				        FROM
-				            tcontentcategoryassign
-				          INNER JOIN
-				            SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
-				          INNER JOIN
-				            SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
-				        WHERE
-				            SwContentCategory.contentID = SwContent.contentID
-				          AND
-				            SwContentCategory.categoryID = SwCategory.categoryID
-				    )
+				<cfif len(arguments.muraContentID)>
+					SwContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraContentID#" />
+				  AND
+				</cfif>
+					tcontentcategoryassign.contentID is null
 			</cfquery>
 				
 			<cfif rs.extraCount gt 0>
