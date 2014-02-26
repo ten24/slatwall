@@ -678,7 +678,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		}
 		
 		// Add Search Filters if keywords exist
-		if( arrayLen(variables.Keywords) && structCount(variables.keywordProperties) ) {
+		if( arrayLen(variables.Keywords) && (structCount(variables.keywordProperties) || structCount(variables.attributeKeywordProperties)) ) {
 			if(len(hqlWhere) == 0) {
 				if(!arguments.suppressWhere) {
 					hqlWhere &= " WHERE";
