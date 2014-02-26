@@ -695,10 +695,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			}
 			
 			for(var ii=1; ii<=arrayLen(variables.Keywords); ii++) {
-				
 				var paramID = "keyword#ii#";
 				addHQLParam(paramID, "%#variables.Keywords[ii]#%");
-				
 				hqlWhere &= " (";
 				for(var keywordProperty in variables.keywordProperties) {
 					
@@ -709,8 +707,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				for(var attributeProperty in variables.attributeKeywordProperties) {
 					var idProperty = listLast(listFirst(attributeProperty,':'), '.');
 					var fullIDMap = left(idProperty, len(idProperty)-2) & '.' & idProperty;
-					var parentID = listFirst(attributeProperty, ":");
-					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM SlatwallAttributeValue as sav WHERE sav.#fullIDMap# = #parentID# AND sav.attribute.attributeCode = '#listLast(attributeProperty,':')#' AND sav.attributeValue LIKE :#paramID# ) OR";
+					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM SlatwallAttributeValue as sav WHERE sav.#fullIDMap# = #listFirst(attributeProperty, ":")# AND sav.attribute.attributeCode = '#listLast(attributeProperty,':')#' AND sav.attributeValue LIKE :#paramID# ) OR";
 				}
 				
 				hqlWhere = left(hqlWhere, len(hqlWhere)-3 );
