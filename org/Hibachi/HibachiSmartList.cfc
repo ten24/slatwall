@@ -19,6 +19,8 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	property name="keywordPhrases" type="array";
 	property name="keywordProperties" type="struct" hint="This struct holds the properties that searches reference and their relative weight";
 	
+	property name="attributeKeywordProperties" type="struct" hint="This struct holds the custom attributes that searches reference and their relative weight";
+	
 	property name="hqlParams" type="struct";
 	property name="pageRecordsStart" type="numeric" hint="This represents the first record to display and it is used in paging.";
 	property name="pageRecordsShow" type="numeric" hint="This is the total number of entities to display";
@@ -483,9 +485,16 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 
 	public void function addKeywordProperty(required string propertyIdentifier, required numeric weight) {
-		var aliasedProperty = getAliasedProperty(propertyIdentifier=propertyIdentifier);
-		if(len(aliasedProperty)) {
-			variables.keywordProperties[aliasedProperty] = arguments.weight;
+		var entityName = getBaseEntityName();
+		var propertyIsAttribute = getService("hibachiService").getHasAttributeByEntityNameAndPropertyIdentifier(entityName=entityName, propertyIdentifier=arguments.propertyIdentifier);
+		
+		if(propertyIsAttribute) {
+			variables.attributeKeywordProperties[arguments.propertyIdentifier] = arguments.weight;
+		} else {
+			var aliasedProperty = getAliasedProperty(propertyIdentifier=propertyIdentifier);
+			if(len(aliasedProperty)) {
+				variables.keywordProperties[aliasedProperty] = arguments.weight;
+			}
 		}
 	}
 	
@@ -686,6 +695,12 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 					
 					hqlWhere &= " #keywordProperty# LIKE :#paramID# OR";
 				}
+				
+				//Loop over all attributes and find any matches
+				for(var attributeProperty in variables.attributeKeywordProperties) {
+					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM SlatwallAttributeValue as sav WHERE sav.product.productID = aslatwallproduct.productID AND sav.attribute.attributeCode = '#attributeProperty#' AND sav.attributeValue LIKE :#paramID# ) OR";
+				}
+				
 				hqlWhere = left(hqlWhere, len(hqlWhere)-3 );
 				hqlWhere &= " ) AND";
 			}
