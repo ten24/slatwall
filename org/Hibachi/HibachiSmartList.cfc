@@ -484,11 +484,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		}
 	}
 
-	public void function addKeywordProperty(required string propertyIdentifier, required numeric weight) {
-		// 'product.brand.brandSpecialKeywords' | sav.brand.brandID = aslatwallbrand.brandID
-		// 'product.productSpecialKeyword' | sav.product.productID = aslatwallproduct.productID
-		// 'skuSpecialKeywords' | sav.sku.skuID = aslatwallsku.skuID
-		
+	public void function addKeywordProperty(required string propertyIdentifier, required numeric weight) {		
 		var entityName = getBaseEntityName();
 		var propertyIsAttribute = getService("hibachiService").getHasAttributeByEntityNameAndPropertyIdentifier(entityName=entityName, propertyIdentifier=arguments.propertyIdentifier);
 		
@@ -498,20 +494,9 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			var entitiyID = getService("hibachiService").getPrimaryIDPropertyNameByEntityName( lastEntityName );
 			
 			var idPropertyIdentifier = replace(arguments.propertyIdentifier, listLast(arguments.propertyIdentifier, '.'), entitiyID);
-			
-			// product.brand.brandSpecialKeywords = product.brand.brandID
-			// product.productSpecialKeyword = product.productID
-			// skuSpecialKeywords = skuID
-			
 			var aliasedProperty = getAliasedProperty(propertyIdentifier=idPropertyIdentifier);
 			
-			// aslatwallbrand.brandID
-			// aslatwallproduct.productID
-			// aslatwallsku.skuID
-			
-			variables.attributeKeywordProperties[ aliasedProperty & "~" & listLast(arguments.propertyIdentifier, '.') ] = arguments.weight;
-			
-			// aslatwallbrand.brandID:brandSpecialKeywords
+			variables.attributeKeywordProperties[ aliasedProperty & ":" & listLast(arguments.propertyIdentifier, '.') ] = arguments.weight;
 		} else {
 			var aliasedProperty = getAliasedProperty(propertyIdentifier=propertyIdentifier);
 			if(len(aliasedProperty)) {
@@ -722,14 +707,10 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				
 				//Loop over all attributes and find any matches
 				for(var attributeProperty in variables.attributeKeywordProperties) {
-					
-					// aslatwallbrand.brandID:
-					// aslatwallproduct.productID:
-					// aslatwallsku.skuID:
 					var idProperty = listLast(listFirst(attributeProperty,':'), '.');
 					var fullIDMap = left(idProperty, len(idProperty)-2) & '.' & idProperty;
-					// brand.brandID
-					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM SlatwallAttributeValue as sav WHERE sav.#fullIDMap# = #attributeProperty# AND sav.attribute.attributeCode = '#listLast(attributeProperty,':')#' AND sav.attributeValue LIKE :#paramID# ) OR";
+					var parentID = listFirst(attributeProperty, ":");
+					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM SlatwallAttributeValue as sav WHERE sav.#fullIDMap# = #parentID# AND sav.attribute.attributeCode = '#listLast(attributeProperty,':')#' AND sav.attributeValue LIKE :#paramID# ) OR";
 				}
 				
 				hqlWhere = left(hqlWhere, len(hqlWhere)-3 );
