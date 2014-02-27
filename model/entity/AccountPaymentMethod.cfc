@@ -248,7 +248,25 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 		structDelete(variables, "account");
 	}
-
+	
+	// Payment Term (many-to-one)    
+	public void function setPaymentTerm(required any paymentTerm) {    
+		variables.paymentTerm = arguments.paymentTerm;    
+		if(isNew() or !arguments.paymentTerm.hasAccountPaymentMethod( this )) {    
+			arrayAppend(arguments.paymentTerm.getAccountPaymentMethods(), this);    
+		}    
+	}    
+	public void function removePaymentTerm(any paymentTerm) {    
+		if(!structKeyExists(arguments, "paymentTerm")) {    
+			arguments.paymentTerm = variables.paymentTerm;    
+		}    
+		var index = arrayFind(arguments.paymentTerm.getAccountPaymentMethods(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.paymentTerm.getAccountPaymentMethods(), index);    
+		}    
+		structDelete(variables, "paymentTerm");
+	}
+	
 	// Payment Transactions (one-to-many)    
 	public void function addPaymentTransaction(required any paymentTransaction) {    
 		arguments.paymentTransaction.setAccountPaymentMethod( this );    
