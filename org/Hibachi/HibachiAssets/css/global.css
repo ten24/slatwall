@@ -269,7 +269,7 @@ range-filter-upper {
   margin-left: 200px;
 }
 .general-listing-search {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 .listing-display-header {
   background-color: #efefef;
