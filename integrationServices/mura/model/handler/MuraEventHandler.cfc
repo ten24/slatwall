@@ -1060,6 +1060,8 @@
 				  LEFT JOIN
 				  	SwCategory on tcontentcategories.categoryID = SwCategory.cmsCategoryID
 				WHERE
+					tcontentcategories.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraSiteID#" />
+				  AND
 					SwCategory.categoryID is null
 				ORDER BY
 					<cfif $.slatwall.getApplicationValue("databaseType") eq "MySQL" OR  $.slatwall.getApplicationValue("databaseType") eq "Oracle10g">

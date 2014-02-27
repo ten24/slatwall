@@ -47,7 +47,7 @@ Notes:
 	
 	<cffunction name="getMetricDefinitions">
 		<cfreturn [
-			{alias='revenue', calculation='SUM(salePreDiscount) - SUM(returnPreDiscount) - SUM(itemDiscount)', formatType="currency"},
+			{alias='revenue', calculation='SUM(salePreDiscount) + SUM(returnPreDiscount) - SUM(itemDiscount)', formatType="currency"},
 			{alias='salePreDiscount', function='sum', formatType="currency"},
 			{alias='returnPreDiscount', function='sum', formatType="currency"},
 			{alias='quantity', calculation='SUM(quantitySold) + SUM(quantityReturned)', title=rbKey('entity.orderItem.quantity')},
