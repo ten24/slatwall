@@ -583,7 +583,7 @@
 			}
 			
 			// Sync all content category assignments
-			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID') );
+			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID'), muraContentID=$.event('contentBean').getContentID() );
 			
 			endSlatwallRequest();
 		}
@@ -765,7 +765,7 @@
 					verifySlatwallRequest( $=$ );
 					
 					// Sync all missing content for the siteID
-					syncMuraContent( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID );
+					syncMuraContent( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID, lastUpdateOnlyFlag=false );
 					
 					// Sync all missing categories
 					syncMuraCategories( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID );
@@ -882,8 +882,15 @@
 		<cfargument name="$" />
 		<cfargument name="slatwallSiteID" type="any" required="true" />
 		<cfargument name="muraSiteID" type="string" required="true" />
+		<cfargument name="lastUpdateOnlyFlag" type="boolean" default="true" />
 		
 		<cflock name="slatwallSyncMuraContent_#arguments.muraSiteID#" timeout="60" throwontimeout="true">
+			
+			<cfset var lastUpdate = "" />
+			<cfif arguments.$.slatwall.getService('hibachiCacheService').hasCachedValue('integrationMura_contentSyncLastUpdate')>
+				<cfset lastUpdate = arguments.$.slatwall.getService('hibachiCacheService').getCachedValue('integrationMura_contentSyncLastUpdate') />
+			</cfif>
+			<cfset arguments.$.slatwall.getService('hibachiCacheService').setCachedValue('integrationMura_contentSyncLastUpdate', now()) />
 			
 			<cfset var parentMappingCache = {} />
 			<cfset var missingContentQuery = "" />
@@ -903,6 +910,10 @@
 				  LEFT JOIN
 				  	SwContent on tcontent.contentID = SwContent.cmsContentID AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />
 				WHERE
+				<cfif len(lastUpdate) and arguments.lastUpdateOnlyFlag>
+					tcontent.lastupdate > <cfqueryparam cfsqltype="cf_sql_timestamp" value="#lastUpdate#" />
+				  AND
+				</cfif>
 					tcontent.active = <cfqueryparam cfsqltype="cf_sql_bit" value="1" />
 				  AND
 				  	tcontent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraSiteID#" />
@@ -1123,17 +1134,17 @@
 	
 	<cffunction name="syncMuraContentCategoryAssignment">
 		<cfargument name="muraSiteID" type="string" required="true" />
+		<cfargument name="muraContentID" type="string" default="" />
 		
 		<cflock name="slatwallSyncMuraContentCategoryAssignment_#arguments.muraSiteID#" timeout="60" throwontimeout="true">
 			
 			<cfset var allMissingAssignments = "" />
 			<cfset var rs = "" />
 			
-			<!--- Get the missing assingments --->
-			<cfquery name="allMissingAssignments">
+			<!--- Check for missing assignments --->
+			<cfquery name="rs">
 				SELECT
-					SwContent.contentID,
-					SwCategory.categoryID
+					count(SwContent.contentID) as missingCount
 				FROM
 					tcontentcategoryassign
 				  INNER JOIN
@@ -1143,42 +1154,88 @@
 				  LEFT JOIN
 				  	SwContentCategory on SwContentCategory.contentID = SwContent.contentID AND SwContentCategory.categoryID = SwCategory.categoryID
 				WHERE
+				<cfif len(arguments.muraContentID)>
+					tcontentcategoryassign.contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraContentID#" />
+				  AND
+				</cfif>
 					SwContentCategory.contentID is null AND SwContentCategory.categoryID is null
 			</cfquery>
 			
-			<!--- Loop over missing assignments --->
-			<cfloop query="allMissingAssignments">
-				<cfquery name="rs">
-					INSERT INTO SwContentCategory (
-						contentID,
-						categoryID
-					) VALUES (
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.contentID#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.categoryID#" />
-					)
+			<cfif rs.missingCount gt 0>
+				<!--- Get the missing assingments --->
+				<cfquery name="allMissingAssignments">
+					SELECT
+						SwContent.contentID,
+						SwCategory.categoryID
+					FROM
+						tcontentcategoryassign
+					  INNER JOIN
+					  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
+					  INNER JOIN
+					  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
+					  LEFT JOIN
+					  	SwContentCategory on SwContentCategory.contentID = SwContent.contentID AND SwContentCategory.categoryID = SwCategory.categoryID
+					WHERE
+						SwContentCategory.contentID is null AND SwContentCategory.categoryID is null
 				</cfquery>
-			</cfloop>
 				
-			<!--- Delete unneeded assignments --->
+				<!--- Loop over missing assignments --->
+				<cfloop query="allMissingAssignments">
+					<cfquery name="rs">
+						INSERT INTO SwContentCategory (
+							contentID,
+							categoryID
+						) VALUES (
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.contentID#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.categoryID#" />
+						)
+					</cfquery>
+				</cfloop>
+			</cfif>
+			
+			<!--- Check for extra assignments --->
 			<cfquery name="rs">
-				DELETE FROM
-					SwContentCategory
+				SELECT
+				    count(SwContentCategory.contentID) as extraCount
+				FROM
+				    SwContentCategory
+				  INNER JOIN
+				  	SwContent on SwContentCategory.contentID = SwContent.contentID
+				  INNER JOIN
+				  	SwCategory on SwContentCategory.categoryID = SwCategory.categoryID
+				  LEFT JOIN
+				  	tcontentcategoryassign on SwContent.cmsContentID = tcontentcategoryassign.contentID AND SwCategory.cmsCategoryID = tcontentcategoryassign.categoryID
 				WHERE
-					NOT EXISTS(
-						SELECT
-							tcontentcategoryassign.contentID
-						FROM
-							tcontentcategoryassign
-						  INNER JOIN
-						  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
-						  INNER JOIN
-						  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
-						WHERE
-							SwContentCategory.contentID = SwContent.contentID
-						  AND
-						  	SwContentCategory.categoryID = SwCategory.categoryID
-				  	)
+				<cfif len(arguments.muraContentID)>
+					SwContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraContentID#" />
+				  AND
+				</cfif>
+					tcontentcategoryassign.contentID is null
 			</cfquery>
+				
+			<cfif rs.extraCount gt 0>
+				
+				<!--- Delete unneeded assignments --->
+				<cfquery name="rs">
+					DELETE FROM
+						SwContentCategory
+					WHERE
+						NOT EXISTS(
+							SELECT
+								tcontentcategoryassign.contentID
+							FROM
+								tcontentcategoryassign
+							  INNER JOIN
+							  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
+							  INNER JOIN
+							  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
+							WHERE
+								SwContentCategory.contentID = SwContent.contentID
+							  AND
+							  	SwContentCategory.categoryID = SwCategory.categoryID
+					  	)
+				</cfquery>
+			</cfif>
 			
 		</cflock>
 	</cffunction>

@@ -52,6 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	property name="accountService" type="any";
 	property name="orderService" type="any";
+	property name="hibachiSessionService" type="any";
 
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -134,6 +135,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			// Also make sure that this cart gets set in the session as the order
 			rc.$.slatwall.getSession().setOrder( cart );
+			
+			// Make sure that the session is persisted
+			getHibachiSessionService().persistSession();
 		}
 	}
 	
@@ -165,7 +169,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var order = getOrderService().getOrder( arguments.rc.orderID );
 		
 		// verify that the orderID passed in was in fact the last confirmationOrderID from the session, that the order & account match up, and that the account is in fact a guest account right now
-		if(!isNull(order) && arguments.rc.orderID == $.slatwall.getSessionValue('confirmationOrderID') && order.getAccount().getAccountID() == arguments.rc.accountID && order.getAccount().getGuestAccountFlag()) {
+		if(!isNull(order) && arguments.rc.orderID == arguments.rc.$.slatwall.getSessionValue('confirmationOrderID') && order.getAccount().getAccountID() == arguments.rc.accountID && order.getAccount().getGuestAccountFlag()) {
 			
 			var account = getAccountService().processAccount( order.getAccount(), arguments.rc, "createPassword" );
 			arguments.rc.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", account.hasErrors() );
