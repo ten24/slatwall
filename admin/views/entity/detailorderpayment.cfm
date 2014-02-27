@@ -67,6 +67,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="expirationYear" edit="#rc.edit#" />
 				<cfelseif rc.orderPayment.getPaymentMethodType() eq "termPayment">
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="termPaymentAccount" edit="false" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="paymentTerm" edit="false" />
 				</cfif>
 			</cf_HibachiPropertyList>
 			<cf_HibachiPropertyList divClass="span6">
