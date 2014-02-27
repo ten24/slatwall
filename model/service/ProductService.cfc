@@ -96,6 +96,11 @@ component extends="HibachiService" accessors="true" {
 			newSku.setEventStartDateTime( arguments.startDateTime );
 			newSku.setEventEndDateTime( arguments.endDateTime );
 			
+			// Set default Sku if its not already set
+			if( isNull( newSku.getProduct().getDefaultSku() ) ) {
+				newSku.getProduct().setDefaultSku( newSku );
+			}
+			
 			// Get the event capacity and 
 			var eventCapacity = 0;
 			var preEventRegistrationMinutes = 0;
@@ -154,6 +159,10 @@ component extends="HibachiService" accessors="true" {
 				newSku.addLocationConfiguration( locationConfiguration );
 				newSku.setEventCapacity( locationConfiguration.getLocationConfigurationCapacity() );
 				
+				// Set default Sku if its not already set
+				if( isNull( newSku.getProduct().getDefaultSku() ) ) {
+					newSku.getProduct().setDefaultSku( newSku );
+				}
 				var startResDateTime = arguments.startDateTime;
 				var endResDateTime = arguments.endDateTime;
 				if(isNumeric(locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) && locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime') gt 0) {
@@ -555,7 +564,7 @@ component extends="HibachiService" accessors="true" {
 	public any function processProduct_create(required any product, required any processObject) {
 		
 		// GENERATE - CONTENT ACCESS SKUS
-		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "merchandise") {
+		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 			
 			// Bundle Content Into A Single Sku
 			if( arguments.processObject.getBundleContentAccessFlag() ) {
