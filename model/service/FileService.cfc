@@ -125,6 +125,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Only execute file operations when a file is submitted
 		if (isSimpleValue(file.getFileUpload()) && len(file.getFileUpload()) && structKeyExists(form, 'fileUpload')) {
+			
+			if (!directoryExists(file.getFileDirectory())) {
+				directoryCreate(file.getFileDirectory());
+			}
+			
 			// Rename file with .cfm extension in order to control file access
 			var uploadData = fileUpload(file.getFilePath(), 'fileUpload', '*', 'overwrite');
 			

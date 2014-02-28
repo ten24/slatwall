@@ -95,9 +95,14 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	    
 	// ============ START: Non-Persistent Property Methods =================    
 	
+	public string function getFileDirectory()
+	{
+		return setting('globalAssetsFileFolderPath');
+	}
+	
 	public string function getFilePath()
 	{
-		return setting('globalAssetsFileFolderPath') & "/#getFileID()#.cfm";
+		return "#getFileDirectory()#/#getFileID()#.cfm";
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================    
