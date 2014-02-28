@@ -243,10 +243,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint public method to determine if this entity is audited
 	public any function getAuditableFlag() {
 		var metaData = getThisMetaData();
-		if(!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable)) {
+		if(isPersistent() && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
 			return true;
 		}
 		return false;
+	}
+	
+	// @hint Returns an array of files related to this entity
+	public array function getAuditHistory() {
+		variables.auditHistory = getService("hibachiAuditService").getAuditHistoryForEntity(baseID=getPrimaryIDValue());
+		return variables.auditHistory;
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity
@@ -515,8 +521,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			var properties = getProperties();
 			var auditableProperties = [];
 			for (var property in properties) {
-				// TODO make sure the property is persistent also
-				if (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) {
+				// The property must be persistent and auditable
+				if ((!structKeyExists(property, "persistent") || (structKeyExists(property, "persistent") && property.persistent)) && (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable))) {
 					arrayAppend(auditableProperties, property);
 				}
 			}
@@ -525,6 +531,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 
 		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+	}
+	
+	public struct function getAuditablePropertiesStruct() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#") ) {
+			var auditablePropertiesStruct = {};
+			var auditableProperties = getAuditableProperties();
+
+			for(var i=1; i<=arrayLen(auditableProperties); i++) {
+				auditablePropertiesStruct[ auditableProperties[i].name ] = auditableProperties[ i ];
+			}
+			setApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#", auditablePropertiesStruct);
+		}
+
+		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
 	}
 	
 	
@@ -673,7 +693,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		
-		collectPropertyAuditData();
+		getService("hibachiAuditService").logEntityAuditData(entity=this);
 	}
 	
 	public void function preUpdate(struct oldData){
@@ -706,24 +726,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		
-		collectPropertyAuditData(arguments.oldData);
-	}
-	
-	public any function collectPropertyAuditData(struct oldData)
-	{
-		if (getAuditableFlag()) {
-			
-			// type create when no data or no previous audit data exists
-			if (isNull(arguments.oldData)) {
-				
-				// add all auditable properties
-				// getAuditableProperties()
-				
-			// type update
-			} else {
-				// determine the auditable property changes comparing against the old data
-			}
-		}
+		getService("hibachiAuditService").logEntityAuditData(entity=this, oldData=arguments.oldData);
 	}
 	
 	/*
