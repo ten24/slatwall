@@ -54,7 +54,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	property name="auditDateTime" ormtype="timestamp";
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
-	property name="data" ormType="string";
+	property name="data" ormType="string" length="20000"  ;
 	property name="ipAddress" ormType="string";
 	
 	// Calculated Properties

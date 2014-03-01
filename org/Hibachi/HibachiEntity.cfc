@@ -249,10 +249,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return false;
 	}
 	
-	// @hint Returns an array of files related to this entity
-	public array function getAuditHistory() {
-		variables.auditHistory = getService("hibachiAuditService").getAuditHistoryForEntity(baseID=getPrimaryIDValue());
-		return variables.auditHistory;
+	// @hint Returns an array of audit logs related to this entity
+	public array function getAuditLog() {
+		variables.auditLog = getService("hibachiAuditService").getAuditLogForEntity(baseID=getPrimaryIDValue());
+		return variables.auditLog;
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity
