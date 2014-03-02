@@ -59,6 +59,7 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	
 	// Related Object Properties (one-to-many)
 	property name="orderPayments" hb_populateEnabled="false" singularname="orderPayment" fieldType="one-to-many" type="array" fkColumn="paymentTermID" cfc="OrderPayment" inverse="true" orderby="createdDateTime desc";
+	property name="accountPaymentMethods" hb_populateEnabled="false" singularname="accountPaymentMethod" fieldType="one-to-many" type="array" fkColumn="paymentTermID" cfc="AccountPaymentMethod" inverse="true" orderby="createdDateTime desc";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -87,6 +88,13 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	}    
 	public void function removeOrderPayment(required any orderPayment) {    
 		arguments.orderPayment.removePaymentTerm( this );    
+	}
+	
+	public void function addAccountPaymentMethod(required any accountPaymentMethod) {    
+		arguments.accountPaymentMethod.setPaymentTerm( this );
+	}    
+	public void function removeAccountPaymentMethod(required any accountPaymentMethod) {    
+		arguments.accountPaymentMethod.removePaymentTerm( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
