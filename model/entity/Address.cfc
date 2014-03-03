@@ -209,6 +209,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 			if(!isNull(getLastName())) {
 				name = listAppend(name, getLastName(), " ");
 			}
+			return name;
 		} 
 	}
 	
