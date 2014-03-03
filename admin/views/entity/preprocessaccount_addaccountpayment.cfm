@@ -151,14 +151,25 @@ Notes:
 				<th>Amount Unrecieved</th>
 				<th>Amount to Apply</th>
 			</tr>
-			<cf_HibachiListingDisplay smartList="#orderList#">
+			<!---<cf_HibachiListingDisplay smartList="#orderList#">
 				<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
 				<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
 				<cf_HibachiListingColumn propertyIdentifier="fulfillmentTotal" />
 				<cf_HibachiListingColumn propertyIdentifier="paymentAmountDue" />
 				<cf_HibachiListingColumn propertyIdentifier="paymentAmountReceivedTotal" />
 				<cf_HibachiListingColumn propertyIdentifier="paymentAmountTotal" />
-			</cf_HibachiListingDisplay>
+			</cf_HibachiListingDisplay>--->
+				
+			<cfloop array="#orderList.getPageRecords()#" index="orderItem">
+				<tr>
+					<td>#orderItem.getOrderNumber()#</td>
+					<td>#orderItem.getPaymentAmountReceivedTotal()#</td>
+					<td>#orderItem.getPaymentAmountDue()#</td>
+					<td><input type="text" name="toBePaid" value="" class="span1" /></td>
+				</tr>
+			</cfloop>
+				
+				
 				
 		</table>
 		
