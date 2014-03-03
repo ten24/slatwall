@@ -140,6 +140,27 @@ Notes:
 			</cf_HibachiPropertyList>
 			
 		</cf_HibachiPropertyRow>
+		<cfset orderList = $.slatwall.getService("orderService").getOrderSmartList() />
+		<cfset orderList.addFilter('account.accountID', rc.account.getAccountID()) />
+		<!---<cfdump var="#orderList#" top="3" abort=true />--->
+		<br /><br />
+		<table class="table table-striped table-bordered table-condensed">
+			<tr>
+				<th>Order Number</th>
+				<th>Order Payment Amount</th>
+				<th>Amount Unrecieved</th>
+				<th>Amount to Apply</th>
+			</tr>
+			<cf_HibachiListingDisplay smartList="#orderList#">
+				<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
+				<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
+				<cf_HibachiListingColumn propertyIdentifier="fulfillmentTotal" />
+				<cf_HibachiListingColumn propertyIdentifier="paymentAmountDue" />
+				<cf_HibachiListingColumn propertyIdentifier="paymentAmountReceivedTotal" />
+				<cf_HibachiListingColumn propertyIdentifier="paymentAmountTotal" />
+			</cf_HibachiListingDisplay>
+				
+		</table>
 		
 	</cf_HibachiEntityProcessForm>
 </cfoutput>
