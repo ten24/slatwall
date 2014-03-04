@@ -51,6 +51,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		setWhereConditions([]);
 		setOrders([]);
 		setKeywordProperties({});
+		setAttributeKeywordProperties({});
 		setKeywords([]);
 		setKeywordPhrases([]);
 		setHQLParams({});

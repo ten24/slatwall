@@ -1087,7 +1087,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Check delete validation
 		if(arguments.accountPhoneNumber.isDeletable()) {
 			
-			// If the primary email address is this e-mail address then set the primary to null
+			// If the primary phone number is this phone number then set the primary to null
 			if(arguments.accountPhoneNumber.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID() eq arguments.accountPhoneNumber.getAccountPhoneNumberID()) {
 				arguments.accountPhoneNumber.getAccount().setPrimaryPhoneNumber(javaCast("null",""));
 			}
@@ -1103,7 +1103,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Check delete validation
 		if(arguments.accountAddress.isDeletable()) {
 
-			// If the primary email address is this e-mail address then set the primary to null
+			// If the primary address is this address then set the primary to null
 			if(arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
 				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
 			}
@@ -1112,6 +1112,22 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromOrderFulfillments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			
 			return delete(arguments.accountAddress);
+		}
+		
+		return false;
+	}
+	
+	public boolean function deleteAccountPaymentMethod(required any accountPaymentMethod) {
+		
+		// Check delete validation
+		if(arguments.accountPaymentMethod.isDeletable()) {
+
+			// If the primary payment method is this payment method then set the primary to null
+			if(arguments.accountPaymentMethod.getAccount().getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
+				arguments.accountPaymentMethod.getAccount().setPrimaryPaymentMethod(javaCast("null",""));
+			}
+			
+			return delete(arguments.accountPaymentMethod);
 		}
 		
 		return false;
