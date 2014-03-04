@@ -1096,6 +1096,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		stateStruct.orders = duplicate(variables.orders);
 		stateStruct.keywords = duplicate(variables.keywords);
 		stateStruct.keywordProperties = duplicate(variables.keywordProperties);
+		stateStruct.attributeKeywordProperties = duplicate(variables.attributeKeywordProperties);
 		stateStruct.pageRecordsShow = duplicate(variables.pageRecordsShow);
 		stateStruct.entityJoinOrder = duplicate(variables.entityJoinOrder);
 		stateStruct.selectDistinctFlag = duplicate(variables.selectDistinctFlag);
