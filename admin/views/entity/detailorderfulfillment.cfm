@@ -103,6 +103,10 @@ Notes:
 		
 		<cf_HibachiTabGroup object="#rc.orderFulfillment#">
 			<cf_HibachiTab view="admin:entity/orderfulfillmenttabs/orderfulfillmentitems">
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.orderFulfillment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderFulfillment#" attributeSet="#attributeSet#" />
+			</cfloop>
 		</cf_HibachiTabGroup>
 		
 	</cf_HibachiEntityDetailForm>
