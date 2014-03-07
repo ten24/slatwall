@@ -65,6 +65,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	
 	// Related Object Properties (many-to-one)
 	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" hb_optionsNullRBKey="define.select" hb_optionsAdditionalProperties="paymentMethodType" hb_optionsSmartListData="f:activeFlag=1&f:paymentMethodType=creditCard,termPayment,check,giftCard";
+	property name="paymentTerm" cfc="PaymentTerm" fieldtype="many-to-one" fkcolumn="paymentTermID" fetch="join";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
 	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_optionsNullRBKey="define.select";
 	
@@ -146,6 +147,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		// Gift Card
 		if(listFindNoCase("giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
+		}
+		
+		// Term Payment
+		if(listFindNoCase("termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setPaymentTerm( arguments.orderPayment.getPaymentTerm() );
 		}
 		
 		// Credit Card & Gift Card
@@ -242,7 +248,25 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 		structDelete(variables, "account");
 	}
-
+	
+	// Payment Term (many-to-one)    
+	public void function setPaymentTerm(required any paymentTerm) {    
+		variables.paymentTerm = arguments.paymentTerm;    
+		if(isNew() or !arguments.paymentTerm.hasAccountPaymentMethod( this )) {    
+			arrayAppend(arguments.paymentTerm.getAccountPaymentMethods(), this);    
+		}    
+	}    
+	public void function removePaymentTerm(any paymentTerm) {    
+		if(!structKeyExists(arguments, "paymentTerm")) {    
+			arguments.paymentTerm = variables.paymentTerm;    
+		}    
+		var index = arrayFind(arguments.paymentTerm.getAccountPaymentMethods(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.paymentTerm.getAccountPaymentMethods(), index);    
+		}    
+		structDelete(variables, "paymentTerm");
+	}
+	
 	// Payment Transactions (one-to-many)    
 	public void function addPaymentTransaction(required any paymentTransaction) {    
 		arguments.paymentTransaction.setAccountPaymentMethod( this );    

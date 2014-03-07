@@ -164,6 +164,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Term Payment
 		if(listFindNoCase("termPayment", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setTermPaymentAccount( arguments.accountPaymentMethod.getAccount() );
+			setPaymentTerm( arguments.accountPaymentMethod.getPaymentTerm() );
 		}
 		
 		// Credit Card & Gift Card
@@ -203,6 +204,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Gift Card
 		if(listFindNoCase("giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
+		}
+		
+		// Term Payment
+		if(listFindNoCase("termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setPaymentTerm( arguments.orderPayment.getPaymentTerm() );
 		}
 		
 		// Credit Card & Gift Card

@@ -95,6 +95,11 @@ Notes:
 				</cf_HibachiDisplayToggle>
 				
 				<!--- Term Payment Details --->
+				<cf_HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
+					<hr />
+					<h5>#$.slatwall.rbKey('admin.define.termPaymentDetails')#</h5>
+					<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentTerm" edit="#rc.edit#" />
+				</cf_HibachiDisplayToggle>
 				<!--- Just uses Billing Address --->
 			</cf_HibachiPropertyList>
 			<cf_HibachiPropertyList divClass="span6">

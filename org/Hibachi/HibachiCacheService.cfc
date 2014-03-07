@@ -77,6 +77,9 @@ component accessors="true" output="false" extends="HibachiService" {
 	public any function resetCachedKey( required string key ) {
 		// If using the internal cache, then reset there
 		if(getInternalCacheFlag()) {
+			if(!structKeyExists(getCache(), arguments.key)) {
+				getCache()[ arguments.key ] = {};	
+			}
 			getCache()[ arguments.key ].reset = true;
 			
 		// If using the external cache, then reset there
