@@ -686,7 +686,7 @@ Notes:
 									<form action="?s=1" method="post">
 										
 										<!--- Hidden value to setup the slatAction --->
-										<input id="slatActionApplyAccountPaymentMethod" type="hidden" name="slatAction" value="public:cart.addOrderPayment" />
+										<input id="slatActionApplyAccountPaymentMethod" type="hidden" name="slatAction" value="" />
 										
 										<cfset apmFirst = true />
 										
@@ -724,7 +724,7 @@ Notes:
 										<button type="submit" class="btn" onClick="$('##slatActionApplyAccountPaymentMethod').val('public:cart.addOrderPayment');">Apply Payment Method & Review</button>
 										
 										<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
-										<button type="submit" class="btn btn-primary" onClick="$('##slatActionApplyAccountPaymentMethod').val('public:cart.placeOrder');">Apply Payment Method & Place Order</button>
+										<button type="submit" class="btn btn-primary" onClick="$('##slatActionApplyAccountPaymentMethod').val('public:cart.addOrderPayment,public:cart.placeOrder');">Apply Payment Method & Place Order</button>
 									</form>
 								</div>
 								<cfset first = false />
@@ -744,7 +744,7 @@ Notes:
 										<form action="?s=1" method="post">
 											
 											<!--- Hidden value to setup the slatAction --->
-											<input id="slatActionAddOrderPayment" type="hidden" name="slatAction" value="public:cart.addOrderPayment" />
+											<input id="slatActionAddOrderPayment" type="hidden" name="slatAction" value="" />
 											
 											<!--- Hidden value to identify the type of payment method this is --->
 											<input type="hidden" name="newOrderPayment.orderPaymentID" value="#addOrderPaymentObj.getNewOrderPayment().getOrderPaymentID()#" />
@@ -871,7 +871,7 @@ Notes:
 													<button type="submit" class="btn" name="slatAction" onClick="$('##slatActionAddOrderPayment').val('public:cart.addOrderPayment');">Add Payment & Review</button>
 													
 													<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
-													<button type="submit" class="btn btn-primary" name="slatAction" onClick="$('##slatActionAddOrderPayment').val('public:cart.placeOrder');">Add Payment & Place Order</button>
+													<button type="submit" class="btn btn-primary" name="slatAction" onClick="$('##slatActionAddOrderPayment').val('public:cart.addOrderPayment,public:cart.placeOrder');">Add Payment & Place Order</button>
 												</div>
 											</div>
 										</form>
