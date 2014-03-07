@@ -65,6 +65,16 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="creditCardType" />
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="expirationMonth" edit="#rc.edit#" />
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="expirationYear" edit="#rc.edit#" />
+					<hr />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="name" edit="#rc.edit#" title="Address nickname"/>
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="company" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="streetAddress" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="street2Address" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="city" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="stateCode" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="postalCode" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="countryCode" edit="#rc.edit#" />
+					
 				<cfelseif rc.orderPayment.getPaymentMethodType() eq "termPayment">
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="termPaymentAccount" edit="false" />
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="paymentTerm" edit="false" />
