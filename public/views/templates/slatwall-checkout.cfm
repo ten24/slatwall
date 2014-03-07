@@ -1374,12 +1374,16 @@ Notes:
 			<h5>Order Payments</h5>
 			<table class="table table-bordered table-condensed table-striped">
 				<tr>
+					<th>Billing</td>
 					<th>Payment Details</td>
 					<th>Amount</td>
 				</tr>
 				<cfloop array="#order.getOrderPayments()#" index="orderPayment">
 					<cfif orderPayment.getOrderPaymentStatusType().getSystemCode() EQ "opstActive">
 						<tr>
+							<td class="well span3">
+								<sw:AddressDisplay address="#orderPayment.getBillingAddress()#" />
+							</td>
 							<td>#orderPayment.getSimpleRepresentation()#</td>
 							<td>#orderPayment.getFormattedValue('amount')#</td>
 						</tr>
