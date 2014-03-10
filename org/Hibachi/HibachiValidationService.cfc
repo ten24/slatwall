@@ -490,9 +490,7 @@
 
 	public boolean function validate_mod10(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		if(isNull(propertyValue)) {
-			return false;
-		} else {
+		if(!isNull(propertyValue)) {
 			var nDigits = len(propertyValue);
 			var parity = nDigits MOD 2;
 			var digit = "";
@@ -510,8 +508,8 @@
 			}
 			if (Not sum MOD 10){
 				return true;
-			} 
-			return false;
+			}
 		}
+		return false;
 	}
 }
