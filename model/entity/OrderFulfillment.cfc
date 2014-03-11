@@ -246,7 +246,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		
     		// At this point they have either been populated just before, or there were already options
     		var optionsArray = [];
-    		var sortType = setting('fulfillmentMethodShippingOptionSortType');
+    		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
     		
     		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
     			var thisOption = {
