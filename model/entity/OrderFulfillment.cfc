@@ -256,7 +256,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     				shippingMethodSortOrder = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder()
     			};
     			
-    			var inesrted = false;
+    			var inserted = false;
     			
     			for(var i=1; i<=arrayLen(optionsArray); i++) {
     				var thisExistingOption = optionsArray[i];
@@ -266,7 +266,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) ) {
     						
     					arrayInsertAt(optionsArray, i, thisOption);
-    					insered = true;
+    					inserted = true;
     				}
     			}
     			
