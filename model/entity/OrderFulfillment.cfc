@@ -108,6 +108,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="shippingCharge" persistent="false";
 	property name="saveAccountAddress" persistent="false";
 	
+	
 	// ==================== START: Logical Methods =========================
 	
 	public void function removeAccountAddress() {
@@ -237,21 +238,49 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
+    		
     		// If there aren't any shippingMethodOptions available, then try to populate this fulfillment
     		if( !arrayLen(getFulfillmentShippingMethodOptions()) ) {
     			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
     		}
     		
     		// At this point they have either been populated just before, or there were already options
-    		var oArr = [];
-    		var fsmo = getFulfillmentShippingMethodOptions();
-    		for(var i=1; i<=arrayLen(fsmo); i++) {
-    			arrayAppend(oArr, {name=fsmo[i].getSimpleRepresentation(), value=fsmo[i].getShippingMethodRate().getShippingMethod().getShippingMethodID()});	
+    		var optionsArray = [];
+    		var sortType = setting('fulfillmentMethodShippingOptionSortType');
+    		
+    		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
+    			thisOption = {
+    				name = shippingMethodOption.getSimpleRepresentation(),
+    				value = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID(),
+    				totalCharge = shippingMethodOption.getTotalCharge(),
+    				shippingMethodSortOrder = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder()
+    			};
+    			
+    			var inesrted = false;
+    			
+    			for(var i=1; i<=arrayLen(optionsArray); i++) {
+    				var thisExistingOption = optionsArray[i];
+    				
+    				if( (sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
+    				  	||
+    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) ) {
+    						
+    					arrayInsertAt(optionsArray, i, thisOption);
+    					insered = true;
+    				}
+    			}
+    			
+    			if(!inserted) {
+    				arrayAppend(optionsArray, thisOption);	
+    			}
+    			
     		}
-    		if(!arrayLen(oArr)) {
-    			arrayPrepend(oArr, {name=rbKey('define.none'), value=''});
+    		
+    		if(!arrayLen(optionsArray)) {
+    			arrayPrepend(optionsArray, {name=rbKey('define.none'), value=''});
     		}
-    		variables.shippingMethodOptions = oArr;
+			
+    		variables.shippingMethodOptions = optionsArray;
     	}
     	return variables.shippingMethodOptions; 
     }
