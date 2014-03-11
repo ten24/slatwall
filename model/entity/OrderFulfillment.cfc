@@ -249,7 +249,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		var sortType = setting('fulfillmentMethodShippingOptionSortType');
     		
     		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
-    			thisOption = {
+    			var thisOption = {
     				name = shippingMethodOption.getSimpleRepresentation(),
     				value = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID(),
     				totalCharge = shippingMethodOption.getTotalCharge(),
@@ -267,6 +267,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     						
     					arrayInsertAt(optionsArray, i, thisOption);
     					inserted = true;
+    					break;
     				}
     			}
     			
