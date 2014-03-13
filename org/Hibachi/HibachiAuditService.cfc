@@ -10,77 +10,105 @@ component accessors="true" output="false" extends="HibachiService" {
 			// Audit type is create when no old data available or no previous audit log data available
 			if (isNull(arguments.oldData) || !arraylen(arguments.entity.getAuditLog())) {
 				audit.setAuditType("createEntity");
+				
+				// Remove oldData from arguments if it was provided because it is not applicable for property change data
+				if (!isNull(arguments.oldData)) {
+					structDelete(arguments, "oldData");
+				}
 			// Audit type is update
 			} else {
 				audit.setAuditType("updateEntity");
 			}
 			
-			// TODO remove, for testing purposes only
-			if (entity.getClassName() == "Product") {
-				audit.setData(serializeJSON(generatePropertyChangeDataForEntity(argumentCollection=arguments)));
-				this.saveAudit(audit);
-			}
+			audit.setData(serializeJSON(generatePropertyChangeDataForEntity(argumentCollection=arguments)));
+			this.saveAudit(audit);
 		}
 	}
 	
-	public struct function generatePropertyChangeDataForEntity(any entity, struct oldData) {
+	public struct function generatePropertyChangeDataForEntity(any entity, struct oldData) {		
+		// Note: The new and old property value mapping data structs used below effectively allow us to make linear comparisons
+		// To reduce the complexity of comparing the new and old nested property values, we simplify the process by flattening out the entire property
+		// structure using a single-level struct with matching keys that are used to map the respective property values of new and old data.
+		// We can then determine the "deltas" by performing a linear simple value comparisons using the key/value pairs in the property value mapping data structs
+		
 		var auditablePropertiesStruct = arguments.entity.getAuditablePropertiesStruct();
 		
+		// Holds the actual property values that will be serialized as JSON when persisted to the database
 		var propertyChangeData = {};
 		propertyChangeData.newPropertyData = {};
 		
-		logHibachi("*** Constructing propery change data for '#arguments.entity.getClassName()#'");
 		var newPropertyValueMappingData = {};
-		// Add all new auditable properties initially
+		// Track all new auditable properties initially
 		for (var propertyName in auditablePropertiesStruct) {
-			logHibachi("*** standardizing new property '#propertyName#'");
-			propertyChangeData.newPropertyData[propertyName] = getStandardizedValue(value=entity.invokeMethod("get#propertyName#"), mappingData=newPropertyValueMappingData, mappingPath="propertyName");
+			propertyChangeData.newPropertyData[propertyName] = getStandardizedValue(propertyValue=entity.invokeMethod("get#propertyName#"), mappingData=newPropertyValueMappingData, mappingPath=propertyName);
 		}
 		
 		var oldPropertyValueMappingData = {};
-		// Add all old auditable properties initially
+		// Track all old auditable properties initially
 		if (!isNull(arguments.oldData)) {
 			propertyChangeData.oldPropertyData = {};
 			for (var propertyName in auditablePropertiesStruct) {
 				if (structKeyExists(arguments.oldData, propertyName)) {
-					logHibachi("*** standardizing old property '#propertyName#'");
-					propertyChangeData.oldPropertyData[propertyName] = getStandardizedValue(value=arguments.oldData[propertyName], mappingData=oldPropertyValueMappingData, mappingPath=propertyName);
-					// Immediately delete irrelevant empty values
+					propertyChangeData.oldPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.oldData[propertyName], mappingData=oldPropertyValueMappingData, mappingPath=propertyName);
+					
+					// Immediately delete empty value because it is irrelevant
 					if (isSimpleValue(propertyChangeData.oldPropertyData[propertyName]) && !len(propertyChangeData.oldPropertyData[propertyName])) {
-						logHibachi("*** immediately removing old property '#propertyName#' because it is empty and irrelevant");
 						structDelete(propertyChangeData.oldPropertyData, propertyName);
 					}
 				}
 			}
 		}
 		
-		// Any empty arrays, structs, or null values in the property change data should have been converted to empty strings during standardization
+		// Note: If oldPropertyData has been populated, propertyChangeData.oldPropertyData should not contain any empty property values
 		
-		// Compare old and new property values flattened in the mapping data
-		
-		// Filter out empty values in new data when conditions are met
+		// Further process new property values to filter out any empty values under certain conditions
 		for (var propertyName in propertyChangeData.newPropertyData) {
 			var newPropertyValue = propertyChangeData.newPropertyData[propertyName];
 			
-			// Keep empty new values only when they differ from their respective non-empty old values
+			// Keep new empty values only when they differ from their respective old non-empty values
 			if (isSimpleValue(newPropertyValue) && !len(newPropertyValue)) {
-				// Filter out empty new value when no old data exists
-				if (isNull(arguments.oldData)) {
-					logHibachi("*** removing new property '#propertyName#' Filter out empty new value when no old data exists");
-					structDelete(propertyChangeData.newPropertyData, propertyName);
-				// Filter out empty new value when no matching property exists in old property data
-				} else if (!structKeyExists(propertyChangeData.oldPropertyData, propertyName)) {
-					logHibachi("*** removing new property '#propertyName#' Filter out empty new value when no matching property exists in old property data");
-					structDelete(propertyChangeData.newPropertyData, propertyName);
-				// Filter out empty new value because it does not differ from the existing empty old value
-				} else if (structKeyExists(propertyChangeData.oldPropertyData, propertyName) && isSimpleValue(propertyChangeData.oldPropertyData[propertyName]) && !len(propertyChangeData.oldPropertyData[propertyName])) {
-					logHibachi("*** removing new property '#propertyName#' Filter out empty new value because it does not differ from the existing empty old value");
+				// Filter out new empty value because it is irrelevant since no old version of the value existed
+				if (isNull(arguments.oldData) || !structKeyExists(propertyChangeData.oldPropertyData, propertyName)) {
 					structDelete(propertyChangeData.newPropertyData, propertyName);
 				}
 			}
 		}
 		
-		logHibachi("*** Done with change data");
+		// NOTE: All empty arrays, structs, and null values in the property change data should have been converted to empty strings during standardization
+		
+		var changedPropertyNames = [];
+		for (var propertyValueMappingKey in newPropertyValueMappingData) {
+			// Derive top level property name based on property value mapping key
+			var matchResult = reMatchNoCase("(\S+?)(\b)", propertyValueMappingKey);
+			var topLevelPropertyName = matchResult[1];
+			// Skip unecessary comparison because property is already known to differ
+			if (arrayContains(changedPropertyNames, topLevelPropertyName)) {
+				continue;
+			}
+			
+			// Change detected by default because only new data contains property value or if new/old values differ
+			if (!structKeyExists(oldPropertyValueMappingData, propertyValueMappingKey) || (newPropertyValueMappingData[propertyValueMappingKey] != oldPropertyValueMappingData[propertyValueMappingKey])) {
+				if (len(newPropertyValueMappingData[propertyValueMappingKey])) {
+					arrayAppend(changedPropertyNames, topLevelPropertyName);
+				}
+			}
+		}
+		
+		// Remove all irrelevant property values from new property change data
+		for (var propertyName in propertyChangeData.newPropertyData) {
+			if (!arrayContains(changedPropertyNames, propertyName)) {
+				structDelete(propertyChangeData.newPropertyData, propertyName);
+			}
+		}
+		
+		// Remove all irrelevant property values from old property change data
+		if (!isNull(arguments.oldData)) {
+			for (var propertyName in propertyChangeData.oldPropertyData) {
+				if (!arrayContains(changedPropertyNames, propertyName)) {
+					structDelete(propertyChangeData.oldPropertyData, propertyName);
+				}
+			}
+		}
 		
 		return propertyChangeData;
 	}
@@ -96,6 +124,9 @@ component accessors="true" output="false" extends="HibachiService" {
 		// Simple Value
 		if (isSimpleValue(arguments.propertyValue)) {
 			standardizedValue = arguments.propertyValue;
+			
+			// Updates mapping data
+			structInsert(arguments.mappingData, "#arguments.mappingPath#", standardizedValue, true);
 		// Array
 		} else if (isArray(arguments.propertyValue)) {
 			// Standardize values of all array items
@@ -112,7 +143,10 @@ component accessors="true" output="false" extends="HibachiService" {
 		} else if (isObject(arguments.propertyValue) && structKeyExists(arguments.propertyValue, "getPrimaryIDValue")) {
 			standardizedValue = {};
 			// Primary ID of entity is only relevant value
-			standardizedValue[arguments.propertyValue.getPrimaryIDPropertyName()] = arguments.propertyValue.getPrimaryIDValue();
+			standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"] = arguments.propertyValue.getPrimaryIDValue();
+			
+			// Updates mapping data
+			structInsert(arguments.mappingData, "#arguments.mappingPath#[#arguments.propertyValue.getPrimaryIDPropertyName()#]", standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"], true);
 		// Struct
 		} else if (isStruct(arguments.propertyValue)) {
 			standardizedValue = {};
@@ -124,7 +158,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 				
 				// Standardize all key/value pairs
-				standardizedValue[key] = getStandardizedValue(propertyValue=arguments.propertyValue[key], mappingData=arguments.mappingData, mappingPath="#arguments.mappingPath#.#key#");
+				standardizedValue[key] = getStandardizedValue(propertyValue=arguments.propertyValue[key], mappingData=arguments.mappingData, mappingPath="#arguments.mappingPath#[#key#]");
 			}
 			
 			// Convert empty struct to empty string
@@ -132,9 +166,6 @@ component accessors="true" output="false" extends="HibachiService" {
 				standardizedValue = "";
 			}
 		}
-		
-		// updates mapping data using mapping path appended with dot notation
-		structInsert(arguments.mappingData, "#arguments.mappingPath#", standardizedValue, true);
 		
 		return standardizedValue;
 	}
