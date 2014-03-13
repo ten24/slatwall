@@ -35,7 +35,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		
 		// Holds the actual property values that will be serialized as JSON when persisted to the database
 		var propertyChangeData = {};
-		propertyChangeData.newPropertyData = {};
+		propertyChangeData["newPropertyData"] = {};
 		
 		var newPropertyValueMappingData = {};
 		// Track all new auditable properties initially
@@ -46,7 +46,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		var oldPropertyValueMappingData = {};
 		// Track all old auditable properties initially
 		if (!isNull(arguments.oldData)) {
-			propertyChangeData.oldPropertyData = {};
+			propertyChangeData["oldPropertyData"] = {};
 			for (var propertyName in auditablePropertiesStruct) {
 				if (structKeyExists(arguments.oldData, propertyName)) {
 					propertyChangeData.oldPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.oldData[propertyName], mappingData=oldPropertyValueMappingData, mappingPath=propertyName);
