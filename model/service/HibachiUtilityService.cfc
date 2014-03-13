@@ -98,7 +98,15 @@ Notes:
 		}
 		
 		private string function getEncryptionKeyLocation() {
-			return getSettingService().getSettingValue("globalEncryptionKeyLocation") NEQ "" ? getSettingService().getSettingValue("globalEncryptionKeyLocation") : expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+			var keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
+			if(len(keyLocation)) {
+				if(right(keyLocation, 1) eq '/' or right(keyLocation, 1) eq '\') {
+					return keyLocation;	
+				}
+				
+				return keyLocation & '/';
+			}
+			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
 		}
 		
 	</cfscript>
