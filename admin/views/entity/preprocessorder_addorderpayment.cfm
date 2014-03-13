@@ -93,8 +93,8 @@ Notes:
 							$(document).ready(function(e){
 								
 								var paymentDetails = {
-									dynamicChargeOK : '#UCASE(isNull(rc.order.getDynamicChargeOrderPayment()) && rc.order.getStatusCode() eq "ostNotPlaced")#',
-									dynamicCreditOK : '#UCASE(isNull(rc.order.getDynamicCreditOrderPayment()) && rc.order.getStatusCode() eq "ostNotPlaced")#'
+									dynamicChargeOK : '#UCASE(yesNoFormat(isNull(rc.order.getDynamicChargeOrderPayment()) && rc.order.getStatusCode() eq "ostNotPlaced"))#',
+									dynamicCreditOK : '#UCASE(yesNoFormat(isNull(rc.order.getDynamicCreditOrderPayment()) && rc.order.getStatusCode() eq "ostNotPlaced"))#'
 								};
 								
 								$('body').on('change', 'select[name="newOrderPayment.orderPaymentType.typeID"]', function(e) {
@@ -115,11 +115,9 @@ Notes:
 										
 									} else if (paymentDetails.dynamicChargeOK === 'YES') {
 										$('##dynamic-charge-amount').show();
-										
 									} else {
 										$('##charge-amount').show();
 										$('##charge-amount').find('input').attr('name', 'newOrderPayment.amount');
-										
 									}
 									
 								});

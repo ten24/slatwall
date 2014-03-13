@@ -77,7 +77,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					if(thisQuantity > orderItem.getQuantityUndelivered()) {
 						thisQuantity = orderItem.getQuantityUndelivered();
 					}
-					variables.capturableAmount = precisionEvaluate('variables.capturableAmount + ((orderItem.getQuantityUndelivered() / thisQuantity) * orderItem.getExtendedPriceAfterDiscount())');
+					variables.capturableAmount = precisionEvaluate('variables.capturableAmount + ((orderItem.getItemTotal()/orderItem.getQuantity()) * thisQuantity )');
 				}
 			}
 			

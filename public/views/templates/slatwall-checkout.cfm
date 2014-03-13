@@ -209,7 +209,7 @@ Notes:
 									
 									<!--- Email Address --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Email Address</label>
+				    					<label class="control-label" for="emailAddress">Email Address</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="text" valueObject="#accountLoginObj#" valueObjectProperty="emailAddress" class="span4" />
@@ -248,7 +248,7 @@ Notes:
 										<!--- First Name --->
 										<div class="span2">
 											<div class="control-group">
-						    					<label class="control-label" for="rating">First Name</label>
+						    					<label class="control-label" for="firstName">First Name</label>
 						    					<div class="controls">
 						    						
 													<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="firstName" class="span2" />
@@ -261,7 +261,7 @@ Notes:
 										<!--- Last Name --->
 										<div class="span2">
 											<div class="control-group">
-						    					<label class="control-label" for="rating">Last Name</label>
+						    					<label class="control-label" for="lastName">Last Name</label>
 						    					<div class="controls">
 						    						
 													<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="lastName" class="span2" />
@@ -275,7 +275,7 @@ Notes:
 									
 									<!--- Phone Number --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Phone Number</label>
+				    					<label class="control-label" for="phoneNumber">Phone Number</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="phoneNumber" class="span4" />
@@ -286,7 +286,7 @@ Notes:
 									
 									<!--- Email Address --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Email Address</label>
+				    					<label class="control-label" for="emailAddress">Email Address</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="emailAddress" class="span4" />
@@ -297,7 +297,7 @@ Notes:
 									
 									<!--- Email Address Confirm --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Confirm Email Address</label>
+				    					<label class="control-label" for="emailAddressConfirm">Confirm Email Address</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="emailAddressConfirm" class="span4" />
@@ -308,7 +308,7 @@ Notes:
 									
 									<!--- Guest Checkout --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Save Account ( No for Guest Checkout )</label>
+				    					<label class="control-label" for="createAuthenticationFlag">Save Account ( No for Guest Checkout )</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="yesno" valueObject="#createAccountObj#" valueObjectProperty="createAuthenticationFlag" />
@@ -338,7 +338,7 @@ Notes:
 									<!--- Password --->
 									<div id="password-details" >
 										<div class="control-group">
-					    					<label class="control-label" for="rating">Password</label>
+					    					<label class="control-label" for="password">Password</label>
 					    					<div class="controls">
 					    						
 												<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="password" class="span4" />
@@ -349,7 +349,7 @@ Notes:
 										
 										<!--- Password Confirm --->
 										<div class="control-group">
-					    					<label class="control-label" for="rating">Confirm Password</label>
+					    					<label class="control-label" for="passwordConfirm">Confirm Password</label>
 					    					<div class="controls">
 					    						
 												<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="passwordConfirm" class="span4" />
@@ -416,7 +416,7 @@ Notes:
 											<div class="span8">
 												<!--- Email Address --->
 												<div class="control-group">
-							    					<label class="control-label" for="rating">Email Address</label>
+							    					<label class="control-label" for="emailAddress">Email Address</label>
 							    					<div class="controls">
 							    						
 														<sw:FormField type="text" name="orderFulfillments[#orderFulfillmentIndex#].emailAddress" valueObject="#orderFulfillment#" valueObjectProperty="emailAddress" class="span4" />
@@ -432,7 +432,7 @@ Notes:
 											<div class="span8">
 												<!--- Pickup Location --->
 												<div class="control-group">
-							    					<label class="control-label" for="rating">Pickup Location</label>
+							    					<label class="control-label" for="pickupLocation">Pickup Location</label>
 							    					<div class="controls">
 							    						
 														<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].pickupLocation.locationID" valueObject="#orderFulfillment#" valueObjectProperty="pickupLocation" valueOptions="#orderFulfillment.getPickupLocationOptions()#" class="span4" />
@@ -468,7 +468,7 @@ Notes:
 													
 													<!--- Account Address --->
 													<div class="control-group">
-								    					<label class="control-label" for="rating">Select Address</label>
+								    					<label class="control-label" for="accountAddress">Select Address</label>
 								    					<div class="controls">
 								    						
 															<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].accountAddress.accountAddressID" valueObject="#orderFulfillment#" valueObjectProperty="accountAddress" valueOptions="#accountAddressOptions#" value="#accountAddressID#" class="span4" />
@@ -493,7 +493,7 @@ Notes:
 														
 														<!--- Save As Account Address --->
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Save In Address Book</label>
+									    					<label class="control-label" for="saveAccountAddressFlag">Save In Address Book</label>
 									    					<div class="controls">
 									    						
 																<sw:FormField type="yesno" name="orderFulfillments[#orderFulfillmentIndex#].saveAccountAddressFlag" valueObject="#orderFulfillment#" valueObjectProperty="saveAccountAddressFlag" />
@@ -504,7 +504,7 @@ Notes:
 														<!--- Save Account Address Name --->
 														<div id="save-account-address-name#orderFulfillmentIndex#"<cfif not orderFulfillment.getSaveAccountAddressFlag()> class="hide"</cfif>>
 															<div class="control-group">
-										    					<label class="control-label" for="rating">Address Nickname (optional)</label>
+										    					<label class="control-label" for="saveAccountAddressName">Address Nickname (optional)</label>
 										    					<div class="controls">
 										    						
 																	<sw:FormField type="text" name="orderFulfillments[#orderFulfillmentIndex#].saveAccountAddressName" valueObject="#orderFulfillment#" valueObjectProperty="saveAccountAddressName" class="span4" />
@@ -553,7 +553,7 @@ Notes:
 													
 													<!--- Start: Shipping Method Example 1 --->
 													<div class="control-group">
-								    					<label class="control-label" for="rating">Shipping Method Example</label>
+								    					<label class="control-label" for="shippingMethod">Shipping Method Example</label>
 								    					<div class="controls">
 								    						
 															<!--- OPTIONAL: You can use this formField display to show options as a select box
@@ -777,7 +777,7 @@ Notes:
 														
 														<!--- Credit Card Number --->
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Credit Card Number</label>
+									    					<label class="control-label" for="creditCardNumber">Credit Card Number</label>
 									    					<div class="controls">
 									    						
 																<sw:FormField type="text" name="newOrderPayment.creditCardNumber" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="creditCardNumber" class="span4" />
@@ -788,7 +788,7 @@ Notes:
 														
 														<!--- Name on Credit Card --->
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Name on Card</label>
+									    					<label class="control-label" for="nameOnCreditCard">Name on Card</label>
 									    					<div class="controls">
 									    						
 																<sw:FormField type="text" name="newOrderPayment.nameOnCreditCard" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="nameOnCreditCard" class="span4" />
@@ -804,7 +804,7 @@ Notes:
 																
 																<!--- Security Code --->
 																<div class="control-group">
-											    					<label class="control-label" for="rating">Security Code</label>
+											    					<label class="control-label" for="securityCode">Security Code</label>
 											    					<div class="controls">
 											    						
 																		<sw:FormField type="text" name="newOrderPayment.securityCode" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="securityCode" class="span2" />
@@ -820,7 +820,7 @@ Notes:
 																
 																<!--- Expiration --->	
 																<div class="control-group">
-											    					<label class="control-label pull-right" for="rating">Expiration ( MM / YYYY )</label>
+											    					<label class="control-label pull-right" for="expirationMonth">Expiration ( MM / YYYY )</label>
 											    					<div class="controls pull-right">
 											    						
 																		<sw:FormField type="select" name="newOrderPayment.expirationMonth" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="expirationMonth" valueOptions="#addOrderPaymentObj.getNewOrderPayment().getExpirationMonthOptions()#" class="span1" />
@@ -837,7 +837,7 @@ Notes:
 														<!--- SPLIT PAYMENTS (OPTIONAL) - Just delete this section if you don't want to allow for split payments --->
 														<cfset splitPaymentID = "sp" & lcase(createUUID()) />
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Amount</label>
+									    					<label class="control-label" for="newOrderPayment.amount">Amount</label>
 									    					<div class="controls">
 									    						
 									    						#$.slatwall.formatValue(paymentDetails.maximumAmount, 'currency')#
@@ -1025,7 +1025,7 @@ Notes:
 														<input type="hidden" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="#orderPayment.getSecurityCode()#" />
 													<cfelseif isNull(orderPayment.getProviderToken())>
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Re-Enter Security Code</label>
+									    					<label class="control-label" for="securityCode">Re-Enter Security Code</label>
 									    					<div class="controls">
 									    						<input type="text" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="" class="required" />		
 									    					</div>
@@ -1374,12 +1374,16 @@ Notes:
 			<h5>Order Payments</h5>
 			<table class="table table-bordered table-condensed table-striped">
 				<tr>
+					<th>Billing</td>
 					<th>Payment Details</td>
 					<th>Amount</td>
 				</tr>
 				<cfloop array="#order.getOrderPayments()#" index="orderPayment">
 					<cfif orderPayment.getOrderPaymentStatusType().getSystemCode() EQ "opstActive">
 						<tr>
+							<td class="well span3">
+								<sw:AddressDisplay address="#orderPayment.getBillingAddress()#" />
+							</td>
 							<td>#orderPayment.getSimpleRepresentation()#</td>
 							<td>#orderPayment.getFormattedValue('amount')#</td>
 						</tr>

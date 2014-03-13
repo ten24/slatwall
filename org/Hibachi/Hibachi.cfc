@@ -64,6 +64,9 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
 	variables.framework.hibachi.useCachingEngineFlag = false;
+	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
+	variables.framework.hibachi.noaccessDefaultSection = 'main';
+	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -206,12 +209,18 @@ component extends="FW1.framework" {
 				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
 			}
 			
-			// If the current subsytem is a 'login' subsystem, then we can use the current subsystem
-			if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
-				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
+			//Route the user to the noaccess page if they are already logged in
+			if( getHibachiScope().getLoggedInFlag() ) {
+				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.noaccessDefaultSection#.#hibachiConfig.noaccessDefaultItem#", preserve="swprid,sRedirectURL");
 			} else {
-				redirect(action="#hibachiConfig.loginDefaultSubsystem#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
+					// If the current subsystem is a 'login' subsystem, then we can use the current subsystem
+				if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
+					redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
+				} else {
+					redirect(action="#hibachiConfig.loginDefaultSubsystem#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
+				}	
 			}
+			
 		}
 		
 		// Setup structured Data if a request context exists meaning that a full action was called
@@ -287,6 +296,9 @@ component extends="FW1.framework" {
 					// Application Setup Started
 					application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application cache cleared, and init values set.");
+
+					//Add application name to ckfinder
+					fileWrite(expandPath('/#variables.framework.applicationKey#') & '/org/Hibachi/ckfinder/core/connector/cfm/configApplication.cfm', '<cfset this.name="#this.name#" />');
 					
 					// =================== Required Application Setup ===================
 					// The FW1 Application had not previously been loaded so we are going to call onApplicationStart()
@@ -487,6 +499,9 @@ component extends="FW1.framework" {
 	
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
+		if(getHibachiScope().getPersistSessionFlag()) {
+			getHibachiScope().getService("hibachiSessionService").persistSession();
+		}
 		if(!getHibachiScope().getORMHasErrors()) {
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}
