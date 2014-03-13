@@ -68,8 +68,8 @@ Notes:
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		<hr />
-		<div style="width:700px;">
-			<div style="width:685px;">
+		<div style="width:100%;">
+			<div style="width:100%;">
 				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
 			</div>
 		</div>
