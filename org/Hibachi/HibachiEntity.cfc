@@ -521,8 +521,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			var properties = getProperties();
 			var auditableProperties = [];
 			for (var property in properties) {
-				// The property must be persistent and auditable
-				if ((!structKeyExists(property, "persistent") || (structKeyExists(property, "persistent") && property.persistent)) && (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable))) {
+				// The property must be persistent, auditable, and not inverse
+				if ((!structKeyExists(property, "persistent") || (structKeyExists(property, "persistent") && property.persistent)) && (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) && (!structKeyExists(property, "inverse") || (structKeyExists(property, "inverse") && !property.inverse))) {
 					arrayAppend(auditableProperties, property);
 				}
 			}
