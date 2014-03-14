@@ -852,7 +852,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
 			
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
-			
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astSku');
 			
