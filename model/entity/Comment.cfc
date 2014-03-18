@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Comment" entityname="SlatwallComment" table="SwComment" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="commentService" {
+component displayname="Comment" entityname="SlatwallComment" table="SwComment" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="commentService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="commentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
