@@ -141,6 +141,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			
 			// Fulfillment Method
+			fulfillmentMethodShippingOptionSortType = {fieldType="select", defaultValue="sortOrder"},
 			fulfillmentMethodEmailFrom = {fieldType="text"},
 			fulfillmentMethodEmailCC = {fieldType="text"},
 			fulfillmentMethodEmailBCC = {fieldType="text"},
@@ -300,6 +301,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getContentService().getDisplayTemplateOptions( "barrierPage" );
 			case "fulfillmentMethodAutoLocation" :
 				return getLocationService().getLocationOptions();
+			case "fulfillmentMethodShippingOptionSortType" :
+				return [{name=rbKey('define.sortOrder'), value='sortOrder'},{name=rbKey('define.price'), value='price'}];
 			case "globalDefaultSite":
 				var optionSL = getSiteService().getSiteSmartList();
 				optionSL.addSelect('siteName', 'name');

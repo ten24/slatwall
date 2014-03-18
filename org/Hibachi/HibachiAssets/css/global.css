@@ -173,6 +173,9 @@ range-filter-upper {
 .cke_skin_kama {
   width: 685px;
 }
+.modal-body .cke_skin_kama {
+  width: 100%;
+}
 .search-filter {
   padding: 5px 15px 0px 15px;
 }
