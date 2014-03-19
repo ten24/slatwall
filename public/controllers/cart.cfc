@@ -234,7 +234,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 		// Setup newOrderPayment requirements
 		if(structKeyExists(rc, "newOrderPayment")) {
-			rc.newOrderPayment.orderPaymentID = '';
+			param name="rc.newOrderPayment.orderPaymentID" default="";
+			param name="rc.accountAddressID" default="";
+			param name="rc.accountPaymentMethodID" default="";
+			
+			// Make sure that someone isn't trying to pass in another users orderPaymentID
+			if(len(rc.newOrderPayment.orderPaymentID)) {
+				var orderPayment = getOrderService().getOrderPayment(rc.newOrderPayment.orderPaymentID);
+				if(orderPayment.getOrder().getOrderID() != rc.$.slatwall.cart().getOrderID()) {
+					rc.newOrderPayment.orderPaymentID = "";
+				}
+			}
+			
 			rc.newOrderPayment.order.orderID = rc.$.slatwall.cart().getOrderID();
 			rc.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
 		}

@@ -49,13 +49,17 @@ Notes:
 
 <cfoutput>
 	<cf_SlatwallSettingTable>
-		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "email">
+			
+		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "auto">
+			<cf_SlatwallSetting settingName="fulfillmentMethodAutoLocation" settingObject="#rc.fulfillmentMethod#" />
+			<cf_SlatwallSetting settingName="fulfillmentMethodAutoMinReceivedPercentage" settingObject="#rc.fulfillmentMethod#" />
+		<cfelseif rc.fulfillmentMethod.getFulfillmentMethodType() eq "email">
 			<cf_SlatwallSetting settingName="fulfillmentMethodEmailFrom" settingObject="#rc.fulfillmentMethod#" />
 			<cf_SlatwallSetting settingName="fulfillmentMethodEmailCC" settingObject="#rc.fulfillmentMethod#" />
 			<cf_SlatwallSetting settingName="fulfillmentMethodEmailSubjectString" settingObject="#rc.fulfillmentMethod#" />
-		<cfelseif rc.fulfillmentMethod.getFulfillmentMethodType() eq "auto">
-			<cf_SlatwallSetting settingName="fulfillmentMethodAutoLocation" settingObject="#rc.fulfillmentMethod#" />
-			<cf_SlatwallSetting settingName="fulfillmentMethodAutoMinReceivedPercentage" settingObject="#rc.fulfillmentMethod#" />
+		<cfelseif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
+			<cf_SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" settingObject="#rc.fulfillmentMethod#" />
 		</cfif>
+
 	</cf_SlatwallSettingTable>
 </cfoutput>
