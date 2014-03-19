@@ -394,8 +394,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	public void function removeAppliedPromotion(required any appliedPromotion) {    
 		arguments.appliedPromotion.removeOrderFulfillment( this );    
 	}
-
-	// Attribute Values (one-to-many)    
+  
  	// Attribute Values (one-to-many)
 	public void function addAttributeValue(required any attributeValue) {
 		arguments.attributeValue.setOrderFulfillment( this );
