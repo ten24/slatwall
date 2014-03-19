@@ -8,14 +8,14 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="publicPopulateFlag" type="boolean";
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
-	property name="sucessfulActions" type="array";
+	property name="successfulActions" type="array";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
 	
 	public any function init() {
 		setCalledActions( [] );
-		setSucessfulActions( [] );
+		setSuccessfulActions( [] );
 		setFailureActions( [] );
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
@@ -70,7 +70,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public boolean function hasSuccessfulAction( required string action ) {
-		return arrayFindNoCase(getSucessfulActions(), arguments.action) > 0;
+		return arrayFindNoCase(getSuccessfulActions(), arguments.action) > 0;
 	}
 	
 	public boolean function hasFailureAction( required string action ) {
@@ -81,7 +81,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(arguments.failure) {
 			arrayAppend(getFailureActions(), arguments.action);
 		} else {
-			arrayAppend(getSucessfulActions(), arguments.action);
+			arrayAppend(getSuccessfulActions(), arguments.action);
 		}
 	}
 	
