@@ -40,7 +40,9 @@ Notes:
 	
 	<cffunction name="getReportDateTimeDefinitions">
 		<cfreturn [
-			{alias='createdDateTime', dataColumn='SwPaymentTransaction.createdDateTime'}
+			{alias='createdDateTime', dataColumn='SwPaymentTransaction.createdDateTime', title=rbKey('entity.paymentTransaction.createdDateTime')},
+			{alias='orderOpenDateTime', dataColumn='SwOrder.orderOpenDateTime', title=rbKey('entity.order.orderOpenDateTime')},
+			{alias='orderCloseDateTime', dataColumn='SwOrder.orderCloseDateTime', title=rbKey('entity.order.orderCloseDateTime')}
 		] />
 	</cffunction>
 	
@@ -55,6 +57,7 @@ Notes:
 	<cffunction name="getDimensionDefinitions">
 		<cfreturn [
 			{alias='createdDateTime', title=rbKey('entity.paymentTransaction.createdDateTime')},
+			{alias='transactionDateTime', title=rbKey('entity.paymentTransaction.transactionDateTime')},
 			{alias='paymentTransactionID', title=rbKey('entity.paymentTransaction.paymentTransactionID')},
 			{alias='providerTransactionID', title=rbKey('entity.paymentTransaction.providerTransactionID')},
 			{alias='authorizationCode', title=rbKey('entity.paymentTransaction.authorizationCode')},
@@ -93,6 +96,7 @@ Notes:
 					SwPaymentTransaction.transactionSuccessFlag,
 					SwPaymentTransaction.currencyCode,
 					SwPaymentTransaction.avsCode,
+					SwPaymentTransaction.transactionDateTime,
 					CASE
     					WHEN SwPaymentTransaction.orderPaymentID IS NOT NULL THEN 'orderPayment'
 						WHEN SwPaymentTransaction.accountPaymentID IS NOT NULL THEN 'accountPayment'
