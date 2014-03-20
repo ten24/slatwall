@@ -40,7 +40,7 @@ Notes:
 	
 	<cffunction name="getReportDateTimeDefinitions">
 		<cfreturn [
-			{alias='createdDateTime', dataColumn='SwPaymentTransaction.createdDateTime', title=rbKey('entity.paymentTransaction.createdDateTime')},
+			{alias='transactionDateTime', dataColumn='SwPaymentTransaction.transactionDateTime', title=rbKey('entity.paymentTransaction.transactionDateTime')},
 			{alias='orderOpenDateTime', dataColumn='SwOrder.orderOpenDateTime', title=rbKey('entity.order.orderOpenDateTime')},
 			{alias='orderCloseDateTime', dataColumn='SwOrder.orderCloseDateTime', title=rbKey('entity.order.orderCloseDateTime')}
 		] />
