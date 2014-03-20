@@ -187,44 +187,50 @@ Notes:
 			
 			if(!isNull(emailTemplate)) {
 				var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
-						
-				if(structKeyExists(arguments.data, templateObjectIDProperty)) {
+				var templateObject = '';
+				
+				if(structKeyExists(arguments.data, emailTemplate.getEmailTemplateObject())) {
+					// Set the template object from the passed object
+					templateObject = arguments.data[ emailTemplate.getEmailTemplateObject() ];
 					
-					var templateObject = getServiceByEntityName( emailTemplate.getEmailTemplateObject() ).invokeMethod("get#emailTemplate.getEmailTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
+				} else if(structKeyExists(arguments.data, templateObjectIDProperty)) {
+					// Set the template object from the passed ID
+					templateObject = getServiceByEntityName( emailTemplate.getEmailTemplateObject() ).invokeMethod("get#emailTemplate.getEmailTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
+				}
+				
+				if(!isNull(templateObject)) {
+						
+					// Setup the email values
+					arguments.email.setEmailTo( templateObject.stringReplace( emailTemplate.setting('emailToAddress'), false, true ) );
+					arguments.email.setEmailFrom( templateObject.stringReplace( emailTemplate.setting('emailFromAddress'), false, true ) );
+					arguments.email.setEmailCC( templateObject.stringReplace( emailTemplate.setting('emailCCAddress'), false, true ) );
+					arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
+					arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), false, true ) );
+					arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML() ) );
+					arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText() ) );
 					
-					if(!isNull(templateObject)) {
-						
-						// Setup the email values
-						arguments.email.setEmailTo( templateObject.stringReplace( emailTemplate.setting('emailToAddress'), false, true ) );
-						arguments.email.setEmailFrom( templateObject.stringReplace( emailTemplate.setting('emailFromAddress'), false, true ) );
-						arguments.email.setEmailCC( templateObject.stringReplace( emailTemplate.setting('emailCCAddress'), false, true ) );
-						arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
-						arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), false, true ) );
-						arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML() ) );
-						arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText() ) );
-						
-						var templateFileResponse = "";
-						var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
-						
-						local.email = arguments.email;
-						local.emailData = arguments.data;
-						local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
-						
-						if(len(templatePath)) {
-							savecontent variable="templateFileResponse" {
-								include '#templatePath#';
-							}
+					var templateFileResponse = "";
+					var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
+					
+					local.email = arguments.email;
+					local.emailData = arguments.data;
+					local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
+					
+					if(len(templatePath)) {
+						savecontent variable="templateFileResponse" {
+							include '#templatePath#';
 						}
-						
-						if(len(templateFileResponse) && !structKeyExists(local.emailData, "bodyHTML")) {
-							local.emailData.bodyHTML = templateFileResponse;
-						}
-						
-						arguments.email.populate( local.emailData );
 					}
 					
-					// Take all the Settings & String Replace on them (to, from, cc, bcc, subject, bodyHTML, bodyText)
+					if(len(templateFileResponse) && !structKeyExists(local.emailData, "bodyHTML")) {
+						local.emailData.bodyHTML = templateFileResponse;
+					}
+					
+					arguments.email.populate( local.emailData );
 				}
+					
+				// Take all the Settings & String Replace on them (to, from, cc, bcc, subject, bodyHTML, bodyText)
+				
 			}
 		}
 		
