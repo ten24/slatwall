@@ -50,10 +50,13 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	
 	// Persistent Properties
 	property name="accountPaymentAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-
+	property name="amount" ormtype="big_decimal" notnull="true";
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID" hb_optionsNullRBKey="define.select";
+	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID" hb_optionsNullRBKey="define.select";
 	
 	// Related Object Properties (one-to-many)
 	
