@@ -929,6 +929,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
 			
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
+			
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";
 			if(!isNull(getProductType())) {

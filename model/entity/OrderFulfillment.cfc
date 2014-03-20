@@ -69,7 +69,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
 	property name="fulfillmentShippingMethodOptions" singularname="fulfillmentShippingMethodOption" cfc="ShippingMethodOption" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
-	
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
+
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
@@ -107,6 +108,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="discountTotal" persistent="false";
 	property name="shippingCharge" persistent="false";
 	property name="saveAccountAddress" persistent="false";
+	
 	
 	// ==================== START: Logical Methods =========================
 	
@@ -237,21 +239,50 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
+    		
     		// If there aren't any shippingMethodOptions available, then try to populate this fulfillment
     		if( !arrayLen(getFulfillmentShippingMethodOptions()) ) {
     			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
     		}
     		
     		// At this point they have either been populated just before, or there were already options
-    		var oArr = [];
-    		var fsmo = getFulfillmentShippingMethodOptions();
-    		for(var i=1; i<=arrayLen(fsmo); i++) {
-    			arrayAppend(oArr, {name=fsmo[i].getSimpleRepresentation(), value=fsmo[i].getShippingMethodRate().getShippingMethod().getShippingMethodID()});	
+    		var optionsArray = [];
+    		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
+    		
+    		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
+    			var thisOption = {
+    				name = shippingMethodOption.getSimpleRepresentation(),
+    				value = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID(),
+    				totalCharge = shippingMethodOption.getTotalCharge(),
+    				shippingMethodSortOrder = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder()
+    			};
+    			
+    			var inserted = false;
+    			
+    			for(var i=1; i<=arrayLen(optionsArray); i++) {
+    				var thisExistingOption = optionsArray[i];
+    				
+    				if( (sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
+    				  	||
+    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) ) {
+    						
+    					arrayInsertAt(optionsArray, i, thisOption);
+    					inserted = true;
+    					break;
+    				}
+    			}
+    			
+    			if(!inserted) {
+    				arrayAppend(optionsArray, thisOption);	
+    			}
+    			
     		}
-    		if(!arrayLen(oArr)) {
-    			arrayPrepend(oArr, {name=rbKey('define.none'), value=''});
+    		
+    		if(!arrayLen(optionsArray)) {
+    			arrayPrepend(optionsArray, {name=rbKey('define.none'), value=''});
     		}
-    		variables.shippingMethodOptions = oArr;
+			
+    		variables.shippingMethodOptions = optionsArray;
     	}
     	return variables.shippingMethodOptions; 
     }
@@ -362,6 +393,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}    
 	public void function removeAppliedPromotion(required any appliedPromotion) {    
 		arguments.appliedPromotion.removeOrderFulfillment( this );    
+	}
+  
+ 	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setOrderFulfillment( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeOrderFulfillment( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

@@ -327,21 +327,34 @@ function setupEventHandlers() {
 
 			initUIElements('#adminModal');			
 			
-			// make width 90% of screen
+			// make width 90% of screen, 80% height
 			jQuery('#adminModal').css({	
 			    'width': function () { 
 			        return ( jQuery(document).width() * .9 ) + 'px';  
 			    },
 			    'margin-left': function () {
 		            return -(jQuery('#adminModal').width() / 2);
+			    },
+			    'height':function (){
+			    	return (jQuery(window).height()*.8)+'px';
 			    }
 			});
+			//Override modal body height
+			var bodyHeight=jQuery('#adminModal').height() - jQuery('#adminModal .modal-header').outerHeight(true)-jQuery('#adminModal .modal-footer').outerHeight(true)
+			jQuery('#adminModal .modal-body').css({
+				'height':function(){
+					return(bodyHeight+'px');
+				},
+				'max-height': function(){
+					return(bodyHeight+'px');
+				}
+				})
 		});	
 		
 	});
 	
 	//kill all ckeditor instances on modal window close
-	jQuery('#adminModal').on('hidden', function(){
+	jQuery('#adminModal ').on('hidden', function(){
 		
 		for(var i in CKEDITOR.instances) {
 			
@@ -350,6 +363,16 @@ function setupEventHandlers() {
 			}
 			
 		}
+		//return to default size
+		jQuery('#adminModal .modal-body').css({
+				'height':'auto'
+				},{
+				'max-height': '400px'
+				});
+		jQuery('#adminModal').css({
+				'height':'auto'
+				});
+
 	});
 	
 	// Listing Page - Searching

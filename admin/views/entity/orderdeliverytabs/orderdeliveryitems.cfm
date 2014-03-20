@@ -46,20 +46,12 @@
 Notes:
 
 --->
+<cfparam name="rc.orderDelivery" type="any" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable>
-			
-		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "auto">
-			<cf_SlatwallSetting settingName="fulfillmentMethodAutoLocation" settingObject="#rc.fulfillmentMethod#" />
-			<cf_SlatwallSetting settingName="fulfillmentMethodAutoMinReceivedPercentage" settingObject="#rc.fulfillmentMethod#" />
-		<cfelseif rc.fulfillmentMethod.getFulfillmentMethodType() eq "email">
-			<cf_SlatwallSetting settingName="fulfillmentMethodEmailFrom" settingObject="#rc.fulfillmentMethod#" />
-			<cf_SlatwallSetting settingName="fulfillmentMethodEmailCC" settingObject="#rc.fulfillmentMethod#" />
-			<cf_SlatwallSetting settingName="fulfillmentMethodEmailSubjectString" settingObject="#rc.fulfillmentMethod#" />
-		<cfelseif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
-			<cf_SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" settingObject="#rc.fulfillmentMethod#" />
-		</cfif>
-
-	</cf_SlatwallSettingTable>
+	<cf_HibachiListingDisplay smartList="#rc.orderDelivery.getOrderDeliveryItemsSmartList()#">
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.title" />
+		<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
+		<cf_HibachiListingColumn propertyIdentifier="quantity" />
+	</cf_HibachiListingDisplay>
 </cfoutput>
