@@ -62,7 +62,7 @@ Notes:
 				<!--- Add a hidden field for the accountID --->
 				<input type="hidden" name="newAccountPayment.account.accountID" value="#rc.account.getAccountID()#" />
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="amount" fieldName="newAccountPayment.amount" edit="#rc.edit#">
+				<!---<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="amount" fieldName="newAccountPayment.amount" edit="#rc.edit#">--->
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" fieldName="newAccountPayment.currencyCode" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethodID" edit="#rc.edit#">
@@ -140,9 +140,9 @@ Notes:
 			</cf_HibachiPropertyList>
 			
 		</cf_HibachiPropertyRow>
-		<cfset orderList = $.slatwall.getService("orderService").getOrderSmartList() />
-		<cfset orderList.addFilter('account.accountID', rc.account.getAccountID()) />
-		<!---<cfdump var="#orderList#" top="3" abort=true />--->
+		
+		<cfset orderList = rc.account.getOrdersSmartList() />
+		
 		<br /><br />
 		<table class="table table-striped table-bordered table-condensed">
 			<tr>
@@ -151,16 +151,8 @@ Notes:
 				<th>Amount Unrecieved</th>
 				<th>Amount to Apply</th>
 			</tr>
-			<!---<cf_HibachiListingDisplay smartList="#orderList#">
-				<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
-				<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
-				<cf_HibachiListingColumn propertyIdentifier="fulfillmentTotal" />
-				<cf_HibachiListingColumn propertyIdentifier="paymentAmountDue" />
-				<cf_HibachiListingColumn propertyIdentifier="paymentAmountReceivedTotal" />
-				<cf_HibachiListingColumn propertyIdentifier="paymentAmountTotal" />
-			</cf_HibachiListingDisplay>--->
 				
-			<cfloop array="#orderList.getPageRecords()#" index="orderItem">
+			<cfloop array="#orderList.getRecords()#" index="orderItem">
 				<tr>
 					<td>#orderItem.getOrderNumber()#</td>
 					<td>#orderItem.getPaymentAmountReceivedTotal()#</td>
@@ -169,7 +161,12 @@ Notes:
 				</tr>
 			</cfloop>
 				
-				
+			<tr>
+				<td>(Account)</td>
+				<td>(Account)</td>
+				<td>(Account)</td>
+				<td><input type="text" name="toBePaid" value="" class="span1" /></td>
+			</tr>	
 				
 		</table>
 		
