@@ -516,13 +516,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	public string function getAuditablePropertyExclusionList() {
+		return "createdByAccount,createdDateTime,modifiedByAccount,modifiedDateTime,remoteID";
+	}
+	
 	public array function getAuditableProperties() {
 		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
 			var properties = getProperties();
 			var auditableProperties = [];
 			for (var property in properties) {
-				// The property must be persistent, auditable, and not inverse
-				if ((!structKeyExists(property, "persistent") || (structKeyExists(property, "persistent") && property.persistent)) && (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) && (!structKeyExists(property, "inverse") || (structKeyExists(property, "inverse") && !property.inverse))) {
+				var propertyExclusionList = getAuditablePropertyExclusionList();
+				
+				// The property must be persistent, auditable, not in property exclusion list, not a calculated property, must be a column or one-to-many, and field not inverse
+				if ((!structKeyExists(property, "persistent") || (structKeyExists(property, "persistent") && property.persistent)) && (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) && !listFindNoCase(propertyExclusionList, property.name) && (left(property.name, 10) != "calculated") && (!structKeyExists(property, "fieldType") || property.fieldType == "column" || property.fieldType == "many-to-one") && (!structKeyExists(property, "inverse") || (structKeyExists(property, "inverse") && !property.inverse))) {
 					arrayAppend(auditableProperties, property);
 				}
 			}

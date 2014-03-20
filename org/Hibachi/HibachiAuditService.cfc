@@ -6,6 +6,11 @@ component accessors="true" output="false" extends="HibachiService" {
 			audit.setBaseID(entity.getPrimaryIDValue());
 			audit.setBaseObject(entity.getClassName());
 			audit.setAuditDateTime(now());
+			audit.setIPAddress(CGI.REMOTE_ADDR);
+			
+			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				audit.setSessionAccount( getHibachiScope().getAccount() );	
+			}
 			
 			// Audit type is create when no old data available or no previous audit log data available
 			if (isNull(arguments.oldData) || !arraylen(arguments.entity.getAuditLog())) {
@@ -18,6 +23,21 @@ component accessors="true" output="false" extends="HibachiService" {
 			// Audit type is update
 			} else {
 				audit.setAuditType("updateEntity");
+				for (var k in arguments.oldData) {
+					if (isNull(arguments.oldData[k])) {
+						logHibachi("old data present [null] '#k#'");
+					} else if (isSimpleValue(arguments.oldData[k])) {
+						logHibachi("old data present [simple] '#k#' #arguments.oldData[k]#");
+					} else if (isArray(arguments.oldData[k])) {
+						logHibachi("old data present [array] '#k#' [#arraylen(arguments.oldData[k])#]");
+					} else if (structKeyExists(arguments.oldData[k], "getPrimaryIDValue")) {
+						logHibachi("old data present [entity] '#k#' #arguments.oldData[k].getPrimaryIDValue()#");
+					} else if (structKeyExists(arguments.oldData[k], "toString")) {
+						logHibachi("old data present [tostring] '#k#' #arguments.oldData[k].toString()#");
+					} else {
+						logHibachi("old data present [any] '#k#'");
+					}
+				}
 			}
 			
 			audit.setData(serializeJSON(generatePropertyChangeDataForEntity(argumentCollection=arguments)));
@@ -75,21 +95,41 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 		
 		// NOTE: All empty arrays, structs, and null values in the property change data should have been converted to empty strings during standardization
-		
+		// Create a union of changed properties by complete 2-way comparisons of both new and old property value mapping data
 		var changedPropertyNames = [];
+		
+		// Compare new against old
 		for (var propertyValueMappingKey in newPropertyValueMappingData) {
 			// Derive top level property name based on property value mapping key
 			var matchResult = reMatchNoCase("(\S+?)(\b)", propertyValueMappingKey);
 			var topLevelPropertyName = matchResult[1];
-			// Skip unecessary comparison because property is already known to differ
-			if (arrayContains(changedPropertyNames, topLevelPropertyName)) {
-				continue;
-			}
 			
-			// Change detected by default because only new data contains property value or if new/old values differ
-			if (!structKeyExists(oldPropertyValueMappingData, propertyValueMappingKey) || (newPropertyValueMappingData[propertyValueMappingKey] != oldPropertyValueMappingData[propertyValueMappingKey])) {
-				if (len(newPropertyValueMappingData[propertyValueMappingKey])) {
-					arrayAppend(changedPropertyNames, topLevelPropertyName);
+			// Skip unecessary comparison because property is already known to differ
+			if (!arrayContains(changedPropertyNames, topLevelPropertyName)) {
+				// Change detected by default because only new data contains property value or if new/old values differ
+				if (!structKeyExists(oldPropertyValueMappingData, propertyValueMappingKey) || (newPropertyValueMappingData[propertyValueMappingKey] != oldPropertyValueMappingData[propertyValueMappingKey])) {
+					if (len(newPropertyValueMappingData[propertyValueMappingKey])) {
+						arrayAppend(changedPropertyNames, topLevelPropertyName);
+					}
+				}
+			}
+		}
+		
+		// Compare old against new
+		if (!isNull(arguments.oldData)) {
+			for (var propertyValueMappingKey in oldPropertyValueMappingData) {
+				// Derive top level property name based on property value mapping key
+				var matchResult = reMatchNoCase("(\S+?)(\b)", propertyValueMappingKey);
+				var topLevelPropertyName = matchResult[1];
+				
+				// Skip unecessary comparison because property is already known to differ
+				if (!arrayContains(changedPropertyNames, topLevelPropertyName)) {
+					// Change detected by default because only old data contains property value or if new/old values differ
+					if (!structKeyExists(newPropertyValueMappingData, propertyValueMappingKey) || (newPropertyValueMappingData[propertyValueMappingKey] != oldPropertyValueMappingData[propertyValueMappingKey])) {
+						if (len(oldPropertyValueMappingData[propertyValueMappingKey])) {
+							arrayAppend(changedPropertyNames, topLevelPropertyName);
+						}
+					}
 				}
 			}
 		}
@@ -127,6 +167,17 @@ component accessors="true" output="false" extends="HibachiService" {
 			
 			// Updates mapping data
 			structInsert(arguments.mappingData, "#arguments.mappingPath#", standardizedValue, true);
+		// Entity
+		} else if (isObject(arguments.propertyValue) && arguments.propertyValue.isPersistent()) {
+			standardizedValue = {};
+			// Primary ID of entity is only relevant value
+			standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"] = arguments.propertyValue.getPrimaryIDValue();
+			
+			// Updates mapping data
+			structInsert(arguments.mappingData, "#arguments.mappingPath#[#arguments.propertyValue.getPrimaryIDPropertyName()#]", standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"], true);
+		
+		}
+		/*
 		// Array
 		} else if (isArray(arguments.propertyValue)) {
 			// Standardize values of all array items
@@ -139,14 +190,6 @@ component accessors="true" output="false" extends="HibachiService" {
 			if (arrayIsEmpty(standardizedValue)) {
 				standardizedValue = "";
 			}
-		// Entity
-		} else if (isObject(arguments.propertyValue) && structKeyExists(arguments.propertyValue, "getPrimaryIDValue")) {
-			standardizedValue = {};
-			// Primary ID of entity is only relevant value
-			standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"] = arguments.propertyValue.getPrimaryIDValue();
-			
-			// Updates mapping data
-			structInsert(arguments.mappingData, "#arguments.mappingPath#[#arguments.propertyValue.getPrimaryIDPropertyName()#]", standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"], true);
 		// Struct
 		} else if (isStruct(arguments.propertyValue)) {
 			standardizedValue = {};
@@ -166,6 +209,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				standardizedValue = "";
 			}
 		}
+		*/
 		
 		return standardizedValue;
 	}
