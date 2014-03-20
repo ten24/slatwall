@@ -920,7 +920,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public void function preUpdate(Struct oldData){
-		super.preUpdate();
+		super.preUpdate(argumentCollection=arguments);
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
 	}
 	
