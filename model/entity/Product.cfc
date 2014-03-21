@@ -372,6 +372,79 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
 	
+	public any function getSkuOptionDetais(string selectedOptionIDList="") {
+		
+		// Setup return structure
+		var skuOptionDetials = {};
+		
+		// Get all the skus for this product with options fetched
+		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
+		
+		// Loop over the skus
+		for(var sku in getSkus()) {
+			
+			var skuOptionIDArray = [];
+			for(var option in sku.getOptions()) {
+				arrayAppend(skuOptionIDArray, option.getOptionID());
+			}
+			
+			var allSelectedInSku = true;
+			for(var selected in listToArray(arguments.selectedOptionIDList)) {
+				if(!arrayFindNoCase(skuOptionIDArray, selected)) {
+					allSelectedInSku = false;
+					break;
+				}
+			}
+			
+			// Loop over the options for this sku
+			for(var option in sku.getOptions()) {
+				
+				// Created Shortended Variables
+				var ogCode = option.getOptionGroup().getOptionGroupCode();
+				
+				// Create a struct for this optionGroup if it doesn't exist
+				if(!structKeyExists(skuOptionDetials, ogCode)) {
+					skuOptionDetials[ ogCode ] = {};
+					skuOptionDetials[ ogCode ][ "options" ] = [];
+					skuOptionDetials[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
+					skuOptionDetials[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
+					skuOptionDetials[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
+					skuOptionDetials[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
+				}
+				
+				// Create a struct for this option if one doesn't exist
+				var existingOptionFound = false;
+				for(var existingOption in skuOptionDetials[ ogCode ][ "options" ]) {
+					if( existingOption.optionID == option.getOptionID() ) {
+						existingOption['totalQATS'] += sku.getQuantity("QATS");
+						if(allSelectedInSku) {
+							existingOption['selectedQATS'] += sku.getQuantity("QATS");	
+						}
+						existingOptionFound = true;
+						break;
+					}
+				}
+				if(!existingOptionFound) {
+					var newOption = {};
+					newOption['optionID'] = option.getOptionID();
+					newOption['optionCode'] = option.getOptionCode();
+					newOption['optionName'] = option.getOptionName();
+					newOption['name'] = option.getOptionName();
+					newOption['value'] = option.getOptionID();
+					newOption['totalQATS'] = sku.getQuantity("QATS");
+					newOption['selectedQATS'] = 0;
+					if(allSelectedInSku) {
+						newOption['selectedQATS'] = sku.getQuantity("QATS");	
+					}
+					arrayAppend(skuOptionDetials[ ogCode ].options, newOption);
+				}
+			}
+			
+		}
+		
+		return skuOptionDetials;
+	}
+	
 	public struct function getCrumbData(required string path, required string siteID, required array baseCrumbArray) {
 		var productFilename = replace(arguments.path, "/#arguments.siteID#/", "", "all");
 		productFilename = left(productFilename, len(productFilename)-1);
