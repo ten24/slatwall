@@ -46,34 +46,12 @@
 Notes:
 
 --->
-<cfparam name="rc.email" type="any" />
-<cfparam name="rc.emailTemplate" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfset primaryIDPropertyName = $.slatwall.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.emailTemplate.getEmailTemplateObject()) />
+<cfparam name="rc.orderDelivery" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.email#" edit="#rc.edit#" processActionQueryString="#primaryIDPropertyName#=#rc[primaryIDPropertyName]#">
-		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.email#">
-		</cf_HibachiEntityActionBar>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailSubject" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		<hr />
-		<div style="width:100%;">
-			<div style="width:100%;">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
-			</div>
-		</div>
-		
-	</cf_HibachiEntityProcessForm>
+	<cf_HibachiListingDisplay smartList="#rc.orderDelivery.getOrderDeliveryItemsSmartList()#">
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.title" />
+		<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
+		<cf_HibachiListingColumn propertyIdentifier="quantity" />
+	</cf_HibachiListingDisplay>
 </cfoutput>
-

@@ -35,7 +35,7 @@
 		"orderFulfillmentID":			[],
 		"orderReturnID":				[],
 		"quantity":						[{"required":true,"dataType":"numeric","minValue":1}],
-		"price":						[{"required":true,"dataType":"numeric","minValue":0}],
+		"price":						[{"required":true,"dataType":"numeric","minValue":0,"lteProperty":"sku.qats"}],
 		"emailAddress":					[{"dataType":"email"}]
 		
 	},
