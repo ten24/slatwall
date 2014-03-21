@@ -130,7 +130,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			processOrder_updatePromotionDiscounts( order, {} );
-			//getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 			
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
