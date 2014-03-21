@@ -372,7 +372,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
 	
-	public any function getSkuOptionDetais(string selectedOptionIDList="") {
+	public any function getSkuOptionDetails(string selectedOptionIDList="") {
 		
 		// Setup return structure
 		var skuOptionDetials = {};
