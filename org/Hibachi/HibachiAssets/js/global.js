@@ -886,7 +886,11 @@ function updateTextAutocompleteSuggestions( autocompleteField, data ) {
 						innerLI += '</a></li>';
 						jQuery( '#' + jQuery(autocompleteField).data('sugessionsid') ).append( innerLI );
 					});
-					jQuery( '#' + jQuery( autocompleteField ).data('sugessionsid') ).parent().show();
+					var suggestionList=jQuery( '#' + jQuery( autocompleteField ).data('sugessionsid')).parent();
+					suggestionList.css('position','fixed');
+					suggestionList.css('top',suggestionList.parent().offset().top+25);
+					suggestionList.css('left',suggestionList.parent().offset().left);
+					suggestionList.show();
 					
 					textAutocompleteRelease();
 					
