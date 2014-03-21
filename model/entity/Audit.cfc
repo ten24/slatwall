@@ -50,11 +50,11 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// Persistent Properties
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="auditType" ormType="string"; // createEntity, updateEntity, deleteEntity, rollbackEntity, mergeEntity, scheduleUpdate, login, logout
+	property name="auditType" ormType="string"; // create, update, delete, rollback, merge, scheduleUpdate, login, logout
 	property name="auditDateTime" ormtype="timestamp";
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
-	property name="data" ormType="string" length="20000"  ;
+	property name="data" ormType="string" length="4000";
 	property name="ipAddress" ormType="string";
 	
 	// TODO future scheduled date

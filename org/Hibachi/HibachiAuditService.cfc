@@ -14,7 +14,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			
 			// Audit type is create when no old data available or no previous audit log data available
 			if (isNull(arguments.oldData) || !arraylen(arguments.entity.getAuditLog())) {
-				audit.setAuditType("createEntity");
+				audit.setAuditType("create");
 				
 				// Remove oldData from arguments if it was provided because it is not applicable for property change data
 				if (!isNull(arguments.oldData)) {
@@ -22,27 +22,22 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			// Audit type is update
 			} else {
-				audit.setAuditType("updateEntity");
-				for (var k in arguments.oldData) {
-					if (isNull(arguments.oldData[k])) {
-						logHibachi("old data present [null] '#k#'");
-					} else if (isSimpleValue(arguments.oldData[k])) {
-						logHibachi("old data present [simple] '#k#' #arguments.oldData[k]#");
-					} else if (isArray(arguments.oldData[k])) {
-						logHibachi("old data present [array] '#k#' [#arraylen(arguments.oldData[k])#]");
-					} else if (structKeyExists(arguments.oldData[k], "getPrimaryIDValue")) {
-						logHibachi("old data present [entity] '#k#' #arguments.oldData[k].getPrimaryIDValue()#");
-					} else if (structKeyExists(arguments.oldData[k], "toString")) {
-						logHibachi("old data present [tostring] '#k#' #arguments.oldData[k].toString()#");
-					} else {
-						logHibachi("old data present [any] '#k#'");
-					}
-				}
+				audit.setAuditType("update");
 			}
 			
 			audit.setData(serializeJSON(generatePropertyChangeDataForEntity(argumentCollection=arguments)));
 			this.saveAudit(audit);
 		}
+	}
+	
+	public any function processAudit_rollback(required any audit, required any processObject) {
+		// TODO implement processAudit_rollback method
+		// determine which entity audit corresponds to
+		// grab entity's audit log
+		// inspect processing object to determine which audit entry to rollback to
+		// calculate the changes for rollback
+		// call populate on entity and save
+		throw(message="HibachiAuditService has not implemented 'processAudit_rollback'.");
 	}
 	
 	public struct function generatePropertyChangeDataForEntity(any entity, struct oldData) {		
