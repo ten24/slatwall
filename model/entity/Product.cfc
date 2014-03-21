@@ -380,24 +380,43 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Get all the skus for this product with options fetched
 		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
 		
+		
+		// Get the selected options by optionGroup
+		var selectedOptionGroupsByOptionID = {};
+		
+		// Create an array of the selectOptions
+		if(listLen(arguments.selectedOptionIDList)) {
+			for(var sku in skus) {
+				for(var option in sku.getOptions()) {
+					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
+						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
+						break;
+					}
+				}
+				if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
+					break;
+				}
+			}
+		}
+		
 		// Loop over the skus
-		for(var sku in getSkus()) {
+		for(var sku in skus) {
 			
 			var skuOptionIDArray = [];
 			for(var option in sku.getOptions()) {
 				arrayAppend(skuOptionIDArray, option.getOptionID());
 			}
 			
-			var allSelectedInSku = true;
-			for(var selected in listToArray(arguments.selectedOptionIDList)) {
-				if(!arrayFindNoCase(skuOptionIDArray, selected)) {
-					allSelectedInSku = false;
-					break;
-				}
-			}
-			
 			// Loop over the options for this sku
 			for(var option in sku.getOptions()) {
+				
+				var allSelectedInSku = true;
+				for(var selected in listToArray(arguments.selectedOptionIDList)) {
+					if(selectedOptionGroupsByOptionID[ selected ] != option.getOptionGroup().getOptionGroupID() && !arrayFindNoCase(skuOptionIDArray, selected)) {
+						allSelectedInSku = false;
+						break;
+					}
+				}
 				
 				// Created Shortended Variables
 				var ogCode = option.getOptionGroup().getOptionGroupCode();
