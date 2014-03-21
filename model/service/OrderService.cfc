@@ -129,7 +129,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
 			
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
-			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
+			processOrder_updatePromotionDiscounts( order, {} );
+			//getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 			
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
@@ -1098,6 +1099,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
+	public any function processOrder_updatePromotionDiscounts(required any order, struct data) {
+		return getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
+	}
 	
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
