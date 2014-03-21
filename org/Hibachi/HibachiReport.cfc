@@ -31,6 +31,14 @@
 	<!--- Rendered Data Properties --->
 	<cfproperty name="reportDataTable" />
 	
+	<!--- Currency Code --->
+	<cfproperty name="currencyCode" />
+	
+	<!--- Currency Code Method --->
+	<cffunction name="getCurrencyCode" access="public" output="false">
+		<cfreturn 'USD' />
+	</cffunction>
+	
 	<!--- Format Type Method --->
 	<cffunction name="getAliasFormatType" access="public" output="false">
 		<cfargument name="alias" type="string" required="true" />
