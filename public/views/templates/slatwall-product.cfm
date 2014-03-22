@@ -76,6 +76,8 @@ Notes:
 				<h2>#$.slatwall.product().getTitle()#</h2>
 			</div>
 		</div>
+		
+		<!--- Start: General Info Display Example --->
 		<div class="row">
 			<div class="span4">
 				<div class="well">
@@ -89,6 +91,7 @@ Notes:
 					</cfif>
 				</div>
 			</div>
+			
 			<div class="span8">
 				<div class="row">
 					<div class="span5">
@@ -155,164 +158,291 @@ Notes:
 						<!--- END: PRICE DISPLAY EXAMPLE --->
 					</div>
 				</div>
-				
-				<hr />
-				
-				<!--- If this item was just added show the success message --->
-				<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
-					<div class="alert alert-success">
-						The item was successfully added to your cart.  You might want to change the action="" of the add to cart form so that it points directly to shopping cart page that way the user ends up there.
-					</div>
-				<!--- If this item was just tried to be added, but failed then show the failure message ---> 
-				<cfelseif $.slatwall.hasFailureAction( "public:cart.addOrderItem" )>
-					<div class="alert alert-error">
-						<!--- Display whatever errors might have been associated with the specific options --->
-						<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" />
-						
-						<!--- Display any errors with saving the order after the item was atempted to be added --->
-						<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderItem" />
-					</div>
-				</cfif>
-				
-				<div class="row">
-					<div class="span4">
-						<!--- START: ADD TO CART EXAMPLE 1 --->
-						<h5>Add To Cart Form Example 1</h5>
-						
-						<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. ---> 
-						<form action="?s=1" method="post">
-							<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
-							
-							<!---[ DEVELOPER NOTES ]																				
-																																	
-								$.slatwall.product().getSkus() returns all of the skus for a product								
-							 																										
-							 	sorted = true | allows for the list to be sorted based on the optionGroup and option sort order		
-								fetchOptions = true | optimizes the query to pull down the option details to be displayed			
-																																	
-							--->
-							<cfset local.skus = $.slatwall.product().getSkus(sorted=true, fetchOptions=true) />
-							
-							<cfif #$.slatwall.product().getAvailableForPurchaseFlag()#>
-								
-								<!--- Check to see if there are more than 1 skus, if so then display the options dropdown --->
-								<cfif arrayLen(local.skus) gt 1>
-									
-									<!--- Sku Selector --->
-									<div class="control-group">
-				    					<label class="control-label">Select Options</label>
-				    					<div class="controls">
-				    						
-											<!--- Sku Select Dropdown --->
-											<select name="skuID" class="required">
-												
-												<!--- Blank option to force user to select (this is optional) --->	
-												<option value="">Select Option</option>
-												
-												<!--- Loop over the skus to display options --->
-												<cfloop array="#local.skus#" index="local.sku">
-													<!--- This provides an option for each sku, with the 'displayOptions' method to show the optionGroup / option names --->
-													<option value="#local.sku.getSkuID()#">#local.sku.displayOptions()#</option>
-												</cfloop>
-												
-											</select>
-											<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="sku" />
-											
-				    					</div>
-				  					</div>
-									
-								<!--- If there are only 1 skus, then add a hidden field --->
-								<cfelse> 
-									<input type="hidden" name="skuID" value="#$.slatwall.product().getDefaultSku().getSkuID()#" />
-								</cfif>
-								
-								<!--- Quantity --->
-								<div class="control-group">
-			    					<label class="control-label" for="quantity">Quantity</label>
-			    					<div class="controls">
-			    						
-										<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
-										<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
-										
-			    					</div>
-			  					</div>
-							
-							<!--- Add to Cart Button --->
-								<button type="submit" class="btn">Add To Cart</button>
-							<cfelse>
-								<p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p>
-							</cfif>
-						</form>
-						<!--- END: ADD TO CART EXAMPLE 1 --->
-					</div>
-					
-					<div class="span4">
-						<!--- START: ADD TO CART EXAMPLE 2 --->
-						<h5>Add To Cart Form Example 2</h5>
-						
-						<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. ---> 
-						<form action="?s=1" method="post">
-							<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
-							<input type="hidden" name="productID" value="#$.slatwall.product().getProductID()#" />
-							
-							<cfif #$.slatwall.product().getAvailableForPurchaseFlag()#>
-								<!--- First we get all the option groups this product uses --->
-								<cfset optionGroupsArr = $.slatwall.product().getOptionGroups() />
-								<cfset defaultSelectedOptions = $.slatwall.product().getDefaultSku().getOptionsIDList() />
-								
-								<!--- Loop over all options groups --->
-								<cfloop array="#optionGroupsArr#" index="optionGroup">
-									
-									<!--- Then we get the options for used by each option group for this product --->
-									<cfset optionsArr = $.slatwall.product().getOptionsByOptionGroup( optionGroup.getOptionGroupID() ) />
-									
-									
-									<!--- Option Selector --->
-									<div class="control-group">
-				    					<label class="control-label">#optionGroup.getOptionGroupName()#</label>
-				    					<div class="controls">
-				    						
-											<!--- Option Select Dropdown --->
-											<select name="selectedOptionIDList">
-										
-												<cfloop array="#optionsArr#" index="option">
-													<option value="#option.getOptionID()#" <cfif listFindNoCase(defaultSelectedOptions, option.getOptionID())> selected="selected"</cfif>>#option.getOptionName()#</option>
-												</cfloop>
-												
-											</select>
-											
-											
-				    					</div>
-				  					</div>
-								</cfloop>
-								
-								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="selectedOptionIDList" />
-								
-								<!--- Quantity --->
-								<div class="control-group">
-			    					<label class="control-label" for="quantity">Quantity</label>
-			    					<div class="controls">
-			    						
-										<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
-										<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
-										
-			    					</div>
-			  					</div>
-								
-								<!--- Add to Cart Button --->
-								<button type="submit" class="btn">Add To Cart</button>
-							<cfelse>
-								<p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p> 
-							</cfif>
-						</form>
-						<!--- END: ADD TO CART EXAMPLE 2 --->
-							
-					</div>
-				</div>
 			</div>
 		</div>
+		<!--- End: General Info Display Example --->
+			
+		<hr />
 		
-		<!--- Lower Section --->
+		<!--- Start: Add to Cart Examples --->
+		<div class="row">
+			
+			<!--- If this item was just added show the success message --->
+			<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
+				<div class="alert alert-success">
+					The item was successfully added to your cart.  You might want to change the action="" of the add to cart form so that it points directly to shopping cart page that way the user ends up there.
+				</div>
+			<!--- If this item was just tried to be added, but failed then show the failure message ---> 
+			<cfelseif $.slatwall.hasFailureAction( "public:cart.addOrderItem" )>
+				<div class="alert alert-error">
+					<!--- Display whatever errors might have been associated with the specific options --->
+					<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" />
+					
+					<!--- Display any errors with saving the order after the item was atempted to be added --->
+					<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderItem" />
+				</div>
+			</cfif>
+			
+			<cfif #$.slatwall.product().getAvailableForPurchaseFlag()#>
+			
+				<div class="span4">
+					<!--- START: ADD TO CART EXAMPLE 1 --->
+					<h5>Add To Cart Form 1 (Simple Sku Dropdown, No Inventory)</h5>
+					
+					<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. ---> 
+					<form action="?s=1" method="post">
+						<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
+						
+						<!---[ DEVELOPER NOTES ]																				
+																																
+							$.slatwall.product().getSkus() returns all of the skus for a product								
+						 																										
+						 	sorted = true | allows for the list to be sorted based on the optionGroup and option sort order		
+							fetchOptions = true | optimizes the query to pull down the option details to be displayed			
+																																
+						--->
+						<cfset skus = $.slatwall.product().getSkus(sorted=true, fetchOptions=true) />
+							
+						<!--- Check to see if there are more than 1 skus, if so then display the options dropdown --->
+						<cfif arrayLen(skus) gt 1>
+							
+							<!--- Sku Selector --->
+							<div class="control-group">
+		    					<label class="control-label">Select Options</label>
+		    					<div class="controls">
+		    						
+									<!--- Sku Select Dropdown --->
+									<select name="skuID" class="required">
+										
+										<!--- Blank option to force user to select (this is optional) --->	
+										<option value="">Select Option</option>
+										
+										<!--- Loop over the skus to display options --->
+										<cfloop array="#skus#" index="sku">
+											<!--- This provides an option for each sku, with the 'displayOptions' method to show the optionGroup / option names --->
+											<option value="#sku.getSkuID()#">#sku.displayOptions()#</option>
+										</cfloop>
+										
+									</select>
+									<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="sku" />
+									
+		    					</div>
+		  					</div>
+							
+						<!--- If there are only 1 skus, then add a hidden field --->
+						<cfelse> 
+							<input type="hidden" name="skuID" value="#$.slatwall.product().getDefaultSku().getSkuID()#" />
+						</cfif>
+						
+						<!--- Quantity --->
+						<div class="control-group">
+	    					<label class="control-label" for="quantity">Quantity</label>
+	    					<div class="controls">
+	    						
+								<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
+								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
+								
+	    					</div>
+	  					</div>
+						
+						<!--- Add to Cart Button --->
+						<button type="submit" class="btn">Add To Cart</button>
+					</form>
+					<!--- END: ADD TO CART EXAMPLE 1 --->
+				</div>
+				
+				<div class="span4">
+					<!--- START: ADD TO CART EXAMPLE 2 --->
+					<h5>Add To Cart Form 2 (Split Option Groups, Default Sku Selected, No Inventory Check)</h5>
+					
+					<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. ---> 
+					<form action="?s=1" method="post">
+						<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
+						<input type="hidden" name="productID" value="#$.slatwall.product().getProductID()#" />
+						
+						<!--- First we get all the option groups this product uses --->
+						<cfset optionGroupsArr = $.slatwall.product().getOptionGroups() />
+						<cfset defaultSelectedOptions = $.slatwall.product().getDefaultSku().getOptionsIDList() />
+						
+						<!--- Loop over all options groups --->
+						<cfloop array="#optionGroupsArr#" index="optionGroup">
+							
+							<!--- Then we get the options for used by each option group for this product --->
+							<cfset optionsArr = $.slatwall.product().getOptionsByOptionGroup( optionGroup.getOptionGroupID() ) />
+							
+							<!--- Option Selector --->
+							<div class="control-group">
+		    					<label class="control-label">#optionGroup.getOptionGroupName()#</label>
+		    					<div class="controls">
+		    						
+									<!--- Option Select Dropdown --->
+									<select name="selectedOptionIDList">
+								
+										<cfloop array="#optionsArr#" index="option">
+											<option value="#option.getOptionID()#" <cfif listFindNoCase(defaultSelectedOptions, option.getOptionID())> selected="selected"</cfif>>#option.getOptionName()#</option>
+										</cfloop>
+										
+									</select>
+									
+									
+		    					</div>
+		  					</div>
+						</cfloop>
+						
+						<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="selectedOptionIDList" />
+						
+						<!--- Quantity --->
+						<div class="control-group">
+	    					<label class="control-label" for="quantity">Quantity</label>
+	    					<div class="controls">
+	    						
+								<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
+								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
+								
+	    					</div>
+	  					</div>
+						
+						<!--- Add to Cart Button --->
+						<button type="submit" class="btn">Add To Cart</button>
+					</form>
+					<!--- END: ADD TO CART EXAMPLE 2 --->
+				</div>
+				
+				<div class="span4">
+					<!--- START: ADD TO CART EXAMPLE 3 --->
+					<h5>Add To Cart Form Example 3 (Split Option Groups, Ajax Inventory Update)</h5>
+					
+					<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. ---> 
+					<form action="?s=1" method="post">
+						<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
+						<input type="hidden" name="productID" value="#$.slatwall.product().getProductID()#" />
+						
+						<!--- First we get all the option groups this product uses --->
+						<cfset optionGroupsArr = $.slatwall.product().getOptionGroups() />
+						
+						<!--- We also get the options associeated with each of those option groups along with some additional details --->
+						<cfset skuOptionDetails = $.slatwall.product().getSkuOptionDetails() />
+						
+						
+						<!--- Create a container to compartmentalize this UI element, the class of this is used by the javascript --->
+						<div class="ajax-product-options">
+							<!--- Loop over all options groups --->
+							<cfloop array="#optionGroupsArr#" index="optionGroup">
+								
+								<!--- Option Selector --->
+								<div class="control-group">
+			    					<label class="control-label">#optionGroup.getOptionGroupName()#</label>
+			    					<div class="controls">
+			    						
+										<!--- We can pull this optionGroup's Option out of the skuOptionDetails --->
+										<cfset optionGroupOptions = skuOptionDetails[ optionGroup.getOptionGroupCode() ].options />
+										
+										<!--- Option Select Dropdown --->
+										<select name="selectedOptionIDList" data-optiongroupcode="#optionGroup.getOptionGroupCode()#" class="ajax-option-selector">
+											
+											<!--- First we include the unselected option --->
+											<option value="" selected="selected">Select #optionGroup.getOptionGroupName()#...</option>
+											
+											<!--- New we loop over all options for this optionGroup --->
+											<cfloop array="#optionGroupOptions#" index="optionDetails">
+												
+												<!--- Make sure that this option has a totalQATS > 0 --->
+												<cfif optionDetails.totalQATS gte 1>
+													<option value="#optionDetails.optionID#">#optionDetails.optionName#</option>
+												</cfif>
+												
+											</cfloop>
+											
+										</select>
+										
+										
+			    					</div>
+			  					</div>
+								
+							</cfloop>
+							
+							<!--- jQuery that allows for dynamic updating of options --->
+							<script type="text/javascript">
+								(function($){
+									$(document).ready(function(e){
+										$('body').on('change', '.ajax-option-selector', function(){
+											
+											var selectedOptionIDList = $.map($(this).closest('.ajax-product-options').find('select[name=selectedOptionIDList]'), function(n, i){
+												if(n.value.length) {
+													return n.value;	
+												}
+											}).join(',');
+											
+											var data = {
+												'slatAction': 'public:ajax.productSkuOptionDetails',
+												'productID': '#$.slatwall.product().getProductID()#',
+												'selectedOptionIDList': selectedOptionIDList
+											};
+											
+											var thisOptionSelector = this;
+											 
+											jQuery.ajax({
+												type: 'get',
+												url: '#$.slatwall.getApplicationValue("baseURL")#/',
+												data: data,
+												dataType: "json",
+												context: document.body,
+												headers: { 'X-Hibachi-AJAX': true },
+												error: function( err ) {
+													alert('There was an error processing request: ' + err);
+												},
+												success: function(r) {
+													for(var optionGroup in r.skuOptionDetails) {
+														if( $(thisOptionSelector).data('optiongroupcode') != optionGroup ) {
+															for(var index in r.skuOptionDetails[ optionGroup ].options) {
+																var optionDetails = r.skuOptionDetails[ optionGroup ].options[ index ];
+																
+																// This default dersion will just add the 'disabled' attribute to ones with no inventory
+																if(optionDetails.selectedQATS <= 0) {
+																	$(thisOptionSelector).closest('.ajax-product-options').find('option[value=' + optionDetails.optionID + ']').attr('disabled', 'disabled');	
+																} else {
+																	$(thisOptionSelector).closest('.ajax-product-options').find('option[value=' + optionDetails.optionID + ']').removeAttr('disabled');
+																}
+																
+															}
+														} 
+													}
+												}
+											});
+											
+										});
+											
+									});
+									
+								})( jQuery );
+							</script>
+						</div>
+						
+						<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="selectedOptionIDList" />
+						
+						<!--- Quantity --->
+						<div class="control-group">
+	    					<label class="control-label" for="quantity">Quantity</label>
+	    					<div class="controls">
+	    						
+								<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
+								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
+								
+	    					</div>
+	  					</div>
+						
+						<!--- Add to Cart Button --->
+						<button type="submit" class="btn">Add To Cart</button>
+					</form>
+					<!--- END: ADD TO CART EXAMPLE 2 --->
+						
+				</div>
+			<cfelse>
+				<div class="span12"><p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p></div>
+			</cfif>		
+		</div>
+		<!--- End: Add to Cart Examples --->
+		
 		<hr />
 		
 		<!--- Start: Add Product Review Example --->
@@ -498,7 +628,6 @@ Notes:
 		</div>
 		<!--- End: Add Product Review Example --->
 		
-		
 		<hr />
 			
 		<!--- Start: Related Products Example --->
@@ -564,7 +693,7 @@ Notes:
 			<div class="span12">
 				<h5>Image Gallery Example</h5>
 				
-				<cfset local.galleryDetails = $.slatwall.product().getImageGalleryArray() />
+				<cfset galleryDetails = $.slatwall.product().getImageGalleryArray() />
 				
 				<!---[ DEVELOPER NOTES ]																		
 																												
@@ -599,19 +728,19 @@ Notes:
 				--->
 				
 				<!--- If the product has more than the default image assigned, let's display all images --->
-				<cfif arraylen(local.galleryDetails) GT "1">
+				<cfif arraylen(galleryDetails) GT "1">
 					<ul class="thumbnails">
-						<cfloop array="#local.galleryDetails#" index="local.image">
+						<cfloop array="#galleryDetails#" index="image">
 							<!---[ DEVELOPER NOTES ]																		
 								Now that we are inside of the loop of images being returned, you have access to the			
-								following detials insilde of the local.image struct that came back in the array				
+								following detials insilde of the image struct that came back in the array				
 							--->
 							<li class="span3">
-								<a href="#local.image.resizedimagepaths[2]#" target="_blank" class="thumbnail" title="zoom">
-									<img src="#local.image.resizedimagepaths[1]#" alt="#local.image.name#">
+								<a href="#image.resizedimagepaths[2]#" target="_blank" class="thumbnail" title="zoom">
+									<img src="#image.resizedimagepaths[1]#" alt="#image.name#">
 									<i class="icon-zoom-in"></i>
 									<span class="pull-right">
-										#local.image.name#
+										#image.name#
 									</span>
 								</a>
 							</li>
