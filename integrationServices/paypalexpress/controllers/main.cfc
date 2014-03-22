@@ -60,6 +60,7 @@ component accessors="true" output="false" {
 	this.anyAdminMethods='';
 	
 	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'main');
 	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -90,6 +91,8 @@ component accessors="true" output="false" {
 		param name="rc.token" default="";
 		
 		var paymentMethod = getPaymentService().getPaymentMethod( rc.paymentMethodID );
+
+		arguments.rc.$.slatwall.setPublicPopulateFlag( true );
 		
 		if(!isNull(paymentMethod) && paymentMethod.getIntegration().getIntegrationPackage() eq "paypalexpress") {
 			
@@ -107,7 +110,7 @@ component accessors="true" output="false" {
 				paymentData.newOrderPayment.amount = responseData.PAYMENTREQUEST_0_AMT;
 				paymentData.newOrderPayment.paymentMethod.paymentMethodID = paymentMethod.getPaymentMethodID();
 				paymentData.newOrderPayment.order.orderID = rc.$.slatwall.cart().getOrderID();
-				paymentData.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
+				paymentData.newOrderPayment.orderPaymentType.typeID = '8aac86674079189801407a81b456000a';
 				paymentData.newOrderPayment.providerToken = responseData.token & '~' & responseData.payerID;
 				
 				var order = getOrderService().processOrder( rc.$.slatwall.cart(), paymentData, 'addOrderPayment');
