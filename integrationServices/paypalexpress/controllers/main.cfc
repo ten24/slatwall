@@ -87,7 +87,7 @@ component accessors="true" output="false" {
 	}
 	
 	public void function processResponse( required struct rc ) {
-		param name="rc.paymentMethodID" default="8aac86674079189801407a81b456000a";
+		param name="rc.paymentMethodID" default="";
 		param name="rc.token" default="";
 		
 		var paymentMethod = getPaymentService().getPaymentMethod( rc.paymentMethodID );
