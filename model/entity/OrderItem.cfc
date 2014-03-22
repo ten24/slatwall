@@ -174,7 +174,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     public numeric function getCombinedTaxRate() {
     	var taxRate = 0;
     	for(var i=1; i <= ArrayLen(getAppliedTaxes()); i++) {
-    		taxRate = precisionEvaluate('taxRate + getAppliedTaxes()[i].getTaxRate()');
+    		taxRate = precisionEvaluate(taxRate + getAppliedTaxes()[i].getTaxRate());
     	}
     	
     	return taxRate;
@@ -191,29 +191,29 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var discountAmount = 0;
 		
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = precisionEvaluate('discountAmount + getAppliedPromotions()[i].getDiscountAmount()');
+			discountAmount = precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 		
 		return discountAmount;
 	}
 	
 	public numeric function getExtendedPrice() {
-		return precisionEvaluate('getPrice() * val(getQuantity())');
+		return precisionEvaluate(getPrice() * val(getQuantity()));
 	}
 	
 	public numeric function getExtendedSkuPrice() {
-		return precisionEvaluate('getSkuPrice() * getQuantity()');
+		return precisionEvaluate(getSkuPrice() * getQuantity());
 	}
 	
 	public numeric function getExtendedPriceAfterDiscount() {
-		return precisionEvaluate('getExtendedPrice() - getDiscountAmount()');
+		return precisionEvaluate(getExtendedPrice() - getDiscountAmount());
 	}
 	
 	public numeric function getTaxAmount() {
 		var taxAmount = 0;
 		
 		for(var i=1; i<=arrayLen(getAppliedTaxes()); i++) {
-			taxAmount = precisionEvaluate('taxAmount + getAppliedTaxes()[i].getTaxAmount()');
+			taxAmount = precisionEvaluate(taxAmount + getAppliedTaxes()[i].getTaxAmount());
 		}
 		
 		return taxAmount;
@@ -252,7 +252,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public numeric function getItemTotal() {
-		return precisionEvaluate('getTaxAmount() + getExtendedPriceAfterDiscount()');
+		return precisionEvaluate(getTaxAmount() + getExtendedPriceAfterDiscount());
 	}
 	
 	

@@ -230,7 +230,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived())) {
-				amountReceived = precisionEvaluate('amountReceived + getPaymentTransactions()[i].getAmountReceived()');	
+				amountReceived = precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived());	
 			}
 		}
 				
@@ -242,7 +242,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountCredited())) {
-				amountCredited = precisionEvaluate('amountCredited + getPaymentTransactions()[i].getAmountCredited()');	
+				amountCredited = precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited());	
 			}
 		}
 			
@@ -255,7 +255,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(isNull(getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) || !getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) {
-				amountAuthorized = precisionEvaluate('amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized()');	
+				amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());	
 			}
 		}
 			
@@ -266,7 +266,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unauthroized = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate('getAmount() - getAmountReceived() - getAmountAuthorized()');
+			unauthroized = precisionEvaluate(getAmount() - getAmountReceived() - getAmountAuthorized());
 		}
 		
 		return unauthroized;
@@ -276,7 +276,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncaptured = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncaptured = precisionEvaluate('getAmountAuthorized() - getAmountReceived()');
+			uncaptured = precisionEvaluate(getAmountAuthorized() - getAmountReceived());
 		}
 		
 		return uncaptured;
@@ -286,7 +286,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unreceived = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unreceived = precisionEvaluate('getAmount() - getAmountReceived()');
+			unreceived = precisionEvaluate(getAmount() - getAmountReceived());
 		}
 		
 		return unreceived;
@@ -296,7 +296,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncredited = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = precisionEvaluate('getAmount() + getAmountCredited()');
+			uncredited = precisionEvaluate(getAmount() + getAmountCredited());
 		}
 		
 		return uncredited;
@@ -428,7 +428,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			var total = getOrder().getTotal();
 			var paymentTotal = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrder().getOrderID());
 			
-			variables.orderAmountNeeded = precisionEvaluate('total - paymentTotal');
+			variables.orderAmountNeeded = precisionEvaluate(total - paymentTotal);
 		}
 		
 		return variables.orderAmountNeeded;

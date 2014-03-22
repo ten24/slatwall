@@ -572,7 +572,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 			
 			if(orderPayment.getStatusCode() eq "opstActive") {
-				var totalReceived = precisionEvaluate('orderPayment.getAmountReceived() - orderPayment.getAmountCredited()');
+				var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
 				if(totalReceived gt 0) {
 					var transactionData = {
 						amount = totalReceived,
@@ -811,7 +811,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// Call the placeOrderTransactionType for the order payment
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
 							
-								amountAuthorizeCreditReceive = precisionEvaluate('amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()');
+								amountAuthorizeCreditReceive = precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited());
 							}
 						}
 						
@@ -980,7 +980,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 			
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
-			if(precisionEvaluate('arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()') == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
+			if(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
 				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostClosed") );
 				
 			// The default case is just to set it to processing
@@ -1025,7 +1025,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 						
 						if(!orderPayment.hasErrors()) {
-							amountToBeCaptured = precisionEvaluate('amountToBeCaptured - transactionData.amount');
+							amountToBeCaptured = precisionEvaluate(amountToBeCaptured - transactionData.amount);
 						}
 					}
 				}
@@ -1257,7 +1257,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 				
-				var thisToCharge = precisionEvaluate('arguments.processObject.getAmount() - totalAmountCharged');
+				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
 				
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
@@ -1284,7 +1284,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					precisionEvaluate('totalAmountCharged + paymentTransaction.getAmountReceived()');
+					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
 				}
 				
 			}
