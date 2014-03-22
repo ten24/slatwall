@@ -89,7 +89,7 @@ Notes:
 							<td>#orderItem.getSku().getSkuDefinition()#</td>
 							<td>#orderItem.getQuantity()#</td>
 							<td>#orderItem.getQuantityDelivered()#</td>
-							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#precisionEvaluate('orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity()')#" class="span1 number" /></td>
+							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#precisionEvaluate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity())#" class="span1 number" /></td>
 							<td><input type="text" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number" /></td>
 							<!--- IF THIS IS AN EVENT ORDER ITEM
 								ADD CHECKBOX THAT SAYS CANCEL REGISTRATION
