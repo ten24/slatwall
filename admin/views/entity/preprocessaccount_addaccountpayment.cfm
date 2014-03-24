@@ -150,22 +150,26 @@ Notes:
 		<table class="table table-striped table-bordered table-condensed">
 			<tr>
 				<th>Order Number</th>
-				<th>Order Payment Amount</th>
+				<th>Term</th>
+				<th>Order Payment Recieved</th>
 				<th>Amount Unrecieved</th>
+				<th>Due Date</th>
 				<th>Amount to Apply</th>
 			</tr>
 				
 			<cfloop array="#orderList.getRecords()#" index="orderItem">
 				<tr>
-					<td><!---#orderItem.getOrderNumber()#---></td>
-					<td><!---#orderItem.getPaymentAmountReceivedTotal()#---></td>
-					<td><!---#orderItem.getPaymentAmountDue()#---></td>
+					<td>#orderItem.getOrder().getOrderNumber()#</td>
+					<td>#orderItem.getPaymentTerm().getPaymentTermName()#</td>
+					<td>#orderItem.getOrder().getPaymentAmountReceivedTotal()#</td>
+					<td>#orderItem.getOrder().getPaymentAmountDue()#</td>
+					<td>#orderItem.getPaymentDueDate()#</td>
 					<td><input type="text" name="toBePaid" value="" class="span1" /></td>
 				</tr>
 			</cfloop>
 				
 			<tr>
-				<td colspan="3"><strong>(Additional Unassigned Amount)</td>
+				<td colspan="5"><strong>(Additional Unassigned Amount)</td>
 				<td><input type="text" name="toBePaid" value="" class="span1" /></td>
 			</tr>	
 				

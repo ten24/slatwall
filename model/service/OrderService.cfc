@@ -541,7 +541,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
-		if(!newOrderPayment.hasErrors() && newOrderPayment.getOrder.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
+		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
+
+		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
 		}
 		
@@ -1666,9 +1668,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderPayment = save(arguments.orderPayment, arguments.data, arguments.context);
 		
 		var newPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();
-		
+
 		//Only do this check if the order has already been placed, and this a term payment
-		if(orderPayment.getPaymentMethodType() == 'termPayment' && orderPayment.getOrder().getOrderStatusType() != 'ostNotPlaced' && oldPaymentTermID != newPaymentTermID) {
+		if(orderPayment.getPaymentMethodType() == 'termPayment' && orderPayment.getOrder().getOrderStatusType().getSystemCode() != 'ostNotPlaced' && oldPaymentTermID != newPaymentTermID && !isNull(orderPayment.getPaymentTerm())) {
 			if(orderPayment.getCreatedDateTime() > orderPayment.getOrder().getOrderOpenDateTime()) {
 				orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate ( startDate=orderPayment.getCreatedDateTime() ) );
 			} else {
