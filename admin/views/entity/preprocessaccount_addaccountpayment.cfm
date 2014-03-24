@@ -58,7 +58,7 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				
+				<cf_HibachiPropertyList divClass="span6">
 				<!--- Add a hidden field for the accountID --->
 				<input type="hidden" name="newAccountPayment.account.accountID" value="#rc.account.getAccountID()#" />
 				
@@ -66,7 +66,8 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" fieldName="newAccountPayment.currencyCode" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethodID" edit="#rc.edit#">
-	
+				</cf_HibachiPropertyList>
+				<cf_HibachiPropertyList divClass="span6">
 				<!--- New Payment Method --->
 				<cf_HibachiDisplayToggle selector="select[name='accountPaymentMethodID']" showValues="" loadVisable="#!len(rc.processObject.getAccountPaymentMethodID())#">
 					
@@ -136,7 +137,7 @@ Notes:
 						</cf_HibachiDisplayToggle>	
 					</cf_HibachiDisplayToggle>
 				</cf_HibachiDisplayToggle>
-				
+				</cf_HibachiPropertyList>
 			</cf_HibachiPropertyList>
 			
 		</cf_HibachiPropertyRow>
@@ -162,9 +163,7 @@ Notes:
 			</cfloop>
 				
 			<tr>
-				<td>(Account)</td>
-				<td>(Account)</td>
-				<td>(Account)</td>
+				<td colspan="3"><strong>(Additional Unassigned Amount)</td>
 				<td><input type="text" name="toBePaid" value="" class="span1" /></td>
 			</tr>	
 				
