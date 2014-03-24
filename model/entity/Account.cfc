@@ -304,7 +304,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			variables.termOrderPaymentsByDueDateSmartList = getService('orderService').getOrderPaymentSmartList();
 			variables.termOrderPaymentsByDueDateSmartList.addFilter('order.account.accountId', this.getAccountID());
 			variables.termOrderPaymentsByDueDateSmartList.addFilter('paymentMethod.paymentMethodType', 'termPayment');
-			variables.termOrderPaymentsByDueDateSmartList.addOrderBy('paymentDueDate|ASC');
+			variables.termOrderPaymentsByDueDateSmartList.addOrder('paymentDueDate|ASC');
 		}
 		return variables.termOrderPaymentsByDueDateSmartList;
 	}

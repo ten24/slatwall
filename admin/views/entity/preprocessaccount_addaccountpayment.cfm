@@ -142,7 +142,9 @@ Notes:
 			
 		</cf_HibachiPropertyRow>
 		
-		<cfset orderList = rc.account.getOrdersSmartList() />
+		<cfset orderList = rc.account.getTermOrderPaymentsByDueDateSmartList() />
+		
+		<!---<cfdump var=#orderList# top=3 />--->
 		
 		<br /><br />
 		<table class="table table-striped table-bordered table-condensed">
@@ -155,9 +157,9 @@ Notes:
 				
 			<cfloop array="#orderList.getRecords()#" index="orderItem">
 				<tr>
-					<td>#orderItem.getOrderNumber()#</td>
-					<td>#orderItem.getPaymentAmountReceivedTotal()#</td>
-					<td>#orderItem.getPaymentAmountDue()#</td>
+					<td><!---#orderItem.getOrderNumber()#---></td>
+					<td><!---#orderItem.getPaymentAmountReceivedTotal()#---></td>
+					<td><!---#orderItem.getPaymentAmountDue()#---></td>
 					<td><input type="text" name="toBePaid" value="" class="span1" /></td>
 				</tr>
 			</cfloop>
