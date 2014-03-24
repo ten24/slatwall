@@ -53,6 +53,7 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="shippingAddressPostalCode" ormtype="string";
 	property name="lastRequestDateTime" ormtype="timestamp";
 	property name="lastRequestIPAddress" ormtype="string";
+	property name="rbLocale" ormtype="string";
 	
 	// Related Entities
 	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";

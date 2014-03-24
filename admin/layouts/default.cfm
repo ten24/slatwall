@@ -61,6 +61,7 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.2.3.2.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">
+    	<link href="#request.slatwallScope.getBaseURL()#/assets/Fonts/css/flag-icon.css" rel="stylesheet">
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
@@ -199,9 +200,9 @@ Notes:
 							</cf_HibachiDividerHider>
 						</cf_HibachiActionCallerDropdown>
 					</ul>
-					<cfif $.slatwall.getLoggedInAsAdminFlag()>
-						<div class="pull-right">
-							<ul class="nav">
+					<div class="pull-right">
+						<ul class="nav">
+							<cfif $.slatwall.getLoggedInAsAdminFlag()>
 								<cf_HibachiActionCallerDropdown title="" icon="user icon-white" dropdownclass="pull-right" type="nav">
 									<cf_HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
 									<cf_HibachiActionCaller action="admin:main.logout" type="list">
@@ -210,12 +211,20 @@ Notes:
 									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">Developer Docs</a></li>
 									<cf_HibachiActionCaller action="admin:main.about" type="list">
 								</cf_HibachiActionCallerDropdown>
-							</ul>
+							</cfif>
+							<cf_HibachiActionCallerDropdown title="<i class='flag-icon flag-icon-#lcase(listLast($.slatwall.getRBLocale(), '_' ))#'></i>" type="nav">
+								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" type="list">
+								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" type="list">
+								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" type="list">
+								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" type="list">
+							</cf_HibachiActionCallerDropdown>
+						</ul>
+						<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<form name="search" class="navbar-search" action="/" onSubmit="return false;">
 								<input id="global-search" type="text" name="serach" class="search-query span2" placeholder="Search">
 							</form>
-						</div>
-					</cfif>
+						</cfif>
+					</div>
 				</div>
 			</div>
 		</div>
