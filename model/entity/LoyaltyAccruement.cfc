@@ -95,8 +95,7 @@ component displayname="LoyaltyAccruement" entityname="SlatwallLoyaltyAccruement"
 	
 	public array function getPointTypeOptions() {
 		return [
-			{name=rbKey('entity.loyaltyAccruement.pointType.fixed'), value="fixed"},
-			{name=rbKey('entity.loyaltyAccruement.pointType.pointPerDollar'), value="pointPerDollar"}
+			{name=rbKey('entity.loyaltyAccruement.pointType.fixed'), value="fixed"}
 		];
 	}
 	
