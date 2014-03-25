@@ -109,8 +109,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							authorizations[a].createdDateTime = thisData.createdDateTime;
 							authorizations[a].providerTransactionID = thisData.providerTransactionID;
 						}
-						authorizations[a].amountAuthorized = precisionEvaluate('authorizations[a].amountAuthorized + thisData.amountAuthorized');
-						authorizations[a].amountReceived = precisionEvaluate('authorizations[a].amountReceived + thisData.amountReceived');
+						authorizations[a].amountAuthorized = precisionEvaluate(authorizations[a].amountAuthorized + thisData.amountAuthorized);
+						authorizations[a].amountReceived = precisionEvaluate(authorizations[a].amountReceived + thisData.amountReceived);
 						thisDataAdded = true;
 						break;
 					}
@@ -124,7 +124,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var a=1; a<=arrayLen(authorizations); a++) {
 			if(authorizations[a].amountAuthorized gt authorizations[a].amountReceived) {
 				sortedFound = false;
-				authorizations[a].chargeableAmount = precisionEvaluate('authorizations[a].amountAuthorized - authorizations[a].amountReceived');
+				authorizations[a].chargeableAmount = precisionEvaluate(authorizations[a].amountAuthorized - authorizations[a].amountReceived);
 				for(var s=1; s<=arrayLen(sortedAuths); s++) {
 					if(sortedAuths[s].createdDateTime gt authorizations[a].createdDateTime) {
 						arrayInsertAt(sortedAuths, s, authorizations[a]);
@@ -164,7 +164,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(!structKeyExists(paymentMethodMaxAmount, thisPaymentMethodID)) {
 						paymentMethodMaxAmount[thisPaymentMethodID] = arguments.order.getFulfillmentChargeAfterDiscountTotal();
 					}
-					paymentMethodMaxAmount[thisPaymentMethodID] = precisionEvaluate('paymentMethodMaxAmount[thisPaymentMethodID] + (arguments.order.getOrderItems()[i].getExtendedPriceAfterDiscount() + arguments.order.getOrderItems()[i].getTaxAmount())');
+					paymentMethodMaxAmount[thisPaymentMethodID] = precisionEvaluate(paymentMethodMaxAmount[thisPaymentMethodID] + (arguments.order.getOrderItems()[i].getExtendedPriceAfterDiscount() + arguments.order.getOrderItems()[i].getTaxAmount()));
 				}
 			}
 			

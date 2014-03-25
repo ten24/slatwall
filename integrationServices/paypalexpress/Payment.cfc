@@ -69,8 +69,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	public any function processExternal( required any requestBean ){
 		
 		var orderPayment = getService("orderService").getOrderPayment( requestBean.getOrderPaymentID() );
-		var paymentMethod = orderPaymentID.getPaymentMethod();
-		
+		var paymentMethod = orderPayment.getPaymentMethod();		
 		var responseData = {};
 		
 		var httpRequest = new http();
@@ -89,8 +88,10 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		httpRequest.addParam(type="formfield", name="pwd", value=paymentMethod.getIntegration().setting('paypalAccountPassword'));
 		httpRequest.addParam(type="formfield", name="signature", value=paymentMethod.getIntegration().setting('paypalAccountSignature'));									// Dynamic
 		httpRequest.addParam(type="formfield", name="version", value="98.0");
-		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_PAYMENTACTION", value="Authorization");
-		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#requestBean.getAmount()#");
+
+		// order params
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_PAYMENTACTION", value="SALE");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#orderPayment.getAmount()#");
 		httpRequest.addParam(type="formfield", name="PAYERID", value="#listLast(orderPayment.getProviderToken(), "~")#");
 		httpRequest.addParam(type="formfield", name="token", value="#listFirst(orderPayment.getProviderToken(), "~")#");
 		
@@ -105,29 +106,28 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		}
 		
 		var response = getTransient("externalTransactionResponseBean");
-	
+
 		// Set the response Code
 		response.setStatusCode( responseData.ack );
-		
-		// Check to see if it was successful
-		if(responseData.ack != "Success") {
+
+		// Check to see if it was successful (Success or SuccessWithWarning)
+		if( !findNoCase("success",responseData.ack) ) {
 			// Transaction did not go through
-			response.addError(responseData.reasonCode, responseData.reasonCode);
+			response.addError(responseData.L_ERRORCODE0, responseData.L_LONGMESSAGE0);
 		} else {
-			response.setAmountReceived( responseData.PAYMENTREQUEST_0_AMT );
+			response.setAmountReceived( responseData.PAYMENTINFO_0_AMT );
+			response.setTransactionID( responseData.CORRELATIONID );
+			response.setAuthorizationCode( responseData.TOKEN );
+			response.setSecurityCodeMatchFlag( true );
+			response.setAVSCode( "Y" );
 		}
-		
-		response.setTransactionID( responseData.CORRELATIONID );
-		response.setAuthorizationCode( responseData.TOKEN );
-		response.setSecurityCodeMatch( true );
-		response.setAVSCode( "Y" );
 		
 		return response;
 	}
 	
 	public struct function getInitiatePaymentData( required any paymentMethod, required any order ) {
-		
 		var responseData = {};
+		var returnURL = paymentMethod.getIntegration().setting('externalPaymentReturnURL') & "?slatAction=paypalexpress:main.processResponse";
 		
 		var httpRequest = new http();
 		httpRequest.setMethod("POST");
@@ -141,20 +141,35 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		httpRequest.setResolveurl( false );
 		
 		httpRequest.addParam(type="formfield", name="method", value="setExpressCheckout");
-		httpRequest.addParam(type="formfield", name="paymentAction", value="sale");
 		httpRequest.addParam(type="formfield", name="user", value=arguments.paymentMethod.getIntegration().setting('paypalAccountUser'));
 		httpRequest.addParam(type="formfield", name="pwd", value=arguments.paymentMethod.getIntegration().setting('paypalAccountPassword'));
 		httpRequest.addParam(type="formfield", name="signature", value=arguments.paymentMethod.getIntegration().setting('paypalAccountSignature'));
 		httpRequest.addParam(type="formfield", name="version", value="98.0");
-		httpRequest.addParam(type="formfield", name="paymentRequest_0_amt", value="#arguments.order.getTotal()#");
-		httpRequest.addParam(type="formfield", name="paymentRequest_0_currencyCode", value="#arguments.order.getCurrencyCode()#");
-		httpRequest.addParam(type="formfield", name="noShipping", value="0");																							// Dynamic
-		httpRequest.addParam(type="formfield", name="allowNote", value="0");																							// Dynamic
-		//httpRequest.addParam(type="formfield", name="hdrImg", value="");
+
+		// line items
+		for( var i=1; i <= arrayLen(arguments.order.getOrderItems()); ++i){
+			var orderItem = arguments.order.getOrderItems()[i];
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NAME#i-1#", value="#orderItem.getSku().getProduct().getTitle()#");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NUMBER#i-1#", value="#orderItem.getSku().getSkuCode()#");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i-1#", value="#orderItem.getPrice()#");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i-1#", value="#orderItem.getQuantity()#");
+		}
+
+		// cart totals
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_PAYMENTACTION", value="SALE");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_ITEMAMT", value="#arguments.order.getSubTotal()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_TAXAMT", value="#arguments.order.getTaxTotal()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_SHIPPINGAMT", value="#arguments.order.getFulfillmentTotal()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#arguments.order.getTotal()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_CURRENCYCODE", value="#arguments.order.getCurrencyCode()#");
+
+		//httpRequest.addParam(type="formfield", name="noShipping", value="0");
+		httpRequest.addParam(type="formfield", name="allowNote", value="0");
+		httpRequest.addParam(type="formfield", name="hdrImg", value=arguments.paymentMethod.getIntegration().setting('paypalHeaderImage'));
 		httpRequest.addParam(type="formfield", name="email", value=arguments.paymentMethod.getIntegration().setting('paypalAccountEmail'));
-		httpRequest.addParam(type="formfield", name="returnURL", value="#request.slatwallScope.getURL()#");		// Dynamic
+		httpRequest.addParam(type="formfield", name="returnURL", value="#returnURL#");
 		httpRequest.addParam(type="formfield", name="cancelURL", value=paymentMethod.getIntegration().setting('cancelURL'));
-		
+
 		var response = httpRequest.send().getPrefix();
 		
 		if(structKeyExists(response, "filecontent") && len(response.fileContent)) {
@@ -164,7 +179,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				responseData[listFirst(item,"=")] = listRest(item,"=");
 			}
 		}
-		
+
 		return responseData;
 	}
 	

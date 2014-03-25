@@ -69,6 +69,8 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
+	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
@@ -278,6 +280,42 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "orderPayment");
 	}
+
+	// Order Fulfillment (many-to-one)
+	public void function setOrderFulfillment(required any orderFulfillment) {
+		variables.orderFulfillment = arguments.orderFulfillment;
+		if(isNew() or !arguments.orderFulfillment.hasAttributeValue( this )) {
+			arrayAppend(arguments.orderFulfillment.getAttributeValues(), this);
+		}
+	}
+	public void function removeOrderFulfillment(any orderFulfillment) {
+		if(!structKeyExists(arguments, "orderFulfillment")) {
+			arguments.orderFulfillment = variables.orderFulfillment;
+		}
+		var index = arrayFind(arguments.orderFulfillment.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderFulfillment.getAttributeValues(), index);
+		}
+		structDelete(variables, "orderFulfillment");
+	}
+
+	// Order Delivery (many-to-one)
+	public void function setOrderDelivery(required any orderDelivery) {
+		variables.orderDelivery = arguments.orderDelivery;
+		if(isNew() or !arguments.orderDelivery.hasAttributeValue( this )) {
+			arrayAppend(arguments.orderDelivery.getAttributeValues(), this);
+		}
+	}
+	public void function removeOrderDelivery(any orderDelivery) {
+		if(!structKeyExists(arguments, "orderDelivery")) {
+			arguments.orderDelivery = variables.orderDelivery;
+		}
+		var index = arrayFind(arguments.orderDelivery.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderDelivery.getAttributeValues(), index);
+		}
+		structDelete(variables, "orderDelivery");
+	}	
 	
 	// Product (many-to-one)
 	public void function setProduct(required any product) {

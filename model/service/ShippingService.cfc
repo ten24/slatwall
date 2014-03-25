@@ -333,16 +333,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
 				case "increasePercentage":
-					returnAmount = precisionEvaluate('arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount)');
+					returnAmount = precisionEvaluate(arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
 					break;
 				case "decreasePercentage":
-					returnAmount = precisionEvaluate('arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount)');
+					returnAmount = precisionEvaluate(arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
 					break;
 				case "increaseAmount":
-					returnAmount = precisionEvaluate('arguments.originalAmount + shippingMethodRateAdjustmentAmount');
+					returnAmount = precisionEvaluate(arguments.originalAmount + shippingMethodRateAdjustmentAmount);
 					break;
 				case "decreaseAmount":
-					returnAmount = precisionEvaluate('arguments.originalAmount - shippingMethodRateAdjustmentAmount');
+					returnAmount = precisionEvaluate(arguments.originalAmount - shippingMethodRateAdjustmentAmount);
 					break;
 			}
 		}
