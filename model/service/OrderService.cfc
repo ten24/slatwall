@@ -112,31 +112,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return orderRequirementsList;
 	}
 	
-	public void function recalculateOrderAmounts(required any order) {
-		
-		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
-			
-			// Loop over the orderItems to see if the skuPrice Changed
-			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
-				for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-					if(listFindNoCase("oitSale,oitDeposit",arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode()) && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
-						arguments.order.getOrderItems()[i].setPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
-						arguments.order.getOrderItems()[i].setSkuPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
-					}
-				}
-			}
-			
-			// First Re-Calculate the 'amounts' base on price groups
-			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
-			
-			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
-			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
-			
-			// Re-Calculate tax now that the new promotions and price groups have been applied
-			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
-		}
-	}
-	
 	public any function forceItemQuantityUpdate(required any order, required any messageBean) {
 		// Loop over each order Item
 		for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--)	{
@@ -714,7 +689,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			if(!arguments.order.hasPromotionCode( pc )) {
 				arguments.order.addPromotionCode( pc );
-				recalculateOrderAmounts(order=arguments.order);
+				this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
 			}
 		}		
 		
@@ -941,7 +916,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getHibachiDAO().save( returnOrder );
 		
 		// Recalculate the order amounts for tax and promotions
-		recalculateOrderAmounts( returnOrder );
+		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
 		
 		// Check to see if we are attaching an referenced orderPayment
 		if(len(arguments.processObject.getRefundOrderPaymentID())) {
@@ -1273,6 +1248,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
+	public any function processOrder_updateOrderAmounts(required any order, struct data) {
+		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
+			
+			// Loop over the orderItems to see if the skuPrice Changed
+			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
+				for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+					if(listFindNoCase("oitSale,oitDeposit",arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode()) && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
+						arguments.order.getOrderItems()[i].setPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
+						arguments.order.getOrderItems()[i].setSkuPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
+					}
+				}
+			}
+			
+			// First Re-Calculate the 'amounts' base on price groups
+			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
+			
+			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
+			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
+			
+			// Re-Calculate tax now that the new promotions and price groups have been applied
+			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		}
+		return arguments.order;
+	}
 	
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
@@ -1815,7 +1814,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Recalculate the order amounts for tax and promotions
-			recalculateOrderAmounts(arguments.order);
+			arguments.order = this.processOrder( order, {}, 'updateOrderAmounts');
 			
 			// Make sure the auto-state stuff gets called.
 			arguments.order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
@@ -1867,7 +1866,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Recalculate the order amounts for tax and promotions
-			recalculateOrderAmounts( arguments.orderFulfillment.getOrder() );
+			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
 			
 		}
 		
@@ -1888,7 +1887,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Recalculate the order amounts for tax and promotions
-			recalculateOrderAmounts( arguments.orderItem.getOrder() );
+			this.processOrder( arguments.orderItem.getOrder(), {}, 'updateOrderAmounts' );
 		}
 		
 		return arguments.orderItem;
@@ -2020,7 +2019,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Recalculate the order amounts
-			recalculateOrderAmounts( order );
+			this.processOrder( order, {}, 'updateOrderAmounts' );
 			
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderItem );

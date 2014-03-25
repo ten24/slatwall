@@ -255,12 +255,40 @@
 	
 	public boolean function validate_dataType(required any object, required string propertyIdentifier, required any constraintValue) {
 		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		// Standard Validation DataTypes
 		if(listFindNoCase("any,array,binary,boolean,component,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode",arguments.constraintValue)) {
 			if(isNull(propertyValue) || isValid(arguments.constraintValue, propertyValue)) {
 				return true;
 			}
+			
+		// Custom CreditCardNumber DataTypes
 		} else if(listFindNoCase("creditCard,creditCardNumber",arguments.constraintValue)) {
-			return validate_mod10(argumentcollection=arguments);
+			var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+			if(isNull(propertyValue)) {
+				return true;
+			}
+			if(len(propertyValue) && isNumeric(propertyValue)) {
+				var nDigits = len(propertyValue);
+				var parity = nDigits MOD 2;
+				var digit = "";
+				var sum = 0;
+				
+				for(var i=0; i <= nDigits - 1; i=i+1) {
+					digit = mid(propertyValue, i+1, 1);
+					if ((i MOD 2) == parity) {
+						digit = digit * 2;
+						if (digit > 9) {
+							digit = digit - 9;
+						}
+					}
+					sum = sum + digit;
+				}
+				if (Not sum MOD 10){
+					return true;
+				}
+			}
+			return false;
 		} else {
 			throw("The validation file: #arguments.object.getClassName()#.json has an incorrect dataType constraint value of '#arguments.constraintValue#' for one of it's properties.  Valid values are: any,array,binary,boolean,component,creditCard,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode");
 		}
@@ -506,28 +534,4 @@
 		return false;
 	}
 
-	public boolean function validate_mod10(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		if(!isNull(propertyValue)) {
-			var nDigits = len(propertyValue);
-			var parity = nDigits MOD 2;
-			var digit = "";
-			var sum = 0;
-
-			for(var i=0; i <= nDigits - 1; i=i+1) {
-				digit = mid(propertyValue, i+1, 1);
-				if ((i MOD 2) == parity) {
-					digit = digit * 2;
-					if (digit > 9) {
-						digit = digit - 9;
-					}
-				}
-				sum = sum + digit;
-			}
-			if (Not sum MOD 10){
-				return true;
-			}
-		}
-		return false;
-	}
 }

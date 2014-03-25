@@ -77,7 +77,7 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 		}
 		
 		// Recaluclate Order Totals In Case something has changed
-		getOrderService().recalculateOrderAmounts(rc.$.slatwall.cart());
+		getOrderService().processOrder(rc.$.slatwall.cart(), {}, 'updateOrderAmounts');
 		
 		// get the list of requirements left for this order to be processed
 		rc.orderRequirementsList = getOrderService().getOrderRequirementsList(rc.$.slatwall.cart());
