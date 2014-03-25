@@ -46,16 +46,16 @@
 Notes:
 
 */
-component displayname="Comment Relationship" entityname="SlatwallCommentRelationship" table="SwCommentRelationship" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="commentService" {
+component displayname="Comment Relationship" entityname="SlatwallCommentRelationship" table="SwCommentRelationship" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="commentService" hb_permission="comment.commentRelationships" {
 	
 	// Persistent Properties
 	property name="commentRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="referencedRelationshipFlag" ormtype="boolean" default="false";
-	property name="referencedExpressionStart" ormtype="integer";
-	property name="referencedExpressionEnd" ormtype="integer";
-	property name="referencedExpressionEntity" ormtype="string";
-	property name="referencedExpressionProperty" ormtype="string";
-	property name="referencedExpressionValue" ormtype="string";
+	property name="referencedRelationshipFlag" hb_populateEnabled="false" ormtype="boolean" default="false";
+	property name="referencedExpressionStart" hb_populateEnabled="false" ormtype="integer";
+	property name="referencedExpressionEnd" hb_populateEnabled="false" ormtype="integer";
+	property name="referencedExpressionEntity" hb_populateEnabled="false" ormtype="string";
+	property name="referencedExpressionProperty" hb_populateEnabled="false" ormtype="string";
+	property name="referencedExpressionValue" hb_populateEnabled="false" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="comment" cfc="Comment" fieldtype="many-to-one" fkcolumn="commentID";
