@@ -54,7 +54,7 @@ Notes:
 		<cfargument name="publicFlag" type="boolean" required="false" />
 
 		<cftry>
-			<cfset hqlParams = [arguments.primaryIDValue] />
+			<cfset var hqlParams = [arguments.primaryIDValue] />
 			
 			<cfset var hql="SELECT NEW MAP(
 				scr.commentRelationshipID as commentRelationshipID,

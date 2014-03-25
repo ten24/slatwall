@@ -1,4 +1,12 @@
 {
+    "conditions":{
+    	"noPaymentAmountNeeded":{
+    	    "order.orderPaymentAmountNeeded":{"eq":0}
+    	}
+	},
+	"properties":{
+		"newOrderPayment.dynamicAmountFlag":	[{"conditions":"noPaymentAmountNeeded","eq":false}]
+	},
 	"populatedPropertyValidation":{
 		"newOrderPayment":		[{"validate":false}]
 	}

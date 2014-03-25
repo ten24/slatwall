@@ -169,5 +169,23 @@ Notes:
 			DELETE FROM SwAccount WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.oldAccountID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="getNewAccountLoyaltyNumber" output="false">
+		<cfargument name="loyaltyID" type="string" required="true" />
+		
+		<cfset var accountLoyaltyNumber="1234" />
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			SELECT MAX(accountLoyaltyNumber) as maxAccountLoyaltyNumber FROM SwAccountLoyalty WHERE loyaltyID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.loyaltyID#" />	
+		</cfquery>
+		
+		<cfif rs.maxAccountLoyaltyNumber gt 0 >
+			<cfset accountLoyaltyNumber = rs.maxAccountLoyaltyNumber + 1 />
+		</cfif>
+		
+		<cfreturn accountLoyaltyNumber />
+	</cffunction>
+	
 </cfcomponent>
 

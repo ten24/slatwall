@@ -13,7 +13,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		var subsystemName = listFirst( arguments.action, ":" );
 		var sectionName = listFirst( listLast(arguments.action, ":"), "." );
-		var itemName = listLast( arguments.action, "." );
+		if(listLen(arguments.action, ".") eq 2) {
+			var itemName = listLast( arguments.action, "." );	
+		} else {
+			var itemName = 'default';
+		}
+		
 		var actionPermissions = getActionPermissionDetails();
 		
 		// Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on

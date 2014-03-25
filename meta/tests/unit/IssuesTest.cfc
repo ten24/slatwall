@@ -179,7 +179,7 @@ component extends="SlatwallUnitTestBase" {
 		assertFalse(accountHasErrors);
 		assert(account2HasErrors);
 	}
-	
+
 	public void function issue_1604() {
 		
 		var order = request.slatwallScope.getCart();
@@ -204,6 +204,7 @@ component extends="SlatwallUnitTestBase" {
 		var product  = request.slatwallScope.newEntity("Product");
 		request.slatwallScope.saveEntity( product );
 	}
+	
 }
 
 

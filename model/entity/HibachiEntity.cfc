@@ -58,62 +58,21 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Call the super populate to do all the standard logic
 		super.populate(argumentcollection=arguments);
 
-		// Get the assigned attributes
-		var assignedAttributeSets = getAssignedAttributeSetSmartList().getRecords();
-
-		var attributeType = replace(getEntityName(),"Slatwall","");
-		attributeType = lcase(left(attributeType, 1)) & right(attributeType, len(attributeType)-1);
-
 		// Loop over attribute sets
-		for(var ats=1; ats<=arrayLen(assignedAttributeSets); ats++) {
-
-			var attributes = assignedAttributeSets[ats].getAttributes();
-
-			for(var at=1; at<=arrayLen(attributes); at++) {
-
-				if(structKeyExists(arguments.data, attributes[at].getAttributeCode())) {
-
-					// Get the attribute value object, and update it
-					var av = getAttributeValue( attributes[at].getAttributeCode(), true);
-					av.setAttributeValue( data[ attributes[at].getAttributeCode() ]);
-					av.setAttribute( attributes[at] );
-					av.invokeMethod("set#attributeType#", {1=this});
-
-					// If this attribute value is new, then we can add it to the array
-					if(av.isNew()) {
-						this.addAttributeValue(av);
-					}
-
-					// Update the cache for this attribute value
-					getAttributeValuesByAttributeCodeStruct()[ attributes[at].getAttributeCode() ] = av;
-					getAttributeValuesByAttributeIDStruct()[ attributes[at].getAttributeID() ] = av;
-
+		for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
+			
+			// Loop over attributes
+			for(var attribute in attributeSet.getAttributes()) {
+				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
+					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], "") );
 				}
 			}
+			
 		}
 
 		// Return this object
 		return this;
 	}
-
-	/*
-
-	// @help overwrite parents _setProperty to enable formatType parsing
-	private void function _setProperty( required any name, any value, any formatType='' ){
-		
-		if( arguments.formatType EQ 'dateTime' ){
-			local.convertedJavaDateFormat = trim('#reReplace(reReplace(reReplace(setting("globalDateFormat"),"y\{1,4}","y"),"d\{1,2}","d"),"\m{1,2}","M")# #reReplace(reReplace(replace(setting("globalTimeFormat"),"tt","a"),"h\{2}","H"),"\m{1,2}","m")#');
-
-			try{
-				arguments.value = createObject('java','java.text.SimpleDateFormat').init(local.convertedJavaDateFormat).parse(arguments.value,createObject('java','java.text.ParsePosition').init(0));
-			}catch(any e){}
-		}
-		
-
-		super._setProperty(argumentCollection=arguments);
-	}
-	
-	*/
 
 	// @hint Returns an array of comments related to this entity
 	public array function getComments( boolean publicFlag ) {
@@ -123,6 +82,15 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			variables.comments = getService("commentService").getRelatedCommentsForEntity( argumentCollection=arguments );
 		}
 		return variables.comments;
+	}
+	
+	// @hint Returns an array of files related to this entity
+	public array function getFiles() {
+		if(!structKeyExists(variables, "files")) {
+			arguments.baseID = getPrimaryIDValue();
+			variables.files = getService("fileService").getRelatedFilesForEntity(argumentCollection=arguments);
+		}
+		return variables.files;
 	}
 
 	// @hint helper function to return a Setting
@@ -136,6 +104,10 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 
 	// Attribute Value
+	public boolean function hasAttributeCode( required string attributeCode ) {
+		return getService("hibachiService").getEntityHasAttributeByEntityName( getClassName(), arguments.attributeCode );
+	}
+	
 	public array function getAttributeValuesForEntity() {
 		if(!structKeyExists(variables, "attributeValuesForEntity")) {
 			variables.attributeValuesForEntity = [];
@@ -179,7 +151,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			newAttributeValue.setAttributeValueType( lcase( replace(getEntityName(),'Slatwall','') ) );
 			var thisAttribute = getService("attributeService").getAttributeByAttributeCode( arguments.attribute );
 			if(isNull(thisAttribute) && len(arguments.attribute) eq 32) {
-				thisAttribute = getService("attributeService").getAttributeByAttributeCode( arguments.attribute );
+				thisAttribute = getService("attributeService").getAttributeByAttributeID( arguments.attribute );
 			}
 			if(!isNull(thisAttribute)) {
 				newAttributeValue.setAttribute( thisAttribute );
@@ -200,6 +172,23 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 
 		return "";
+	}
+	
+	public any function setAttributeValue(required string attribute, required any value){
+		
+		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
+		attributeValueEntity.setAttributeValue( arguments.value );
+		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
+
+		// If this attribute value is new, then we can add it to the array
+		if(attributeValueEntity.isNew()) {
+			this.addAttributeValue( attributeValueEntity );
+		}
+
+		// Update the cache for this attribute value
+		getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
+		getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
+			
 	}
 
 	public any function getAssignedAttributeSetSmartList(){
@@ -269,6 +258,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return variables.emailTemplates;
 	}
+	
+	public string function getShortReferenceID( boolean createNewFlag=false ) {
+		return getService("dataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);
+	}
 
 }
-

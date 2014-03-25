@@ -53,6 +53,8 @@ Notes:
 		<cf_SlatwallSetting settingName="globalEncryptionKeySize" />
 		<cf_SlatwallSetting settingName="globalEncryptionKeyLocation" />
 		<cf_SlatwallSetting settingName="globalEncryptionService" />
+		<cf_SlatwallSetting settingName="globalNoSessionIPRegex" />
+		<cf_SlatwallSetting settingName="globalNoSessionPersistDefault" />
 		<cf_SlatwallSetting settingName="globalRemoteIDShowFlag" />
 		<cf_SlatwallSetting settingName="globalRemoteIDEditFlag" />
 	</cf_SlatwallSettingTable>

@@ -67,17 +67,64 @@
 			// Call any public slatAction methods that are found
 			if(len($.event('slatAction')) && listFirst($.event('slatAction'), ":") != "frontend") {
 				
+				// We need to pull out any redirectURL's for the form & url so they don't automatically get called
+				var redirectFormDetails = {};
+				var redirectURLDetails = {};
+				
+				if(structKeyExists(form, "fRedirectURL")) {
+					redirectFormDetails.fRedirectURL = form.fRedirectURL;
+					structDelete(form, "fRedirectURL");
+				} else if (structKeyExists(url, "fRedirectURL")) {
+					redirectURLDetails.fRedirectURL = url.fRedirectURL;
+					structDelete(url, "fRedirectURL");
+				}
+				if(structKeyExists(form, "sRedirectURL")) {
+					redirectFormDetails.sRedirectURL = form.sRedirectURL;
+					structDelete(form, "sRedirectURL");
+				} else if (structKeyExists(url, "sRedirectURL")) {
+					redirectURLDetails.sRedirectURL = url.sRedirectURL;
+					structDelete(url, "sRedirectURL");
+				}
+				if(structKeyExists(form, "redirectURL")) {
+					redirectFormDetails.redirectURL = form.redirectURL;
+					structDelete(form, "redirectURL");
+				} else if (structKeyExists(url, "redirectURL")) {
+					redirectURLDetails.redirectURL = url.redirectURL;
+					structDelete(url, "redirectURL");
+				}
+				
+				var allRedirects = redirectURLDetails;
+				structAppend(allRedirects, redirectFormDetails, true);
+				
 				// This allows for multiple actions to be called
 				var actionsArray = listToArray( $.event('slatAction') );
 				
 				// This loops over the actions that were passed in
 				for(var a=1; a<=arrayLen(actionsArray); a++) {
-				
+					
 					// Call the correct public controller
 					$.slatwall.doAction( actionsArray[a] );
 					
+					// If the action failed, break out of the loop so that we don't continue to try processing
+					if($.slatwall.hasFailureAction(actionsArray[a])) {
+						break;
+					}
 				}
 				
+				if(structKeyExists(allRedirects, "fRedirectURL") && arrayLen($.slatwall.getFailureActions())) {
+					endSlatwallRequest();
+					location(url=allRedirects.fRedirectURL, addtoken=false);
+				} else if (structKeyExists(allRedirects, "sRedirectURL") && !arrayLen($.slatwall.getFailureActions())) {
+					endSlatwallRequest();
+					location(url=allRedirects.sRedirectURL, addtoken=false);
+				} else if (structKeyExists(allRedirects, "redirectURL")) {
+					endSlatwallRequest();
+					location(url=allRedirects.redirectURL, addtoken=false);
+				}
+				
+				// Replace the form & url with the correct values
+				structAppend(form, redirectFormDetails);
+				structAppend(url, redirectURLDetails);
 			}
 			
 			// If we aren't on the homepage we can do our own URL inspection
@@ -145,9 +192,18 @@
 						
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
+							
 							var listingPageFilename = left($.event('path'), find("/#$.slatwall.setting('globalURLKeyProduct')#/", $.event('path'))-1);
 							listingPageFilename = replace(listingPageFilename, "/#$.event('siteID')#/", "", "all");
+							
+							if($.slatwall.setting('integrationMuraLookupListingContentObjects')) {
+								var listingPageContentBean = $.getBean("content").loadBy( filename=listingPageFilename, siteID=$.slatwall.getContent().getSite().getCMSSiteID() );
+								$.content().setPath(listingPageContentBean.getPath());
+								$.content().setContentID(listingPageContentBean.getContentID());	
+							}
+							
 							var crumbDataArray = $.getBean("contentManager").getActiveContentByFilename(listingPageFilename, $.event('siteid'), true).getCrumbArray();
+							
 						} else {
 							var crumbDataArray = $.getBean("contentManager").getCrumbList(contentID="00000000000000000000000000000000001", siteID=$.event('siteID'), setInheritance=false, path="00000000000000000000000000000000001", sort="asc");
 						}
@@ -512,14 +568,12 @@
 				param name="contentData.contentRestrictedContentDisplayTemplate" default="";
 				param name="contentData.contentRequirePurchaseFlag" default="";
 				param name="contentData.contentRequireSubscriptionFlag" default="";
+				
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentIncludeChildContentProductsFlag", settingValue=contentData.contentIncludeChildContentProductsFlag);
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentRestrictAccessFlag", settingValue=contentData.contentRestrictAccessFlag);
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentRestrictedContentDisplayTemplate", settingValue=contentData.contentRestrictedContentDisplayTemplate);
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentRequirePurchaseFlag", settingValue=contentData.contentRequirePurchaseFlag);
 				updateSlatwallContentSetting($=$, contentID=slatwallContent.getContentID(), settingName="contentRequireSubscriptionFlag", settingValue=contentData.contentRequireSubscriptionFlag);
-				
-				// Clear the settings cache (in the future this needs to be targeted)
-				$.slatwall.getService("settingService").clearAllSettingsCache();
 				
 				// If the "Add Sku" was selected, then we call that process method
 				if(structKeyExists(contentData, "addSku") && contentData.addSku && structKeyExists(contentData, "addSkuDetails")) {
@@ -529,7 +583,7 @@
 			}
 			
 			// Sync all content category assignments
-			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID') );
+			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID'), muraContentID=$.event('contentBean').getContentID() );
 			
 			endSlatwallRequest();
 		}
@@ -654,9 +708,6 @@
 			syncMuraPluginSetting( $=$, settingName="createDefaultPages", settingValue=getMuraPluginConfig().getSetting("createDefaultPages") );
 			syncMuraPluginSetting( $=$, settingName="superUserSyncFlag", settingValue=getMuraPluginConfig().getSetting("superUserSyncFlag") );
 			
-			// Clear the setting cache so that these new setting values get pulled in
-			$.slatwall.getService("settingService").clearAllSettingsCache();
-			
 			for(var i=1; i<=assignedSitesQuery.recordCount; i++) {
 				
 				var cmsSiteID = assignedSitesQuery["siteid"][i];
@@ -714,7 +765,7 @@
 					verifySlatwallRequest( $=$ );
 					
 					// Sync all missing content for the siteID
-					syncMuraContent( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID );
+					syncMuraContent( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID, lastUpdateOnlyFlag=false );
 					
 					// Sync all missing categories
 					syncMuraCategories( $=$, slatwallSiteID=threadData.slatwallSiteID, muraSiteID=threadData.cmsSiteID );
@@ -831,8 +882,15 @@
 		<cfargument name="$" />
 		<cfargument name="slatwallSiteID" type="any" required="true" />
 		<cfargument name="muraSiteID" type="string" required="true" />
+		<cfargument name="lastUpdateOnlyFlag" type="boolean" default="true" />
 		
 		<cflock name="slatwallSyncMuraContent_#arguments.muraSiteID#" timeout="60" throwontimeout="true">
+			
+			<cfset var lastUpdate = "" />
+			<cfif arguments.$.slatwall.getService('hibachiCacheService').hasCachedValue('integrationMura_contentSyncLastUpdate')>
+				<cfset lastUpdate = arguments.$.slatwall.getService('hibachiCacheService').getCachedValue('integrationMura_contentSyncLastUpdate') />
+			</cfif>
+			<cfset arguments.$.slatwall.getService('hibachiCacheService').setCachedValue('integrationMura_contentSyncLastUpdate', now()) />
 			
 			<cfset var parentMappingCache = {} />
 			<cfset var missingContentQuery = "" />
@@ -852,6 +910,10 @@
 				  LEFT JOIN
 				  	SwContent on tcontent.contentID = SwContent.cmsContentID AND SwContent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />
 				WHERE
+				<cfif len(lastUpdate) and arguments.lastUpdateOnlyFlag>
+					tcontent.lastupdate > <cfqueryparam cfsqltype="cf_sql_timestamp" value="#lastUpdate#" />
+				  AND
+				</cfif>
 					tcontent.active = <cfqueryparam cfsqltype="cf_sql_bit" value="1" />
 				  AND
 				  	tcontent.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraSiteID#" />
@@ -1074,17 +1136,17 @@
 	
 	<cffunction name="syncMuraContentCategoryAssignment">
 		<cfargument name="muraSiteID" type="string" required="true" />
+		<cfargument name="muraContentID" type="string" default="" />
 		
 		<cflock name="slatwallSyncMuraContentCategoryAssignment_#arguments.muraSiteID#" timeout="60" throwontimeout="true">
 			
 			<cfset var allMissingAssignments = "" />
 			<cfset var rs = "" />
 			
-			<!--- Get the missing assingments --->
-			<cfquery name="allMissingAssignments">
+			<!--- Check for missing assignments --->
+			<cfquery name="rs">
 				SELECT
-					SwContent.contentID,
-					SwCategory.categoryID
+					count(SwContent.contentID) as missingCount
 				FROM
 					tcontentcategoryassign
 				  INNER JOIN
@@ -1094,42 +1156,88 @@
 				  LEFT JOIN
 				  	SwContentCategory on SwContentCategory.contentID = SwContent.contentID AND SwContentCategory.categoryID = SwCategory.categoryID
 				WHERE
+				<cfif len(arguments.muraContentID)>
+					tcontentcategoryassign.contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraContentID#" />
+				  AND
+				</cfif>
 					SwContentCategory.contentID is null AND SwContentCategory.categoryID is null
 			</cfquery>
 			
-			<!--- Loop over missing assignments --->
-			<cfloop query="allMissingAssignments">
-				<cfquery name="rs">
-					INSERT INTO SwContentCategory (
-						contentID,
-						categoryID
-					) VALUES (
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.contentID#" />,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.categoryID#" />
-					)
+			<cfif rs.missingCount gt 0>
+				<!--- Get the missing assingments --->
+				<cfquery name="allMissingAssignments">
+					SELECT
+						SwContent.contentID,
+						SwCategory.categoryID
+					FROM
+						tcontentcategoryassign
+					  INNER JOIN
+					  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
+					  INNER JOIN
+					  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
+					  LEFT JOIN
+					  	SwContentCategory on SwContentCategory.contentID = SwContent.contentID AND SwContentCategory.categoryID = SwCategory.categoryID
+					WHERE
+						SwContentCategory.contentID is null AND SwContentCategory.categoryID is null
 				</cfquery>
-			</cfloop>
 				
-			<!--- Delete unneeded assignments --->
+				<!--- Loop over missing assignments --->
+				<cfloop query="allMissingAssignments">
+					<cfquery name="rs">
+						INSERT INTO SwContentCategory (
+							contentID,
+							categoryID
+						) VALUES (
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.contentID#" />,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#allMissingAssignments.categoryID#" />
+						)
+					</cfquery>
+				</cfloop>
+			</cfif>
+			
+			<!--- Check for extra assignments --->
 			<cfquery name="rs">
-				DELETE FROM
-					SwContentCategory
+				SELECT
+				    count(SwContentCategory.contentID) as extraCount
+				FROM
+				    SwContentCategory
+				  INNER JOIN
+				  	SwContent on SwContentCategory.contentID = SwContent.contentID
+				  INNER JOIN
+				  	SwCategory on SwContentCategory.categoryID = SwCategory.categoryID
+				  LEFT JOIN
+				  	tcontentcategoryassign on SwContent.cmsContentID = tcontentcategoryassign.contentID AND SwCategory.cmsCategoryID = tcontentcategoryassign.categoryID
 				WHERE
-					NOT EXISTS(
-						SELECT
-							tcontentcategoryassign.contentID
-						FROM
-							tcontentcategoryassign
-						  INNER JOIN
-						  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
-						  INNER JOIN
-						  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
-						WHERE
-							SwContentCategory.contentID = SwContent.contentID
-						  AND
-						  	SwContentCategory.categoryID = SwCategory.categoryID
-				  	)
+				<cfif len(arguments.muraContentID)>
+					SwContent.cmsContentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.muraContentID#" />
+				  AND
+				</cfif>
+					tcontentcategoryassign.contentID is null
 			</cfquery>
+				
+			<cfif rs.extraCount gt 0>
+				
+				<!--- Delete unneeded assignments --->
+				<cfquery name="rs">
+					DELETE FROM
+						SwContentCategory
+					WHERE
+						NOT EXISTS(
+							SELECT
+								tcontentcategoryassign.contentID
+							FROM
+								tcontentcategoryassign
+							  INNER JOIN
+							  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
+							  INNER JOIN
+							  	SwCategory on tcontentcategoryassign.categoryID = SwCategory.cmsCategoryID
+							WHERE
+								SwContentCategory.contentID = SwContent.contentID
+							  AND
+							  	SwContentCategory.categoryID = SwCategory.categoryID
+					  	)
+				</cfquery>
+			</cfif>
 			
 		</cflock>
 	</cffunction>
@@ -1359,18 +1467,24 @@
 		<cfargument name="settingValue" default="" />
 		
 		<cfset var rs = "" />
+		<cfset var rs2 = "" />
 		<cfset var rsResult = "" />
 		
 		<cfif len(arguments.settingValue)>
-			<cfquery name="rs" result="rsResult">
-				UPDATE
+			
+			<cfquery name="rs">
+				SELECT
+					settingID,
+					settingValue
+				FROM
 					SwSetting
-				SET
-					settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
 				WHERE
-					contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#" />
+					LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#" />
+				  AND
+				  	contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" />
 			</cfquery>
-			<cfif not rsResult.recordCount>
+			
+			<cfif not rs.recordCount>
 				<cfquery name="rs">
 					INSERT INTO SwSetting (
 						settingID,
@@ -1384,11 +1498,29 @@
 						<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" />
 					)
 				</cfquery>
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKey('setting_#arguments.settingName#_#arguments.contentID#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
+			<cfelseif rs.settingValue neq arguments.settingValue>
+				<cfquery name="rs2" result="rsResult">
+					UPDATE
+						SwSetting
+					SET
+						settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
+					WHERE
+						settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" />
+				</cfquery>
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKey('setting_#arguments.settingName#_#arguments.contentID#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
 			</cfif>
+			
 		<cfelse>
-			<cfquery name="rs">
-				DELETE FROM SwSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#" />
+			<cfquery name="rs" result="rsResult">
+				DELETE FROM SwSetting WHERE contentID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#" /> AND LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#" />
 			</cfquery>
+			<cfif rsResult.recordCount>
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKey('setting_#arguments.settingName#_#arguments.contentID#') />
+				<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_#arguments.settingName#') />
+			</cfif>
 		</cfif> 
 	</cffunction>
 	
@@ -1399,16 +1531,18 @@
 		
 		<cfset var rs = "" />
 		<cfset var rs2 = "" />
+		<cfset var fullSettingName = "integrationMura#arguments.settingName#" />
 		
 		<cfquery name="rs">
-			SELECT settingID, settingValue FROM SwSetting WHERE settingName = <cfqueryparam cfsqltype="cf_sql_varchar" value="integrationMura#arguments.settingName#" />
+			SELECT settingID, settingValue FROM SwSetting WHERE LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(fullSettingName)#" />
 		</cfquery>
 		
-		<cfif rs.recordCount>
+		<cfif rs.recordCount and rs.settingValue neq arguments.settingValue>
 			<cfquery name="rs2">
 				UPDATE SwSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" /> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#" /> 
 			</cfquery>
-		<cfelse>
+			<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
+		<cfelseif not rs.recordCount>
 			<cfquery name="rs2">
 				INSERT INTO SwSetting (
 					settingID,
@@ -1416,10 +1550,11 @@
 					settingValue
 				) VALUES (
 					<cfqueryparam cfsqltype="cf_sql_varchar" value="#$.slatwall.createHibachiUUID()#" />,
-					 <cfqueryparam cfsqltype="cf_sql_varchar" value="integrationMura#arguments.settingName#" />,
-					 <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#fullSettingName#" />,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#" />
 				) 
 			</cfquery>
+			<cfset arguments.$.slatwall.getService('hibachiCacheService').resetCachedKeyByPrefix('setting_integrationMura#arguments.settingName#') />
 		</cfif>
 
 	</cffunction>

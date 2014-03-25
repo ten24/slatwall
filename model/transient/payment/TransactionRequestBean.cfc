@@ -54,10 +54,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="transactionType" type="string" ;
 	property name="transactionAmount" type="numeric";
 	property name="transactionCurrencyCode" type="string";
-	property name="isDuplicateFlag" type="boolean";
+	property name="transactionCurrencyISONumber" type="string";
 	
 	// Credit Card Info
-	property name="nameOnCreditCard" ormType="string";
+	property name="nameOnCreditCard" type="string";
 	property name="creditCardNumber" type="string"; 
 	property name="creditCardType" type="string"; 
 	property name="expirationMonth" type="numeric";   
@@ -95,6 +95,13 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	// Pertinent Reference Information (used for all above)
 	property name="accountID" type="string";
 	
+	// Reference Objects
+	property name="account" type="any";
+	property name="accountPayment" type="any";
+	property name="accountPaymentMethod" type="any";
+	property name="order" type="any";
+	property name="orderPayment" type="any";
+	
 	// Always there if this Account Payment or Order Payment has previously had an authorization done
 	property name="originalAuthorizationCode" type="string";
 	property name="originalAuthorizationProviderTransactionID" type="string";
@@ -107,6 +114,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	
 	// Deprecated
 	property name="transactionCurrency" ormtype="string";
+	property name="isDuplicateFlag" type="boolean";
 	
 	/*
 	Process Types
@@ -202,6 +210,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		setAccountPaymentID( arguments.accountPayment.getAccountPaymentID() );
 		setAccountID( arguments.accountPayment.getAccount().getAccountID() );
 		
+		setAccountPayment( arguments.accountPayment );
+		setAccount( arguments.accountPayment.getAccount() );
+		
 	}
 	
 	public void function populatePaymentInfoWithOrderPayment(required any orderPayment) {
@@ -285,9 +296,13 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 		
 		// Populate relavent Misc Info
-		setOrderPaymentID(arguments.orderPayment.getOrderPaymentID());
-		setOrderID(arguments.orderPayment.getOrder().getOrderID());
-		setAccountID(arguments.orderPayment.getOrder().getAccount().getAccountID());
+		setOrderPaymentID( arguments.orderPayment.getOrderPaymentID() );
+		setOrderID( arguments.orderPayment.getOrder().getOrderID() );
+		setAccountID( arguments.orderPayment.getOrder().getAccount().getAccountID() );
+		
+		setOrderPayment( arguments.orderPayment );
+		setOrder( arguments.orderPayment.getOrder() );
+		setAccount( arguments.orderPayment.getOrder().getAccount() );
 		
 	}
 	
@@ -351,6 +366,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		// Populate relavent Misc Info
 		setAccountPaymentMethodID( arguments.accountPaymentMethod.getAccountPaymentMethodID() );
 		setAccountID( arguments.accountPaymentMethod.getAccount().getAccountID() );
+		
+		setAccountPaymentMethod( arguments.accountPaymentMethod );
+		setAccount( arguments.accountPaymentMethod.getAccount() );
+		
 	}
 	
 	// Deprecated

@@ -55,12 +55,21 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	property name="imageFile" ormtype="string" hb_formFieldType="file" hb_fileUpload="true" hb_fileAcceptMIMEType="image/gif,image/jpeg,image/pjpeg,image/png,image/x-png" hb_fileAcceptExtension=".jpeg,.jpg,.png,.gif";
 	property name="directory" ormtype="string";
 	
+	// Related Object Properties (many-to-many)
+	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwImageOption" fkcolumn="imageID" inversejoincolumn="optionID"; 
+
 	// Related entity properties (many-to-one)
 	property name="imageType" cfc="Type" fieldtype="many-to-one" fkcolumn="imageTypeID" hb_optionsSmartListData="f:parentType.systemCode=imageType";
 	
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
 	property name="option" cfc="Option" fieldtype="many-to-one" fkcolumn="optionID";
+	
+	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="imageID" inverse="true" cascade="all-delete-orphan";
+
+	// Remote properties
+	property name="remoteID" ormtype="string";
 	
 	// Audit properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -187,12 +196,29 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 		structDelete(variables, "promotion");
 	}
 	
+	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setImage( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeImage( this );
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentationPropertyName() {
 		return "imageFile";
+	}
+	
+	public any function getOptionsSmartlist() {
+		var smartList = getService("optionService").getOptionSmartList();
+		smartList.setSelectDistinctFlag(1);
+		smartList.addFilter("optionGroup.imageGroupFlag",1);
+		smartList.addFilter("skus.product.productID",this.getProduct().getProductID());
+		smartList.addOrder("optionGroup.sortOrder|ASC,sortOrder|ASC");
+		return smartList;
 	}
 	
 	// ==================  END:  Overridden Methods ========================

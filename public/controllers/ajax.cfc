@@ -51,6 +51,7 @@ component output="false" accessors="true" {
 	property name="fw" type="any";
 	
 	property name="addressService" type="any";
+	property name="productService" type="any";
 
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -65,8 +66,22 @@ component output="false" accessors="true" {
 		
 		var country = getAddressService().getCountry(rc.countryCode);
 		
+		// Make sure that the stateCodeOptions are in the variables scope
+		country.getStateCodeOptions();
+		
 		if(!isNull(country)) {
 			rc.ajaxResponse["country"] = country;	
+		}
+	}
+	
+	public void function productSkuOptionDetails( required struct rc ) {
+		param name="arguments.rc.productID" type="string" default="";
+		param name="arguments.rc.selectedOptionIDList" type="string" default="";
+		
+		var product = getProductService().getProduct( arguments.rc.productID );
+		
+		if(!isNull(product) && product.getActiveFlag() && product.getPublishedFlag()) {
+			rc.ajaxResponse["skuOptionDetails"] = product.getSkuOptionDetails( arguments.rc.selectedOptionIDList );
 		}
 	}
 	

@@ -69,6 +69,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountAuthentications" singularname="accountAuthentication" cfc="AccountAuthentication" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="accountContentAccesses" hb_populateEnabled="false" singularname="accountContentAccess" cfc="AccountContentAccess" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountEmailAddresses" hb_populateEnabled="public" singularname="accountEmailAddress" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountEmailAddress" cascade="all-delete-orphan" inverse="true";
+	property name="accountLoyalties" singularname="accountLoyalty" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountLoyalty" cascade="all-delete-orphan" inverse="true";
 	property name="accountPaymentMethods" hb_populateEnabled="public" singularname="accountPaymentMethod" cfc="AccountPaymentMethod" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountPayments" singularname="accountPayment" cfc="AccountPayment" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all" inverse="true";
 	property name="accountPhoneNumbers" hb_populateEnabled="public" singularname="accountPhoneNumber" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountPhoneNumber" cascade="all-delete-orphan" inverse="true";
@@ -117,6 +118,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="slatwallAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
+	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);	
@@ -296,6 +298,22 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return termAccountBalance;
 	}
 	
+	public any function getUnenrolledAccountLoyaltyOptions() {
+		if(!structKeyExists(variables, "unenrolledAccountLoyaltyOptions")) {
+			variables.unenrolledAccountLoyaltyOptions = [];
+			
+			var smartList = getService("loyaltyService").getLoyaltySmartList();
+			smartList.addFilter('activeFlag', 1);
+			smartList.addWhereCondition(" NOT EXISTS( FROM SlatwallAccountLoyalty al WHERE al.loyalty.loyaltyID = aslatwallloyalty.loyaltyID and al.account.accountID = '#getAccountID()#')");
+			
+			for(var loyaltyPrograms in smartList.getRecords()) {
+				arrayAppend(variables.unenrolledAccountLoyaltyOptions,{name=loyaltyPrograms.getLoyaltyName(),value=loyaltyPrograms.getLoyaltyID()});
+			}
+		}
+
+		return variables.unenrolledAccountLoyaltyOptions;
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
@@ -450,6 +468,14 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 	public void function removeTermAccountOrderPayment(required any termAccountOrderPayment) {
 		arguments.termAccountOrderPayment.removeTermPaymentAccount( this );
+	}
+	
+	// Account Loyalty Programs (one-to-many)
+	public void function addAccountLoyalty(required any accountLoyalty) {    
+		arguments.accountLoyalty.setAccount( this );    
+	}    
+	public void function removeAccountLoyalty(required any accountLoyalty) {    
+		arguments.accountLoyalty.removeAccount( this );    
 	}
 	
 	// Price Groups (many-to-many - owner)

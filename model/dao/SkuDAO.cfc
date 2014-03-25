@@ -48,7 +48,7 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO" accessors="true" output="false">
 	
-	<cfproperty name="nextOptionGroupSortOrder" type="numeric" />
+	<cfproperty name="hibachiCacheService" type="any" />
 	
 	<cffunction name="getTransactionExistsFlag" returntype="boolean" output="false">
 		<cfargument name="productID" />
@@ -173,6 +173,7 @@ Notes:
 		<cfargument name="productID" type="string" required="true" />
 		
 		<cfset var sorted = "" />
+		<cfset var nextOptionGroupSortOrder = getHibachiCacheService().getOrCacheFunctionValue("skuDAO_getNextOptionGroupSortOrder", this, "getNextOptionGroupSortOrder") />
 		
 		<!--- TODO: test to see if this query works with DB's other than MSSQL and MySQL --->
 		<cfquery name="sorted">
@@ -192,37 +193,27 @@ Notes:
 				SwSku.skuID
 			ORDER BY
 				<cfif getApplicationValue("databaseType") eq "MicrosoftSQLServer">
-					SUM(SwOption.sortOrder * POWER(CAST(10 as bigint), CAST((#getNextOptionGroupSortOrder()# - SwOptionGroup.sortOrder) as bigint))) ASC
+					SUM(SwOption.sortOrder * POWER(CAST(10 as bigint), CAST((#nextOptionGroupSortOrder# - SwOptionGroup.sortOrder) as bigint))) ASC
 				<cfelse>
-					SUM(SwOption.sortOrder * POWER(10, #getNextOptionGroupSortOrder()# - SwOptionGroup.sortOrder)) ASC
+					SUM(SwOption.sortOrder * POWER(10, #nextOptionGroupSortOrder# - SwOptionGroup.sortOrder)) ASC
 				</cfif>
 		</cfquery>
 		
 		<cfreturn sorted />
 	</cffunction>
 	
-	<cffunction name="getNextOptionGroupSortOrder" returntype="numeric" access="private">
-		<cfif not structKeyExists(variables, "nextOptionGroupSortOrder")>
-			<cfset variables.nextOptionGroupSortOrder = 1 />
-			
-			<cfset var rs = "" />
-			
-			<cfquery name="rs">
-				SELECT max(SwOptionGroup.sortOrder) as max FROM SwOptionGroup
-			</cfquery>
-			<cfif rs.recordCount>
-				<cfset variables.nextOptionGroupSortOrder = rs.max + 1 />
-			</cfif>
-			
+	<cffunction name="getNextOptionGroupSortOrder" returntype="numeric" access="public">
+		<cfset var nogSortOrder = 1 />
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			SELECT max(SwOptionGroup.sortOrder) as max FROM SwOptionGroup
+		</cfquery>
+		<cfif rs.recordCount>
+			<cfset nogSortOrder = rs.max + 1 />
 		</cfif>
 		
-		<cfreturn variables.nextOptionGroupSortOrder />
-	</cffunction>
-	
-	<cffunction name="clearNextOptionGroupSortOrder" returntype="void" access="public">
-		<cfif not structKeyExists(variables, "nextOptionGroupSortOrder")>
-			<cfset structDelete(variables, "nextOptionGroupSortOrder") />
-		</cfif>
+		<cfreturn nogSortOrder />
 	</cffunction>
 	
 </cfcomponent>

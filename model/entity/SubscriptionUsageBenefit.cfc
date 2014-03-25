@@ -206,6 +206,10 @@ component entityname="SlatwallSubscriptionUsageBenefit" table="SwSubsUsageBenefi
 
 	// ================== START: Overridden Methods ========================
 	
+	public string function getSimpleRepresentation() {
+		return getSubscriptionBenefit().getSubscriptionBenefitName();
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================

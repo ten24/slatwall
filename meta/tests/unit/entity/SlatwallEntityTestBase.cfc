@@ -53,18 +53,22 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(variables.entity.hasErrors());
 	}
 	
-	public void function simple_representation_exists_and_is_simple() {
-		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
-	}
-	
 	public void function has_primary_id_property_name() {
 		assert(len(variables.entity.getPrimaryIDPropertyName()));
 	}
 	
 	public void function defaults_are_correct() {
-		assert(variables.entity.isNew());
-		assert(!len(variables.entity.getPrimaryIDValue()));
+		assert(variables.entity.getNewFlag());
 	}
+	
+	public void function getSimpleRepresentation_exists_and_is_simple() {
+		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
+	}
+	
+	public void function getShortRefernceID_returns_blank_by_default() {
+		assert(variables.entity.getShortReferenceID() eq "");
+	}
+	
 }
 
 

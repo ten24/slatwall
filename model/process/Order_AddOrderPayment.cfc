@@ -72,6 +72,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountPaymentMethodIDOptions";
 	property name="paymentMethodIDOptions";
 	property name="accountAddressIDOptions";
+	property name="paymentTermIDOptions";
 	
 	// Helper Properties
 	
@@ -153,6 +154,28 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 		}
 		return variables.paymentMethodIDOptions;
+	}
+	
+	public array function getPaymentTermIDOptions() {
+		if(!structKeyExists(variables, "paymentTermIDOptions")) {
+			variables.paymentTermIDOptions = [];
+		
+			var paymentTermSmartList = getService("PaymentService").getPaymentTermSmartList();
+			paymentTermSmartList.addFilter("activeFlag", 1);
+			
+			if(!isNull(getOrder().getAccount())) {
+				paymentTermSmartList.addInFilter("paymentTermID", getOrder().getAccount().setting('accountEligiblePaymentTerms'));
+			}
+			
+			var paymentTermsArray = paymentTermSmartList.getRecords();
+			for (var paymentTerm in paymentTermsArray) {
+				arrayAppend(variables.paymentTermIDOptions, {
+					name = paymentTerm.getPaymentTermName(),
+					value = paymentTerm.getPaymentTermID()
+				});
+			}
+		}
+		return variables.paymentTermIDOptions;
 	}
 	
 	// ======================  END: Data Options ===========================

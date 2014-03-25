@@ -63,10 +63,10 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.loginDefaultSubsystem = 'admin';
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
+	variables.framework.hibachi.useCachingEngineFlag = false;
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
-	
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -169,7 +169,11 @@ component extends="FW1.framework" {
 	
 	public void function setupGlobalRequest() {
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
-			request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
+            if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
+                request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
+            } else {
+                request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
+            }
 			
 			// Verify that the application is setup
 			verifyApplicationSetup();
@@ -195,6 +199,15 @@ component extends="FW1.framework" {
 			
 			// setup the success redirect URL as this current page
 			request.context.sRedirectURL = getHibachiScope().getURL();
+			
+			// make sure there are no reload keys in the redirectURL
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "#variables.framework.reload#=#variables.framework.password#", "");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "#variables.framework.hibachi.fullUpdateKey#=#variables.framework.hibachi.fullUpdatePassword#", "");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "&&&", "&", "all");
+			request.context.sRedirectURL = replace(request.context.sRedirectURL, "&&", "&", "all");
+			if(right(request.context.sRedirectURL, 1) == "?" || right(request.context.sRedirectURL, 1) == "&") {
+				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
+			}
 			
 			//Route the user to the noaccess page if they are already logged in
 			if( getHibachiScope().getLoggedInFlag() ) {
@@ -486,6 +499,9 @@ component extends="FW1.framework" {
 	
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
+		if(getHibachiScope().getPersistSessionFlag()) {
+			getHibachiScope().getService("hibachiSessionService").persistSession();
+		}
 		if(!getHibachiScope().getORMHasErrors()) {
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}

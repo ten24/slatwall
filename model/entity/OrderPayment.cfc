@@ -71,6 +71,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
 	property name="orderPaymentStatusType" hb_populateEnabled="false" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentStatusType" fetch="join";
 	property name="paymentMethod" hb_populateEnabled="public" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" fetch="join";
+	property name="paymentTerm" cfc="PaymentTerm" fieldtype="many-to-one" fkcolumn="paymentTermID" fetch="join";
 	property name="referencedOrderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="referencedOrderPaymentID";
 	property name="termPaymentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="termPaymentAccountID";
 	
@@ -163,6 +164,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Term Payment
 		if(listFindNoCase("termPayment", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setTermPaymentAccount( arguments.accountPaymentMethod.getAccount() );
+			setPaymentTerm( arguments.accountPaymentMethod.getPaymentTerm() );
 		}
 		
 		// Credit Card & Gift Card
@@ -202,6 +204,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Gift Card
 		if(listFindNoCase("giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
+		}
+		
+		// Term Payment
+		if(listFindNoCase("termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setPaymentTerm( arguments.orderPayment.getPaymentTerm() );
 		}
 		
 		// Credit Card & Gift Card
@@ -507,6 +514,24 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			arrayDeleteAt(arguments.termPaymentAccount.getTermAccountOrderPayments(), index);    
 		}    
 		structDelete(variables, "termPaymentAccount");    
+	}
+	
+	// Payment Term (many-to-one)    
+	public void function setPaymentTerm(required any paymentTerm) {    
+		variables.paymentTerm = arguments.paymentTerm;    
+		if(isNew() or !arguments.paymentTerm.hasOrderPayment( this )) {    
+			arrayAppend(arguments.paymentTerm.getOrderPayments(), this);    
+		}    
+	}    
+	public void function removePaymentTerm(any paymentTerm) {    
+		if(!structKeyExists(arguments, "paymentTerm")) {    
+			arguments.paymentTerm = variables.paymentTerm;    
+		}    
+		var index = arrayFind(arguments.paymentTerm.getOrderPayments(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.paymentTerm.getOrderPayments(), index);    
+		}    
+		structDelete(variables, "paymentTerm");    
 	}
 	
 	// AttributeValues (one-to-many)

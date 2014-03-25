@@ -93,6 +93,9 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 	
 	// Non-Persistent Properties
 
+	property name="avsDescription" persistent="false";
+
+
 	public any function init() {
 		setAmountAuthorized(0);
 		setAmountCharged(0);
@@ -109,6 +112,14 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 			return getAccountPayment();
 		} else if (!isNull(getAccountPaymentMethod())) {
 			return getAccountPaymentMethod();
+		}
+	}
+
+	public string function getAVSDescription(){
+		if(!isNull(getAvsCode()) && getAvsCode() !=''){
+			return rbKey('entity.PaymentTransaction.AVSDescription.' & getAvsCode());	
+		}else{
+			return '';
 		}
 	}
 	

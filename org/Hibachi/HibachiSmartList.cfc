@@ -322,28 +322,24 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			}
 		}
 		
-		if(propertyIsAttribute && listLen(arguments.propertyIdentifier, variables.subEntityDelimiters) eq 1) {
+		for(var i=1; i<listLen(arguments.propertyIdentifier, variables.subEntityDelimiters); i++) {
+			var thisProperty = listGetAt(arguments.propertyIdentifier, i, variables.subEntityDelimiters);
 			if(structKeyExists(arguments,"fetch")){
-				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=arguments.propertyIdentifier,fetch=arguments.fetch,isAttribute=true);
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,fetch=arguments.fetch,isAttribute=false);
 			} else {
-				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=arguments.propertyIdentifier,isAttribute=true);
-			}
-			entityAlias = variables.entities[entityName].entityAlias;
-		} else {
-			for(var i=1; i<listLen(arguments.propertyIdentifier, variables.subEntityDelimiters); i++) {
-				var thisProperty = listGetAt(arguments.propertyIdentifier, i, variables.subEntityDelimiters);
-				var isAttribute = false;
-				if(propertyIsAttribute && listLen(arguments.propertyIdentifier, variables.subEntityDelimiters) == i+1) {
-					isAttribute = true;
-				}
-				if(structKeyExists(arguments,"fetch")){
-					entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,fetch=arguments.fetch,isAttribute=isAttribute);
-				} else {
-					entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,isAttribute=isAttribute);
-				}
-				entityAlias = variables.entities[entityName].entityAlias;
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=thisProperty,isAttribute=false);
 			}
 		}
+		
+		if(propertyIsAttribute) {
+			if(structKeyExists(arguments,"fetch")){
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=listLast(arguments.propertyIdentifier, variables.subEntityDelimiters),fetch=arguments.fetch,isAttribute=true);
+			} else {
+				entityName = joinRelatedProperty(parentEntityName=entityName, relatedProperty=listLast(arguments.propertyIdentifier, variables.subEntityDelimiters),isAttribute=true);
+			}
+		}
+		
+		entityAlias = variables.entities[entityName].entityAlias;
 		
 		if(propertyIsAttribute) {
 			return "#entityAlias#.attributeValue";	
@@ -518,7 +514,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		var hqlSelect = "";
 		
 		if(arguments.countOnly) {
-			hqlSelect &= "SELECT count(distinct #variables.entities[getBaseEntityName()].entityAlias#.#getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getBaseEntityName())#)";
+			hqlSelect &= "SELECT count(";
+			if(getSelectDistinctFlag()) {
+					hqlSelect &= "distinct ";
+			}
+			hqlSelect &= "#variables.entities[getBaseEntityName()].entityAlias#.#getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getBaseEntityName())#)";
 		} else {
 			if(structCount(variables.selects)) {
 				hqlSelect = "SELECT";
@@ -622,14 +622,14 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 						hqlWhere &= " (";
 						for(var ii=1; ii<=listLen(variables.whereGroups[i].likeFilters[likeFilter], variables.valueDelimiter); ii++) {
 							var paramID = "LF#replace(likeFilter, ".", "", "all")##i##ii#";
-							addHQLParam(paramID, listGetAt(variables.whereGroups[i].likeFilters[likeFilter], ii, variables.valueDelimiter));
-							hqlWhere &= " #likeFilter# LIKE :#paramID# OR";
+							addHQLParam(paramID, lcase(listGetAt(variables.whereGroups[i].likeFilters[likeFilter], ii, variables.valueDelimiter)));
+							hqlWhere &= " LOWER(#likeFilter#) LIKE :#paramID# OR";
 						}
 						hqlWhere = left(hqlWhere, len(hqlWhere)-2) & ") AND";
 					} else {
 						var paramID = "LF#replace(likeFilter, ".", "", "all")##i#";
-						addHQLParam(paramID, variables.whereGroups[i].likeFilters[likeFilter]);
-						hqlWhere &= " #likeFilter# LIKE :#paramID# AND";
+						addHQLParam(paramID, lcase(variables.whereGroups[i].likeFilters[likeFilter]));
+						hqlWhere &= " LOWER(#likeFilter#) LIKE :#paramID# AND";
 					}
 				}
 				
@@ -697,11 +697,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			
 			for(var ii=1; ii<=arrayLen(variables.Keywords); ii++) {
 				var paramID = "keyword#ii#";
-				addHQLParam(paramID, "%#variables.Keywords[ii]#%");
+				addHQLParam(paramID, "%#lcase(variables.Keywords[ii])#%");
 				hqlWhere &= " (";
 				for(var keywordProperty in variables.keywordProperties) {
 					
-					hqlWhere &= " #keywordProperty# LIKE :#paramID# OR";
+					hqlWhere &= " LOWER(#keywordProperty#) LIKE :#paramID# OR";
 				}
 				
 				//Loop over all attributes and find any matches
@@ -1096,6 +1096,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		stateStruct.orders = duplicate(variables.orders);
 		stateStruct.keywords = duplicate(variables.keywords);
 		stateStruct.keywordProperties = duplicate(variables.keywordProperties);
+		stateStruct.attributeKeywordProperties = duplicate(variables.attributeKeywordProperties);
 		stateStruct.pageRecordsShow = duplicate(variables.pageRecordsShow);
 		stateStruct.entityJoinOrder = duplicate(variables.entityJoinOrder);
 		stateStruct.selectDistinctFlag = duplicate(variables.selectDistinctFlag);

@@ -249,7 +249,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
-	private void function setSubscriptionUsageStatus(required any subscriptionUsage, required string subscriptionStatusTypeCode, any effectiveDateTime = now(), any subscriptionStatusChangeReasonTypeCode) {
+	public void function setSubscriptionUsageStatus(required any subscriptionUsage, required string subscriptionStatusTypeCode, any effectiveDateTime = now(), any subscriptionStatusChangeReasonTypeCode) {
 		var subscriptionStatus = this.newSubscriptionStatus();
 		subscriptionStatus.setSubscriptionStatusType(this.getTypeBySystemCode(arguments.subscriptionStatusTypeCode));
 		if(structKeyExists(arguments, "subscriptionStatusChangeReasonTypeCode") && arguments.subscriptionStatusChangeReasonTypeCode != "") {
@@ -373,6 +373,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				currencyCode=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrder().getCurrencyCode()
 			};
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
+			
+			// Grab the original order fulfillment
+			var originalOrderFulfillment = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrderFulfillment();
+			
+			// If there was originally a shippingMethod copy it over
+			if(!isNull(originalOrderFulfillment.getShippingMethod())) {
+				order.getOrderFulfillments()[1].setShippingMethod(originalOrderFulfillment.getShippingMethod());	
+			}
+			// If there was originally a shippingAddress copy it over a duplicate
+			if(!isNull(originalOrderFulfillment.getShippingAddress()) && !originalOrderFulfillment.getShippingAddress().getNewFlag()) {
+				order.getOrderFulfillments()[1].setShippingAddress( originalOrderFulfillment.getShippingAddress().copyAddress() );	
+			}
+			// If there was originally an email address copy it over
+			if(!isNull(originalOrderFulfillment.getEmailAddress())) {
+				order.getOrderFulfillments()[1].setEmailAddress(originalOrderFulfillment.getEmailAddress());	
+			}
 			
 			// Make sure that the orderItem was added to the order without issue
 			if(!order.hasErrors()) {
@@ -505,6 +521,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
+		return arguments.subscriptionUsage;
+	}
+	
+	public any function processSubscriptionUsage_addUsageBenefit(required any subscriptionUsage, required any processObject) {
+		
+		var subscriptionBenefit = this.getSubscriptionBenefit(processObject.getSubscriptionBenefitID());
+		
+		if(listFindNoCase("both,initial", arguments.processObject.getBenefitTermType())) {
+			var subscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
+			subscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
+			
+			var subscriptionUsageBenefitAccount = this.newSubscriptionUsageBenefitAccount();
+			subscriptionUsageBenefitAccount.setSubscriptionUsageBenefit( subscriptionUsageBenefit );
+			subscriptionUsageBenefitAccount.setAccount( arguments.subscriptionUsage.getAccount() );
+			
+			arguments.subscriptionUsage.addSubscriptionUsageBenefit( subscriptionUsageBenefit );	
+		}
+		if(listFindNoCase("both,renewal", arguments.processObject.getBenefitTermType())) {
+			var renewalSubscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
+			
+			renewalSubscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
+			
+			arguments.subscriptionUsage.addRenewalSubscriptionUsageBenefit( renewalSubscriptionUsageBenefit );
+		}
+			
 		return arguments.subscriptionUsage;
 	}
 	

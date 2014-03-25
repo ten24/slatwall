@@ -71,6 +71,10 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclProductType" fkcolumn="productTypeID" inversejoincolumn="promotionRewardID" inverse="true";
 	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualProductType" fkcolumn="productTypeID" inversejoincolumn="promotionQualifierID" inverse="true";
 	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclProductType" fkcolumn="productTypeID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="loyaltyAccruements" singularname="loyaltyAccruement" cfc="LoyaltyAccruement" fieldtype="many-to-many" linktable="SwLoyaltyAccruProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyAccruementExclusions" singularname="loyaltyAccruementExclusion" cfc="LoyaltyAccruement" type="array" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyRedemption" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
+	property name="loyaltyRedemptionExclusions" singularname="loyaltyRedemptionExclusion" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedempExclProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
 	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="priceGroupRateExclusions" singularname="priceGroupRateExclusion" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGrpRateExclProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="attributeSets" singularname="attributeSet" cfc="AttributeSet" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProductType" fkcolumn="productTypeID" inversejoincolumn="attributeSetID" inverse="true";
@@ -243,6 +247,38 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		arguments.physical.removeProductType( this );
 	}
 	
+	// Loyalty Accruements (many-to-many - inverse)
+	public void function addLoyaltyAccruement(required any loyaltyAccruement) {
+		arguments.loyaltyAccruement.addProductType( this );
+	}
+	public void function removeloyaltyAccruement(required any loyaltyAccruement) {
+		arguments.loyaltyAccruement.removeProductType( this );
+	}
+	
+	// Loyalty Accruements Exclusions (many-to-many - inverse)
+	public void function addLoyaltyAccruementExclusion(required any loyaltyAccruementExclusion) {
+		arguments.loyaltyAccruementExclusion.addProductType( this );
+	}
+	public void function removeloyaltyAccruementExclusion(required any loyaltyAccruementExclusion) {
+		arguments.loyaltyAccruementExclusion.removeProductType( this );
+	}
+	
+	// Loyalty Redemptions (many-to-many - inverse)
+	public void function addLoyaltyRedemption(required any loyaltyRedemption) {
+		arguments.loyaltyRedemption.addProductType( this );
+	}
+	public void function removeLoyaltyRedemption(required any loyaltyRedemption) {
+		arguments.loyaltyRedemption.removeProductType( this );
+	}
+	
+	// Loyalty Redemption Exclusions (many-to-many - inverse)
+	public void function addLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
+		arguments.loyaltyRedemptionExclusion.addProductType( this );
+	}
+	public void function removeLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
+		arguments.loyaltyRedemptionExclusion.removeProductType( this );
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
@@ -284,7 +320,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 			
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astProductType');
-			
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			
 			var wc = "(";

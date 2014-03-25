@@ -50,7 +50,7 @@ component displayname="Option" entityname="SlatwallOption" table="SwOption" pers
 	
 	// Persistent Properties
 	property name="optionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="optionCode" ormtype="string";
+	property name="optionCode" ormtype="string" index="PI_OPTIONCODE";
 	property name="optionName" ormtype="string";
 	property name="optionDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="sortOrder" ormtype="integer" sortContext="optionGroup";
@@ -68,6 +68,7 @@ component displayname="Option" entityname="SlatwallOption" table="SwOption" pers
 	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclOption" fkcolumn="optionID" inversejoincolumn="promotionRewardID" inverse="true";
 	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualOption" fkcolumn="optionID" inversejoincolumn="promotionQualifierID" inverse="true";
 	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclOption" fkcolumn="optionID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="productImages" singularname="productImage" cfc="Image" fieldtype="many-to-many" linktable="SwImageOption" fkcolumn="optionID" inversejoincolumn="imageID" inverse="true" lazy="extra"; 
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";

@@ -51,6 +51,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="addressService" type="any";
 	property name="currencyService" type="any";
 	property name="emailService" type="any";
+	property name="fileService" type="any";
 	property name="imageService" type="any";
 	property name="measurementService" type="any";
 	property name="optionService" type="any";
@@ -61,11 +62,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="scheduleService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
-	
+	property name="loyaltyService" type="any";
 	
 	this.publicMethods='';
+	
 	this.anyAdminMethods='';
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'saveSetting');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'deleteSetting');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'detailSetting');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'editSetting');
+	
 	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'settings');
 	
 	// Address Zone Location
 	public void function createAddressZoneLocation(required struct rc) {
@@ -113,6 +121,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function detailCurrency(required struct rc) {
 		rc.currency = getCurrencyService().getCurrency(rc.currencyCode);
+	}
+	
+	// File
+	public void function downloadFile(required struct rc) {
+		populateRenderAndRedirectFailureValues(arguments.rc);
+		var file = getFileService().downloadFile(fileID=rc.fileID);
+		
+		if (file.hasErrors())
+		{
+			file.showErrorsAndMessages();
+			renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
+		}
 	}
 	
 	// Email

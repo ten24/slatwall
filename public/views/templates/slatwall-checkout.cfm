@@ -110,6 +110,12 @@ Notes:
 	</cfif>
 </cfif>
 
+<!--- IMPORTANT: This is here so that the checkout layout is never cached by the browser --->
+<cfheader name="cache-control" value="no-cache, no-store, must-revalidate" /> 
+<cfheader name="cache-control" value="post-check=0, pre-check=0" /> 
+<cfheader name="last-modified" value="#now()#" />
+<cfheader name="pragma"  value="no-cache" />
+
 <!--- We are paraming this variable so that we can use it later to see if a specific step was clicked on.  Using the url.step is just a templating thing and it has nothing to do really with the core of Slatwall.  This could be changed to anything --->
 <cfparam name="url.step" default="" />
 
@@ -748,7 +754,6 @@ Notes:
 											
 											<!--- Hidden value to identify the type of payment method this is --->
 											<input type="hidden" name="newOrderPayment.orderPaymentID" value="#addOrderPaymentObj.getNewOrderPayment().getOrderPaymentID()#" />
-											<input type="hidden" name="newOrderPayment.order.orderID" value="#$.slatwall.cart().getOrderID()#" />
 											<input type="hidden" name="newOrderPayment.paymentMethod.paymentMethodID" value="#paymentDetails.paymentMethod.getPaymentMethodID()#" />
 											
 											<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderPayment" />
@@ -887,7 +892,6 @@ Notes:
 <!--- ============= CONFIRMATION ============================================== --->
 <!--- ============= ORDER REVIEW ============================================== --->
 					<cfelseif not len(orderRequirementsList) or url.step eq 'review'>
-						
 						
 						<h4>Step 4 - Order Review</h4>
 
@@ -1040,11 +1044,14 @@ Notes:
 												<div class="span6">
 													<h6>Billing Address:</h6>
 													#orderPayment.getBillingAddress().getName()#<br />
-													<cfif orderPayment.getBillingAddress().getCompany() NEQ "">#orderPayment.getBillingAddress().getCompany()#<br /></cfif>
-													<cfif orderPayment.getBillingAddress().getPhone() NEQ "">#orderPayment.getBillingAddress().getPhone()#<br /></cfif>
+													<cfif isNull(orderPayment.getBillingAddress().getCompany()) && len(orderPayment.getBillingAddress().getCompany())>
+														#orderPayment.getBillingAddress().getCompany()#<br />
+													</cfif>
+													<cfif !isNull(orderPayment.getBillingAddress().getPhoneNumber()) && len(orderPayment.getBillingAddress().getCompany())>
+														#orderPayment.getBillingAddress().getPhoneNumber()#<br />
+													</cfif>
 													#orderPayment.getBillingAddress().getStreetAddress()#<br />
-													
-													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
+													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address()) && len(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
 													#orderPayment.getBillingAddress().getCity()#, #orderPayment.getBillingAddress().getStateCode()# #orderPayment.getBillingAddress().getPostalCode()#<br />
 													#orderPayment.getBillingAddress().getCountryCode()#
 												</div>
@@ -1171,7 +1178,74 @@ Notes:
 			<cfset order = $.slatwall.getService('orderService').getOrder( $.slatwall.getSessionValue('confirmationOrderID') ) />
 			
 			<!--- Overview & Status --->
-			<h5>Your Order Has Been Placed!</h5>
+			<h4>Your Order Has Been Placed!</h4>
+			
+			
+			<!--- START: SAVE GUEST ACCOUNT --->
+				
+			<!---[DEVELOPER NOTES]																		
+																										
+				The below code allows for users to checkout as a guest, and then later once their		
+				order has been placed they can create just the password so that the my-account section	
+				just works.  Some website opt to never give the option to create a password up front	
+				and to only create the password once the order is placed.  It is totally fine to		
+				remove this functionality all together from the confirmation page						
+																										
+			--->
+			
+			<!--- If the createPassword form has been submitted sucessfully display message --->
+			<cfif $.slatwall.hasSuccessfulAction( "public:cart.guestAccountCreatePassword" )>
+				<div class="alert alert-success">
+					Account saved successfully.
+				</div>
+				
+			<!--- If the form has not been submitted and the account on the order is a guest account, then display the form to create a password --->
+			<cfelseif order.getAccount().getGuestAccountFlag()>
+				<div class="well">
+					<h5>Your order was placed as a guest account.
+					Enter a password now so that you can access your order history at a later time from my account.</h5>
+					
+					<!--- Setup the createPassword object to be used by form for errors --->
+					<cfset createPasswordObj = order.getAccount().getProcessObject("createPassword") />
+					
+					<form action="?s=1" method="post">
+						<input type="hidden" name="slatAction" value="public:cart.guestAccountCreatePassword" />
+						<input type="hidden" name="orderID" value="#order.getOrderID()#" />
+						<input type="hidden" name="accountID" value="#order.getAccount().getAccountID()#" />
+						
+						<!--- Password --->
+						<div class="control-group">
+							<label class="control-label" for="rating">Password</label>
+							<div class="controls">
+								<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="password" class="span4" />
+								<sw:ErrorDisplay object="#createPasswordObj#" errorName="password" />
+							</div>
+						</div>
+						
+						<!--- Password Confirm --->
+						<div class="control-group">
+							<label class="control-label" for="rating">Confirm Password</label>
+							<div class="controls">
+								<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="passwordConfirm" class="span4" />
+								<sw:ErrorDisplay object="#createPasswordObj#" errorName="passwordConfirm" />
+							</div>
+						</div>
+						
+						<!--- Save Account Password --->
+						<div class="control-group pull-left">
+							<div class="controls">
+									<button type="submit" class="btn btn-primary">Save Account Password</button>
+							</div>
+						</div>
+						
+					</form>
+					
+					<br />
+				</div>
+
+			</cfif>
+			<!--- END: SAVE GUEST ACCOUNT --->
+				
 			<div class="row">
 				
 				<div class="span4">
@@ -1300,12 +1374,16 @@ Notes:
 			<h5>Order Payments</h5>
 			<table class="table table-bordered table-condensed table-striped">
 				<tr>
+					<th>Billing</td>
 					<th>Payment Details</td>
 					<th>Amount</td>
 				</tr>
 				<cfloop array="#order.getOrderPayments()#" index="orderPayment">
 					<cfif orderPayment.getOrderPaymentStatusType().getSystemCode() EQ "opstActive">
 						<tr>
+							<td class="well span3">
+								<sw:AddressDisplay address="#orderPayment.getBillingAddress()#" />
+							</td>
 							<td>#orderPayment.getSimpleRepresentation()#</td>
 							<td>#orderPayment.getFormattedValue('amount')#</td>
 						</tr>

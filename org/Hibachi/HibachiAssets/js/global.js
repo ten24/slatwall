@@ -195,6 +195,7 @@ function initUIElements( scopeSelector ) {
 	// Report Sortable
 	jQuery( scopeSelector ).find(jQuery('#hibachi-report-dimension-sort')).sortable({
 		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' );
 			var newDimensionsValue = '';
 			jQuery.each(jQuery('#hibachi-report-dimension-sort').children(), function(i, v){
 				if(i > 0) {
@@ -209,6 +210,7 @@ function initUIElements( scopeSelector ) {
 	// Report Sortable
 	jQuery( scopeSelector ).find(jQuery('#hibachi-report-metric-sort')).sortable({
 		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' );
 			var newMetricsValue = '';
 			jQuery.each(jQuery('#hibachi-report-metric-sort').children(), function(i, v){
 				if(i > 0) {
@@ -325,21 +327,34 @@ function setupEventHandlers() {
 
 			initUIElements('#adminModal');			
 			
-			// make width 90% of screen
+			// make width 90% of screen, 80% height
 			jQuery('#adminModal').css({	
 			    'width': function () { 
 			        return ( jQuery(document).width() * .9 ) + 'px';  
 			    },
 			    'margin-left': function () {
 		            return -(jQuery('#adminModal').width() / 2);
+			    },
+			    'height':function (){
+			    	return (jQuery(window).height()*.8)+'px';
 			    }
 			});
+			//Override modal body height
+			var bodyHeight=jQuery('#adminModal').height() - jQuery('#adminModal .modal-header').outerHeight(true)-jQuery('#adminModal .modal-footer').outerHeight(true)
+			jQuery('#adminModal .modal-body').css({
+				'height':function(){
+					return(bodyHeight+'px');
+				},
+				'max-height': function(){
+					return(bodyHeight+'px');
+				}
+				})
 		});	
 		
 	});
 	
 	//kill all ckeditor instances on modal window close
-	jQuery('#adminModal').on('hidden', function(){
+	jQuery('#adminModal ').on('hidden', function(){
 		
 		for(var i in CKEDITOR.instances) {
 			
@@ -348,6 +363,16 @@ function setupEventHandlers() {
 			}
 			
 		}
+		//return to default size
+		jQuery('#adminModal .modal-body').css({
+				'height':'auto'
+				},{
+				'max-height': '400px'
+				});
+		jQuery('#adminModal').css({
+				'height':'auto'
+				});
+
 	});
 	
 	// Listing Page - Searching
@@ -861,7 +886,11 @@ function updateTextAutocompleteSuggestions( autocompleteField, data ) {
 						innerLI += '</a></li>';
 						jQuery( '#' + jQuery(autocompleteField).data('sugessionsid') ).append( innerLI );
 					});
-					jQuery( '#' + jQuery( autocompleteField ).data('sugessionsid') ).parent().show();
+					var suggestionList=jQuery( '#' + jQuery( autocompleteField ).data('sugessionsid')).parent();
+					suggestionList.css('position','fixed');
+					suggestionList.css('top',suggestionList.parent().offset().top+25);
+					suggestionList.css('left',suggestionList.parent().offset().left);
+					suggestionList.show();
 					
 					textAutocompleteRelease();
 					
@@ -1293,13 +1322,17 @@ function globalSearchHold() {
 	return true;
 }
 
-function globalSearchRelease() {
+function globalSearchRelease( lastKeyword ) {
 	globalSearchCache.onHold = false;
+	if(jQuery('#global-search').val() != lastKeyword) {
+		updateGlobalSearchResults();
+	}
 }
 
 function updateGlobalSearchResults() {
 	
 	if(!globalSearchHold()) {
+		
 		addLoadingDiv( 'search-results' );
 		
 		var data = {
@@ -1351,7 +1384,7 @@ function updateGlobalSearchResults() {
 				}
 				
 				removeLoadingDiv( 'search-results' );
-				globalSearchRelease();
+				globalSearchRelease( data.keywords );
 			}
 			
 		});
@@ -1362,6 +1395,7 @@ function updateReport() {
 	
 	var data = {
 		slatAction: 'admin:report.default',
+		reportID: jQuery('input[name="reportID"]').val(),
 		reportName: jQuery('#hibachi-report').data('reportname'),
 		reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
 		reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),

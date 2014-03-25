@@ -6,6 +6,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInFlag" type="boolean";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
+	property name="persistSessionFlag" type="boolean";
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
 	property name="successfulActions" type="array";
@@ -20,6 +21,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
+		setPersistSessionFlag( true );
 		
 		return super.init();
 	}
@@ -38,7 +40,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public boolean function getLoggedInFlag() {
-		if(!getSession().getAccount().isNew()) {
+		if(!getSession().getAccount().getNewFlag()) {
 			return true;
 		}
 		return false;
@@ -92,7 +94,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return entityService.invokeMethod("new#arguments.entityName#");
 	}
 	
-	public any function getEntity(required string entityName, string entityID="", boolean isReturnNewOnNotFound=false) {
+	public any function getEntity(required string entityName, any entityID="", boolean isReturnNewOnNotFound=false) {
 		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
 		
 		return entityService.invokeMethod("get#arguments.entityName#", {1=arguments.entityID, 2=arguments.isReturnNewOnNotFound});

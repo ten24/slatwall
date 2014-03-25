@@ -55,14 +55,17 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="transactionSuccessFlag">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="transactionType">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="providerTransactionID">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="authorizationCode">
+				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="authorizationCodeUsed">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountAuthorized">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountReceived">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountCredited">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="securityCodeMatchFlag">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="avsCode">
+				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="avsDescription">
 				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="statusCode">
 				<cfif not isnull(rc.paymentTransaction.getMessage())>
 					<cfset messagesStruct = deserializeJSON(rc.paymentTransaction.getMessage()) />
