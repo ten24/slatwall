@@ -250,8 +250,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.redirectURL" default="";
 		
 		arguments.rc.$.slatwall.getSession().setRBLocale(arguments.rc.rbLocale);
+		arguments.rc.$.slatwall.setPersistSessionFlag( true );
 		
 		getFW().redirectExact( rc.redirectURL );
+		
 	}
 }
 
