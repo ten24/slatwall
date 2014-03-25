@@ -125,6 +125,7 @@ component  extends="HibachiService" accessors="true" {
 				
 				variables.europeanCentralBankRates = duplicate(newDetails);	
 			} catch (any e) {
+				variables.europeanCentralBankRates = {};
 			}
 		}
 		return variables.europeanCentralBankRates;
