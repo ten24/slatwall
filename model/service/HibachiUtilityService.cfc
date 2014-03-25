@@ -55,7 +55,9 @@ Notes:
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
 			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
 				var currency = getService("currencyService").getCurrency( arguments.formatDetails.currencyCode );
-				return currency.getCurrencySymbol() & LSNumberFormat(arguments.value, ',.__');
+				if(!isNull(currency)){
+					return currency.getCurrencySymbol() & LSNumberFormat(arguments.value, ',.__');
+				}
 			}
 			
 			// Otherwsie use the global currencyLocal
