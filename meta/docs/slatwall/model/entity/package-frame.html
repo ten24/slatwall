@@ -1,0 +1,540 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title> slatwall.model.entity </title>
+	<meta name="keywords" content="slatwall.model.entity package">
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+</head>
+<body>
+	
+	<p>
+		<a href="package-summary.html" target="classFrame"><span class="label label-success">slatwall.model.entity</span></a>
+	</p>
+	
+	
+	<p><strong>classes</strong></p>
+	<ul class="list-unstyled">
+		
+		<li>
+			<a href="Access.html" title="class in slatwall.model.entity" target="classFrame">Access</a>
+		</li>
+		
+		<li>
+			<a href="Account.html" title="class in slatwall.model.entity" target="classFrame">Account</a>
+		</li>
+		
+		<li>
+			<a href="AccountAddress.html" title="class in slatwall.model.entity" target="classFrame">AccountAddress</a>
+		</li>
+		
+		<li>
+			<a href="AccountAuthentication.html" title="class in slatwall.model.entity" target="classFrame">AccountAuthentication</a>
+		</li>
+		
+		<li>
+			<a href="AccountContentAccess.html" title="class in slatwall.model.entity" target="classFrame">AccountContentAccess</a>
+		</li>
+		
+		<li>
+			<a href="AccountEmailAddress.html" title="class in slatwall.model.entity" target="classFrame">AccountEmailAddress</a>
+		</li>
+		
+		<li>
+			<a href="AccountLoyalty.html" title="class in slatwall.model.entity" target="classFrame">AccountLoyalty</a>
+		</li>
+		
+		<li>
+			<a href="AccountLoyaltyTransaction.html" title="class in slatwall.model.entity" target="classFrame">AccountLoyaltyTransaction</a>
+		</li>
+		
+		<li>
+			<a href="AccountPayment.html" title="class in slatwall.model.entity" target="classFrame">AccountPayment</a>
+		</li>
+		
+		<li>
+			<a href="AccountPaymentApplied.html" title="class in slatwall.model.entity" target="classFrame">AccountPaymentApplied</a>
+		</li>
+		
+		<li>
+			<a href="AccountPaymentMethod.html" title="class in slatwall.model.entity" target="classFrame">AccountPaymentMethod</a>
+		</li>
+		
+		<li>
+			<a href="AccountPhoneNumber.html" title="class in slatwall.model.entity" target="classFrame">AccountPhoneNumber</a>
+		</li>
+		
+		<li>
+			<a href="AccountRelationship.html" title="class in slatwall.model.entity" target="classFrame">AccountRelationship</a>
+		</li>
+		
+		<li>
+			<a href="Address.html" title="class in slatwall.model.entity" target="classFrame">Address</a>
+		</li>
+		
+		<li>
+			<a href="AddressZone.html" title="class in slatwall.model.entity" target="classFrame">AddressZone</a>
+		</li>
+		
+		<li>
+			<a href="AlternateSkuCode.html" title="class in slatwall.model.entity" target="classFrame">AlternateSkuCode</a>
+		</li>
+		
+		<li>
+			<a href="Attribute.html" title="class in slatwall.model.entity" target="classFrame">Attribute</a>
+		</li>
+		
+		<li>
+			<a href="AttributeOption.html" title="class in slatwall.model.entity" target="classFrame">AttributeOption</a>
+		</li>
+		
+		<li>
+			<a href="AttributeSet.html" title="class in slatwall.model.entity" target="classFrame">AttributeSet</a>
+		</li>
+		
+		<li>
+			<a href="AttributeValue.html" title="class in slatwall.model.entity" target="classFrame">AttributeValue</a>
+		</li>
+		
+		<li>
+			<a href="Brand.html" title="class in slatwall.model.entity" target="classFrame">Brand</a>
+		</li>
+		
+		<li>
+			<a href="Category.html" title="class in slatwall.model.entity" target="classFrame">Category</a>
+		</li>
+		
+		<li>
+			<a href="Comment.html" title="class in slatwall.model.entity" target="classFrame">Comment</a>
+		</li>
+		
+		<li>
+			<a href="CommentRelationship.html" title="class in slatwall.model.entity" target="classFrame">CommentRelationship</a>
+		</li>
+		
+		<li>
+			<a href="Content.html" title="class in slatwall.model.entity" target="classFrame">Content</a>
+		</li>
+		
+		<li>
+			<a href="ContentAccess.html" title="class in slatwall.model.entity" target="classFrame">ContentAccess</a>
+		</li>
+		
+		<li>
+			<a href="Country.html" title="class in slatwall.model.entity" target="classFrame">Country</a>
+		</li>
+		
+		<li>
+			<a href="Currency.html" title="class in slatwall.model.entity" target="classFrame">Currency</a>
+		</li>
+		
+		<li>
+			<a href="Email.html" title="class in slatwall.model.entity" target="classFrame">Email</a>
+		</li>
+		
+		<li>
+			<a href="EmailTemplate.html" title="class in slatwall.model.entity" target="classFrame">EmailTemplate</a>
+		</li>
+		
+		<li>
+			<a href="EmailVerification.html" title="class in slatwall.model.entity" target="classFrame">EmailVerification</a>
+		</li>
+		
+		<li>
+			<a href="EventTrigger.html" title="class in slatwall.model.entity" target="classFrame">EventTrigger</a>
+		</li>
+		
+		<li>
+			<a href="File.html" title="class in slatwall.model.entity" target="classFrame">File</a>
+		</li>
+		
+		<li>
+			<a href="FileRelationship.html" title="class in slatwall.model.entity" target="classFrame">FileRelationship</a>
+		</li>
+		
+		<li>
+			<a href="FulfillmentMethod.html" title="class in slatwall.model.entity" target="classFrame">FulfillmentMethod</a>
+		</li>
+		
+		<li>
+			<a href="HibachiEntity.html" title="class in slatwall.model.entity" target="classFrame">HibachiEntity</a>
+		</li>
+		
+		<li>
+			<a href="Image.html" title="class in slatwall.model.entity" target="classFrame">Image</a>
+		</li>
+		
+		<li>
+			<a href="Integration.html" title="class in slatwall.model.entity" target="classFrame">Integration</a>
+		</li>
+		
+		<li>
+			<a href="Inventory.html" title="class in slatwall.model.entity" target="classFrame">Inventory</a>
+		</li>
+		
+		<li>
+			<a href="Location.html" title="class in slatwall.model.entity" target="classFrame">Location</a>
+		</li>
+		
+		<li>
+			<a href="LocationAddress.html" title="class in slatwall.model.entity" target="classFrame">LocationAddress</a>
+		</li>
+		
+		<li>
+			<a href="Loyalty.html" title="class in slatwall.model.entity" target="classFrame">Loyalty</a>
+		</li>
+		
+		<li>
+			<a href="LoyaltyAccruement.html" title="class in slatwall.model.entity" target="classFrame">LoyaltyAccruement</a>
+		</li>
+		
+		<li>
+			<a href="LoyaltyRedemption.html" title="class in slatwall.model.entity" target="classFrame">LoyaltyRedemption</a>
+		</li>
+		
+		<li>
+			<a href="LoyaltyTerm.html" title="class in slatwall.model.entity" target="classFrame">LoyaltyTerm</a>
+		</li>
+		
+		<li>
+			<a href="MeasurementUnit.html" title="class in slatwall.model.entity" target="classFrame">MeasurementUnit</a>
+		</li>
+		
+		<li>
+			<a href="Option.html" title="class in slatwall.model.entity" target="classFrame">Option</a>
+		</li>
+		
+		<li>
+			<a href="OptionGroup.html" title="class in slatwall.model.entity" target="classFrame">OptionGroup</a>
+		</li>
+		
+		<li>
+			<a href="Order.html" title="class in slatwall.model.entity" target="classFrame">Order</a>
+		</li>
+		
+		<li>
+			<a href="OrderDelivery.html" title="class in slatwall.model.entity" target="classFrame">OrderDelivery</a>
+		</li>
+		
+		<li>
+			<a href="OrderDeliveryItem.html" title="class in slatwall.model.entity" target="classFrame">OrderDeliveryItem</a>
+		</li>
+		
+		<li>
+			<a href="OrderFulfillment.html" title="class in slatwall.model.entity" target="classFrame">OrderFulfillment</a>
+		</li>
+		
+		<li>
+			<a href="OrderItem.html" title="class in slatwall.model.entity" target="classFrame">OrderItem</a>
+		</li>
+		
+		<li>
+			<a href="OrderOrigin.html" title="class in slatwall.model.entity" target="classFrame">OrderOrigin</a>
+		</li>
+		
+		<li>
+			<a href="OrderPayment.html" title="class in slatwall.model.entity" target="classFrame">OrderPayment</a>
+		</li>
+		
+		<li>
+			<a href="OrderReturn.html" title="class in slatwall.model.entity" target="classFrame">OrderReturn</a>
+		</li>
+		
+		<li>
+			<a href="PaymentMethod.html" title="class in slatwall.model.entity" target="classFrame">PaymentMethod</a>
+		</li>
+		
+		<li>
+			<a href="PaymentTerm.html" title="class in slatwall.model.entity" target="classFrame">PaymentTerm</a>
+		</li>
+		
+		<li>
+			<a href="PaymentTransaction.html" title="class in slatwall.model.entity" target="classFrame">PaymentTransaction</a>
+		</li>
+		
+		<li>
+			<a href="Permission.html" title="class in slatwall.model.entity" target="classFrame">Permission</a>
+		</li>
+		
+		<li>
+			<a href="PermissionGroup.html" title="class in slatwall.model.entity" target="classFrame">PermissionGroup</a>
+		</li>
+		
+		<li>
+			<a href="Physical.html" title="class in slatwall.model.entity" target="classFrame">Physical</a>
+		</li>
+		
+		<li>
+			<a href="PhysicalCount.html" title="class in slatwall.model.entity" target="classFrame">PhysicalCount</a>
+		</li>
+		
+		<li>
+			<a href="PhysicalCountItem.html" title="class in slatwall.model.entity" target="classFrame">PhysicalCountItem</a>
+		</li>
+		
+		<li>
+			<a href="PostalCode.html" title="class in slatwall.model.entity" target="classFrame">PostalCode</a>
+		</li>
+		
+		<li>
+			<a href="PriceGroup.html" title="class in slatwall.model.entity" target="classFrame">PriceGroup</a>
+		</li>
+		
+		<li>
+			<a href="PriceGroupRate.html" title="class in slatwall.model.entity" target="classFrame">PriceGroupRate</a>
+		</li>
+		
+		<li>
+			<a href="Print.html" title="class in slatwall.model.entity" target="classFrame">Print</a>
+		</li>
+		
+		<li>
+			<a href="PrintTemplate.html" title="class in slatwall.model.entity" target="classFrame">PrintTemplate</a>
+		</li>
+		
+		<li>
+			<a href="Product.html" title="class in slatwall.model.entity" target="classFrame">Product</a>
+		</li>
+		
+		<li>
+			<a href="ProductReview.html" title="class in slatwall.model.entity" target="classFrame">ProductReview</a>
+		</li>
+		
+		<li>
+			<a href="ProductType.html" title="class in slatwall.model.entity" target="classFrame">ProductType</a>
+		</li>
+		
+		<li>
+			<a href="Promotion.html" title="class in slatwall.model.entity" target="classFrame">Promotion</a>
+		</li>
+		
+		<li>
+			<a href="PromotionAccount.html" title="class in slatwall.model.entity" target="classFrame">PromotionAccount</a>
+		</li>
+		
+		<li>
+			<a href="PromotionApplied.html" title="class in slatwall.model.entity" target="classFrame">PromotionApplied</a>
+		</li>
+		
+		<li>
+			<a href="PromotionCode.html" title="class in slatwall.model.entity" target="classFrame">PromotionCode</a>
+		</li>
+		
+		<li>
+			<a href="PromotionPeriod.html" title="class in slatwall.model.entity" target="classFrame">PromotionPeriod</a>
+		</li>
+		
+		<li>
+			<a href="PromotionQualifier.html" title="class in slatwall.model.entity" target="classFrame">PromotionQualifier</a>
+		</li>
+		
+		<li>
+			<a href="PromotionReward.html" title="class in slatwall.model.entity" target="classFrame">PromotionReward</a>
+		</li>
+		
+		<li>
+			<a href="Report.html" title="class in slatwall.model.entity" target="classFrame">Report</a>
+		</li>
+		
+		<li>
+			<a href="RoundingRule.html" title="class in slatwall.model.entity" target="classFrame">RoundingRule</a>
+		</li>
+		
+		<li>
+			<a href="Schedule.html" title="class in slatwall.model.entity" target="classFrame">Schedule</a>
+		</li>
+		
+		<li>
+			<a href="Session.html" title="class in slatwall.model.entity" target="classFrame">Session</a>
+		</li>
+		
+		<li>
+			<a href="Setting.html" title="class in slatwall.model.entity" target="classFrame">Setting</a>
+		</li>
+		
+		<li>
+			<a href="ShippingMethod.html" title="class in slatwall.model.entity" target="classFrame">ShippingMethod</a>
+		</li>
+		
+		<li>
+			<a href="ShippingMethodOption.html" title="class in slatwall.model.entity" target="classFrame">ShippingMethodOption</a>
+		</li>
+		
+		<li>
+			<a href="ShippingMethodRate.html" title="class in slatwall.model.entity" target="classFrame">ShippingMethodRate</a>
+		</li>
+		
+		<li>
+			<a href="ShortReference.html" title="class in slatwall.model.entity" target="classFrame">ShortReference</a>
+		</li>
+		
+		<li>
+			<a href="Site.html" title="class in slatwall.model.entity" target="classFrame">Site</a>
+		</li>
+		
+		<li>
+			<a href="Sku.html" title="class in slatwall.model.entity" target="classFrame">Sku</a>
+		</li>
+		
+		<li>
+			<a href="SkuCurrency.html" title="class in slatwall.model.entity" target="classFrame">SkuCurrency</a>
+		</li>
+		
+		<li>
+			<a href="State.html" title="class in slatwall.model.entity" target="classFrame">State</a>
+		</li>
+		
+		<li>
+			<a href="Stock.html" title="class in slatwall.model.entity" target="classFrame">Stock</a>
+		</li>
+		
+		<li>
+			<a href="StockAdjustment.html" title="class in slatwall.model.entity" target="classFrame">StockAdjustment</a>
+		</li>
+		
+		<li>
+			<a href="StockAdjustmentDelivery.html" title="class in slatwall.model.entity" target="classFrame">StockAdjustmentDelivery</a>
+		</li>
+		
+		<li>
+			<a href="StockAdjustmentDeliveryItem.html" title="class in slatwall.model.entity" target="classFrame">StockAdjustmentDeliveryItem</a>
+		</li>
+		
+		<li>
+			<a href="StockAdjustmentItem.html" title="class in slatwall.model.entity" target="classFrame">StockAdjustmentItem</a>
+		</li>
+		
+		<li>
+			<a href="StockHold.html" title="class in slatwall.model.entity" target="classFrame">StockHold</a>
+		</li>
+		
+		<li>
+			<a href="StockReceiver.html" title="class in slatwall.model.entity" target="classFrame">StockReceiver</a>
+		</li>
+		
+		<li>
+			<a href="StockReceiverItem.html" title="class in slatwall.model.entity" target="classFrame">StockReceiverItem</a>
+		</li>
+		
+		<li>
+			<a href="SubscriptionBenefit.html" title="class in slatwall.model.entity" target="classFrame">SubscriptionBenefit</a>
+		</li>
+		
+		<li>
+			<a href="SubscriptionOrderItem.html" title="class in slatwall.model.entity" target="classFrame">SubscriptionOrderItem</a>
+		</li>
+		
+		<li>
+			<a href="SubscriptionStatus.html" title="class in slatwall.model.entity" target="classFrame">SubscriptionStatus</a>
+		</li>
+		
+		<li>
+			<a href="SubscriptionTerm.html" title="class in slatwall.model.entity" target="classFrame">SubscriptionTerm</a>
+		</li>
+		
+		<li>
+			<a href="SubscriptionUsage.html" title="class in slatwall.model.entity" target="classFrame">SubscriptionUsage</a>
+		</li>
+		
+		<li>
+			<a href="SubscriptionUsageBenefit.html" title="class in slatwall.model.entity" target="classFrame">SubscriptionUsageBenefit</a>
+		</li>
+		
+		<li>
+			<a href="SubscriptionUsageBenefitAccount.html" title="class in slatwall.model.entity" target="classFrame">SubscriptionUsageBenefitAccount</a>
+		</li>
+		
+		<li>
+			<a href="Task.html" title="class in slatwall.model.entity" target="classFrame">Task</a>
+		</li>
+		
+		<li>
+			<a href="TaskHistory.html" title="class in slatwall.model.entity" target="classFrame">TaskHistory</a>
+		</li>
+		
+		<li>
+			<a href="TaskSchedule.html" title="class in slatwall.model.entity" target="classFrame">TaskSchedule</a>
+		</li>
+		
+		<li>
+			<a href="TaxApplied.html" title="class in slatwall.model.entity" target="classFrame">TaxApplied</a>
+		</li>
+		
+		<li>
+			<a href="TaxCategory.html" title="class in slatwall.model.entity" target="classFrame">TaxCategory</a>
+		</li>
+		
+		<li>
+			<a href="TaxCategoryRate.html" title="class in slatwall.model.entity" target="classFrame">TaxCategoryRate</a>
+		</li>
+		
+		<li>
+			<a href="Term.html" title="class in slatwall.model.entity" target="classFrame">Term</a>
+		</li>
+		
+		<li>
+			<a href="Type.html" title="class in slatwall.model.entity" target="classFrame">Type</a>
+		</li>
+		
+		<li>
+			<a href="UpdateScript.html" title="class in slatwall.model.entity" target="classFrame">UpdateScript</a>
+		</li>
+		
+		<li>
+			<a href="Vendor.html" title="class in slatwall.model.entity" target="classFrame">Vendor</a>
+		</li>
+		
+		<li>
+			<a href="VendorAccount.html" title="class in slatwall.model.entity" target="classFrame">VendorAccount</a>
+		</li>
+		
+		<li>
+			<a href="VendorAddress.html" title="class in slatwall.model.entity" target="classFrame">VendorAddress</a>
+		</li>
+		
+		<li>
+			<a href="VendorEmailAddress.html" title="class in slatwall.model.entity" target="classFrame">VendorEmailAddress</a>
+		</li>
+		
+		<li>
+			<a href="VendorOrder.html" title="class in slatwall.model.entity" target="classFrame">VendorOrder</a>
+		</li>
+		
+		<li>
+			<a href="VendorOrderItem.html" title="class in slatwall.model.entity" target="classFrame">VendorOrderItem</a>
+		</li>
+		
+		<li>
+			<a href="VendorPhoneNumber.html" title="class in slatwall.model.entity" target="classFrame">VendorPhoneNumber</a>
+		</li>
+		
+		<li>
+			<a href="VendorSkuStock.html" title="class in slatwall.model.entity" target="classFrame">VendorSkuStock</a>
+		</li>
+		
+	</ul>
+	
+
+</body>
+</html>

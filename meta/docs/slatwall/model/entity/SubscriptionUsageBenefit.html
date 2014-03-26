@@ -1,0 +1,3539 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>SubscriptionUsageBenefit</title>
+	<meta name="keywords" content="slatwall.model.entity.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/model/entity/SubscriptionUsageBenefit.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.model.entity"><span class="label label-success">slatwall.model.entity</span></a>
+</div>
+
+<h2>
+
+Class
+SubscriptionUsageBenefit</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a>
+                <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiEntity</a>
+                    <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">slatwall.model.entity.HibachiEntity</a>
+                        <img src="../../../resources/inherit.gif" alt="extended by ">slatwall.model.entity.SubscriptionUsageBenefit
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				cacheuse 
+				: transactional 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				hb_servicename 
+				: subscriptionService 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				persistent 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				table 
+				: SwSubsUsageBenefit 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				hb_permission 
+				: subscriptionUsage.subscriptionUsageBenefits 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				entityname 
+				: SlatwallSubscriptionUsageBenefit 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#accessType()">accessType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">hb_optionssmartlistdata = f:parentType.systemCode=accessType</li>
+				
+				<li class="label label-default label-annotations">cfc = Type</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = accessTypeID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#categories()">categories</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = category</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = categoryID</li>
+				
+				<li class="label label-default label-annotations">cfc = Category</li>
+				
+				<li class="label label-default label-annotations">linktable = SwSubsUsageBenefitCategory</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionUsageBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#contents()">contents</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = content</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = contentID</li>
+				
+				<li class="label label-default label-annotations">cfc = Content</li>
+				
+				<li class="label label-default label-annotations">linktable = SwSubsUsageBenefitContent</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionUsageBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#createdByAccount()">createdByAccount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+				<li class="label label-default label-annotations">cfc = Account</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = createdByAccountID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#createdDateTime()">createdDateTime</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = timestamp</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#excludedCategories()">excludedCategories</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = excludedCategory</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = categoryID</li>
+				
+				<li class="label label-default label-annotations">cfc = Category</li>
+				
+				<li class="label label-default label-annotations">linktable = SwSubsUsageBenefitExclCategory</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionUsageBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#excludedContents()">excludedContents</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = excludedContent</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = contentID</li>
+				
+				<li class="label label-default label-annotations">cfc = Content</li>
+				
+				<li class="label label-default label-annotations">linktable = SwSubsUsageBenefitExclContent</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionUsageBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#maxUseCount()">maxUseCount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = integer</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#modifiedByAccount()">modifiedByAccount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+				<li class="label label-default label-annotations">cfc = Account</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = modifiedByAccountID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#modifiedDateTime()">modifiedDateTime</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = timestamp</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#priceGroups()">priceGroups</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = priceGroup</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = priceGroupID</li>
+				
+				<li class="label label-default label-annotations">cfc = PriceGroup</li>
+				
+				<li class="label label-default label-annotations">linktable = SwSubsUsageBenefitPriceGroup</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionUsageBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#promotions()">promotions</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = promotion</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = promotionID</li>
+				
+				<li class="label label-default label-annotations">cfc = Promotion</li>
+				
+				<li class="label label-default label-annotations">linktable = SwSubsUsageBenefitPromotion</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionUsageBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#remoteID()">remoteID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#renewalSubscriptionUsage()">renewalSubscriptionUsage</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">inverse = true</li>
+				
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = SubscriptionUsage</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = renewalSubscriptionUsageID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#subscriptionBenefit()">subscriptionBenefit</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = SubscriptionBenefit</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#subscriptionUsage()">subscriptionUsage</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">inverse = true</li>
+				
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = SubscriptionUsage</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionUsageID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#subscriptionUsageBenefitAccounts()">subscriptionUsageBenefitAccounts</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">inverse = true</li>
+				
+				<li class="label label-default label-annotations">fieldtype = one-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = subscriptionUsageBenefitAccount</li>
+				
+				<li class="label label-default label-annotations">cascade = all-delete-orphan</li>
+				
+				<li class="label label-default label-annotations">cfc = SubscriptionUsageBenefitAccount</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionUsageBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#subscriptionUsageBenefitID()">subscriptionUsageBenefitID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">generator = uuid</li>
+				
+				<li class="label label-default label-annotations">fieldtype = id</li>
+				
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">unsavedvalue = </li>
+				
+				<li class="label label-default label-annotations">length = 32</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#ADDCATEGORY()">ADDCATEGORY</A></strong>(<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> category)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#ADDCONTENT()">ADDCONTENT</A></strong>(<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> content)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#ADDEXCLUDEDCATEGORY()">ADDEXCLUDEDCATEGORY</A></strong>(<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> excludedCategory)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#ADDEXCLUDEDCONTENT()">ADDEXCLUDEDCONTENT</A></strong>(<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> excludedContent)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#ADDPROMOTION()">ADDPROMOTION</A></strong>(<a href="../../../slatwall/model/entity/Promotion.html" title="class in slatwall.model.entity">Promotion</a> promotion)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#ADDSUBSCRIPTIONUSAGEBENEFITACCOUNT()">ADDSUBSCRIPTIONUSAGEBENEFITACCOUNT</A></strong>(<a href="../../../slatwall/model/entity/SubscriptionUsageBenefitAccount.html" title="class in slatwall.model.entity">SubscriptionUsageBenefitAccount</a> subscriptionUsageBenefitAccount)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETACCESSTYPE()">GETACCESSTYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETCATEGORIES()">GETCATEGORIES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETCONTENTS()">GETCONTENTS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETCREATEDBYACCOUNT()">GETCREATEDBYACCOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETCREATEDDATETIME()">GETCREATEDDATETIME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETEXCLUDEDCATEGORIES()">GETEXCLUDEDCATEGORIES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETEXCLUDEDCONTENTS()">GETEXCLUDEDCONTENTS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETMAXUSECOUNT()">GETMAXUSECOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETMODIFIEDBYACCOUNT()">GETMODIFIEDBYACCOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETMODIFIEDDATETIME()">GETMODIFIEDDATETIME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETPRICEGROUPS()">GETPRICEGROUPS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETPROMOTIONS()">GETPROMOTIONS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETREMOTEID()">GETREMOTEID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETRENEWALSUBSCRIPTIONUSAGE()">GETRENEWALSUBSCRIPTIONUSAGE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETSUBSCRIPTIONBENEFIT()">GETSUBSCRIPTIONBENEFIT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETSUBSCRIPTIONUSAGE()">GETSUBSCRIPTIONUSAGE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETSUBSCRIPTIONUSAGEBENEFITACCOUNTS()">GETSUBSCRIPTIONUSAGEBENEFITACCOUNTS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#GETSUBSCRIPTIONUSAGEBENEFITID()">GETSUBSCRIPTIONUSAGEBENEFITID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASACCESSTYPE()">HASACCESSTYPE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASCATEGORY()">HASCATEGORY</A></strong>([<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> categories])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASCONTENT()">HASCONTENT</A></strong>([<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> contents])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASCREATEDBYACCOUNT()">HASCREATEDBYACCOUNT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASEXCLUDEDCATEGORY()">HASEXCLUDEDCATEGORY</A></strong>([<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> excludedCategories])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASEXCLUDEDCONTENT()">HASEXCLUDEDCONTENT</A></strong>([<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> excludedContents])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASMODIFIEDBYACCOUNT()">HASMODIFIEDBYACCOUNT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASPRICEGROUP()">HASPRICEGROUP</A></strong>([<a href="../../../slatwall/model/entity/PriceGroup.html" title="class in slatwall.model.entity">PriceGroup</a> priceGroups])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASPROMOTION()">HASPROMOTION</A></strong>([<a href="../../../slatwall/model/entity/Promotion.html" title="class in slatwall.model.entity">Promotion</a> promotions])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASRENEWALSUBSCRIPTIONUSAGE()">HASRENEWALSUBSCRIPTIONUSAGE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASSUBSCRIPTIONBENEFIT()">HASSUBSCRIPTIONBENEFIT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASSUBSCRIPTIONUSAGE()">HASSUBSCRIPTIONUSAGE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#HASSUBSCRIPTIONUSAGEBENEFITACCOUNT()">HASSUBSCRIPTIONUSAGEBENEFITACCOUNT</A></strong>([<a href="../../../slatwall/model/entity/SubscriptionUsageBenefitAccount.html" title="class in slatwall.model.entity">SubscriptionUsageBenefitAccount</a> subscriptionUsageBenefitAccounts])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#REMOVECATEGORY()">REMOVECATEGORY</A></strong>(<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> category)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#REMOVECONTENT()">REMOVECONTENT</A></strong>(<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> content)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#REMOVEEXCLUDEDCATEGORY()">REMOVEEXCLUDEDCATEGORY</A></strong>(<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> excludedCategory)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#REMOVEEXCLUDEDCONTENT()">REMOVEEXCLUDEDCONTENT</A></strong>(<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> excludedContent)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#REMOVEPROMOTION()">REMOVEPROMOTION</A></strong>(<a href="../../../slatwall/model/entity/Promotion.html" title="class in slatwall.model.entity">Promotion</a> promotion)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#REMOVESUBSCRIPTIONUSAGEBENEFITACCOUNT()">REMOVESUBSCRIPTIONUSAGEBENEFITACCOUNT</A></strong>(<a href="../../../slatwall/model/entity/SubscriptionUsageBenefitAccount.html" title="class in slatwall.model.entity">SubscriptionUsageBenefitAccount</a> subscriptionUsageBenefitAccount)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETACCESSTYPE()">SETACCESSTYPE</A></strong>(any accessType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETCATEGORIES()">SETCATEGORIES</A></strong>(array categories)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETCONTENTS()">SETCONTENTS</A></strong>(array contents)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETCREATEDBYACCOUNT()">SETCREATEDBYACCOUNT</A></strong>(any createdByAccount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETCREATEDDATETIME()">SETCREATEDDATETIME</A></strong>(any createdDateTime)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETEXCLUDEDCATEGORIES()">SETEXCLUDEDCATEGORIES</A></strong>(array excludedCategories)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETEXCLUDEDCONTENTS()">SETEXCLUDEDCONTENTS</A></strong>(array excludedContents)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETMAXUSECOUNT()">SETMAXUSECOUNT</A></strong>(any maxUseCount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETMODIFIEDBYACCOUNT()">SETMODIFIEDBYACCOUNT</A></strong>(any modifiedByAccount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETMODIFIEDDATETIME()">SETMODIFIEDDATETIME</A></strong>(any modifiedDateTime)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETPRICEGROUPS()">SETPRICEGROUPS</A></strong>(array priceGroups)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETPROMOTIONS()">SETPROMOTIONS</A></strong>(array promotions)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETREMOTEID()">SETREMOTEID</A></strong>(any remoteID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETSUBSCRIPTIONBENEFIT()">SETSUBSCRIPTIONBENEFIT</A></strong>(any subscriptionBenefit)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETSUBSCRIPTIONUSAGEBENEFITACCOUNTS()">SETSUBSCRIPTIONUSAGEBENEFITACCOUNTS</A></strong>(array subscriptionUsageBenefitAccounts)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a></code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#SETSUBSCRIPTIONUSAGEBENEFITID()">SETSUBSCRIPTIONUSAGEBENEFITID</A></strong>(any subscriptionUsageBenefitID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#addPriceGroup()">addPriceGroup</A></strong>(any priceGroup)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#copyFromSubscriptionBenefit()">copyFromSubscriptionBenefit</A></strong>(any subscriptionBenefit)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#copyFromSubscriptionUsageBenefit()">copyFromSubscriptionUsageBenefit</A></strong>(any subscriptionUsageBenefit)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#getAvailableUseCount()">getAvailableUseCount</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#getCurrentUseCount()">getCurrentUseCount</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#removePriceGroup()">removePriceGroup</A></strong>(any priceGroup)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#removeRenewalSubscriptionUsage()">removeRenewalSubscriptionUsage</A></strong>([any renewalSubscriptionUsage])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#removeSubscriptionUsage()">removeSubscriptionUsage</A></strong>([any subscriptionUsage])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#setRenewalSubscriptionUsage()">setRenewalSubscriptionUsage</A></strong>(any renewalSubscriptionUsage)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="SubscriptionUsageBenefit.html#setSubscriptionUsage()">setSubscriptionUsage</A></strong>(any subscriptionUsage)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.model.entity.HibachiEntity"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">slatwall.model.entity.HibachiEntity</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//slatwall/model/entity/HibachiEntity.html#SETASSIGNEDATTRIBUTESETSMARTLIST()">SETASSIGNEDATTRIBUTESETSMARTLIST</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#SETATTRIBUTEVALUESBYATTRIBUTECODESTRUCT()">SETATTRIBUTEVALUESBYATTRIBUTECODESTRUCT</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#SETATTRIBUTEVALUESBYATTRIBUTEIDSTRUCT()">SETATTRIBUTEVALUESBYATTRIBUTEIDSTRUCT</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#clearAttributeCache()">clearAttributeCache</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAssignedAttributeSetSmartList()">getAssignedAttributeSetSmartList</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValue()">getAttributeValue</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesByAttributeCodeStruct()">getAttributeValuesByAttributeCodeStruct</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesByAttributeIDStruct()">getAttributeValuesByAttributeIDStruct</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesForEntity()">getAttributeValuesForEntity</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getComments()">getComments</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getEmailTemplates()">getEmailTemplates</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getPrintTemplates()">getPrintTemplates</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getSettingDetails()">getSettingDetails</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#populate()">populate</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#setting()">setting</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiEntity"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiEntity</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#GETPROCESSOBJECTS()">GETPROCESSOBJECTS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETEMAILTEMPLATES()">SETEMAILTEMPLATES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETNEWFLAG()">SETNEWFLAG</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPERSISTABLEERRORS()">SETPERSISTABLEERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPRINTTEMPLATES()">SETPRINTTEMPLATES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPROCESSOBJECTS()">SETPROCESSOBJECTS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETSIMPLEREPRESENTATION()">SETSIMPLEREPRESENTATION</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#addError()">addError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#addPersistableError()">addPersistableError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#buildIDPathList()">buildIDPathList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#clearProcessObject()">clearProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#duplicate()">duplicate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getEntityName()">getEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getErrors()">getErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getIdentifierColumnNames()">getIdentifierColumnNames</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getIdentifierValue()">getIdentifierValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getNewFlag()">getNewFlag</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getNewPropertyEntity()">getNewPropertyEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPersistableErrors()">getPersistableErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPrimaryIDPropertyName()">getPrimaryIDPropertyName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPrimaryIDValue()">getPrimaryIDValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getProcessObject()">getProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyAssignedIDList()">getPropertyAssignedIDList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyCount()">getPropertyCount</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyOptions()">getPropertyOptions</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyOptionsSmartList()">getPropertyOptionsSmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyPrimaryID()">getPropertyPrimaryID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertySmartList()">getPropertySmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyStruct()">getPropertyStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getSimpleRepresentation()">getSimpleRepresentation</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getSimpleRepresentationPropertyName()">getSimpleRepresentationPropertyName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasAnyInProperty()">hasAnyInProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasProcessObject()">hasProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasUniqueOrNullProperty()">hasUniqueOrNullProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasUniqueProperty()">hasUniqueProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#init()">init</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isDeletable()">isDeletable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isEditable()">isEditable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNew()">isNew</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotDeletable()">isNotDeletable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotEditable()">isNotEditable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotProcessable()">isNotProcessable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isPersistable()">isPersistable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isProcessable()">isProcessable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#onMissingMethod()">onMissingMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#preInsert()">preInsert</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#preUpdate()">preUpdate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#removeAllManyToManyRelationships()">removeAllManyToManyRelationships</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#setProcessObject()">setProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#updateCalculatedProperties()">updateCalculatedProperties</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#GETPOPULATEDSUBPROPERTIES()">GETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIERRORS()">SETHIBACHIERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIMESSAGES()">SETHIBACHIMESSAGES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETPOPULATEDSUBPROPERTIES()">SETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETVALIDATIONS()">SETVALIDATIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#_setProperty()">_setProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addErrors()">addErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addMessage()">addMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#afterPopulate()">afterPopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#beforePopulate()">beforePopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllErrorsHTML()">getAllErrorsHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllMessagesHTML()">getAllMessagesHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getError()">getError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFieldTypeByPropertyIdentifier()">getFieldTypeByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFormattedValue()">getFormattedValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiErrors()">getHibachiErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiMessages()">getHibachiMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getLastObjectByPropertyIdentifier()">getLastObjectByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getMessages()">getMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getProperties()">getProperties</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertiesStruct()">getPropertiesStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldName()">getPropertyFieldName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldType()">getPropertyFieldType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFormatType()">getPropertyFormatType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyHint()">getPropertyHint</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyMetaData()">getPropertyMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertySessionDefault()">getPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyTitle()">getPropertyTitle</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyValidationClass()">getPropertyValidationClass</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getTitleByPropertyIdentifier()">getTitleByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValidations()">getValidations</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValueByPropertyIdentifier()">getValueByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasError()">hasError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasErrors()">hasErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessage()">hasMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessages()">hasMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasProperty()">hasProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#setPropertySessionDefault()">setPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrors()">showErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrorsAndMessages()">showErrorsAndMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showMessages()">showMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#stringReplace()">stringReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#validate()">validate</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#rbKey()">rbKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="accessType()"><!-- --></a>
+		<h3>accessType</h3>
+
+		<kbd>
+			property any <strong>accessType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>hb_optionssmartlistdata</code> - f:parentType.systemCode=accessType</dd>
+			
+			<dd><code>cfc</code> - Type</dd>
+			
+			<dd><code>fkcolumn</code> - accessTypeID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="categories()"><!-- --></a>
+		<h3>categories</h3>
+
+		<kbd>
+			property array <strong>categories</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - category</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - categoryID</dd>
+			
+			<dd><code>cfc</code> - Category</dd>
+			
+			<dd><code>linktable</code> - SwSubsUsageBenefitCategory</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionUsageBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="contents()"><!-- --></a>
+		<h3>contents</h3>
+
+		<kbd>
+			property array <strong>contents</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - content</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - contentID</dd>
+			
+			<dd><code>cfc</code> - Content</dd>
+			
+			<dd><code>linktable</code> - SwSubsUsageBenefitContent</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionUsageBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="createdByAccount()"><!-- --></a>
+		<h3>createdByAccount</h3>
+
+		<kbd>
+			property any <strong>createdByAccount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Account</dd>
+			
+			<dd><code>fkcolumn</code> - createdByAccountID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="createdDateTime()"><!-- --></a>
+		<h3>createdDateTime</h3>
+
+		<kbd>
+			property any <strong>createdDateTime</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - timestamp</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="excludedCategories()"><!-- --></a>
+		<h3>excludedCategories</h3>
+
+		<kbd>
+			property array <strong>excludedCategories</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - excludedCategory</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - categoryID</dd>
+			
+			<dd><code>cfc</code> - Category</dd>
+			
+			<dd><code>linktable</code> - SwSubsUsageBenefitExclCategory</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionUsageBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="excludedContents()"><!-- --></a>
+		<h3>excludedContents</h3>
+
+		<kbd>
+			property array <strong>excludedContents</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - excludedContent</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - contentID</dd>
+			
+			<dd><code>cfc</code> - Content</dd>
+			
+			<dd><code>linktable</code> - SwSubsUsageBenefitExclContent</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionUsageBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="maxUseCount()"><!-- --></a>
+		<h3>maxUseCount</h3>
+
+		<kbd>
+			property any <strong>maxUseCount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - integer</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="modifiedByAccount()"><!-- --></a>
+		<h3>modifiedByAccount</h3>
+
+		<kbd>
+			property any <strong>modifiedByAccount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Account</dd>
+			
+			<dd><code>fkcolumn</code> - modifiedByAccountID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="modifiedDateTime()"><!-- --></a>
+		<h3>modifiedDateTime</h3>
+
+		<kbd>
+			property any <strong>modifiedDateTime</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - timestamp</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="priceGroups()"><!-- --></a>
+		<h3>priceGroups</h3>
+
+		<kbd>
+			property array <strong>priceGroups</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - priceGroup</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - priceGroupID</dd>
+			
+			<dd><code>cfc</code> - PriceGroup</dd>
+			
+			<dd><code>linktable</code> - SwSubsUsageBenefitPriceGroup</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionUsageBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="promotions()"><!-- --></a>
+		<h3>promotions</h3>
+
+		<kbd>
+			property array <strong>promotions</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - promotion</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - promotionID</dd>
+			
+			<dd><code>cfc</code> - Promotion</dd>
+			
+			<dd><code>linktable</code> - SwSubsUsageBenefitPromotion</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionUsageBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="remoteID()"><!-- --></a>
+		<h3>remoteID</h3>
+
+		<kbd>
+			property any <strong>remoteID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="renewalSubscriptionUsage()"><!-- --></a>
+		<h3>renewalSubscriptionUsage</h3>
+
+		<kbd>
+			property any <strong>renewalSubscriptionUsage</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>inverse</code> - true</dd>
+			
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - SubscriptionUsage</dd>
+			
+			<dd><code>fkcolumn</code> - renewalSubscriptionUsageID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="subscriptionBenefit()"><!-- --></a>
+		<h3>subscriptionBenefit</h3>
+
+		<kbd>
+			property any <strong>subscriptionBenefit</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - SubscriptionBenefit</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="subscriptionUsage()"><!-- --></a>
+		<h3>subscriptionUsage</h3>
+
+		<kbd>
+			property any <strong>subscriptionUsage</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>inverse</code> - true</dd>
+			
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - SubscriptionUsage</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionUsageID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="subscriptionUsageBenefitAccounts()"><!-- --></a>
+		<h3>subscriptionUsageBenefitAccounts</h3>
+
+		<kbd>
+			property array <strong>subscriptionUsageBenefitAccounts</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>inverse</code> - true</dd>
+			
+			<dd><code>fieldtype</code> - one-to-many</dd>
+			
+			<dd><code>singularname</code> - subscriptionUsageBenefitAccount</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cascade</code> - all-delete-orphan</dd>
+			
+			<dd><code>cfc</code> - SubscriptionUsageBenefitAccount</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionUsageBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="subscriptionUsageBenefitID()"><!-- --></a>
+		<h3>subscriptionUsageBenefitID</h3>
+
+		<kbd>
+			property any <strong>subscriptionUsageBenefitID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>generator</code> - uuid</dd>
+			
+			<dd><code>fieldtype</code> - id</dd>
+			
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>unsavedvalue</code> - </dd>
+			
+			<dd><code>length</code> - 32</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="ADDCATEGORY()"><!-- --></a>
+	<h3>ADDCATEGORY</h3>
+	
+	<kbd>public void <strong>ADDCATEGORY</strong>(<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> category)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>category</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="ADDCONTENT()"><!-- --></a>
+	<h3>ADDCONTENT</h3>
+	
+	<kbd>public void <strong>ADDCONTENT</strong>(<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> content)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>content</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="ADDEXCLUDEDCATEGORY()"><!-- --></a>
+	<h3>ADDEXCLUDEDCATEGORY</h3>
+	
+	<kbd>public void <strong>ADDEXCLUDEDCATEGORY</strong>(<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> excludedCategory)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedCategory</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="ADDEXCLUDEDCONTENT()"><!-- --></a>
+	<h3>ADDEXCLUDEDCONTENT</h3>
+	
+	<kbd>public void <strong>ADDEXCLUDEDCONTENT</strong>(<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> excludedContent)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedContent</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="ADDPROMOTION()"><!-- --></a>
+	<h3>ADDPROMOTION</h3>
+	
+	<kbd>public void <strong>ADDPROMOTION</strong>(<a href="../../../slatwall/model/entity/Promotion.html" title="class in slatwall.model.entity">Promotion</a> promotion)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>promotion</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="ADDSUBSCRIPTIONUSAGEBENEFITACCOUNT()"><!-- --></a>
+	<h3>ADDSUBSCRIPTIONUSAGEBENEFITACCOUNT</h3>
+	
+	<kbd>public void <strong>ADDSUBSCRIPTIONUSAGEBENEFITACCOUNT</strong>(<a href="../../../slatwall/model/entity/SubscriptionUsageBenefitAccount.html" title="class in slatwall.model.entity">SubscriptionUsageBenefitAccount</a> subscriptionUsageBenefitAccount)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionUsageBenefitAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCESSTYPE()"><!-- --></a>
+	<h3>GETACCESSTYPE</h3>
+	
+	<kbd>public any <strong>GETACCESSTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCATEGORIES()"><!-- --></a>
+	<h3>GETCATEGORIES</h3>
+	
+	<kbd>public array <strong>GETCATEGORIES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCONTENTS()"><!-- --></a>
+	<h3>GETCONTENTS</h3>
+	
+	<kbd>public array <strong>GETCONTENTS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>GETCREATEDBYACCOUNT</h3>
+	
+	<kbd>public any <strong>GETCREATEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREATEDDATETIME()"><!-- --></a>
+	<h3>GETCREATEDDATETIME</h3>
+	
+	<kbd>public any <strong>GETCREATEDDATETIME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXCLUDEDCATEGORIES()"><!-- --></a>
+	<h3>GETEXCLUDEDCATEGORIES</h3>
+	
+	<kbd>public array <strong>GETEXCLUDEDCATEGORIES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXCLUDEDCONTENTS()"><!-- --></a>
+	<h3>GETEXCLUDEDCONTENTS</h3>
+	
+	<kbd>public array <strong>GETEXCLUDEDCONTENTS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMAXUSECOUNT()"><!-- --></a>
+	<h3>GETMAXUSECOUNT</h3>
+	
+	<kbd>public any <strong>GETMAXUSECOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>GETMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public any <strong>GETMODIFIEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMODIFIEDDATETIME()"><!-- --></a>
+	<h3>GETMODIFIEDDATETIME</h3>
+	
+	<kbd>public any <strong>GETMODIFIEDDATETIME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPRICEGROUPS()"><!-- --></a>
+	<h3>GETPRICEGROUPS</h3>
+	
+	<kbd>public array <strong>GETPRICEGROUPS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPROMOTIONS()"><!-- --></a>
+	<h3>GETPROMOTIONS</h3>
+	
+	<kbd>public array <strong>GETPROMOTIONS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETREMOTEID()"><!-- --></a>
+	<h3>GETREMOTEID</h3>
+	
+	<kbd>public any <strong>GETREMOTEID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETRENEWALSUBSCRIPTIONUSAGE()"><!-- --></a>
+	<h3>GETRENEWALSUBSCRIPTIONUSAGE</h3>
+	
+	<kbd>public any <strong>GETRENEWALSUBSCRIPTIONUSAGE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSUBSCRIPTIONBENEFIT()"><!-- --></a>
+	<h3>GETSUBSCRIPTIONBENEFIT</h3>
+	
+	<kbd>public any <strong>GETSUBSCRIPTIONBENEFIT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSUBSCRIPTIONUSAGE()"><!-- --></a>
+	<h3>GETSUBSCRIPTIONUSAGE</h3>
+	
+	<kbd>public any <strong>GETSUBSCRIPTIONUSAGE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSUBSCRIPTIONUSAGEBENEFITACCOUNTS()"><!-- --></a>
+	<h3>GETSUBSCRIPTIONUSAGEBENEFITACCOUNTS</h3>
+	
+	<kbd>public array <strong>GETSUBSCRIPTIONUSAGEBENEFITACCOUNTS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSUBSCRIPTIONUSAGEBENEFITID()"><!-- --></a>
+	<h3>GETSUBSCRIPTIONUSAGEBENEFITID</h3>
+	
+	<kbd>public any <strong>GETSUBSCRIPTIONUSAGEBENEFITID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASACCESSTYPE()"><!-- --></a>
+	<h3>HASACCESSTYPE</h3>
+	
+	<kbd>public boolean <strong>HASACCESSTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASCATEGORY()"><!-- --></a>
+	<h3>HASCATEGORY</h3>
+	
+	<kbd>public boolean <strong>HASCATEGORY</strong>([<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> categories])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>categories</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASCONTENT()"><!-- --></a>
+	<h3>HASCONTENT</h3>
+	
+	<kbd>public boolean <strong>HASCONTENT</strong>([<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> contents])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>contents</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>HASCREATEDBYACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASCREATEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASEXCLUDEDCATEGORY()"><!-- --></a>
+	<h3>HASEXCLUDEDCATEGORY</h3>
+	
+	<kbd>public boolean <strong>HASEXCLUDEDCATEGORY</strong>([<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> excludedCategories])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedCategories</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASEXCLUDEDCONTENT()"><!-- --></a>
+	<h3>HASEXCLUDEDCONTENT</h3>
+	
+	<kbd>public boolean <strong>HASEXCLUDEDCONTENT</strong>([<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> excludedContents])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedContents</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>HASMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASMODIFIEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPRICEGROUP()"><!-- --></a>
+	<h3>HASPRICEGROUP</h3>
+	
+	<kbd>public boolean <strong>HASPRICEGROUP</strong>([<a href="../../../slatwall/model/entity/PriceGroup.html" title="class in slatwall.model.entity">PriceGroup</a> priceGroups])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>priceGroups</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPROMOTION()"><!-- --></a>
+	<h3>HASPROMOTION</h3>
+	
+	<kbd>public boolean <strong>HASPROMOTION</strong>([<a href="../../../slatwall/model/entity/Promotion.html" title="class in slatwall.model.entity">Promotion</a> promotions])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>promotions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASRENEWALSUBSCRIPTIONUSAGE()"><!-- --></a>
+	<h3>HASRENEWALSUBSCRIPTIONUSAGE</h3>
+	
+	<kbd>public boolean <strong>HASRENEWALSUBSCRIPTIONUSAGE</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASSUBSCRIPTIONBENEFIT()"><!-- --></a>
+	<h3>HASSUBSCRIPTIONBENEFIT</h3>
+	
+	<kbd>public boolean <strong>HASSUBSCRIPTIONBENEFIT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASSUBSCRIPTIONUSAGE()"><!-- --></a>
+	<h3>HASSUBSCRIPTIONUSAGE</h3>
+	
+	<kbd>public boolean <strong>HASSUBSCRIPTIONUSAGE</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASSUBSCRIPTIONUSAGEBENEFITACCOUNT()"><!-- --></a>
+	<h3>HASSUBSCRIPTIONUSAGEBENEFITACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASSUBSCRIPTIONUSAGEBENEFITACCOUNT</strong>([<a href="../../../slatwall/model/entity/SubscriptionUsageBenefitAccount.html" title="class in slatwall.model.entity">SubscriptionUsageBenefitAccount</a> subscriptionUsageBenefitAccounts])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionUsageBenefitAccounts</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVECATEGORY()"><!-- --></a>
+	<h3>REMOVECATEGORY</h3>
+	
+	<kbd>public boolean <strong>REMOVECATEGORY</strong>(<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> category)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>category</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVECONTENT()"><!-- --></a>
+	<h3>REMOVECONTENT</h3>
+	
+	<kbd>public boolean <strong>REMOVECONTENT</strong>(<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> content)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>content</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVEEXCLUDEDCATEGORY()"><!-- --></a>
+	<h3>REMOVEEXCLUDEDCATEGORY</h3>
+	
+	<kbd>public boolean <strong>REMOVEEXCLUDEDCATEGORY</strong>(<a href="../../../slatwall/model/entity/Category.html" title="class in slatwall.model.entity">Category</a> excludedCategory)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedCategory</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVEEXCLUDEDCONTENT()"><!-- --></a>
+	<h3>REMOVEEXCLUDEDCONTENT</h3>
+	
+	<kbd>public boolean <strong>REMOVEEXCLUDEDCONTENT</strong>(<a href="../../../slatwall/model/entity/Content.html" title="class in slatwall.model.entity">Content</a> excludedContent)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedContent</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVEPROMOTION()"><!-- --></a>
+	<h3>REMOVEPROMOTION</h3>
+	
+	<kbd>public boolean <strong>REMOVEPROMOTION</strong>(<a href="../../../slatwall/model/entity/Promotion.html" title="class in slatwall.model.entity">Promotion</a> promotion)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>promotion</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVESUBSCRIPTIONUSAGEBENEFITACCOUNT()"><!-- --></a>
+	<h3>REMOVESUBSCRIPTIONUSAGEBENEFITACCOUNT</h3>
+	
+	<kbd>public boolean <strong>REMOVESUBSCRIPTIONUSAGEBENEFITACCOUNT</strong>(<a href="../../../slatwall/model/entity/SubscriptionUsageBenefitAccount.html" title="class in slatwall.model.entity">SubscriptionUsageBenefitAccount</a> subscriptionUsageBenefitAccount)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionUsageBenefitAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCESSTYPE()"><!-- --></a>
+	<h3>SETACCESSTYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETACCESSTYPE</strong>(any accessType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accessType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCATEGORIES()"><!-- --></a>
+	<h3>SETCATEGORIES</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETCATEGORIES</strong>(array categories)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>categories</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCONTENTS()"><!-- --></a>
+	<h3>SETCONTENTS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETCONTENTS</strong>(array contents)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>contents</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>SETCREATEDBYACCOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETCREATEDBYACCOUNT</strong>(any createdByAccount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>createdByAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREATEDDATETIME()"><!-- --></a>
+	<h3>SETCREATEDDATETIME</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETCREATEDDATETIME</strong>(any createdDateTime)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>createdDateTime</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXCLUDEDCATEGORIES()"><!-- --></a>
+	<h3>SETEXCLUDEDCATEGORIES</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETEXCLUDEDCATEGORIES</strong>(array excludedCategories)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedCategories</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXCLUDEDCONTENTS()"><!-- --></a>
+	<h3>SETEXCLUDEDCONTENTS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETEXCLUDEDCONTENTS</strong>(array excludedContents)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedContents</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMAXUSECOUNT()"><!-- --></a>
+	<h3>SETMAXUSECOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETMAXUSECOUNT</strong>(any maxUseCount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>maxUseCount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>SETMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETMODIFIEDBYACCOUNT</strong>(any modifiedByAccount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>modifiedByAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMODIFIEDDATETIME()"><!-- --></a>
+	<h3>SETMODIFIEDDATETIME</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETMODIFIEDDATETIME</strong>(any modifiedDateTime)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>modifiedDateTime</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPRICEGROUPS()"><!-- --></a>
+	<h3>SETPRICEGROUPS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETPRICEGROUPS</strong>(array priceGroups)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>priceGroups</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPROMOTIONS()"><!-- --></a>
+	<h3>SETPROMOTIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETPROMOTIONS</strong>(array promotions)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>promotions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETREMOTEID()"><!-- --></a>
+	<h3>SETREMOTEID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETREMOTEID</strong>(any remoteID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>remoteID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSUBSCRIPTIONBENEFIT()"><!-- --></a>
+	<h3>SETSUBSCRIPTIONBENEFIT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETSUBSCRIPTIONBENEFIT</strong>(any subscriptionBenefit)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionBenefit</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSUBSCRIPTIONUSAGEBENEFITACCOUNTS()"><!-- --></a>
+	<h3>SETSUBSCRIPTIONUSAGEBENEFITACCOUNTS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETSUBSCRIPTIONUSAGEBENEFITACCOUNTS</strong>(array subscriptionUsageBenefitAccounts)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionUsageBenefitAccounts</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSUBSCRIPTIONUSAGEBENEFITID()"><!-- --></a>
+	<h3>SETSUBSCRIPTIONUSAGEBENEFITID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/SubscriptionUsageBenefit.html" title="class in slatwall.model.entity">SubscriptionUsageBenefit</a> <strong>SETSUBSCRIPTIONUSAGEBENEFITID</strong>(any subscriptionUsageBenefitID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionUsageBenefitID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addPriceGroup()"><!-- --></a>
+	<h3>addPriceGroup</h3>
+	
+	<kbd>public void <strong>addPriceGroup</strong>(any priceGroup)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>priceGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="copyFromSubscriptionBenefit()"><!-- --></a>
+	<h3>copyFromSubscriptionBenefit</h3>
+	
+	<kbd>public void <strong>copyFromSubscriptionBenefit</strong>(any subscriptionBenefit)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionBenefit</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="copyFromSubscriptionUsageBenefit()"><!-- --></a>
+	<h3>copyFromSubscriptionUsageBenefit</h3>
+	
+	<kbd>public void <strong>copyFromSubscriptionUsageBenefit</strong>(any subscriptionUsageBenefit)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionUsageBenefit</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAvailableUseCount()"><!-- --></a>
+	<h3>getAvailableUseCount</h3>
+	
+	<kbd>public numeric <strong>getAvailableUseCount</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentUseCount()"><!-- --></a>
+	<h3>getCurrentUseCount</h3>
+	
+	<kbd>public numeric <strong>getCurrentUseCount</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="removePriceGroup()"><!-- --></a>
+	<h3>removePriceGroup</h3>
+	
+	<kbd>public void <strong>removePriceGroup</strong>(any priceGroup)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>priceGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeRenewalSubscriptionUsage()"><!-- --></a>
+	<h3>removeRenewalSubscriptionUsage</h3>
+	
+	<kbd>public void <strong>removeRenewalSubscriptionUsage</strong>([any renewalSubscriptionUsage])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>renewalSubscriptionUsage</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeSubscriptionUsage()"><!-- --></a>
+	<h3>removeSubscriptionUsage</h3>
+	
+	<kbd>public void <strong>removeSubscriptionUsage</strong>([any subscriptionUsage])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionUsage</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setRenewalSubscriptionUsage()"><!-- --></a>
+	<h3>setRenewalSubscriptionUsage</h3>
+	
+	<kbd>public void <strong>setRenewalSubscriptionUsage</strong>(any renewalSubscriptionUsage)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>renewalSubscriptionUsage</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setSubscriptionUsage()"><!-- --></a>
+	<h3>setSubscriptionUsage</h3>
+	
+	<kbd>public void <strong>setSubscriptionUsage</strong>(any subscriptionUsage)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionUsage</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

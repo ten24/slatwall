@@ -1,0 +1,3652 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>AttributeValue</title>
+	<meta name="keywords" content="slatwall.model.entity.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/model/entity/AttributeValue.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.model.entity"><span class="label label-success">slatwall.model.entity</span></a>
+</div>
+
+<h2>
+
+Class
+AttributeValue</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a>
+                <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiEntity</a>
+                    <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">slatwall.model.entity.HibachiEntity</a>
+                        <img src="../../../resources/inherit.gif" alt="extended by ">slatwall.model.entity.AttributeValue
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				cacheuse 
+				: transactional 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				hb_servicename 
+				: attributeService 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				persistent 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				table 
+				: SwAttributeValue 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				displayname 
+				: Attribute Value 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				output 
+				: false 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				entityname 
+				: SlatwallAttributeValue 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#account()">account</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = Account</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = accountID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#accountPayment()">accountPayment</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = AccountPayment</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = accountPaymentID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#attribute()">attribute</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">notnull = true</li>
+				
+				<li class="label label-default label-annotations">cfc = Attribute</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = attributeID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#attributeID()">attributeID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">update = false</li>
+				
+				<li class="label label-default label-annotations">insert = false</li>
+				
+				<li class="label label-default label-annotations">length = 32</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#attributeValue()">attributeValue</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">length = 4000</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#attributeValueEncrypted()">attributeValueEncrypted</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#attributeValueID()">attributeValueID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">generator = uuid</li>
+				
+				<li class="label label-default label-annotations">fieldtype = id</li>
+				
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">unsavedvalue = </li>
+				
+				<li class="label label-default label-annotations">length = 32</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#attributeValueOptions()">attributeValueOptions</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#attributeValueType()">attributeValueType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = custom</li>
+				
+				<li class="label label-default label-annotations">notnull = true</li>
+				
+				<li class="label label-default label-annotations">hb_formfieldtype = select</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#brand()">brand</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = Brand</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = brandID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#order()">order</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = Order</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = orderID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#orderItem()">orderItem</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = OrderItem</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = orderItemID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#orderPayment()">orderPayment</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = OrderPayment</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = orderPaymentID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#product()">product</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = Product</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = productID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#productType()">productType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = ProductType</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = productTypeID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#remoteID()">remoteID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#sku()">sku</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = Sku</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = skuID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#subscriptionBenefit()">subscriptionBenefit</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = SubscriptionBenefit</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = subscriptionBenefitID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#vendor()">vendor</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = Vendor</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = vendorID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#vendorOrder()">vendorOrder</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = VendorOrder</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = vendorOrderID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETACCOUNT()">GETACCOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETACCOUNTPAYMENT()">GETACCOUNTPAYMENT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETATTRIBUTE()">GETATTRIBUTE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETATTRIBUTEID()">GETATTRIBUTEID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETATTRIBUTEVALUEENCRYPTED()">GETATTRIBUTEVALUEENCRYPTED</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETATTRIBUTEVALUEID()">GETATTRIBUTEVALUEID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETATTRIBUTEVALUETYPE()">GETATTRIBUTEVALUETYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETBRAND()">GETBRAND</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETORDER()">GETORDER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETORDERITEM()">GETORDERITEM</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETORDERPAYMENT()">GETORDERPAYMENT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETPRODUCT()">GETPRODUCT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETPRODUCTTYPE()">GETPRODUCTTYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETREMOTEID()">GETREMOTEID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETSKU()">GETSKU</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETSUBSCRIPTIONBENEFIT()">GETSUBSCRIPTIONBENEFIT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETVENDOR()">GETVENDOR</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#GETVENDORORDER()">GETVENDORORDER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASACCOUNT()">HASACCOUNT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASACCOUNTPAYMENT()">HASACCOUNTPAYMENT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASATTRIBUTE()">HASATTRIBUTE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASBRAND()">HASBRAND</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASORDER()">HASORDER</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASORDERITEM()">HASORDERITEM</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASORDERPAYMENT()">HASORDERPAYMENT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASPRODUCT()">HASPRODUCT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASPRODUCTTYPE()">HASPRODUCTTYPE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASSKU()">HASSKU</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASSUBSCRIPTIONBENEFIT()">HASSUBSCRIPTIONBENEFIT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASVENDOR()">HASVENDOR</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#HASVENDORORDER()">HASVENDORORDER</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a></code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#SETATTRIBUTEID()">SETATTRIBUTEID</A></strong>(any attributeID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a></code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#SETATTRIBUTEVALUE()">SETATTRIBUTEVALUE</A></strong>(any attributeValue)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a></code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#SETATTRIBUTEVALUEENCRYPTED()">SETATTRIBUTEVALUEENCRYPTED</A></strong>(any attributeValueEncrypted)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a></code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#SETATTRIBUTEVALUEID()">SETATTRIBUTEVALUEID</A></strong>(any attributeValueID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a></code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#SETATTRIBUTEVALUEOPTIONS()">SETATTRIBUTEVALUEOPTIONS</A></strong>(any attributeValueOptions)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a></code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#SETATTRIBUTEVALUETYPE()">SETATTRIBUTEVALUETYPE</A></strong>(any attributeValueType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a></code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#SETREMOTEID()">SETREMOTEID</A></strong>(any remoteID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#getAttributeValue()">getAttributeValue</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#getAttributeValueOptions()">getAttributeValueOptions</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#getPropertyValidationClass()">getPropertyValidationClass</A></strong>(string propertyName, [string context='save'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#getSimpleRepresentationPropertyName()">getSimpleRepresentationPropertyName</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#preInsert()">preInsert</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#preUpdate()">preUpdate</A></strong>([struct oldData])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeAccount()">removeAccount</A></strong>([any account])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeAccountPayment()">removeAccountPayment</A></strong>([any accountPayment])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeAttribute()">removeAttribute</A></strong>([any attribute])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeBrand()">removeBrand</A></strong>([any brand])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeOrder()">removeOrder</A></strong>([any order])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeOrderItem()">removeOrderItem</A></strong>([any orderItem])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeOrderPayment()">removeOrderPayment</A></strong>([any orderPayment])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeProduct()">removeProduct</A></strong>([any product])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeProductType()">removeProductType</A></strong>([any productType])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeSku()">removeSku</A></strong>([any sku])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeSubscriptionBenefit()">removeSubscriptionBenefit</A></strong>([any subscriptionBenefit])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeVendor()">removeVendor</A></strong>([any vendor])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#removeVendorOrder()">removeVendorOrder</A></strong>([any vendorOrder])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setAccount()">setAccount</A></strong>(any account)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setAccountPayment()">setAccountPayment</A></strong>(any accountPayment)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setAttribute()">setAttribute</A></strong>(any attribute)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setBrand()">setBrand</A></strong>(any brand)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setOrder()">setOrder</A></strong>(any order)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setOrderItem()">setOrderItem</A></strong>(any orderItem)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setOrderPayment()">setOrderPayment</A></strong>(any orderPayment)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setProduct()">setProduct</A></strong>(any product)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setProductType()">setProductType</A></strong>(any productType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setSku()">setSku</A></strong>(any sku)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setSubscriptionBenefit()">setSubscriptionBenefit</A></strong>(any subscriptionBenefit)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setVendor()">setVendor</A></strong>(any vendor)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#setVendorOrder()">setVendorOrder</A></strong>(any vendorOrder)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AttributeValue.html#validate()">validate</A></strong>([string context=''])
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.model.entity.HibachiEntity"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">slatwall.model.entity.HibachiEntity</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//slatwall/model/entity/HibachiEntity.html#SETASSIGNEDATTRIBUTESETSMARTLIST()">SETASSIGNEDATTRIBUTESETSMARTLIST</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#SETATTRIBUTEVALUESBYATTRIBUTECODESTRUCT()">SETATTRIBUTEVALUESBYATTRIBUTECODESTRUCT</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#SETATTRIBUTEVALUESBYATTRIBUTEIDSTRUCT()">SETATTRIBUTEVALUESBYATTRIBUTEIDSTRUCT</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#clearAttributeCache()">clearAttributeCache</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAssignedAttributeSetSmartList()">getAssignedAttributeSetSmartList</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesByAttributeCodeStruct()">getAttributeValuesByAttributeCodeStruct</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesByAttributeIDStruct()">getAttributeValuesByAttributeIDStruct</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesForEntity()">getAttributeValuesForEntity</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getComments()">getComments</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getEmailTemplates()">getEmailTemplates</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getPrintTemplates()">getPrintTemplates</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getSettingDetails()">getSettingDetails</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#populate()">populate</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#setting()">setting</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiEntity"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiEntity</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#GETPROCESSOBJECTS()">GETPROCESSOBJECTS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETEMAILTEMPLATES()">SETEMAILTEMPLATES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETNEWFLAG()">SETNEWFLAG</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPERSISTABLEERRORS()">SETPERSISTABLEERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPRINTTEMPLATES()">SETPRINTTEMPLATES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPROCESSOBJECTS()">SETPROCESSOBJECTS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETSIMPLEREPRESENTATION()">SETSIMPLEREPRESENTATION</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#addError()">addError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#addPersistableError()">addPersistableError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#buildIDPathList()">buildIDPathList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#clearProcessObject()">clearProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#duplicate()">duplicate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getCreatedDateTime()">getCreatedDateTime</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getEntityName()">getEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getErrors()">getErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getIdentifierColumnNames()">getIdentifierColumnNames</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getIdentifierValue()">getIdentifierValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getModifiedDateTime()">getModifiedDateTime</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getNewFlag()">getNewFlag</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getNewPropertyEntity()">getNewPropertyEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPersistableErrors()">getPersistableErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPrimaryIDPropertyName()">getPrimaryIDPropertyName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPrimaryIDValue()">getPrimaryIDValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getProcessObject()">getProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyAssignedIDList()">getPropertyAssignedIDList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyCount()">getPropertyCount</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyOptions()">getPropertyOptions</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyOptionsSmartList()">getPropertyOptionsSmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyPrimaryID()">getPropertyPrimaryID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertySmartList()">getPropertySmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyStruct()">getPropertyStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getSimpleRepresentation()">getSimpleRepresentation</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasAnyInProperty()">hasAnyInProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasProcessObject()">hasProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasUniqueOrNullProperty()">hasUniqueOrNullProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasUniqueProperty()">hasUniqueProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#init()">init</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isDeletable()">isDeletable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isEditable()">isEditable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNew()">isNew</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotDeletable()">isNotDeletable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotEditable()">isNotEditable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotProcessable()">isNotProcessable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isPersistable()">isPersistable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isProcessable()">isProcessable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#onMissingMethod()">onMissingMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#removeAllManyToManyRelationships()">removeAllManyToManyRelationships</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#setProcessObject()">setProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#updateCalculatedProperties()">updateCalculatedProperties</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#GETPOPULATEDSUBPROPERTIES()">GETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIERRORS()">SETHIBACHIERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIMESSAGES()">SETHIBACHIMESSAGES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETPOPULATEDSUBPROPERTIES()">SETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETVALIDATIONS()">SETVALIDATIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#_setProperty()">_setProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addErrors()">addErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addMessage()">addMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#afterPopulate()">afterPopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#beforePopulate()">beforePopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllErrorsHTML()">getAllErrorsHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllMessagesHTML()">getAllMessagesHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getError()">getError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFieldTypeByPropertyIdentifier()">getFieldTypeByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFormattedValue()">getFormattedValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiErrors()">getHibachiErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiMessages()">getHibachiMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getLastObjectByPropertyIdentifier()">getLastObjectByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getMessages()">getMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getProperties()">getProperties</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertiesStruct()">getPropertiesStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldName()">getPropertyFieldName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldType()">getPropertyFieldType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFormatType()">getPropertyFormatType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyHint()">getPropertyHint</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyMetaData()">getPropertyMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertySessionDefault()">getPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyTitle()">getPropertyTitle</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getTitleByPropertyIdentifier()">getTitleByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValidations()">getValidations</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValueByPropertyIdentifier()">getValueByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasError()">hasError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasErrors()">hasErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessage()">hasMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessages()">hasMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasProperty()">hasProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#setPropertySessionDefault()">setPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrors()">showErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrorsAndMessages()">showErrorsAndMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showMessages()">showMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#stringReplace()">stringReplace</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#rbKey()">rbKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="account()"><!-- --></a>
+		<h3>account</h3>
+
+		<kbd>
+			property any <strong>account</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Account</dd>
+			
+			<dd><code>fkcolumn</code> - accountID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountPayment()"><!-- --></a>
+		<h3>accountPayment</h3>
+
+		<kbd>
+			property any <strong>accountPayment</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - AccountPayment</dd>
+			
+			<dd><code>fkcolumn</code> - accountPaymentID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="attribute()"><!-- --></a>
+		<h3>attribute</h3>
+
+		<kbd>
+			property any <strong>attribute</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>notnull</code> - true</dd>
+			
+			<dd><code>cfc</code> - Attribute</dd>
+			
+			<dd><code>fkcolumn</code> - attributeID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="attributeID()"><!-- --></a>
+		<h3>attributeID</h3>
+
+		<kbd>
+			property any <strong>attributeID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>update</code> - false</dd>
+			
+			<dd><code>insert</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>length</code> - 32</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="attributeValue()"><!-- --></a>
+		<h3>attributeValue</h3>
+
+		<kbd>
+			property any <strong>attributeValue</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>length</code> - 4000</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="attributeValueEncrypted()"><!-- --></a>
+		<h3>attributeValueEncrypted</h3>
+
+		<kbd>
+			property any <strong>attributeValueEncrypted</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="attributeValueID()"><!-- --></a>
+		<h3>attributeValueID</h3>
+
+		<kbd>
+			property any <strong>attributeValueID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>generator</code> - uuid</dd>
+			
+			<dd><code>fieldtype</code> - id</dd>
+			
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>unsavedvalue</code> - </dd>
+			
+			<dd><code>length</code> - 32</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="attributeValueOptions()"><!-- --></a>
+		<h3>attributeValueOptions</h3>
+
+		<kbd>
+			property any <strong>attributeValueOptions</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="attributeValueType()"><!-- --></a>
+		<h3>attributeValueType</h3>
+
+		<kbd>
+			property any <strong>attributeValueType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>hb_formattype</code> - custom</dd>
+			
+			<dd><code>notnull</code> - true</dd>
+			
+			<dd><code>hb_formfieldtype</code> - select</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="brand()"><!-- --></a>
+		<h3>brand</h3>
+
+		<kbd>
+			property any <strong>brand</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Brand</dd>
+			
+			<dd><code>fkcolumn</code> - brandID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="order()"><!-- --></a>
+		<h3>order</h3>
+
+		<kbd>
+			property any <strong>order</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Order</dd>
+			
+			<dd><code>fkcolumn</code> - orderID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="orderItem()"><!-- --></a>
+		<h3>orderItem</h3>
+
+		<kbd>
+			property any <strong>orderItem</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - OrderItem</dd>
+			
+			<dd><code>fkcolumn</code> - orderItemID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="orderPayment()"><!-- --></a>
+		<h3>orderPayment</h3>
+
+		<kbd>
+			property any <strong>orderPayment</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - OrderPayment</dd>
+			
+			<dd><code>fkcolumn</code> - orderPaymentID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="product()"><!-- --></a>
+		<h3>product</h3>
+
+		<kbd>
+			property any <strong>product</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Product</dd>
+			
+			<dd><code>fkcolumn</code> - productID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="productType()"><!-- --></a>
+		<h3>productType</h3>
+
+		<kbd>
+			property any <strong>productType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - ProductType</dd>
+			
+			<dd><code>fkcolumn</code> - productTypeID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="remoteID()"><!-- --></a>
+		<h3>remoteID</h3>
+
+		<kbd>
+			property any <strong>remoteID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="sku()"><!-- --></a>
+		<h3>sku</h3>
+
+		<kbd>
+			property any <strong>sku</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Sku</dd>
+			
+			<dd><code>fkcolumn</code> - skuID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="subscriptionBenefit()"><!-- --></a>
+		<h3>subscriptionBenefit</h3>
+
+		<kbd>
+			property any <strong>subscriptionBenefit</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - SubscriptionBenefit</dd>
+			
+			<dd><code>fkcolumn</code> - subscriptionBenefitID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="vendor()"><!-- --></a>
+		<h3>vendor</h3>
+
+		<kbd>
+			property any <strong>vendor</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Vendor</dd>
+			
+			<dd><code>fkcolumn</code> - vendorID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="vendorOrder()"><!-- --></a>
+		<h3>vendorOrder</h3>
+
+		<kbd>
+			property any <strong>vendorOrder</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - VendorOrder</dd>
+			
+			<dd><code>fkcolumn</code> - vendorOrderID</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="GETACCOUNT()"><!-- --></a>
+	<h3>GETACCOUNT</h3>
+	
+	<kbd>public any <strong>GETACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTPAYMENT()"><!-- --></a>
+	<h3>GETACCOUNTPAYMENT</h3>
+	
+	<kbd>public any <strong>GETACCOUNTPAYMENT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETATTRIBUTE()"><!-- --></a>
+	<h3>GETATTRIBUTE</h3>
+	
+	<kbd>public any <strong>GETATTRIBUTE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETATTRIBUTEID()"><!-- --></a>
+	<h3>GETATTRIBUTEID</h3>
+	
+	<kbd>public any <strong>GETATTRIBUTEID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETATTRIBUTEVALUEENCRYPTED()"><!-- --></a>
+	<h3>GETATTRIBUTEVALUEENCRYPTED</h3>
+	
+	<kbd>public any <strong>GETATTRIBUTEVALUEENCRYPTED</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETATTRIBUTEVALUEID()"><!-- --></a>
+	<h3>GETATTRIBUTEVALUEID</h3>
+	
+	<kbd>public any <strong>GETATTRIBUTEVALUEID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETATTRIBUTEVALUETYPE()"><!-- --></a>
+	<h3>GETATTRIBUTEVALUETYPE</h3>
+	
+	<kbd>public any <strong>GETATTRIBUTEVALUETYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBRAND()"><!-- --></a>
+	<h3>GETBRAND</h3>
+	
+	<kbd>public any <strong>GETBRAND</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORDER()"><!-- --></a>
+	<h3>GETORDER</h3>
+	
+	<kbd>public any <strong>GETORDER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORDERITEM()"><!-- --></a>
+	<h3>GETORDERITEM</h3>
+	
+	<kbd>public any <strong>GETORDERITEM</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORDERPAYMENT()"><!-- --></a>
+	<h3>GETORDERPAYMENT</h3>
+	
+	<kbd>public any <strong>GETORDERPAYMENT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPRODUCT()"><!-- --></a>
+	<h3>GETPRODUCT</h3>
+	
+	<kbd>public any <strong>GETPRODUCT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPRODUCTTYPE()"><!-- --></a>
+	<h3>GETPRODUCTTYPE</h3>
+	
+	<kbd>public any <strong>GETPRODUCTTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETREMOTEID()"><!-- --></a>
+	<h3>GETREMOTEID</h3>
+	
+	<kbd>public any <strong>GETREMOTEID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSKU()"><!-- --></a>
+	<h3>GETSKU</h3>
+	
+	<kbd>public any <strong>GETSKU</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSUBSCRIPTIONBENEFIT()"><!-- --></a>
+	<h3>GETSUBSCRIPTIONBENEFIT</h3>
+	
+	<kbd>public any <strong>GETSUBSCRIPTIONBENEFIT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETVENDOR()"><!-- --></a>
+	<h3>GETVENDOR</h3>
+	
+	<kbd>public any <strong>GETVENDOR</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETVENDORORDER()"><!-- --></a>
+	<h3>GETVENDORORDER</h3>
+	
+	<kbd>public any <strong>GETVENDORORDER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASACCOUNT()"><!-- --></a>
+	<h3>HASACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASACCOUNTPAYMENT()"><!-- --></a>
+	<h3>HASACCOUNTPAYMENT</h3>
+	
+	<kbd>public boolean <strong>HASACCOUNTPAYMENT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASATTRIBUTE()"><!-- --></a>
+	<h3>HASATTRIBUTE</h3>
+	
+	<kbd>public boolean <strong>HASATTRIBUTE</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASBRAND()"><!-- --></a>
+	<h3>HASBRAND</h3>
+	
+	<kbd>public boolean <strong>HASBRAND</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASORDER()"><!-- --></a>
+	<h3>HASORDER</h3>
+	
+	<kbd>public boolean <strong>HASORDER</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASORDERITEM()"><!-- --></a>
+	<h3>HASORDERITEM</h3>
+	
+	<kbd>public boolean <strong>HASORDERITEM</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASORDERPAYMENT()"><!-- --></a>
+	<h3>HASORDERPAYMENT</h3>
+	
+	<kbd>public boolean <strong>HASORDERPAYMENT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPRODUCT()"><!-- --></a>
+	<h3>HASPRODUCT</h3>
+	
+	<kbd>public boolean <strong>HASPRODUCT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPRODUCTTYPE()"><!-- --></a>
+	<h3>HASPRODUCTTYPE</h3>
+	
+	<kbd>public boolean <strong>HASPRODUCTTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASSKU()"><!-- --></a>
+	<h3>HASSKU</h3>
+	
+	<kbd>public boolean <strong>HASSKU</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASSUBSCRIPTIONBENEFIT()"><!-- --></a>
+	<h3>HASSUBSCRIPTIONBENEFIT</h3>
+	
+	<kbd>public boolean <strong>HASSUBSCRIPTIONBENEFIT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASVENDOR()"><!-- --></a>
+	<h3>HASVENDOR</h3>
+	
+	<kbd>public boolean <strong>HASVENDOR</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASVENDORORDER()"><!-- --></a>
+	<h3>HASVENDORORDER</h3>
+	
+	<kbd>public boolean <strong>HASVENDORORDER</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETATTRIBUTEID()"><!-- --></a>
+	<h3>SETATTRIBUTEID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> <strong>SETATTRIBUTEID</strong>(any attributeID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETATTRIBUTEVALUE()"><!-- --></a>
+	<h3>SETATTRIBUTEVALUE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> <strong>SETATTRIBUTEVALUE</strong>(any attributeValue)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValue</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETATTRIBUTEVALUEENCRYPTED()"><!-- --></a>
+	<h3>SETATTRIBUTEVALUEENCRYPTED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> <strong>SETATTRIBUTEVALUEENCRYPTED</strong>(any attributeValueEncrypted)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValueEncrypted</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETATTRIBUTEVALUEID()"><!-- --></a>
+	<h3>SETATTRIBUTEVALUEID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> <strong>SETATTRIBUTEVALUEID</strong>(any attributeValueID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValueID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETATTRIBUTEVALUEOPTIONS()"><!-- --></a>
+	<h3>SETATTRIBUTEVALUEOPTIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> <strong>SETATTRIBUTEVALUEOPTIONS</strong>(any attributeValueOptions)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValueOptions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETATTRIBUTEVALUETYPE()"><!-- --></a>
+	<h3>SETATTRIBUTEVALUETYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> <strong>SETATTRIBUTEVALUETYPE</strong>(any attributeValueType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValueType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETREMOTEID()"><!-- --></a>
+	<h3>SETREMOTEID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> <strong>SETREMOTEID</strong>(any remoteID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>remoteID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAttributeValue()"><!-- --></a>
+	<h3>getAttributeValue</h3>
+	
+	<kbd>public any <strong>getAttributeValue</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValue()">getAttributeValue</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">HibachiEntity</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAttributeValueOptions()"><!-- --></a>
+	<h3>getAttributeValueOptions</h3>
+	
+	<kbd>public array <strong>getAttributeValueOptions</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPropertyValidationClass()"><!-- --></a>
+	<h3>getPropertyValidationClass</h3>
+	
+	<kbd>public string <strong>getPropertyValidationClass</strong>(string propertyName, [string context='save'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyValidationClass()">getPropertyValidationClass</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">HibachiTransient</a>
+			</code>
+			</dd>
+		</dl>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyName</code></dd>
+		
+		<dd><code>context</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSimpleRepresentationPropertyName()"><!-- --></a>
+	<h3>getSimpleRepresentationPropertyName</h3>
+	
+	<kbd>public any <strong>getSimpleRepresentationPropertyName</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getSimpleRepresentationPropertyName()">getSimpleRepresentationPropertyName</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">HibachiEntity</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="preInsert()"><!-- --></a>
+	<h3>preInsert</h3>
+	
+	<kbd>public void <strong>preInsert</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#preInsert()">preInsert</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">HibachiEntity</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="preUpdate()"><!-- --></a>
+	<h3>preUpdate</h3>
+	
+	<kbd>public void <strong>preUpdate</strong>([struct oldData])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#preUpdate()">preUpdate</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">HibachiEntity</a>
+			</code>
+			</dd>
+		</dl>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>oldData</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeAccount()"><!-- --></a>
+	<h3>removeAccount</h3>
+	
+	<kbd>public void <strong>removeAccount</strong>([any account])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>account</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeAccountPayment()"><!-- --></a>
+	<h3>removeAccountPayment</h3>
+	
+	<kbd>public void <strong>removeAccountPayment</strong>([any accountPayment])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPayment</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeAttribute()"><!-- --></a>
+	<h3>removeAttribute</h3>
+	
+	<kbd>public void <strong>removeAttribute</strong>([any attribute])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attribute</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeBrand()"><!-- --></a>
+	<h3>removeBrand</h3>
+	
+	<kbd>public void <strong>removeBrand</strong>([any brand])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brand</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeOrder()"><!-- --></a>
+	<h3>removeOrder</h3>
+	
+	<kbd>public void <strong>removeOrder</strong>([any order])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeOrderItem()"><!-- --></a>
+	<h3>removeOrderItem</h3>
+	
+	<kbd>public void <strong>removeOrderItem</strong>([any orderItem])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderItem</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeOrderPayment()"><!-- --></a>
+	<h3>removeOrderPayment</h3>
+	
+	<kbd>public void <strong>removeOrderPayment</strong>([any orderPayment])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderPayment</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeProduct()"><!-- --></a>
+	<h3>removeProduct</h3>
+	
+	<kbd>public void <strong>removeProduct</strong>([any product])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>product</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeProductType()"><!-- --></a>
+	<h3>removeProductType</h3>
+	
+	<kbd>public void <strong>removeProductType</strong>([any productType])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeSku()"><!-- --></a>
+	<h3>removeSku</h3>
+	
+	<kbd>public void <strong>removeSku</strong>([any sku])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>sku</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeSubscriptionBenefit()"><!-- --></a>
+	<h3>removeSubscriptionBenefit</h3>
+	
+	<kbd>public void <strong>removeSubscriptionBenefit</strong>([any subscriptionBenefit])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionBenefit</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeVendor()"><!-- --></a>
+	<h3>removeVendor</h3>
+	
+	<kbd>public void <strong>removeVendor</strong>([any vendor])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>vendor</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeVendorOrder()"><!-- --></a>
+	<h3>removeVendorOrder</h3>
+	
+	<kbd>public void <strong>removeVendorOrder</strong>([any vendorOrder])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>vendorOrder</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setAccount()"><!-- --></a>
+	<h3>setAccount</h3>
+	
+	<kbd>public void <strong>setAccount</strong>(any account)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>account</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setAccountPayment()"><!-- --></a>
+	<h3>setAccountPayment</h3>
+	
+	<kbd>public void <strong>setAccountPayment</strong>(any accountPayment)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPayment</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setAttribute()"><!-- --></a>
+	<h3>setAttribute</h3>
+	
+	<kbd>public void <strong>setAttribute</strong>(any attribute)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attribute</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setBrand()"><!-- --></a>
+	<h3>setBrand</h3>
+	
+	<kbd>public void <strong>setBrand</strong>(any brand)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brand</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setOrder()"><!-- --></a>
+	<h3>setOrder</h3>
+	
+	<kbd>public void <strong>setOrder</strong>(any order)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setOrderItem()"><!-- --></a>
+	<h3>setOrderItem</h3>
+	
+	<kbd>public void <strong>setOrderItem</strong>(any orderItem)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderItem</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setOrderPayment()"><!-- --></a>
+	<h3>setOrderPayment</h3>
+	
+	<kbd>public void <strong>setOrderPayment</strong>(any orderPayment)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderPayment</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setProduct()"><!-- --></a>
+	<h3>setProduct</h3>
+	
+	<kbd>public void <strong>setProduct</strong>(any product)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>product</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setProductType()"><!-- --></a>
+	<h3>setProductType</h3>
+	
+	<kbd>public void <strong>setProductType</strong>(any productType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setSku()"><!-- --></a>
+	<h3>setSku</h3>
+	
+	<kbd>public void <strong>setSku</strong>(any sku)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>sku</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setSubscriptionBenefit()"><!-- --></a>
+	<h3>setSubscriptionBenefit</h3>
+	
+	<kbd>public void <strong>setSubscriptionBenefit</strong>(any subscriptionBenefit)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionBenefit</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setVendor()"><!-- --></a>
+	<h3>setVendor</h3>
+	
+	<kbd>public void <strong>setVendor</strong>(any vendor)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>vendor</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setVendorOrder()"><!-- --></a>
+	<h3>setVendorOrder</h3>
+	
+	<kbd>public void <strong>setVendorOrder</strong>(any vendorOrder)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>vendorOrder</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="validate()"><!-- --></a>
+	<h3>validate</h3>
+	
+	<kbd>public any <strong>validate</strong>([string context=''])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#validate()">validate</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">HibachiTransient</a>
+			</code>
+			</dd>
+		</dl>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>context</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

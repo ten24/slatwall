@@ -1,0 +1,5857 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>PromotionQualifier</title>
+	<meta name="keywords" content="slatwall.model.entity.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/model/entity/PromotionQualifier.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.model.entity"><span class="label label-success">slatwall.model.entity</span></a>
+</div>
+
+<h2>
+
+Class
+PromotionQualifier</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a>
+                <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiEntity</a>
+                    <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">slatwall.model.entity.HibachiEntity</a>
+                        <img src="../../../resources/inherit.gif" alt="extended by ">slatwall.model.entity.PromotionQualifier
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				cacheuse 
+				: transactional 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				hb_servicename 
+				: promotionService 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				persistent 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				table 
+				: SwPromoQual 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				displayname 
+				: Promotion Qualifier 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				hb_permission 
+				: promotionPeriod.promotionQualifiers 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				entityname 
+				: SlatwallPromotionQualifier 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#brands()">brands</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = brand</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = brandID</li>
+				
+				<li class="label label-default label-annotations">cfc = Brand</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualBrand</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#createdByAccount()">createdByAccount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+				<li class="label label-default label-annotations">cfc = Account</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = createdByAccountID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#createdDateTime()">createdDateTime</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = timestamp</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#excludedBrands()">excludedBrands</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = excludedBrand</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = brandID</li>
+				
+				<li class="label label-default label-annotations">cfc = Brand</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualExclBrand</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#excludedOptions()">excludedOptions</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = excludedOption</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = optionID</li>
+				
+				<li class="label label-default label-annotations">cfc = Option</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualExclOption</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#excludedProductTypes()">excludedProductTypes</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = excludedProductType</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = productTypeID</li>
+				
+				<li class="label label-default label-annotations">cfc = ProductType</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualExclProductType</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#excludedProducts()">excludedProducts</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = excludedProduct</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = productID</li>
+				
+				<li class="label label-default label-annotations">cfc = Product</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualExclProduct</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#excludedSkus()">excludedSkus</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = excludedSku</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = skuID</li>
+				
+				<li class="label label-default label-annotations">cfc = Sku</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualExclSku</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#fulfillmentMethods()">fulfillmentMethods</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = fulfillmentMethod</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = fulfillmentMethodID</li>
+				
+				<li class="label label-default label-annotations">cfc = FulfillmentMethod</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualFulfillmentMethod</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#maximumFulfillmentWeight()">maximumFulfillmentWeight</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.unlimited</li>
+				
+				<li class="label label-default label-annotations">ormtype = big_decimal</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = weight</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#maximumItemPrice()">maximumItemPrice</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.unlimited</li>
+				
+				<li class="label label-default label-annotations">ormtype = big_decimal</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#maximumItemQuantity()">maximumItemQuantity</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.unlimited</li>
+				
+				<li class="label label-default label-annotations">ormtype = integer</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#maximumOrderQuantity()">maximumOrderQuantity</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.unlimited</li>
+				
+				<li class="label label-default label-annotations">ormtype = integer</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#maximumOrderSubtotal()">maximumOrderSubtotal</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.unlimited</li>
+				
+				<li class="label label-default label-annotations">ormtype = big_decimal</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#minimumFulfillmentWeight()">minimumFulfillmentWeight</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.0</li>
+				
+				<li class="label label-default label-annotations">ormtype = big_decimal</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = weight</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#minimumItemPrice()">minimumItemPrice</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.0</li>
+				
+				<li class="label label-default label-annotations">ormtype = big_decimal</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#minimumItemQuantity()">minimumItemQuantity</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.0</li>
+				
+				<li class="label label-default label-annotations">ormtype = integer</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#minimumOrderQuantity()">minimumOrderQuantity</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.0</li>
+				
+				<li class="label label-default label-annotations">ormtype = integer</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#minimumOrderSubtotal()">minimumOrderSubtotal</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_nullrbkey = define.0</li>
+				
+				<li class="label label-default label-annotations">ormtype = big_decimal</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#modifiedByAccount()">modifiedByAccount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+				<li class="label label-default label-annotations">cfc = Account</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = modifiedByAccountID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#modifiedDateTime()">modifiedDateTime</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = timestamp</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#options()">options</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = option</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = optionID</li>
+				
+				<li class="label label-default label-annotations">cfc = Option</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualOption</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#productTypes()">productTypes</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = productType</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = productTypeID</li>
+				
+				<li class="label label-default label-annotations">cfc = ProductType</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualProductType</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#products()">products</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = product</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = productID</li>
+				
+				<li class="label label-default label-annotations">cfc = Product</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualProduct</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#promotionPeriod()">promotionPeriod</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = PromotionPeriod</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionPeriodID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#promotionQualifierID()">promotionQualifierID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">generator = uuid</li>
+				
+				<li class="label label-default label-annotations">fieldtype = id</li>
+				
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">unsavedvalue = </li>
+				
+				<li class="label label-default label-annotations">length = 32</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#qualifierApplicationTypeOptions()">qualifierApplicationTypeOptions</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#qualifierType()">qualifierType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = rbKey</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#remoteID()">remoteID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#rewardMatchingType()">rewardMatchingType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">hb_formattype = rbKey</li>
+				
+				<li class="label label-default label-annotations">hb_formfieldtype = select</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#shippingAddressZones()">shippingAddressZones</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = shippingAddressZone</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = addressZoneID</li>
+				
+				<li class="label label-default label-annotations">cfc = AddressZone</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualShipAddressZone</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#shippingMethods()">shippingMethods</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = shippingMethod</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = shippingMethodID</li>
+				
+				<li class="label label-default label-annotations">cfc = ShippingMethod</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualShippingMethod</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#skus()">skus</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = sku</li>
+				
+				<li class="label label-default label-annotations">inversejoincolumn = skuID</li>
+				
+				<li class="label label-default label-annotations">cfc = Sku</li>
+				
+				<li class="label label-default label-annotations">linktable = SwPromoQualSku</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = promotionQualifierID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#ADDFULFILLMENTMETHOD()">ADDFULFILLMENTMETHOD</A></strong>(<a href="../../../slatwall/model/entity/FulfillmentMethod.html" title="class in slatwall.model.entity">FulfillmentMethod</a> fulfillmentMethod)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#ADDSHIPPINGADDRESSZONE()">ADDSHIPPINGADDRESSZONE</A></strong>(<a href="../../../slatwall/model/entity/AddressZone.html" title="class in slatwall.model.entity">AddressZone</a> shippingAddressZone)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#ADDSHIPPINGMETHOD()">ADDSHIPPINGMETHOD</A></strong>(<a href="../../../slatwall/model/entity/ShippingMethod.html" title="class in slatwall.model.entity">ShippingMethod</a> shippingMethod)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETBRANDS()">GETBRANDS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETCREATEDBYACCOUNT()">GETCREATEDBYACCOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETCREATEDDATETIME()">GETCREATEDDATETIME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETEXCLUDEDBRANDS()">GETEXCLUDEDBRANDS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETEXCLUDEDOPTIONS()">GETEXCLUDEDOPTIONS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETEXCLUDEDPRODUCTS()">GETEXCLUDEDPRODUCTS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETEXCLUDEDPRODUCTTYPES()">GETEXCLUDEDPRODUCTTYPES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETEXCLUDEDSKUS()">GETEXCLUDEDSKUS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETFULFILLMENTMETHODS()">GETFULFILLMENTMETHODS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMAXIMUMFULFILLMENTWEIGHT()">GETMAXIMUMFULFILLMENTWEIGHT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMAXIMUMITEMPRICE()">GETMAXIMUMITEMPRICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMAXIMUMITEMQUANTITY()">GETMAXIMUMITEMQUANTITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMAXIMUMORDERQUANTITY()">GETMAXIMUMORDERQUANTITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMAXIMUMORDERSUBTOTAL()">GETMAXIMUMORDERSUBTOTAL</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMINIMUMFULFILLMENTWEIGHT()">GETMINIMUMFULFILLMENTWEIGHT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMINIMUMITEMPRICE()">GETMINIMUMITEMPRICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMINIMUMITEMQUANTITY()">GETMINIMUMITEMQUANTITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMINIMUMORDERQUANTITY()">GETMINIMUMORDERQUANTITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMINIMUMORDERSUBTOTAL()">GETMINIMUMORDERSUBTOTAL</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMODIFIEDBYACCOUNT()">GETMODIFIEDBYACCOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETMODIFIEDDATETIME()">GETMODIFIEDDATETIME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETOPTIONS()">GETOPTIONS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETPRODUCTS()">GETPRODUCTS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETPRODUCTTYPES()">GETPRODUCTTYPES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETPROMOTIONPERIOD()">GETPROMOTIONPERIOD</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETPROMOTIONQUALIFIERID()">GETPROMOTIONQUALIFIERID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETQUALIFIERAPPLICATIONTYPEOPTIONS()">GETQUALIFIERAPPLICATIONTYPEOPTIONS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETQUALIFIERTYPE()">GETQUALIFIERTYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETREMOTEID()">GETREMOTEID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETREWARDMATCHINGTYPE()">GETREWARDMATCHINGTYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETSHIPPINGADDRESSZONES()">GETSHIPPINGADDRESSZONES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETSHIPPINGMETHODS()">GETSHIPPINGMETHODS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#GETSKUS()">GETSKUS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASBRAND()">HASBRAND</A></strong>([<a href="../../../slatwall/model/entity/Brand.html" title="class in slatwall.model.entity">Brand</a> brands])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASCREATEDBYACCOUNT()">HASCREATEDBYACCOUNT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASEXCLUDEDBRAND()">HASEXCLUDEDBRAND</A></strong>([<a href="../../../slatwall/model/entity/Brand.html" title="class in slatwall.model.entity">Brand</a> excludedBrands])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASEXCLUDEDOPTION()">HASEXCLUDEDOPTION</A></strong>([<a href="../../../slatwall/model/entity/Option.html" title="class in slatwall.model.entity">Option</a> excludedOptions])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASEXCLUDEDPRODUCT()">HASEXCLUDEDPRODUCT</A></strong>([<a href="../../../slatwall/model/entity/Product.html" title="class in slatwall.model.entity">Product</a> excludedProducts])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASEXCLUDEDPRODUCTTYPE()">HASEXCLUDEDPRODUCTTYPE</A></strong>([<a href="../../../slatwall/model/entity/ProductType.html" title="class in slatwall.model.entity">ProductType</a> excludedProductTypes])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASEXCLUDEDSKU()">HASEXCLUDEDSKU</A></strong>([<a href="../../../slatwall/model/entity/Sku.html" title="class in slatwall.model.entity">Sku</a> excludedSkus])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASFULFILLMENTMETHOD()">HASFULFILLMENTMETHOD</A></strong>([<a href="../../../slatwall/model/entity/FulfillmentMethod.html" title="class in slatwall.model.entity">FulfillmentMethod</a> fulfillmentMethods])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASMODIFIEDBYACCOUNT()">HASMODIFIEDBYACCOUNT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASOPTION()">HASOPTION</A></strong>([<a href="../../../slatwall/model/entity/Option.html" title="class in slatwall.model.entity">Option</a> options])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASPRODUCT()">HASPRODUCT</A></strong>([<a href="../../../slatwall/model/entity/Product.html" title="class in slatwall.model.entity">Product</a> products])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASPRODUCTTYPE()">HASPRODUCTTYPE</A></strong>([<a href="../../../slatwall/model/entity/ProductType.html" title="class in slatwall.model.entity">ProductType</a> productTypes])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASPROMOTIONPERIOD()">HASPROMOTIONPERIOD</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASSHIPPINGADDRESSZONE()">HASSHIPPINGADDRESSZONE</A></strong>([<a href="../../../slatwall/model/entity/AddressZone.html" title="class in slatwall.model.entity">AddressZone</a> shippingAddressZones])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASSHIPPINGMETHOD()">HASSHIPPINGMETHOD</A></strong>([<a href="../../../slatwall/model/entity/ShippingMethod.html" title="class in slatwall.model.entity">ShippingMethod</a> shippingMethods])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#HASSKU()">HASSKU</A></strong>([<a href="../../../slatwall/model/entity/Sku.html" title="class in slatwall.model.entity">Sku</a> skus])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#REMOVEFULFILLMENTMETHOD()">REMOVEFULFILLMENTMETHOD</A></strong>(<a href="../../../slatwall/model/entity/FulfillmentMethod.html" title="class in slatwall.model.entity">FulfillmentMethod</a> fulfillmentMethod)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#REMOVESHIPPINGADDRESSZONE()">REMOVESHIPPINGADDRESSZONE</A></strong>(<a href="../../../slatwall/model/entity/AddressZone.html" title="class in slatwall.model.entity">AddressZone</a> shippingAddressZone)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#REMOVESHIPPINGMETHOD()">REMOVESHIPPINGMETHOD</A></strong>(<a href="../../../slatwall/model/entity/ShippingMethod.html" title="class in slatwall.model.entity">ShippingMethod</a> shippingMethod)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETBRANDS()">SETBRANDS</A></strong>(any brands)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETCREATEDBYACCOUNT()">SETCREATEDBYACCOUNT</A></strong>(any createdByAccount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETCREATEDDATETIME()">SETCREATEDDATETIME</A></strong>(any createdDateTime)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETEXCLUDEDBRANDS()">SETEXCLUDEDBRANDS</A></strong>(array excludedBrands)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETEXCLUDEDOPTIONS()">SETEXCLUDEDOPTIONS</A></strong>(array excludedOptions)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETEXCLUDEDPRODUCTS()">SETEXCLUDEDPRODUCTS</A></strong>(any excludedProducts)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETEXCLUDEDPRODUCTTYPES()">SETEXCLUDEDPRODUCTTYPES</A></strong>(any excludedProductTypes)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETEXCLUDEDSKUS()">SETEXCLUDEDSKUS</A></strong>(any excludedSkus)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETFULFILLMENTMETHODS()">SETFULFILLMENTMETHODS</A></strong>(any fulfillmentMethods)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMAXIMUMFULFILLMENTWEIGHT()">SETMAXIMUMFULFILLMENTWEIGHT</A></strong>(any maximumFulfillmentWeight)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMAXIMUMITEMPRICE()">SETMAXIMUMITEMPRICE</A></strong>(any maximumItemPrice)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMAXIMUMITEMQUANTITY()">SETMAXIMUMITEMQUANTITY</A></strong>(any maximumItemQuantity)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMAXIMUMORDERQUANTITY()">SETMAXIMUMORDERQUANTITY</A></strong>(any maximumOrderQuantity)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMAXIMUMORDERSUBTOTAL()">SETMAXIMUMORDERSUBTOTAL</A></strong>(any maximumOrderSubtotal)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMINIMUMFULFILLMENTWEIGHT()">SETMINIMUMFULFILLMENTWEIGHT</A></strong>(any minimumFulfillmentWeight)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMINIMUMITEMPRICE()">SETMINIMUMITEMPRICE</A></strong>(any minimumItemPrice)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMINIMUMITEMQUANTITY()">SETMINIMUMITEMQUANTITY</A></strong>(any minimumItemQuantity)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMINIMUMORDERQUANTITY()">SETMINIMUMORDERQUANTITY</A></strong>(any minimumOrderQuantity)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMINIMUMORDERSUBTOTAL()">SETMINIMUMORDERSUBTOTAL</A></strong>(any minimumOrderSubtotal)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMODIFIEDBYACCOUNT()">SETMODIFIEDBYACCOUNT</A></strong>(any modifiedByAccount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETMODIFIEDDATETIME()">SETMODIFIEDDATETIME</A></strong>(any modifiedDateTime)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETOPTIONS()">SETOPTIONS</A></strong>(any options)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETPRODUCTS()">SETPRODUCTS</A></strong>(any products)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETPRODUCTTYPES()">SETPRODUCTTYPES</A></strong>(any productTypes)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETPROMOTIONQUALIFIERID()">SETPROMOTIONQUALIFIERID</A></strong>(any promotionQualifierID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETQUALIFIERAPPLICATIONTYPEOPTIONS()">SETQUALIFIERAPPLICATIONTYPEOPTIONS</A></strong>(array qualifierApplicationTypeOptions)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETQUALIFIERTYPE()">SETQUALIFIERTYPE</A></strong>(any qualifierType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETREMOTEID()">SETREMOTEID</A></strong>(any remoteID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETREWARDMATCHINGTYPE()">SETREWARDMATCHINGTYPE</A></strong>(any rewardMatchingType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETSHIPPINGADDRESSZONES()">SETSHIPPINGADDRESSZONES</A></strong>(any shippingAddressZones)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETSHIPPINGMETHODS()">SETSHIPPINGMETHODS</A></strong>(any shippingMethods)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a></code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#SETSKUS()">SETSKUS</A></strong>(any skus)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addBrand()">addBrand</A></strong>(any brand)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addExcludedBrand()">addExcludedBrand</A></strong>(any brand)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addExcludedOption()">addExcludedOption</A></strong>(any option)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addExcludedProduct()">addExcludedProduct</A></strong>(any product)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addExcludedProductType()">addExcludedProductType</A></strong>(any productType)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addExcludedSku()">addExcludedSku</A></strong>(any sku)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addOption()">addOption</A></strong>(any option)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addProduct()">addProduct</A></strong>(any product)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addProductType()">addProductType</A></strong>(any productType)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#addSku()">addSku</A></strong>(any sku)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#getRewardMatchingTypeOptions()">getRewardMatchingTypeOptions</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#getSimpleRepresentation()">getSimpleRepresentation</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#getSimpleRepresentationPropertyName()">getSimpleRepresentationPropertyName</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#isDeletable()">isDeletable</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeBrand()">removeBrand</A></strong>(any brand)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeExcludedBrand()">removeExcludedBrand</A></strong>(any brand)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeExcludedOption()">removeExcludedOption</A></strong>(any option)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeExcludedProduct()">removeExcludedProduct</A></strong>(any product)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeExcludedProductType()">removeExcludedProductType</A></strong>(any productType)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeExcludedSku()">removeExcludedSku</A></strong>(any sku)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeOption()">removeOption</A></strong>(any option)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeProduct()">removeProduct</A></strong>(any product)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeProductType()">removeProductType</A></strong>(any productType)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removePromotionPeriod()">removePromotionPeriod</A></strong>([any promotionPeriod])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#removeSku()">removeSku</A></strong>(any sku)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="PromotionQualifier.html#setPromotionPeriod()">setPromotionPeriod</A></strong>(any promotionPeriod)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.model.entity.HibachiEntity"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">slatwall.model.entity.HibachiEntity</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//slatwall/model/entity/HibachiEntity.html#SETASSIGNEDATTRIBUTESETSMARTLIST()">SETASSIGNEDATTRIBUTESETSMARTLIST</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#SETATTRIBUTEVALUESBYATTRIBUTECODESTRUCT()">SETATTRIBUTEVALUESBYATTRIBUTECODESTRUCT</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#SETATTRIBUTEVALUESBYATTRIBUTEIDSTRUCT()">SETATTRIBUTEVALUESBYATTRIBUTEIDSTRUCT</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#clearAttributeCache()">clearAttributeCache</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAssignedAttributeSetSmartList()">getAssignedAttributeSetSmartList</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValue()">getAttributeValue</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesByAttributeCodeStruct()">getAttributeValuesByAttributeCodeStruct</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesByAttributeIDStruct()">getAttributeValuesByAttributeIDStruct</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesForEntity()">getAttributeValuesForEntity</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getComments()">getComments</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getEmailTemplates()">getEmailTemplates</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getPrintTemplates()">getPrintTemplates</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getSettingDetails()">getSettingDetails</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#populate()">populate</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#setting()">setting</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiEntity"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiEntity</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#GETPROCESSOBJECTS()">GETPROCESSOBJECTS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETEMAILTEMPLATES()">SETEMAILTEMPLATES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETNEWFLAG()">SETNEWFLAG</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPERSISTABLEERRORS()">SETPERSISTABLEERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPRINTTEMPLATES()">SETPRINTTEMPLATES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPROCESSOBJECTS()">SETPROCESSOBJECTS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETSIMPLEREPRESENTATION()">SETSIMPLEREPRESENTATION</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#addError()">addError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#addPersistableError()">addPersistableError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#buildIDPathList()">buildIDPathList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#clearProcessObject()">clearProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#duplicate()">duplicate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getEntityName()">getEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getErrors()">getErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getIdentifierColumnNames()">getIdentifierColumnNames</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getIdentifierValue()">getIdentifierValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getNewFlag()">getNewFlag</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getNewPropertyEntity()">getNewPropertyEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPersistableErrors()">getPersistableErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPrimaryIDPropertyName()">getPrimaryIDPropertyName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPrimaryIDValue()">getPrimaryIDValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getProcessObject()">getProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyAssignedIDList()">getPropertyAssignedIDList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyCount()">getPropertyCount</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyOptions()">getPropertyOptions</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyOptionsSmartList()">getPropertyOptionsSmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyPrimaryID()">getPropertyPrimaryID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertySmartList()">getPropertySmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyStruct()">getPropertyStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasAnyInProperty()">hasAnyInProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasProcessObject()">hasProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasUniqueOrNullProperty()">hasUniqueOrNullProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasUniqueProperty()">hasUniqueProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#init()">init</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isEditable()">isEditable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNew()">isNew</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotDeletable()">isNotDeletable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotEditable()">isNotEditable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotProcessable()">isNotProcessable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isPersistable()">isPersistable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isProcessable()">isProcessable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#onMissingMethod()">onMissingMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#preInsert()">preInsert</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#preUpdate()">preUpdate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#removeAllManyToManyRelationships()">removeAllManyToManyRelationships</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#setProcessObject()">setProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#updateCalculatedProperties()">updateCalculatedProperties</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#GETPOPULATEDSUBPROPERTIES()">GETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIERRORS()">SETHIBACHIERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIMESSAGES()">SETHIBACHIMESSAGES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETPOPULATEDSUBPROPERTIES()">SETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETVALIDATIONS()">SETVALIDATIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#_setProperty()">_setProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addErrors()">addErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addMessage()">addMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#afterPopulate()">afterPopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#beforePopulate()">beforePopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllErrorsHTML()">getAllErrorsHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllMessagesHTML()">getAllMessagesHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getError()">getError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFieldTypeByPropertyIdentifier()">getFieldTypeByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFormattedValue()">getFormattedValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiErrors()">getHibachiErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiMessages()">getHibachiMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getLastObjectByPropertyIdentifier()">getLastObjectByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getMessages()">getMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getProperties()">getProperties</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertiesStruct()">getPropertiesStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldName()">getPropertyFieldName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldType()">getPropertyFieldType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFormatType()">getPropertyFormatType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyHint()">getPropertyHint</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyMetaData()">getPropertyMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertySessionDefault()">getPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyTitle()">getPropertyTitle</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyValidationClass()">getPropertyValidationClass</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getTitleByPropertyIdentifier()">getTitleByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValidations()">getValidations</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValueByPropertyIdentifier()">getValueByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasError()">hasError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasErrors()">hasErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessage()">hasMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessages()">hasMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasProperty()">hasProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#setPropertySessionDefault()">setPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrors()">showErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrorsAndMessages()">showErrorsAndMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showMessages()">showMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#stringReplace()">stringReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#validate()">validate</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#rbKey()">rbKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="brands()"><!-- --></a>
+		<h3>brands</h3>
+
+		<kbd>
+			property any <strong>brands</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - brand</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - brandID</dd>
+			
+			<dd><code>cfc</code> - Brand</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualBrand</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="createdByAccount()"><!-- --></a>
+		<h3>createdByAccount</h3>
+
+		<kbd>
+			property any <strong>createdByAccount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Account</dd>
+			
+			<dd><code>fkcolumn</code> - createdByAccountID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="createdDateTime()"><!-- --></a>
+		<h3>createdDateTime</h3>
+
+		<kbd>
+			property any <strong>createdDateTime</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - timestamp</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="excludedBrands()"><!-- --></a>
+		<h3>excludedBrands</h3>
+
+		<kbd>
+			property array <strong>excludedBrands</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - excludedBrand</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - brandID</dd>
+			
+			<dd><code>cfc</code> - Brand</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualExclBrand</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="excludedOptions()"><!-- --></a>
+		<h3>excludedOptions</h3>
+
+		<kbd>
+			property array <strong>excludedOptions</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - excludedOption</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - optionID</dd>
+			
+			<dd><code>cfc</code> - Option</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualExclOption</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="excludedProductTypes()"><!-- --></a>
+		<h3>excludedProductTypes</h3>
+
+		<kbd>
+			property any <strong>excludedProductTypes</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - excludedProductType</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - productTypeID</dd>
+			
+			<dd><code>cfc</code> - ProductType</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualExclProductType</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="excludedProducts()"><!-- --></a>
+		<h3>excludedProducts</h3>
+
+		<kbd>
+			property any <strong>excludedProducts</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - excludedProduct</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - productID</dd>
+			
+			<dd><code>cfc</code> - Product</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualExclProduct</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="excludedSkus()"><!-- --></a>
+		<h3>excludedSkus</h3>
+
+		<kbd>
+			property any <strong>excludedSkus</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - excludedSku</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - skuID</dd>
+			
+			<dd><code>cfc</code> - Sku</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualExclSku</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="fulfillmentMethods()"><!-- --></a>
+		<h3>fulfillmentMethods</h3>
+
+		<kbd>
+			property any <strong>fulfillmentMethods</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - fulfillmentMethod</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - fulfillmentMethodID</dd>
+			
+			<dd><code>cfc</code> - FulfillmentMethod</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualFulfillmentMethod</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="maximumFulfillmentWeight()"><!-- --></a>
+		<h3>maximumFulfillmentWeight</h3>
+
+		<kbd>
+			property any <strong>maximumFulfillmentWeight</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.unlimited</dd>
+			
+			<dd><code>ormtype</code> - big_decimal</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - weight</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="maximumItemPrice()"><!-- --></a>
+		<h3>maximumItemPrice</h3>
+
+		<kbd>
+			property any <strong>maximumItemPrice</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.unlimited</dd>
+			
+			<dd><code>ormtype</code> - big_decimal</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="maximumItemQuantity()"><!-- --></a>
+		<h3>maximumItemQuantity</h3>
+
+		<kbd>
+			property any <strong>maximumItemQuantity</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.unlimited</dd>
+			
+			<dd><code>ormtype</code> - integer</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="maximumOrderQuantity()"><!-- --></a>
+		<h3>maximumOrderQuantity</h3>
+
+		<kbd>
+			property any <strong>maximumOrderQuantity</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.unlimited</dd>
+			
+			<dd><code>ormtype</code> - integer</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="maximumOrderSubtotal()"><!-- --></a>
+		<h3>maximumOrderSubtotal</h3>
+
+		<kbd>
+			property any <strong>maximumOrderSubtotal</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.unlimited</dd>
+			
+			<dd><code>ormtype</code> - big_decimal</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="minimumFulfillmentWeight()"><!-- --></a>
+		<h3>minimumFulfillmentWeight</h3>
+
+		<kbd>
+			property any <strong>minimumFulfillmentWeight</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.0</dd>
+			
+			<dd><code>ormtype</code> - big_decimal</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - weight</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="minimumItemPrice()"><!-- --></a>
+		<h3>minimumItemPrice</h3>
+
+		<kbd>
+			property any <strong>minimumItemPrice</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.0</dd>
+			
+			<dd><code>ormtype</code> - big_decimal</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="minimumItemQuantity()"><!-- --></a>
+		<h3>minimumItemQuantity</h3>
+
+		<kbd>
+			property any <strong>minimumItemQuantity</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.0</dd>
+			
+			<dd><code>ormtype</code> - integer</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="minimumOrderQuantity()"><!-- --></a>
+		<h3>minimumOrderQuantity</h3>
+
+		<kbd>
+			property any <strong>minimumOrderQuantity</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.0</dd>
+			
+			<dd><code>ormtype</code> - integer</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="minimumOrderSubtotal()"><!-- --></a>
+		<h3>minimumOrderSubtotal</h3>
+
+		<kbd>
+			property any <strong>minimumOrderSubtotal</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>hb_nullrbkey</code> - define.0</dd>
+			
+			<dd><code>ormtype</code> - big_decimal</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="modifiedByAccount()"><!-- --></a>
+		<h3>modifiedByAccount</h3>
+
+		<kbd>
+			property any <strong>modifiedByAccount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Account</dd>
+			
+			<dd><code>fkcolumn</code> - modifiedByAccountID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="modifiedDateTime()"><!-- --></a>
+		<h3>modifiedDateTime</h3>
+
+		<kbd>
+			property any <strong>modifiedDateTime</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - timestamp</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="options()"><!-- --></a>
+		<h3>options</h3>
+
+		<kbd>
+			property any <strong>options</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - option</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - optionID</dd>
+			
+			<dd><code>cfc</code> - Option</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualOption</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="productTypes()"><!-- --></a>
+		<h3>productTypes</h3>
+
+		<kbd>
+			property any <strong>productTypes</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - productType</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - productTypeID</dd>
+			
+			<dd><code>cfc</code> - ProductType</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualProductType</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="products()"><!-- --></a>
+		<h3>products</h3>
+
+		<kbd>
+			property any <strong>products</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - product</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - productID</dd>
+			
+			<dd><code>cfc</code> - Product</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualProduct</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="promotionPeriod()"><!-- --></a>
+		<h3>promotionPeriod</h3>
+
+		<kbd>
+			property any <strong>promotionPeriod</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - PromotionPeriod</dd>
+			
+			<dd><code>fkcolumn</code> - promotionPeriodID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="promotionQualifierID()"><!-- --></a>
+		<h3>promotionQualifierID</h3>
+
+		<kbd>
+			property any <strong>promotionQualifierID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>generator</code> - uuid</dd>
+			
+			<dd><code>fieldtype</code> - id</dd>
+			
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>unsavedvalue</code> - </dd>
+			
+			<dd><code>length</code> - 32</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="qualifierApplicationTypeOptions()"><!-- --></a>
+		<h3>qualifierApplicationTypeOptions</h3>
+
+		<kbd>
+			property array <strong>qualifierApplicationTypeOptions</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="qualifierType()"><!-- --></a>
+		<h3>qualifierType</h3>
+
+		<kbd>
+			property any <strong>qualifierType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - rbKey</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="remoteID()"><!-- --></a>
+		<h3>remoteID</h3>
+
+		<kbd>
+			property any <strong>remoteID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="rewardMatchingType()"><!-- --></a>
+		<h3>rewardMatchingType</h3>
+
+		<kbd>
+			property any <strong>rewardMatchingType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - rbKey</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>hb_formfieldtype</code> - select</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shippingAddressZones()"><!-- --></a>
+		<h3>shippingAddressZones</h3>
+
+		<kbd>
+			property any <strong>shippingAddressZones</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - shippingAddressZone</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - addressZoneID</dd>
+			
+			<dd><code>cfc</code> - AddressZone</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualShipAddressZone</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shippingMethods()"><!-- --></a>
+		<h3>shippingMethods</h3>
+
+		<kbd>
+			property any <strong>shippingMethods</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - shippingMethod</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - shippingMethodID</dd>
+			
+			<dd><code>cfc</code> - ShippingMethod</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualShippingMethod</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="skus()"><!-- --></a>
+		<h3>skus</h3>
+
+		<kbd>
+			property any <strong>skus</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-many</dd>
+			
+			<dd><code>singularname</code> - sku</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>inversejoincolumn</code> - skuID</dd>
+			
+			<dd><code>cfc</code> - Sku</dd>
+			
+			<dd><code>linktable</code> - SwPromoQualSku</dd>
+			
+			<dd><code>fkcolumn</code> - promotionQualifierID</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="ADDFULFILLMENTMETHOD()"><!-- --></a>
+	<h3>ADDFULFILLMENTMETHOD</h3>
+	
+	<kbd>public void <strong>ADDFULFILLMENTMETHOD</strong>(<a href="../../../slatwall/model/entity/FulfillmentMethod.html" title="class in slatwall.model.entity">FulfillmentMethod</a> fulfillmentMethod)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fulfillmentMethod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="ADDSHIPPINGADDRESSZONE()"><!-- --></a>
+	<h3>ADDSHIPPINGADDRESSZONE</h3>
+	
+	<kbd>public void <strong>ADDSHIPPINGADDRESSZONE</strong>(<a href="../../../slatwall/model/entity/AddressZone.html" title="class in slatwall.model.entity">AddressZone</a> shippingAddressZone)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingAddressZone</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="ADDSHIPPINGMETHOD()"><!-- --></a>
+	<h3>ADDSHIPPINGMETHOD</h3>
+	
+	<kbd>public void <strong>ADDSHIPPINGMETHOD</strong>(<a href="../../../slatwall/model/entity/ShippingMethod.html" title="class in slatwall.model.entity">ShippingMethod</a> shippingMethod)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingMethod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBRANDS()"><!-- --></a>
+	<h3>GETBRANDS</h3>
+	
+	<kbd>public any <strong>GETBRANDS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>GETCREATEDBYACCOUNT</h3>
+	
+	<kbd>public any <strong>GETCREATEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREATEDDATETIME()"><!-- --></a>
+	<h3>GETCREATEDDATETIME</h3>
+	
+	<kbd>public any <strong>GETCREATEDDATETIME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXCLUDEDBRANDS()"><!-- --></a>
+	<h3>GETEXCLUDEDBRANDS</h3>
+	
+	<kbd>public array <strong>GETEXCLUDEDBRANDS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXCLUDEDOPTIONS()"><!-- --></a>
+	<h3>GETEXCLUDEDOPTIONS</h3>
+	
+	<kbd>public array <strong>GETEXCLUDEDOPTIONS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXCLUDEDPRODUCTS()"><!-- --></a>
+	<h3>GETEXCLUDEDPRODUCTS</h3>
+	
+	<kbd>public any <strong>GETEXCLUDEDPRODUCTS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXCLUDEDPRODUCTTYPES()"><!-- --></a>
+	<h3>GETEXCLUDEDPRODUCTTYPES</h3>
+	
+	<kbd>public any <strong>GETEXCLUDEDPRODUCTTYPES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXCLUDEDSKUS()"><!-- --></a>
+	<h3>GETEXCLUDEDSKUS</h3>
+	
+	<kbd>public any <strong>GETEXCLUDEDSKUS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETFULFILLMENTMETHODS()"><!-- --></a>
+	<h3>GETFULFILLMENTMETHODS</h3>
+	
+	<kbd>public any <strong>GETFULFILLMENTMETHODS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMAXIMUMFULFILLMENTWEIGHT()"><!-- --></a>
+	<h3>GETMAXIMUMFULFILLMENTWEIGHT</h3>
+	
+	<kbd>public any <strong>GETMAXIMUMFULFILLMENTWEIGHT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMAXIMUMITEMPRICE()"><!-- --></a>
+	<h3>GETMAXIMUMITEMPRICE</h3>
+	
+	<kbd>public any <strong>GETMAXIMUMITEMPRICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMAXIMUMITEMQUANTITY()"><!-- --></a>
+	<h3>GETMAXIMUMITEMQUANTITY</h3>
+	
+	<kbd>public any <strong>GETMAXIMUMITEMQUANTITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMAXIMUMORDERQUANTITY()"><!-- --></a>
+	<h3>GETMAXIMUMORDERQUANTITY</h3>
+	
+	<kbd>public any <strong>GETMAXIMUMORDERQUANTITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMAXIMUMORDERSUBTOTAL()"><!-- --></a>
+	<h3>GETMAXIMUMORDERSUBTOTAL</h3>
+	
+	<kbd>public any <strong>GETMAXIMUMORDERSUBTOTAL</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMINIMUMFULFILLMENTWEIGHT()"><!-- --></a>
+	<h3>GETMINIMUMFULFILLMENTWEIGHT</h3>
+	
+	<kbd>public any <strong>GETMINIMUMFULFILLMENTWEIGHT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMINIMUMITEMPRICE()"><!-- --></a>
+	<h3>GETMINIMUMITEMPRICE</h3>
+	
+	<kbd>public any <strong>GETMINIMUMITEMPRICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMINIMUMITEMQUANTITY()"><!-- --></a>
+	<h3>GETMINIMUMITEMQUANTITY</h3>
+	
+	<kbd>public any <strong>GETMINIMUMITEMQUANTITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMINIMUMORDERQUANTITY()"><!-- --></a>
+	<h3>GETMINIMUMORDERQUANTITY</h3>
+	
+	<kbd>public any <strong>GETMINIMUMORDERQUANTITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMINIMUMORDERSUBTOTAL()"><!-- --></a>
+	<h3>GETMINIMUMORDERSUBTOTAL</h3>
+	
+	<kbd>public any <strong>GETMINIMUMORDERSUBTOTAL</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>GETMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public any <strong>GETMODIFIEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMODIFIEDDATETIME()"><!-- --></a>
+	<h3>GETMODIFIEDDATETIME</h3>
+	
+	<kbd>public any <strong>GETMODIFIEDDATETIME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETOPTIONS()"><!-- --></a>
+	<h3>GETOPTIONS</h3>
+	
+	<kbd>public any <strong>GETOPTIONS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPRODUCTS()"><!-- --></a>
+	<h3>GETPRODUCTS</h3>
+	
+	<kbd>public any <strong>GETPRODUCTS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPRODUCTTYPES()"><!-- --></a>
+	<h3>GETPRODUCTTYPES</h3>
+	
+	<kbd>public any <strong>GETPRODUCTTYPES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPROMOTIONPERIOD()"><!-- --></a>
+	<h3>GETPROMOTIONPERIOD</h3>
+	
+	<kbd>public any <strong>GETPROMOTIONPERIOD</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPROMOTIONQUALIFIERID()"><!-- --></a>
+	<h3>GETPROMOTIONQUALIFIERID</h3>
+	
+	<kbd>public any <strong>GETPROMOTIONQUALIFIERID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETQUALIFIERAPPLICATIONTYPEOPTIONS()"><!-- --></a>
+	<h3>GETQUALIFIERAPPLICATIONTYPEOPTIONS</h3>
+	
+	<kbd>public array <strong>GETQUALIFIERAPPLICATIONTYPEOPTIONS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETQUALIFIERTYPE()"><!-- --></a>
+	<h3>GETQUALIFIERTYPE</h3>
+	
+	<kbd>public any <strong>GETQUALIFIERTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETREMOTEID()"><!-- --></a>
+	<h3>GETREMOTEID</h3>
+	
+	<kbd>public any <strong>GETREMOTEID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETREWARDMATCHINGTYPE()"><!-- --></a>
+	<h3>GETREWARDMATCHINGTYPE</h3>
+	
+	<kbd>public any <strong>GETREWARDMATCHINGTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPPINGADDRESSZONES()"><!-- --></a>
+	<h3>GETSHIPPINGADDRESSZONES</h3>
+	
+	<kbd>public any <strong>GETSHIPPINGADDRESSZONES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPPINGMETHODS()"><!-- --></a>
+	<h3>GETSHIPPINGMETHODS</h3>
+	
+	<kbd>public any <strong>GETSHIPPINGMETHODS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSKUS()"><!-- --></a>
+	<h3>GETSKUS</h3>
+	
+	<kbd>public any <strong>GETSKUS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASBRAND()"><!-- --></a>
+	<h3>HASBRAND</h3>
+	
+	<kbd>public boolean <strong>HASBRAND</strong>([<a href="../../../slatwall/model/entity/Brand.html" title="class in slatwall.model.entity">Brand</a> brands])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brands</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>HASCREATEDBYACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASCREATEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASEXCLUDEDBRAND()"><!-- --></a>
+	<h3>HASEXCLUDEDBRAND</h3>
+	
+	<kbd>public boolean <strong>HASEXCLUDEDBRAND</strong>([<a href="../../../slatwall/model/entity/Brand.html" title="class in slatwall.model.entity">Brand</a> excludedBrands])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedBrands</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASEXCLUDEDOPTION()"><!-- --></a>
+	<h3>HASEXCLUDEDOPTION</h3>
+	
+	<kbd>public boolean <strong>HASEXCLUDEDOPTION</strong>([<a href="../../../slatwall/model/entity/Option.html" title="class in slatwall.model.entity">Option</a> excludedOptions])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedOptions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASEXCLUDEDPRODUCT()"><!-- --></a>
+	<h3>HASEXCLUDEDPRODUCT</h3>
+	
+	<kbd>public boolean <strong>HASEXCLUDEDPRODUCT</strong>([<a href="../../../slatwall/model/entity/Product.html" title="class in slatwall.model.entity">Product</a> excludedProducts])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedProducts</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASEXCLUDEDPRODUCTTYPE()"><!-- --></a>
+	<h3>HASEXCLUDEDPRODUCTTYPE</h3>
+	
+	<kbd>public boolean <strong>HASEXCLUDEDPRODUCTTYPE</strong>([<a href="../../../slatwall/model/entity/ProductType.html" title="class in slatwall.model.entity">ProductType</a> excludedProductTypes])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedProductTypes</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASEXCLUDEDSKU()"><!-- --></a>
+	<h3>HASEXCLUDEDSKU</h3>
+	
+	<kbd>public boolean <strong>HASEXCLUDEDSKU</strong>([<a href="../../../slatwall/model/entity/Sku.html" title="class in slatwall.model.entity">Sku</a> excludedSkus])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedSkus</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASFULFILLMENTMETHOD()"><!-- --></a>
+	<h3>HASFULFILLMENTMETHOD</h3>
+	
+	<kbd>public boolean <strong>HASFULFILLMENTMETHOD</strong>([<a href="../../../slatwall/model/entity/FulfillmentMethod.html" title="class in slatwall.model.entity">FulfillmentMethod</a> fulfillmentMethods])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fulfillmentMethods</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>HASMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASMODIFIEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASOPTION()"><!-- --></a>
+	<h3>HASOPTION</h3>
+	
+	<kbd>public boolean <strong>HASOPTION</strong>([<a href="../../../slatwall/model/entity/Option.html" title="class in slatwall.model.entity">Option</a> options])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>options</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPRODUCT()"><!-- --></a>
+	<h3>HASPRODUCT</h3>
+	
+	<kbd>public boolean <strong>HASPRODUCT</strong>([<a href="../../../slatwall/model/entity/Product.html" title="class in slatwall.model.entity">Product</a> products])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>products</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPRODUCTTYPE()"><!-- --></a>
+	<h3>HASPRODUCTTYPE</h3>
+	
+	<kbd>public boolean <strong>HASPRODUCTTYPE</strong>([<a href="../../../slatwall/model/entity/ProductType.html" title="class in slatwall.model.entity">ProductType</a> productTypes])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productTypes</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPROMOTIONPERIOD()"><!-- --></a>
+	<h3>HASPROMOTIONPERIOD</h3>
+	
+	<kbd>public boolean <strong>HASPROMOTIONPERIOD</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASSHIPPINGADDRESSZONE()"><!-- --></a>
+	<h3>HASSHIPPINGADDRESSZONE</h3>
+	
+	<kbd>public boolean <strong>HASSHIPPINGADDRESSZONE</strong>([<a href="../../../slatwall/model/entity/AddressZone.html" title="class in slatwall.model.entity">AddressZone</a> shippingAddressZones])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingAddressZones</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASSHIPPINGMETHOD()"><!-- --></a>
+	<h3>HASSHIPPINGMETHOD</h3>
+	
+	<kbd>public boolean <strong>HASSHIPPINGMETHOD</strong>([<a href="../../../slatwall/model/entity/ShippingMethod.html" title="class in slatwall.model.entity">ShippingMethod</a> shippingMethods])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingMethods</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASSKU()"><!-- --></a>
+	<h3>HASSKU</h3>
+	
+	<kbd>public boolean <strong>HASSKU</strong>([<a href="../../../slatwall/model/entity/Sku.html" title="class in slatwall.model.entity">Sku</a> skus])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>skus</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVEFULFILLMENTMETHOD()"><!-- --></a>
+	<h3>REMOVEFULFILLMENTMETHOD</h3>
+	
+	<kbd>public boolean <strong>REMOVEFULFILLMENTMETHOD</strong>(<a href="../../../slatwall/model/entity/FulfillmentMethod.html" title="class in slatwall.model.entity">FulfillmentMethod</a> fulfillmentMethod)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fulfillmentMethod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVESHIPPINGADDRESSZONE()"><!-- --></a>
+	<h3>REMOVESHIPPINGADDRESSZONE</h3>
+	
+	<kbd>public boolean <strong>REMOVESHIPPINGADDRESSZONE</strong>(<a href="../../../slatwall/model/entity/AddressZone.html" title="class in slatwall.model.entity">AddressZone</a> shippingAddressZone)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingAddressZone</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="REMOVESHIPPINGMETHOD()"><!-- --></a>
+	<h3>REMOVESHIPPINGMETHOD</h3>
+	
+	<kbd>public boolean <strong>REMOVESHIPPINGMETHOD</strong>(<a href="../../../slatwall/model/entity/ShippingMethod.html" title="class in slatwall.model.entity">ShippingMethod</a> shippingMethod)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingMethod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBRANDS()"><!-- --></a>
+	<h3>SETBRANDS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETBRANDS</strong>(any brands)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brands</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>SETCREATEDBYACCOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETCREATEDBYACCOUNT</strong>(any createdByAccount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>createdByAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREATEDDATETIME()"><!-- --></a>
+	<h3>SETCREATEDDATETIME</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETCREATEDDATETIME</strong>(any createdDateTime)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>createdDateTime</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXCLUDEDBRANDS()"><!-- --></a>
+	<h3>SETEXCLUDEDBRANDS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETEXCLUDEDBRANDS</strong>(array excludedBrands)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedBrands</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXCLUDEDOPTIONS()"><!-- --></a>
+	<h3>SETEXCLUDEDOPTIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETEXCLUDEDOPTIONS</strong>(array excludedOptions)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedOptions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXCLUDEDPRODUCTS()"><!-- --></a>
+	<h3>SETEXCLUDEDPRODUCTS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETEXCLUDEDPRODUCTS</strong>(any excludedProducts)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedProducts</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXCLUDEDPRODUCTTYPES()"><!-- --></a>
+	<h3>SETEXCLUDEDPRODUCTTYPES</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETEXCLUDEDPRODUCTTYPES</strong>(any excludedProductTypes)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedProductTypes</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXCLUDEDSKUS()"><!-- --></a>
+	<h3>SETEXCLUDEDSKUS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETEXCLUDEDSKUS</strong>(any excludedSkus)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>excludedSkus</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETFULFILLMENTMETHODS()"><!-- --></a>
+	<h3>SETFULFILLMENTMETHODS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETFULFILLMENTMETHODS</strong>(any fulfillmentMethods)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fulfillmentMethods</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMAXIMUMFULFILLMENTWEIGHT()"><!-- --></a>
+	<h3>SETMAXIMUMFULFILLMENTWEIGHT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMAXIMUMFULFILLMENTWEIGHT</strong>(any maximumFulfillmentWeight)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>maximumFulfillmentWeight</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMAXIMUMITEMPRICE()"><!-- --></a>
+	<h3>SETMAXIMUMITEMPRICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMAXIMUMITEMPRICE</strong>(any maximumItemPrice)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>maximumItemPrice</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMAXIMUMITEMQUANTITY()"><!-- --></a>
+	<h3>SETMAXIMUMITEMQUANTITY</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMAXIMUMITEMQUANTITY</strong>(any maximumItemQuantity)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>maximumItemQuantity</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMAXIMUMORDERQUANTITY()"><!-- --></a>
+	<h3>SETMAXIMUMORDERQUANTITY</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMAXIMUMORDERQUANTITY</strong>(any maximumOrderQuantity)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>maximumOrderQuantity</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMAXIMUMORDERSUBTOTAL()"><!-- --></a>
+	<h3>SETMAXIMUMORDERSUBTOTAL</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMAXIMUMORDERSUBTOTAL</strong>(any maximumOrderSubtotal)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>maximumOrderSubtotal</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMINIMUMFULFILLMENTWEIGHT()"><!-- --></a>
+	<h3>SETMINIMUMFULFILLMENTWEIGHT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMINIMUMFULFILLMENTWEIGHT</strong>(any minimumFulfillmentWeight)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>minimumFulfillmentWeight</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMINIMUMITEMPRICE()"><!-- --></a>
+	<h3>SETMINIMUMITEMPRICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMINIMUMITEMPRICE</strong>(any minimumItemPrice)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>minimumItemPrice</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMINIMUMITEMQUANTITY()"><!-- --></a>
+	<h3>SETMINIMUMITEMQUANTITY</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMINIMUMITEMQUANTITY</strong>(any minimumItemQuantity)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>minimumItemQuantity</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMINIMUMORDERQUANTITY()"><!-- --></a>
+	<h3>SETMINIMUMORDERQUANTITY</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMINIMUMORDERQUANTITY</strong>(any minimumOrderQuantity)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>minimumOrderQuantity</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMINIMUMORDERSUBTOTAL()"><!-- --></a>
+	<h3>SETMINIMUMORDERSUBTOTAL</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMINIMUMORDERSUBTOTAL</strong>(any minimumOrderSubtotal)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>minimumOrderSubtotal</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>SETMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMODIFIEDBYACCOUNT</strong>(any modifiedByAccount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>modifiedByAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMODIFIEDDATETIME()"><!-- --></a>
+	<h3>SETMODIFIEDDATETIME</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETMODIFIEDDATETIME</strong>(any modifiedDateTime)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>modifiedDateTime</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETOPTIONS()"><!-- --></a>
+	<h3>SETOPTIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETOPTIONS</strong>(any options)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>options</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPRODUCTS()"><!-- --></a>
+	<h3>SETPRODUCTS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETPRODUCTS</strong>(any products)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>products</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPRODUCTTYPES()"><!-- --></a>
+	<h3>SETPRODUCTTYPES</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETPRODUCTTYPES</strong>(any productTypes)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productTypes</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPROMOTIONQUALIFIERID()"><!-- --></a>
+	<h3>SETPROMOTIONQUALIFIERID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETPROMOTIONQUALIFIERID</strong>(any promotionQualifierID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>promotionQualifierID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETQUALIFIERAPPLICATIONTYPEOPTIONS()"><!-- --></a>
+	<h3>SETQUALIFIERAPPLICATIONTYPEOPTIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETQUALIFIERAPPLICATIONTYPEOPTIONS</strong>(array qualifierApplicationTypeOptions)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>qualifierApplicationTypeOptions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETQUALIFIERTYPE()"><!-- --></a>
+	<h3>SETQUALIFIERTYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETQUALIFIERTYPE</strong>(any qualifierType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>qualifierType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETREMOTEID()"><!-- --></a>
+	<h3>SETREMOTEID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETREMOTEID</strong>(any remoteID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>remoteID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETREWARDMATCHINGTYPE()"><!-- --></a>
+	<h3>SETREWARDMATCHINGTYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETREWARDMATCHINGTYPE</strong>(any rewardMatchingType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>rewardMatchingType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPPINGADDRESSZONES()"><!-- --></a>
+	<h3>SETSHIPPINGADDRESSZONES</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETSHIPPINGADDRESSZONES</strong>(any shippingAddressZones)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingAddressZones</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPPINGMETHODS()"><!-- --></a>
+	<h3>SETSHIPPINGMETHODS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETSHIPPINGMETHODS</strong>(any shippingMethods)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingMethods</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSKUS()"><!-- --></a>
+	<h3>SETSKUS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/PromotionQualifier.html" title="class in slatwall.model.entity">PromotionQualifier</a> <strong>SETSKUS</strong>(any skus)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>skus</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addBrand()"><!-- --></a>
+	<h3>addBrand</h3>
+	
+	<kbd>public void <strong>addBrand</strong>(any brand)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brand</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addExcludedBrand()"><!-- --></a>
+	<h3>addExcludedBrand</h3>
+	
+	<kbd>public void <strong>addExcludedBrand</strong>(any brand)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brand</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addExcludedOption()"><!-- --></a>
+	<h3>addExcludedOption</h3>
+	
+	<kbd>public void <strong>addExcludedOption</strong>(any option)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>option</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addExcludedProduct()"><!-- --></a>
+	<h3>addExcludedProduct</h3>
+	
+	<kbd>public void <strong>addExcludedProduct</strong>(any product)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>product</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addExcludedProductType()"><!-- --></a>
+	<h3>addExcludedProductType</h3>
+	
+	<kbd>public void <strong>addExcludedProductType</strong>(any productType)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addExcludedSku()"><!-- --></a>
+	<h3>addExcludedSku</h3>
+	
+	<kbd>public void <strong>addExcludedSku</strong>(any sku)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>sku</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addOption()"><!-- --></a>
+	<h3>addOption</h3>
+	
+	<kbd>public void <strong>addOption</strong>(any option)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>option</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addProduct()"><!-- --></a>
+	<h3>addProduct</h3>
+	
+	<kbd>public void <strong>addProduct</strong>(any product)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>product</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addProductType()"><!-- --></a>
+	<h3>addProductType</h3>
+	
+	<kbd>public void <strong>addProductType</strong>(any productType)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addSku()"><!-- --></a>
+	<h3>addSku</h3>
+	
+	<kbd>public void <strong>addSku</strong>(any sku)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>sku</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getRewardMatchingTypeOptions()"><!-- --></a>
+	<h3>getRewardMatchingTypeOptions</h3>
+	
+	<kbd>public array <strong>getRewardMatchingTypeOptions</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSimpleRepresentation()"><!-- --></a>
+	<h3>getSimpleRepresentation</h3>
+	
+	<kbd>public string <strong>getSimpleRepresentation</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getSimpleRepresentation()">getSimpleRepresentation</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">HibachiEntity</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSimpleRepresentationPropertyName()"><!-- --></a>
+	<h3>getSimpleRepresentationPropertyName</h3>
+	
+	<kbd>public string <strong>getSimpleRepresentationPropertyName</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getSimpleRepresentationPropertyName()">getSimpleRepresentationPropertyName</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">HibachiEntity</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="isDeletable()"><!-- --></a>
+	<h3>isDeletable</h3>
+	
+	<kbd>public boolean <strong>isDeletable</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isDeletable()">isDeletable</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">HibachiEntity</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeBrand()"><!-- --></a>
+	<h3>removeBrand</h3>
+	
+	<kbd>public void <strong>removeBrand</strong>(any brand)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brand</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeExcludedBrand()"><!-- --></a>
+	<h3>removeExcludedBrand</h3>
+	
+	<kbd>public void <strong>removeExcludedBrand</strong>(any brand)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brand</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeExcludedOption()"><!-- --></a>
+	<h3>removeExcludedOption</h3>
+	
+	<kbd>public void <strong>removeExcludedOption</strong>(any option)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>option</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeExcludedProduct()"><!-- --></a>
+	<h3>removeExcludedProduct</h3>
+	
+	<kbd>public void <strong>removeExcludedProduct</strong>(any product)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>product</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeExcludedProductType()"><!-- --></a>
+	<h3>removeExcludedProductType</h3>
+	
+	<kbd>public void <strong>removeExcludedProductType</strong>(any productType)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeExcludedSku()"><!-- --></a>
+	<h3>removeExcludedSku</h3>
+	
+	<kbd>public void <strong>removeExcludedSku</strong>(any sku)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>sku</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeOption()"><!-- --></a>
+	<h3>removeOption</h3>
+	
+	<kbd>public void <strong>removeOption</strong>(any option)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>option</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeProduct()"><!-- --></a>
+	<h3>removeProduct</h3>
+	
+	<kbd>public void <strong>removeProduct</strong>(any product)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>product</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeProductType()"><!-- --></a>
+	<h3>removeProductType</h3>
+	
+	<kbd>public void <strong>removeProductType</strong>(any productType)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removePromotionPeriod()"><!-- --></a>
+	<h3>removePromotionPeriod</h3>
+	
+	<kbd>public void <strong>removePromotionPeriod</strong>([any promotionPeriod])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>promotionPeriod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeSku()"><!-- --></a>
+	<h3>removeSku</h3>
+	
+	<kbd>public void <strong>removeSku</strong>(any sku)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>sku</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setPromotionPeriod()"><!-- --></a>
+	<h3>setPromotionPeriod</h3>
+	
+	<kbd>public void <strong>setPromotionPeriod</strong>(any promotionPeriod)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>promotionPeriod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

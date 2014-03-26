@@ -1,0 +1,2585 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>ShippingRatesRequestBean</title>
+	<meta name="keywords" content="slatwall.model.transient.fulfillment.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../../index.html?slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.model.transient.fulfillment"><span class="label label-success">slatwall.model.transient.fulfillment</span></a>
+</div>
+
+<h2>
+
+Class
+ShippingRatesRequestBean</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../../resources/inherit.gif" alt="extended by "><a href="../../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../../resources/inherit.gif" alt="extended by "><a href="../../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a>
+                <img src="../../../../resources/inherit.gif" alt="extended by "><a href="../../../../slatwall/model/transient/HibachiTransient.html" title="class in slatwall.model.transient">slatwall.model.transient.HibachiTransient</a>
+                    <img src="../../../../resources/inherit.gif" alt="extended by "><a href="../../../../slatwall/model/transient/RequestBean.html" title="class in slatwall.model.transient">slatwall.model.transient.RequestBean</a>
+                        <img src="../../../../resources/inherit.gif" alt="extended by ">slatwall.model.transient.fulfillment.ShippingRatesRequestBean
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				output 
+				: false 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromCity()">shipFromCity</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromCompany()">shipFromCompany</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromCountryCode()">shipFromCountryCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromLocality()">shipFromLocality</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromName()">shipFromName</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromPostalCode()">shipFromPostalCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromStateCode()">shipFromStateCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromStreet2Address()">shipFromStreet2Address</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipFromStreetAddress()">shipFromStreetAddress</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToCity()">shipToCity</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToCompany()">shipToCompany</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToCountryCode()">shipToCountryCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToLocality()">shipToLocality</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToName()">shipToName</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToPostalCode()">shipToPostalCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToStateCode()">shipToStateCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToStreet2Address()">shipToStreet2Address</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shipToStreetAddress()">shipToStreetAddress</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#shippingItemRequestBeans()">shippingItemRequestBeans</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+	<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+	<a name="constructor_summary"><!-- --></a>
+	<table class="table table-bordered table-hover">
+		<tr class="info">
+			<th align="left" colspan="2">
+				<strong>Constructor Summary</strong>
+			</th>
+		</tr>
+		<tr>
+			
+			<td>
+				<strong><a href="ShippingRatesRequestBean.html#init()">init</A></strong>()
+				<br>
+				
+			</td>
+		</tr>
+	</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMCITY()">GETSHIPFROMCITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMCOMPANY()">GETSHIPFROMCOMPANY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMCOUNTRYCODE()">GETSHIPFROMCOUNTRYCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMLOCALITY()">GETSHIPFROMLOCALITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMNAME()">GETSHIPFROMNAME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMPOSTALCODE()">GETSHIPFROMPOSTALCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMSTATECODE()">GETSHIPFROMSTATECODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMSTREET2ADDRESS()">GETSHIPFROMSTREET2ADDRESS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPFROMSTREETADDRESS()">GETSHIPFROMSTREETADDRESS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPPINGITEMREQUESTBEANS()">GETSHIPPINGITEMREQUESTBEANS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTOCITY()">GETSHIPTOCITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTOCOMPANY()">GETSHIPTOCOMPANY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTOCOUNTRYCODE()">GETSHIPTOCOUNTRYCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTOLOCALITY()">GETSHIPTOLOCALITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTONAME()">GETSHIPTONAME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTOPOSTALCODE()">GETSHIPTOPOSTALCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTOSTATECODE()">GETSHIPTOSTATECODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTOSTREET2ADDRESS()">GETSHIPTOSTREET2ADDRESS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#GETSHIPTOSTREETADDRESS()">GETSHIPTOSTREETADDRESS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMCITY()">SETSHIPFROMCITY</A></strong>(string shipFromCity)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMCOMPANY()">SETSHIPFROMCOMPANY</A></strong>(string shipFromCompany)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMCOUNTRYCODE()">SETSHIPFROMCOUNTRYCODE</A></strong>(string shipFromCountryCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMLOCALITY()">SETSHIPFROMLOCALITY</A></strong>(string shipFromLocality)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMNAME()">SETSHIPFROMNAME</A></strong>(string shipFromName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMPOSTALCODE()">SETSHIPFROMPOSTALCODE</A></strong>(string shipFromPostalCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMSTATECODE()">SETSHIPFROMSTATECODE</A></strong>(string shipFromStateCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMSTREET2ADDRESS()">SETSHIPFROMSTREET2ADDRESS</A></strong>(string shipFromStreet2Address)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPFROMSTREETADDRESS()">SETSHIPFROMSTREETADDRESS</A></strong>(string shipFromStreetAddress)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPPINGITEMREQUESTBEANS()">SETSHIPPINGITEMREQUESTBEANS</A></strong>(array shippingItemRequestBeans)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTOCITY()">SETSHIPTOCITY</A></strong>(string shipToCity)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTOCOMPANY()">SETSHIPTOCOMPANY</A></strong>(string shipToCompany)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTOCOUNTRYCODE()">SETSHIPTOCOUNTRYCODE</A></strong>(string shipToCountryCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTOLOCALITY()">SETSHIPTOLOCALITY</A></strong>(string shipToLocality)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTONAME()">SETSHIPTONAME</A></strong>(string shipToName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTOPOSTALCODE()">SETSHIPTOPOSTALCODE</A></strong>(string shipToPostalCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTOSTATECODE()">SETSHIPTOSTATECODE</A></strong>(string shipToStateCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTOSTREET2ADDRESS()">SETSHIPTOSTREET2ADDRESS</A></strong>(string shipToStreet2Address)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#SETSHIPTOSTREETADDRESS()">SETSHIPTOSTREETADDRESS</A></strong>(string shipToStreetAddress)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#addShippingItem()">addShippingItem</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#getTotalValue()">getTotalValue</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#getTotalWeight()">getTotalWeight</A></strong>([string unitCode='lb'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#populateShipFromWithAddress()">populateShipFromWithAddress</A></strong>(any address)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#populateShipToWithAddress()">populateShipToWithAddress</A></strong>(any address)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="ShippingRatesRequestBean.html#populateShippingItemsWithOrderFulfillmentItems()">populateShippingItemsWithOrderFulfillmentItems</A></strong>(array orderFulfillmentItems)
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.model.transient.RequestBean"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../../slatwall/model/transient/RequestBean.html" title="class in slatwall.model.transient">slatwall.model.transient.RequestBean</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../../..//slatwall/model/transient/RequestBean.html#GETDATA()">GETDATA</a>, <a href="../../../..//slatwall/model/transient/RequestBean.html#SETDATA()">SETDATA</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.model.transient.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../../slatwall/model/transient/HibachiTransient.html" title="class in slatwall.model.transient">slatwall.model.transient.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#GETPOPULATEDSUBPROPERTIES()">GETPOPULATEDSUBPROPERTIES</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIERRORS()">SETHIBACHIERRORS</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIMESSAGES()">SETHIBACHIMESSAGES</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETPOPULATEDSUBPROPERTIES()">SETPOPULATEDSUBPROPERTIES</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETVALIDATIONS()">SETVALIDATIONS</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#_setProperty()">_setProperty</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#addError()">addError</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#addErrors()">addErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#addMessage()">addMessage</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#afterPopulate()">afterPopulate</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#beforePopulate()">beforePopulate</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllErrorsHTML()">getAllErrorsHTML</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllMessagesHTML()">getAllMessagesHTML</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getError()">getError</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getErrors()">getErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFieldTypeByPropertyIdentifier()">getFieldTypeByPropertyIdentifier</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFormattedValue()">getFormattedValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiErrors()">getHibachiErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiMessages()">getHibachiMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getLastObjectByPropertyIdentifier()">getLastObjectByPropertyIdentifier</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getMessages()">getMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getProperties()">getProperties</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertiesStruct()">getPropertiesStruct</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldName()">getPropertyFieldName</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldType()">getPropertyFieldType</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFormatType()">getPropertyFormatType</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyHint()">getPropertyHint</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyMetaData()">getPropertyMetaData</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertySessionDefault()">getPropertySessionDefault</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyTitle()">getPropertyTitle</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyValidationClass()">getPropertyValidationClass</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getTitleByPropertyIdentifier()">getTitleByPropertyIdentifier</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValidations()">getValidations</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValueByPropertyIdentifier()">getValueByPropertyIdentifier</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasError()">hasError</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasErrors()">hasErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessage()">hasMessage</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessages()">hasMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasProperty()">hasProperty</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#populate()">populate</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#setPropertySessionDefault()">setPropertySessionDefault</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrors()">showErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrorsAndMessages()">showErrorsAndMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#showMessages()">showMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#stringReplace()">stringReplace</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#validate()">validate</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#rbKey()">rbKey</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+	<a name="constructor_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Constructor Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	<a name="init()"><!-- --></a><h3>
+	init</h3>
+	<kbd>public <strong>init</strong>()</kbd>
+
+	<br><br>
+
+	
+	<hr>
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="shipFromCity()"><!-- --></a>
+		<h3>shipFromCity</h3>
+
+		<kbd>
+			property string <strong>shipFromCity</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipFromCompany()"><!-- --></a>
+		<h3>shipFromCompany</h3>
+
+		<kbd>
+			property string <strong>shipFromCompany</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipFromCountryCode()"><!-- --></a>
+		<h3>shipFromCountryCode</h3>
+
+		<kbd>
+			property string <strong>shipFromCountryCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipFromLocality()"><!-- --></a>
+		<h3>shipFromLocality</h3>
+
+		<kbd>
+			property string <strong>shipFromLocality</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipFromName()"><!-- --></a>
+		<h3>shipFromName</h3>
+
+		<kbd>
+			property string <strong>shipFromName</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipFromPostalCode()"><!-- --></a>
+		<h3>shipFromPostalCode</h3>
+
+		<kbd>
+			property string <strong>shipFromPostalCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipFromStateCode()"><!-- --></a>
+		<h3>shipFromStateCode</h3>
+
+		<kbd>
+			property string <strong>shipFromStateCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipFromStreet2Address()"><!-- --></a>
+		<h3>shipFromStreet2Address</h3>
+
+		<kbd>
+			property string <strong>shipFromStreet2Address</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipFromStreetAddress()"><!-- --></a>
+		<h3>shipFromStreetAddress</h3>
+
+		<kbd>
+			property string <strong>shipFromStreetAddress</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToCity()"><!-- --></a>
+		<h3>shipToCity</h3>
+
+		<kbd>
+			property string <strong>shipToCity</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToCompany()"><!-- --></a>
+		<h3>shipToCompany</h3>
+
+		<kbd>
+			property string <strong>shipToCompany</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToCountryCode()"><!-- --></a>
+		<h3>shipToCountryCode</h3>
+
+		<kbd>
+			property string <strong>shipToCountryCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToLocality()"><!-- --></a>
+		<h3>shipToLocality</h3>
+
+		<kbd>
+			property string <strong>shipToLocality</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToName()"><!-- --></a>
+		<h3>shipToName</h3>
+
+		<kbd>
+			property string <strong>shipToName</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToPostalCode()"><!-- --></a>
+		<h3>shipToPostalCode</h3>
+
+		<kbd>
+			property string <strong>shipToPostalCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToStateCode()"><!-- --></a>
+		<h3>shipToStateCode</h3>
+
+		<kbd>
+			property string <strong>shipToStateCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToStreet2Address()"><!-- --></a>
+		<h3>shipToStreet2Address</h3>
+
+		<kbd>
+			property string <strong>shipToStreet2Address</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shipToStreetAddress()"><!-- --></a>
+		<h3>shipToStreetAddress</h3>
+
+		<kbd>
+			property string <strong>shipToStreetAddress</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shippingItemRequestBeans()"><!-- --></a>
+		<h3>shippingItemRequestBeans</h3>
+
+		<kbd>
+			property array <strong>shippingItemRequestBeans</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="GETSHIPFROMCITY()"><!-- --></a>
+	<h3>GETSHIPFROMCITY</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMCITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPFROMCOMPANY()"><!-- --></a>
+	<h3>GETSHIPFROMCOMPANY</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMCOMPANY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPFROMCOUNTRYCODE()"><!-- --></a>
+	<h3>GETSHIPFROMCOUNTRYCODE</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMCOUNTRYCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPFROMLOCALITY()"><!-- --></a>
+	<h3>GETSHIPFROMLOCALITY</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMLOCALITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPFROMNAME()"><!-- --></a>
+	<h3>GETSHIPFROMNAME</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMNAME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPFROMPOSTALCODE()"><!-- --></a>
+	<h3>GETSHIPFROMPOSTALCODE</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMPOSTALCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPFROMSTATECODE()"><!-- --></a>
+	<h3>GETSHIPFROMSTATECODE</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMSTATECODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPFROMSTREET2ADDRESS()"><!-- --></a>
+	<h3>GETSHIPFROMSTREET2ADDRESS</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMSTREET2ADDRESS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPFROMSTREETADDRESS()"><!-- --></a>
+	<h3>GETSHIPFROMSTREETADDRESS</h3>
+	
+	<kbd>public string <strong>GETSHIPFROMSTREETADDRESS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPPINGITEMREQUESTBEANS()"><!-- --></a>
+	<h3>GETSHIPPINGITEMREQUESTBEANS</h3>
+	
+	<kbd>public array <strong>GETSHIPPINGITEMREQUESTBEANS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTOCITY()"><!-- --></a>
+	<h3>GETSHIPTOCITY</h3>
+	
+	<kbd>public string <strong>GETSHIPTOCITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTOCOMPANY()"><!-- --></a>
+	<h3>GETSHIPTOCOMPANY</h3>
+	
+	<kbd>public string <strong>GETSHIPTOCOMPANY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTOCOUNTRYCODE()"><!-- --></a>
+	<h3>GETSHIPTOCOUNTRYCODE</h3>
+	
+	<kbd>public string <strong>GETSHIPTOCOUNTRYCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTOLOCALITY()"><!-- --></a>
+	<h3>GETSHIPTOLOCALITY</h3>
+	
+	<kbd>public string <strong>GETSHIPTOLOCALITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTONAME()"><!-- --></a>
+	<h3>GETSHIPTONAME</h3>
+	
+	<kbd>public string <strong>GETSHIPTONAME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTOPOSTALCODE()"><!-- --></a>
+	<h3>GETSHIPTOPOSTALCODE</h3>
+	
+	<kbd>public string <strong>GETSHIPTOPOSTALCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTOSTATECODE()"><!-- --></a>
+	<h3>GETSHIPTOSTATECODE</h3>
+	
+	<kbd>public string <strong>GETSHIPTOSTATECODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTOSTREET2ADDRESS()"><!-- --></a>
+	<h3>GETSHIPTOSTREET2ADDRESS</h3>
+	
+	<kbd>public string <strong>GETSHIPTOSTREET2ADDRESS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPTOSTREETADDRESS()"><!-- --></a>
+	<h3>GETSHIPTOSTREETADDRESS</h3>
+	
+	<kbd>public string <strong>GETSHIPTOSTREETADDRESS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMCITY()"><!-- --></a>
+	<h3>SETSHIPFROMCITY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMCITY</strong>(string shipFromCity)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromCity</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMCOMPANY()"><!-- --></a>
+	<h3>SETSHIPFROMCOMPANY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMCOMPANY</strong>(string shipFromCompany)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromCompany</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMCOUNTRYCODE()"><!-- --></a>
+	<h3>SETSHIPFROMCOUNTRYCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMCOUNTRYCODE</strong>(string shipFromCountryCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromCountryCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMLOCALITY()"><!-- --></a>
+	<h3>SETSHIPFROMLOCALITY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMLOCALITY</strong>(string shipFromLocality)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromLocality</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMNAME()"><!-- --></a>
+	<h3>SETSHIPFROMNAME</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMNAME</strong>(string shipFromName)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMPOSTALCODE()"><!-- --></a>
+	<h3>SETSHIPFROMPOSTALCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMPOSTALCODE</strong>(string shipFromPostalCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromPostalCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMSTATECODE()"><!-- --></a>
+	<h3>SETSHIPFROMSTATECODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMSTATECODE</strong>(string shipFromStateCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromStateCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMSTREET2ADDRESS()"><!-- --></a>
+	<h3>SETSHIPFROMSTREET2ADDRESS</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMSTREET2ADDRESS</strong>(string shipFromStreet2Address)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromStreet2Address</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPFROMSTREETADDRESS()"><!-- --></a>
+	<h3>SETSHIPFROMSTREETADDRESS</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPFROMSTREETADDRESS</strong>(string shipFromStreetAddress)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipFromStreetAddress</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPPINGITEMREQUESTBEANS()"><!-- --></a>
+	<h3>SETSHIPPINGITEMREQUESTBEANS</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPPINGITEMREQUESTBEANS</strong>(array shippingItemRequestBeans)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingItemRequestBeans</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTOCITY()"><!-- --></a>
+	<h3>SETSHIPTOCITY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTOCITY</strong>(string shipToCity)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToCity</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTOCOMPANY()"><!-- --></a>
+	<h3>SETSHIPTOCOMPANY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTOCOMPANY</strong>(string shipToCompany)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToCompany</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTOCOUNTRYCODE()"><!-- --></a>
+	<h3>SETSHIPTOCOUNTRYCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTOCOUNTRYCODE</strong>(string shipToCountryCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToCountryCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTOLOCALITY()"><!-- --></a>
+	<h3>SETSHIPTOLOCALITY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTOLOCALITY</strong>(string shipToLocality)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToLocality</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTONAME()"><!-- --></a>
+	<h3>SETSHIPTONAME</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTONAME</strong>(string shipToName)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTOPOSTALCODE()"><!-- --></a>
+	<h3>SETSHIPTOPOSTALCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTOPOSTALCODE</strong>(string shipToPostalCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToPostalCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTOSTATECODE()"><!-- --></a>
+	<h3>SETSHIPTOSTATECODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTOSTATECODE</strong>(string shipToStateCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToStateCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTOSTREET2ADDRESS()"><!-- --></a>
+	<h3>SETSHIPTOSTREET2ADDRESS</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTOSTREET2ADDRESS</strong>(string shipToStreet2Address)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToStreet2Address</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPTOSTREETADDRESS()"><!-- --></a>
+	<h3>SETSHIPTOSTREETADDRESS</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/fulfillment/ShippingRatesRequestBean.html" title="class in slatwall.model.transient.fulfillment">ShippingRatesRequestBean</a> <strong>SETSHIPTOSTREETADDRESS</strong>(string shipToStreetAddress)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shipToStreetAddress</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addShippingItem()"><!-- --></a>
+	<h3>addShippingItem</h3>
+	
+	<kbd>public void <strong>addShippingItem</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getTotalValue()"><!-- --></a>
+	<h3>getTotalValue</h3>
+	
+	<kbd>public numeric <strong>getTotalValue</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getTotalWeight()"><!-- --></a>
+	<h3>getTotalWeight</h3>
+	
+	<kbd>public numeric <strong>getTotalWeight</strong>([string unitCode='lb'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>unitCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="populateShipFromWithAddress()"><!-- --></a>
+	<h3>populateShipFromWithAddress</h3>
+	
+	<kbd>public void <strong>populateShipFromWithAddress</strong>(any address)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>address</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="populateShipToWithAddress()"><!-- --></a>
+	<h3>populateShipToWithAddress</h3>
+	
+	<kbd>public void <strong>populateShipToWithAddress</strong>(any address)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>address</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="populateShippingItemsWithOrderFulfillmentItems()"><!-- --></a>
+	<h3>populateShippingItemsWithOrderFulfillmentItems</h3>
+	
+	<kbd>public void <strong>populateShippingItemsWithOrderFulfillmentItems</strong>(array orderFulfillmentItems)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderFulfillmentItems</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

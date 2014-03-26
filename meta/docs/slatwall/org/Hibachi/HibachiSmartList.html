@@ -1,0 +1,4118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>HibachiSmartList</title>
+	<meta name="keywords" content="slatwall.org.Hibachi.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/org/Hibachi/HibachiSmartList.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.org.Hibachi"><span class="label label-success">slatwall.org.Hibachi</span></a>
+</div>
+
+<h2>
+
+Class
+HibachiSmartList</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../resources/inherit.gif" alt="extended by ">Slatwall.org.Hibachi.HibachiSmartList
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				output 
+				: false 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				persistent 
+				: false 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Direct Known Subclasses:</strong></div>
+  	<div class="panel-body">
+	
+		<a href="../../..//slatwall/model/transient/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a>
+	
+	</div>
+</div>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#attributeKeywordProperties()">attributeKeywordProperties</A></strong> 
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This struct holds the custom attributes that searches reference and their relative weight.
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#baseEntityName()">baseEntityName</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#cacheName()">cacheName</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#cacheable()">cacheable</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#currentPageDeclaration()">currentPageDeclaration</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#currentURL()">currentURL</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#entities()">entities</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#entityJoinOrder()">entityJoinOrder</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#hqlParams()">hqlParams</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#keywordPhrases()">keywordPhrases</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#keywordProperties()">keywordProperties</A></strong> 
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This struct holds the properties that searches reference and their relative weight.
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#keywords()">keywords</A></strong> 
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This array holds all of the keywords that were searched for.
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#orders()">orders</A></strong> 
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This struct holds the display order specification based on property.
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#pageRecords()">pageRecords</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#pageRecordsShow()">pageRecordsShow</A></strong> 
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is the total number of entities to display.
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#pageRecordsStart()">pageRecordsStart</A></strong> 
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This represents the first record to display and it is used in paging.
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#records()">records</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#savedStateID()">savedStateID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#selectDistinctFlag()">selectDistinctFlag</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#selects()">selects</A></strong> 
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This struct holds any selects that are to be used in creating the records array.
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#whereConditions()">whereConditions</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#whereGroups()">whereGroups</A></strong> 
+			<br>
+			
+			<!-- only grab the first sentence of the hint -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this holds all filters and ranges.
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETATTRIBUTEKEYWORDPROPERTIES()">GETATTRIBUTEKEYWORDPROPERTIES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: This struct holds the custom attributes that searches reference and their relative weight.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETBASEENTITYNAME()">GETBASEENTITYNAME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETCACHEABLE()">GETCACHEABLE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETCURRENTPAGEDECLARATION()">GETCURRENTPAGEDECLARATION</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETCURRENTURL()">GETCURRENTURL</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETENTITIES()">GETENTITIES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETENTITYJOINORDER()">GETENTITYJOINORDER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETKEYWORDPHRASES()">GETKEYWORDPHRASES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETKEYWORDPROPERTIES()">GETKEYWORDPROPERTIES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: This struct holds the properties that searches reference and their relative weight.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETKEYWORDS()">GETKEYWORDS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: This array holds all of the keywords that were searched for.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETORDERS()">GETORDERS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: This struct holds the display order specification based on property.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETPAGERECORDSSHOW()">GETPAGERECORDSSHOW</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: This is the total number of entities to display.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETSELECTDISTINCTFLAG()">GETSELECTDISTINCTFLAG</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETSELECTS()">GETSELECTS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: This struct holds any selects that are to be used in creating the records array.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETWHERECONDITIONS()">GETWHERECONDITIONS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#GETWHEREGROUPS()">GETWHEREGROUPS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: this holds all filters and ranges.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETATTRIBUTEKEYWORDPROPERTIES()">SETATTRIBUTEKEYWORDPROPERTIES</A></strong>(struct attributeKeywordProperties)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: This struct holds the custom attributes that searches reference and their relative weight.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETBASEENTITYNAME()">SETBASEENTITYNAME</A></strong>(string baseEntityName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETCACHEABLE()">SETCACHEABLE</A></strong>(boolean cacheable)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETCACHENAME()">SETCACHENAME</A></strong>(string cacheName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETCURRENTPAGEDECLARATION()">SETCURRENTPAGEDECLARATION</A></strong>(string currentPageDeclaration)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETCURRENTURL()">SETCURRENTURL</A></strong>(string currentURL)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETENTITIES()">SETENTITIES</A></strong>(struct entities)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETENTITYJOINORDER()">SETENTITYJOINORDER</A></strong>(array entityJoinOrder)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETHQLPARAMS()">SETHQLPARAMS</A></strong>(struct hqlParams)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETKEYWORDPHRASES()">SETKEYWORDPHRASES</A></strong>(array keywordPhrases)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETKEYWORDPROPERTIES()">SETKEYWORDPROPERTIES</A></strong>(struct keywordProperties)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: This struct holds the properties that searches reference and their relative weight.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETKEYWORDS()">SETKEYWORDS</A></strong>(array keywords)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: This array holds all of the keywords that were searched for.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETORDERS()">SETORDERS</A></strong>(array orders)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: This struct holds the display order specification based on property.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETPAGERECORDS()">SETPAGERECORDS</A></strong>(array pageRecords)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETPAGERECORDSSHOW()">SETPAGERECORDSSHOW</A></strong>(numeric pageRecordsShow)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: This is the total number of entities to display.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETPAGERECORDSSTART()">SETPAGERECORDSSTART</A></strong>(numeric pageRecordsStart)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: This represents the first record to display and it is used in paging.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETRECORDS()">SETRECORDS</A></strong>(array records)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETSAVEDSTATEID()">SETSAVEDSTATEID</A></strong>(string savedStateID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETSELECTDISTINCTFLAG()">SETSELECTDISTINCTFLAG</A></strong>(boolean selectDistinctFlag)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETSELECTS()">SETSELECTS</A></strong>(struct selects)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: This struct holds any selects that are to be used in creating the records array.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETWHERECONDITIONS()">SETWHERECONDITIONS</A></strong>(array whereConditions)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#SETWHEREGROUPS()">SETWHEREGROUPS</A></strong>(array whereGroups)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: this holds all filters and ranges.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>private&nbsp;void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addEntity()">addEntity</A></strong>(string entityName, string entityAlias, string entityFullName, struct entityProperties, [string parentAlias=''], [string parentRelatedProperty=''], [string joinType=''])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addFilter()">addFilter</A></strong>(string propertyIdentifier, string value, [numeric whereGroup='1'], [boolean fetch])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addHQLParam()">addHQLParam</A></strong>(string paramName, any paramValue)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addInFilter()">addInFilter</A></strong>(string propertyIdentifier, string value, [numeric whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addKeywordProperty()">addKeywordProperty</A></strong>(string propertyIdentifier, numeric weight)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addLikeFilter()">addLikeFilter</A></strong>(string propertyIdentifier, string value, [numeric whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addOrder()">addOrder</A></strong>(string orderStatement, [numeric position])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addRange()">addRange</A></strong>(string propertyIdentifier, string value, [numeric whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addSelect()">addSelect</A></strong>(string propertyIdentifier, string alias)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#addWhereCondition()">addWhereCondition</A></strong>(string condition, [struct conditionParams='[runtime expression]'], [string conditionOperator='AND'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#applyData()">applyData</A></strong>(any data)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#buildURL()">buildURL</A></strong>(string queryAddition, [boolean appendValues='true'], [boolean toggleKeys='true'], [string currentURL='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#clearRecordsCount()">clearRecordsCount</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>private&nbsp;void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#confirmWhereGroup()">confirmWhereGroup</A></strong>(numeric whereGroup)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>private&nbsp;struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#convertNVPStringToStruct()">convertNVPStringToStruct</A></strong>(string data)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>private&nbsp;string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getAliasedProperty()">getAliasedProperty</A></strong>(string propertyIdentifier, [boolean fetch])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getBaseEntityPrimaryAliase()">getBaseEntityPrimaryAliase</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getCacheName()">getCacheName</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getCurrentPage()">getCurrentPage</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getFilterOptions()">getFilterOptions</A></strong>(string valuePropertyIdentifier, string namePropertyIdentifier)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getFilters()">getFilters</A></strong>([string propertyIdentifier], [numeric whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getHQL()">getHQL</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getHQLFrom()">getHQLFrom</A></strong>([boolean supressFrom='false'], [boolean allowFetch='true'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getHQLOrder()">getHQLOrder</A></strong>([boolean supressOrderBy='false'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getHQLParams()">getHQLParams</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getHQLSelect()">getHQLSelect</A></strong>([boolean countOnly='false'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getHQLWhere()">getHQLWhere</A></strong>([boolean suppressWhere='false'], [any searchOrder='false'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getInFilters()">getInFilters</A></strong>([string propertyIdentifier], [numeric whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getLikeFilters()">getLikeFilters</A></strong>([string propertyIdentifier], [numeric whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getPageRecords()">getPageRecords</A></strong>([boolean refresh='false'])
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getPageRecordsEnd()">getPageRecordsEnd</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getPageRecordsStart()">getPageRecordsStart</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: This represents the first record to display and it is used in paging.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>private&nbsp;struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getPropertiesStructFromEntityMeta()">getPropertiesStructFromEntityMeta</A></strong>(struct meta)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getRangeMinMax()">getRangeMinMax</A></strong>(string propertyIdentifier)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getRanges()">getRanges</A></strong>([string propertyIdentifier], [numeric whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getRecords()">getRecords</A></strong>([boolean refresh='false'])
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getRecordsCount()">getRecordsCount</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getSavedStateID()">getSavedStateID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getStateStruct()">getStateStruct</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#getTotalPages()">getTotalPages</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#isFilterApplied()">isFilterApplied</A></strong>(string filter, string value)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#isLikeFilterApplied()">isLikeFilterApplied</A></strong>(string filter, string value)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#isRangeApplied()">isRangeApplied</A></strong>(string range, string value)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#joinRelatedProperty()">joinRelatedProperty</A></strong>(string parentEntityName, string relatedProperty, [string joinType=''], [boolean fetch='false'], [boolean isAttribute='false'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#loadSavedState()">loadSavedState</A></strong>(string savedStateID)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#removeFilter()">removeFilter</A></strong>(string propertyIdentifier, [numeric whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#removeInFilter()">removeInFilter</A></strong>(string propertyIdentifier, [any whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#removeLikeFilter()">removeLikeFilter</A></strong>(string propertyIdentifier, [any whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#removeRange()">removeRange</A></strong>(string propertyIdentifier, [any whereGroup='1'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>private&nbsp;void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#saveState()">saveState</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiSmartList.html#setup()">setup</A></strong>(string entityName, [struct data='[runtime expression]'], [numeric pageRecordsStart='1'], [numeric pageRecordsShow='10'], [string currentURL=''])
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#init()">init</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#rbKey()">rbKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="attributeKeywordProperties()"><!-- --></a>
+		<h3>attributeKeywordProperties</h3>
+
+		<kbd>
+			property struct <strong>attributeKeywordProperties</strong> 
+		</kbd>
+
+		<br><br>
+		
+			<p>This struct holds the custom attributes that searches reference and their relative weight</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="baseEntityName()"><!-- --></a>
+		<h3>baseEntityName</h3>
+
+		<kbd>
+			property string <strong>baseEntityName</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="cacheName()"><!-- --></a>
+		<h3>cacheName</h3>
+
+		<kbd>
+			property string <strong>cacheName</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="cacheable()"><!-- --></a>
+		<h3>cacheable</h3>
+
+		<kbd>
+			property boolean <strong>cacheable</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentPageDeclaration()"><!-- --></a>
+		<h3>currentPageDeclaration</h3>
+
+		<kbd>
+			property string <strong>currentPageDeclaration</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentURL()"><!-- --></a>
+		<h3>currentURL</h3>
+
+		<kbd>
+			property string <strong>currentURL</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="entities()"><!-- --></a>
+		<h3>entities</h3>
+
+		<kbd>
+			property struct <strong>entities</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="entityJoinOrder()"><!-- --></a>
+		<h3>entityJoinOrder</h3>
+
+		<kbd>
+			property array <strong>entityJoinOrder</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="hqlParams()"><!-- --></a>
+		<h3>hqlParams</h3>
+
+		<kbd>
+			property struct <strong>hqlParams</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="keywordPhrases()"><!-- --></a>
+		<h3>keywordPhrases</h3>
+
+		<kbd>
+			property array <strong>keywordPhrases</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="keywordProperties()"><!-- --></a>
+		<h3>keywordProperties</h3>
+
+		<kbd>
+			property struct <strong>keywordProperties</strong> 
+		</kbd>
+
+		<br><br>
+		
+			<p>This struct holds the properties that searches reference and their relative weight</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="keywords()"><!-- --></a>
+		<h3>keywords</h3>
+
+		<kbd>
+			property array <strong>keywords</strong> 
+		</kbd>
+
+		<br><br>
+		
+			<p>This array holds all of the keywords that were searched for</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="orders()"><!-- --></a>
+		<h3>orders</h3>
+
+		<kbd>
+			property array <strong>orders</strong> 
+		</kbd>
+
+		<br><br>
+		
+			<p>This struct holds the display order specification based on property</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="pageRecords()"><!-- --></a>
+		<h3>pageRecords</h3>
+
+		<kbd>
+			property array <strong>pageRecords</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="pageRecordsShow()"><!-- --></a>
+		<h3>pageRecordsShow</h3>
+
+		<kbd>
+			property numeric <strong>pageRecordsShow</strong> 
+		</kbd>
+
+		<br><br>
+		
+			<p>This is the total number of entities to display</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="pageRecordsStart()"><!-- --></a>
+		<h3>pageRecordsStart</h3>
+
+		<kbd>
+			property numeric <strong>pageRecordsStart</strong> 
+		</kbd>
+
+		<br><br>
+		
+			<p>This represents the first record to display and it is used in paging.</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="records()"><!-- --></a>
+		<h3>records</h3>
+
+		<kbd>
+			property array <strong>records</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="savedStateID()"><!-- --></a>
+		<h3>savedStateID</h3>
+
+		<kbd>
+			property string <strong>savedStateID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="selectDistinctFlag()"><!-- --></a>
+		<h3>selectDistinctFlag</h3>
+
+		<kbd>
+			property boolean <strong>selectDistinctFlag</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="selects()"><!-- --></a>
+		<h3>selects</h3>
+
+		<kbd>
+			property struct <strong>selects</strong> 
+		</kbd>
+
+		<br><br>
+		
+			<p>This struct holds any selects that are to be used in creating the records array</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="whereConditions()"><!-- --></a>
+		<h3>whereConditions</h3>
+
+		<kbd>
+			property array <strong>whereConditions</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="whereGroups()"><!-- --></a>
+		<h3>whereGroups</h3>
+
+		<kbd>
+			property array <strong>whereGroups</strong> 
+		</kbd>
+
+		<br><br>
+		
+			<p>this holds all filters and ranges</p>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="GETATTRIBUTEKEYWORDPROPERTIES()"><!-- --></a>
+	<h3>GETATTRIBUTEKEYWORDPROPERTIES</h3>
+	
+	<kbd>public struct <strong>GETATTRIBUTEKEYWORDPROPERTIES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: This struct holds the custom attributes that searches reference and their relative weight</p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBASEENTITYNAME()"><!-- --></a>
+	<h3>GETBASEENTITYNAME</h3>
+	
+	<kbd>public string <strong>GETBASEENTITYNAME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCACHEABLE()"><!-- --></a>
+	<h3>GETCACHEABLE</h3>
+	
+	<kbd>public boolean <strong>GETCACHEABLE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCURRENTPAGEDECLARATION()"><!-- --></a>
+	<h3>GETCURRENTPAGEDECLARATION</h3>
+	
+	<kbd>public string <strong>GETCURRENTPAGEDECLARATION</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCURRENTURL()"><!-- --></a>
+	<h3>GETCURRENTURL</h3>
+	
+	<kbd>public string <strong>GETCURRENTURL</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETENTITIES()"><!-- --></a>
+	<h3>GETENTITIES</h3>
+	
+	<kbd>public struct <strong>GETENTITIES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETENTITYJOINORDER()"><!-- --></a>
+	<h3>GETENTITYJOINORDER</h3>
+	
+	<kbd>public array <strong>GETENTITYJOINORDER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETKEYWORDPHRASES()"><!-- --></a>
+	<h3>GETKEYWORDPHRASES</h3>
+	
+	<kbd>public array <strong>GETKEYWORDPHRASES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETKEYWORDPROPERTIES()"><!-- --></a>
+	<h3>GETKEYWORDPROPERTIES</h3>
+	
+	<kbd>public struct <strong>GETKEYWORDPROPERTIES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: This struct holds the properties that searches reference and their relative weight</p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETKEYWORDS()"><!-- --></a>
+	<h3>GETKEYWORDS</h3>
+	
+	<kbd>public array <strong>GETKEYWORDS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: This array holds all of the keywords that were searched for</p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORDERS()"><!-- --></a>
+	<h3>GETORDERS</h3>
+	
+	<kbd>public array <strong>GETORDERS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: This struct holds the display order specification based on property</p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPAGERECORDSSHOW()"><!-- --></a>
+	<h3>GETPAGERECORDSSHOW</h3>
+	
+	<kbd>public numeric <strong>GETPAGERECORDSSHOW</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: This is the total number of entities to display</p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSELECTDISTINCTFLAG()"><!-- --></a>
+	<h3>GETSELECTDISTINCTFLAG</h3>
+	
+	<kbd>public boolean <strong>GETSELECTDISTINCTFLAG</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSELECTS()"><!-- --></a>
+	<h3>GETSELECTS</h3>
+	
+	<kbd>public struct <strong>GETSELECTS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: This struct holds any selects that are to be used in creating the records array</p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETWHERECONDITIONS()"><!-- --></a>
+	<h3>GETWHERECONDITIONS</h3>
+	
+	<kbd>public array <strong>GETWHERECONDITIONS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETWHEREGROUPS()"><!-- --></a>
+	<h3>GETWHEREGROUPS</h3>
+	
+	<kbd>public array <strong>GETWHEREGROUPS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: this holds all filters and ranges</p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETATTRIBUTEKEYWORDPROPERTIES()"><!-- --></a>
+	<h3>SETATTRIBUTEKEYWORDPROPERTIES</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETATTRIBUTEKEYWORDPROPERTIES</strong>(struct attributeKeywordProperties)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: This struct holds the custom attributes that searches reference and their relative weight</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeKeywordProperties</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBASEENTITYNAME()"><!-- --></a>
+	<h3>SETBASEENTITYNAME</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETBASEENTITYNAME</strong>(string baseEntityName)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>baseEntityName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCACHEABLE()"><!-- --></a>
+	<h3>SETCACHEABLE</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETCACHEABLE</strong>(boolean cacheable)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>cacheable</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCACHENAME()"><!-- --></a>
+	<h3>SETCACHENAME</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETCACHENAME</strong>(string cacheName)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>cacheName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTPAGEDECLARATION()"><!-- --></a>
+	<h3>SETCURRENTPAGEDECLARATION</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETCURRENTPAGEDECLARATION</strong>(string currentPageDeclaration)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentPageDeclaration</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTURL()"><!-- --></a>
+	<h3>SETCURRENTURL</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETCURRENTURL</strong>(string currentURL)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentURL</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETENTITIES()"><!-- --></a>
+	<h3>SETENTITIES</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETENTITIES</strong>(struct entities)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>entities</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETENTITYJOINORDER()"><!-- --></a>
+	<h3>SETENTITYJOINORDER</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETENTITYJOINORDER</strong>(array entityJoinOrder)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>entityJoinOrder</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETHQLPARAMS()"><!-- --></a>
+	<h3>SETHQLPARAMS</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETHQLPARAMS</strong>(struct hqlParams)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>hqlParams</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETKEYWORDPHRASES()"><!-- --></a>
+	<h3>SETKEYWORDPHRASES</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETKEYWORDPHRASES</strong>(array keywordPhrases)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>keywordPhrases</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETKEYWORDPROPERTIES()"><!-- --></a>
+	<h3>SETKEYWORDPROPERTIES</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETKEYWORDPROPERTIES</strong>(struct keywordProperties)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: This struct holds the properties that searches reference and their relative weight</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>keywordProperties</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETKEYWORDS()"><!-- --></a>
+	<h3>SETKEYWORDS</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETKEYWORDS</strong>(array keywords)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: This array holds all of the keywords that were searched for</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>keywords</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORDERS()"><!-- --></a>
+	<h3>SETORDERS</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETORDERS</strong>(array orders)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: This struct holds the display order specification based on property</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orders</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPAGERECORDS()"><!-- --></a>
+	<h3>SETPAGERECORDS</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETPAGERECORDS</strong>(array pageRecords)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>pageRecords</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPAGERECORDSSHOW()"><!-- --></a>
+	<h3>SETPAGERECORDSSHOW</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETPAGERECORDSSHOW</strong>(numeric pageRecordsShow)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: This is the total number of entities to display</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>pageRecordsShow</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPAGERECORDSSTART()"><!-- --></a>
+	<h3>SETPAGERECORDSSTART</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETPAGERECORDSSTART</strong>(numeric pageRecordsStart)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: This represents the first record to display and it is used in paging.</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>pageRecordsStart</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETRECORDS()"><!-- --></a>
+	<h3>SETRECORDS</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETRECORDS</strong>(array records)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>records</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSAVEDSTATEID()"><!-- --></a>
+	<h3>SETSAVEDSTATEID</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETSAVEDSTATEID</strong>(string savedStateID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>savedStateID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSELECTDISTINCTFLAG()"><!-- --></a>
+	<h3>SETSELECTDISTINCTFLAG</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETSELECTDISTINCTFLAG</strong>(boolean selectDistinctFlag)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>selectDistinctFlag</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSELECTS()"><!-- --></a>
+	<h3>SETSELECTS</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETSELECTS</strong>(struct selects)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: This struct holds any selects that are to be used in creating the records array</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>selects</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETWHERECONDITIONS()"><!-- --></a>
+	<h3>SETWHERECONDITIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETWHERECONDITIONS</strong>(array whereConditions)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>whereConditions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETWHEREGROUPS()"><!-- --></a>
+	<h3>SETWHEREGROUPS</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a> <strong>SETWHEREGROUPS</strong>(array whereGroups)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: this holds all filters and ranges</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>whereGroups</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addEntity()"><!-- --></a>
+	<h3>addEntity</h3>
+	
+	<kbd>private void <strong>addEntity</strong>(string entityName, string entityAlias, string entityFullName, struct entityProperties, [string parentAlias=''], [string parentRelatedProperty=''], [string joinType=''])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>entityName</code></dd>
+		
+		<dd><code>entityAlias</code></dd>
+		
+		<dd><code>entityFullName</code></dd>
+		
+		<dd><code>entityProperties</code></dd>
+		
+		<dd><code>parentAlias</code></dd>
+		
+		<dd><code>parentRelatedProperty</code></dd>
+		
+		<dd><code>joinType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addFilter()"><!-- --></a>
+	<h3>addFilter</h3>
+	
+	<kbd>public void <strong>addFilter</strong>(string propertyIdentifier, string value, [numeric whereGroup='1'], [boolean fetch])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		<dd><code>fetch</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addHQLParam()"><!-- --></a>
+	<h3>addHQLParam</h3>
+	
+	<kbd>public void <strong>addHQLParam</strong>(string paramName, any paramValue)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>paramName</code></dd>
+		
+		<dd><code>paramValue</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addInFilter()"><!-- --></a>
+	<h3>addInFilter</h3>
+	
+	<kbd>public void <strong>addInFilter</strong>(string propertyIdentifier, string value, [numeric whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addKeywordProperty()"><!-- --></a>
+	<h3>addKeywordProperty</h3>
+	
+	<kbd>public void <strong>addKeywordProperty</strong>(string propertyIdentifier, numeric weight)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>weight</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addLikeFilter()"><!-- --></a>
+	<h3>addLikeFilter</h3>
+	
+	<kbd>public void <strong>addLikeFilter</strong>(string propertyIdentifier, string value, [numeric whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addOrder()"><!-- --></a>
+	<h3>addOrder</h3>
+	
+	<kbd>public void <strong>addOrder</strong>(string orderStatement, [numeric position])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderStatement</code></dd>
+		
+		<dd><code>position</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addRange()"><!-- --></a>
+	<h3>addRange</h3>
+	
+	<kbd>public void <strong>addRange</strong>(string propertyIdentifier, string value, [numeric whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addSelect()"><!-- --></a>
+	<h3>addSelect</h3>
+	
+	<kbd>public void <strong>addSelect</strong>(string propertyIdentifier, string alias)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>alias</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addWhereCondition()"><!-- --></a>
+	<h3>addWhereCondition</h3>
+	
+	<kbd>public void <strong>addWhereCondition</strong>(string condition, [struct conditionParams='[runtime expression]'], [string conditionOperator='AND'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>condition</code></dd>
+		
+		<dd><code>conditionParams</code></dd>
+		
+		<dd><code>conditionOperator</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="applyData()"><!-- --></a>
+	<h3>applyData</h3>
+	
+	<kbd>public void <strong>applyData</strong>(any data)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="buildURL()"><!-- --></a>
+	<h3>buildURL</h3>
+	
+	<kbd>public string <strong>buildURL</strong>(string queryAddition, [boolean appendValues='true'], [boolean toggleKeys='true'], [string currentURL='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">HibachiObject</a>
+			</code>
+			</dd>
+		</dl>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>queryAddition</code></dd>
+		
+		<dd><code>appendValues</code></dd>
+		
+		<dd><code>toggleKeys</code></dd>
+		
+		<dd><code>currentURL</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="clearRecordsCount()"><!-- --></a>
+	<h3>clearRecordsCount</h3>
+	
+	<kbd>public void <strong>clearRecordsCount</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="confirmWhereGroup()"><!-- --></a>
+	<h3>confirmWhereGroup</h3>
+	
+	<kbd>private void <strong>confirmWhereGroup</strong>(numeric whereGroup)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="convertNVPStringToStruct()"><!-- --></a>
+	<h3>convertNVPStringToStruct</h3>
+	
+	<kbd>private struct <strong>convertNVPStringToStruct</strong>(string data)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAliasedProperty()"><!-- --></a>
+	<h3>getAliasedProperty</h3>
+	
+	<kbd>private string <strong>getAliasedProperty</strong>(string propertyIdentifier, [boolean fetch])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>fetch</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getBaseEntityPrimaryAliase()"><!-- --></a>
+	<h3>getBaseEntityPrimaryAliase</h3>
+	
+	<kbd>public string <strong>getBaseEntityPrimaryAliase</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCacheName()"><!-- --></a>
+	<h3>getCacheName</h3>
+	
+	<kbd>public any <strong>getCacheName</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentPage()"><!-- --></a>
+	<h3>getCurrentPage</h3>
+	
+	<kbd>public numeric <strong>getCurrentPage</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFilterOptions()"><!-- --></a>
+	<h3>getFilterOptions</h3>
+	
+	<kbd>public array <strong>getFilterOptions</strong>(string valuePropertyIdentifier, string namePropertyIdentifier)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>valuePropertyIdentifier</code></dd>
+		
+		<dd><code>namePropertyIdentifier</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFilters()"><!-- --></a>
+	<h3>getFilters</h3>
+	
+	<kbd>public any <strong>getFilters</strong>([string propertyIdentifier], [numeric whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHQL()"><!-- --></a>
+	<h3>getHQL</h3>
+	
+	<kbd>public string <strong>getHQL</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHQLFrom()"><!-- --></a>
+	<h3>getHQLFrom</h3>
+	
+	<kbd>public string <strong>getHQLFrom</strong>([boolean supressFrom='false'], [boolean allowFetch='true'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>supressFrom</code></dd>
+		
+		<dd><code>allowFetch</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHQLOrder()"><!-- --></a>
+	<h3>getHQLOrder</h3>
+	
+	<kbd>public string <strong>getHQLOrder</strong>([boolean supressOrderBy='false'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>supressOrderBy</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHQLParams()"><!-- --></a>
+	<h3>getHQLParams</h3>
+	
+	<kbd>public struct <strong>getHQLParams</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHQLSelect()"><!-- --></a>
+	<h3>getHQLSelect</h3>
+	
+	<kbd>public string <strong>getHQLSelect</strong>([boolean countOnly='false'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>countOnly</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHQLWhere()"><!-- --></a>
+	<h3>getHQLWhere</h3>
+	
+	<kbd>public string <strong>getHQLWhere</strong>([boolean suppressWhere='false'], [any searchOrder='false'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>suppressWhere</code></dd>
+		
+		<dd><code>searchOrder</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getInFilters()"><!-- --></a>
+	<h3>getInFilters</h3>
+	
+	<kbd>public any <strong>getInFilters</strong>([string propertyIdentifier], [numeric whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getLikeFilters()"><!-- --></a>
+	<h3>getLikeFilters</h3>
+	
+	<kbd>public any <strong>getLikeFilters</strong>([string propertyIdentifier], [numeric whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPageRecords()"><!-- --></a>
+	<h3>getPageRecords</h3>
+	
+	<kbd>public array <strong>getPageRecords</strong>([boolean refresh='false'])</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>refresh</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPageRecordsEnd()"><!-- --></a>
+	<h3>getPageRecordsEnd</h3>
+	
+	<kbd>public numeric <strong>getPageRecordsEnd</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPageRecordsStart()"><!-- --></a>
+	<h3>getPageRecordsStart</h3>
+	
+	<kbd>public numeric <strong>getPageRecordsStart</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: This represents the first record to display and it is used in paging.</p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPropertiesStructFromEntityMeta()"><!-- --></a>
+	<h3>getPropertiesStructFromEntityMeta</h3>
+	
+	<kbd>private struct <strong>getPropertiesStructFromEntityMeta</strong>(struct meta)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>meta</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getRangeMinMax()"><!-- --></a>
+	<h3>getRangeMinMax</h3>
+	
+	<kbd>public struct <strong>getRangeMinMax</strong>(string propertyIdentifier)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getRanges()"><!-- --></a>
+	<h3>getRanges</h3>
+	
+	<kbd>public any <strong>getRanges</strong>([string propertyIdentifier], [numeric whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getRecords()"><!-- --></a>
+	<h3>getRecords</h3>
+	
+	<kbd>public array <strong>getRecords</strong>([boolean refresh='false'])</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>refresh</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getRecordsCount()"><!-- --></a>
+	<h3>getRecordsCount</h3>
+	
+	<kbd>public numeric <strong>getRecordsCount</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSavedStateID()"><!-- --></a>
+	<h3>getSavedStateID</h3>
+	
+	<kbd>public string <strong>getSavedStateID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getStateStruct()"><!-- --></a>
+	<h3>getStateStruct</h3>
+	
+	<kbd>public struct <strong>getStateStruct</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getTotalPages()"><!-- --></a>
+	<h3>getTotalPages</h3>
+	
+	<kbd>public any <strong>getTotalPages</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="isFilterApplied()"><!-- --></a>
+	<h3>isFilterApplied</h3>
+	
+	<kbd>public boolean <strong>isFilterApplied</strong>(string filter, string value)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>filter</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="isLikeFilterApplied()"><!-- --></a>
+	<h3>isLikeFilterApplied</h3>
+	
+	<kbd>public boolean <strong>isLikeFilterApplied</strong>(string filter, string value)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>filter</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="isRangeApplied()"><!-- --></a>
+	<h3>isRangeApplied</h3>
+	
+	<kbd>public boolean <strong>isRangeApplied</strong>(string range, string value)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>range</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="joinRelatedProperty()"><!-- --></a>
+	<h3>joinRelatedProperty</h3>
+	
+	<kbd>public string <strong>joinRelatedProperty</strong>(string parentEntityName, string relatedProperty, [string joinType=''], [boolean fetch='false'], [boolean isAttribute='false'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>parentEntityName</code></dd>
+		
+		<dd><code>relatedProperty</code></dd>
+		
+		<dd><code>joinType</code></dd>
+		
+		<dd><code>fetch</code></dd>
+		
+		<dd><code>isAttribute</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="loadSavedState()"><!-- --></a>
+	<h3>loadSavedState</h3>
+	
+	<kbd>public void <strong>loadSavedState</strong>(string savedStateID)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>savedStateID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeFilter()"><!-- --></a>
+	<h3>removeFilter</h3>
+	
+	<kbd>public void <strong>removeFilter</strong>(string propertyIdentifier, [numeric whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeInFilter()"><!-- --></a>
+	<h3>removeInFilter</h3>
+	
+	<kbd>public void <strong>removeInFilter</strong>(string propertyIdentifier, [any whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeLikeFilter()"><!-- --></a>
+	<h3>removeLikeFilter</h3>
+	
+	<kbd>public void <strong>removeLikeFilter</strong>(string propertyIdentifier, [any whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeRange()"><!-- --></a>
+	<h3>removeRange</h3>
+	
+	<kbd>public void <strong>removeRange</strong>(string propertyIdentifier, [any whereGroup='1'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>propertyIdentifier</code></dd>
+		
+		<dd><code>whereGroup</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="saveState()"><!-- --></a>
+	<h3>saveState</h3>
+	
+	<kbd>private void <strong>saveState</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="setup()"><!-- --></a>
+	<h3>setup</h3>
+	
+	<kbd>public any <strong>setup</strong>(string entityName, [struct data='[runtime expression]'], [numeric pageRecordsStart='1'], [numeric pageRecordsShow='10'], [string currentURL=''])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>entityName</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		<dd><code>pageRecordsStart</code></dd>
+		
+		<dd><code>pageRecordsShow</code></dd>
+		
+		<dd><code>currentURL</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

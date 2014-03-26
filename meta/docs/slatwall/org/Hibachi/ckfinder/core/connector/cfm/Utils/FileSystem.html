@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>FileSystem</title>
+	<meta name="keywords" content="slatwall.org.Hibachi.ckfinder.core.connector.cfm.Utils.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../../../../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../../../../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../../../../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../../../../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../../../../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../../../../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../../../../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../../../../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../../../../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../../../../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../../../../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../../../../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../../../../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../../../../../../index.html?slatwall/org/Hibachi/ckfinder/core/connector/cfm/Utils/FileSystem.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.org.Hibachi.ckfinder.core.connector.cfm.Utils"><span class="label label-success">slatwall.org.Hibachi.ckfinder.core.connector.cfm.Utils</span></a>
+</div>
+
+<h2>
+
+Class
+FileSystem</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../../../../../../resources/inherit.gif" alt="extended by ">slatwall.org.Hibachi.ckfinder.core.connector.cfm.Utils.FileSystem
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<span class="label label-warning"><em>None</em></span>
+		
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>String</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#CombinePaths()">CombinePaths</A></strong>(string path1, string path2)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This function behaves similar to System.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>String</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#binaryFileRead()">binaryFileRead</A></strong>(string fileName, Numeric bytes)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#checkFileName()">checkFileName</A></strong>(string fileName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;check if filename is valid.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#checkFolderName()">checkFolderName</A></strong>(string folderName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;check if foldername is valid.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#createDirectoryRecursively()">createDirectoryRecursively</A></strong>(string fileAndPath, [Boolean isPathToFile='false'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#detectHtml()">detectHtml</A></strong>(String filePath)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>Numeric</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#fileSize()">fileSize</A></strong>(String pathToFile)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>String</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#fixPath()">fixPath</A></strong>(string path, [boolean fixBackslash='true'])
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fix path (add trailing slashes etc.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>String</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#fixUrl()">fixUrl</A></strong>(string path)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fix url (add trailing slashes etc.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>String</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#getFileExtension()">getFileExtension</A></strong>(String fileName)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#getFileMimeType()">getFileMimeType</A></strong>(string filePath)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>String</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#getFileNameWithoutExtension()">getFileNameWithoutExtension</A></strong>(String fileName)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#getLastModifiedStamp()">getLastModifiedStamp</A></strong>(String filename)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>String</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#getThumbFileName()">getThumbFileName</A></strong>([any fileName])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#hasChildren()">hasChildren</A></strong>(String folderPath)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return true if given folder has subfolders.
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#isImageValid()">isImageValid</A></strong>(String filePath, String extension)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#moveTempFile()">moveTempFile</A></strong>(String source, String destination)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>String</code>
+		</td>
+		<td>
+			<strong><a href="FileSystem.html#resolveUrl()">resolveUrl</A></strong>(String baseUrl)
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="CombinePaths()"><!-- --></a>
+	<h3>CombinePaths</h3>
+	
+	<kbd>public String <strong>CombinePaths</strong>(string path1, string path2)</kbd>
+	
+	<br><br>
+
+	
+		<p>This function behaves similar to System.IO.Path.Combine in C Sharp</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>path1</code></dd>
+		
+		<dd><code>path2</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="binaryFileRead()"><!-- --></a>
+	<h3>binaryFileRead</h3>
+	
+	<kbd>public String <strong>binaryFileRead</strong>(string fileName, Numeric bytes)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code></dd>
+		
+		<dd><code>bytes</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="checkFileName()"><!-- --></a>
+	<h3>checkFileName</h3>
+	
+	<kbd>public boolean <strong>checkFileName</strong>(string fileName)</kbd>
+	
+	<br><br>
+
+	
+		<p>check if filename is valid</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="checkFolderName()"><!-- --></a>
+	<h3>checkFolderName</h3>
+	
+	<kbd>public boolean <strong>checkFolderName</strong>(string folderName)</kbd>
+	
+	<br><br>
+
+	
+		<p>check if foldername is valid</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="createDirectoryRecursively()"><!-- --></a>
+	<h3>createDirectoryRecursively</h3>
+	
+	<kbd>public boolean <strong>createDirectoryRecursively</strong>(string fileAndPath, [Boolean isPathToFile='false'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileAndPath</code></dd>
+		
+		<dd><code>isPathToFile</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="detectHtml()"><!-- --></a>
+	<h3>detectHtml</h3>
+	
+	<kbd>public boolean <strong>detectHtml</strong>(String filePath)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>filePath</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="fileSize()"><!-- --></a>
+	<h3>fileSize</h3>
+	
+	<kbd>public Numeric <strong>fileSize</strong>(String pathToFile)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>pathToFile</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="fixPath()"><!-- --></a>
+	<h3>fixPath</h3>
+	
+	<kbd>public String <strong>fixPath</strong>(string path, [boolean fixBackslash='true'])</kbd>
+	
+	<br><br>
+
+	
+		<p>Fix path (add trailing slashes etc.)</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>path</code></dd>
+		
+		<dd><code>fixBackslash</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="fixUrl()"><!-- --></a>
+	<h3>fixUrl</h3>
+	
+	<kbd>public String <strong>fixUrl</strong>(string path)</kbd>
+	
+	<br><br>
+
+	
+		<p>Fix url (add trailing slashes etc.)</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>path</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFileExtension()"><!-- --></a>
+	<h3>getFileExtension</h3>
+	
+	<kbd>public String <strong>getFileExtension</strong>(String fileName)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFileMimeType()"><!-- --></a>
+	<h3>getFileMimeType</h3>
+	
+	<kbd>public string <strong>getFileMimeType</strong>(string filePath)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>filePath</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFileNameWithoutExtension()"><!-- --></a>
+	<h3>getFileNameWithoutExtension</h3>
+	
+	<kbd>public String <strong>getFileNameWithoutExtension</strong>(String fileName)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getLastModifiedStamp()"><!-- --></a>
+	<h3>getLastModifiedStamp</h3>
+	
+	<kbd>public any <strong>getLastModifiedStamp</strong>(String filename)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>filename</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getThumbFileName()"><!-- --></a>
+	<h3>getThumbFileName</h3>
+	
+	<kbd>public String <strong>getThumbFileName</strong>([any fileName])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="hasChildren()"><!-- --></a>
+	<h3>hasChildren</h3>
+	
+	<kbd>public boolean <strong>hasChildren</strong>(String folderPath)</kbd>
+	
+	<br><br>
+
+	
+		<p>return true if given folder has subfolders</p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderPath</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="isImageValid()"><!-- --></a>
+	<h3>isImageValid</h3>
+	
+	<kbd>public boolean <strong>isImageValid</strong>(String filePath, String extension)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>filePath</code></dd>
+		
+		<dd><code>extension</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="moveTempFile()"><!-- --></a>
+	<h3>moveTempFile</h3>
+	
+	<kbd>public void <strong>moveTempFile</strong>(String source, String destination)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>source</code></dd>
+		
+		<dd><code>destination</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="resolveUrl()"><!-- --></a>
+	<h3>resolveUrl</h3>
+	
+	<kbd>public String <strong>resolveUrl</strong>(String baseUrl)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>baseUrl</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

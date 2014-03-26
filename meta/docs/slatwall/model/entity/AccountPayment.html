@@ -1,0 +1,6607 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>AccountPayment</title>
+	<meta name="keywords" content="slatwall.model.entity.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/model/entity/AccountPayment.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.model.entity"><span class="label label-success">slatwall.model.entity</span></a>
+</div>
+
+<h2>
+
+Class
+AccountPayment</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a>
+                <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiEntity</a>
+                    <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">slatwall.model.entity.HibachiEntity</a>
+                        <img src="../../../resources/inherit.gif" alt="extended by ">slatwall.model.entity.AccountPayment
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				cacheuse 
+				: transactional 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				hb_servicename 
+				: accountService 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				persistent 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				table 
+				: SwAccountPayment 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				displayname 
+				: Account Payment 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				hb_permission 
+				: account.accountPayment 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				hb_processcontexts 
+				: offlineTransaction,process 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				entityname 
+				: SlatwallAccountPayment 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#account()">account</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = Account</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = accountID</li>
+				
+				<li class="label label-default label-annotations">hb_optionsnullrbkey = define.select</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#accountPaymentID()">accountPaymentID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">generator = uuid</li>
+				
+				<li class="label label-default label-annotations">fieldtype = id</li>
+				
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">unsavedvalue = </li>
+				
+				<li class="label label-default label-annotations">length = 32</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#accountPaymentMethod()">accountPaymentMethod</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = AccountPaymentMethod</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = accountPaymentMethodID</li>
+				
+				<li class="label label-default label-annotations">hb_optionsnullrbkey = define.select</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#accountPaymentType()">accountPaymentType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">hb_optionssmartlistdata = f:parentType.systemCode=accountPaymentType</li>
+				
+				<li class="label label-default label-annotations">cfc = Type</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = accountPaymentTypeID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amount()">amount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = big_decimal</li>
+				
+				<li class="label label-default label-annotations">notnull = true</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amountAuthorized()">amountAuthorized</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amountCredited()">amountCredited</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amountReceived()">amountReceived</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amountUnassigned()">amountUnassigned</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amountUnauthorized()">amountUnauthorized</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amountUncaptured()">amountUncaptured</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amountUncredited()">amountUncredited</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#amountUnreceived()">amountUnreceived</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">hb_formattype = currency</li>
+				
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#attributeValues()">attributeValues</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">inverse = true</li>
+				
+				<li class="label label-default label-annotations">fieldtype = one-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = attributeValue</li>
+				
+				<li class="label label-default label-annotations">cascade = all-delete-orphan</li>
+				
+				<li class="label label-default label-annotations">cfc = AttributeValue</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = accountPaymentID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#bankAccountNumber()">bankAccountNumber</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#bankAccountNumberEncrypted()">bankAccountNumberEncrypted</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#bankRoutingNumber()">bankRoutingNumber</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#bankRoutingNumberEncrypted()">bankRoutingNumberEncrypted</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#billingAddress()">billingAddress</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cascade = all</li>
+				
+				<li class="label label-default label-annotations">cfc = Address</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = billingAddressID</li>
+				
+				<li class="label label-default label-annotations">hb_optionsnullrbkey = define.select</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#checkNumber()">checkNumber</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#checkNumberEncrypted()">checkNumberEncrypted</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#createdByAccount()">createdByAccount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+				<li class="label label-default label-annotations">cfc = Account</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = createdByAccountID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#createdDateTime()">createdDateTime</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = timestamp</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#creditCardLastFour()">creditCardLastFour</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#creditCardNumber()">creditCardNumber</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#creditCardNumberEncrypted()">creditCardNumberEncrypted</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#creditCardOrProviderTokenExistsFlag()">creditCardOrProviderTokenExistsFlag</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#creditCardType()">creditCardType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#currencyCode()">currencyCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">length = 3</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#experationMonthOptions()">experationMonthOptions</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#expirationDate()">expirationDate</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#expirationMonth()">expirationMonth</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">hb_formfieldtype = select</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#expirationYear()">expirationYear</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+				<li class="label label-default label-annotations">hb_formfieldtype = select</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#expirationYearOptions()">expirationYearOptions</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#giftCardNumber()">giftCardNumber</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#giftCardNumberEncrypted()">giftCardNumberEncrypted</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#modifiedByAccount()">modifiedByAccount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+				<li class="label label-default label-annotations">cfc = Account</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = modifiedByAccountID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#modifiedDateTime()">modifiedDateTime</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = timestamp</li>
+				
+				<li class="label label-default label-annotations">hb_populateenabled = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#nameOnCreditCard()">nameOnCreditCard</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#originalAuthorizationCode()">originalAuthorizationCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#originalAuthorizationProviderTransactionID()">originalAuthorizationProviderTransactionID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#originalChargeProviderTransactionID()">originalChargeProviderTransactionID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#originalProviderTransactionID()">originalProviderTransactionID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#paymentMethod()">paymentMethod</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">fieldtype = many-to-one</li>
+				
+				<li class="label label-default label-annotations">cfc = PaymentMethod</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = paymentMethodID</li>
+				
+				<li class="label label-default label-annotations">hb_optionsnullrbkey = define.select</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#paymentMethodType()">paymentMethodType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#paymentTransactions()">paymentTransactions</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">inverse = true</li>
+				
+				<li class="label label-default label-annotations">fieldtype = one-to-many</li>
+				
+				<li class="label label-default label-annotations">singularname = paymentTransaction</li>
+				
+				<li class="label label-default label-annotations">cascade = all</li>
+				
+				<li class="label label-default label-annotations">cfc = PaymentTransaction</li>
+				
+				<li class="label label-default label-annotations">fkcolumn = accountPaymentID</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#providerToken()">providerToken</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#remoteID()">remoteID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#securityCode()">securityCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+	<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+	<a name="constructor_summary"><!-- --></a>
+	<table class="table table-bordered table-hover">
+		<tr class="info">
+			<th align="left" colspan="2">
+				<strong>Constructor Summary</strong>
+			</th>
+		</tr>
+		<tr>
+			
+			<td>
+				<strong><a href="AccountPayment.html#init()">init</A></strong>()
+				<br>
+				
+			</td>
+		</tr>
+	</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETACCOUNT()">GETACCOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETACCOUNTPAYMENTID()">GETACCOUNTPAYMENTID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETACCOUNTPAYMENTMETHOD()">GETACCOUNTPAYMENTMETHOD</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETACCOUNTPAYMENTTYPE()">GETACCOUNTPAYMENTTYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETAMOUNT()">GETAMOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETATTRIBUTEVALUES()">GETATTRIBUTEVALUES</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETBANKACCOUNTNUMBER()">GETBANKACCOUNTNUMBER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETBANKACCOUNTNUMBERENCRYPTED()">GETBANKACCOUNTNUMBERENCRYPTED</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETBANKROUTINGNUMBER()">GETBANKROUTINGNUMBER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETBANKROUTINGNUMBERENCRYPTED()">GETBANKROUTINGNUMBERENCRYPTED</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETCHECKNUMBER()">GETCHECKNUMBER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETCHECKNUMBERENCRYPTED()">GETCHECKNUMBERENCRYPTED</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETCREATEDBYACCOUNT()">GETCREATEDBYACCOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETCREATEDDATETIME()">GETCREATEDDATETIME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETCREDITCARDLASTFOUR()">GETCREDITCARDLASTFOUR</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETCREDITCARDNUMBER()">GETCREDITCARDNUMBER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETCREDITCARDNUMBERENCRYPTED()">GETCREDITCARDNUMBERENCRYPTED</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETCREDITCARDTYPE()">GETCREDITCARDTYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETEXPERATIONMONTHOPTIONS()">GETEXPERATIONMONTHOPTIONS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETEXPIRATIONDATE()">GETEXPIRATIONDATE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETEXPIRATIONMONTH()">GETEXPIRATIONMONTH</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETEXPIRATIONYEAR()">GETEXPIRATIONYEAR</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETGIFTCARDNUMBER()">GETGIFTCARDNUMBER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETGIFTCARDNUMBERENCRYPTED()">GETGIFTCARDNUMBERENCRYPTED</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETMODIFIEDBYACCOUNT()">GETMODIFIEDBYACCOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETMODIFIEDDATETIME()">GETMODIFIEDDATETIME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETNAMEONCREDITCARD()">GETNAMEONCREDITCARD</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETPAYMENTMETHOD()">GETPAYMENTMETHOD</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETPAYMENTTRANSACTIONS()">GETPAYMENTTRANSACTIONS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETPROVIDERTOKEN()">GETPROVIDERTOKEN</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETREMOTEID()">GETREMOTEID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#GETSECURITYCODE()">GETSECURITYCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASACCOUNT()">HASACCOUNT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASACCOUNTPAYMENTMETHOD()">HASACCOUNTPAYMENTMETHOD</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASACCOUNTPAYMENTTYPE()">HASACCOUNTPAYMENTTYPE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASATTRIBUTEVALUE()">HASATTRIBUTEVALUE</A></strong>([<a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> attributeValues])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASBILLINGADDRESS()">HASBILLINGADDRESS</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASCREATEDBYACCOUNT()">HASCREATEDBYACCOUNT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASMODIFIEDBYACCOUNT()">HASMODIFIEDBYACCOUNT</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASPAYMENTMETHOD()">HASPAYMENTMETHOD</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#HASPAYMENTTRANSACTION()">HASPAYMENTTRANSACTION</A></strong>([<a href="../../../slatwall/model/entity/PaymentTransaction.html" title="class in slatwall.model.entity">PaymentTransaction</a> paymentTransactions])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETACCOUNTPAYMENTID()">SETACCOUNTPAYMENTID</A></strong>(any accountPaymentID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETACCOUNTPAYMENTMETHOD()">SETACCOUNTPAYMENTMETHOD</A></strong>(any accountPaymentMethod)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETACCOUNTPAYMENTTYPE()">SETACCOUNTPAYMENTTYPE</A></strong>(any accountPaymentType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNT()">SETAMOUNT</A></strong>(any amount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNTAUTHORIZED()">SETAMOUNTAUTHORIZED</A></strong>(numeric amountAuthorized)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNTCREDITED()">SETAMOUNTCREDITED</A></strong>(numeric amountCredited)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNTRECEIVED()">SETAMOUNTRECEIVED</A></strong>(numeric amountReceived)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNTUNASSIGNED()">SETAMOUNTUNASSIGNED</A></strong>(numeric amountUnassigned)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNTUNAUTHORIZED()">SETAMOUNTUNAUTHORIZED</A></strong>(any amountUnauthorized)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNTUNCAPTURED()">SETAMOUNTUNCAPTURED</A></strong>(any amountUncaptured)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNTUNCREDITED()">SETAMOUNTUNCREDITED</A></strong>(any amountUncredited)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETAMOUNTUNRECEIVED()">SETAMOUNTUNRECEIVED</A></strong>(any amountUnreceived)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETATTRIBUTEVALUES()">SETATTRIBUTEVALUES</A></strong>(array attributeValues)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETBANKACCOUNTNUMBER()">SETBANKACCOUNTNUMBER</A></strong>(any bankAccountNumber)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETBANKACCOUNTNUMBERENCRYPTED()">SETBANKACCOUNTNUMBERENCRYPTED</A></strong>(any bankAccountNumberEncrypted)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETBANKROUTINGNUMBER()">SETBANKROUTINGNUMBER</A></strong>(any bankRoutingNumber)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETBANKROUTINGNUMBERENCRYPTED()">SETBANKROUTINGNUMBERENCRYPTED</A></strong>(any bankRoutingNumberEncrypted)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETBILLINGADDRESS()">SETBILLINGADDRESS</A></strong>(any billingAddress)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCHECKNUMBER()">SETCHECKNUMBER</A></strong>(any checkNumber)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCHECKNUMBERENCRYPTED()">SETCHECKNUMBERENCRYPTED</A></strong>(any checkNumberEncrypted)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCREATEDBYACCOUNT()">SETCREATEDBYACCOUNT</A></strong>(any createdByAccount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCREATEDDATETIME()">SETCREATEDDATETIME</A></strong>(any createdDateTime)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCREDITCARDLASTFOUR()">SETCREDITCARDLASTFOUR</A></strong>(any creditCardLastFour)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCREDITCARDNUMBERENCRYPTED()">SETCREDITCARDNUMBERENCRYPTED</A></strong>(any creditCardNumberEncrypted)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCREDITCARDORPROVIDERTOKENEXISTSFLAG()">SETCREDITCARDORPROVIDERTOKENEXISTSFLAG</A></strong>(any creditCardOrProviderTokenExistsFlag)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCREDITCARDTYPE()">SETCREDITCARDTYPE</A></strong>(any creditCardType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETCURRENCYCODE()">SETCURRENCYCODE</A></strong>(any currencyCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETEXPERATIONMONTHOPTIONS()">SETEXPERATIONMONTHOPTIONS</A></strong>(any experationMonthOptions)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETEXPIRATIONDATE()">SETEXPIRATIONDATE</A></strong>(any expirationDate)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETEXPIRATIONMONTH()">SETEXPIRATIONMONTH</A></strong>(any expirationMonth)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETEXPIRATIONYEAR()">SETEXPIRATIONYEAR</A></strong>(any expirationYear)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETEXPIRATIONYEAROPTIONS()">SETEXPIRATIONYEAROPTIONS</A></strong>(any expirationYearOptions)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETGIFTCARDNUMBER()">SETGIFTCARDNUMBER</A></strong>(any giftCardNumber)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETGIFTCARDNUMBERENCRYPTED()">SETGIFTCARDNUMBERENCRYPTED</A></strong>(any giftCardNumberEncrypted)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETMODIFIEDBYACCOUNT()">SETMODIFIEDBYACCOUNT</A></strong>(any modifiedByAccount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETMODIFIEDDATETIME()">SETMODIFIEDDATETIME</A></strong>(any modifiedDateTime)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETNAMEONCREDITCARD()">SETNAMEONCREDITCARD</A></strong>(any nameOnCreditCard)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETORIGINALAUTHORIZATIONCODE()">SETORIGINALAUTHORIZATIONCODE</A></strong>(any originalAuthorizationCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID()">SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</A></strong>(any originalAuthorizationProviderTransactionID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETORIGINALCHARGEPROVIDERTRANSACTIONID()">SETORIGINALCHARGEPROVIDERTRANSACTIONID</A></strong>(any originalChargeProviderTransactionID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETORIGINALPROVIDERTRANSACTIONID()">SETORIGINALPROVIDERTRANSACTIONID</A></strong>(any originalProviderTransactionID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETPAYMENTMETHOD()">SETPAYMENTMETHOD</A></strong>(any paymentMethod)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETPAYMENTMETHODTYPE()">SETPAYMENTMETHODTYPE</A></strong>(any paymentMethodType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETPAYMENTTRANSACTIONS()">SETPAYMENTTRANSACTIONS</A></strong>(array paymentTransactions)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETPROVIDERTOKEN()">SETPROVIDERTOKEN</A></strong>(any providerToken)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETREMOTEID()">SETREMOTEID</A></strong>(any remoteID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a></code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#SETSECURITYCODE()">SETSECURITYCODE</A></strong>(any securityCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#addAttributeValue()">addAttributeValue</A></strong>(any attributeValue)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#addPaymentTransaction()">addPaymentTransaction</A></strong>(any paymentTransaction)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#copyFromAccountPaymentMethod()">copyFromAccountPaymentMethod</A></strong>(any accountPaymentMethod)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getAmountAuthorized()">getAmountAuthorized</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getAmountCredited()">getAmountCredited</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getAmountReceived()">getAmountReceived</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getAmountUnassigned()">getAmountUnassigned</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getAmountUnauthorized()">getAmountUnauthorized</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getAmountUncaptured()">getAmountUncaptured</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getAmountUncredited()">getAmountUncredited</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getAmountUnreceived()">getAmountUnreceived</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getBillingAddress()">getBillingAddress</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getCreditCardOrProviderTokenExistsFlag()">getCreditCardOrProviderTokenExistsFlag</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getCurrencyCode()">getCurrencyCode</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getExpirationMonthOptions()">getExpirationMonthOptions</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getExpirationYearOptions()">getExpirationYearOptions</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getOriginalAuthorizationCode()">getOriginalAuthorizationCode</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getOriginalAuthorizationProviderTransactionID()">getOriginalAuthorizationProviderTransactionID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getOriginalChargeProviderTransactionID()">getOriginalChargeProviderTransactionID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getOriginalProviderTransactionID()">getOriginalProviderTransactionID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getPaymentMethodOptions()">getPaymentMethodOptions</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getPaymentMethodType()">getPaymentMethodType</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#getSimpleRepresentation()">getSimpleRepresentation</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#removeAccount()">removeAccount</A></strong>([any account])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#removeAttributeValue()">removeAttributeValue</A></strong>(any attributeValue)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#removePaymentTransaction()">removePaymentTransaction</A></strong>(any paymentTransaction)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#setAccount()">setAccount</A></strong>(any account)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="AccountPayment.html#setCreditCardNumber()">setCreditCardNumber</A></strong>(string creditCardNumber)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.model.entity.HibachiEntity"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/model/entity/HibachiEntity.html" title="class in slatwall.model.entity">slatwall.model.entity.HibachiEntity</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//slatwall/model/entity/HibachiEntity.html#SETASSIGNEDATTRIBUTESETSMARTLIST()">SETASSIGNEDATTRIBUTESETSMARTLIST</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#SETATTRIBUTEVALUESBYATTRIBUTECODESTRUCT()">SETATTRIBUTEVALUESBYATTRIBUTECODESTRUCT</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#SETATTRIBUTEVALUESBYATTRIBUTEIDSTRUCT()">SETATTRIBUTEVALUESBYATTRIBUTEIDSTRUCT</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#clearAttributeCache()">clearAttributeCache</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAssignedAttributeSetSmartList()">getAssignedAttributeSetSmartList</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValue()">getAttributeValue</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesByAttributeCodeStruct()">getAttributeValuesByAttributeCodeStruct</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesByAttributeIDStruct()">getAttributeValuesByAttributeIDStruct</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getAttributeValuesForEntity()">getAttributeValuesForEntity</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getComments()">getComments</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getEmailTemplates()">getEmailTemplates</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getPrintTemplates()">getPrintTemplates</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#getSettingDetails()">getSettingDetails</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#populate()">populate</a>, <a href="../../..//slatwall/model/entity/HibachiEntity.html#setting()">setting</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiEntity"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiEntity</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#GETPROCESSOBJECTS()">GETPROCESSOBJECTS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETEMAILTEMPLATES()">SETEMAILTEMPLATES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETNEWFLAG()">SETNEWFLAG</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPERSISTABLEERRORS()">SETPERSISTABLEERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPRINTTEMPLATES()">SETPRINTTEMPLATES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETPROCESSOBJECTS()">SETPROCESSOBJECTS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#SETSIMPLEREPRESENTATION()">SETSIMPLEREPRESENTATION</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#addError()">addError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#addPersistableError()">addPersistableError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#buildIDPathList()">buildIDPathList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#clearProcessObject()">clearProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#duplicate()">duplicate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getEntityName()">getEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getErrors()">getErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getIdentifierColumnNames()">getIdentifierColumnNames</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getIdentifierValue()">getIdentifierValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getNewFlag()">getNewFlag</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getNewPropertyEntity()">getNewPropertyEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPersistableErrors()">getPersistableErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPrimaryIDPropertyName()">getPrimaryIDPropertyName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPrimaryIDValue()">getPrimaryIDValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getProcessObject()">getProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyAssignedIDList()">getPropertyAssignedIDList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyCount()">getPropertyCount</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyOptions()">getPropertyOptions</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyOptionsSmartList()">getPropertyOptionsSmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyPrimaryID()">getPropertyPrimaryID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertySmartList()">getPropertySmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getPropertyStruct()">getPropertyStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getSimpleRepresentationPropertyName()">getSimpleRepresentationPropertyName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasAnyInProperty()">hasAnyInProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasProcessObject()">hasProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasUniqueOrNullProperty()">hasUniqueOrNullProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#hasUniqueProperty()">hasUniqueProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isDeletable()">isDeletable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isEditable()">isEditable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNew()">isNew</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotDeletable()">isNotDeletable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotEditable()">isNotEditable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isNotProcessable()">isNotProcessable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isPersistable()">isPersistable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#isProcessable()">isProcessable</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#onMissingMethod()">onMissingMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#preInsert()">preInsert</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#preUpdate()">preUpdate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#removeAllManyToManyRelationships()">removeAllManyToManyRelationships</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#setProcessObject()">setProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#updateCalculatedProperties()">updateCalculatedProperties</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#GETPOPULATEDSUBPROPERTIES()">GETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIERRORS()">SETHIBACHIERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIMESSAGES()">SETHIBACHIMESSAGES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETPOPULATEDSUBPROPERTIES()">SETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETVALIDATIONS()">SETVALIDATIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#_setProperty()">_setProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addErrors()">addErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addMessage()">addMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#afterPopulate()">afterPopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#beforePopulate()">beforePopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllErrorsHTML()">getAllErrorsHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllMessagesHTML()">getAllMessagesHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getError()">getError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFieldTypeByPropertyIdentifier()">getFieldTypeByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFormattedValue()">getFormattedValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiErrors()">getHibachiErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiMessages()">getHibachiMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getLastObjectByPropertyIdentifier()">getLastObjectByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getMessages()">getMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getProperties()">getProperties</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertiesStruct()">getPropertiesStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldName()">getPropertyFieldName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldType()">getPropertyFieldType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFormatType()">getPropertyFormatType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyHint()">getPropertyHint</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyMetaData()">getPropertyMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertySessionDefault()">getPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyTitle()">getPropertyTitle</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyValidationClass()">getPropertyValidationClass</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getTitleByPropertyIdentifier()">getTitleByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValidations()">getValidations</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValueByPropertyIdentifier()">getValueByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasError()">hasError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasErrors()">hasErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessage()">hasMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessages()">hasMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasProperty()">hasProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#setPropertySessionDefault()">setPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrors()">showErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrorsAndMessages()">showErrorsAndMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showMessages()">showMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#stringReplace()">stringReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#validate()">validate</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#rbKey()">rbKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+	<a name="constructor_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Constructor Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	<a name="init()"><!-- --></a><h3>
+	init</h3>
+	<kbd>public <strong>init</strong>()</kbd>
+
+	<br><br>
+
+	
+	<hr>
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="account()"><!-- --></a>
+		<h3>account</h3>
+
+		<kbd>
+			property any <strong>account</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Account</dd>
+			
+			<dd><code>fkcolumn</code> - accountID</dd>
+			
+			<dd><code>hb_optionsnullrbkey</code> - define.select</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountPaymentID()"><!-- --></a>
+		<h3>accountPaymentID</h3>
+
+		<kbd>
+			property any <strong>accountPaymentID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>generator</code> - uuid</dd>
+			
+			<dd><code>fieldtype</code> - id</dd>
+			
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>unsavedvalue</code> - </dd>
+			
+			<dd><code>length</code> - 32</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountPaymentMethod()"><!-- --></a>
+		<h3>accountPaymentMethod</h3>
+
+		<kbd>
+			property any <strong>accountPaymentMethod</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - AccountPaymentMethod</dd>
+			
+			<dd><code>fkcolumn</code> - accountPaymentMethodID</dd>
+			
+			<dd><code>hb_optionsnullrbkey</code> - define.select</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountPaymentType()"><!-- --></a>
+		<h3>accountPaymentType</h3>
+
+		<kbd>
+			property any <strong>accountPaymentType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>hb_optionssmartlistdata</code> - f:parentType.systemCode=accountPaymentType</dd>
+			
+			<dd><code>cfc</code> - Type</dd>
+			
+			<dd><code>fkcolumn</code> - accountPaymentTypeID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amount()"><!-- --></a>
+		<h3>amount</h3>
+
+		<kbd>
+			property any <strong>amount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - big_decimal</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>notnull</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amountAuthorized()"><!-- --></a>
+		<h3>amountAuthorized</h3>
+
+		<kbd>
+			property numeric <strong>amountAuthorized</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amountCredited()"><!-- --></a>
+		<h3>amountCredited</h3>
+
+		<kbd>
+			property numeric <strong>amountCredited</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amountReceived()"><!-- --></a>
+		<h3>amountReceived</h3>
+
+		<kbd>
+			property numeric <strong>amountReceived</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amountUnassigned()"><!-- --></a>
+		<h3>amountUnassigned</h3>
+
+		<kbd>
+			property numeric <strong>amountUnassigned</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amountUnauthorized()"><!-- --></a>
+		<h3>amountUnauthorized</h3>
+
+		<kbd>
+			property any <strong>amountUnauthorized</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amountUncaptured()"><!-- --></a>
+		<h3>amountUncaptured</h3>
+
+		<kbd>
+			property any <strong>amountUncaptured</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amountUncredited()"><!-- --></a>
+		<h3>amountUncredited</h3>
+
+		<kbd>
+			property any <strong>amountUncredited</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="amountUnreceived()"><!-- --></a>
+		<h3>amountUnreceived</h3>
+
+		<kbd>
+			property any <strong>amountUnreceived</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>hb_formattype</code> - currency</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="attributeValues()"><!-- --></a>
+		<h3>attributeValues</h3>
+
+		<kbd>
+			property array <strong>attributeValues</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>inverse</code> - true</dd>
+			
+			<dd><code>fieldtype</code> - one-to-many</dd>
+			
+			<dd><code>singularname</code> - attributeValue</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cascade</code> - all-delete-orphan</dd>
+			
+			<dd><code>cfc</code> - AttributeValue</dd>
+			
+			<dd><code>fkcolumn</code> - accountPaymentID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="bankAccountNumber()"><!-- --></a>
+		<h3>bankAccountNumber</h3>
+
+		<kbd>
+			property any <strong>bankAccountNumber</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="bankAccountNumberEncrypted()"><!-- --></a>
+		<h3>bankAccountNumberEncrypted</h3>
+
+		<kbd>
+			property any <strong>bankAccountNumberEncrypted</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="bankRoutingNumber()"><!-- --></a>
+		<h3>bankRoutingNumber</h3>
+
+		<kbd>
+			property any <strong>bankRoutingNumber</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="bankRoutingNumberEncrypted()"><!-- --></a>
+		<h3>bankRoutingNumberEncrypted</h3>
+
+		<kbd>
+			property any <strong>bankRoutingNumberEncrypted</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingAddress()"><!-- --></a>
+		<h3>billingAddress</h3>
+
+		<kbd>
+			property any <strong>billingAddress</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cascade</code> - all</dd>
+			
+			<dd><code>cfc</code> - Address</dd>
+			
+			<dd><code>fkcolumn</code> - billingAddressID</dd>
+			
+			<dd><code>hb_optionsnullrbkey</code> - define.select</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="checkNumber()"><!-- --></a>
+		<h3>checkNumber</h3>
+
+		<kbd>
+			property any <strong>checkNumber</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="checkNumberEncrypted()"><!-- --></a>
+		<h3>checkNumberEncrypted</h3>
+
+		<kbd>
+			property any <strong>checkNumberEncrypted</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="createdByAccount()"><!-- --></a>
+		<h3>createdByAccount</h3>
+
+		<kbd>
+			property any <strong>createdByAccount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Account</dd>
+			
+			<dd><code>fkcolumn</code> - createdByAccountID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="createdDateTime()"><!-- --></a>
+		<h3>createdDateTime</h3>
+
+		<kbd>
+			property any <strong>createdDateTime</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - timestamp</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="creditCardLastFour()"><!-- --></a>
+		<h3>creditCardLastFour</h3>
+
+		<kbd>
+			property any <strong>creditCardLastFour</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="creditCardNumber()"><!-- --></a>
+		<h3>creditCardNumber</h3>
+
+		<kbd>
+			property any <strong>creditCardNumber</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="creditCardNumberEncrypted()"><!-- --></a>
+		<h3>creditCardNumberEncrypted</h3>
+
+		<kbd>
+			property any <strong>creditCardNumberEncrypted</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="creditCardOrProviderTokenExistsFlag()"><!-- --></a>
+		<h3>creditCardOrProviderTokenExistsFlag</h3>
+
+		<kbd>
+			property any <strong>creditCardOrProviderTokenExistsFlag</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="creditCardType()"><!-- --></a>
+		<h3>creditCardType</h3>
+
+		<kbd>
+			property any <strong>creditCardType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currencyCode()"><!-- --></a>
+		<h3>currencyCode</h3>
+
+		<kbd>
+			property any <strong>currencyCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>length</code> - 3</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="experationMonthOptions()"><!-- --></a>
+		<h3>experationMonthOptions</h3>
+
+		<kbd>
+			property any <strong>experationMonthOptions</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="expirationDate()"><!-- --></a>
+		<h3>expirationDate</h3>
+
+		<kbd>
+			property any <strong>expirationDate</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="expirationMonth()"><!-- --></a>
+		<h3>expirationMonth</h3>
+
+		<kbd>
+			property any <strong>expirationMonth</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>hb_formfieldtype</code> - select</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="expirationYear()"><!-- --></a>
+		<h3>expirationYear</h3>
+
+		<kbd>
+			property any <strong>expirationYear</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>hb_formfieldtype</code> - select</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="expirationYearOptions()"><!-- --></a>
+		<h3>expirationYearOptions</h3>
+
+		<kbd>
+			property any <strong>expirationYearOptions</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="giftCardNumber()"><!-- --></a>
+		<h3>giftCardNumber</h3>
+
+		<kbd>
+			property any <strong>giftCardNumber</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="giftCardNumberEncrypted()"><!-- --></a>
+		<h3>giftCardNumberEncrypted</h3>
+
+		<kbd>
+			property any <strong>giftCardNumberEncrypted</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="modifiedByAccount()"><!-- --></a>
+		<h3>modifiedByAccount</h3>
+
+		<kbd>
+			property any <strong>modifiedByAccount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - Account</dd>
+			
+			<dd><code>fkcolumn</code> - modifiedByAccountID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="modifiedDateTime()"><!-- --></a>
+		<h3>modifiedDateTime</h3>
+
+		<kbd>
+			property any <strong>modifiedDateTime</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - timestamp</dd>
+			
+			<dd><code>hb_populateenabled</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="nameOnCreditCard()"><!-- --></a>
+		<h3>nameOnCreditCard</h3>
+
+		<kbd>
+			property any <strong>nameOnCreditCard</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="originalAuthorizationCode()"><!-- --></a>
+		<h3>originalAuthorizationCode</h3>
+
+		<kbd>
+			property any <strong>originalAuthorizationCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="originalAuthorizationProviderTransactionID()"><!-- --></a>
+		<h3>originalAuthorizationProviderTransactionID</h3>
+
+		<kbd>
+			property any <strong>originalAuthorizationProviderTransactionID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="originalChargeProviderTransactionID()"><!-- --></a>
+		<h3>originalChargeProviderTransactionID</h3>
+
+		<kbd>
+			property any <strong>originalChargeProviderTransactionID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="originalProviderTransactionID()"><!-- --></a>
+		<h3>originalProviderTransactionID</h3>
+
+		<kbd>
+			property any <strong>originalProviderTransactionID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="paymentMethod()"><!-- --></a>
+		<h3>paymentMethod</h3>
+
+		<kbd>
+			property any <strong>paymentMethod</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>fieldtype</code> - many-to-one</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cfc</code> - PaymentMethod</dd>
+			
+			<dd><code>fkcolumn</code> - paymentMethodID</dd>
+			
+			<dd><code>hb_optionsnullrbkey</code> - define.select</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="paymentMethodType()"><!-- --></a>
+		<h3>paymentMethodType</h3>
+
+		<kbd>
+			property any <strong>paymentMethodType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="paymentTransactions()"><!-- --></a>
+		<h3>paymentTransactions</h3>
+
+		<kbd>
+			property array <strong>paymentTransactions</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>inverse</code> - true</dd>
+			
+			<dd><code>fieldtype</code> - one-to-many</dd>
+			
+			<dd><code>singularname</code> - paymentTransaction</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>cascade</code> - all</dd>
+			
+			<dd><code>cfc</code> - PaymentTransaction</dd>
+			
+			<dd><code>fkcolumn</code> - accountPaymentID</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="providerToken()"><!-- --></a>
+		<h3>providerToken</h3>
+
+		<kbd>
+			property any <strong>providerToken</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="remoteID()"><!-- --></a>
+		<h3>remoteID</h3>
+
+		<kbd>
+			property any <strong>remoteID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="securityCode()"><!-- --></a>
+		<h3>securityCode</h3>
+
+		<kbd>
+			property any <strong>securityCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="GETACCOUNT()"><!-- --></a>
+	<h3>GETACCOUNT</h3>
+	
+	<kbd>public any <strong>GETACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTPAYMENTID()"><!-- --></a>
+	<h3>GETACCOUNTPAYMENTID</h3>
+	
+	<kbd>public any <strong>GETACCOUNTPAYMENTID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTPAYMENTMETHOD()"><!-- --></a>
+	<h3>GETACCOUNTPAYMENTMETHOD</h3>
+	
+	<kbd>public any <strong>GETACCOUNTPAYMENTMETHOD</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTPAYMENTTYPE()"><!-- --></a>
+	<h3>GETACCOUNTPAYMENTTYPE</h3>
+	
+	<kbd>public any <strong>GETACCOUNTPAYMENTTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETAMOUNT()"><!-- --></a>
+	<h3>GETAMOUNT</h3>
+	
+	<kbd>public any <strong>GETAMOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETATTRIBUTEVALUES()"><!-- --></a>
+	<h3>GETATTRIBUTEVALUES</h3>
+	
+	<kbd>public array <strong>GETATTRIBUTEVALUES</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBANKACCOUNTNUMBER()"><!-- --></a>
+	<h3>GETBANKACCOUNTNUMBER</h3>
+	
+	<kbd>public any <strong>GETBANKACCOUNTNUMBER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBANKACCOUNTNUMBERENCRYPTED()"><!-- --></a>
+	<h3>GETBANKACCOUNTNUMBERENCRYPTED</h3>
+	
+	<kbd>public any <strong>GETBANKACCOUNTNUMBERENCRYPTED</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBANKROUTINGNUMBER()"><!-- --></a>
+	<h3>GETBANKROUTINGNUMBER</h3>
+	
+	<kbd>public any <strong>GETBANKROUTINGNUMBER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBANKROUTINGNUMBERENCRYPTED()"><!-- --></a>
+	<h3>GETBANKROUTINGNUMBERENCRYPTED</h3>
+	
+	<kbd>public any <strong>GETBANKROUTINGNUMBERENCRYPTED</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCHECKNUMBER()"><!-- --></a>
+	<h3>GETCHECKNUMBER</h3>
+	
+	<kbd>public any <strong>GETCHECKNUMBER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCHECKNUMBERENCRYPTED()"><!-- --></a>
+	<h3>GETCHECKNUMBERENCRYPTED</h3>
+	
+	<kbd>public any <strong>GETCHECKNUMBERENCRYPTED</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>GETCREATEDBYACCOUNT</h3>
+	
+	<kbd>public any <strong>GETCREATEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREATEDDATETIME()"><!-- --></a>
+	<h3>GETCREATEDDATETIME</h3>
+	
+	<kbd>public any <strong>GETCREATEDDATETIME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREDITCARDLASTFOUR()"><!-- --></a>
+	<h3>GETCREDITCARDLASTFOUR</h3>
+	
+	<kbd>public any <strong>GETCREDITCARDLASTFOUR</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREDITCARDNUMBER()"><!-- --></a>
+	<h3>GETCREDITCARDNUMBER</h3>
+	
+	<kbd>public any <strong>GETCREDITCARDNUMBER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREDITCARDNUMBERENCRYPTED()"><!-- --></a>
+	<h3>GETCREDITCARDNUMBERENCRYPTED</h3>
+	
+	<kbd>public any <strong>GETCREDITCARDNUMBERENCRYPTED</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREDITCARDTYPE()"><!-- --></a>
+	<h3>GETCREDITCARDTYPE</h3>
+	
+	<kbd>public any <strong>GETCREDITCARDTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXPERATIONMONTHOPTIONS()"><!-- --></a>
+	<h3>GETEXPERATIONMONTHOPTIONS</h3>
+	
+	<kbd>public any <strong>GETEXPERATIONMONTHOPTIONS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXPIRATIONDATE()"><!-- --></a>
+	<h3>GETEXPIRATIONDATE</h3>
+	
+	<kbd>public any <strong>GETEXPIRATIONDATE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXPIRATIONMONTH()"><!-- --></a>
+	<h3>GETEXPIRATIONMONTH</h3>
+	
+	<kbd>public any <strong>GETEXPIRATIONMONTH</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXPIRATIONYEAR()"><!-- --></a>
+	<h3>GETEXPIRATIONYEAR</h3>
+	
+	<kbd>public any <strong>GETEXPIRATIONYEAR</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETGIFTCARDNUMBER()"><!-- --></a>
+	<h3>GETGIFTCARDNUMBER</h3>
+	
+	<kbd>public any <strong>GETGIFTCARDNUMBER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETGIFTCARDNUMBERENCRYPTED()"><!-- --></a>
+	<h3>GETGIFTCARDNUMBERENCRYPTED</h3>
+	
+	<kbd>public any <strong>GETGIFTCARDNUMBERENCRYPTED</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>GETMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public any <strong>GETMODIFIEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETMODIFIEDDATETIME()"><!-- --></a>
+	<h3>GETMODIFIEDDATETIME</h3>
+	
+	<kbd>public any <strong>GETMODIFIEDDATETIME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETNAMEONCREDITCARD()"><!-- --></a>
+	<h3>GETNAMEONCREDITCARD</h3>
+	
+	<kbd>public any <strong>GETNAMEONCREDITCARD</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPAYMENTMETHOD()"><!-- --></a>
+	<h3>GETPAYMENTMETHOD</h3>
+	
+	<kbd>public any <strong>GETPAYMENTMETHOD</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPAYMENTTRANSACTIONS()"><!-- --></a>
+	<h3>GETPAYMENTTRANSACTIONS</h3>
+	
+	<kbd>public array <strong>GETPAYMENTTRANSACTIONS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPROVIDERTOKEN()"><!-- --></a>
+	<h3>GETPROVIDERTOKEN</h3>
+	
+	<kbd>public any <strong>GETPROVIDERTOKEN</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETREMOTEID()"><!-- --></a>
+	<h3>GETREMOTEID</h3>
+	
+	<kbd>public any <strong>GETREMOTEID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSECURITYCODE()"><!-- --></a>
+	<h3>GETSECURITYCODE</h3>
+	
+	<kbd>public any <strong>GETSECURITYCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASACCOUNT()"><!-- --></a>
+	<h3>HASACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASACCOUNTPAYMENTMETHOD()"><!-- --></a>
+	<h3>HASACCOUNTPAYMENTMETHOD</h3>
+	
+	<kbd>public boolean <strong>HASACCOUNTPAYMENTMETHOD</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASACCOUNTPAYMENTTYPE()"><!-- --></a>
+	<h3>HASACCOUNTPAYMENTTYPE</h3>
+	
+	<kbd>public boolean <strong>HASACCOUNTPAYMENTTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASATTRIBUTEVALUE()"><!-- --></a>
+	<h3>HASATTRIBUTEVALUE</h3>
+	
+	<kbd>public boolean <strong>HASATTRIBUTEVALUE</strong>([<a href="../../../slatwall/model/entity/AttributeValue.html" title="class in slatwall.model.entity">AttributeValue</a> attributeValues])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValues</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASBILLINGADDRESS()"><!-- --></a>
+	<h3>HASBILLINGADDRESS</h3>
+	
+	<kbd>public boolean <strong>HASBILLINGADDRESS</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>HASCREATEDBYACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASCREATEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>HASMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public boolean <strong>HASMODIFIEDBYACCOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPAYMENTMETHOD()"><!-- --></a>
+	<h3>HASPAYMENTMETHOD</h3>
+	
+	<kbd>public boolean <strong>HASPAYMENTMETHOD</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="HASPAYMENTTRANSACTION()"><!-- --></a>
+	<h3>HASPAYMENTTRANSACTION</h3>
+	
+	<kbd>public boolean <strong>HASPAYMENTTRANSACTION</strong>([<a href="../../../slatwall/model/entity/PaymentTransaction.html" title="class in slatwall.model.entity">PaymentTransaction</a> paymentTransactions])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>paymentTransactions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTPAYMENTID()"><!-- --></a>
+	<h3>SETACCOUNTPAYMENTID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETACCOUNTPAYMENTID</strong>(any accountPaymentID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPaymentID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTPAYMENTMETHOD()"><!-- --></a>
+	<h3>SETACCOUNTPAYMENTMETHOD</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETACCOUNTPAYMENTMETHOD</strong>(any accountPaymentMethod)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPaymentMethod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTPAYMENTTYPE()"><!-- --></a>
+	<h3>SETACCOUNTPAYMENTTYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETACCOUNTPAYMENTTYPE</strong>(any accountPaymentType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPaymentType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNT()"><!-- --></a>
+	<h3>SETAMOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNT</strong>(any amount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNTAUTHORIZED()"><!-- --></a>
+	<h3>SETAMOUNTAUTHORIZED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNTAUTHORIZED</strong>(numeric amountAuthorized)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amountAuthorized</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNTCREDITED()"><!-- --></a>
+	<h3>SETAMOUNTCREDITED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNTCREDITED</strong>(numeric amountCredited)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amountCredited</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNTRECEIVED()"><!-- --></a>
+	<h3>SETAMOUNTRECEIVED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNTRECEIVED</strong>(numeric amountReceived)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amountReceived</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNTUNASSIGNED()"><!-- --></a>
+	<h3>SETAMOUNTUNASSIGNED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNTUNASSIGNED</strong>(numeric amountUnassigned)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amountUnassigned</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNTUNAUTHORIZED()"><!-- --></a>
+	<h3>SETAMOUNTUNAUTHORIZED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNTUNAUTHORIZED</strong>(any amountUnauthorized)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amountUnauthorized</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNTUNCAPTURED()"><!-- --></a>
+	<h3>SETAMOUNTUNCAPTURED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNTUNCAPTURED</strong>(any amountUncaptured)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amountUncaptured</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNTUNCREDITED()"><!-- --></a>
+	<h3>SETAMOUNTUNCREDITED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNTUNCREDITED</strong>(any amountUncredited)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amountUncredited</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETAMOUNTUNRECEIVED()"><!-- --></a>
+	<h3>SETAMOUNTUNRECEIVED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETAMOUNTUNRECEIVED</strong>(any amountUnreceived)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>amountUnreceived</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETATTRIBUTEVALUES()"><!-- --></a>
+	<h3>SETATTRIBUTEVALUES</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETATTRIBUTEVALUES</strong>(array attributeValues)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValues</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBANKACCOUNTNUMBER()"><!-- --></a>
+	<h3>SETBANKACCOUNTNUMBER</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETBANKACCOUNTNUMBER</strong>(any bankAccountNumber)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>bankAccountNumber</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBANKACCOUNTNUMBERENCRYPTED()"><!-- --></a>
+	<h3>SETBANKACCOUNTNUMBERENCRYPTED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETBANKACCOUNTNUMBERENCRYPTED</strong>(any bankAccountNumberEncrypted)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>bankAccountNumberEncrypted</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBANKROUTINGNUMBER()"><!-- --></a>
+	<h3>SETBANKROUTINGNUMBER</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETBANKROUTINGNUMBER</strong>(any bankRoutingNumber)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>bankRoutingNumber</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBANKROUTINGNUMBERENCRYPTED()"><!-- --></a>
+	<h3>SETBANKROUTINGNUMBERENCRYPTED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETBANKROUTINGNUMBERENCRYPTED</strong>(any bankRoutingNumberEncrypted)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>bankRoutingNumberEncrypted</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGADDRESS()"><!-- --></a>
+	<h3>SETBILLINGADDRESS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETBILLINGADDRESS</strong>(any billingAddress)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingAddress</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCHECKNUMBER()"><!-- --></a>
+	<h3>SETCHECKNUMBER</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCHECKNUMBER</strong>(any checkNumber)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>checkNumber</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCHECKNUMBERENCRYPTED()"><!-- --></a>
+	<h3>SETCHECKNUMBERENCRYPTED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCHECKNUMBERENCRYPTED</strong>(any checkNumberEncrypted)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>checkNumberEncrypted</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREATEDBYACCOUNT()"><!-- --></a>
+	<h3>SETCREATEDBYACCOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCREATEDBYACCOUNT</strong>(any createdByAccount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>createdByAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREATEDDATETIME()"><!-- --></a>
+	<h3>SETCREATEDDATETIME</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCREATEDDATETIME</strong>(any createdDateTime)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>createdDateTime</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREDITCARDLASTFOUR()"><!-- --></a>
+	<h3>SETCREDITCARDLASTFOUR</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCREDITCARDLASTFOUR</strong>(any creditCardLastFour)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>creditCardLastFour</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREDITCARDNUMBERENCRYPTED()"><!-- --></a>
+	<h3>SETCREDITCARDNUMBERENCRYPTED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCREDITCARDNUMBERENCRYPTED</strong>(any creditCardNumberEncrypted)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>creditCardNumberEncrypted</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREDITCARDORPROVIDERTOKENEXISTSFLAG()"><!-- --></a>
+	<h3>SETCREDITCARDORPROVIDERTOKENEXISTSFLAG</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCREDITCARDORPROVIDERTOKENEXISTSFLAG</strong>(any creditCardOrProviderTokenExistsFlag)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>creditCardOrProviderTokenExistsFlag</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREDITCARDTYPE()"><!-- --></a>
+	<h3>SETCREDITCARDTYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCREDITCARDTYPE</strong>(any creditCardType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>creditCardType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENCYCODE()"><!-- --></a>
+	<h3>SETCURRENCYCODE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETCURRENCYCODE</strong>(any currencyCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currencyCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXPERATIONMONTHOPTIONS()"><!-- --></a>
+	<h3>SETEXPERATIONMONTHOPTIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETEXPERATIONMONTHOPTIONS</strong>(any experationMonthOptions)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>experationMonthOptions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXPIRATIONDATE()"><!-- --></a>
+	<h3>SETEXPIRATIONDATE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETEXPIRATIONDATE</strong>(any expirationDate)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>expirationDate</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXPIRATIONMONTH()"><!-- --></a>
+	<h3>SETEXPIRATIONMONTH</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETEXPIRATIONMONTH</strong>(any expirationMonth)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>expirationMonth</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXPIRATIONYEAR()"><!-- --></a>
+	<h3>SETEXPIRATIONYEAR</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETEXPIRATIONYEAR</strong>(any expirationYear)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>expirationYear</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXPIRATIONYEAROPTIONS()"><!-- --></a>
+	<h3>SETEXPIRATIONYEAROPTIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETEXPIRATIONYEAROPTIONS</strong>(any expirationYearOptions)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>expirationYearOptions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETGIFTCARDNUMBER()"><!-- --></a>
+	<h3>SETGIFTCARDNUMBER</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETGIFTCARDNUMBER</strong>(any giftCardNumber)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>giftCardNumber</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETGIFTCARDNUMBERENCRYPTED()"><!-- --></a>
+	<h3>SETGIFTCARDNUMBERENCRYPTED</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETGIFTCARDNUMBERENCRYPTED</strong>(any giftCardNumberEncrypted)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>giftCardNumberEncrypted</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMODIFIEDBYACCOUNT()"><!-- --></a>
+	<h3>SETMODIFIEDBYACCOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETMODIFIEDBYACCOUNT</strong>(any modifiedByAccount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>modifiedByAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETMODIFIEDDATETIME()"><!-- --></a>
+	<h3>SETMODIFIEDDATETIME</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETMODIFIEDDATETIME</strong>(any modifiedDateTime)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>modifiedDateTime</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETNAMEONCREDITCARD()"><!-- --></a>
+	<h3>SETNAMEONCREDITCARD</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETNAMEONCREDITCARD</strong>(any nameOnCreditCard)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>nameOnCreditCard</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORIGINALAUTHORIZATIONCODE()"><!-- --></a>
+	<h3>SETORIGINALAUTHORIZATIONCODE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETORIGINALAUTHORIZATIONCODE</strong>(any originalAuthorizationCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalAuthorizationCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</strong>(any originalAuthorizationProviderTransactionID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalAuthorizationProviderTransactionID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORIGINALCHARGEPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>SETORIGINALCHARGEPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETORIGINALCHARGEPROVIDERTRANSACTIONID</strong>(any originalChargeProviderTransactionID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalChargeProviderTransactionID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORIGINALPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>SETORIGINALPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETORIGINALPROVIDERTRANSACTIONID</strong>(any originalProviderTransactionID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalProviderTransactionID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPAYMENTMETHOD()"><!-- --></a>
+	<h3>SETPAYMENTMETHOD</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETPAYMENTMETHOD</strong>(any paymentMethod)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>paymentMethod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPAYMENTMETHODTYPE()"><!-- --></a>
+	<h3>SETPAYMENTMETHODTYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETPAYMENTMETHODTYPE</strong>(any paymentMethodType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>paymentMethodType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPAYMENTTRANSACTIONS()"><!-- --></a>
+	<h3>SETPAYMENTTRANSACTIONS</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETPAYMENTTRANSACTIONS</strong>(array paymentTransactions)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>paymentTransactions</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPROVIDERTOKEN()"><!-- --></a>
+	<h3>SETPROVIDERTOKEN</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETPROVIDERTOKEN</strong>(any providerToken)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>providerToken</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETREMOTEID()"><!-- --></a>
+	<h3>SETREMOTEID</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETREMOTEID</strong>(any remoteID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>remoteID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSECURITYCODE()"><!-- --></a>
+	<h3>SETSECURITYCODE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/entity/AccountPayment.html" title="class in slatwall.model.entity">AccountPayment</a> <strong>SETSECURITYCODE</strong>(any securityCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>securityCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addAttributeValue()"><!-- --></a>
+	<h3>addAttributeValue</h3>
+	
+	<kbd>public void <strong>addAttributeValue</strong>(any attributeValue)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValue</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="addPaymentTransaction()"><!-- --></a>
+	<h3>addPaymentTransaction</h3>
+	
+	<kbd>public void <strong>addPaymentTransaction</strong>(any paymentTransaction)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>paymentTransaction</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="copyFromAccountPaymentMethod()"><!-- --></a>
+	<h3>copyFromAccountPaymentMethod</h3>
+	
+	<kbd>public void <strong>copyFromAccountPaymentMethod</strong>(any accountPaymentMethod)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPaymentMethod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAmountAuthorized()"><!-- --></a>
+	<h3>getAmountAuthorized</h3>
+	
+	<kbd>public numeric <strong>getAmountAuthorized</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAmountCredited()"><!-- --></a>
+	<h3>getAmountCredited</h3>
+	
+	<kbd>public numeric <strong>getAmountCredited</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAmountReceived()"><!-- --></a>
+	<h3>getAmountReceived</h3>
+	
+	<kbd>public numeric <strong>getAmountReceived</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAmountUnassigned()"><!-- --></a>
+	<h3>getAmountUnassigned</h3>
+	
+	<kbd>public numeric <strong>getAmountUnassigned</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAmountUnauthorized()"><!-- --></a>
+	<h3>getAmountUnauthorized</h3>
+	
+	<kbd>public numeric <strong>getAmountUnauthorized</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAmountUncaptured()"><!-- --></a>
+	<h3>getAmountUncaptured</h3>
+	
+	<kbd>public numeric <strong>getAmountUncaptured</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAmountUncredited()"><!-- --></a>
+	<h3>getAmountUncredited</h3>
+	
+	<kbd>public numeric <strong>getAmountUncredited</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getAmountUnreceived()"><!-- --></a>
+	<h3>getAmountUnreceived</h3>
+	
+	<kbd>public numeric <strong>getAmountUnreceived</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getBillingAddress()"><!-- --></a>
+	<h3>getBillingAddress</h3>
+	
+	<kbd>public any <strong>getBillingAddress</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCreditCardOrProviderTokenExistsFlag()"><!-- --></a>
+	<h3>getCreditCardOrProviderTokenExistsFlag</h3>
+	
+	<kbd>public boolean <strong>getCreditCardOrProviderTokenExistsFlag</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrencyCode()"><!-- --></a>
+	<h3>getCurrencyCode</h3>
+	
+	<kbd>public any <strong>getCurrencyCode</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getExpirationMonthOptions()"><!-- --></a>
+	<h3>getExpirationMonthOptions</h3>
+	
+	<kbd>public array <strong>getExpirationMonthOptions</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getExpirationYearOptions()"><!-- --></a>
+	<h3>getExpirationYearOptions</h3>
+	
+	<kbd>public array <strong>getExpirationYearOptions</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getOriginalAuthorizationCode()"><!-- --></a>
+	<h3>getOriginalAuthorizationCode</h3>
+	
+	<kbd>public any <strong>getOriginalAuthorizationCode</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getOriginalAuthorizationProviderTransactionID()"><!-- --></a>
+	<h3>getOriginalAuthorizationProviderTransactionID</h3>
+	
+	<kbd>public any <strong>getOriginalAuthorizationProviderTransactionID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getOriginalChargeProviderTransactionID()"><!-- --></a>
+	<h3>getOriginalChargeProviderTransactionID</h3>
+	
+	<kbd>public any <strong>getOriginalChargeProviderTransactionID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getOriginalProviderTransactionID()"><!-- --></a>
+	<h3>getOriginalProviderTransactionID</h3>
+	
+	<kbd>public any <strong>getOriginalProviderTransactionID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPaymentMethodOptions()"><!-- --></a>
+	<h3>getPaymentMethodOptions</h3>
+	
+	<kbd>public any <strong>getPaymentMethodOptions</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPaymentMethodType()"><!-- --></a>
+	<h3>getPaymentMethodType</h3>
+	
+	<kbd>public string <strong>getPaymentMethodType</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSimpleRepresentation()"><!-- --></a>
+	<h3>getSimpleRepresentation</h3>
+	
+	<kbd>public any <strong>getSimpleRepresentation</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiEntity.html#getSimpleRepresentation()">getSimpleRepresentation</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiEntity.html" title="class in slatwall.org.Hibachi">HibachiEntity</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeAccount()"><!-- --></a>
+	<h3>removeAccount</h3>
+	
+	<kbd>public void <strong>removeAccount</strong>([any account])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>account</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removeAttributeValue()"><!-- --></a>
+	<h3>removeAttributeValue</h3>
+	
+	<kbd>public void <strong>removeAttributeValue</strong>(any attributeValue)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>attributeValue</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="removePaymentTransaction()"><!-- --></a>
+	<h3>removePaymentTransaction</h3>
+	
+	<kbd>public void <strong>removePaymentTransaction</strong>(any paymentTransaction)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>paymentTransaction</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setAccount()"><!-- --></a>
+	<h3>setAccount</h3>
+	
+	<kbd>public void <strong>setAccount</strong>(any account)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>account</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setCreditCardNumber()"><!-- --></a>
+	<h3>setCreditCardNumber</h3>
+	
+	<kbd>public void <strong>setCreditCardNumber</strong>(string creditCardNumber)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>creditCardNumber</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

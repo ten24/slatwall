@@ -1,0 +1,2345 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>HibachiScope</title>
+	<meta name="keywords" content="slatwall.model.transient.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/model/transient/HibachiScope.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.model.transient"><span class="label label-success">slatwall.model.transient</span></a>
+</div>
+
+<h2>
+
+Class
+HibachiScope</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a>
+                <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiScope.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiScope</a>
+                    <img src="../../../resources/inherit.gif" alt="extended by ">slatwall.model.transient.HibachiScope
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				output 
+				: false 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#brand()">brand</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#cart()">cart</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#content()">content</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#currentAccount()">currentAccount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#currentBrand()">currentBrand</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#currentCart()">currentCart</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#currentContent()">currentContent</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#currentProduct()">currentProduct</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#currentProductSmartList()">currentProductSmartList</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#currentProductType()">currentProductType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#emailQueue()">emailQueue</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#product()">product</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#productSmartList()">productSmartList</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#productType()">productType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#site()">site</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETBRAND()">SETBRAND</A></strong>(any brand)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCART()">SETCART</A></strong>(any cart)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCONTENT()">SETCONTENT</A></strong>(any content)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCURRENTACCOUNT()">SETCURRENTACCOUNT</A></strong>(any currentAccount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCURRENTBRAND()">SETCURRENTBRAND</A></strong>(any currentBrand)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCURRENTCART()">SETCURRENTCART</A></strong>(any currentCart)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCURRENTCONTENT()">SETCURRENTCONTENT</A></strong>(any currentContent)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCURRENTPRODUCT()">SETCURRENTPRODUCT</A></strong>(any currentProduct)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCURRENTPRODUCTSMARTLIST()">SETCURRENTPRODUCTSMARTLIST</A></strong>(any currentProductSmartList)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETCURRENTPRODUCTTYPE()">SETCURRENTPRODUCTTYPE</A></strong>(any currentProductType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETEMAILQUEUE()">SETEMAILQUEUE</A></strong>(array emailQueue)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETPRODUCT()">SETPRODUCT</A></strong>(any product)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETPRODUCTSMARTLIST()">SETPRODUCTSMARTLIST</A></strong>(any productSmartList)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETPRODUCTTYPE()">SETPRODUCTTYPE</A></strong>(any productType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#SETSITE()">SETSITE</A></strong>(any site)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#clearEmailAndPrintQueue()">clearEmailAndPrintQueue</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#clearPrintQueue()">clearPrintQueue</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getBaseImageURL()">getBaseImageURL</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getBrand()">getBrand</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCart()">getCart</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getContent()">getContent</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCurrentAccount()">getCurrentAccount</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCurrentBrand()">getCurrentBrand</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCurrentCart()">getCurrentCart</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCurrentContent()">getCurrentContent</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCurrentProduct()">getCurrentProduct</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCurrentProductSmartList()">getCurrentProductSmartList</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCurrentProductType()">getCurrentProductType</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getCurrentSession()">getCurrentSession</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getEmailQueue()">getEmailQueue</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>array</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getPrintQueue()">getPrintQueue</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getProduct()">getProduct</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getProductList()">getProductList</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getProductSmartList()">getProductSmartList</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getProductType()">getProductType</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getResizedImage()">getResizedImage</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getResizedImagePath()">getResizedImagePath</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getSettingDetails()">getSettingDetails</A></strong>(any settingName, [array filterEntities='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getSite()">getSite</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getSlatwallRootDirectory()">getSlatwallRootDirectory</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getSlatwallRootPath()">getSlatwallRootPath</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#getSlatwallRootURL()">getSlatwallRootURL</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#onMissingMethod()">onMissingMethod</A></strong>(string missingMethodName, struct missingMethodArguments)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#renderJSObject()">renderJSObject</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#sessionFacade()">sessionFacade</A></strong>([string property], [string value])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiScope.html#setting()">setting</A></strong>(string settingName, [array filterEntities='[runtime expression]'], [any formatValue='false'])
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiScope"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiScope.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiScope</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#GETCALLEDACTIONS()">GETCALLEDACTIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#GETFAILUREACTIONS()">GETFAILUREACTIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#GETORMHASERRORS()">GETORMHASERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#GETPUBLICPOPULATEFLAG()">GETPUBLICPOPULATEFLAG</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#GETRBLOCALE()">GETRBLOCALE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#GETSUCESSFULACTIONS()">GETSUCESSFULACTIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETACCOUNT()">SETACCOUNT</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETCALLEDACTIONS()">SETCALLEDACTIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETFAILUREACTIONS()">SETFAILUREACTIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETLOGGEDINASADMINFLAG()">SETLOGGEDINASADMINFLAG</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETLOGGEDINFLAG()">SETLOGGEDINFLAG</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETORMHASERRORS()">SETORMHASERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETPUBLICPOPULATEFLAG()">SETPUBLICPOPULATEFLAG</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETRBLOCALE()">SETRBLOCALE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETSESSION()">SETSESSION</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETSUCESSFULACTIONS()">SETSUCESSFULACTIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#SETURL()">SETURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#addActionResult()">addActionResult</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#authenticateAction()">authenticateAction</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#authenticateEntity()">authenticateEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#authenticateEntityProperty()">authenticateEntityProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#deleteEntity()">deleteEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#doAction()">doAction</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#flushORMSession()">flushORMSession</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#getAccount()">getAccount</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#getEntity()">getEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#getLoggedInAsAdminFlag()">getLoggedInAsAdminFlag</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#getLoggedInFlag()">getLoggedInFlag</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#getSession()">getSession</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#getSmartList()">getSmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#getURL()">getURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#getValue()">getValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#hasFailureAction()">hasFailureAction</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#hasSuccessfulAction()">hasSuccessfulAction</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#hasValue()">hasValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#init()">init</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#newEntity()">newEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#rbKey()">rbKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#saveEntity()">saveEntity</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#setValue()">setValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#showMessage()">showMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#showMessageKey()">showMessageKey</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#GETPOPULATEDSUBPROPERTIES()">GETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIERRORS()">SETHIBACHIERRORS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIMESSAGES()">SETHIBACHIMESSAGES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETPOPULATEDSUBPROPERTIES()">SETPOPULATEDSUBPROPERTIES</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETVALIDATIONS()">SETVALIDATIONS</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#_setProperty()">_setProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addError()">addError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addErrors()">addErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#addMessage()">addMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#afterPopulate()">afterPopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#beforePopulate()">beforePopulate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllErrorsHTML()">getAllErrorsHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllMessagesHTML()">getAllMessagesHTML</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getError()">getError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getErrors()">getErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFieldTypeByPropertyIdentifier()">getFieldTypeByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFormattedValue()">getFormattedValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiErrors()">getHibachiErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiMessages()">getHibachiMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getLastObjectByPropertyIdentifier()">getLastObjectByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getMessages()">getMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getProperties()">getProperties</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertiesStruct()">getPropertiesStruct</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldName()">getPropertyFieldName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldType()">getPropertyFieldType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFormatType()">getPropertyFormatType</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyHint()">getPropertyHint</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyMetaData()">getPropertyMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertySessionDefault()">getPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyTitle()">getPropertyTitle</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyValidationClass()">getPropertyValidationClass</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getTitleByPropertyIdentifier()">getTitleByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValidations()">getValidations</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValueByPropertyIdentifier()">getValueByPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasError()">hasError</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasErrors()">hasErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessage()">hasMessage</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessages()">hasMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasProperty()">hasProperty</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#populate()">populate</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#setPropertySessionDefault()">setPropertySessionDefault</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrors()">showErrors</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrorsAndMessages()">showErrorsAndMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#showMessages()">showMessages</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#stringReplace()">stringReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiTransient.html#validate()">validate</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="brand()"><!-- --></a>
+		<h3>brand</h3>
+
+		<kbd>
+			property any <strong>brand</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="cart()"><!-- --></a>
+		<h3>cart</h3>
+
+		<kbd>
+			property any <strong>cart</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="content()"><!-- --></a>
+		<h3>content</h3>
+
+		<kbd>
+			property any <strong>content</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentAccount()"><!-- --></a>
+		<h3>currentAccount</h3>
+
+		<kbd>
+			property any <strong>currentAccount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentBrand()"><!-- --></a>
+		<h3>currentBrand</h3>
+
+		<kbd>
+			property any <strong>currentBrand</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentCart()"><!-- --></a>
+		<h3>currentCart</h3>
+
+		<kbd>
+			property any <strong>currentCart</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentContent()"><!-- --></a>
+		<h3>currentContent</h3>
+
+		<kbd>
+			property any <strong>currentContent</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentProduct()"><!-- --></a>
+		<h3>currentProduct</h3>
+
+		<kbd>
+			property any <strong>currentProduct</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentProductSmartList()"><!-- --></a>
+		<h3>currentProductSmartList</h3>
+
+		<kbd>
+			property any <strong>currentProductSmartList</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="currentProductType()"><!-- --></a>
+		<h3>currentProductType</h3>
+
+		<kbd>
+			property any <strong>currentProductType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="emailQueue()"><!-- --></a>
+		<h3>emailQueue</h3>
+
+		<kbd>
+			property array <strong>emailQueue</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="product()"><!-- --></a>
+		<h3>product</h3>
+
+		<kbd>
+			property any <strong>product</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="productSmartList()"><!-- --></a>
+		<h3>productSmartList</h3>
+
+		<kbd>
+			property any <strong>productSmartList</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="productType()"><!-- --></a>
+		<h3>productType</h3>
+
+		<kbd>
+			property any <strong>productType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="site()"><!-- --></a>
+		<h3>site</h3>
+
+		<kbd>
+			property any <strong>site</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="SETBRAND()"><!-- --></a>
+	<h3>SETBRAND</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETBRAND</strong>(any brand)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>brand</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCART()"><!-- --></a>
+	<h3>SETCART</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCART</strong>(any cart)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>cart</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCONTENT()"><!-- --></a>
+	<h3>SETCONTENT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCONTENT</strong>(any content)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>content</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTACCOUNT()"><!-- --></a>
+	<h3>SETCURRENTACCOUNT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCURRENTACCOUNT</strong>(any currentAccount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTBRAND()"><!-- --></a>
+	<h3>SETCURRENTBRAND</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCURRENTBRAND</strong>(any currentBrand)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentBrand</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTCART()"><!-- --></a>
+	<h3>SETCURRENTCART</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCURRENTCART</strong>(any currentCart)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentCart</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTCONTENT()"><!-- --></a>
+	<h3>SETCURRENTCONTENT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCURRENTCONTENT</strong>(any currentContent)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentContent</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTPRODUCT()"><!-- --></a>
+	<h3>SETCURRENTPRODUCT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCURRENTPRODUCT</strong>(any currentProduct)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentProduct</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTPRODUCTSMARTLIST()"><!-- --></a>
+	<h3>SETCURRENTPRODUCTSMARTLIST</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCURRENTPRODUCTSMARTLIST</strong>(any currentProductSmartList)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentProductSmartList</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCURRENTPRODUCTTYPE()"><!-- --></a>
+	<h3>SETCURRENTPRODUCTTYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETCURRENTPRODUCTTYPE</strong>(any currentProductType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>currentProductType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEMAILQUEUE()"><!-- --></a>
+	<h3>SETEMAILQUEUE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETEMAILQUEUE</strong>(array emailQueue)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>emailQueue</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPRODUCT()"><!-- --></a>
+	<h3>SETPRODUCT</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETPRODUCT</strong>(any product)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>product</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPRODUCTSMARTLIST()"><!-- --></a>
+	<h3>SETPRODUCTSMARTLIST</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETPRODUCTSMARTLIST</strong>(any productSmartList)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productSmartList</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPRODUCTTYPE()"><!-- --></a>
+	<h3>SETPRODUCTTYPE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETPRODUCTTYPE</strong>(any productType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>productType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSITE()"><!-- --></a>
+	<h3>SETSITE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/transient/HibachiScope.html" title="class in slatwall.model.transient">HibachiScope</a> <strong>SETSITE</strong>(any site)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>site</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="clearEmailAndPrintQueue()"><!-- --></a>
+	<h3>clearEmailAndPrintQueue</h3>
+	
+	<kbd>public void <strong>clearEmailAndPrintQueue</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="clearPrintQueue()"><!-- --></a>
+	<h3>clearPrintQueue</h3>
+	
+	<kbd>public void <strong>clearPrintQueue</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getBaseImageURL()"><!-- --></a>
+	<h3>getBaseImageURL</h3>
+	
+	<kbd>public string <strong>getBaseImageURL</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getBrand()"><!-- --></a>
+	<h3>getBrand</h3>
+	
+	<kbd>public any <strong>getBrand</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCart()"><!-- --></a>
+	<h3>getCart</h3>
+	
+	<kbd>public any <strong>getCart</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getContent()"><!-- --></a>
+	<h3>getContent</h3>
+	
+	<kbd>public any <strong>getContent</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentAccount()"><!-- --></a>
+	<h3>getCurrentAccount</h3>
+	
+	<kbd>public any <strong>getCurrentAccount</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentBrand()"><!-- --></a>
+	<h3>getCurrentBrand</h3>
+	
+	<kbd>public any <strong>getCurrentBrand</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentCart()"><!-- --></a>
+	<h3>getCurrentCart</h3>
+	
+	<kbd>public any <strong>getCurrentCart</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentContent()"><!-- --></a>
+	<h3>getCurrentContent</h3>
+	
+	<kbd>public any <strong>getCurrentContent</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentProduct()"><!-- --></a>
+	<h3>getCurrentProduct</h3>
+	
+	<kbd>public any <strong>getCurrentProduct</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentProductSmartList()"><!-- --></a>
+	<h3>getCurrentProductSmartList</h3>
+	
+	<kbd>public any <strong>getCurrentProductSmartList</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentProductType()"><!-- --></a>
+	<h3>getCurrentProductType</h3>
+	
+	<kbd>public any <strong>getCurrentProductType</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentSession()"><!-- --></a>
+	<h3>getCurrentSession</h3>
+	
+	<kbd>public any <strong>getCurrentSession</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getEmailQueue()"><!-- --></a>
+	<h3>getEmailQueue</h3>
+	
+	<kbd>public array <strong>getEmailQueue</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPrintQueue()"><!-- --></a>
+	<h3>getPrintQueue</h3>
+	
+	<kbd>public array <strong>getPrintQueue</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getProduct()"><!-- --></a>
+	<h3>getProduct</h3>
+	
+	<kbd>public any <strong>getProduct</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getProductList()"><!-- --></a>
+	<h3>getProductList</h3>
+	
+	<kbd>public any <strong>getProductList</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getProductSmartList()"><!-- --></a>
+	<h3>getProductSmartList</h3>
+	
+	<kbd>public any <strong>getProductSmartList</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getProductType()"><!-- --></a>
+	<h3>getProductType</h3>
+	
+	<kbd>public any <strong>getProductType</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getResizedImage()"><!-- --></a>
+	<h3>getResizedImage</h3>
+	
+	<kbd>public string <strong>getResizedImage</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getResizedImagePath()"><!-- --></a>
+	<h3>getResizedImagePath</h3>
+	
+	<kbd>public string <strong>getResizedImagePath</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSettingDetails()"><!-- --></a>
+	<h3>getSettingDetails</h3>
+	
+	<kbd>public struct <strong>getSettingDetails</strong>(any settingName, [array filterEntities='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>settingName</code></dd>
+		
+		<dd><code>filterEntities</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSite()"><!-- --></a>
+	<h3>getSite</h3>
+	
+	<kbd>public any <strong>getSite</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSlatwallRootDirectory()"><!-- --></a>
+	<h3>getSlatwallRootDirectory</h3>
+	
+	<kbd>public string <strong>getSlatwallRootDirectory</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSlatwallRootPath()"><!-- --></a>
+	<h3>getSlatwallRootPath</h3>
+	
+	<kbd>public any <strong>getSlatwallRootPath</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSlatwallRootURL()"><!-- --></a>
+	<h3>getSlatwallRootURL</h3>
+	
+	<kbd>public any <strong>getSlatwallRootURL</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="onMissingMethod()"><!-- --></a>
+	<h3>onMissingMethod</h3>
+	
+	<kbd>public any <strong>onMissingMethod</strong>(string missingMethodName, struct missingMethodArguments)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>missingMethodName</code></dd>
+		
+		<dd><code>missingMethodArguments</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="renderJSObject()"><!-- --></a>
+	<h3>renderJSObject</h3>
+	
+	<kbd>public string <strong>renderJSObject</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//Slatwall/org/Hibachi/HibachiScope.html#renderJSObject()">renderJSObject</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/HibachiScope.html" title="class in slatwall.org.Hibachi">HibachiScope</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="sessionFacade()"><!-- --></a>
+	<h3>sessionFacade</h3>
+	
+	<kbd>public any <strong>sessionFacade</strong>([string property], [string value])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>property</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setting()"><!-- --></a>
+	<h3>setting</h3>
+	
+	<kbd>public any <strong>setting</strong>(string settingName, [array filterEntities='[runtime expression]'], [any formatValue='false'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>settingName</code></dd>
+		
+		<dd><code>filterEntities</code></dd>
+		
+		<dd><code>formatValue</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

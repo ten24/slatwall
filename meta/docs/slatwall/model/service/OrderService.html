@@ -1,0 +1,3235 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>OrderService</title>
+	<meta name="keywords" content="slatwall.model.service.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/model/service/OrderService.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.model.service"><span class="label label-success">slatwall.model.service</span></a>
+</div>
+
+<h2>
+
+Class
+OrderService</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/HibachiService.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiService</a>
+                <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/model/service/HibachiService.html" title="class in slatwall.model.service">slatwall.model.service.HibachiService</a>
+                    <img src="../../../resources/inherit.gif" alt="extended by ">slatwall.model.service.OrderService
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				output 
+				: false 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				persistent 
+				: false 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#accountService()">accountService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#addressService()">addressService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#commentService()">commentService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#emailService()">emailService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#fulfillmentService()">fulfillmentService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#locationService()">locationService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#orderDAO()">orderDAO</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#paymentService()">paymentService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#priceGroupService()">priceGroupService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#promotionService()">promotionService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#settingService()">settingService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#shippingService()">shippingService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#skuService()">skuService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#stockService()">stockService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#subscriptionService()">subscriptionService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#taxService()">taxService</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETACCOUNTSERVICE()">GETACCOUNTSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETADDRESSSERVICE()">GETADDRESSSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETCOMMENTSERVICE()">GETCOMMENTSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETEMAILSERVICE()">GETEMAILSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETFULFILLMENTSERVICE()">GETFULFILLMENTSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETLOCATIONSERVICE()">GETLOCATIONSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETORDERDAO()">GETORDERDAO</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETPAYMENTSERVICE()">GETPAYMENTSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETPRICEGROUPSERVICE()">GETPRICEGROUPSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETPROMOTIONSERVICE()">GETPROMOTIONSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETSETTINGSERVICE()">GETSETTINGSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETSHIPPINGSERVICE()">GETSHIPPINGSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETSKUSERVICE()">GETSKUSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETSTOCKSERVICE()">GETSTOCKSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETSUBSCRIPTIONSERVICE()">GETSUBSCRIPTIONSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#GETTAXSERVICE()">GETTAXSERVICE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETACCOUNTSERVICE()">SETACCOUNTSERVICE</A></strong>(any accountService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETADDRESSSERVICE()">SETADDRESSSERVICE</A></strong>(any addressService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETCOMMENTSERVICE()">SETCOMMENTSERVICE</A></strong>(any commentService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETEMAILSERVICE()">SETEMAILSERVICE</A></strong>(any emailService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETFULFILLMENTSERVICE()">SETFULFILLMENTSERVICE</A></strong>(any fulfillmentService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETLOCATIONSERVICE()">SETLOCATIONSERVICE</A></strong>(any locationService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETORDERDAO()">SETORDERDAO</A></strong>(any orderDAO)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETPAYMENTSERVICE()">SETPAYMENTSERVICE</A></strong>(any paymentService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETPRICEGROUPSERVICE()">SETPRICEGROUPSERVICE</A></strong>(any priceGroupService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETPROMOTIONSERVICE()">SETPROMOTIONSERVICE</A></strong>(any promotionService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETSETTINGSERVICE()">SETSETTINGSERVICE</A></strong>(any settingService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETSHIPPINGSERVICE()">SETSHIPPINGSERVICE</A></strong>(any shippingService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETSKUSERVICE()">SETSKUSERVICE</A></strong>(any skuService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETSTOCKSERVICE()">SETSTOCKSERVICE</A></strong>(any stockService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETSUBSCRIPTIONSERVICE()">SETSUBSCRIPTIONSERVICE</A></strong>(any subscriptionService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a></code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#SETTAXSERVICE()">SETTAXSERVICE</A></strong>(any taxService)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#deleteOrder()">deleteOrder</A></strong>(any order)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#deleteOrderItem()">deleteOrderItem</A></strong>(any orderItem)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#duplicateOrderWithNewAccount()">duplicateOrderWithNewAccount</A></strong>(any originalOrder, any newAccount)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#forceItemQuantityUpdate()">forceItemQuantityUpdate</A></strong>(any order, any messageBean)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#getMaxOrderNumber()">getMaxOrderNumber</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#getOrderItemSmartList()">getOrderItemSmartList</A></strong>([struct data='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#getOrderPaymentNonNullAmountTotal()">getOrderPaymentNonNullAmountTotal</A></strong>(string orderID)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#getOrderRequirementsList()">getOrderRequirementsList</A></strong>(any order)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#getOrderSmartList()">getOrderSmartList</A></strong>([struct data='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#getPreviouslyReturnedFulfillmentTotal()">getPreviouslyReturnedFulfillmentTotal</A></strong>(any orderID)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>struct</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#getQuantityPriceSkuAlreadyReturned()">getQuantityPriceSkuAlreadyReturned</A></strong>(any orderID, any skuID)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrderDeliveryItem_setupContentAccess()">processOrderDeliveryItem_setupContentAccess</A></strong>(any orderDeliveryItem)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrderDeliveryItem_setupSubscription()">processOrderDeliveryItem_setupSubscription</A></strong>(any orderDeliveryItem)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrderDelivery_create()">processOrderDelivery_create</A></strong>(any orderDelivery, any processObject, [struct data='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrderFulfillment_manualFulfillmentCharge()">processOrderFulfillment_manualFulfillmentCharge</A></strong>(any orderFulfillment, [struct data='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrderItem_updateStatus()">processOrderItem_updateStatus</A></strong>(any orderItem)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrderPayment_createTransaction()">processOrderPayment_createTransaction</A></strong>(any orderPayment, any processObject)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrderPayment_runPlaceOrderTransaction()">processOrderPayment_runPlaceOrderTransaction</A></strong>(any orderPayment)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrderReturn_receive()">processOrderReturn_receive</A></strong>(any orderReturn, any processObject)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_addOrderItem()">processOrder_addOrderItem</A></strong>(any order, any processObject)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_addOrderPayment()">processOrder_addOrderPayment</A></strong>(any order, any processObject)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_addPromotionCode()">processOrder_addPromotionCode</A></strong>(any order, any processObject)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_cancelOrder()">processOrder_cancelOrder</A></strong>(any order, [struct data='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_clear()">processOrder_clear</A></strong>(any order)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_create()">processOrder_create</A></strong>(any order, any processObject, struct data='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_createReturn()">processOrder_createReturn</A></strong>(any order, any processObject)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_placeOnHold()">processOrder_placeOnHold</A></strong>(any order, [struct data='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_placeOrder()">processOrder_placeOrder</A></strong>(any order, struct data)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_removeOrderItem()">processOrder_removeOrderItem</A></strong>(any order, struct data)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_removeOrderPayment()">processOrder_removeOrderPayment</A></strong>(any order, struct data)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_removePromotionCode()">processOrder_removePromotionCode</A></strong>(any order, struct data)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_takeOffHold()">processOrder_takeOffHold</A></strong>(any order, [struct data='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#processOrder_updateStatus()">processOrder_updateStatus</A></strong>(any order, [struct data])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#recalculateOrderAmounts()">recalculateOrderAmounts</A></strong>(any order)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#saveOrder()">saveOrder</A></strong>(any order, [struct data='[runtime expression]'], [string context='save'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#saveOrderFulfillment()">saveOrderFulfillment</A></strong>(any orderFulfillment, [struct data='[runtime expression]'], [string context='save'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#saveOrderItem()">saveOrderItem</A></strong>(any orderItem, [struct data='[runtime expression]'], [string context='save'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="OrderService.html#saveOrderPayment()">saveOrderPayment</A></strong>(any orderPayment, [struct data='[runtime expression]'], [string context='save'])
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.model.service.HibachiService"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/model/service/HibachiService.html" title="class in slatwall.model.service">slatwall.model.service.HibachiService</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/model/service/HibachiService.html#delete()">delete</a>, <a href="../../..//Slatwall/model/service/HibachiService.html#getEntityHasAttributeByEntityName()">getEntityHasAttributeByEntityName</a>, <a href="../../..//Slatwall/model/service/HibachiService.html#getHasAttributeByEntityNameAndPropertyIdentifier()">getHasAttributeByEntityNameAndPropertyIdentifier</a>, <a href="../../..//Slatwall/model/service/HibachiService.html#getSlatwallScope()">getSlatwallScope</a>, <a href="../../..//Slatwall/model/service/HibachiService.html#save()">save</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiService"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiService.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiService</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiService.html#GETHIBACHIAUTHENTICATIONSERVICE()">GETHIBACHIAUTHENTICATIONSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#GETHIBACHIDAO()">GETHIBACHIDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#GETHIBACHIEVENTSERVICE()">GETHIBACHIEVENTSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#GETHIBACHIRBSERVICE()">GETHIBACHIRBSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#GETHIBACHISESSIONSERVICE()">GETHIBACHISESSIONSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#GETHIBACHITAGSERVICE()">GETHIBACHITAGSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#GETHIBACHIUTILITYSERVICE()">GETHIBACHIUTILITYSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#GETHIBACHIVALIDATIONSERVICE()">GETHIBACHIVALIDATIONSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#SETHIBACHIAUTHENTICATIONSERVICE()">SETHIBACHIAUTHENTICATIONSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#SETHIBACHIDAO()">SETHIBACHIDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#SETHIBACHIEVENTSERVICE()">SETHIBACHIEVENTSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#SETHIBACHIRBSERVICE()">SETHIBACHIRBSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#SETHIBACHISESSIONSERVICE()">SETHIBACHISESSIONSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#SETHIBACHITAGSERVICE()">SETHIBACHITAGSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#SETHIBACHIUTILITYSERVICE()">SETHIBACHIUTILITYSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#SETHIBACHIVALIDATIONSERVICE()">SETHIBACHIVALIDATIONSERVICE</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#count()">count</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#export()">export</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#get()">get</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getEntitiesMetaData()">getEntitiesMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getEntityHasPropertyByEntityName()">getEntityHasPropertyByEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getEntityMetaData()">getEntityMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getEntityNameIsValidFlag()">getEntityNameIsValidFlag</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getEntityORMMetaDataObject()">getEntityORMMetaDataObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getEntityObject()">getEntityObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getHasPropertyByEntityNameAndPropertyIdentifier()">getHasPropertyByEntityNameAndPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getIdentifierColumnNamesByEntityName()">getIdentifierColumnNamesByEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getLastEntityNameInPropertyIdentifier()">getLastEntityNameInPropertyIdentifier</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getPrimaryIDPropertyNameByEntityName()">getPrimaryIDPropertyNameByEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getProperlyCasedFullClassNameByEntityName()">getProperlyCasedFullClassNameByEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getProperlyCasedFullEntityName()">getProperlyCasedFullEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getProperlyCasedShortEntityName()">getProperlyCasedShortEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getPropertiesByEntityName()">getPropertiesByEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getPropertiesStructByEntityName()">getPropertiesStructByEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getPropertyByEntityNameAndPropertyName()">getPropertyByEntityNameAndPropertyName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getServiceByEntityName()">getServiceByEntityName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getSmartList()">getSmartList</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#getTableTopSortOrder()">getTableTopSortOrder</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#list()">list</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#new()">new</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingCountMethod()">onMissingCountMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingDeleteMethod()">onMissingDeleteMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingExportMethod()">onMissingExportMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingGetMethod()">onMissingGetMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingGetSmartListMethod()">onMissingGetSmartListMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingListMethod()">onMissingListMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingListXXXFilterByYYYMethod()">onMissingListXXXFilterByYYYMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingListXXXFilterByYYYOrderByZZZMethod()">onMissingListXXXFilterByYYYOrderByZZZMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingListXXXMethod()">onMissingListXXXMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingListXXXOrderByZZZMethod()">onMissingListXXXOrderByZZZMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingMethod()">onMissingMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingNewMethod()">onMissingNewMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingProcessMethod()">onMissingProcessMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#onMissingSaveMethod()">onMissingSaveMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#process()">process</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiService.html#updateRecordSortOrder()">updateRecordSortOrder</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#init()">init</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#rbKey()">rbKey</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="accountService()"><!-- --></a>
+		<h3>accountService</h3>
+
+		<kbd>
+			property any <strong>accountService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="addressService()"><!-- --></a>
+		<h3>addressService</h3>
+
+		<kbd>
+			property any <strong>addressService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="commentService()"><!-- --></a>
+		<h3>commentService</h3>
+
+		<kbd>
+			property any <strong>commentService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="emailService()"><!-- --></a>
+		<h3>emailService</h3>
+
+		<kbd>
+			property any <strong>emailService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="fulfillmentService()"><!-- --></a>
+		<h3>fulfillmentService</h3>
+
+		<kbd>
+			property any <strong>fulfillmentService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="locationService()"><!-- --></a>
+		<h3>locationService</h3>
+
+		<kbd>
+			property any <strong>locationService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="orderDAO()"><!-- --></a>
+		<h3>orderDAO</h3>
+
+		<kbd>
+			property any <strong>orderDAO</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="paymentService()"><!-- --></a>
+		<h3>paymentService</h3>
+
+		<kbd>
+			property any <strong>paymentService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="priceGroupService()"><!-- --></a>
+		<h3>priceGroupService</h3>
+
+		<kbd>
+			property any <strong>priceGroupService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="promotionService()"><!-- --></a>
+		<h3>promotionService</h3>
+
+		<kbd>
+			property any <strong>promotionService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="settingService()"><!-- --></a>
+		<h3>settingService</h3>
+
+		<kbd>
+			property any <strong>settingService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="shippingService()"><!-- --></a>
+		<h3>shippingService</h3>
+
+		<kbd>
+			property any <strong>shippingService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="skuService()"><!-- --></a>
+		<h3>skuService</h3>
+
+		<kbd>
+			property any <strong>skuService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="stockService()"><!-- --></a>
+		<h3>stockService</h3>
+
+		<kbd>
+			property any <strong>stockService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="subscriptionService()"><!-- --></a>
+		<h3>subscriptionService</h3>
+
+		<kbd>
+			property any <strong>subscriptionService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="taxService()"><!-- --></a>
+		<h3>taxService</h3>
+
+		<kbd>
+			property any <strong>taxService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="GETACCOUNTSERVICE()"><!-- --></a>
+	<h3>GETACCOUNTSERVICE</h3>
+	
+	<kbd>public any <strong>GETACCOUNTSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETADDRESSSERVICE()"><!-- --></a>
+	<h3>GETADDRESSSERVICE</h3>
+	
+	<kbd>public any <strong>GETADDRESSSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCOMMENTSERVICE()"><!-- --></a>
+	<h3>GETCOMMENTSERVICE</h3>
+	
+	<kbd>public any <strong>GETCOMMENTSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEMAILSERVICE()"><!-- --></a>
+	<h3>GETEMAILSERVICE</h3>
+	
+	<kbd>public any <strong>GETEMAILSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETFULFILLMENTSERVICE()"><!-- --></a>
+	<h3>GETFULFILLMENTSERVICE</h3>
+	
+	<kbd>public any <strong>GETFULFILLMENTSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETLOCATIONSERVICE()"><!-- --></a>
+	<h3>GETLOCATIONSERVICE</h3>
+	
+	<kbd>public any <strong>GETLOCATIONSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORDERDAO()"><!-- --></a>
+	<h3>GETORDERDAO</h3>
+	
+	<kbd>public any <strong>GETORDERDAO</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPAYMENTSERVICE()"><!-- --></a>
+	<h3>GETPAYMENTSERVICE</h3>
+	
+	<kbd>public any <strong>GETPAYMENTSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPRICEGROUPSERVICE()"><!-- --></a>
+	<h3>GETPRICEGROUPSERVICE</h3>
+	
+	<kbd>public any <strong>GETPRICEGROUPSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPROMOTIONSERVICE()"><!-- --></a>
+	<h3>GETPROMOTIONSERVICE</h3>
+	
+	<kbd>public any <strong>GETPROMOTIONSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSETTINGSERVICE()"><!-- --></a>
+	<h3>GETSETTINGSERVICE</h3>
+	
+	<kbd>public any <strong>GETSETTINGSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSHIPPINGSERVICE()"><!-- --></a>
+	<h3>GETSHIPPINGSERVICE</h3>
+	
+	<kbd>public any <strong>GETSHIPPINGSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSKUSERVICE()"><!-- --></a>
+	<h3>GETSKUSERVICE</h3>
+	
+	<kbd>public any <strong>GETSKUSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSTOCKSERVICE()"><!-- --></a>
+	<h3>GETSTOCKSERVICE</h3>
+	
+	<kbd>public any <strong>GETSTOCKSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSUBSCRIPTIONSERVICE()"><!-- --></a>
+	<h3>GETSUBSCRIPTIONSERVICE</h3>
+	
+	<kbd>public any <strong>GETSUBSCRIPTIONSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETTAXSERVICE()"><!-- --></a>
+	<h3>GETTAXSERVICE</h3>
+	
+	<kbd>public any <strong>GETTAXSERVICE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTSERVICE()"><!-- --></a>
+	<h3>SETACCOUNTSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETACCOUNTSERVICE</strong>(any accountService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETADDRESSSERVICE()"><!-- --></a>
+	<h3>SETADDRESSSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETADDRESSSERVICE</strong>(any addressService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>addressService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCOMMENTSERVICE()"><!-- --></a>
+	<h3>SETCOMMENTSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETCOMMENTSERVICE</strong>(any commentService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>commentService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEMAILSERVICE()"><!-- --></a>
+	<h3>SETEMAILSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETEMAILSERVICE</strong>(any emailService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>emailService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETFULFILLMENTSERVICE()"><!-- --></a>
+	<h3>SETFULFILLMENTSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETFULFILLMENTSERVICE</strong>(any fulfillmentService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fulfillmentService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETLOCATIONSERVICE()"><!-- --></a>
+	<h3>SETLOCATIONSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETLOCATIONSERVICE</strong>(any locationService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>locationService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORDERDAO()"><!-- --></a>
+	<h3>SETORDERDAO</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETORDERDAO</strong>(any orderDAO)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderDAO</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPAYMENTSERVICE()"><!-- --></a>
+	<h3>SETPAYMENTSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETPAYMENTSERVICE</strong>(any paymentService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>paymentService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPRICEGROUPSERVICE()"><!-- --></a>
+	<h3>SETPRICEGROUPSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETPRICEGROUPSERVICE</strong>(any priceGroupService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>priceGroupService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPROMOTIONSERVICE()"><!-- --></a>
+	<h3>SETPROMOTIONSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETPROMOTIONSERVICE</strong>(any promotionService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>promotionService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSETTINGSERVICE()"><!-- --></a>
+	<h3>SETSETTINGSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETSETTINGSERVICE</strong>(any settingService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>settingService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSHIPPINGSERVICE()"><!-- --></a>
+	<h3>SETSHIPPINGSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETSHIPPINGSERVICE</strong>(any shippingService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>shippingService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSKUSERVICE()"><!-- --></a>
+	<h3>SETSKUSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETSKUSERVICE</strong>(any skuService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>skuService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSTOCKSERVICE()"><!-- --></a>
+	<h3>SETSTOCKSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETSTOCKSERVICE</strong>(any stockService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>stockService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSUBSCRIPTIONSERVICE()"><!-- --></a>
+	<h3>SETSUBSCRIPTIONSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETSUBSCRIPTIONSERVICE</strong>(any subscriptionService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subscriptionService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETTAXSERVICE()"><!-- --></a>
+	<h3>SETTAXSERVICE</h3>
+	
+	<kbd>public <a href="../../../slatwall/model/service/OrderService.html" title="class in slatwall.model.service">OrderService</a> <strong>SETTAXSERVICE</strong>(any taxService)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>taxService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="deleteOrder()"><!-- --></a>
+	<h3>deleteOrder</h3>
+	
+	<kbd>public any <strong>deleteOrder</strong>(any order)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="deleteOrderItem()"><!-- --></a>
+	<h3>deleteOrderItem</h3>
+	
+	<kbd>public any <strong>deleteOrderItem</strong>(any orderItem)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderItem</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="duplicateOrderWithNewAccount()"><!-- --></a>
+	<h3>duplicateOrderWithNewAccount</h3>
+	
+	<kbd>public any <strong>duplicateOrderWithNewAccount</strong>(any originalOrder, any newAccount)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalOrder</code></dd>
+		
+		<dd><code>newAccount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="forceItemQuantityUpdate()"><!-- --></a>
+	<h3>forceItemQuantityUpdate</h3>
+	
+	<kbd>public any <strong>forceItemQuantityUpdate</strong>(any order, any messageBean)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>messageBean</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getMaxOrderNumber()"><!-- --></a>
+	<h3>getMaxOrderNumber</h3>
+	
+	<kbd>public any <strong>getMaxOrderNumber</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getOrderItemSmartList()"><!-- --></a>
+	<h3>getOrderItemSmartList</h3>
+	
+	<kbd>public any <strong>getOrderItemSmartList</strong>([struct data='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getOrderPaymentNonNullAmountTotal()"><!-- --></a>
+	<h3>getOrderPaymentNonNullAmountTotal</h3>
+	
+	<kbd>public numeric <strong>getOrderPaymentNonNullAmountTotal</strong>(string orderID)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getOrderRequirementsList()"><!-- --></a>
+	<h3>getOrderRequirementsList</h3>
+	
+	<kbd>public string <strong>getOrderRequirementsList</strong>(any order)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getOrderSmartList()"><!-- --></a>
+	<h3>getOrderSmartList</h3>
+	
+	<kbd>public any <strong>getOrderSmartList</strong>([struct data='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getPreviouslyReturnedFulfillmentTotal()"><!-- --></a>
+	<h3>getPreviouslyReturnedFulfillmentTotal</h3>
+	
+	<kbd>public numeric <strong>getPreviouslyReturnedFulfillmentTotal</strong>(any orderID)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getQuantityPriceSkuAlreadyReturned()"><!-- --></a>
+	<h3>getQuantityPriceSkuAlreadyReturned</h3>
+	
+	<kbd>public struct <strong>getQuantityPriceSkuAlreadyReturned</strong>(any orderID, any skuID)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderID</code></dd>
+		
+		<dd><code>skuID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrderDeliveryItem_setupContentAccess()"><!-- --></a>
+	<h3>processOrderDeliveryItem_setupContentAccess</h3>
+	
+	<kbd>public any <strong>processOrderDeliveryItem_setupContentAccess</strong>(any orderDeliveryItem)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderDeliveryItem</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrderDeliveryItem_setupSubscription()"><!-- --></a>
+	<h3>processOrderDeliveryItem_setupSubscription</h3>
+	
+	<kbd>public any <strong>processOrderDeliveryItem_setupSubscription</strong>(any orderDeliveryItem)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderDeliveryItem</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrderDelivery_create()"><!-- --></a>
+	<h3>processOrderDelivery_create</h3>
+	
+	<kbd>public any <strong>processOrderDelivery_create</strong>(any orderDelivery, any processObject, [struct data='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderDelivery</code></dd>
+		
+		<dd><code>processObject</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrderFulfillment_manualFulfillmentCharge()"><!-- --></a>
+	<h3>processOrderFulfillment_manualFulfillmentCharge</h3>
+	
+	<kbd>public any <strong>processOrderFulfillment_manualFulfillmentCharge</strong>(any orderFulfillment, [struct data='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderFulfillment</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrderItem_updateStatus()"><!-- --></a>
+	<h3>processOrderItem_updateStatus</h3>
+	
+	<kbd>public any <strong>processOrderItem_updateStatus</strong>(any orderItem)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderItem</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrderPayment_createTransaction()"><!-- --></a>
+	<h3>processOrderPayment_createTransaction</h3>
+	
+	<kbd>public any <strong>processOrderPayment_createTransaction</strong>(any orderPayment, any processObject)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderPayment</code></dd>
+		
+		<dd><code>processObject</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrderPayment_runPlaceOrderTransaction()"><!-- --></a>
+	<h3>processOrderPayment_runPlaceOrderTransaction</h3>
+	
+	<kbd>public any <strong>processOrderPayment_runPlaceOrderTransaction</strong>(any orderPayment)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderPayment</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrderReturn_receive()"><!-- --></a>
+	<h3>processOrderReturn_receive</h3>
+	
+	<kbd>public any <strong>processOrderReturn_receive</strong>(any orderReturn, any processObject)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderReturn</code></dd>
+		
+		<dd><code>processObject</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_addOrderItem()"><!-- --></a>
+	<h3>processOrder_addOrderItem</h3>
+	
+	<kbd>public any <strong>processOrder_addOrderItem</strong>(any order, any processObject)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>processObject</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_addOrderPayment()"><!-- --></a>
+	<h3>processOrder_addOrderPayment</h3>
+	
+	<kbd>public any <strong>processOrder_addOrderPayment</strong>(any order, any processObject)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>processObject</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_addPromotionCode()"><!-- --></a>
+	<h3>processOrder_addPromotionCode</h3>
+	
+	<kbd>public any <strong>processOrder_addPromotionCode</strong>(any order, any processObject)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>processObject</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_cancelOrder()"><!-- --></a>
+	<h3>processOrder_cancelOrder</h3>
+	
+	<kbd>public any <strong>processOrder_cancelOrder</strong>(any order, [struct data='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_clear()"><!-- --></a>
+	<h3>processOrder_clear</h3>
+	
+	<kbd>public any <strong>processOrder_clear</strong>(any order)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_create()"><!-- --></a>
+	<h3>processOrder_create</h3>
+	
+	<kbd>public any <strong>processOrder_create</strong>(any order, any processObject, struct data='[runtime expression]')</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>processObject</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_createReturn()"><!-- --></a>
+	<h3>processOrder_createReturn</h3>
+	
+	<kbd>public any <strong>processOrder_createReturn</strong>(any order, any processObject)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>processObject</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_placeOnHold()"><!-- --></a>
+	<h3>processOrder_placeOnHold</h3>
+	
+	<kbd>public any <strong>processOrder_placeOnHold</strong>(any order, [struct data='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_placeOrder()"><!-- --></a>
+	<h3>processOrder_placeOrder</h3>
+	
+	<kbd>public any <strong>processOrder_placeOrder</strong>(any order, struct data)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_removeOrderItem()"><!-- --></a>
+	<h3>processOrder_removeOrderItem</h3>
+	
+	<kbd>public any <strong>processOrder_removeOrderItem</strong>(any order, struct data)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_removeOrderPayment()"><!-- --></a>
+	<h3>processOrder_removeOrderPayment</h3>
+	
+	<kbd>public any <strong>processOrder_removeOrderPayment</strong>(any order, struct data)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_removePromotionCode()"><!-- --></a>
+	<h3>processOrder_removePromotionCode</h3>
+	
+	<kbd>public any <strong>processOrder_removePromotionCode</strong>(any order, struct data)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_takeOffHold()"><!-- --></a>
+	<h3>processOrder_takeOffHold</h3>
+	
+	<kbd>public any <strong>processOrder_takeOffHold</strong>(any order, [struct data='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="processOrder_updateStatus()"><!-- --></a>
+	<h3>processOrder_updateStatus</h3>
+	
+	<kbd>public any <strong>processOrder_updateStatus</strong>(any order, [struct data])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="recalculateOrderAmounts()"><!-- --></a>
+	<h3>recalculateOrderAmounts</h3>
+	
+	<kbd>public void <strong>recalculateOrderAmounts</strong>(any order)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="saveOrder()"><!-- --></a>
+	<h3>saveOrder</h3>
+	
+	<kbd>public any <strong>saveOrder</strong>(any order, [struct data='[runtime expression]'], [string context='save'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>order</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		<dd><code>context</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="saveOrderFulfillment()"><!-- --></a>
+	<h3>saveOrderFulfillment</h3>
+	
+	<kbd>public any <strong>saveOrderFulfillment</strong>(any orderFulfillment, [struct data='[runtime expression]'], [string context='save'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderFulfillment</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		<dd><code>context</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="saveOrderItem()"><!-- --></a>
+	<h3>saveOrderItem</h3>
+	
+	<kbd>public any <strong>saveOrderItem</strong>(any orderItem, [struct data='[runtime expression]'], [string context='save'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderItem</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		<dd><code>context</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="saveOrderPayment()"><!-- --></a>
+	<h3>saveOrderPayment</h3>
+	
+	<kbd>public any <strong>saveOrderPayment</strong>(any orderPayment, [struct data='[runtime expression]'], [string context='save'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderPayment</code></dd>
+		
+		<dd><code>data</code></dd>
+		
+		<dd><code>context</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

@@ -1,0 +1,1334 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>HibachiObject</title>
+	<meta name="keywords" content="slatwall.org.Hibachi.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/org/Hibachi/HibachiObject.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.org.Hibachi"><span class="label label-success">slatwall.org.Hibachi</span></a>
+</div>
+
+<h2>
+
+Class
+HibachiObject</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by ">Slatwall.org.Hibachi.HibachiObject
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				output 
+				: false 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				persistent 
+				: false 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Direct Known Subclasses:</strong></div>
+  	<div class="panel-body">
+	
+		<a href="../../..//slatwall/integrationServices/BaseAuthentication.html" title="class in slatwall.org.Hibachi">BaseAuthentication</a>
+	,
+		<a href="../../..//slatwall/integrationServices/BaseIntegration.html" title="class in slatwall.org.Hibachi">BaseIntegration</a>
+	,
+		<a href="../../..//slatwall/integrationServices/BasePayment.html" title="class in slatwall.org.Hibachi">BasePayment</a>
+	,
+		<a href="../../..//slatwall/integrationServices/BaseShipping.html" title="class in slatwall.org.Hibachi">BaseShipping</a>
+	,
+		<a href="../../..//slatwall/model/handler/EventHandler.html" title="class in slatwall.org.Hibachi">EventHandler</a>
+	,
+		<a href="../../..//slatwall/org/Hibachi/HibachiController.html" title="class in slatwall.org.Hibachi">HibachiController</a>
+	,
+		<a href="../../..//slatwall/org/Hibachi/HibachiDAO.html" title="class in slatwall.org.Hibachi">HibachiDAO</a>
+	,
+		<a href="../../..//slatwall/org/Hibachi/HibachiErrors.html" title="class in slatwall.org.Hibachi">HibachiErrors</a>
+	,
+		<a href="../../..//slatwall/org/Hibachi/HibachiMessages.html" title="class in slatwall.org.Hibachi">HibachiMessages</a>
+	,
+		<a href="../../..//slatwall/org/Hibachi/HibachiService.html" title="class in slatwall.org.Hibachi">HibachiService</a>
+	,
+		<a href="../../..//slatwall/org/Hibachi/HibachiSmartList.html" title="class in slatwall.org.Hibachi">HibachiSmartList</a>
+	,
+		<a href="../../..//slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">HibachiTransient</a>
+	
+	</div>
+</div>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#hibachiInstanceApplicationScopeKey()">hibachiInstanceApplicationScopeKey</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">persistent = false</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+	<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+	<a name="constructor_summary"><!-- --></a>
+	<table class="table table-bordered table-hover">
+		<tr class="info">
+			<th align="left" colspan="2">
+				<strong>Constructor Summary</strong>
+			</th>
+		</tr>
+		<tr>
+			
+			<td>
+				<strong><a href="HibachiObject.html#init()">init</A></strong>()
+				<br>
+				
+			</td>
+		</tr>
+	</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">HibachiObject</a></code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</A></strong>(string hibachiInstanceApplicationScopeKey)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#buildURL()">buildURL</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#createHibachiUUID()">createHibachiUUID</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#decryptValue()">decryptValue</A></strong>([string value])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#encryptValue()">encryptValue</A></strong>([string value])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#formatValue()">formatValue</A></strong>(string value, string formatType, [struct formatDetails='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getApplicationValue()">getApplicationValue</A></strong>(any key)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getBaseURL()">getBaseURL</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getBean()">getBean</A></strong>(string beanName)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getBeanFactory()">getBeanFactory</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getClassFullname()">getClassFullname</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getClassName()">getClassName</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getDAO()">getDAO</A></strong>(string daoName)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>private&nbsp;any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getHibachiScope()">getHibachiScope</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getService()">getService</A></strong>(string serviceName)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getSessionValue()">getSessionValue</A></strong>(any key)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getThisMetaData()">getThisMetaData</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getTransient()">getTransient</A></strong>(string transientName)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getURLFromPath()">getURLFromPath</A></strong>(any path)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getVariables()">getVariables</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#hasApplicationValue()">hasApplicationValue</A></strong>(any key)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#hasSessionValue()">hasSessionValue</A></strong>(any key)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#invokeMethod()">invokeMethod</A></strong>(string methodName, [struct methodArguments='[runtime expression]'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#isPersistent()">isPersistent</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#isProcessObject()">isProcessObject</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#logHibachi()">logHibachi</A></strong>(string message, [boolean generalLog='false'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#logHibachiException()">logHibachiException</A></strong>(any exception)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#nullReplace()">nullReplace</A></strong>([any value], any defaultValue)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#rbKey()">rbKey</A></strong>(string key)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#setApplicationValue()">setApplicationValue</A></strong>(any key, any value)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="HibachiObject.html#setSessionValue()">setSessionValue</A></strong>(any key, any value)
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+	<a name="constructor_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Constructor Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	<a name="init()"><!-- --></a><h3>
+	init</h3>
+	<kbd>public <strong>init</strong>()</kbd>
+
+	<br><br>
+
+	
+	<hr>
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="hibachiInstanceApplicationScopeKey()"><!-- --></a>
+		<h3>hibachiInstanceApplicationScopeKey</h3>
+
+		<kbd>
+			property string <strong>hibachiInstanceApplicationScopeKey</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>persistent</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()"><!-- --></a>
+	<h3>SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</h3>
+	
+	<kbd>public <a href="../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">HibachiObject</a> <strong>SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</strong>(string hibachiInstanceApplicationScopeKey)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>hibachiInstanceApplicationScopeKey</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="buildURL()"><!-- --></a>
+	<h3>buildURL</h3>
+	
+	<kbd>public string <strong>buildURL</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="createHibachiUUID()"><!-- --></a>
+	<h3>createHibachiUUID</h3>
+	
+	<kbd>public string <strong>createHibachiUUID</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="decryptValue()"><!-- --></a>
+	<h3>decryptValue</h3>
+	
+	<kbd>public string <strong>decryptValue</strong>([string value])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>value</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="encryptValue()"><!-- --></a>
+	<h3>encryptValue</h3>
+	
+	<kbd>public string <strong>encryptValue</strong>([string value])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>value</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="formatValue()"><!-- --></a>
+	<h3>formatValue</h3>
+	
+	<kbd>public any <strong>formatValue</strong>(string value, string formatType, [struct formatDetails='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>value</code></dd>
+		
+		<dd><code>formatType</code></dd>
+		
+		<dd><code>formatDetails</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getApplicationValue()"><!-- --></a>
+	<h3>getApplicationValue</h3>
+	
+	<kbd>public any <strong>getApplicationValue</strong>(any key)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>key</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getBaseURL()"><!-- --></a>
+	<h3>getBaseURL</h3>
+	
+	<kbd>public string <strong>getBaseURL</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getBean()"><!-- --></a>
+	<h3>getBean</h3>
+	
+	<kbd>public any <strong>getBean</strong>(string beanName)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>beanName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getBeanFactory()"><!-- --></a>
+	<h3>getBeanFactory</h3>
+	
+	<kbd>public any <strong>getBeanFactory</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getClassFullname()"><!-- --></a>
+	<h3>getClassFullname</h3>
+	
+	<kbd>public any <strong>getClassFullname</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getClassName()"><!-- --></a>
+	<h3>getClassName</h3>
+	
+	<kbd>public any <strong>getClassName</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getDAO()"><!-- --></a>
+	<h3>getDAO</h3>
+	
+	<kbd>public any <strong>getDAO</strong>(string daoName)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>daoName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHibachiInstanceApplicationScopeKey()"><!-- --></a>
+	<h3>getHibachiInstanceApplicationScopeKey</h3>
+	
+	<kbd>private any <strong>getHibachiInstanceApplicationScopeKey</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHibachiScope()"><!-- --></a>
+	<h3>getHibachiScope</h3>
+	
+	<kbd>public any <strong>getHibachiScope</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHibachiTempDirectory()"><!-- --></a>
+	<h3>getHibachiTempDirectory</h3>
+	
+	<kbd>public string <strong>getHibachiTempDirectory</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getService()"><!-- --></a>
+	<h3>getService</h3>
+	
+	<kbd>public any <strong>getService</strong>(string serviceName)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>serviceName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSessionValue()"><!-- --></a>
+	<h3>getSessionValue</h3>
+	
+	<kbd>public any <strong>getSessionValue</strong>(any key)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>key</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSimpleValuesSerialized()"><!-- --></a>
+	<h3>getSimpleValuesSerialized</h3>
+	
+	<kbd>public string <strong>getSimpleValuesSerialized</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getThisMetaData()"><!-- --></a>
+	<h3>getThisMetaData</h3>
+	
+	<kbd>public any <strong>getThisMetaData</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getTransient()"><!-- --></a>
+	<h3>getTransient</h3>
+	
+	<kbd>public any <strong>getTransient</strong>(string transientName)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>transientName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getURLFromPath()"><!-- --></a>
+	<h3>getURLFromPath</h3>
+	
+	<kbd>public string <strong>getURLFromPath</strong>(any path)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>path</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getVariables()"><!-- --></a>
+	<h3>getVariables</h3>
+	
+	<kbd>public any <strong>getVariables</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getVirtualFileSystemPath()"><!-- --></a>
+	<h3>getVirtualFileSystemPath</h3>
+	
+	<kbd>public any <strong>getVirtualFileSystemPath</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="hasApplicationValue()"><!-- --></a>
+	<h3>hasApplicationValue</h3>
+	
+	<kbd>public boolean <strong>hasApplicationValue</strong>(any key)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>key</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="hasSessionValue()"><!-- --></a>
+	<h3>hasSessionValue</h3>
+	
+	<kbd>public boolean <strong>hasSessionValue</strong>(any key)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>key</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="invokeMethod()"><!-- --></a>
+	<h3>invokeMethod</h3>
+	
+	<kbd>public any <strong>invokeMethod</strong>(string methodName, [struct methodArguments='[runtime expression]'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>methodName</code></dd>
+		
+		<dd><code>methodArguments</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="isPersistent()"><!-- --></a>
+	<h3>isPersistent</h3>
+	
+	<kbd>public any <strong>isPersistent</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="isProcessObject()"><!-- --></a>
+	<h3>isProcessObject</h3>
+	
+	<kbd>public any <strong>isProcessObject</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="logHibachi()"><!-- --></a>
+	<h3>logHibachi</h3>
+	
+	<kbd>public void <strong>logHibachi</strong>(string message, [boolean generalLog='false'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>message</code></dd>
+		
+		<dd><code>generalLog</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="logHibachiException()"><!-- --></a>
+	<h3>logHibachiException</h3>
+	
+	<kbd>public void <strong>logHibachiException</strong>(any exception)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>exception</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="nullReplace()"><!-- --></a>
+	<h3>nullReplace</h3>
+	
+	<kbd>public any <strong>nullReplace</strong>([any value], any defaultValue)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>value</code></dd>
+		
+		<dd><code>defaultValue</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="rbKey()"><!-- --></a>
+	<h3>rbKey</h3>
+	
+	<kbd>public string <strong>rbKey</strong>(string key)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>key</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setApplicationValue()"><!-- --></a>
+	<h3>setApplicationValue</h3>
+	
+	<kbd>public void <strong>setApplicationValue</strong>(any key, any value)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>key</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setSessionValue()"><!-- --></a>
+	<h3>setSessionValue</h3>
+	
+	<kbd>public void <strong>setSessionValue</strong>(any key, any value)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>key</code></dd>
+		
+		<dd><code>value</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

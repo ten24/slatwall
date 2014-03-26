@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Hibachi</title>
+	<meta name="keywords" content="slatwall.org.Hibachi.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../index.html?slatwall/org/Hibachi/Hibachi.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.org.Hibachi"><span class="label label-success">slatwall.org.Hibachi</span></a>
+</div>
+
+<h2>
+
+Class
+Hibachi</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../resources/inherit.gif" alt="extended by "><a href="../../../slatwall/org/Hibachi/FW1/framework.html" title="class in slatwall.org.Hibachi.FW1">slatwall.org.Hibachi.FW1.framework</a>
+            <img src="../../../resources/inherit.gif" alt="extended by ">slatwall.org.Hibachi.Hibachi
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<span class="label label-warning"><em>None</em></span>
+		
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#bootstrap()">bootstrap</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#customizeViewOrLayoutPath()">customizeViewOrLayoutPath</A></strong>([struct pathInfo], [string type], [string fullPath])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#doAction()">doAction</A></strong>(string action)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#endHibachiLifecycle()">endHibachiLifecycle</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#getHibachiScope()">getHibachiScope</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#getSubsystemDirPrefix()">getSubsystemDirPrefix</A></strong>([string subsystem])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#onEveryRequest()">onEveryRequest</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#onFirstRequest()">onFirstRequest</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#onFirstRequestPostUpdate()">onFirstRequestPostUpdate</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#onInternalRequest()">onInternalRequest</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#onUpdateRequest()">onUpdateRequest</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#redirectExact()">redirectExact</A></strong>(string location, [boolean addToken='false'])
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#reloadApplication()">reloadApplication</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#setupGlobalRequest()">setupGlobalRequest</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#setupRequest()">setupRequest</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#setupResponse()">setupResponse</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#setupView()">setupView</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="Hibachi.html#verifyApplicationSetup()">verifyApplicationSetup</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.org.Hibachi.FW1.framework"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../slatwall/org/Hibachi/FW1/framework.html" title="class in slatwall.org.Hibachi.FW1">slatwall.org.Hibachi.FW1.framework</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../..//slatwall/org/Hibachi/FW1/framework.html#abortController()">abortController</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#actionSpecifiesSubsystem()">actionSpecifiesSubsystem</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#addRoute()">addRoute</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#autowire()">autowire</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#buildLayoutQueue()">buildLayoutQueue</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#buildURL()">buildURL</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#buildViewQueue()">buildViewQueue</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#cachedFileExists()">cachedFileExists</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#cfcFilePath()">cfcFilePath</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#controller()">controller</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#doController()">doController</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#doService()">doService</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#dumpException()">dumpException</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#ensureNewFrameworkStructsExist()">ensureNewFrameworkStructsExist</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#failure()">failure</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#findImplicitAndExplicitSetters()">findImplicitAndExplicitSetters</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#frameworkTrace()">frameworkTrace</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#frameworkTraceRender()">frameworkTraceRender</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getAction()">getAction</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getBaseURL()">getBaseURL</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getBeanFactory()">getBeanFactory</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getCachedComponent()">getCachedComponent</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getConfig()">getConfig</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getController()">getController</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getDefaultBeanFactory()">getDefaultBeanFactory</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getDefaultSubsystem()">getDefaultSubsystem</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getEnvironment()">getEnvironment</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getFullyQualifiedAction()">getFullyQualifiedAction</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getHostname()">getHostname</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getItem()">getItem</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getNextPreserveKeyAndPurgeOld()">getNextPreserveKeyAndPurgeOld</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getPreserveKeySessionKey()">getPreserveKeySessionKey</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getProperty()">getProperty</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getRoute()">getRoute</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getRoutes()">getRoutes</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getSection()">getSection</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getSectionAndItem()">getSectionAndItem</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getService()">getService</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getServiceKey()">getServiceKey</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getSubsystem()">getSubsystem</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getSubsystemBase()">getSubsystemBase</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getSubsystemBeanFactory()">getSubsystemBeanFactory</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getSubsystemConfig()">getSubsystemConfig</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#hasBeanFactory()">hasBeanFactory</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#hasDefaultBeanFactory()">hasDefaultBeanFactory</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#hasSubsystemBeanFactory()">hasSubsystemBeanFactory</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#injectFramework()">injectFramework</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#internalLayout()">internalLayout</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#internalView()">internalView</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#isFrameworkInitialized()">isFrameworkInitialized</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#isFrameworkReloadRequest()">isFrameworkReloadRequest</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#isSubsystemInitialized()">isSubsystemInitialized</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#layout()">layout</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#onApplicationStart()">onApplicationStart</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#onError()">onError</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#onMissingView()">onMissingView</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#onPopulateError()">onPopulateError</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#onRequest()">onRequest</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#onRequestEnd()">onRequestEnd</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#onRequestStart()">onRequestStart</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#onSessionStart()">onSessionStart</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#parseViewOrLayoutPath()">parseViewOrLayoutPath</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#populate()">populate</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#processRouteMatch()">processRouteMatch</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#processRoutes()">processRoutes</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#raiseException()">raiseException</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#redirect()">redirect</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#restoreFlashContext()">restoreFlashContext</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#saveFlashContext()">saveFlashContext</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#service()">service</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setBeanFactory()">setBeanFactory</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setCfcMethodFailureInfo()">setCfcMethodFailureInfo</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setLayout()">setLayout</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setProperty()">setProperty</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setSubsystemBeanFactory()">setSubsystemBeanFactory</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setView()">setView</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupApplication()">setupApplication</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupApplicationWrapper()">setupApplicationWrapper</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupEnvironment()">setupEnvironment</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupFrameworkDefaults()">setupFrameworkDefaults</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupFrameworkEnvironments()">setupFrameworkEnvironments</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupRequestDefaults()">setupRequestDefaults</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupRequestWrapper()">setupRequestWrapper</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupResponseWrapper()">setupResponseWrapper</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupSession()">setupSession</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupSessionWrapper()">setupSessionWrapper</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupSubsystem()">setupSubsystem</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupSubsystemWrapper()">setupSubsystemWrapper</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#usingSubsystems()">usingSubsystems</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#validateAction()">validateAction</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#view()">view</a>, <a href="../../..//slatwall/org/Hibachi/FW1/framework.html#viewNotFound()">viewNotFound</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="bootstrap()"><!-- --></a>
+	<h3>bootstrap</h3>
+	
+	<kbd>public any <strong>bootstrap</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="customizeViewOrLayoutPath()"><!-- --></a>
+	<h3>customizeViewOrLayoutPath</h3>
+	
+	<kbd>public string <strong>customizeViewOrLayoutPath</strong>([struct pathInfo], [string type], [string fullPath])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//slatwall/org/Hibachi/FW1/framework.html#customizeViewOrLayoutPath()">customizeViewOrLayoutPath</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/FW1/framework.html" title="class in slatwall.org.Hibachi.FW1">framework</a>
+			</code>
+			</dd>
+		</dl>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>pathInfo</code></dd>
+		
+		<dd><code>type</code></dd>
+		
+		<dd><code>fullPath</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="doAction()"><!-- --></a>
+	<h3>doAction</h3>
+	
+	<kbd>public string <strong>doAction</strong>(string action)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>action</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="endHibachiLifecycle()"><!-- --></a>
+	<h3>endHibachiLifecycle</h3>
+	
+	<kbd>public void <strong>endHibachiLifecycle</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHibachiInstanceApplicationScopeKey()"><!-- --></a>
+	<h3>getHibachiInstanceApplicationScopeKey</h3>
+	
+	<kbd>public any <strong>getHibachiInstanceApplicationScopeKey</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getHibachiScope()"><!-- --></a>
+	<h3>getHibachiScope</h3>
+	
+	<kbd>public any <strong>getHibachiScope</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="getSubsystemDirPrefix()"><!-- --></a>
+	<h3>getSubsystemDirPrefix</h3>
+	
+	<kbd>public string <strong>getSubsystemDirPrefix</strong>([string subsystem])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//slatwall/org/Hibachi/FW1/framework.html#getSubsystemDirPrefix()">getSubsystemDirPrefix</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/FW1/framework.html" title="class in slatwall.org.Hibachi.FW1">framework</a>
+			</code>
+			</dd>
+		</dl>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>subsystem</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="onEveryRequest()"><!-- --></a>
+	<h3>onEveryRequest</h3>
+	
+	<kbd>public void <strong>onEveryRequest</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="onFirstRequest()"><!-- --></a>
+	<h3>onFirstRequest</h3>
+	
+	<kbd>public void <strong>onFirstRequest</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="onFirstRequestPostUpdate()"><!-- --></a>
+	<h3>onFirstRequestPostUpdate</h3>
+	
+	<kbd>public void <strong>onFirstRequestPostUpdate</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="onInternalRequest()"><!-- --></a>
+	<h3>onInternalRequest</h3>
+	
+	<kbd>public void <strong>onInternalRequest</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="onUpdateRequest()"><!-- --></a>
+	<h3>onUpdateRequest</h3>
+	
+	<kbd>public void <strong>onUpdateRequest</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="redirectExact()"><!-- --></a>
+	<h3>redirectExact</h3>
+	
+	<kbd>public void <strong>redirectExact</strong>(string location, [boolean addToken='false'])</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>location</code></dd>
+		
+		<dd><code>addToken</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="reloadApplication()"><!-- --></a>
+	<h3>reloadApplication</h3>
+	
+	<kbd>public any <strong>reloadApplication</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="setupGlobalRequest()"><!-- --></a>
+	<h3>setupGlobalRequest</h3>
+	
+	<kbd>public void <strong>setupGlobalRequest</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="setupRequest()"><!-- --></a>
+	<h3>setupRequest</h3>
+	
+	<kbd>public void <strong>setupRequest</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupRequest()">setupRequest</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/FW1/framework.html" title="class in slatwall.org.Hibachi.FW1">framework</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setupResponse()"><!-- --></a>
+	<h3>setupResponse</h3>
+	
+	<kbd>public void <strong>setupResponse</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupResponse()">setupResponse</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/FW1/framework.html" title="class in slatwall.org.Hibachi.FW1">framework</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setupView()"><!-- --></a>
+	<h3>setupView</h3>
+	
+	<kbd>public void <strong>setupView</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+			<dt><strong>Overrides:</strong></dt>
+			<dd>
+			<code>
+			<a href="../../..//slatwall/org/Hibachi/FW1/framework.html#setupView()">setupView</a></code>
+			in class
+			<code>
+				<a href="../../../slatwall/org/Hibachi/FW1/framework.html" title="class in slatwall.org.Hibachi.FW1">framework</a>
+			</code>
+			</dd>
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="verifyApplicationSetup()"><!-- --></a>
+	<h3>verifyApplicationSetup</h3>
+	
+	<kbd>public void <strong>verifyApplicationSetup</strong>()</kbd>
+	
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>

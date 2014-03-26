@@ -1,0 +1,4455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>TransactionRequestBean</title>
+	<meta name="keywords" content="slatwall.model.transient.payment.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../../../highlighter/styles/shCoreDefault.css">
+	<script src="../../../../highlighter/scripts/shCore.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>ColdDoc 1.0</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-flash"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../../../index.html?slatwall/model/transient/payment/TransactionRequestBean.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: slatwall.model.transient.payment"><span class="label label-success">slatwall.model.transient.payment</span></a>
+</div>
+
+<h2>
+
+Class
+TransactionRequestBean</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre>WEB-INF.cftags.component
+        <img src="../../../../resources/inherit.gif" alt="extended by "><a href="../../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a>
+            <img src="../../../../resources/inherit.gif" alt="extended by "><a href="../../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a>
+                <img src="../../../../resources/inherit.gif" alt="extended by "><a href="../../../../slatwall/model/transient/HibachiTransient.html" title="class in slatwall.model.transient">slatwall.model.transient.HibachiTransient</a>
+                    <img src="../../../../resources/inherit.gif" alt="extended by "><a href="../../../../slatwall/model/transient/RequestBean.html" title="class in slatwall.model.transient">slatwall.model.transient.RequestBean</a>
+                        <img src="../../../../resources/inherit.gif" alt="extended by ">Slatwall.model.transient.payment.TransactionRequestBean
+</pre>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				output 
+				: false 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<div class="panel panel-default">
+	<div class="panel-heading"><strong>Direct Known Subclasses:</strong></div>
+  	<div class="panel-body">
+	
+		<a href="../../../..//slatwall/model/transient/payment/CreditCardTransactionRequestBean.html" title="class in slatwall.model.transient.payment">CreditCardTransactionRequestBean</a>
+	,
+		<a href="../../../..//slatwall/model/transient/payment/ExternalTransactionRequestBean.html" title="class in slatwall.model.transient.payment">ExternalTransactionRequestBean</a>
+	,
+		<a href="../../../..//slatwall/model/transient/payment/GiftCardTransactionRequestBean.html" title="class in slatwall.model.transient.payment">GiftCardTransactionRequestBean</a>
+	
+	</div>
+</div>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#accountFirstName()">accountFirstName</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#accountID()">accountID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#accountLastName()">accountLastName</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#accountPaymentID()">accountPaymentID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#accountPaymentMethodID()">accountPaymentMethodID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#accountPrimaryEmailAddress()">accountPrimaryEmailAddress</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#accountPrimaryPhoneNumber()">accountPrimaryPhoneNumber</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingCity()">billingCity</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingCompany()">billingCompany</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingCountryCode()">billingCountryCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingLocality()">billingLocality</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingName()">billingName</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingPostalCode()">billingPostalCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingStateCode()">billingStateCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingStreet2Address()">billingStreet2Address</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#billingStreetAddress()">billingStreetAddress</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#creditCardNumber()">creditCardNumber</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#creditCardType()">creditCardType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#expirationMonth()">expirationMonth</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#expirationYear()">expirationYear</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#isDuplicateFlag()">isDuplicateFlag</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#nameOnCreditCard()">nameOnCreditCard</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#orderID()">orderID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#orderPaymentID()">orderPaymentID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#originalAuthorizationCode()">originalAuthorizationCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#originalAuthorizationProviderTransactionID()">originalAuthorizationProviderTransactionID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#originalChargeProviderTransactionID()">originalChargeProviderTransactionID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#originalProviderTransactionID()">originalProviderTransactionID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#preAuthorizationCode()">preAuthorizationCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#preAuthorizationProviderTransactionID()">preAuthorizationProviderTransactionID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#providerToken()">providerToken</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#securityCode()">securityCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#transactionAmount()">transactionAmount</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#transactionCurrency()">transactionCurrency</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">ormtype = string</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#transactionCurrencyCode()">transactionCurrencyCode</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#transactionID()">transactionID</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#transactionType()">transactionType</A></strong> 
+			<br>
+			
+			<br><br>
+			<ul>
+			
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETACCOUNTFIRSTNAME()">GETACCOUNTFIRSTNAME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETACCOUNTID()">GETACCOUNTID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETACCOUNTLASTNAME()">GETACCOUNTLASTNAME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETACCOUNTPAYMENTID()">GETACCOUNTPAYMENTID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETACCOUNTPAYMENTMETHODID()">GETACCOUNTPAYMENTMETHODID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETACCOUNTPRIMARYEMAILADDRESS()">GETACCOUNTPRIMARYEMAILADDRESS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETACCOUNTPRIMARYPHONENUMBER()">GETACCOUNTPRIMARYPHONENUMBER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGCITY()">GETBILLINGCITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGCOMPANY()">GETBILLINGCOMPANY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGCOUNTRYCODE()">GETBILLINGCOUNTRYCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGLOCALITY()">GETBILLINGLOCALITY</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGNAME()">GETBILLINGNAME</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGPOSTALCODE()">GETBILLINGPOSTALCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGSTATECODE()">GETBILLINGSTATECODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGSTREET2ADDRESS()">GETBILLINGSTREET2ADDRESS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETBILLINGSTREETADDRESS()">GETBILLINGSTREETADDRESS</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETCREDITCARDNUMBER()">GETCREDITCARDNUMBER</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETCREDITCARDTYPE()">GETCREDITCARDTYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETEXPIRATIONMONTH()">GETEXPIRATIONMONTH</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETEXPIRATIONYEAR()">GETEXPIRATIONYEAR</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boolean</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETISDUPLICATEFLAG()">GETISDUPLICATEFLAG</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETNAMEONCREDITCARD()">GETNAMEONCREDITCARD</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETORDERID()">GETORDERID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETORDERPAYMENTID()">GETORDERPAYMENTID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETORIGINALAUTHORIZATIONCODE()">GETORIGINALAUTHORIZATIONCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID()">GETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETORIGINALCHARGEPROVIDERTRANSACTIONID()">GETORIGINALCHARGEPROVIDERTRANSACTIONID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETORIGINALPROVIDERTRANSACTIONID()">GETORIGINALPROVIDERTRANSACTIONID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETPREAUTHORIZATIONCODE()">GETPREAUTHORIZATIONCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETPREAUTHORIZATIONPROVIDERTRANSACTIONID()">GETPREAUTHORIZATIONPROVIDERTRANSACTIONID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETPROVIDERTOKEN()">GETPROVIDERTOKEN</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETSECURITYCODE()">GETSECURITYCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>numeric</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETTRANSACTIONAMOUNT()">GETTRANSACTIONAMOUNT</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETTRANSACTIONCURRENCYCODE()">GETTRANSACTIONCURRENCYCODE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETTRANSACTIONID()">GETTRANSACTIONID</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#GETTRANSACTIONTYPE()">GETTRANSACTIONTYPE</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETACCOUNTFIRSTNAME()">SETACCOUNTFIRSTNAME</A></strong>(string accountFirstName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETACCOUNTID()">SETACCOUNTID</A></strong>(string accountID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETACCOUNTLASTNAME()">SETACCOUNTLASTNAME</A></strong>(string accountLastName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETACCOUNTPAYMENTID()">SETACCOUNTPAYMENTID</A></strong>(string accountPaymentID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETACCOUNTPAYMENTMETHODID()">SETACCOUNTPAYMENTMETHODID</A></strong>(string accountPaymentMethodID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETACCOUNTPRIMARYEMAILADDRESS()">SETACCOUNTPRIMARYEMAILADDRESS</A></strong>(string accountPrimaryEmailAddress)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETACCOUNTPRIMARYPHONENUMBER()">SETACCOUNTPRIMARYPHONENUMBER</A></strong>(string accountPrimaryPhoneNumber)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGCITY()">SETBILLINGCITY</A></strong>(string billingCity)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGCOMPANY()">SETBILLINGCOMPANY</A></strong>(string billingCompany)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGCOUNTRYCODE()">SETBILLINGCOUNTRYCODE</A></strong>(string billingCountryCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGLOCALITY()">SETBILLINGLOCALITY</A></strong>(string billingLocality)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGNAME()">SETBILLINGNAME</A></strong>(string billingName)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGPOSTALCODE()">SETBILLINGPOSTALCODE</A></strong>(string billingPostalCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGSTATECODE()">SETBILLINGSTATECODE</A></strong>(string billingStateCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGSTREET2ADDRESS()">SETBILLINGSTREET2ADDRESS</A></strong>(string billingStreet2Address)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETBILLINGSTREETADDRESS()">SETBILLINGSTREETADDRESS</A></strong>(string billingStreetAddress)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETCREDITCARDNUMBER()">SETCREDITCARDNUMBER</A></strong>(string creditCardNumber)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETCREDITCARDTYPE()">SETCREDITCARDTYPE</A></strong>(string creditCardType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETEXPIRATIONMONTH()">SETEXPIRATIONMONTH</A></strong>(numeric expirationMonth)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETEXPIRATIONYEAR()">SETEXPIRATIONYEAR</A></strong>(numeric expirationYear)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETISDUPLICATEFLAG()">SETISDUPLICATEFLAG</A></strong>(boolean isDuplicateFlag)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETNAMEONCREDITCARD()">SETNAMEONCREDITCARD</A></strong>(any nameOnCreditCard)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETORDERID()">SETORDERID</A></strong>(string orderID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETORDERPAYMENTID()">SETORDERPAYMENTID</A></strong>(string orderPaymentID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETORIGINALAUTHORIZATIONCODE()">SETORIGINALAUTHORIZATIONCODE</A></strong>(string originalAuthorizationCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID()">SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</A></strong>(string originalAuthorizationProviderTransactionID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETORIGINALCHARGEPROVIDERTRANSACTIONID()">SETORIGINALCHARGEPROVIDERTRANSACTIONID</A></strong>(string originalChargeProviderTransactionID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETORIGINALPROVIDERTRANSACTIONID()">SETORIGINALPROVIDERTRANSACTIONID</A></strong>(string originalProviderTransactionID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETPREAUTHORIZATIONCODE()">SETPREAUTHORIZATIONCODE</A></strong>(string preAuthorizationCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETPREAUTHORIZATIONPROVIDERTRANSACTIONID()">SETPREAUTHORIZATIONPROVIDERTRANSACTIONID</A></strong>(string preAuthorizationProviderTransactionID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETPROVIDERTOKEN()">SETPROVIDERTOKEN</A></strong>(string providerToken)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETSECURITYCODE()">SETSECURITYCODE</A></strong>(string securityCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETTRANSACTIONAMOUNT()">SETTRANSACTIONAMOUNT</A></strong>(numeric transactionAmount)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETTRANSACTIONCURRENCY()">SETTRANSACTIONCURRENCY</A></strong>(any transactionCurrency)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETTRANSACTIONCURRENCYCODE()">SETTRANSACTIONCURRENCYCODE</A></strong>(string transactionCurrencyCode)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETTRANSACTIONID()">SETTRANSACTIONID</A></strong>(string transactionID)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a></code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#SETTRANSACTIONTYPE()">SETTRANSACTIONTYPE</A></strong>(string transactionType)
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#getTransactionCurrency()">getTransactionCurrency</A></strong>()
+			<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get: .
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#populatePaymentInfoWithAccountPayment()">populatePaymentInfoWithAccountPayment</A></strong>(any accountPayment)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#populatePaymentInfoWithAccountPaymentMethod()">populatePaymentInfoWithAccountPaymentMethod</A></strong>(any accountPaymentMethod)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>void</code>
+		</td>
+		<td>
+			<strong><a href="TransactionRequestBean.html#populatePaymentInfoWithOrderPayment()">populatePaymentInfoWithOrderPayment</A></strong>(any orderPayment)
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.model.transient.RequestBean"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../../slatwall/model/transient/RequestBean.html" title="class in slatwall.model.transient">slatwall.model.transient.RequestBean</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../../..//slatwall/model/transient/RequestBean.html#GETDATA()">GETDATA</a>, <a href="../../../..//slatwall/model/transient/RequestBean.html#SETDATA()">SETDATA</a>, <a href="../../../..//slatwall/model/transient/RequestBean.html#init()">init</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_slatwall.model.transient.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../../slatwall/model/transient/HibachiTransient.html" title="class in slatwall.model.transient">slatwall.model.transient.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiTransient"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../../slatwall/org/Hibachi/HibachiTransient.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiTransient</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#GETPOPULATEDSUBPROPERTIES()">GETPOPULATEDSUBPROPERTIES</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIERRORS()">SETHIBACHIERRORS</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETHIBACHIMESSAGES()">SETHIBACHIMESSAGES</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETPOPULATEDSUBPROPERTIES()">SETPOPULATEDSUBPROPERTIES</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#SETVALIDATIONS()">SETVALIDATIONS</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#_setProperty()">_setProperty</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#addError()">addError</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#addErrors()">addErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#addMessage()">addMessage</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#afterPopulate()">afterPopulate</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#beforePopulate()">beforePopulate</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllErrorsHTML()">getAllErrorsHTML</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getAllMessagesHTML()">getAllMessagesHTML</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getError()">getError</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getErrors()">getErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFieldTypeByPropertyIdentifier()">getFieldTypeByPropertyIdentifier</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getFormattedValue()">getFormattedValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiErrors()">getHibachiErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getHibachiMessages()">getHibachiMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getLastObjectByPropertyIdentifier()">getLastObjectByPropertyIdentifier</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getMessages()">getMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getProperties()">getProperties</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertiesStruct()">getPropertiesStruct</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldName()">getPropertyFieldName</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFieldType()">getPropertyFieldType</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyFormatType()">getPropertyFormatType</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyHint()">getPropertyHint</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyMetaData()">getPropertyMetaData</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertySessionDefault()">getPropertySessionDefault</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyTitle()">getPropertyTitle</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getPropertyValidationClass()">getPropertyValidationClass</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getTitleByPropertyIdentifier()">getTitleByPropertyIdentifier</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValidations()">getValidations</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#getValueByPropertyIdentifier()">getValueByPropertyIdentifier</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasError()">hasError</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasErrors()">hasErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessage()">hasMessage</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasMessages()">hasMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#hasProperty()">hasProperty</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#populate()">populate</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#setPropertySessionDefault()">setPropertySessionDefault</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrors()">showErrors</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#showErrorsAndMessages()">showErrorsAndMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#showMessages()">showMessages</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#stringReplace()">stringReplace</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiTransient.html#validate()">validate</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_Slatwall.org.Hibachi.HibachiObject"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd><a href="../../../../slatwall/org/Hibachi/HibachiObject.html" title="class in slatwall.org.Hibachi">slatwall.org.Hibachi.HibachiObject</a></kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY()">SETHIBACHIINSTANCEAPPLICATIONSCOPEKEY</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#buildURL()">buildURL</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#createHibachiUUID()">createHibachiUUID</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#decryptValue()">decryptValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#encryptValue()">encryptValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#formatValue()">formatValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getApplicationValue()">getApplicationValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getBaseURL()">getBaseURL</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getBean()">getBean</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getBeanFactory()">getBeanFactory</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassFullname()">getClassFullname</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getClassName()">getClassName</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getDAO()">getDAO</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiInstanceApplicationScopeKey()">getHibachiInstanceApplicationScopeKey</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiScope()">getHibachiScope</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getHibachiTempDirectory()">getHibachiTempDirectory</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getService()">getService</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getSessionValue()">getSessionValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getSimpleValuesSerialized()">getSimpleValuesSerialized</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getThisMetaData()">getThisMetaData</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getTransient()">getTransient</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getURLFromPath()">getURLFromPath</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getVariables()">getVariables</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#getVirtualFileSystemPath()">getVirtualFileSystemPath</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#hasApplicationValue()">hasApplicationValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#hasSessionValue()">hasSessionValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#invokeMethod()">invokeMethod</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#isPersistent()">isPersistent</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#isProcessObject()">isProcessObject</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachi()">logHibachi</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#logHibachiException()">logHibachiException</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#nullReplace()">nullReplace</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#rbKey()">rbKey</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#setApplicationValue()">setApplicationValue</a>, <a href="../../../..//Slatwall/org/Hibachi/HibachiObject.html#setSessionValue()">setSessionValue</a> 
+			</td>
+		</tr>
+	</table>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="accountFirstName()"><!-- --></a>
+		<h3>accountFirstName</h3>
+
+		<kbd>
+			property string <strong>accountFirstName</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountID()"><!-- --></a>
+		<h3>accountID</h3>
+
+		<kbd>
+			property string <strong>accountID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountLastName()"><!-- --></a>
+		<h3>accountLastName</h3>
+
+		<kbd>
+			property string <strong>accountLastName</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountPaymentID()"><!-- --></a>
+		<h3>accountPaymentID</h3>
+
+		<kbd>
+			property string <strong>accountPaymentID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountPaymentMethodID()"><!-- --></a>
+		<h3>accountPaymentMethodID</h3>
+
+		<kbd>
+			property string <strong>accountPaymentMethodID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountPrimaryEmailAddress()"><!-- --></a>
+		<h3>accountPrimaryEmailAddress</h3>
+
+		<kbd>
+			property string <strong>accountPrimaryEmailAddress</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="accountPrimaryPhoneNumber()"><!-- --></a>
+		<h3>accountPrimaryPhoneNumber</h3>
+
+		<kbd>
+			property string <strong>accountPrimaryPhoneNumber</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingCity()"><!-- --></a>
+		<h3>billingCity</h3>
+
+		<kbd>
+			property string <strong>billingCity</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingCompany()"><!-- --></a>
+		<h3>billingCompany</h3>
+
+		<kbd>
+			property string <strong>billingCompany</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingCountryCode()"><!-- --></a>
+		<h3>billingCountryCode</h3>
+
+		<kbd>
+			property string <strong>billingCountryCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingLocality()"><!-- --></a>
+		<h3>billingLocality</h3>
+
+		<kbd>
+			property string <strong>billingLocality</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingName()"><!-- --></a>
+		<h3>billingName</h3>
+
+		<kbd>
+			property string <strong>billingName</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingPostalCode()"><!-- --></a>
+		<h3>billingPostalCode</h3>
+
+		<kbd>
+			property string <strong>billingPostalCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingStateCode()"><!-- --></a>
+		<h3>billingStateCode</h3>
+
+		<kbd>
+			property string <strong>billingStateCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingStreet2Address()"><!-- --></a>
+		<h3>billingStreet2Address</h3>
+
+		<kbd>
+			property string <strong>billingStreet2Address</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="billingStreetAddress()"><!-- --></a>
+		<h3>billingStreetAddress</h3>
+
+		<kbd>
+			property string <strong>billingStreetAddress</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="creditCardNumber()"><!-- --></a>
+		<h3>creditCardNumber</h3>
+
+		<kbd>
+			property string <strong>creditCardNumber</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="creditCardType()"><!-- --></a>
+		<h3>creditCardType</h3>
+
+		<kbd>
+			property string <strong>creditCardType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="expirationMonth()"><!-- --></a>
+		<h3>expirationMonth</h3>
+
+		<kbd>
+			property numeric <strong>expirationMonth</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="expirationYear()"><!-- --></a>
+		<h3>expirationYear</h3>
+
+		<kbd>
+			property numeric <strong>expirationYear</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="isDuplicateFlag()"><!-- --></a>
+		<h3>isDuplicateFlag</h3>
+
+		<kbd>
+			property boolean <strong>isDuplicateFlag</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="nameOnCreditCard()"><!-- --></a>
+		<h3>nameOnCreditCard</h3>
+
+		<kbd>
+			property any <strong>nameOnCreditCard</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="orderID()"><!-- --></a>
+		<h3>orderID</h3>
+
+		<kbd>
+			property string <strong>orderID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="orderPaymentID()"><!-- --></a>
+		<h3>orderPaymentID</h3>
+
+		<kbd>
+			property string <strong>orderPaymentID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="originalAuthorizationCode()"><!-- --></a>
+		<h3>originalAuthorizationCode</h3>
+
+		<kbd>
+			property string <strong>originalAuthorizationCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="originalAuthorizationProviderTransactionID()"><!-- --></a>
+		<h3>originalAuthorizationProviderTransactionID</h3>
+
+		<kbd>
+			property string <strong>originalAuthorizationProviderTransactionID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="originalChargeProviderTransactionID()"><!-- --></a>
+		<h3>originalChargeProviderTransactionID</h3>
+
+		<kbd>
+			property string <strong>originalChargeProviderTransactionID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="originalProviderTransactionID()"><!-- --></a>
+		<h3>originalProviderTransactionID</h3>
+
+		<kbd>
+			property string <strong>originalProviderTransactionID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="preAuthorizationCode()"><!-- --></a>
+		<h3>preAuthorizationCode</h3>
+
+		<kbd>
+			property string <strong>preAuthorizationCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="preAuthorizationProviderTransactionID()"><!-- --></a>
+		<h3>preAuthorizationProviderTransactionID</h3>
+
+		<kbd>
+			property string <strong>preAuthorizationProviderTransactionID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="providerToken()"><!-- --></a>
+		<h3>providerToken</h3>
+
+		<kbd>
+			property string <strong>providerToken</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="securityCode()"><!-- --></a>
+		<h3>securityCode</h3>
+
+		<kbd>
+			property string <strong>securityCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="transactionAmount()"><!-- --></a>
+		<h3>transactionAmount</h3>
+
+		<kbd>
+			property numeric <strong>transactionAmount</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="transactionCurrency()"><!-- --></a>
+		<h3>transactionCurrency</h3>
+
+		<kbd>
+			property any <strong>transactionCurrency</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>ormtype</code> - string</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="transactionCurrencyCode()"><!-- --></a>
+		<h3>transactionCurrencyCode</h3>
+
+		<kbd>
+			property string <strong>transactionCurrencyCode</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="transactionID()"><!-- --></a>
+		<h3>transactionID</h3>
+
+		<kbd>
+			property string <strong>transactionID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="transactionType()"><!-- --></a>
+		<h3>transactionType</h3>
+
+		<kbd>
+			property string <strong>transactionType</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>serializable</code> - true</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="GETACCOUNTFIRSTNAME()"><!-- --></a>
+	<h3>GETACCOUNTFIRSTNAME</h3>
+	
+	<kbd>public string <strong>GETACCOUNTFIRSTNAME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTID()"><!-- --></a>
+	<h3>GETACCOUNTID</h3>
+	
+	<kbd>public string <strong>GETACCOUNTID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTLASTNAME()"><!-- --></a>
+	<h3>GETACCOUNTLASTNAME</h3>
+	
+	<kbd>public string <strong>GETACCOUNTLASTNAME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTPAYMENTID()"><!-- --></a>
+	<h3>GETACCOUNTPAYMENTID</h3>
+	
+	<kbd>public string <strong>GETACCOUNTPAYMENTID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTPAYMENTMETHODID()"><!-- --></a>
+	<h3>GETACCOUNTPAYMENTMETHODID</h3>
+	
+	<kbd>public string <strong>GETACCOUNTPAYMENTMETHODID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTPRIMARYEMAILADDRESS()"><!-- --></a>
+	<h3>GETACCOUNTPRIMARYEMAILADDRESS</h3>
+	
+	<kbd>public string <strong>GETACCOUNTPRIMARYEMAILADDRESS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETACCOUNTPRIMARYPHONENUMBER()"><!-- --></a>
+	<h3>GETACCOUNTPRIMARYPHONENUMBER</h3>
+	
+	<kbd>public string <strong>GETACCOUNTPRIMARYPHONENUMBER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGCITY()"><!-- --></a>
+	<h3>GETBILLINGCITY</h3>
+	
+	<kbd>public string <strong>GETBILLINGCITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGCOMPANY()"><!-- --></a>
+	<h3>GETBILLINGCOMPANY</h3>
+	
+	<kbd>public string <strong>GETBILLINGCOMPANY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGCOUNTRYCODE()"><!-- --></a>
+	<h3>GETBILLINGCOUNTRYCODE</h3>
+	
+	<kbd>public string <strong>GETBILLINGCOUNTRYCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGLOCALITY()"><!-- --></a>
+	<h3>GETBILLINGLOCALITY</h3>
+	
+	<kbd>public string <strong>GETBILLINGLOCALITY</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGNAME()"><!-- --></a>
+	<h3>GETBILLINGNAME</h3>
+	
+	<kbd>public string <strong>GETBILLINGNAME</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGPOSTALCODE()"><!-- --></a>
+	<h3>GETBILLINGPOSTALCODE</h3>
+	
+	<kbd>public string <strong>GETBILLINGPOSTALCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGSTATECODE()"><!-- --></a>
+	<h3>GETBILLINGSTATECODE</h3>
+	
+	<kbd>public string <strong>GETBILLINGSTATECODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGSTREET2ADDRESS()"><!-- --></a>
+	<h3>GETBILLINGSTREET2ADDRESS</h3>
+	
+	<kbd>public string <strong>GETBILLINGSTREET2ADDRESS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETBILLINGSTREETADDRESS()"><!-- --></a>
+	<h3>GETBILLINGSTREETADDRESS</h3>
+	
+	<kbd>public string <strong>GETBILLINGSTREETADDRESS</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREDITCARDNUMBER()"><!-- --></a>
+	<h3>GETCREDITCARDNUMBER</h3>
+	
+	<kbd>public string <strong>GETCREDITCARDNUMBER</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETCREDITCARDTYPE()"><!-- --></a>
+	<h3>GETCREDITCARDTYPE</h3>
+	
+	<kbd>public string <strong>GETCREDITCARDTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXPIRATIONMONTH()"><!-- --></a>
+	<h3>GETEXPIRATIONMONTH</h3>
+	
+	<kbd>public numeric <strong>GETEXPIRATIONMONTH</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETEXPIRATIONYEAR()"><!-- --></a>
+	<h3>GETEXPIRATIONYEAR</h3>
+	
+	<kbd>public numeric <strong>GETEXPIRATIONYEAR</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETISDUPLICATEFLAG()"><!-- --></a>
+	<h3>GETISDUPLICATEFLAG</h3>
+	
+	<kbd>public boolean <strong>GETISDUPLICATEFLAG</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETNAMEONCREDITCARD()"><!-- --></a>
+	<h3>GETNAMEONCREDITCARD</h3>
+	
+	<kbd>public any <strong>GETNAMEONCREDITCARD</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORDERID()"><!-- --></a>
+	<h3>GETORDERID</h3>
+	
+	<kbd>public string <strong>GETORDERID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORDERPAYMENTID()"><!-- --></a>
+	<h3>GETORDERPAYMENTID</h3>
+	
+	<kbd>public string <strong>GETORDERPAYMENTID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORIGINALAUTHORIZATIONCODE()"><!-- --></a>
+	<h3>GETORIGINALAUTHORIZATIONCODE</h3>
+	
+	<kbd>public string <strong>GETORIGINALAUTHORIZATIONCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>GETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public string <strong>GETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORIGINALCHARGEPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>GETORIGINALCHARGEPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public string <strong>GETORIGINALCHARGEPROVIDERTRANSACTIONID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETORIGINALPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>GETORIGINALPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public string <strong>GETORIGINALPROVIDERTRANSACTIONID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPREAUTHORIZATIONCODE()"><!-- --></a>
+	<h3>GETPREAUTHORIZATIONCODE</h3>
+	
+	<kbd>public string <strong>GETPREAUTHORIZATIONCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPREAUTHORIZATIONPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>GETPREAUTHORIZATIONPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public string <strong>GETPREAUTHORIZATIONPROVIDERTRANSACTIONID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETPROVIDERTOKEN()"><!-- --></a>
+	<h3>GETPROVIDERTOKEN</h3>
+	
+	<kbd>public string <strong>GETPROVIDERTOKEN</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSECURITYCODE()"><!-- --></a>
+	<h3>GETSECURITYCODE</h3>
+	
+	<kbd>public string <strong>GETSECURITYCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETTRANSACTIONAMOUNT()"><!-- --></a>
+	<h3>GETTRANSACTIONAMOUNT</h3>
+	
+	<kbd>public numeric <strong>GETTRANSACTIONAMOUNT</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETTRANSACTIONCURRENCYCODE()"><!-- --></a>
+	<h3>GETTRANSACTIONCURRENCYCODE</h3>
+	
+	<kbd>public string <strong>GETTRANSACTIONCURRENCYCODE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETTRANSACTIONID()"><!-- --></a>
+	<h3>GETTRANSACTIONID</h3>
+	
+	<kbd>public string <strong>GETTRANSACTIONID</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETTRANSACTIONTYPE()"><!-- --></a>
+	<h3>GETTRANSACTIONTYPE</h3>
+	
+	<kbd>public string <strong>GETTRANSACTIONTYPE</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTFIRSTNAME()"><!-- --></a>
+	<h3>SETACCOUNTFIRSTNAME</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETACCOUNTFIRSTNAME</strong>(string accountFirstName)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountFirstName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTID()"><!-- --></a>
+	<h3>SETACCOUNTID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETACCOUNTID</strong>(string accountID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTLASTNAME()"><!-- --></a>
+	<h3>SETACCOUNTLASTNAME</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETACCOUNTLASTNAME</strong>(string accountLastName)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountLastName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTPAYMENTID()"><!-- --></a>
+	<h3>SETACCOUNTPAYMENTID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETACCOUNTPAYMENTID</strong>(string accountPaymentID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPaymentID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTPAYMENTMETHODID()"><!-- --></a>
+	<h3>SETACCOUNTPAYMENTMETHODID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETACCOUNTPAYMENTMETHODID</strong>(string accountPaymentMethodID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPaymentMethodID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTPRIMARYEMAILADDRESS()"><!-- --></a>
+	<h3>SETACCOUNTPRIMARYEMAILADDRESS</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETACCOUNTPRIMARYEMAILADDRESS</strong>(string accountPrimaryEmailAddress)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPrimaryEmailAddress</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETACCOUNTPRIMARYPHONENUMBER()"><!-- --></a>
+	<h3>SETACCOUNTPRIMARYPHONENUMBER</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETACCOUNTPRIMARYPHONENUMBER</strong>(string accountPrimaryPhoneNumber)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPrimaryPhoneNumber</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGCITY()"><!-- --></a>
+	<h3>SETBILLINGCITY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGCITY</strong>(string billingCity)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingCity</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGCOMPANY()"><!-- --></a>
+	<h3>SETBILLINGCOMPANY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGCOMPANY</strong>(string billingCompany)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingCompany</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGCOUNTRYCODE()"><!-- --></a>
+	<h3>SETBILLINGCOUNTRYCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGCOUNTRYCODE</strong>(string billingCountryCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingCountryCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGLOCALITY()"><!-- --></a>
+	<h3>SETBILLINGLOCALITY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGLOCALITY</strong>(string billingLocality)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingLocality</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGNAME()"><!-- --></a>
+	<h3>SETBILLINGNAME</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGNAME</strong>(string billingName)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingName</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGPOSTALCODE()"><!-- --></a>
+	<h3>SETBILLINGPOSTALCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGPOSTALCODE</strong>(string billingPostalCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingPostalCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGSTATECODE()"><!-- --></a>
+	<h3>SETBILLINGSTATECODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGSTATECODE</strong>(string billingStateCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingStateCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGSTREET2ADDRESS()"><!-- --></a>
+	<h3>SETBILLINGSTREET2ADDRESS</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGSTREET2ADDRESS</strong>(string billingStreet2Address)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingStreet2Address</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETBILLINGSTREETADDRESS()"><!-- --></a>
+	<h3>SETBILLINGSTREETADDRESS</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETBILLINGSTREETADDRESS</strong>(string billingStreetAddress)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>billingStreetAddress</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREDITCARDNUMBER()"><!-- --></a>
+	<h3>SETCREDITCARDNUMBER</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETCREDITCARDNUMBER</strong>(string creditCardNumber)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>creditCardNumber</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCREDITCARDTYPE()"><!-- --></a>
+	<h3>SETCREDITCARDTYPE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETCREDITCARDTYPE</strong>(string creditCardType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>creditCardType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXPIRATIONMONTH()"><!-- --></a>
+	<h3>SETEXPIRATIONMONTH</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETEXPIRATIONMONTH</strong>(numeric expirationMonth)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>expirationMonth</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETEXPIRATIONYEAR()"><!-- --></a>
+	<h3>SETEXPIRATIONYEAR</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETEXPIRATIONYEAR</strong>(numeric expirationYear)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>expirationYear</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETISDUPLICATEFLAG()"><!-- --></a>
+	<h3>SETISDUPLICATEFLAG</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETISDUPLICATEFLAG</strong>(boolean isDuplicateFlag)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>isDuplicateFlag</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETNAMEONCREDITCARD()"><!-- --></a>
+	<h3>SETNAMEONCREDITCARD</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETNAMEONCREDITCARD</strong>(any nameOnCreditCard)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>nameOnCreditCard</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORDERID()"><!-- --></a>
+	<h3>SETORDERID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETORDERID</strong>(string orderID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORDERPAYMENTID()"><!-- --></a>
+	<h3>SETORDERPAYMENTID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETORDERPAYMENTID</strong>(string orderPaymentID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderPaymentID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORIGINALAUTHORIZATIONCODE()"><!-- --></a>
+	<h3>SETORIGINALAUTHORIZATIONCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETORIGINALAUTHORIZATIONCODE</strong>(string originalAuthorizationCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalAuthorizationCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETORIGINALAUTHORIZATIONPROVIDERTRANSACTIONID</strong>(string originalAuthorizationProviderTransactionID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalAuthorizationProviderTransactionID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORIGINALCHARGEPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>SETORIGINALCHARGEPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETORIGINALCHARGEPROVIDERTRANSACTIONID</strong>(string originalChargeProviderTransactionID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalChargeProviderTransactionID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETORIGINALPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>SETORIGINALPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETORIGINALPROVIDERTRANSACTIONID</strong>(string originalProviderTransactionID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>originalProviderTransactionID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPREAUTHORIZATIONCODE()"><!-- --></a>
+	<h3>SETPREAUTHORIZATIONCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETPREAUTHORIZATIONCODE</strong>(string preAuthorizationCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>preAuthorizationCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPREAUTHORIZATIONPROVIDERTRANSACTIONID()"><!-- --></a>
+	<h3>SETPREAUTHORIZATIONPROVIDERTRANSACTIONID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETPREAUTHORIZATIONPROVIDERTRANSACTIONID</strong>(string preAuthorizationProviderTransactionID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>preAuthorizationProviderTransactionID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETPROVIDERTOKEN()"><!-- --></a>
+	<h3>SETPROVIDERTOKEN</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETPROVIDERTOKEN</strong>(string providerToken)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>providerToken</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSECURITYCODE()"><!-- --></a>
+	<h3>SETSECURITYCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETSECURITYCODE</strong>(string securityCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>securityCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETTRANSACTIONAMOUNT()"><!-- --></a>
+	<h3>SETTRANSACTIONAMOUNT</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETTRANSACTIONAMOUNT</strong>(numeric transactionAmount)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>transactionAmount</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETTRANSACTIONCURRENCY()"><!-- --></a>
+	<h3>SETTRANSACTIONCURRENCY</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETTRANSACTIONCURRENCY</strong>(any transactionCurrency)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>transactionCurrency</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETTRANSACTIONCURRENCYCODE()"><!-- --></a>
+	<h3>SETTRANSACTIONCURRENCYCODE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETTRANSACTIONCURRENCYCODE</strong>(string transactionCurrencyCode)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>transactionCurrencyCode</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETTRANSACTIONID()"><!-- --></a>
+	<h3>SETTRANSACTIONID</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETTRANSACTIONID</strong>(string transactionID)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>transactionID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETTRANSACTIONTYPE()"><!-- --></a>
+	<h3>SETTRANSACTIONTYPE</h3>
+	
+	<kbd>public <a href="../../../../slatwall/model/transient/payment/TransactionRequestBean.html" title="class in slatwall.model.transient.payment">TransactionRequestBean</a> <strong>SETTRANSACTIONTYPE</strong>(string transactionType)</kbd>
+	
+	<br><br>
+
+	
+		<p>set: </p>
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>transactionType</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getTransactionCurrency()"><!-- --></a>
+	<h3>getTransactionCurrency</h3>
+	
+	<kbd>public string <strong>getTransactionCurrency</strong>()</kbd>
+	
+	<br><br>
+
+	
+		<p>get: </p>
+	
+
+	</dl>
+	<hr>
+
+	<a name="populatePaymentInfoWithAccountPayment()"><!-- --></a>
+	<h3>populatePaymentInfoWithAccountPayment</h3>
+	
+	<kbd>public void <strong>populatePaymentInfoWithAccountPayment</strong>(any accountPayment)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPayment</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="populatePaymentInfoWithAccountPaymentMethod()"><!-- --></a>
+	<h3>populatePaymentInfoWithAccountPaymentMethod</h3>
+	
+	<kbd>public void <strong>populatePaymentInfoWithAccountPaymentMethod</strong>(any accountPaymentMethod)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>accountPaymentMethod</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="populatePaymentInfoWithOrderPayment()"><!-- --></a>
+	<h3>populatePaymentInfoWithOrderPayment</h3>
+	
+	<kbd>public void <strong>populatePaymentInfoWithOrderPayment</strong>(any orderPayment)</kbd>
+	
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>orderPayment</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>
