@@ -80,7 +80,13 @@ component displayname="Shipping Method" entityname="SlatwallShippingMethod" tabl
 
 	public array function getShippingMethodRateIntegrationOptions() {
 		var optionsSL = getService("integrationService").getIntegrationSmartList();
+		
+		// TODO[jubs] : Replace these types of filters, with Like filters
+		// optionsSL.addFilter('activeFlag', '1');
+		// optionsSL.addLikeFilter('integrationTypeList', '%shipping%');
+		
 		optionsSL.addFilter('shippingActiveFlag', '1');
+		
 		optionsSL.addSelect('integrationName', 'name');
 		optionsSL.addSelect('integrationID', 'value');
 		return optionsSL.getRecords();

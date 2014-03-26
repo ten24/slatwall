@@ -54,6 +54,13 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	property name="integrationName" ormtype="string";
 	property name="installedFlag" ormtype="boolean";
 	
+	// TODO[jubs] : add
+	/*
+		activeFlag
+		integrationTypeList
+	*/
+	
+	// TODO[jubs] : Remove all these
 	property name="authenticationReadyFlag" ormtype="boolean";
 	property name="authenticationActiveFlag" ormtype="boolean";
 	property name="customReadyFlag" ormtype="boolean";

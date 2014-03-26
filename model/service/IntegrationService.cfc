@@ -146,6 +146,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					integration.setIntegrationPackage(integrationPackage);
 					integration.setIntegrationName(integrationCFC.getDisplayName());
 					
+					// TODO[jubs] : The integration list fill out these fields
+					// "authentication,custom,fw1,payment,shipping" were going to add ",tax"
+					
+					// integration.setIntegrationTypeList( integrationCFC.getIntegrationTypes() );
+					
+					// TODO[jubs]: remove all this below, and just change to
+					// start of removal
 					integration.setAuthenticationReadyFlag(0);
 					integration.setCustomReadyFlag(0);
 					integration.setFW1ReadyFlag(0);
@@ -212,7 +219,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(isNull(integration.getShippingActiveFlag()) || (integration.getShippingActiveFlag() && !integration.getShippingReadyFlag())) {
 						integration.setShippingActiveFlag(0);
 					}
-					
+					// TODO[jubs] : End of removal
 					
 					// Call Entity Save so that any new integrations get persisted
 					getHibachiDAO().save( integration );

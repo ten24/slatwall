@@ -57,6 +57,8 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
+				
+				<!--- TODO[jubs] : Remove all these, and just add activeFlag --->
 				<cfif rc.integration.getAuthenticationReadyFlag()>
 					<cf_HibachiPropertyDisplay object="#rc.integration#" property="authenticationActiveFlag" edit="#rc.edit#" />
 				</cfif>
@@ -69,7 +71,13 @@ Notes:
 				<cfif rc.integration.getPaymentReadyFlag()>
 					<cf_HibachiPropertyDisplay object="#rc.integration#" property="paymentActiveFlag" edit="#rc.edit#" />
 				</cfif>
+				
+				<!--- TODO[jubs] : Add this --->
+				<!--- <cf_HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" /> --->
+				
 			</cf_HibachiPropertyList>
+			
+			
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.integration#">
