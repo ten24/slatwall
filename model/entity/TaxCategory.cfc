@@ -110,7 +110,14 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	}
 	
 	*/
-	
+	public array function getTaxCategoryRateIntegrationOptions() {
+		var optionsSL = getService("integrationService").getIntegrationSmartList();
+		optionsSL.addFilter('activeFlag', '1');
+		optionsSL.addSelect('integrationName', 'name');
+		optionsSL.addSelect('integrationID', 'value');
+		
+		return optionsSL.getRecords();
+	}	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
