@@ -58,7 +58,7 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 		
 	// Related Object Properties (one-to-many)
 	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="taxCategoryRateID" cascade="all" inverse="true" lazy="extra";
-	
+	property name="taxIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="taxIntegrationID";
 	// Related Object Properties (many-to-many - owner)
 	
 	// Related Object Properties (many-to-many - inverse)
