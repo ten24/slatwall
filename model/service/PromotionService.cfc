@@ -147,7 +147,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
 					
-					var discountAmount = precisionEvaluate('(orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity())');
+					var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
 					
 					orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ] = [];
 					
@@ -249,7 +249,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												var originalDiscountAmount = getDiscountAmount(reward, orderItem.getSkuPrice(), discountQuantity);
 												
 												// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
-												var discountAmount = precisionEvaluate('originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice())');
+												var discountAmount = precisionEvaluate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice()));
 												
 											}
 											
@@ -296,7 +296,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												// Increment the number of times this promotion reward has been used
 												promotionRewardUsageDetails[ reward.getPromotionRewardID() ].usedInOrder += discountQuantity;
 												
-												var discountPerUseValue = precisionEvaluate('discountAmount / discountQuantity');
+												var discountPerUseValue = precisionEvaluate(discountAmount / discountQuantity);
 												
 												var usageAdded = false;
 												
@@ -483,7 +483,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								if(orderItemQulifiedDiscounts[ orderItemID ][y].promotionRewardID == prID) {
 									
 									// Set the discountAmount as some fraction of the original discountAmount
-									orderItemQulifiedDiscounts[ orderItemID ][y].discountAmount = precisionEvaluate('(orderItemQulifiedDiscounts[ orderItemID ][y].discountAmount / thisDiscountQuantity) * (thisDiscountQuantity - needToRemove)');
+									orderItemQulifiedDiscounts[ orderItemID ][y].discountAmount = precisionEvaluate((orderItemQulifiedDiscounts[ orderItemID ][y].discountAmount / thisDiscountQuantity) * (thisDiscountQuantity - needToRemove));
 									
 									// Update the needToRemove
 									needToRemove = 0;
@@ -987,24 +987,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity) {
 		var discountAmountPreRounding = 0;
 		var roundedFinalAmount = 0;
-		var originalAmount = precisionEvaluate('arguments.price * arguments.quantity');
+		var originalAmount = precisionEvaluate(arguments.price * arguments.quantity);
 		
 		
 		switch(reward.getAmountType()) {
 			case "percentageOff" :
-				discountAmountPreRounding = precisionEvaluate('originalAmount * (reward.getAmount()/100)');
+				discountAmountPreRounding = precisionEvaluate(originalAmount * (reward.getAmount()/100));
 				break;
 			case "amountOff" :
 				discountAmountPreRounding = reward.getAmount() * quantity;
 				break;
 			case "amount" :
-				discountAmountPreRounding = precisionEvaluate('(arguments.price - reward.getAmount()) * arguments.quantity');
+				discountAmountPreRounding = precisionEvaluate((arguments.price - reward.getAmount()) * arguments.quantity);
 				break;
 		}
 		
 		if(!isNull(reward.getRoundingRule())) {
-			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=precisionEvaluate('originalAmount - discountAmountPreRounding'), roundingRule=reward.getRoundingRule());
-			discountAmount = precisionEvaluate('originalAmount - roundedFinalAmount');
+			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=precisionEvaluate(originalAmount - discountAmountPreRounding), roundingRule=reward.getRoundingRule());
+			discountAmount = precisionEvaluate(originalAmount - roundedFinalAmount);
 		} else {
 			discountAmount = discountAmountPreRounding;
 		}

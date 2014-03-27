@@ -127,9 +127,9 @@ Notes:
 		
 		<cfloop query="rs">
 			<cfif rs.systemCode eq "optCharge">
-				<cfset total = precisionEvaluate('total + rs.amount') />
+				<cfset total = precisionEvaluate(total + rs.amount) />
 			<cfelse>
-				<cfset total = precisionEvaluate('total - rs.amount') />
+				<cfset total = precisionEvaluate(total - rs.amount) />
 			</cfif>
 		</cfloop>
 		

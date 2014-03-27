@@ -2,6 +2,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 
 	property name="accountService" type="any";
 	property name="orderService" type="any";
+	property name="hibachiAuditService" type="any";
 	property name="hibachiTagService" type="any";
 	
 
@@ -39,6 +40,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( CGI.REMOTE_ADDR );
 		
+		if(!isNull(getHibachiScope().getSession().getRBLocale())) {
+			getHibachiScope().setRBLocale( getHibachiScope().getSession().getRBLocale() );
+		}
+		
 		// If the session has an account but no authentication, then remove the account
 		// Check to see if this session has an accountAuthentication, if it does then we need to verify that the authentication shouldn't be auto logged out
 		// If there was an integration, then check the verify method for any custom auto-logout logic
@@ -65,6 +70,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		currentSession.setAccount( arguments.account );
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
 		
+		getHibachiAuditService().logAccountActivity("login");
+		
 		// Make sure that we persist the session
 		persistSession();
 		
@@ -76,6 +83,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	public void function logoutAccount() {
 		var currentSession = getHibachiScope().getSession();
+		
+		getHibachiAuditService().logAccountActivity("logout");
 		
 		currentSession.removeAccount();
 		currentSession.removeAccountAuthentication();

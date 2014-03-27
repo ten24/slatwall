@@ -249,10 +249,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return false;
 	}
 	
-	// @hint Returns an array of audit logs related to this entity
-	public array function getAuditLog() {
-		variables.auditLog = getService("hibachiAuditService").getAuditLogForEntity(baseID=getPrimaryIDValue());
-		return variables.auditLog;
+	// @hint Returns a smart list of audits related to this entity
+	public any function getAuditSmartList() {
+		variables.auditLogSmartList = getService("hibachiAuditService").getAuditSmartList();
+		variables.auditLogSmartList.addFilter("baseID", getPrimaryIDValue());
+		return variables.auditLogSmartList;
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity

@@ -66,6 +66,12 @@ Notes:
 			</cf_HibachiListingDisplay>
 		</div>
 		<div class="span6">
+			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
+			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="30" />
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span4">
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.recentproductupdates")#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.productSmartList#" 
 					recordDetailAction="admin:entity.detailproduct">
@@ -75,9 +81,7 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="modifiedByAccount.fullname" />
 			</cf_HibachiListingDisplay>
 		</div>
-	</div>
-	<div class="row-fluid">
-		<div class="span6">
+		<div class="span4">
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.recentvendororderupdates")#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.vendorOrderSmartList#" 
 					recordDetailAction="admin:entity.detailvendororder">
@@ -87,7 +91,7 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="modifiedByAccount.fullname" />
 			</cf_HibachiListingDisplay>
 		</div>
-		<div class="span6">
+		<div class="span4">
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.productReviewSmartList#" 
 					recordDetailAction="admin:entity.detailproductreview">
