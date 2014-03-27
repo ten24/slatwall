@@ -87,32 +87,10 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 		return variables.taxCategoryRatesDeletableFlag;
 	}
 	
-	// TODO[jubs] : Add the function getTaxCategoryRateIntegrationOptions()
-	/*
-	Here is example:
-	
-	getTaxCategoryRateIntegrationOptions()
-	
-	public array function getShippingMethodRateIntegrationOptions() {
-	
-		// Get an integration smartlist
-		var optionsSL = getService("integrationService").getIntegrationSmartList();
-		
-		// This is going to change from this:
-		optionsSL.addFilter('shippingActiveFlag', '1');
-		// To This:
-		optionsSL.addFilter('activeFlag', '1');
-		
-		optionsSL.addSelect('integrationName', 'name');
-		optionsSL.addSelect('integrationID', 'value');
-		
-		return optionsSL.getRecords();
-	}
-	
-	*/
 	public array function getTaxCategoryRateIntegrationOptions() {
 		var optionsSL = getService("integrationService").getIntegrationSmartList();
 		optionsSL.addFilter('activeFlag', '1');
+		optionsSL.addLikeFilter('integrationTypeList', '%tax%');
 		optionsSL.addSelect('integrationName', 'name');
 		optionsSL.addSelect('integrationID', 'value');
 		

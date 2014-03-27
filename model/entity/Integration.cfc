@@ -54,25 +54,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	property name="integrationName" ormtype="string";
 	property name="installedFlag" ormtype="boolean";
 	
-	// TODO[jubs] : add
-	/*
-		activeFlag
-		integrationTypeList
-	*/
+	//Active Flag and IntegrationTypeList
 	property name="activeFlag" ormtype="boolean";
-	property name="integrationTypeList" ormtype="string";
+	property name="integrationTypeList" ormtype="string"; 
 	
-	// TODO[jubs] : Remove all these
-	property name="authenticationReadyFlag" ormtype="boolean";
-	property name="authenticationActiveFlag" ormtype="boolean";
-	property name="customReadyFlag" ormtype="boolean";
-	property name="customActiveFlag" ormtype="boolean";
-	property name="fw1ReadyFlag" ormtype="boolean";
-	property name="fw1ActiveFlag" ormtype="boolean";
-	property name="paymentReadyFlag" ormtype="boolean";
-	property name="paymentActiveFlag" ormtype="boolean";
-	property name="shippingReadyFlag" ormtype="boolean";
-	property name="shippingActiveFlag" ormtype="boolean";
 	
 	// Audit properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -85,7 +70,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	
 	
 	public boolean function getEnabledFlag() {
-		return getCustomActiveFlag() || getFW1ActiveFlag() || getPaymentActiveFlag() || getShippingActiveFlag();
+		return getActiveFlag();
 	}
 	
 	public array function getShippingMethodOptions( ) {

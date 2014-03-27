@@ -59,21 +59,8 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
 				
 				<!--- TODO[jubs] : Remove all these, and just add activeFlag --->
-				<cfif rc.integration.getAuthenticationReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="authenticationActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getFW1ReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="fw1ActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getShippingReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="shippingActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getPaymentReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="paymentActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				
 				<!--- TODO[jubs] : Add this --->
-				<!--- <cf_HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" /> --->
+				<cf_HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" />
 				
 			</cf_HibachiPropertyList>
 			

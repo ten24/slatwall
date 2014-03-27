@@ -375,7 +375,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	public array function getCustomIntegrationOptions() {
 		var options = [];
 		
-		var integrations = getIntegrationService().listIntegration({customReadyFlag=1});
+		var integrations = getIntegrationService().listIntegration({activeFlag=1});
 		
 		for(var i=1; i<=arrayLen(integrations); i++) {
 			arrayAppend(options, {name=integrations[i].getIntegrationName(), value=integrations[i].getIntegrationPackage()});
