@@ -1,4 +1,78 @@
-component accessors="true" output="false" extends="HibachiService" {
+/*
+
+    Slatwall - An Open Source eCommerce Platform
+    Copyright (C) ten24, LLC
+	
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+	
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+	
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    
+    Linking this program statically or dynamically with other modules is
+    making a combined work based on this program.  Thus, the terms and
+    conditions of the GNU General Public License cover the whole
+    combination.
+	
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your 
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms 
+    of your choice, provided that you follow these specific guidelines: 
+
+	- You also meet the terms and conditions of the license of each 
+	  independent module 
+	- You must not alter the default display of the Slatwall name or logo from  
+	  any part of the application 
+	- Your custom code must not alter or create any files inside Slatwall, 
+	  except in the following directories:
+		/integrationServices/
+
+	You may copy and distribute the modified version of this program that meets 
+	the above guidelines as a combined work under the terms of GPL for this program, 
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
+    
+    If you modify this program, you may extend this exception to your version 
+    of the program, but you are not obligated to do so.
+
+Notes:
+
+*/
+
+component extends="HibachiService" accessors="true" {
+	
+	// ===================== START: Logical Methods ===========================
+	public any function getRelatedEntityForAudit(any audit) {
+		// TODO What if the entity has been deleted? Or perhaps all of the prior related audit logs shouldn't even exist so this would never be a problem?
+		return getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod("get#arguments.audit.getBaseObject()#", {1=arguments.audit.getBaseID()});
+	}
+	
+	public any function newAudit() {
+		var audit = super.newAudit();
+		audit.setAuditDateTime(now());
+		audit.setIPAddress(CGI.REMOTE_ADDR);
+		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+			audit.setSessionAccount( getHibachiScope().getAccount() );	
+		}
+		
+		return audit;
+	}
+	
+	public void function logAccountActivity(string auditType) {
+		if (listFindNoCase("login,logout", arguments.auditType)) {
+			var audit = this.newAudit();
+			audit.setAuditType(arguments.auditType);
+			this.saveAudit(audit);
+		}
+	}
 	
 	public any function logEntityAuditData(any entity, struct oldData) {
 		if (arguments.entity.getAuditableFlag()) {
@@ -13,7 +87,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 			
 			// Audit type is create when no old data available or no previous audit log data available
-			if (isNull(arguments.oldData) || !arraylen(arguments.entity.getAuditLog())) {
+			if (isNull(arguments.oldData) || (arguments.entity.getAuditSmartList().getRecordsCount()  == 0)) {
 				audit.setAuditType("create");
 				
 				// Remove oldData from arguments if it was provided because it is not applicable for property change data
@@ -28,16 +102,6 @@ component accessors="true" output="false" extends="HibachiService" {
 			audit.setData(serializeJSON(generatePropertyChangeDataForEntity(argumentCollection=arguments)));
 			this.saveAudit(audit);
 		}
-	}
-	
-	public any function processAudit_rollback(required any audit, required any processObject) {
-		// TODO implement processAudit_rollback method
-		// determine which entity audit corresponds to
-		// grab entity's audit log
-		// inspect processing object to determine which audit entry to rollback to
-		// calculate the changes for rollback
-		// call populate on entity and save
-		throw(message="HibachiAuditService has not implemented 'processAudit_rollback'.");
 	}
 	
 	public struct function generatePropertyChangeDataForEntity(any entity, struct oldData) {		
@@ -209,9 +273,44 @@ component accessors="true" output="false" extends="HibachiService" {
 		return standardizedValue;
 	}
 	
-	public array function getAuditLogForEntity( required string baseID ) {
-		// Find file relationships for base object entity
-		return this.listAudit(arguments);
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	public any function processAudit_rollback(required any audit, required any processObject) {
+		// TODO implement processAudit_rollback method
+		// determine which entity audit corresponds to
+		// grab entity's audit log
+		// inspect processing object to determine which audit entry to rollback to
+		// calculate the changes for rollback
+		// call populate on entity and save
+		throw(message="HibachiAuditService has not implemented 'processAudit_rollback'.");
 	}
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Status Methods ===========================
+	
+	// ======================  END: Status Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
+	
+	// ===================== START: Delete Overrides ==========================
+	
+	// =====================  END: Delete Overrides ===========================
 	
 }

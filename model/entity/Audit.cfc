@@ -54,11 +54,11 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	property name="auditDateTime" ormtype="timestamp";
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
-	property name="data" ormType="string" length="4000";
+	property name="data" ormType="string" length="8000";
 	property name="ipAddress" ormType="string";
 	
 	// TODO future scheduled date
-	// TODO one-to-many comment relationship
+	// TODO comment
 	
 	// Calculated Properties
 
@@ -76,6 +76,8 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// Audit Properties
 	
 	// Non-Persistent Properties
+	property name="summary" type="string" persistent="false";
+	property name="relatedEntity" type="any" persistent="false";
 	
 	// Deprecated Properties
 
@@ -85,6 +87,27 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public function getSummary() {
+		if (!structKeyExists(variables, "summary")) {
+			// TODO This is where the magic will start to happen. We probably will want to delegate the summary to the related entity or appropriate service method so it can generate something meaningful with the audit data?
+			try {
+				variables.summary = getRelatedEntity().getSimpleRepresentation();
+			} catch (any e) {
+				variables.summary = rbKey("entity.audit.nosummary");
+			}
+		}
+		
+		return variables.summary;
+	}
+	
+	public function getRelatedEntity() {
+		if (!structKeyExists(variables, "relatedEntity")) {
+			variables.relatedEntity = getService("HibachiAuditService").getRelatedEntityForAudit(this);
+		}
+		
+		return variables.relatedEntity;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
