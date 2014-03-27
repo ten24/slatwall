@@ -68,23 +68,4 @@ Notes:
 		<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
 
 	</cf_HibachiEntityDetailForm>
-	
-	<!-- TODO[jubs] :
-	Steps: 
-	-Figure out where exactly this should be. 
-	-Create a dummy tax integration. 
-		-Figure out what data would be needed to generate tax
-		-Figure out how to gather that data and input it into the Vertex Dummy Method
-	*This is where I believe I need to go next. 
-	-->
-
-	<cf_HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.taxcategory')#" icon="plus" buttonClass="btn-inverse">
-		<cfset local.integrationOptions = rc.taxCategory.getTaxCategoryRateIntegrationOptions()>
-		<cfloop array="#local.integrationOptions#" index="local.integration">
-			<cf_HibachiActionCaller text="#local.integration['name']# #request.slatwallScope.rbKey('define.rate')#" action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#&integrationID=#local.integration['value']#" modal="true" />
-		</cfloop>
-		<cf_HibachiActionCaller action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" modal="true" />
-	</cf_HibachiActionCallerDropdown>
-
-
 </cfoutput>

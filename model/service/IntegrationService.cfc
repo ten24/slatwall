@@ -120,6 +120,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
+	//                
+	// Added this here
+	public any function getTaxIntegrationCFC(required any integration) {
+		if(!structKeyExists(variables.taxIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
+			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Tax").init();
+			variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
+		}
+		return variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+	}
 	
 	public any function updateIntegrationsFromDirectory( required any beanFactory ) {
 		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
@@ -227,6 +236,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var isl = this.getIntegrationSmartList();
 		isl.addFilter('activeFlag', 1);
 		isl.addFilter('installedFlag', 1);
+		isl.addLikeFilter('integrationPackage', '%Authentication%');
 		
 		var authInts = isl.getRecords();
 		for(var i=1; i<=arrayLen(authInts); i++) {

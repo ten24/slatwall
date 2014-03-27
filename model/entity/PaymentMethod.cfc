@@ -182,6 +182,7 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 			if(!isNull(getPaymentMethodType())) {
 				var optionsSL = getService("integrationService").getIntegrationSmartList();
 				optionsSL.addFilter('installedFlag', '1');
+				optionsSL.addLikeFilter('integrationPackage', '%Payment%');
 				optionsSL.addFilter('activeFlag', '1');
 				
 				for(var i=1; i<=arrayLen(optionsSL.getRecords()); i++) {

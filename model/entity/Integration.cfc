@@ -84,7 +84,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 		return variables.shippingMethodOptions;
 	}
 	
-	
+	// Added Tax IntegrationCFC
 	public any function getIntegrationCFC( string integrationType="" ) {
 		switch (arguments.integrationType) {
 			case "authentication" : {
@@ -97,6 +97,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 			}
 			case "shipping" : {
 				return getService("integrationService").getShippingIntegrationCFC(this);
+				break;
+			}
+			case "tax" : {
+				return getService("integrationService").getTaxIntegrationCFC(this);
 				break;
 			}
 			default : {

@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,28 +45,37 @@
 
 Notes:
 
---->
-<cfparam name="rc.taxCategory" type="any" />
-
-<cf_HibachiListingDisplay smartList="#rc.taxCategory.getTaxCategoryRatesSmartList()#"
-						   recordEditAction="admin:entity.edittaxcategoryrate"
-						   recordEditQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#"
-						   recordEditModal=true
-						   recordDetailAction="admin:entity.detailtaxcategoryrate"
-						   recordDetailQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#"
-						   recordDetailModal=true
-						   recordDeleteAction="admin:entity.deletetaxcategoryrate"
-						   recordDeleteQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#&redirectAction=admin:entity.detailtaxcategory">
+*/
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+	
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "tax";
+	}
+	
+	public string function getDisplayName() {
+		return "Vertex";
+	}
+	
+	public struct function getSettings() {
+		var settings = {
+			accountNo = {fieldType="text"},
+			password = {fieldType="password", encryptValue=true},
+			transactionKey = {fieldType="text"},
+			meterNo = {fieldType="text"},
+			productType = {fieldType="text"},
+			testingFlag = {fieldType="yesno", defaultValue="1"},
+			shipperStreet = {fieldType="text"},
+			shipperCity = {fieldType="text"},
+			shipperStateCode = {fieldType="text"},
+			shipperPostalCode = {fieldType="text"},
+			shipperCountryCode = {fieldType="text"}
+		};
 		
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxRate" />
-	<cf_HibachiListingColumn propertyIdentifier="addressZone.addressZoneName" />
-</cf_HibachiListingDisplay>
-
-
-<cf_HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.taxcategory')#" icon="plus" buttonClass="btn-inverse">
-	<cfset local.integrationOptions = rc.taxCategory.getTaxCategoryRateIntegrationOptions()>
-	<cfloop array="#local.integrationOptions#" index="local.integration">
-		<cf_HibachiActionCaller text="#local.integration['name']# #request.slatwallScope.rbKey('define.rate')#" action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#&integrationID=#local.integration['value']#" modal="true" />
-	</cfloop>
-	<cf_HibachiActionCaller action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" modal="true" />
-</cf_HibachiActionCallerDropdown>
+		return settings;
+	}
+	
+}
