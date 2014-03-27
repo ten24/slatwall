@@ -48,6 +48,7 @@ Notes:
 --->
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
+	<cfparam name="attributes.auditTypeList" type="string" default="create,update" />
 	<cfparam name="attributes.baseObjectList" type="string" default="" />
 	<cfparam name="attributes.object" type="any" default="" />
 	<cfparam name="attributes.recordsShow" type="string" default="10" hint="This is the total number of audit records to display" />
@@ -71,6 +72,10 @@ Notes:
 		<cfif listLen(attributes.baseObjectList)>
 			<cfset thisTag.auditSmartList.addInFilter("baseObject", attributes.baseObjectList) />
 		</cfif>
+	</cfif>
+	
+	<cfif listLen(attributes.auditTypeList)>
+		<cfset thisTag.auditSmartList.addInFilter("auditType", attributes.auditTypeList) />
 	</cfif>
 	
 	<cfset thisTag.auditSmartList.addOrder("auditDateTime|DESC") />
