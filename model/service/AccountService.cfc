@@ -58,7 +58,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="siteService" type="any";
 	property name="loyaltyService" type="any";
 	property name="validationService" type="any";
-	
+	property name="orderService" type="any";
 	
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -150,6 +150,28 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		}
+		
+		
+		
+		// Loop over all account payments and link them to the AccountPaymentApplied object
+		for (appliedOrderPayment in processObject.getAppliedOrderPayments()) {
+			
+			if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
+
+				var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+				
+				var newAccountPaymentApplied = this.newAccountPaymentApplied();
+				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
+				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
+				
+				// Link to the order payment if the payment is assigned to a term order
+				if(!isNull(orderPayment)) {
+					newAccountPaymentApplied.setOrderPayment( orderPayment );
+				}
+			}
+		}
+		
+		
 		
 		// Save the newAccountPayment
 		newAccountPayment = this.saveAccountPayment( newAccountPayment );

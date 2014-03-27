@@ -142,7 +142,7 @@ Notes:
 			
 		</cf_HibachiPropertyRow>
 		
-		<cfset orderList = rc.account.getTermOrderPaymentsByDueDateSmartList() />
+		<cfset orderPaymentList = rc.account.getTermOrderPaymentsByDueDateSmartList() />
 
 		<br /><br />
 		<table class="table table-striped table-bordered table-condensed">
@@ -154,21 +154,28 @@ Notes:
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetDueDate')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAmount')#</th>
 			</tr>
-				
-			<cfloop array="#orderList.getRecords()#" index="orderItem">
+			<cfset i=0 />
+			<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
+				<cfset i++ />
 				<tr>
-					<td>#orderItem.getOrder().getOrderNumber()#</td>
-					<td>#orderItem.getPaymentTerm().getPaymentTermName()#</td>
-					<td>#orderItem.getOrder().getPaymentAmountReceivedTotal()#</td>
-					<td>#orderItem.getOrder().getPaymentAmountDue()#</td>
-					<td>#orderItem.getFormattedValue('paymentDueDate', 'date' )#</td>
-					<td><input type="text" name="toBePaid" value="" class="span1" /></td>
+					<td>#orderPayment.getOrder().getOrderNumber()#</td>
+					<td>#orderPayment.getPaymentTerm().getPaymentTermName()#</td>
+					<td>#orderPayment.getOrder().getPaymentAmountReceivedTotal()#</td>
+					<td>#orderPayment.getOrder().getPaymentAmountDue()#</td>
+					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
+					<td>
+						<input type="text" name="appliedOrderPayments[#i#].amount" value="" class="span1" />
+						<input type="hidden" name="appliedOrderPayments[#i#].orderPaymentID" value="#orderPayment.getOrderPaymentID()#" />
+					</td>
 				</tr>
 			</cfloop>
 				
 			<tr>
 				<td colspan="5"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
-				<td><input type="text" name="toBePaid" value="" class="span1" /></td>
+				<td>
+					<input type="text" name="appliedOrderPayments[#i+1#].amount" value="" class="span1" />
+					<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value="" />
+				</td>
 			</tr>	
 				
 		</table>
