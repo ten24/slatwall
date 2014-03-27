@@ -70,6 +70,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.publicMethods=listAppend(this.publicMethods, 'forgotPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'resetPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'setupInitialAdmin');
+	this.publicMethods=listAppend(this.publicMethods, 'changeLanguage');
 	
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'default');
@@ -242,6 +243,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		
 		login( rc );
+	}
+	
+	public void function changeLanguage( required struct rc ){
+		param name="arguments.rc.rbLocale" default="";
+		param name="arguments.rc.redirectURL" default="";
+		
+		arguments.rc.$.slatwall.getSession().setRBLocale(arguments.rc.rbLocale);
+		arguments.rc.$.slatwall.setPersistSessionFlag( true );
+		
+		getFW().redirectExact( rc.redirectURL );
+		
 	}
 }
 
