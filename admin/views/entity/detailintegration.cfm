@@ -57,9 +57,6 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
-				
-				<!--- TODO[jubs] : Remove all these, and just add activeFlag --->
-				<!--- TODO[jubs] : Add this --->
 				<cf_HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" />
 				
 			</cf_HibachiPropertyList>
@@ -69,7 +66,7 @@ Notes:
 		
 		<cf_HibachiTabGroup object="#rc.integration#">
 			<cf_HibachiTab view="admin:entity/integrationtabs/settings" />
-			<!--- <cf_HibachiTab view="admin:entity/integrationtabs/paymenttest" /> --->
+			<cf_HibachiTab view="admin:entity/integrationtabs/paymenttest" />
 		</cf_HibachiTabGroup>
 		
 	</cf_HibachiEntityDetailForm>
