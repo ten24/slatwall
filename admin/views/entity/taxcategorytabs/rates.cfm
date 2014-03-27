@@ -63,4 +63,3 @@ Notes:
 </cf_HibachiListingDisplay>
 
 <cf_HibachiActionCaller action="admin:entity.createtaxcategoryrate" class="btn" icon="plus" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" modal=true />
-
