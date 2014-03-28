@@ -534,7 +534,9 @@
 			
 			<cfset var dataSeriesID = 0 />
 			<cfset var chartRow = 0 />
-						
+			
+			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, "#getReportEndDateTime()#") />			
+			
 			<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
 				
 				<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
@@ -552,7 +554,7 @@
 					<cfset variables.chartData["series"][dataSeriesID]["type"] = "area" />
 				</cfif>
 				
-				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#getReportEndDateTime()#" datepart="#loopdatepart#">
+				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#reportEndDateTimePlusOne#" datepart="#loopdatepart#">
 					<cfset var thisData = [] />
 					<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
 					<cfif year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow] and 
