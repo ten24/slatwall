@@ -34,8 +34,8 @@
 		"sku":							[{"required":true}],
 		"orderFulfillmentID":			[],
 		"orderReturnID":				[],
-		"quantity":						[{"required":true,"dataType":"numeric","minValue":1}],
-		"price":						[{"required":true,"dataType":"numeric","minValue":0,"lteProperty":"sku.qats"}],
+		"quantity":						[{"required":true,"dataType":"numeric","minValue":1,"lteProperty":"sku.qats"}],
+		"price":						[{"required":true,"dataType":"numeric","minValue":0}],
 		"emailAddress":					[{"dataType":"email"}]
 		
 	},
