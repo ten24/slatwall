@@ -1,1 +1,0 @@
-<cfset this.name="slatwall-develop" />
