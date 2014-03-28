@@ -55,6 +55,11 @@ Notes:
 	<cf_HibachiMessageDisplay />
 	
 	<div class="row-fluid">
+		<div class="span12">
+			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
+			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="30" />
+		</div>
+		<!---
 		<div class="span6">
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.orderSmartList#" 
@@ -69,7 +74,9 @@ Notes:
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
 			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="30" />
 		</div>
+		--->
 	</div>
+	<!---
 	<div class="row-fluid">
 		<div class="span4">
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.recentproductupdates")#</h5>
@@ -101,4 +108,5 @@ Notes:
 			</cf_HibachiListingDisplay>
 		</div>
 	</div>
+	--->
 </cfoutput>

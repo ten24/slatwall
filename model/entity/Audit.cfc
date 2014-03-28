@@ -50,7 +50,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// Persistent Properties
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="auditType" ormType="string"; // create, update, delete, rollback, merge, scheduleUpdate, login, logout
+	property name="auditType" ormType="string" hb_formatType=""; // create, update, delete, rollback, merge, scheduleUpdate, login, logout
 	property name="auditDateTime" ormtype="timestamp";
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
@@ -100,6 +100,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 		
 		return variables.summary;
 	}
+	
 	
 	public function getRelatedEntity() {
 		if (!structKeyExists(variables, "relatedEntity")) {

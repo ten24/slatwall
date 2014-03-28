@@ -78,6 +78,13 @@ Notes:
 		<cfset thisTag.auditSmartList.addInFilter("auditType", attributes.auditTypeList) />
 	</cfif>
 	
+	<!---
+		
+		SELECT a FROM SlatwallAudit a INNER JOIN FETCH
+		
+	--->
+	
+	
 	<cfset thisTag.auditSmartList.addOrder("auditDateTime|DESC") />
 	
 	<!--- Display page or all --->
@@ -93,34 +100,38 @@ Notes:
 	<cfoutput>
 		<table class="table table-striped table-bordered table-condensed">
 			<tbody>
+				<!---
 				<tr>
-					<th>#attributes.hibachiScope.rbKey("entity.audit.auditDateTime")#</th>
-					<th class="primary">#attributes.hibachiScope.rbKey("entity.audit.auditType")#</th>
 					
-					<!--- Unnecessary to display base object column when using attribute.object --->
-					<cfif thisTag.mode neq "object">
-						<th>#attributes.hibachiScope.rbKey("entity.audit.baseObject")#</th>
-						<cfset thisTag.columnCount++ />
-					</cfif>
-					<th>#attributes.hibachiScope.rbKey("define.summary")#</th>
+					<th>#attributes.hibachiScope.rbKey("entity.audit.auditDateTime")#</th>
+					<th class="primary"></th>
 					<th>#attributes.hibachiScope.rbKey("entity.define.changedByAccount")#</th>
 					<th class="admin admin2">&nbsp;</th>
+					
 				</tr>
+				--->
 				
 				<cfif arraylen(thisTag.auditArray)>
 					<cfloop array="#thisTag.auditArray#" index="currentAudit">
 						<tr>
-							<td>#currentAudit.getFormattedValue("auditDateTime")#</td>
-							<td>#currentAudit.getAuditType()#</td>
-							
-							<!--- Unnecessary to display base object column when using attribute.object --->
-							<cfif thisTag.mode neq "object">
-								<td>#currentAudit.getBaseObject()#</td>
-							</cfif>
-							<!---<td>#currentAudit.getData()#</td>--->
-							<td>#currentAudit.getSummary()#</td>
-							<td>#currentAudit.getSessionAccount().getSimpleRepresentation()#</td>
-							<td class="admin admin2">&nbsp;</td>
+							<td><strong>#currentAudit.getFormattedValue("auditDateTime")#</strong><br />
+								#currentAudit.getSessionAccount().getFullName()#
+							</td>
+							<td class="primary">
+								<cfif thisTag.mode neq 'object'>#currentAudit.getBaseObject()#</strong> #currentAudit.getSummary()#<br /></cfif>
+								<strong>#currentAudit.getFormattedValue('auditType')#</strong>
+								<cfif currentAudit.getAuditType() eq 'update'>
+									| <cfset dd = deserializeJSON(currentAudit.getData()) />
+									<cfloop collection="#dd.newPropertyData#" item="property">
+										#attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#,
+									</cfloop>
+									 <a href="##">(details)</a>
+								</cfif>
+							</td>
+							<!---
+							<td>#currentAudit.getSessionAccount().getFullName()#</td>
+							<td class="admin admin2">&nbsp;#currentAudit.getData()#</td>
+							--->
 						</tr>
 					</cfloop>
 				<cfelse>
