@@ -60,19 +60,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public void function clearActiveFW1Subsystems() {
 		structDelete(variables, "activeFW1Subsystems");
 	}
-	
+
 	public array function getActiveFW1Subsystems() {
 		if( !structKeyExists(variables, "activeFW1Subsystems") ) {
 			var afs = [];
-			var integrations = this.listIntegration({activeFlag=1, installedFlag=1});
-			for(var i=1; i<=arrayLen(integrations); i++) {
-				arrayAppend(afs, {subsystem=integrations[i].getIntegrationPackage(), name=integrations[i].getIntegrationName()});
+			var integrations = this.getIntegrationSmartList();
+			integrations.addFilter('activeFlag', '1');
+			integrations.addFilter('installedFlag', '1');
+			integrations.addLikeFilter('integrationTypeList', '%fw1%');
+			integrations.addSelect('integrationName', 'name');
+			
+			var fw1Ints = integrations.getRecords();
+			for(var i=1; i<=arrayLen(fw1Ints); i++) {
+				arrayAppend(afs, {subsystem=integrations[i].getIntegrationTypeList(), name=integrations[i].getIntegrationName()});
 			}
 			variables.activeFW1Subsystems = afs;
 		}
 		return variables.activeFW1Subsystems;
-	}
-	
+	}	
+
 	public any function getAllSettingMetaData() {
 		var allSettingMetaData = {};
 		
@@ -120,8 +126,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
-	//                
-	// Added this here
+
 	public any function getTaxIntegrationCFC(required any integration) {
 		if(!structKeyExists(variables.taxIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
 			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Tax").init();
@@ -236,7 +241,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var isl = this.getIntegrationSmartList();
 		isl.addFilter('activeFlag', 1);
 		isl.addFilter('installedFlag', 1);
-		isl.addLikeFilter('integrationPackage', '%Authentication%');
+		isl.addLikeFilter('integrationPackage', '%authentication%');
 		
 		var authInts = isl.getRecords();
 		for(var i=1; i<=arrayLen(authInts); i++) {

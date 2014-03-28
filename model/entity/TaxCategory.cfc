@@ -90,7 +90,7 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	public array function getTaxCategoryRateIntegrationOptions() {
 		var optionsSL = getService("integrationService").getIntegrationSmartList();
 		optionsSL.addFilter('activeFlag', '1');
-		optionsSL.addLikeFilter('integrationTypeList', '%Tax%');
+		optionsSL.addLikeFilter('integrationTypeList', '%tax%');
 		optionsSL.addSelect('integrationName', 'name');
 		optionsSL.addSelect('integrationID', 'value');
 		
