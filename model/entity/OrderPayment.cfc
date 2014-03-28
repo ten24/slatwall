@@ -349,7 +349,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getOriginalAuthorizationCode() {
-		if(!structKeyExists(variables,"originalAuthorizationCode")) {
+		if(!structKeyExists(variables,"originalAuthorizationCode") || !len(variables.originalAuthorizationCode)) {
 			if(!isNull(getReferencedOrderPayment())) {
 				variables.originalAuthorizationCode = getService( "paymentService" ).getOriginalAuthorizationCode( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
 			} else {
@@ -360,7 +360,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getOriginalAuthorizationProviderTransactionID() {
-		if(!structKeyExists(variables,"originalAuthorizationProviderTransactionID")) {
+		if(!structKeyExists(variables,"originalAuthorizationProviderTransactionID") || !len(variables.originalAuthorizationProviderTransactionID)) {
 			if(!isNull(getReferencedOrderPayment())) {
 				variables.originalAuthorizationProviderTransactionID = getService( "paymentService" ).getOriginalAuthorizationProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
 			} else {
@@ -371,7 +371,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getOriginalChargeProviderTransactionID() {
-		if(!structKeyExists(variables,"originalChargeProviderTransactionID")) {
+		if(!structKeyExists(variables,"originalChargeProviderTransactionID") || !len(variables.originalChargeProviderTransactionID)) {
 			if(!isNull(getReferencedOrderPayment())) {
 				variables.originalChargeProviderTransactionID = getService( "paymentService" ).getOriginalChargeProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
 			} else {
@@ -382,7 +382,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getOriginalProviderTransactionID() {
-		if(!structKeyExists(variables,"originalProviderTransactionID")) {
+		if(!structKeyExists(variables,"originalProviderTransactionID") || !len(variables.originalProviderTransactionID)) {
 			if(!isNull(getReferencedOrderPayment())) {
 				variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );	
 			} else {
