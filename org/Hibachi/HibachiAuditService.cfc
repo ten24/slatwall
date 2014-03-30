@@ -74,17 +74,19 @@ component extends="HibachiService" accessors="true" {
 		}
 	}
 	
-	public any function logEntityAuditData(any entity, struct oldData) {
+	public void function logEntityDelete(any entity) {
+		var audit = this.newAudit();
+		audit.setAuditType("delete");
+		audit.setBaseID(arguments.entity.getPrimaryIDValue());
+		audit.setBaseObject(arguments.entity.getClassName());
+		this.saveAudit(audit);
+	}
+	
+	public any function logEntityModify(any entity, struct oldData) {
 		if (arguments.entity.getAuditableFlag()) {
 			var audit = this.newAudit();
 			audit.setBaseID(entity.getPrimaryIDValue());
 			audit.setBaseObject(entity.getClassName());
-			audit.setAuditDateTime(now());
-			audit.setIPAddress(CGI.REMOTE_ADDR);
-			
-			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				audit.setSessionAccount( getHibachiScope().getAccount() );	
-			}
 			
 			// Audit type is create when no old data available or no previous audit log data available
 			if (isNull(arguments.oldData) || (arguments.entity.getAuditSmartList().getRecordsCount()  == 0)) {

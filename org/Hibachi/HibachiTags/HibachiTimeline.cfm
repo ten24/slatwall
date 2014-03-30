@@ -48,7 +48,7 @@ Notes:
 --->
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
-	<cfparam name="attributes.auditTypeList" type="string" default="create,update" />
+	<cfparam name="attributes.auditTypeList" type="string" default="create,update,delete" />
 	<cfparam name="attributes.baseObjectList" type="string" default="" />
 	<cfparam name="attributes.object" type="any" default="" />
 	<cfparam name="attributes.recordsShow" type="string" default="10" hint="This is the total number of audit records to display" />
@@ -121,9 +121,10 @@ Notes:
 								<cfif thisTag.mode neq 'object'>#currentAudit.getBaseObject()#</strong> #currentAudit.getSummary()#<br /></cfif>
 								<strong>#currentAudit.getFormattedValue('auditType')#</strong>
 								<cfif currentAudit.getAuditType() eq 'update'>
-									| <cfset dd = deserializeJSON(currentAudit.getData()) />
-									<cfloop collection="#dd.newPropertyData#" item="property">
-										#attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#,
+									| <cfset data = deserializeJSON(currentAudit.getData()) />
+									<cfset isFirstFlag = true />
+									<cfloop collection="#data.newPropertyData#" item="property">
+										<cfif not isFirstFlag>,</cfif> #attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#
 									</cfloop>
 									 <a href="##">(details)</a>
 								</cfif>

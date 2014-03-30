@@ -700,7 +700,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		
-		getService("hibachiAuditService").logEntityAuditData(entity=this);
+		getService("hibachiAuditService").logEntityModify(entity=this);
 	}
 	
 	public void function preUpdate(struct oldData){
@@ -736,7 +736,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		// Manually populate primary ID in old data because it doesn't exist by default
 		arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
 		
-		getService("hibachiAuditService").logEntityAuditData(entity=this, oldData=arguments.oldData);
+		getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+	}
+	
+	public void function preDelete() {
+		getService("hibachiAuditService").logEntityDelete(this);
 	}
 	
 	/*
