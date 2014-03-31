@@ -126,7 +126,9 @@ Notes:
 									<cfloop collection="#data.newPropertyData#" item="property">
 										<cfif not isFirstFlag>,</cfif> #attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#
 									</cfloop>
-									 <a href="##">(details)</a>
+									 <a href="##">(Details)</a>
+									 <cf_HibachiProcessCaller action="admin:entity.preProcessAudit" entity="#currentAudit#" processContext="rollback" type="link" modal="true" />
+									 <!--- <cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOnHold" type="list" modal="true" /> --->
 								</cfif>
 							</td>
 							<!---

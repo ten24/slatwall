@@ -56,6 +56,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// New Properties
 
 	// Data Properties (ID's)
+	property name="rollbackAudit" hb_rbKey="entity.audit.rollbackPoint" hb_formFieldType="select";
 	
 	// Data Properties (Inputs)
 	
@@ -64,6 +65,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Object / Array Populate)
 	
 	// Option Properties
+	property name="rollbackAuditOptions";
 	
 	// Helper Properties
 	
@@ -80,6 +82,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ==================  END: New Property Helpers =======================
 	
 	// ====================== START: Data Options ==========================
+	
+	public array function getRollbackAuditOptions() {
+		if (!structKeyExists(variables, "rollbackAuditIDOptions")) {
+			variables.rollbackAuditIDOptions = [];
+			
+			var sl = getAudit().getRelatedEntity().getAuditSmartList();
+			// options include all audits of the related entity except the audit currently being processed
+			sl.addWhereCondition("auditID <> :auditID", {auditID=getAudit().getAuditID()});
+			for (var currentAudit in sl.getRecords()) {
+				arrayAppend(variables.rollbackAuditIDOptions, {name="#currentAudit.getFormattedValue('auditDateTime')# | #currentAudit.getAuditID()#", value=currentAudit.getAuditID()});
+			}
+		}
+		
+		return variables.rollbackAuditIDOptions;
+	}
 	
 	// ======================  END: Data Options ===========================
 	

@@ -290,7 +290,7 @@ component extends="HibachiService" accessors="true" {
 		// inspect processing object to determine which audit entry to rollback to
 		// calculate the changes for rollback
 		// call populate on entity and save
-		throw(message="HibachiAuditService has not implemented 'processAudit_rollback'.");
+		throw(message="We are rolling back to '#arguments.processObject.getRollbackAudit().getAuditID()#'.");
 	}
 	
 	// =====================  END: Process Methods ============================
