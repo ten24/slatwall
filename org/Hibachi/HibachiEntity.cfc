@@ -253,6 +253,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public any function getAuditSmartList() {
 		variables.auditLogSmartList = getService("hibachiAuditService").getAuditSmartList();
 		variables.auditLogSmartList.addFilter("baseID", getPrimaryIDValue());
+		variables.auditLogSmartList.addOrder("auditDateTime|DESC");
 		return variables.auditLogSmartList;
 	}
 	
