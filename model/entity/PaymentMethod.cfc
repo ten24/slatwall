@@ -184,17 +184,24 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 				optionsSL.addFilter('installedFlag', '1');
 				optionsSL.addLikeFilter('integrationTypeList', '%payment%');
 				optionsSL.addFilter('activeFlag', '1');
-				
+				//Added This
+				optionsSL.addSelect('integrationName', 'name');
+				optionsSL.addSelect('integrationID', 'id');
+				variables.paymentIntegrationOptions = optionsSL.getRecord();
+				//Subtracted This
+				/*
 				for(var i=1; i<=arrayLen(optionsSL.getRecords()); i++) {
 					if(listFindNoCase(optionsSL.getRecords()[i].getIntegrationCFC("payment").getPaymentMethodTypes(), getPaymentMethodType())) {
 						arrayAppend(variables.paymentIntegrationOptions, {name=optionsSL.getRecords()[i].getIntegrationName(), value=optionsSL.getRecords()[i].getIntegrationID()});	
 					}
-				}	
-			}
+				*/
+			}	
 		}
-		
 		return variables.paymentIntegrationOptions;
 	}
+		
+		
+	
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		

@@ -63,18 +63,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public array function getActiveFW1Subsystems() {
 		if( !structKeyExists(variables, "activeFW1Subsystems") ) {
-			var afs = [];
-			var integrations = this.getIntegrationSmartList();
-			integrations.addFilter('activeFlag', '1');
-			integrations.addFilter('installedFlag', '1');
-			integrations.addLikeFilter('integrationTypeList', '%fw1%');
-			integrations.addSelect('integrationName', 'name');
-			
-			var fw1Ints = integrations.getRecords();
-			for(var i=1; i<=arrayLen(fw1Ints); i++) {
-				arrayAppend(afs, {subsystem=integrations[i].getIntegrationTypeList(), name=integrations[i].getIntegrationName()});
-			}
-			variables.activeFW1Subsystems = afs;
+			var integrationSmartlist = this.getIntegrationSmartList();
+			integrationSmartlist.addFilter('activeFlag', '1');
+			integrationSmartlist.addFilter('installedFlag', '1');
+			integrationSmartlist.addLikeFilter('integrationTypeList', '%fw1%');
+			integrationSmartlist.addSelect('integrationName', 'name');
+			integrationSmartlist.addSelect('integrationPackage', 'package');
+			variables.activeFW1Subsystems = integrationSmartlist.getRecords();
 		}
 		return variables.activeFW1Subsystems;
 	}	
