@@ -186,8 +186,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getOrderNumber() {
 		if(isNull(variables.orderNumber)) {
-			variables.orderNumber = "";
 			confirmOrderNumberOpenDateCloseDatePaymentAmount();
+			if(isNull(variables.orderNumber)) {
+				return "";
+			}
 		}
 		return variables.orderNumber;
 	}
