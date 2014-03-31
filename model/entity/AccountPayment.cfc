@@ -221,7 +221,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var totalAmt = 0;
 		
 		for(var i=1; i<=arrayLen(getAppliedAccountPayments()); i++) {
-			totalAmt = precisionEvauate(totalAmt + getAppliedAccountPayments()[i].amount());
+			totalAmt = precisionEvaluate(totalAmt + getAppliedAccountPayments()[i].getAmount());
 		}
 		
 		return totalAmt;

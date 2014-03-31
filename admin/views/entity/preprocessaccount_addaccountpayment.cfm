@@ -160,8 +160,8 @@ Notes:
 				<tr>
 					<td>#orderPayment.getOrder().getOrderNumber()#</td>
 					<td>#orderPayment.getPaymentTerm().getPaymentTermName()#</td>
-					<td>#orderPayment.getOrder().getPaymentAmountReceivedTotal()#</td>
-					<td>#orderPayment.getOrder().getPaymentAmountDue()#</td>
+					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountReceivedTotal')#</td>
+					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
 					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
 					<td>
 						<input type="text" name="appliedOrderPayments[#i#].amount" value="" class="span1" />

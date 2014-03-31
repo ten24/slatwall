@@ -168,11 +168,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(!isNull(orderPayment)) {
 					newAccountPaymentApplied.setOrderPayment( orderPayment );
 				}
+				// Save the account payment applied
+				newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied ); 
 			}
 		}
-		
-		
-		
+
 		// Save the newAccountPayment
 		newAccountPayment = this.saveAccountPayment( newAccountPayment );
 		
