@@ -57,7 +57,7 @@ Notes:
 	
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="rollbackAudit.auditID" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="rollbackAudit" fieldName="rollbackAudit.auditID" edit="#rc.edit#">
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 	
