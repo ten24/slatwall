@@ -108,20 +108,20 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	
 	// Account Payment (many-to-one)    
 	public void function setOrderPayment(required any orderPayment) {    
-		variables.accountPayment = arguments.accountPayment;    
-		if(isNew() or !arguments.accountPayment.hasAppliedAccountPayment( this )) {    
-			arrayAppend(arguments.accountPayment.getAppliedAccountPayments(), this);    
+		variables.orderPayment = arguments.orderPayment;    
+		if(isNew() or !arguments.orderPayment.hasAppliedAccountPayment( this )) {    
+			arrayAppend(arguments.orderPayment.getAppliedAccountPayments(), this);    
 		}    
 	}    
 	public void function removeOrderPayment(any orderPayment) {    
-		if(!structKeyExists(arguments, "accountPayment")) {    
-			arguments.accountPayment = variables.accountPayment;    
+		if(!structKeyExists(arguments, "orderPayment")) {    
+			arguments.accountPayment = variables.orderPayment;    
 		}    
-		var index = arrayFind(arguments.accountPayment.getAppliedAccountPayments(), this);    
+		var index = arrayFind(arguments.orderPayment.getAppliedAccountPayments(), this);    
 		if(index > 0) {    
-			arrayDeleteAt(arguments.accountPayment.getAppliedAccountPayments(), index);    
+			arrayDeleteAt(arguments.orderPayment.getAppliedAccountPayments(), index);    
 		}    
-		structDelete(variables, "accountPayment");    
+		structDelete(variables, "orderPayment");    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
