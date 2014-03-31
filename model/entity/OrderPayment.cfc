@@ -560,6 +560,14 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		arguments.referencingOrderPayment.removeReferencedOrderPayment( this );    
 	}
 	
+	// Applied Account Payments (one-to-many)    
+	public void function addAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.setOrderPayment( this );    
+	}    
+	public void function removeAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.removeOrderPayment( this );    
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

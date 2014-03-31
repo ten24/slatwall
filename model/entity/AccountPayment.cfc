@@ -373,6 +373,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		arguments.attributeValue.removeAccountPayment( this );    
 	}
 	
+	// Applied Account Payments (one-to-many)    
+	public void function addAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.setAccountPayment( this );    
+	}    
+	public void function removeAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.removeAccountPayment( this );    
+	}
+	
 	// Account (many-to-one)
 	public void function setAccount(required any account) {
 		variables.account = arguments.account;

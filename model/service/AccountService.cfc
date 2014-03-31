@@ -162,12 +162,14 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				var newAccountPaymentApplied = this.newAccountPaymentApplied();
 				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
+				
 				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
 				
 				// Link to the order payment if the payment is assigned to a term order
 				if(!isNull(orderPayment)) {
 					newAccountPaymentApplied.setOrderPayment( orderPayment );
 				}
+				
 				// Save the account payment applied
 				newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied ); 
 			}
@@ -178,11 +180,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there are errors in the newAccountPayment after save, then add them to the account
 		if(newAccountPayment.hasErrors()) {
+			WriteDump("Error!");
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
 			
 		// If no errors, then we can process a transaction
 		} else {
-			
+			WriteDump("No Error!");
 			var transactionData = {
 				amount = newAccountPayment.getAmount()
 			};
@@ -198,7 +201,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
-				
 		}
 		
 		return arguments.account;

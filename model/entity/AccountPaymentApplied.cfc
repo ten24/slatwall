@@ -88,6 +88,42 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Account Payment (many-to-one)    
+	public void function setAccountPayment(required any accountPayment) {    
+		variables.accountPayment = arguments.accountPayment;    
+		if(isNew() or !arguments.accountPayment.hasAppliedAccountPayment( this )) {    
+			arrayAppend(arguments.accountPayment.getAppliedAccountPayments(), this);    
+		}    
+	}    
+	public void function removeAccountPayment(any accountPayment) {    
+		if(!structKeyExists(arguments, "accountPayment")) {    
+			arguments.accountPayment = variables.accountPayment;    
+		}    
+		var index = arrayFind(arguments.accountPayment.getAppliedAccountPayments(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.accountPayment.getAppliedAccountPayments(), index);    
+		}    
+		structDelete(variables, "accountPayment");    
+	}
+	
+	// Account Payment (many-to-one)    
+	public void function setOrderPayment(required any orderPayment) {    
+		variables.accountPayment = arguments.accountPayment;    
+		if(isNew() or !arguments.accountPayment.hasAppliedAccountPayment( this )) {    
+			arrayAppend(arguments.accountPayment.getAppliedAccountPayments(), this);    
+		}    
+	}    
+	public void function removeOrderPayment(any orderPayment) {    
+		if(!structKeyExists(arguments, "accountPayment")) {    
+			arguments.accountPayment = variables.accountPayment;    
+		}    
+		var index = arrayFind(arguments.accountPayment.getAppliedAccountPayments(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.accountPayment.getAppliedAccountPayments(), index);    
+		}    
+		structDelete(variables, "accountPayment");    
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
