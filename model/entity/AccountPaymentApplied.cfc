@@ -143,6 +143,12 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+	public string function getSimpleRepresentationPropertyName() {
+		return "accountPaymentAppliedID";
+	}
+	public any function getSimpleRepresentation() {
+		return getFormattedValue('accountPaymentAppliedID');
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

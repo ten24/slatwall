@@ -158,6 +158,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
 
+				WriteDump(appliedOrderPayment.orderPaymentID);
+				abort;
+
 				var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
 				
 				var newAccountPaymentApplied = this.newAccountPaymentApplied();
