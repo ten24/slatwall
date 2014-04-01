@@ -106,7 +106,7 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 		structDelete(variables, "accountPayment");    
 	}
 	
-	// Account Payment (many-to-one)    
+	// Order Payment (many-to-one)    
 	public void function setOrderPayment(required any orderPayment) {    
 		variables.orderPayment = arguments.orderPayment;    
 		if(isNew() or !arguments.orderPayment.hasAppliedAccountPayment( this )) {    
