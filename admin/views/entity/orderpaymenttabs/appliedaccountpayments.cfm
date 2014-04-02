@@ -49,17 +49,15 @@ Notes:
 <cfparam name="rc.orderPayment" type="any" />
 
 <cfoutput>
+
 	<cf_HibachiListingDisplay smartList="#rc.orderPayment.getAppliedAccountPaymentsSmartList()#"
 			recordDetailAction="admin:entity.detailaccountpaymentapplied"
 			recordDetailModal="true">
 			
+			
 		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<cf_HibachiListingColumn propertyIdentifier="accountpayment.paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="accountpayment.paymentTransactions.transactionType" />
 		<cf_HibachiListingColumn propertyIdentifier="amount" />	
-		<cf_HibachiListingColumn propertyIdentifier="orderpayment.amountAuthorized" />
-		<cf_HibachiListingColumn propertyIdentifier="orderpayment.amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="orderpayment.amountCredited" />
 		
 	</cf_HibachiListingDisplay>
 </cfoutput>
