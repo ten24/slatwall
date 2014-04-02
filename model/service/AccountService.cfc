@@ -154,7 +154,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		
 		// Loop over all account payments and link them to the AccountPaymentApplied object
-		for (appliedOrderPayment in processObject.getAppliedOrderPayments()) {
+		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
 			
 			if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
 				var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
@@ -167,6 +167,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Link to the order payment if the payment is assigned to a term order
 				if(!isNull(orderPayment)) {
 					newAccountPaymentApplied.setOrderPayment( orderPayment );
+					
+					
+					
 				}
 				
 				// Save the account payment applied
@@ -198,6 +201,23 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
+			
+			//Loop over the newaccountpayment.getAppliedPayments
+			for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
+				if(!IsNull(appliedAccountPayment.getOrderPayment())) {
+					transactionData = {
+						amount = appliedAccountPayment.getAmount()
+					};
+					
+					if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
+						transactionData.transactionType = 'receive';
+					} else {
+						transactionData.transactionType = 'credit';
+					}
+					
+					getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
+				}
+			}
 		}
 		
 		return arguments.account;
