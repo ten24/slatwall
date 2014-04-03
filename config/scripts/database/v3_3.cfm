@@ -53,7 +53,7 @@ Notes:
 
 <!--- Update accountPayment and move amount into the AccountPaymentApplied table --->
 <cftry>
-	<!---<cfquery name="local.hasTable" dbtype="query">
+	<cfquery name="local.hasTable" dbtype="query">
 		SELECT
 			* 
 		FROM
@@ -62,7 +62,7 @@ Notes:
 			TABLE_NAME = 'SwAccountPaymentApplied'
 	</cfquery>
 	
-	<cfif local.hasTable.recordCount>--->
+	<cfif local.hasTable.recordCount>
 		<cfquery name="local.updateData">
 			SELECT
 				accountPaymentID,
@@ -95,7 +95,7 @@ Notes:
 				)
 			</cfquery>
 		</cfloop>
-	<!---</cfif>--->
+	</cfif>
 	
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update accountPayment and move amount into the AccountPaymentApplied table has error">
