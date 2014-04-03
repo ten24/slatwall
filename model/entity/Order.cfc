@@ -289,7 +289,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				
 				if(orderItem.getQuantityDelivered()) {
 					
-					variables.deliveredItemsAmountTotal = precisionEvaluate('variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getExtendedPriceAfterDiscount())');
+					variables.deliveredItemsAmountTotal = precisionEvaluate('variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getItemTotal())');
 					
 					if(!listFindNoCase(fulfillmentChargeAddedList, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
 						
