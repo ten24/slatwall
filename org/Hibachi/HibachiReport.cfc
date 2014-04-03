@@ -212,6 +212,8 @@
 				<cfreturn metricDefinition />
 			</cfif>
 		</cfloop>
+		
+		<cfreturn getMetricDefinitions()[1] />
 	</cffunction>
 	
 	<cffunction name="getDimensionDefinition" access="public" output="false">
@@ -224,6 +226,8 @@
 				<cfreturn dimensionDefinition />
 			</cfif>
 		</cfloop>
+		
+		<cfreturn getDimensionDefinitions()[1] />
 	</cffunction>
 	
 	<cffunction name="getReportDateTimeDefinition" access="public" output="false">
@@ -236,6 +240,8 @@
 				<cfreturn reportDateTimeDefinition />
 			</cfif>
 		</cfloop>
+		
+		<cfreturn getReportDateTimeDefinitions()[1] />
 	</cffunction>
 	
 	<!--- ==================  END: DEFINITION METHODS ======================== --->
