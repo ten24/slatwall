@@ -50,7 +50,6 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	// Persistent Properties
 	property name="accountPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="amount" ormtype="big_decimal" notnull="true";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
@@ -74,6 +73,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	// Related Object Properties (one-to-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentID" cascade="all-delete-orphan" inverse="true";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentID" cascade="all" inverse="true";
+	property name="appliedAccountPayments" singularname="appliedAccountPayment" cfc="AccountPaymentApplied" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentID" cascade="all" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -89,6 +89,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
+	property name="amount" persistent="false" type="numeric" hb_formatType="currency";
 	property name="amountAuthorized" persistent="false" type="numeric" hb_formatType="currency";
 	property name="amountCredited" persistent="false" type="numeric" hb_formatType="currency";
 	property name="amountReceived" persistent="false" type="numeric" hb_formatType="currency";
@@ -216,6 +217,16 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public numeric function getAmount() {
+		var totalAmt = 0;
+		
+		for(var i=1; i<=arrayLen(getAppliedAccountPayments()); i++) {
+			totalAmt = precisionEvaluate(totalAmt + getAppliedAccountPayments()[i].getAmount());
+		}
+		
+		return totalAmt;
+	}
+	
 	public numeric function getAmountReceived() {
 		var amountReceived = 0;
 		
@@ -223,7 +234,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCharge" ) {
 			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountReceived = precisionEvaluate('amountReceived + getPaymentTransactions()[i].getAmountReceived()');
+				amountReceived = precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived());
 			}
 			
 		}
@@ -238,7 +249,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCredit" ) {
 			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
-				amountCredited = precisionEvaluate('amountCredited + getPaymentTransactions()[i].getAmountCredited()');
+				amountCredited = precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited());
 			}
 			
 		}
@@ -253,7 +264,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if( getAccountPaymentType().getSystemCode() == "aptCharge" ) {
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 				if(isNull(getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) || !getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) {
-					amountAuthorized = precisionEvaluate('amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized()');
+					amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());
 				}
 			}
 		}
@@ -265,7 +276,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var unauthroized = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate('getAmount() - getAmountReceived() - getAmountAuthorized()');
+			unauthroized = precisionEvaluate(getAmount() - getAmountReceived() - getAmountAuthorized());
 		}
 		
 		return unauthroized;
@@ -275,7 +286,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var uncaptured = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncaptured = precisionEvaluate('getAmountAuthorized() - getAmountReceived()');
+			uncaptured = precisionEvaluate(getAmountAuthorized() - getAmountReceived());
 		}
 		
 		return uncaptured;
@@ -285,7 +296,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var unreceived = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unreceived = precisionEvaluate('getAmount() - getAmountReceived()');
+			unreceived = precisionEvaluate(getAmount() - getAmountReceived());
 		}
 		
 		return unreceived;
@@ -295,7 +306,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var uncredited = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = precisionEvaluate('getAmount() - getAmountCredited()');
+			uncredited = precisionEvaluate(getAmount() - getAmountCredited());
 		}
 		
 		return uncredited;
@@ -360,6 +371,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	}    
 	public void function removeAttributeValue(required any attributeValue) {    
 		arguments.attributeValue.removeAccountPayment( this );    
+	}
+	
+	// Applied Account Payments (one-to-many)    
+	public void function addAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.setAccountPayment( this );    
+	}    
+	public void function removeAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.removeAccountPayment( this );    
 	}
 	
 	// Account (many-to-one)

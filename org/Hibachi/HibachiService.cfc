@@ -643,10 +643,13 @@
 			if(!structCount(variables.entitiesMetaData)) {
 				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 				for(var entityName in entityNamesArr) {
-					var entityMetaData = entityNew(entityName).getThisMetaData();
-					var entityShortName = listLast(entityMetaData.fullname, '.');
-					if(structKeyExists(entityMetaData, "persistent") && entityMetaData.persistent) {
-						 variables.entitiesMetaData[ entityShortName ] = entityMetaData;
+					var entity = entityNew(entityName);
+					if(structKeyExists(entity, "getThisMetaData")) {
+						var entityMetaData = entityNew(entityName).getThisMetaData();
+						if(isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname")) {
+							var entityShortName = listLast(entityMetaData.fullname, '.');
+							variables.entitiesMetaData[ entityShortName ] = entityMetaData;
+						}
 					}
 				}
 			}

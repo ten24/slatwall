@@ -119,6 +119,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
+	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);	
@@ -277,7 +278,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public numeric function getTermAccountAvailableCredit() {
 		var termAccountAvailableCredit = setting('accountTermCreditLimit');
 		
-		termAccountAvailableCredit = precisionEvaluate('termAccountAvailableCredit - getTermAccountBalance()');
+		termAccountAvailableCredit = precisionEvaluate(termAccountAvailableCredit - getTermAccountBalance());
 		
 		return termAccountAvailableCredit;
 	}
@@ -287,15 +288,25 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		
 		// First look at all the unreceived open order payment
 		for(var i=1; i<=arrayLen(getTermAccountOrderPayments()); i++) {
-			termAccountBalance = precisionEvaluate('termAccountBalance + getTermAccountOrderPayments()[i].getAmountUnreceived()');
+			termAccountBalance = precisionEvaluate(termAccountBalance + getTermAccountOrderPayments()[i].getAmountUnreceived());
 		}
 		
 		// Now look for the unasigned payment amount 
 		for(var i=1; i<=arrayLen(getAccountPayments()); i++) {
-			termAccountBalance = precisionEvaluate('termAccountBalance - getAccountPayments()[i].getAmountUnassigned()');
+			termAccountBalance = precisionEvaluate(termAccountBalance - getAccountPayments()[i].getAmountUnassigned());
 		}
 		
 		return termAccountBalance;
+	}
+	
+	public any function getTermOrderPaymentsByDueDateSmartList() {
+		if(!structKeyExists(variables, "termOrderPaymentsByDueDateSmartList")) {
+			variables.termOrderPaymentsByDueDateSmartList = getService('orderService').getOrderPaymentSmartList();
+			variables.termOrderPaymentsByDueDateSmartList.addFilter('order.account.accountId', this.getAccountID());
+			variables.termOrderPaymentsByDueDateSmartList.addFilter('paymentMethod.paymentMethodType', 'termPayment');
+			variables.termOrderPaymentsByDueDateSmartList.addOrder('paymentDueDate|ASC');
+		}
+		return variables.termOrderPaymentsByDueDateSmartList;
 	}
 	
 	public any function getUnenrolledAccountLoyaltyOptions() {
