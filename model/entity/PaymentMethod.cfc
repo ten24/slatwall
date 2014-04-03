@@ -185,7 +185,7 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 				optionsSL.addLikeFilter('integrationTypeList', '%payment%');
 				optionsSL.addFilter('activeFlag', '1');
 				optionsSL.addSelect('integrationName', 'name');
-				optionsSL.addSelect('integrationID', 'id');
+				optionsSL.addSelect('integrationID', 'subsystem');
 				variables.paymentIntegrationOptions = optionsSL.getRecord();
 			}	
 		}

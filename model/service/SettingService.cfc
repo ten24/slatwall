@@ -373,13 +373,13 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 	
 	public array function getCustomIntegrationOptions() {
-		var integrations = this.getIntegrationSmartList();
-		integrations.addFilter('activeFlag', '1');
-		integrations.addFilter('installedFlag', '1');
-		integrations.addLikeFilter('integrationTypeList', '%custom%');
-		integrations.addSelect('integrationName', 'name');
-		integrations.addSelect('integrationPackage', 'value');
-		var options = integrations.getRecords();
+		var integrationSmartlist = this.getIntegrationSmartList();
+		integrationSmartlist.addFilter('activeFlag', '1');
+		integrationSmartlist.addFilter('installedFlag', '1');
+		integrationSmartlist.addLikeFilter('integrationTypeList', '%custom%');
+		integrationSmartlist.addSelect('integrationName', 'name');
+		integrationSmartlist.addSelect('integrationPackage', 'value');
+		var options = integrationSmartlist.getRecords();
 		return options;
 	}
 	

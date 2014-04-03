@@ -55,6 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	variables.paymentIntegrationCFCs = {};
 	variables.shippingIntegrationCFCs = {};
 	variables.authenticationIntegrationCFCs = {};
+	variables.taxIntegrationCFCs = {};
 	variables.jsObjectAdditions = '';
 	
 	public void function clearActiveFW1Subsystems() {
@@ -68,7 +69,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			integrationSmartlist.addFilter('installedFlag', '1');
 			integrationSmartlist.addLikeFilter('integrationTypeList', '%fw1%');
 			integrationSmartlist.addSelect('integrationName', 'name');
-			integrationSmartlist.addSelect('integrationPackage', 'package');
+			integrationSmartlist.addSelect('integrationPackage', 'subsystem');
 			variables.activeFW1Subsystems = integrationSmartlist.getRecords();
 		}
 		return variables.activeFW1Subsystems;
