@@ -95,6 +95,9 @@ Notes:
 		<cf_HibachiTabGroup object="#rc.orderPayment#">
 			<cf_HibachiTab view="admin:entity/orderpaymenttabs/paymenttransactions" />
 			
+			<cfif rc.orderPayment.getPaymentMethodType() eq "termPayment">
+				<cf_HibachiTab view="admin:entity/orderpaymenttabs/appliedaccountpayments" />
+			</cfif>
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderPayment#" attributeSet="#attributeSet#" />

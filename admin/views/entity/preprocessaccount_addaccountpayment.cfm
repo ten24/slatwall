@@ -58,15 +58,16 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				
+				<cf_HibachiPropertyList divClass="span6">
 				<!--- Add a hidden field for the accountID --->
 				<input type="hidden" name="newAccountPayment.account.accountID" value="#rc.account.getAccountID()#" />
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="amount" fieldName="newAccountPayment.amount" edit="#rc.edit#">
+				<!---<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="amount" fieldName="newAccountPayment.amount" edit="#rc.edit#">--->
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" fieldName="newAccountPayment.currencyCode" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethodID" edit="#rc.edit#">
-	
+				</cf_HibachiPropertyList>
+				<cf_HibachiPropertyList divClass="span6">
 				<!--- New Payment Method --->
 				<cf_HibachiDisplayToggle selector="select[name='accountPaymentMethodID']" showValues="" loadVisable="#!len(rc.processObject.getAccountPaymentMethodID())#">
 					
@@ -136,10 +137,48 @@ Notes:
 						</cf_HibachiDisplayToggle>	
 					</cf_HibachiDisplayToggle>
 				</cf_HibachiDisplayToggle>
-				
+				</cf_HibachiPropertyList>
 			</cf_HibachiPropertyList>
 			
 		</cf_HibachiPropertyRow>
+		
+		<cfset orderPaymentList = rc.account.getTermOrderPaymentsByDueDateSmartList() />
+
+		<br /><br />
+		<table class="table table-striped table-bordered table-condensed">
+			<tr>
+				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetOrderNum')#</th>
+				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetTerm')#</th>
+				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetReceived')#</th>
+				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnReceived')#</th>
+				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetDueDate')#</th>
+				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAmount')#</th>
+			</tr>
+			<cfset i=0 />
+			<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
+				<cfset i++ />
+				<tr>
+					<td>#orderPayment.getOrder().getOrderNumber()#</td>
+					<td>#orderPayment.getPaymentTerm().getPaymentTermName()#</td>
+					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountReceivedTotal')#</td>
+					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
+					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
+					<td>
+						<input type="text" name="appliedOrderPayments[#i#].amount" value="" class="span1" />
+						<input type="hidden" name="appliedOrderPayments[#i#].orderPaymentID" value="#orderPayment.getOrderPaymentID()#" />
+					</td>
+				</tr>
+			</cfloop>
+				
+			<tr>
+				<td colspan="5"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
+				<td>
+					<input type="text" name="appliedOrderPayments[#i+1#].amount" value="" class="span1" />
+					<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value="" />
+				</td>
+			</tr>	
+				
+		</table>
 		
 	</cf_HibachiEntityProcessForm>
 </cfoutput>
