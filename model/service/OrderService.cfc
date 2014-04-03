@@ -516,6 +516,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
+		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
+
+		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
+			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
+		}
+		
 		return arguments.order;
 	}
 	
@@ -880,6 +886,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							if(!isNull(getHibachiScope().getSession().getOrder()) && arguments.order.getOrderID() == getHibachiScope().getSession().getOrder().getOrderID()) {
 								getHibachiScope().getSession().setOrder(javaCast("null", ""));
+							}
+						
+							// Loop over all orderPayments and if it's a term payment set the payment due date
+							for(var orderPayment in order.getOrderPayments()) {
+								if(orderPayment.getStatusCode() == 'opstActive' && orderPayment.getPaymentMethodType() == 'termPayment' && !isNull(orderPayment.getPaymentTerm())) {
+									orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate() );
+								}
 							}
 						
 							// Update the order status
@@ -1648,8 +1661,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function saveOrderPayment(required any orderPayment, struct data={}, string context="save") {
 		
+		var oldPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();
+		
 		// Call the generic save method to populate and validate
 		arguments.orderPayment = save(arguments.orderPayment, arguments.data, arguments.context);
+		
+		var newPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();
+
+		//Only do this check if the order has already been placed, and this a term payment
+		if(orderPayment.getPaymentMethodType() == 'termPayment' && orderPayment.getOrder().getOrderStatusType().getSystemCode() != 'ostNotPlaced' && oldPaymentTermID != newPaymentTermID && !isNull(orderPayment.getPaymentTerm())) {
+			if(orderPayment.getCreatedDateTime() > orderPayment.getOrder().getOrderOpenDateTime()) {
+				orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate ( startDate=orderPayment.getCreatedDateTime() ) );
+			} else {
+				orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate ( startDate=orderPayment.getOrder().getOrderOpenDateTime() ) );
+			}
+		}
 		
 		// If the orderPayment doesn't have any errors, then we can update the status to active.  If later a transaction runs, then this payment may get flagged back in inactive in the same request
 		if(!arguments.orderPayment.hasErrors()) {

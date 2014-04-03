@@ -84,7 +84,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 		
 		// If no properties could be identified as a simpleRepresentaition 
-		throw("There is no Simple Representation Property Name for #getClassName()#.  You can either override getSimpleRepresentation() or override getSimpleRepresentationPropertyName() in the entity, but be sure to do it at the bottom iside of commented sectin for overrides.");
+		throw("There is no Simple Representation Property Name for #getClassName()#.  You can either override getSimpleRepresentation() or override getSimpleRepresentationPropertyName() in the entity, but be sure to do it at the bottom inside of commented section for overrides.");
 	}
 	
 	// @hint checks a one-to-many property for the first entity with errors, if one isn't found then it returns a new one
