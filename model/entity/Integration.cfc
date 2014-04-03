@@ -75,7 +75,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	
 	public array function getShippingMethodOptions() {
 		if(!structKeyExists(variables, "shippingMethodOptions")) {
-			var integrationSmartlist = getService("integrationService").this.getIntegrationSmartList();
+			var integrationSmartlist = getService("integrationService").getIntegrationSmartList();
 			integrationSmartlist.addFilter('activeFlag', '1');
 			integrationSmartlist.addLikeFilter('integrationTypeList', '%shipping%');
 			integrationSmartlist.addSelect('integrationName', 'name');
