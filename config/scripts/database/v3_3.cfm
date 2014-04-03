@@ -79,13 +79,15 @@ Notes:
 		<cfloop query="local.updateData">
 			<cfquery name="local.change">
 				INSERT INTO SwAccountPaymentApplied (
-					amount,
+					accountPaymentAppliedID,
 					accountPaymentID,
+					amount,
 					createdDateTime,
 					createdByAccountID,
 					modifiedDateTime,
 					modifiedByAccountID
 				) VALUES (
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#Replace(lcase(createuuid()), "-", "", "all")#" />,
 					<cfqueryparam cfsqltype="cf_sql_varchar" null="#not len(local.updateData.accountPaymentID)#" value="#local.updateData.accountPaymentID#" />,
 					<cfqueryparam cfsqltype="cf_sql_money" value="#local.updateData.amount#" />,
 					<cfqueryparam cfsqltype="cf_sql_timestamp" null="#not len(local.updateData.createdDateTime)#" value="#local.updateData.createdDateTime#" />,
@@ -98,6 +100,7 @@ Notes:
 	</cfif>
 	
 	<cfcatch>
+		<cfdump var="#cfcatch#" abort=true>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update accountPayment and move amount into the AccountPaymentApplied table has error">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
