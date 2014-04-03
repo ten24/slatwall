@@ -92,6 +92,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.skuCode;
 	}
 	
+	public boolean function skuIsNewFlag() {
+ 		variables.sku.isNewFlag = getService("contentService").getProcessContent_CreateSku().sku.getNewFlag();
+ 		if(variables.sku.isNewFlag == true) {
+ 			variables.skuIsNewFlag = false;
+ 		}
+ 		return variables.skuIsNewFlag;
+	}
+	
 	// ========================  END: Defaults =============================
 
 	// =================== START: Lazy Object Helpers ======================
