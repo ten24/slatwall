@@ -373,19 +373,13 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 	
 	public array function getCustomIntegrationOptions() {
-		var options = [];
-		
 		var integrations = this.getIntegrationSmartList();
 		integrations.addFilter('activeFlag', '1');
 		integrations.addFilter('installedFlag', '1');
 		integrations.addLikeFilter('integrationTypeList', '%custom%');
 		integrations.addSelect('integrationName', 'name');
-		var customInts = integrations.getRecords();
-		
-		for(var i=1; i<=arrayLen(customInts); i++) {
-			arrayAppend(options, {name=integrations[i].getIntegrationName(), value=integrations[i].getIntegrationPackage()});
-		}
-		
+		integrations.addSelect('integrationPackage', 'value');
+		var options = integrations.getRecords();
 		return options;
 	}
 	

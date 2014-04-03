@@ -73,6 +73,18 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 		return getActiveFlag();
 	}
 	
+	public array function getShippingMethodOptions() {
+		if(!structKeyExists(variables, "shippingMethodOptions")) {
+			var integrationSmartlist = getService("integrationService").this.getIntegrationSmartList();
+			integrationSmartlist.addFilter('activeFlag', '1');
+			integrationSmartlist.addLikeFilter('integrationTypeList', '%shipping%');
+			integrationSmartlist.addSelect('integrationName', 'name');
+			integrationSmartlist.addSelect('integrationID', 'value');
+			variables.shippingMethodOptions = integrationSmartlist.getRecords();
+		}
+		return variables.shippingMethodOptions;
+	}	
+	/*
 	public array function getShippingMethodOptions( ) {
 		if(!structKeyExists(variables, "shippingMethodOptions")) {
 			variables.shippingMethodOptions = [];
@@ -83,8 +95,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 		}
 		return variables.shippingMethodOptions;
 	}
-	
-	// Added Tax IntegrationCFC
+	*/
 	public any function getIntegrationCFC( string integrationType="" ) {
 		switch (arguments.integrationType) {
 			case "authentication" : {
