@@ -1,8 +1,8 @@
 {
 	"conditions":{
 		"skuIsNewFlag":{
-			"price":{"eq":false}
-		}  
+			"sku.newFlag":{"eq":true}
+		}
 	},
 
 	"properties":{
