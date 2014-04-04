@@ -238,7 +238,7 @@ component extends="HibachiService" accessors="true" {
 			
 			// Get the upload directory for the current property
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
-			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
+			var fullFilePath = expandPath("#uploadDirectory#/#arguments.processObject.getImageFile()#");
 			
 			// If the directory where this file is going doesn't exists, then create it
 			if(!directoryExists(uploadDirectory)) {
