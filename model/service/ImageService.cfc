@@ -151,7 +151,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			// Figure out the image extension
 			var imageExt = listLast(arguments.imagePath,".");
 			
-			var cacheDirectory = replaceNoCase(replaceNoCase(expandPath(arguments.imagePath), '\', '/', 'all'), listLast(arguments.imagePath, "/"), "cache/");
+			var cacheDirectory = replaceNoCase(replaceNoCase(expandPath(arguments.imagePath), '\', '/', 'all'), trim(listLast(arguments.imagePath, "/")), "cache/");
 			
 			if(!directoryExists(cacheDirectory)) {
 				directoryCreate(cacheDirectory);
