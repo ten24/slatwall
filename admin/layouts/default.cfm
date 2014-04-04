@@ -325,11 +325,12 @@ Notes:
 			<div class="row-fluid">
 				<script type="text/javascript">
 					var expectedController = '#replace(replace(rc.slatAction,'.','-','all'),':','-','all')#';
-					console.log( ngSlatwall.controller( expectedController ) );
+					//console.log( ngSlatwall.controller( expectedController ) );
 					
 				</script>
+				<input type="hidden" ng-model="ngControllerName" value="#replace(replace(rc.slatAction,'.','-','all'),':','-','all')#" />
 				
-				<div class="span12">
+				<div class="span12" ng-controller="defaultController">
 					#body#
 				</div>
 			</div>
