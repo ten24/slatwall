@@ -46,21 +46,18 @@
 Notes:
 
 --->
-<cfparam name="rc.account" type="any" />
+<cfparam name="rc.orderPayment" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.account.getAccountPaymentsSmartList()#"
-							   recordDetailAction="admin:entity.detailaccountpayment"
-							   recordEditAction="admin:entity.editaccountpayment">
 
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="accountPaymentType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
-
+	<cf_HibachiListingDisplay smartList="#rc.orderPayment.getAppliedAccountPaymentsSmartList()#"
+			recordDetailAction="admin:entity.detailaccountpaymentapplied"
+			recordDetailModal="true">
+			
+			
+		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="accountpayment.paymentMethod.paymentMethodName" />
+		<cf_HibachiListingColumn propertyIdentifier="amount" />	
+		
 	</cf_HibachiListingDisplay>
-
-
-	<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn" icon="plus" modal="true" modalFullWidth="true" />
 </cfoutput>

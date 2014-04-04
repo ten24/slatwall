@@ -46,21 +46,22 @@
 Notes:
 
 --->
-<cfparam name="rc.account" type="any" />
+<cfparam name="rc.accountPaymentApplied" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.account.getAccountPaymentsSmartList()#"
-							   recordDetailAction="admin:entity.detailaccountpayment"
-							   recordEditAction="admin:entity.editaccountpayment">
-
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="accountPaymentType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
-
-	</cf_HibachiListingDisplay>
-
-
-	<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn" icon="plus" modal="true" modalFullWidth="true" />
+	<cf_HibachiEntityDetailForm object="#rc.accountPaymentApplied#" edit="#rc.edit#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.accountPaymentApplied#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied.getAccountPayment()#" property="accountPaymentID">
+				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied#" property="accountPayment">
+				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied.getOrderPayment()#" property="orderPaymentID">
+				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied#" property="orderPayment">
+				
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityDetailForm>
 </cfoutput>
