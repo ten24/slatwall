@@ -91,7 +91,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public array function getDefaultStockLocationIDOptions() {
-		return getService("locationService").getLocationOptions();
+		var locationOptions=getService("locationService").getLocationOptions();
+		arrayPrepend(locationOptions, {"name"=rbKey('define.none'),"value"=""});
+		return locationOptions;
 	}
 
 	public boolean function getNewAccountFlag() {
