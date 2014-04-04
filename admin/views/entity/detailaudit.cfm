@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,64 +45,34 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfparam name="rc.audit" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-	// Injected Entity
-	property name="audit";
-	
-	// Lazy / Injected Objects
-	
-	// New Properties
+<cfset backAction = request.context.entityActionDetails.sRedirectAction />
+<cfset backActionQueryString = "#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" />
 
-	// Data Properties (ID's)
-	property name="rollbackAudit" hb_rbKey="entity.audit.rollbackPoint" hb_formFieldType="select";
-	
-	// Data Properties (Inputs)
-	
-	// Data Properties (Related Entity Populate)
-	
-	// Data Properties (Object / Array Populate)
-	
-	// Option Properties
-	property name="rollbackAuditOptions";
-	
-	// Helper Properties
-	
-	// ======================== START: Defaults ============================
-	
-	// ========================  END: Defaults =============================
+<cfif isNull(rc.audit.getRelatedEntity())>
+	<cfset backAction = "admin:main.default" />
+	<cfset backActionQueryString = "" />
+</cfif>
 
-	// =================== START: Lazy Object Helpers ======================
-	
-	// ===================  END: Lazy Object Helpers =======================
-	
-	// ================== START: New Property Helpers ======================
-	
-	// ==================  END: New Property Helpers =======================
-	
-	// ====================== START: Data Options ==========================
-	
-	public array function getRollbackAuditOptions() {
-		if (!structKeyExists(variables, "rollbackAuditIDOptions")) {
-			variables.rollbackAuditIDOptions = [];
-			
-			var sl = getAudit().getRelatedEntity().getAuditSmartList();
-			// options include all audits of the related entity except the audit currently being processed
-			sl.addWhereCondition("auditID <> :auditID", {auditID=getAudit().getAuditID()});
-			for (var currentAudit in sl.getRecords()) {
-				arrayAppend(variables.rollbackAuditIDOptions, {name="#currentAudit.getFormattedValue('auditDateTime')# | #currentAudit.getAuditID()#", value=currentAudit.getAuditID()});
-			}
-		}
+<cfoutput>
+	<cf_HibachiEntityDetailForm object="#rc.audit#">		
+		<cf_HibachiEntityActionBar type="detail" object="#rc.audit#" edit="false" pageTitle="#rc.audit.getTitle()#" showDelete="false" showEdit="false"
+								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
+								   cancelQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#"
+								   backAction="#backAction#"
+								   backQueryString="#backActionQueryString#">
+			<cf_HibachiProcessCaller action="admin:entity.processaudit" entity="#rc.audit#" queryString="redirectAction=#request.context.slatAction#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" processContext="rollback" type="list" modal="false" />
+		</cf_HibachiEntityActionBar>
 		
-		return variables.rollbackAuditIDOptions;
-	}
-	
-	// ======================  END: Data Options ===========================
-	
-	// ===================== START: Helper Methods =========================
-	
-	// =====================  END: Helper Methods ==========================
-	
-	
-}
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList divclass="span12">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+	</cf_HibachiEntityDetailForm>
+</cfoutput>

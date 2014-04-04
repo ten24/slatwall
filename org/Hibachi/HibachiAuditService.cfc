@@ -58,9 +58,13 @@ component extends="HibachiService" accessors="true" {
 	public any function newAudit() {
 		var audit = super.newAudit();
 		audit.setAuditDateTime(now());
-		audit.setIPAddress(CGI.REMOTE_ADDR);
+		audit.setSessionIPAddress(CGI.REMOTE_ADDR);
 		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-			audit.setSessionAccount( getHibachiScope().getAccount() );	
+			audit.setSessionAccountID(getHibachiScope().getAccount().getAccountID());
+			audit.setSessionAccountFullName(getHibachiScope().getAccount().getFullName());
+			if (!isNull(getHibachiScope().getAccount().getEmailAddress())) {
+				audit.setSessionAccountEmailAddress(getHibachiScope().getAccount().getEmailAddress());
+			}
 		}
 		
 		return audit;
@@ -79,14 +83,15 @@ component extends="HibachiService" accessors="true" {
 		audit.setAuditType("delete");
 		audit.setBaseID(arguments.entity.getPrimaryIDValue());
 		audit.setBaseObject(arguments.entity.getClassName());
+		audit.setTitle(arguments.entity.getSimpleRepresentation());
 		this.saveAudit(audit);
 	}
 	
 	public any function logEntityModify(any entity, struct oldData) {
 		if (arguments.entity.getAuditableFlag()) {
 			var audit = this.newAudit();
-			audit.setBaseID(entity.getPrimaryIDValue());
-			audit.setBaseObject(entity.getClassName());
+			audit.setBaseID(arguments.entity.getPrimaryIDValue());
+			audit.setBaseObject(arguments.entity.getClassName());
 			
 			// Audit type is create when no old data available or no previous audit log data available
 			if (isNull(arguments.oldData) || (arguments.entity.getAuditSmartList().getRecordsCount()  == 0)) {
@@ -99,6 +104,12 @@ component extends="HibachiService" accessors="true" {
 			// Audit type is update
 			} else {
 				audit.setAuditType("update");
+			}
+			
+			try {
+				audit.setTitle(arguments.entity.getSimpleRepresentation());
+			} catch (any e) {
+				audit.setTitle(rbKey("entity.audit.nosummary"));
 			}
 			
 			audit.setData(serializeJSON(generatePropertyChangeDataForEntity(argumentCollection=arguments)));
@@ -121,7 +132,7 @@ component extends="HibachiService" accessors="true" {
 		var newPropertyValueMappingData = {};
 		// Track all new auditable properties initially
 		for (var propertyName in auditablePropertiesStruct) {
-			propertyChangeData.newPropertyData[propertyName] = getStandardizedValue(propertyValue=entity.invokeMethod("get#propertyName#"), mappingData=newPropertyValueMappingData, mappingPath=propertyName);
+			propertyChangeData.newPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.entity.invokeMethod("get#propertyName#"), mappingData=newPropertyValueMappingData, mappingPath=propertyName);
 		}
 		
 		var oldPropertyValueMappingData = {};
@@ -283,14 +294,23 @@ component extends="HibachiService" accessors="true" {
 	
 	// ===================== START: Process Methods ===========================
 	
-	public any function processAudit_rollback(required any audit, required any processObject) {
+	public any function processAudit_rollback(required any audit) {
 		// TODO implement processAudit_rollback method
 		// determine which entity audit corresponds to
 		// grab entity's audit log
 		// inspect processing object to determine which audit entry to rollback to
 		// calculate the changes for rollback
 		// call populate on entity and save
-		throw(message="We are rolling back to '#arguments.processObject.getRollbackAudit().getAuditID()#'.");
+		var relatedEntity = arguments.audit.getRelatedEntity();
+		auditSL = relatedEntity.getAuditSmartList();
+		auditSL.addInFilter("auditType", "create,update");
+		
+		// Related entity must have at least 2 audit create/update records to do comparison
+		if (auditSL.getRecordsCount() >= 2) {
+			
+		}
+		
+		return arguments.audit;
 	}
 	
 	// =====================  END: Process Methods ============================

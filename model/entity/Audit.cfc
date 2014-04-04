@@ -50,12 +50,17 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// Persistent Properties
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="auditType" ormType="string" hb_formatType=""; // create, update, delete, rollback, merge, scheduleUpdate, login, logout
+	property name="auditType" ormType="string" hb_formatType="rbKey"; // create, update, delete, rollback, merge, scheduleUpdate, login, logout
 	property name="auditDateTime" ormtype="timestamp";
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
 	property name="data" ormType="string" length="8000";
-	property name="ipAddress" ormType="string";
+	property name="title" ormType="string" length="200";
+	
+	property name="sessionIPAddress" ormType="string";
+	property name="sessionAccountID" ormType="string" length="32";
+	property name="sessionAccountEmailAddress"ormType="string";
+	property name="sessionAccountFullName" ormType="string";
 	
 	// TODO future scheduled date
 	// TODO comment
@@ -63,7 +68,6 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="sessionAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="sessionAccountID";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -76,7 +80,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// Audit Properties
 	
 	// Non-Persistent Properties
-	property name="summary" type="string" persistent="false";
+	property name="changeDetails" type="any" persistent="false";
 	property name="relatedEntity" type="any" persistent="false";
 	
 	// Deprecated Properties
@@ -88,26 +92,16 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public function getSummary() {
-		if (!structKeyExists(variables, "summary")) {
-			// TODO This is where the magic will start to happen. We probably will want to delegate the summary to the related entity or appropriate service method so it can generate something meaningful with the audit data?
-			try {
-				variables.summary = getRelatedEntity().getSimpleRepresentation();
-			} catch (any e) {
-				variables.summary = rbKey("entity.audit.nosummary");
-			}
-		}
-		
-		return variables.summary;
-	}
-	
-	
 	public function getRelatedEntity() {
 		if (!structKeyExists(variables, "relatedEntity")) {
 			variables.relatedEntity = getService("HibachiAuditService").getRelatedEntityForAudit(this);
 		}
 		
-		return variables.relatedEntity;
+		if (!isNull(variables.relatedEntity)) {
+			return variables.relatedEntity;
+		} else {
+			return javacast("null", "");
+		}
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -133,6 +127,10 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentationPropertyName() {
+		return "auditID";
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
