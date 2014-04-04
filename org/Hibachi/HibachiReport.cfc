@@ -324,6 +324,7 @@
 			
 			<cfset var m = 1 />
 			<cfset var data = getData() />
+			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, "#getReportEndDateTime()#") />
 			
 			<cfquery name="variables.chartDataQuery" dbtype="query">
 				SELECT
@@ -356,7 +357,7 @@
 				WHERE
 					reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportStartDateTime()#" />
 				  AND
-				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportEndDateTime()#" />
+				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportEndDateTimePlusOne#" /> 
 				GROUP BY
 					<cfif listFindNoCase('year,month,week,day,hour', getReportDateTimeGroupBy())>
 						data.reportDateTimeYear
@@ -400,6 +401,7 @@
 			
 			<cfset var m = 1 />
 			<cfset var data = getData() />
+			<cfset var reportCompareEndDateTimePlusOne = dateAdd("d", 1, "#getReportCompareEndDateTime()#") />
 			
 			<cfquery name="variables.chartCompareDataQuery" dbtype="query">
 				SELECT
@@ -432,7 +434,7 @@
 				WHERE
 					reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportCompareStartDateTime()#" />
 				  AND
-				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportCompareEndDateTime()#" />
+				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportCompareEndDateTimePlusOne#" />
 				GROUP BY
 					<cfif listFindNoCase('year,month,week,day,hour', getReportDateTimeGroupBy())>
 						data.reportDateTimeYear
@@ -539,9 +541,7 @@
 			<cfset variables.chartData["series"] = [] />
 			
 			<cfset var dataSeriesID = 0 />
-			<cfset var chartRow = 0 />
-			
-			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, "#getReportEndDateTime()#") />			
+			<cfset var chartRow = 0 />		
 			
 			<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
 				
@@ -560,7 +560,7 @@
 					<cfset variables.chartData["series"][dataSeriesID]["type"] = "area" />
 				</cfif>
 				
-				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#reportEndDateTimePlusOne#" datepart="#loopdatepart#">
+				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#getReportEndDateTime()#" datepart="#loopdatepart#">
 					<cfset var thisData = [] />
 					<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
 					<cfif year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow] and 
