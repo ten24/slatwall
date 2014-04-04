@@ -374,7 +374,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				try {
 
 					// Get the upload directory for the current property
-					var uploadDirectory = this.invokeMethod("get#currentProperty.name#UploadDirectory");
+					var uploadDirectory = expandPath(this.invokeMethod("get#currentProperty.name#UploadDirectory"));
 
 					// If the directory where this file is going doesn't exists, then create it
 					if(!directoryExists(uploadDirectory)) {
