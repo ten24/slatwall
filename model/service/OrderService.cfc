@@ -696,6 +696,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( len(arguments.processObject.getOrderOriginID()) ) {
 			arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
 		}
+
+		// Setup the Default Stock Location
+		if( len(arguments.processObject.getDefaultStockLocationID()) ) {
+			arguments.order.setDefaultStockLocation( getSettingService().getLocation(arguments.processObject.getDefaultStockLocationID()) );
+		}
 		
 		// Setup the Currency Code
 		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );

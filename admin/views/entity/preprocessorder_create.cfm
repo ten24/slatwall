@@ -78,6 +78,7 @@ Notes:
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeID" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderOriginID" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="defaultStockLocationID" edit="#rc.edit#">
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 	

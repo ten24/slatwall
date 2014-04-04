@@ -66,6 +66,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="password";
 	property name="passwordConfirm";
 	property name="orderOriginID" hb_rbKey="entity.orderOrigin" hb_formFieldType="select";
+	property name="defaultStockLocationID" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="select";
 	
 	// Cached Properties
 	property name="fulfillmentMethodIDOptions";
@@ -89,6 +90,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return getOrder().getOrderOriginOptions();
 	}
 	
+	public array function getDefaultStockLocationIDOptions() {
+		return getService("locationService").getLocationOptions();
+	}
+
 	public boolean function getNewAccountFlag() {
 		if(!structKeyExists(variables, "newAccountFlag")) {
 			variables.newAccountFlag = 1;
