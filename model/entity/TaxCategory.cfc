@@ -93,7 +93,6 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 		optionsSL.addLikeFilter('integrationTypeList', '%tax%');
 		optionsSL.addSelect('integrationName', 'name');
 		optionsSL.addSelect('integrationID', 'value');
-		optionsSL.addSelect('integrationPackage', 'subsystem');
 		return optionsSL.getRecords();
 	}	
 	// ============  END:  Non-Persistent Property Methods =================

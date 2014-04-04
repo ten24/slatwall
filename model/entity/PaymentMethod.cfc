@@ -172,29 +172,30 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 		}
 		return variables.placeOrderCreditTransactionTypeOptions;
 	}
-	
-	
+
+
 	public array function getPaymentIntegrationOptions() {
 		if(!structKeyExists(variables, "paymentIntegrationOptions")) {
 			variables.paymentIntegrationOptions = [{name=rbKey('define.select'), value=""}];
-			
+
 			// If the payment method type isn't null then we can look at the active integrations with those payment method types
 			if(!isNull(getPaymentMethodType())) {
 				var optionsSL = getService("integrationService").getIntegrationSmartList();
 				optionsSL.addFilter('installedFlag', '1');
-				optionsSL.addLikeFilter('integrationTypeList', '%payment%');
 				optionsSL.addFilter('activeFlag', '1');
-				optionsSL.addSelect('integrationName', 'name');
-				optionsSL.addSelect('integrationID', 'subsystem');
-				variables.paymentIntegrationOptions = optionsSL.getRecord();
-			}	
+				optionsSL.addLikeFilter('integrationTypeList', '%payment%');
+
+				for(var i=1; i<=arrayLen(optionsSL.getRecords()); i++) {
+					if(listFindNoCase(optionsSL.getRecords()[i].getIntegrationCFC("payment").getPaymentMethodTypes(), getPaymentMethodType())) {
+						arrayAppend(variables.paymentIntegrationOptions, {name=optionsSL.getRecords()[i].getIntegrationName(), value=optionsSL.getRecords()[i].getIntegrationID()});	
+					}
+				}	
+			}
 		}
+
 		return variables.paymentIntegrationOptions;
-	}
-		
-		
-	
-	
+	} 
+
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
