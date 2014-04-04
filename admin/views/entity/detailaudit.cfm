@@ -46,21 +46,33 @@
 Notes:
 
 --->
-<cfparam name="rc.account" type="any" />
+<cfparam name="rc.audit" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfset backAction = request.context.entityActionDetails.sRedirectAction />
+<cfset backActionQueryString = "#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" />
+
+<cfif isNull(rc.audit.getRelatedEntity())>
+	<cfset backAction = "admin:main.default" />
+	<cfset backActionQueryString = "" />
+</cfif>
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.account.getAccountPaymentsSmartList()#"
-							   recordDetailAction="admin:entity.detailaccountpayment"
-							   recordEditAction="admin:entity.editaccountpayment">
-
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="accountPaymentType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
-
-	</cf_HibachiListingDisplay>
-
-
-	<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn" icon="plus" modal="true" modalFullWidth="true" />
+	<cf_HibachiEntityDetailForm object="#rc.audit#">		
+		<cf_HibachiEntityActionBar type="detail" object="#rc.audit#" edit="false" pageTitle="#rc.audit.getTitle()#" showDelete="false" showEdit="false"
+								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
+								   cancelQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#"
+								   backAction="#backAction#"
+								   backQueryString="#backActionQueryString#">
+			<cf_HibachiProcessCaller action="admin:entity.processaudit" entity="#rc.audit#" queryString="redirectAction=#request.context.slatAction#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" processContext="rollback" type="list" modal="false" />
+		</cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList divclass="span12">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+	</cf_HibachiEntityDetailForm>
 </cfoutput>

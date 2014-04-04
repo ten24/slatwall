@@ -84,7 +84,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 		
 		// If no properties could be identified as a simpleRepresentaition 
-		throw("There is no Simple Representation Property Name for #getClassName()#.  You can either override getSimpleRepresentation() or override getSimpleRepresentationPropertyName() in the entity, but be sure to do it at the bottom iside of commented sectin for overrides.");
+		throw("There is no Simple Representation Property Name for #getClassName()#.  You can either override getSimpleRepresentation() or override getSimpleRepresentationPropertyName() in the entity, but be sure to do it at the bottom inside of commented section for overrides.");
 	}
 	
 	// @hint checks a one-to-many property for the first entity with errors, if one isn't found then it returns a new one
@@ -253,6 +253,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public any function getAuditSmartList() {
 		variables.auditLogSmartList = getService("hibachiAuditService").getAuditSmartList();
 		variables.auditLogSmartList.addFilter("baseID", getPrimaryIDValue());
+		variables.auditLogSmartList.addOrder("auditDateTime|DESC");
 		return variables.auditLogSmartList;
 	}
 	
@@ -700,7 +701,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		
-		getService("hibachiAuditService").logEntityAuditData(entity=this);
+		getService("hibachiAuditService").logEntityModify(entity=this);
 	}
 	
 	public void function preUpdate(struct oldData){
@@ -736,7 +737,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		// Manually populate primary ID in old data because it doesn't exist by default
 		arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
 		
-		getService("hibachiAuditService").logEntityAuditData(entity=this, oldData=arguments.oldData);
+		getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+	}
+	
+	public void function preDelete() {
+		getService("hibachiAuditService").logEntityDelete(this);
 	}
 	
 	/*

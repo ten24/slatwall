@@ -56,8 +56,8 @@ Notes:
 	
 	<cffunction name="getDimensionDefinitions">
 		<cfreturn [
-			{alias='createdDateTime', title=rbKey('entity.paymentTransaction.createdDateTime')},
 			{alias='transactionDateTime', title=rbKey('entity.paymentTransaction.transactionDateTime')},
+			{alias='createdDateTime', title=rbKey('entity.paymentTransaction.createdDateTime')},
 			{alias='paymentTransactionID', title=rbKey('entity.paymentTransaction.paymentTransactionID')},
 			{alias='providerTransactionID', title=rbKey('entity.paymentTransaction.providerTransactionID')},
 			{alias='authorizationCode', title=rbKey('entity.paymentTransaction.authorizationCode')},

@@ -1,4 +1,4 @@
-/*
+﻿/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -46,28 +46,17 @@
 Notes:
 
 */
-component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="HibachiAuditService" hb_auditable="false" {
+component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentApplied" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="accountService" {
 	
 	// Persistent Properties
-	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="auditType" ormType="string" hb_formatType="rbKey"; // create, update, delete, rollback, merge, scheduleUpdate, login, logout
-	property name="auditDateTime" ormtype="timestamp";
-	property name="baseObject" ormType="string";
-	property name="baseID" ormType="string";
-	property name="data" ormType="string" length="8000";
-	property name="title" ormType="string" length="200";
-	
-	property name="sessionIPAddress" ormType="string";
-	property name="sessionAccountID" ormType="string" length="32";
-	property name="sessionAccountEmailAddress"ormType="string";
-	property name="sessionAccountFullName" ormType="string";
-	
-	// TODO future scheduled date
-	// TODO comment
+	property name="accountPaymentAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="amount" ormtype="big_decimal" notnull="true";
 	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID" hb_optionsNullRBKey="define.select";
+	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID" hb_optionsNullRBKey="define.select";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -76,12 +65,15 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// Related Object Properties (many-to-many - inverse)
 	
 	// Remote Properties
+	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
+	property name="createdDateTime" ormtype="timestamp";
+	property name="createdByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="modifiedDateTime" ormtype="timestamp";
+	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
-	property name="changeDetails" type="any" persistent="false";
-	property name="relatedEntity" type="any" persistent="false";
 	
 	// Deprecated Properties
 
@@ -92,21 +84,45 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public function getRelatedEntity() {
-		if (!structKeyExists(variables, "relatedEntity")) {
-			variables.relatedEntity = getService("HibachiAuditService").getRelatedEntityForAudit(this);
-		}
-		
-		if (!isNull(variables.relatedEntity)) {
-			return variables.relatedEntity;
-		} else {
-			return javacast("null", "");
-		}
-	}
-	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Account Payment (many-to-one)    
+	public void function setAccountPayment(required any accountPayment) {    
+		variables.accountPayment = arguments.accountPayment;    
+		if(isNew() or !arguments.accountPayment.hasAppliedAccountPayment( this )) {    
+			arrayAppend(arguments.accountPayment.getAppliedAccountPayments(), this);    
+		}    
+	}    
+	public void function removeAccountPayment(any accountPayment) {    
+		if(!structKeyExists(arguments, "accountPayment")) {    
+			arguments.accountPayment = variables.accountPayment;    
+		}    
+		var index = arrayFind(arguments.accountPayment.getAppliedAccountPayments(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.accountPayment.getAppliedAccountPayments(), index);    
+		}    
+		structDelete(variables, "accountPayment");    
+	}
+	
+	// Order Payment (many-to-one)    
+	public void function setOrderPayment(required any orderPayment) {    
+		variables.orderPayment = arguments.orderPayment;    
+		if(isNew() or !arguments.orderPayment.hasAppliedAccountPayment( this )) {    
+			arrayAppend(arguments.orderPayment.getAppliedAccountPayments(), this);    
+		}    
+	}    
+	public void function removeOrderPayment(any orderPayment) {    
+		if(!structKeyExists(arguments, "orderPayment")) {    
+			arguments.accountPayment = variables.orderPayment;    
+		}    
+		var index = arrayFind(arguments.orderPayment.getAppliedAccountPayments(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.orderPayment.getAppliedAccountPayments(), index);    
+		}    
+		structDelete(variables, "orderPayment");    
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
@@ -127,9 +143,11 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
-	
 	public string function getSimpleRepresentationPropertyName() {
-		return "auditID";
+		return "accountPaymentAppliedID";
+	}
+	public any function getSimpleRepresentation() {
+		return getFormattedValue('accountPaymentAppliedID');
 	}
 	
 	// ==================  END:  Overridden Methods ========================
