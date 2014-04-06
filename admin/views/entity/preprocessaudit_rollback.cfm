@@ -49,21 +49,110 @@ Notes:
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfset backAction = request.context.entityActionDetails.sRedirectAction />
-<cfset backActionQueryString = "#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" />
 
-<cfif isNull(rc.audit.getRelatedEntity())>
-	<cfset backAction = "admin:main.default" />
-	<cfset backActionQueryString = "" />
-</cfif>
+<cfset showChangeDetails = listFindNoCase("update,create,rollback", rc.audit.getAuditType()) />
+<cfset showChangedFrom = listFindNoCase("update", rc.audit.getAuditType()) />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#">		
+	<cfif showChangeDetails>
+		<cfsavecontent variable="changeDetailsHTML">
+			<table class="table table-striped table-bordered table-condensed">
+				<tbody>
+					<tr>
+						<th>Property</th>
+						<cfif showChangedFrom>
+							<th>Changed From</th>
+						</cfif>
+						<th>Changed To</th>
+					</tr>
+					<cfset data = deserializeJSON(rc.audit.getData()) />
+					<cfset properties = rc.audit.getRelatedEntity().getAuditableProperties() />
+					<cfset hibachiService = request.context.fw.getHibachiScope().getService('HibachiService') />
+					<cfloop array="#properties#" index="currentProperty">
+						<cfif structKeyExists(currentProperty, "cfc")>
+							<cfset entityService = hibachiService.getServiceByEntityName(currentProperty.cfc) />
+						</cfif>
+						
+						<cfif structKeyExists(data.newPropertyData, currentProperty.name) or (structKeyExists(data, "oldPropertyData") and structKeyExists(data.oldPropertyData, currentProperty.name))>
+							<tr>
+								<td>#currentProperty.name#</td>
+								
+									<cfif structKeyExists(data.oldPropertyData, currentProperty.name)>
+										<cfif not structKeyExists(currentProperty, "fieldType") or currentProperty.fieldType == "column">
+											<cfif isBoolean(data.oldPropertyData[currentProperty.name])>
+												<td>#yesNoFormat(data.oldPropertyData[currentProperty.name])#</td>
+											<cfelse>
+												<td>#data.oldPropertyData[currentProperty.name]#</td>
+											</cfif>
+										<cfelseif structKeyExists(currentProperty, "cfc")>
+											<cfset primaryIDPropertyName = hibachiService.getPrimaryIDPropertyNameByEntityName(currentProperty.cfc) />
+											<cfset entity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=data.oldPropertyData[currentProperty.name][primaryIDPropertyName],2=true}) />
+											<td><cf_HibachiActionCaller action="admin:entity.detail#currentProperty.cfc#" queryString="#primaryIDPropertyName#=#data.oldPropertyData[currentProperty.name][primaryIDPropertyName]#" text="#entity.getSimpleRepresentation()#" /></td>
+										</cfif>
+									<cfelse>
+										<td>N/A</td>
+									</cfif>
+									
+									<cfif structKeyExists(data.newPropertyData, currentProperty.name)>
+										<cfif not structKeyExists(currentProperty, "fieldType") or currentProperty.fieldType == "column">
+											<cfif isBoolean(data.newPropertyData[currentProperty.name])>
+												<td>#yesNoFormat(data.newPropertyData[currentProperty.name])#</td>
+											<cfelse>
+												<td>#data.newPropertyData[currentProperty.name]#</td>
+											</cfif>
+										<cfelseif structKeyExists(currentProperty, "cfc")>
+											<cfset primaryIDPropertyName = hibachiService.getPrimaryIDPropertyNameByEntityName(currentProperty.cfc) />
+											<cfset entity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=data.newPropertyData[currentProperty.name][primaryIDPropertyName],2=true}) />
+											<td><cf_HibachiActionCaller action="admin:entity.detail#currentProperty.cfc#" queryString="#primaryIDPropertyName#=#data.newPropertyData[currentProperty.name][primaryIDPropertyName]#" text="#entity.getSimpleRepresentation()#" /></td>
+										</cfif>
+									<cfelse>
+										<td>N/A</td>
+									</cfif>
+							</tr>
+						</cfif>
+					</cfloop>
+					<!---
+					<cfloop collection="#data.newPropertyData#" item="propertyName">
+						<tr>
+							<td>#propertyName#</td>
+							<cfif showChangedFrom>
+								<td></td>
+							</cfif>
+							<cfif isSimpleValue(data.newPropertyData[propertyName])>
+								<cfif isBoolean(data.newPropertyData[propertyName])>
+									<td>#yesNoFormat(data.newPropertyData[propertyName])#</td>
+								<cfelse>
+									<td>#data.newPropertyData[propertyName]#</td>
+								</cfif>
+							<cfelseif isStruct(data.newPropertyData[propertyName])>
+								<!--- check if property ID --->
+								<cfif right(propertyName, 2) eq "ID">
+									<cfset propertyValue = rc.audit.getRelatedEntity().invokeMethod("get#left(propertyName, len(propertyName)-2)#") />
+									<cfif not isNull(propertyValue)>
+										<td>propertyValue.getSimpleRepresentation()</td>
+									<cfelse>
+										<td>NULL</td>
+									</cfif>
+								</cfif>
+								<td>#right(propertyName, 2)#</td>
+								<!---<td>#serializeJSON(data.newPropertyData[propertyName])#</td>--->
+							</cfif>
+						</tr>
+					</cfloop>
+					--->
+				</tbody>
+			</table>
+		</cfsavecontent>
+	</cfif>
+	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divclass="span12">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject">
+				<cfif showChangeDetails>
+					<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+				</cfif>
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		<!---

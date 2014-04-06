@@ -306,7 +306,9 @@ component extends="HibachiService" accessors="true" {
 		auditSL.addInFilter("auditType", "create,update");
 		
 		// Related entity must have at least 2 audit create/update records to do comparison
-		if (auditSL.getRecordsCount() >= 2) {
+		
+		var audits = auditSL.getRecords();
+		for (var i=1; i<=arraylen(audits); i++) {
 			
 		}
 		
