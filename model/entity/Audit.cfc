@@ -92,6 +92,20 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public function getChangeDetails() {
+		if (!structKeyExists(variables, "changeDetails")) {
+			if (listFindNoCase("create,update,rollback", getAuditType())) {
+				variables.changeDetails = getService("HibachiAuditService").getChangeDetailsForAudit(this);
+			}
+		}
+		
+		if (!isNull(variables.changeDetails)) {
+			return variables.changeDetails;
+		} else {
+			return javacast("null", ""); 
+		}
+	}
+	
 	public function getRelatedEntity() {
 		if (!structKeyExists(variables, "relatedEntity")) {
 			variables.relatedEntity = getService("HibachiAuditService").getRelatedEntityForAudit(this);

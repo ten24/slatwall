@@ -55,6 +55,79 @@ component extends="HibachiService" accessors="true" {
 		return getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod("get#arguments.audit.getBaseObject()#", {1=arguments.audit.getBaseID()});
 	}
 	
+	public any function getChangeDetailsForAudit(any audit) {
+		var changeData = deserializeJSON(arguments.audit.getData());
+		
+		var changeDetails = {};
+		changeDetails.properties = [];
+		changeDetails.columnList = "new";
+		if (listFindNoCase("update,rollback", arguments.audit.getAuditType())) {
+			changeDetails.columnList = listAppend(changeDetails.columnList, "old");
+		}
+		
+		var properties = entityNew(getService("hibachiService").getProperlyCasedFullEntityName(arguments.audit.getBaseObject())).getAuditableProperties();
+		for (var currentProperty in properties) {
+			var changeDetail = {};
+			changeDetail['propertyName'] = currentProperty.name;
+			
+			for (var column in listToArray(changeDetails.columnList)) {
+				if (structKeyExists(changeData["#column#PropertyData"], currentProperty.name)) {
+					var columnValue = "";
+					var dataValue = changeData["#column#PropertyData"][currentProperty.name];
+					
+					// Column/Simple Value
+					if (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") {
+						if (isBoolean(dataValue) && structKeyExists(currentProperty, "ormtype") && currentProperty.ormtype == "boolean") {
+							columnValue = rbKey("define.#yesNoFormat(dataValue)#");
+						} else {
+							columnValue = dataValue;
+						}
+					// Entity
+					} else if (structKeyExists(currentProperty, "cfc")) {
+						if (isStruct(dataValue)) {
+							// Get actual reference to entity
+							var entityService = getService("hibachiService").getServiceByEntityName(currentProperty.cfc);
+							var entityPrimaryIDPropertyName = entityService.getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
+							if (structKeyExists(dataValue, entityPrimaryIDPropertyName)) {
+								columnValue = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=dataValue[entityPrimaryIDPropertyName],2=false});
+								
+								// Use simple representation or primaryID in case that the referenced entity had been deleted and no longer exists
+								if (isNull(columnValue)) {
+									if (structKeyExists(dataValue, "title")) {
+										columnValue = dataValue.title;
+									} else {
+										columnValue = dataValue[entityPrimaryIDPropertyName];
+									}
+								}
+							}
+						}
+					}
+					
+					changeDetail[column] = columnValue;
+				}
+			}
+			
+			// Only include the relevant auditable properties
+			if (listFindNoCase(structKeyList(changeDetail), "new") || listFindNoCase(structKeyList(changeDetail), "old")) {
+				// Make sure matching 'old' key exists when appropriately required
+				if (listFindNoCase(changeDetails.columnList, "old") && !structKeyExists(changeDetail, "old")) {
+					// Blank when missing
+					changeDetail['old'] = "";
+				}
+				
+				// Make sure matching 'new' key exists when appropriately required
+				if (listFindNoCase(changeDetails.columnList, "new") && !structKeyExists(changeDetail, "new")) {
+					// Blank when missing
+					changeDetail['new'] = "";
+				}
+				
+				arrayAppend(changeDetails.properties, changeDetail);
+			}
+		}
+		
+		return changeDetails;
+	}
+	
 	public any function newAudit() {
 		var audit = super.newAudit();
 		audit.setAuditDateTime(now());
@@ -244,6 +317,11 @@ component extends="HibachiService" accessors="true" {
 			standardizedValue = {};
 			// Primary ID of entity is only relevant value
 			standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"] = arguments.propertyValue.getPrimaryIDValue();
+			if (structKeyExists(arguments.propertyValue, "getSimpleRepresentation")) {
+				try {
+					standardizedValue["title"] = arguments.propertyValue.getSimpleRepresentation();
+				} catch (any e) {}
+			}
 			
 			// Updates mapping data
 			structInsert(arguments.mappingData, "#arguments.mappingPath#[#arguments.propertyValue.getPrimaryIDPropertyName()#]", standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"], true);

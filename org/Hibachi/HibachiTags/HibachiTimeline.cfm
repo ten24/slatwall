@@ -167,7 +167,7 @@ Notes:
 								<br />
 								</cfif>
 								<cfif currentAudit.getAuditType() eq 'update'>
-									<em>Changed: 
+									<em>#attributes.hibachiScope.rbKey("entity.audit.changeDetails.propertyChanged")#: 
 									<cfset data = deserializeJSON(currentAudit.getData()) />
 									<cfset isFirstFlag = true />
 									<cfloop collection="#data.newPropertyData#" item="property"><cfif not isFirstFlag>,</cfif> #attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#<cfset isFirstFlag = false /></cfloop></em>
