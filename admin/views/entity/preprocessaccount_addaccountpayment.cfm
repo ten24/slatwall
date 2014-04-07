@@ -166,7 +166,7 @@ Notes:
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
 					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
 					<td>
-						<input type="text" name="appliedOrderPayments[#i#].amount" value="" class="span1" ng-model="appliedOrderPayment.amount"/>
+						<input type="text" name="appliedOrderPayments[#i#].amount" class="span1" ng-model="appliedOrderPayment.amount#i#" placeholder="0" ng-change="updateSubTotal()" />
 						<input type="hidden" name="appliedOrderPayments[#i#].orderPaymentID" value="#orderPayment.getOrderPaymentID()#" />
 					</td>
 				</tr>
@@ -175,7 +175,7 @@ Notes:
 			<tr>
 				<td colspan="5"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
 				<td>
-					<input type="text" name="appliedOrderPayments[#i+1#].amount" value="" class="span1" />
+					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="span1" ng-model="appliedOrderPayment.amount#i+1#" placeholder="0" ng-change="updateSubTotal()" />
 					<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value="" />
 				</td>
 			</tr>	

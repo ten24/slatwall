@@ -1,11 +1,15 @@
 var ngSlatwall = angular.module('ng-slatwall', []);
 
-
-ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', function($scope) {
-	$scope.totalAmountToApply = 0;
+ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', function($scope, $filter) {
 	
-	//$scope.totalAmountToApply = $scope.appliedOrderPayments_1_amount;
-	//console.log($scope);
-	alert($scope.appliedOrderPayments);
-	$scope.totalAmountToApply.toFixed(2);
+	$scope.updateSubTotal = function() {
+		$scope.totalAmountToApply = 0;
+		//Loop through all the amount fields and create a running subtotal
+		angular.forEach($scope.appliedOrderPayment, function(value, key){
+			$scope.totalAmountToApply += parseFloat($filter('number')(value, 5));
+	    });
+
+		//Set the precision of the total amount value though angular
+		$filter('number')($scope.totalAmountToApply, 2);
+	}
 });
