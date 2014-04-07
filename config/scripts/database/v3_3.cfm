@@ -140,7 +140,7 @@ Notes:
 		</cfif>
 		
 		<cfcatch>
-			<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update paymentIntegrationID on SlatwallPaymentMethod Has Error">
+			<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Change amount on SlatwallPaymentMethod to allow nulls has error">
 			<cfset local.scriptHasErrors = true />
 		</cfcatch>
 	</cftry>
