@@ -271,6 +271,13 @@ range-filter-upper {
 .table .depth10 {
   margin-left: 200px;
 }
+.general-listing-search {
+  margin-bottom: 0 !important;
+}
+.listing-display-header {
+  background-color: #efefef;
+  border-bottom: 1px solid #cccccc;
+}
 .table-section {
   font-weight: bold;
   background-color: #ccc !important;
