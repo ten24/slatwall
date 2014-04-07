@@ -391,7 +391,6 @@ component extends="HibachiService" accessors="true" {
 		// Aggregate property changes by traversing backwards from current state
 		var rollbackData = {};
 		for (var i=1; i<=rollbackIndex; i++) {
-			logHibachi("Looping #i#");
 			var currentData = deserializeJSON(audits[i].getData());
 			
 			// No need for values from the newest property changes because the most recent state is known
