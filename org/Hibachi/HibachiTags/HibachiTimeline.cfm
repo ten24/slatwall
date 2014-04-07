@@ -51,7 +51,7 @@ Notes:
 	<cfparam name="attributes.auditTypeList" type="string" default="create,update,delete" />
 	<cfparam name="attributes.baseObjectList" type="string" default="" />
 	<cfparam name="attributes.object" type="any" default="" />
-	<cfparam name="attributes.recordsShow" type="string" default="10" hint="This is the total number of audit records to display" />
+	<cfparam name="attributes.recordsShow" type="string" default="10" />
 	<cfparam name="attributes.auditSmartList" type="any" default="" />
 	
 	<cfset thisTag.hibachiAuditService = attributes.hibachiScope.getService('HibachiAuditService') />
