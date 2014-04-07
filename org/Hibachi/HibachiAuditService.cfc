@@ -55,6 +55,79 @@ component extends="HibachiService" accessors="true" {
 		return getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod("get#arguments.audit.getBaseObject()#", {1=arguments.audit.getBaseID()});
 	}
 	
+	public any function getChangeDetailsForAudit(any audit) {
+		var changeData = deserializeJSON(arguments.audit.getData());
+		
+		var changeDetails = {};
+		changeDetails.properties = [];
+		changeDetails.columnList = "new";
+		if (listFindNoCase("update,rollback", arguments.audit.getAuditType())) {
+			changeDetails.columnList = listAppend(changeDetails.columnList, "old");
+		}
+		
+		var properties = entityNew(getService("hibachiService").getProperlyCasedFullEntityName(arguments.audit.getBaseObject())).getAuditableProperties();
+		for (var currentProperty in properties) {
+			var changeDetail = {};
+			changeDetail['propertyName'] = currentProperty.name;
+			
+			for (var column in listToArray(changeDetails.columnList)) {
+				if (structKeyExists(changeData["#column#PropertyData"], currentProperty.name)) {
+					var columnValue = "";
+					var dataValue = changeData["#column#PropertyData"][currentProperty.name];
+					
+					// Column/Simple Value
+					if (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") {
+						if (isBoolean(dataValue) && structKeyExists(currentProperty, "ormtype") && currentProperty.ormtype == "boolean") {
+							columnValue = rbKey("define.#yesNoFormat(dataValue)#");
+						} else {
+							columnValue = dataValue;
+						}
+					// Entity
+					} else if (structKeyExists(currentProperty, "cfc")) {
+						if (isStruct(dataValue)) {
+							// Get actual reference to entity
+							var entityService = getService("hibachiService").getServiceByEntityName(currentProperty.cfc);
+							var entityPrimaryIDPropertyName = entityService.getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
+							if (structKeyExists(dataValue, entityPrimaryIDPropertyName)) {
+								columnValue = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=dataValue[entityPrimaryIDPropertyName],2=false});
+								
+								// Use simple representation or primaryID in case that the referenced entity had been deleted and no longer exists
+								if (isNull(columnValue)) {
+									if (structKeyExists(dataValue, "title")) {
+										columnValue = dataValue.title;
+									} else {
+										columnValue = dataValue[entityPrimaryIDPropertyName];
+									}
+								}
+							}
+						}
+					}
+					
+					changeDetail[column] = columnValue;
+				}
+			}
+			
+			// Only include the relevant auditable properties
+			if (listFindNoCase(structKeyList(changeDetail), "new") || listFindNoCase(structKeyList(changeDetail), "old")) {
+				// Make sure matching 'old' key exists when appropriately required
+				if (listFindNoCase(changeDetails.columnList, "old") && !structKeyExists(changeDetail, "old")) {
+					// Blank when missing
+					changeDetail['old'] = "";
+				}
+				
+				// Make sure matching 'new' key exists when appropriately required
+				if (listFindNoCase(changeDetails.columnList, "new") && !structKeyExists(changeDetail, "new")) {
+					// Blank when missing
+					changeDetail['new'] = "";
+				}
+				
+				arrayAppend(changeDetails.properties, changeDetail);
+			}
+		}
+		
+		return changeDetails;
+	}
+	
 	public any function newAudit() {
 		var audit = super.newAudit();
 		audit.setAuditDateTime(now());
@@ -244,6 +317,11 @@ component extends="HibachiService" accessors="true" {
 			standardizedValue = {};
 			// Primary ID of entity is only relevant value
 			standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"] = arguments.propertyValue.getPrimaryIDValue();
+			if (structKeyExists(arguments.propertyValue, "getSimpleRepresentation")) {
+				try {
+					standardizedValue["title"] = arguments.propertyValue.getSimpleRepresentation();
+				} catch (any e) {}
+			}
 			
 			// Updates mapping data
 			structInsert(arguments.mappingData, "#arguments.mappingPath#[#arguments.propertyValue.getPrimaryIDPropertyName()#]", standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"], true);
@@ -295,20 +373,40 @@ component extends="HibachiService" accessors="true" {
 	// ===================== START: Process Methods ===========================
 	
 	public any function processAudit_rollback(required any audit) {
-		// TODO implement processAudit_rollback method
-		// determine which entity audit corresponds to
-		// grab entity's audit log
-		// inspect processing object to determine which audit entry to rollback to
-		// calculate the changes for rollback
-		// call populate on entity and save
 		var relatedEntity = arguments.audit.getRelatedEntity();
 		auditSL = relatedEntity.getAuditSmartList();
-		auditSL.addInFilter("auditType", "create,update");
+		auditSL.addInFilter("auditType", "create,update,rollback");
 		
-		// Related entity must have at least 2 audit create/update records to do comparison
-		if (auditSL.getRecordsCount() >= 2) {
-			
+		var audits = auditSL.getRecords();
+		
+		// Locate rollback index
+		var rollbackIndex = 1;
+		for (var i=1; i<=arraylen(audits); i++) {
+			if (audits[i].getAuditID() == arguments.audit.getAuditID()) {
+				rollbackIndex = i;
+				break;
+			}
 		}
+		
+		// Aggregate property changes by traversing backwards from current state
+		var rollbackData = {};
+		for (var i=1; i<=rollbackIndex; i++) {
+			var currentData = deserializeJSON(audits[i].getData());
+			
+			// No need for values from the newest property changes because the most recent state is known
+			if (i != 1) {
+				structAppend(rollbackData, currentData.newPropertyData, true);
+			}
+			
+			// No need for the values from the old property changes at the rollback point, we'd be beyond the rollback point
+			if (i != rollbackIndex) {
+				structAppend(rollbackData, currentData.oldPropertyData, true);
+			}
+		}
+		
+		// TODO we need to make sure that the new audit.auditType is "rollback" rather than the default "update" which is happening
+		// Save new version of entity with aggregated rollback changes
+		getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod("save#arguments.audit.getBaseObject()#", {1=relatedEntity,2=rollbackData});
 		
 		return arguments.audit;
 	}

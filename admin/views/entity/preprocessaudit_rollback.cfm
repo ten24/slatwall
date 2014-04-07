@@ -49,30 +49,56 @@ Notes:
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfset backAction = request.context.entityActionDetails.sRedirectAction />
-<cfset backActionQueryString = "#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" />
-
-<cfif isNull(rc.audit.getRelatedEntity())>
-	<cfset backAction = "admin:main.default" />
-	<cfset backActionQueryString = "" />
-</cfif>
+<cfset rc.pageTitle = "#rc.audit.getTitle()#" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#">		
+	<cfif !isNull(rc.audit.getChangeDetails())>
+		<cfset changeDetails = rc.audit.getChangeDetails() />
+		<cfsavecontent variable="changeDetailsHTML">
+			<table class="table table-striped table-bordered table-condensed">
+				<tbody>
+					<tr>
+						<th>#request.context.fw.getHibachiScope().rbKey("entity.audit.changeDetails.property")#</th>
+						<cfif listFindNoCase(changeDetails.columnList, "old")>
+							<th>#request.context.fw.getHibachiScope().rbKey("entity.audit.changeDetails.propertyChanged.old")#</th>
+						</cfif>
+						<th>#request.context.fw.getHibachiScope().rbKey("entity.audit.changeDetails.propertyChanged.new")#</th>
+					</tr>
+					
+					<cfloop array="#changeDetails.properties#" index="changeDetail">
+						<tr>
+							<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+							<cfif listFindNoCase(changeDetails.columnList, "old")>
+								<cfif isSimpleValue(changeDetail.old)>
+									<td>#changeDetail.old#</td>
+								<cfelseif isObject(changeDetail.old)>
+									<td><cf_HibachiActionCaller action="admin:entity.detail#changeDetail.old.getClassName()#" queryString="#changeDetail.old.getPrimaryIDPropertyName()#=#changeDetail.old.getPrimaryIDValue()#" text="#changeDetail.old.getSimpleRepresentation()#" /></td>
+								</cfif>
+							</cfif>
+							
+							<cfif isSimpleValue(changeDetail.new)>
+								<td>#changeDetail.new#</td>
+							<cfelseif isObject(changeDetail.new)>
+								<td><cf_HibachiActionCaller action="admin:entity.detail#changeDetail.new.getClassName()#" queryString="#changeDetail.new.getPrimaryIDPropertyName()#=#changeDetail.new.getPrimaryIDValue()#" text="#changeDetail.new.getSimpleRepresentation()#" /></td>
+							</cfif>
+						</tr>
+					</cfloop>
+				</tbody>
+			</table>
+		</cfsavecontent>
+	</cfif>
+	
+	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divclass="span12">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
-				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
+				<cfif !isNull(rc.audit.getChangeDetails())>
+					<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+				</cfif>
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
-		<!---
-		| Property 		| Changed From 		| Changed To		|
-		  
-		  Brand			  Nike 				  Rebok
-		  
-		  --->
-		  
 		
 	</cf_HibachiEntityProcessForm>
 </cfoutput>
