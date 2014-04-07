@@ -129,7 +129,6 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function newAudit() {
-		// var audit = super.newAudit();
 		var audit = this.new('Audit');
 		audit.setAuditDateTime(now());
 		audit.setSessionIPAddress(CGI.REMOTE_ADDR);
