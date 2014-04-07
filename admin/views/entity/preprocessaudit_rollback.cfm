@@ -91,7 +91,7 @@ Notes:
 			<cf_HibachiPropertyList divclass="span12">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
-				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
 				<cfif !isNull(rc.audit.getChangeDetails())>
 					<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
 				</cfif>
