@@ -49,6 +49,8 @@ Notes:
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<cfset rc.pageTitle = "#rc.audit.getTitle()#" />
+
 <cfoutput>
 	<cfif !isNull(rc.audit.getChangeDetails())>
 		<cfset changeDetails = rc.audit.getChangeDetails() />

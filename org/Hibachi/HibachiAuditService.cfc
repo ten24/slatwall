@@ -373,22 +373,41 @@ component extends="HibachiService" accessors="true" {
 	// ===================== START: Process Methods ===========================
 	
 	public any function processAudit_rollback(required any audit) {
-		// TODO implement processAudit_rollback method
-		// determine which entity audit corresponds to
-		// grab entity's audit log
-		// inspect processing object to determine which audit entry to rollback to
-		// calculate the changes for rollback
-		// call populate on entity and save
 		var relatedEntity = arguments.audit.getRelatedEntity();
 		auditSL = relatedEntity.getAuditSmartList();
-		auditSL.addInFilter("auditType", "create,update");
-		
-		// Related entity must have at least 2 audit create/update records to do comparison
+		auditSL.addInFilter("auditType", "create,update,rollback");
 		
 		var audits = auditSL.getRecords();
+		
+		// Locate rollback index
+		var rollbackIndex = 1;
 		for (var i=1; i<=arraylen(audits); i++) {
-			
+			if (audits[i].getAuditID() == arguments.audit.getAuditID()) {
+				rollbackIndex = i;
+				break;
+			}
 		}
+		
+		// Aggregate property changes by traversing backwards from current state
+		var rollbackData = {};
+		for (var i=1; i<=rollbackIndex; i++) {
+			logHibachi("Looping #i#");
+			var currentData = deserializeJSON(audits[i].getData());
+			
+			// No need for values from the newest property changes because the most recent state is known
+			if (i != 1) {
+				structAppend(rollbackData, currentData.newPropertyData, true);
+			}
+			
+			// No need for the values from the old property changes at the rollback point, we'd be beyond the rollback point
+			if (i != rollbackIndex) {
+				structAppend(rollbackData, currentData.oldPropertyData, true);
+			}
+		}
+		
+		// TODO we need to make sure that the new audit.auditType is "rollback" rather than the default "update" which is happening
+		// Save new version of entity with aggregated rollback changes
+		getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod("save#arguments.audit.getBaseObject()#", {1=relatedEntity,2=rollbackData});
 		
 		return arguments.audit;
 	}

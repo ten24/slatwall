@@ -120,12 +120,12 @@ Notes:
 						<!--- Group by today --->
 						<cfif daysDiffNow eq 0>
 							<cfset dateGroupUsageKey = "today" />
-							<cfset dateGroupText = "Today, #dateFormat(auditDate, 'mmmm dd, yyy')#" />
+							<cfset dateGroupText = "Today, #dateFormat(auditDate, 'mmmm dd, yyyy')#" />
 							<cfset showTime = true />
 						<!--- Group by yesterday --->
 						<cfelseif daysDiffNow eq 1>
 							<cfset dateGroupUsageKey = "yesterday" />
-							<cfset dateGroupText = "Yesterday, #dateFormat(auditDate, 'mmmm dd, yyy')#" />
+							<cfset dateGroupText = "Yesterday, #dateFormat(auditDate, 'mmmm dd, yyyy')#" />
 							<cfset showTime = true />
 						<cfelse>
 							<!--- Group by day of current month --->
