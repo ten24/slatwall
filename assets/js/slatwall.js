@@ -8,8 +8,5 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 		angular.forEach($scope.appliedOrderPayment, function(value, key){
 			$scope.totalAmountToApply += parseFloat($filter('number')(value, 5));
 	    });
-
-		//Set the precision of the total amount value though angular
-		$filter('number')($scope.totalAmountToApply, 2);
 	}
 });
