@@ -46,35 +46,33 @@
 Notes:
 
 --->
-<cfparam name="rc.orderSmartList" type="any" />
-<cfparam name="rc.productReviewSmartList" type="any" />
+<cfparam name="rc.audit" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfset backAction = request.context.entityActionDetails.sRedirectAction />
+<cfset backActionQueryString = "#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" />
+
+<cfif isNull(rc.audit.getRelatedEntity())>
+	<cfset backAction = "admin:main.default" />
+	<cfset backActionQueryString = "" />
+</cfif>
 
 <cfoutput>
-	<cf_HibachiMessageDisplay />
-	
-	<div class="row-fluid">
-		<div class="span6">
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.orderSmartList#" 
-					recordDetailAction="admin:entity.detailorder">
-				<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-				<cf_HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
-				<cf_HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" />
-				<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
-			</cf_HibachiListingDisplay>
-			<br />
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.productReviewSmartList#" 
-					recordDetailAction="admin:entity.detailproductreview">
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="product.calculatedTitle" />
-				<cf_HibachiListingColumn propertyIdentifier="reviewerName" />
-				<cf_HibachiListingColumn propertyIdentifier="reviewTitle" />
-			</cf_HibachiListingDisplay>
-		</div>
-		<div class="span6">
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
-			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="30" />
-		</div>
-	</div>
+	<cf_HibachiEntityDetailForm object="#rc.audit#">		
+		<cf_HibachiEntityActionBar type="detail" object="#rc.audit#" edit="false" pageTitle="#rc.audit.getTitle()#" showDelete="false" showEdit="false"
+								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
+								   cancelQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#"
+								   backAction="#backAction#"
+								   backQueryString="#backActionQueryString#">
+			<cf_HibachiProcessCaller action="admin:entity.processaudit" entity="#rc.audit#" queryString="redirectAction=#request.context.slatAction#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" processContext="rollback" type="list" modal="false" />
+		</cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList divclass="span12">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+	</cf_HibachiEntityDetailForm>
 </cfoutput>

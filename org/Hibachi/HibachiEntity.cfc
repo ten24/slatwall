@@ -240,6 +240,23 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return true;
 	}
 	
+	// @hint public method to determine if this entity is audited
+	public any function getAuditableFlag() {
+		var metaData = getThisMetaData();
+		if(isPersistent() && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
+			return true;
+		}
+		return false;
+	}
+	
+	// @hint Returns a smart list of audits related to this entity
+	public any function getAuditSmartList() {
+		variables.auditLogSmartList = getService("hibachiAuditService").getAuditSmartList();
+		variables.auditLogSmartList.addFilter("baseID", getPrimaryIDValue());
+		variables.auditLogSmartList.addOrder("auditDateTime|DESC");
+		return variables.auditLogSmartList;
+	}
+	
 	// @hint public method that returns the value from the primary ID of this entity
 	public string function getPrimaryIDValue() {
 		return this.invokeMethod("get#getPrimaryIDPropertyName()#");
@@ -501,6 +518,43 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	public string function getAuditablePropertyExclusionList() {
+		return "createdByAccount,createdDateTime,modifiedByAccount,modifiedDateTime,remoteID";
+	}
+	
+	public array function getAuditableProperties() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
+			var properties = getProperties();
+			var auditableProperties = [];
+			for (var property in properties) {
+				var propertyExclusionList = getAuditablePropertyExclusionList();
+				
+				// The property must be persistent, auditable, not in property exclusion list, not a calculated property, must be a column or one-to-many, and field not inverse
+				if ((!structKeyExists(property, "persistent") || (structKeyExists(property, "persistent") && property.persistent)) && (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) && !listFindNoCase(propertyExclusionList, property.name) && (left(property.name, 10) != "calculated") && (!structKeyExists(property, "fieldType") || property.fieldType == "column" || property.fieldType == "many-to-one") && (!structKeyExists(property, "inverse") || (structKeyExists(property, "inverse") && !property.inverse))) {
+					arrayAppend(auditableProperties, property);
+				}
+			}
+
+			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
+		}
+
+		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+	}
+	
+	public struct function getAuditablePropertiesStruct() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#") ) {
+			var auditablePropertiesStruct = {};
+			var auditableProperties = getAuditableProperties();
+
+			for(var i=1; i<=arrayLen(auditableProperties); i++) {
+				auditablePropertiesStruct[ auditableProperties[i].name ] = auditableProperties[ i ];
+			}
+			setApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#", auditablePropertiesStruct);
+		}
+
+		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
+	}
+	
 	
 	
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
@@ -646,6 +700,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				setSortOrder( topSortOrder + 1 );
 			}
 		}
+		
+		getService("hibachiAuditService").logEntityModify(entity=this);
 	}
 	
 	public void function preUpdate(struct oldData){
@@ -677,6 +733,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				setModifiedByAccount(getHibachiScope().getAccount());
 			}
 		}
+		
+		// Manually populate primary ID in old data because it doesn't exist by default
+		arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
+		
+		getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+	}
+	
+	public void function preDelete() {
+		getService("hibachiAuditService").logEntityDelete(this);
 	}
 	
 	/*

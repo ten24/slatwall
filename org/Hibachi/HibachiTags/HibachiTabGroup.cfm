@@ -79,19 +79,23 @@
 									<cfif attributes.object.hasProperty('remoteID')>
 										<cf_HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
 									</cfif>
-									<cfif attributes.object.hasProperty('createdDateTime')>
-										<cf_HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
-									</cfif>
-									<cfif attributes.object.hasProperty('createdByAccount')>
-										<cf_HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
-									</cfif>
-									<cfif attributes.object.hasProperty('modifiedDateTime')>
-										<cf_HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
-									</cfif>
-									<cfif attributes.object.hasProperty('modifiedByAccount')>
-										<cf_HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
+									<cfif !attributes.object.getAuditSmartList().getRecordsCount()>
+										<cfif attributes.object.hasProperty('createdDateTime')>
+											<cf_HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
+										</cfif>
+										<cfif attributes.object.hasProperty('createdByAccount')>
+											<cf_HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
+										</cfif>
+										<cfif attributes.object.hasProperty('modifiedDateTime')>
+											<cf_HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
+										</cfif>
+										<cfif attributes.object.hasProperty('modifiedByAccount')>
+											<cf_HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
+										</cfif>
 									</cfif>
 								</cf_HibachiPropertyList>
+								
+								<cf_HibachiTimeline object="#attributes.object#" />
 							</div>
 						</div>
 					</cfif>
