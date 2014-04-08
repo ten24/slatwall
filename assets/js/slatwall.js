@@ -6,7 +6,7 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 		$scope.totalAmountToApply = 0;
 		//Loop through all the amount fields and create a running subtotal
 		angular.forEach($scope.appliedOrderPayment, function(value, key){
-			$scope.totalAmountToApply += parseFloat($filter('number')(value, 5));
+			$scope.totalAmountToApply += parseFloat(value);
 	    });
 	}
 });
