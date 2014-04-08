@@ -595,7 +595,7 @@
 		if(isNull(propertyValue)) {
 			return true;
 		}
-		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'._'), entity=uniqueObject);
+		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'._'), entity=propertyObject);
 	}
 	
 	public boolean function validate_regex(required any object, required string propertyIdentifier, required string constraintValue) {
