@@ -62,7 +62,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="expirationYear" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
 	property name="giftCardNumberEncrypted" ormType="string";
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
-	property name="providerToken" ormType="string";
+	property name="providerToken" hb_populateEnabled="public" ormType="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
