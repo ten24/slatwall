@@ -19,6 +19,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		if( len(getSessionValue('sessionID')) ) {
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID")) {
+			setSessionValue('sessionID', cookie["#getApplicationValue('applicationKey')#SessionID"]);
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
 			if(sessionEntity.getNewFlag()) {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value='', expires="now");
