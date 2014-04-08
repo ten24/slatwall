@@ -48,12 +48,16 @@ Notes:
 --->
 <cfparam name="rc.attributeSetSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.attributeSetSmartList#" createmodal="true" createReturnAction="admin:entity.detailattributeset" />
-
 <cf_HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
 						   recordDetailAction="admin:entity.detailattributeset"
 						   recordEditAction="admin:entity.editattributeset"
 						   sortProperty="sortOrder">
+						      
+	<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createattributeset" entity="attributeset" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>	
+						      
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
 	<cf_HibachiListingColumn propertyIdentifier="attributeSetType.type" />
 	<cf_HibachiListingColumn propertyIdentifier="globalFlag" />

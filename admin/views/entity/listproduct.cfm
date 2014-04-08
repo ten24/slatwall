@@ -56,7 +56,7 @@ Notes:
 	<cf_HibachiListingDisplay type="listing" smartList="#rc.productSmartList#"
 			recordEditAction="admin:entity.editproduct"
 			recorddetailaction="admin:entity.detailproduct"
-			showCreate="true">
+			showCreate="false">
 			
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >

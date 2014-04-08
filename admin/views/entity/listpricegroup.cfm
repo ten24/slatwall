@@ -49,12 +49,16 @@ Notes:
 <cfparam name="rc.priceGroupSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.priceGroupSmartList#" />
 
 <cf_HibachiListingDisplay smartList="#rc.priceGroupSmartList#" 
 							recordDetailAction="admin:entity.detailpricegroup"
 							recordEditAction="admin:entity.editpricegroup">
+							
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiProcessCaller action="admin:entity.createpricegroup" entity="pricegroup" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+	</cf_HibachiListingDisplayButtonGroup>
+	
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
 	<cf_HibachiListingColumn propertyIdentifier="priceGroupCode" />
 	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />

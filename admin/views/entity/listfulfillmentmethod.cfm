@@ -48,12 +48,16 @@ Notes:
 --->
 <cfparam name="rc.fulfillmentMethodSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.fulfillmentMethodSmartList#" />
-
 <cf_HibachiListingDisplay smartList="#rc.fulfillmentMethodSmartList#"
 		recordEditAction="admin:entity.editfulfillmentmethod"
 		recordDetailAction="admin:entity.detailfulfillmentmethod"
 		sortProperty="sortOrder">
+		
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiProcessCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+	</cf_HibachiListingDisplayButtonGroup>
+		
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentMethodName" />
 	<cf_HibachiListingColumn propertyIdentifier="fulfillmentMethodType" />
 	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />

@@ -47,6 +47,12 @@ Notes:
 <cf_HibachiListingDisplay smartList="#rc.loyaltyTermSmartList#"
 						   recorddetailaction="admin:entity.detailloyaltyterm"
 						   recordEditAction="admin:entity.editloyaltyterm">
+	
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiProcessCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+	</cf_HibachiListingDisplayButtonGroup>
+	
 	<cf_HibachiListingColumn propertyIdentifier="loyaltyTermName" />
 	<cf_HibachiListingColumn propertyIdentifier="loyaltyTermStartDateTime" />
 	<cf_HibachiListingColumn propertyIdentifier="loyalty.loyaltyName" />

@@ -49,10 +49,14 @@ Notes:
 <cfparam name="rc.roundingruleSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.roundingruleSmartList#" createModal="true" />
 
 <cf_HibachiListingDisplay smartList="#rc.roundingruleSmartList#" rc="#rc#" recordEditAction="admin:entity.editroundingrule" recordEditQueryString="redirectAction=admin:entity.listroundingrule" recordEditModal="true" recordDeleteAction="admin:entity.deleteroundingrule">
+	
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiProcessCaller action="admin:entity.createroundingrule" entity="roundingrule" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+	</cf_HibachiListingDisplayButtonGroup>
+	
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="roundingruleName" />
 	<cf_HibachiListingColumn propertyIdentifier="roundingRuleExpression" />
 	<cf_HibachiListingColumn propertyIdentifier="roundingRuleDirection" />

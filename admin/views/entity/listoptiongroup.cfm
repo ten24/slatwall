@@ -50,15 +50,13 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.optionGroupSmartList#" />
-	
 	<cf_HibachiListingDisplay smartList="#rc.optionGroupSmartList#" 
 							   recordDetailAction="admin:entity.detailoptiongroup"
 							   recordEditAction="admin:entity.editoptiongroup"
 							   sortProperty="sortOrder">
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.preprocessoptiongroup " entity="optiongroup" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.createoptiongroup" entity="optiongroup" processContext="create" class="btn btn-primary" icon="plus icon-white" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="optionGroupName" />

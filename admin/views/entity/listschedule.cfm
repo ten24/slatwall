@@ -50,11 +50,15 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiEntityActionBar type="listing" object="#rc.scheduleSmartList#" />
-
 	<cf_HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
 							  recorddetailaction="admin:entity.detailschedule" 
 	                          recordeditaction="admin:entity.editschedule">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createschedule" entity="schedule" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
 		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />
 	</cf_HibachiListingDisplay>
 

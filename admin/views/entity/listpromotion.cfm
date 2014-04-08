@@ -49,14 +49,18 @@ Notes:
 <cfparam name="rc.promotionSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.promotionSmartList#" />
 
 <cfset rc.promotionSmartList.addOrder("promotionName|ASC") />
 
 <cf_HibachiListingDisplay smartList="#rc.promotionSmartList#"
 						   recorddetailaction="admin:entity.detailpromotion"
 						   recordEditAction="admin:entity.editpromotion">
+						      
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiProcessCaller action="admin:entity.createpromotion" entity="promotion" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+	</cf_HibachiListingDisplayButtonGroup>
+	
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotionName" />
 	<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
 	<cf_HibachiListingColumn propertyIdentifier="modifiedDateTime" />

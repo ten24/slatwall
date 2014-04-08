@@ -52,8 +52,7 @@ Notes:
 	
 	<cf_HibachiListingDisplay type="listing" smartList="#rc.skuSmartList#"
 			recordEditAction="admin:entity.editsku"
-			recorddetailaction="admin:entity.detailsku"
-			showCreate="true">
+			recorddetailaction="admin:entity.detailsku">
 			
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >

@@ -49,8 +49,6 @@ Notes:
 <cfparam name="rc.termSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.termSmartList#" createModal="true" />
 
 <cf_HibachiListingDisplay smartList="#rc.termSmartList#"
 						   recordEditAction="admin:entity.editterm"
@@ -58,6 +56,11 @@ Notes:
 						   recordEditModal="true"
 						   recordDeleteAction="admin:entity.deleteterm"
 						   sortProperty="sortOrder">
+						      
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiProcessCaller action="admin:entity.createterm" entity="term" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+	</cf_HibachiListingDisplayButtonGroup>
 						      
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
 	

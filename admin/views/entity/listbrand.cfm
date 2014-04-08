@@ -54,11 +54,11 @@ Notes:
 
 <cf_HibachiListingDisplay smartList="#rc.brandSmartList#"
 						recordDetailAction="admin:entity.detailbrand"
-						recordEditAction="admin:entity.editbrand">
-						
+						recordEditAction="admin:entity.editbrand"
+						showCreate="false">
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.preprocessbrand " entity="brand" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.createbrand" entity="brand" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="false" />
 		</cf_HibachiListingDisplayButtonGroup>
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="brandName" />
 	<cf_HibachiListingColumn propertyIdentifier="brandWebsite" />

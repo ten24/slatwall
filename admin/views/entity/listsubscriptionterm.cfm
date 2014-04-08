@@ -49,8 +49,6 @@ Notes:
 <cfparam name="rc.subscriptionTermSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.subscriptionTermSmartList#" />
 
 <cf_HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
 						recordDetailAction="admin:entity.detailsubscriptionterm"
@@ -58,7 +56,7 @@ Notes:
 						
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.preprocessoptiongroup " entity="optiongroup" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" processContext="create" class="btn btn-primary" icon="plus icon-white"/>
 		</cf_HibachiListingDisplayButtonGroup>					
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
 </cf_HibachiListingDisplay>

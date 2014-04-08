@@ -48,11 +48,14 @@ Notes:
 --->
 <cfparam name="rc.addresszoneSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.addresszoneSmartList#" />
-
 <cf_HibachiListingDisplay smartList="#rc.addresszoneSmartList#"
 						   recordDetailAction="admin:entity.detailaddresszone"
 						   recordEditAction="admin:entity.editaddresszone"
 						   recordDeleteAction="admin:entity.deleteaddresszone">
+						      
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiProcessCaller action="admin:entity.createaddresszone" entity="addresszone" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+	</cf_HibachiListingDisplayButtonGroup>
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="addresszoneName" search="true" />
 </cf_HibachiListingDisplay>

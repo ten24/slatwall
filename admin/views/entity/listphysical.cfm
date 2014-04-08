@@ -49,11 +49,16 @@ Notes:
 <cfparam name="rc.physicalSmartList" type="any"/>
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.physicalSmartList#" createModal="true"></cf_HibachiEntityActionBar>
 	
 	<cf_HibachiListingDisplay smartlist="#rc.physicalSmartList#" 
 	                          recordeditaction="admin:entity.editphysical"
 							  recorddetailaction="admin:entity.detailphysical">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiProcessCaller action="admin:entity.createphysical" entity="physical" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
 		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />	
 		<cf_HibachiListingColumn propertyidentifier="physicalStatusType.type" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
 		<cf_HibachiListingColumn propertyidentifier="createdDateTime" />
