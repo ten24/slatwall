@@ -675,6 +675,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
 		}
 		
+		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
+
+		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
+			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
+		}
+		
 		return arguments.order;
 	}
 	
@@ -1047,6 +1053,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							if(!isNull(getHibachiScope().getSession().getOrder()) && arguments.order.getOrderID() == getHibachiScope().getSession().getOrder().getOrderID()) {
 								getHibachiScope().getSession().setOrder(javaCast("null", ""));
+							}
+						
+							// Loop over all orderPayments and if it's a term payment set the payment due date
+							for(var orderPayment in order.getOrderPayments()) {
+								if(orderPayment.getStatusCode() == 'opstActive' && orderPayment.getPaymentMethodType() == 'termPayment' && !isNull(orderPayment.getPaymentTerm())) {
+									orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate() );
+								}
 							}
 						
 							// Loop over all orderPayments and if it's a term payment set the payment due date

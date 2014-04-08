@@ -111,7 +111,9 @@ component accessors="true" output="false" {
 				paymentData.newOrderPayment.paymentMethod.paymentMethodID = paymentMethod.getPaymentMethodID();
 				paymentData.newOrderPayment.order.orderID = rc.$.slatwall.cart().getOrderID();
 				paymentData.newOrderPayment.orderPaymentType.typeID = '8aac86674079189801407a81b456000a';
-				paymentData.newOrderPayment.providerToken = responseData.token & '~' & responseData.payerID;
+				
+				var addOrderPaymentProcessObject = rc.$.slatwall.cart().getProcessObject('addOrderPayment');
+				addOrderPaymentProcessObject.getNewOrderPayment().setProviderToken(responseData.token & '~' & responseData.payerID);
 				
 				var order = getOrderService().processOrder( rc.$.slatwall.cart(), paymentData, 'addOrderPayment');
 				
