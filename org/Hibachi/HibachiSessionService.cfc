@@ -2,6 +2,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 
 	property name="accountService" type="any";
 	property name="orderService" type="any";
+	property name="hibachiAuditService" type="any";
 	property name="hibachiTagService" type="any";
 	
 
@@ -69,6 +70,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		currentSession.setAccount( arguments.account );
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
 		
+		getHibachiAuditService().logAccountActivity("login");
+		
 		// Make sure that we persist the session
 		persistSession();
 		
@@ -80,6 +83,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	public void function logoutAccount() {
 		var currentSession = getHibachiScope().getSession();
+		
+		getHibachiAuditService().logAccountActivity("logout");
 		
 		currentSession.removeAccount();
 		currentSession.removeAccountAuthentication();

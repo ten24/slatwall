@@ -46,35 +46,22 @@
 Notes:
 
 --->
-<cfparam name="rc.orderSmartList" type="any" />
-<cfparam name="rc.productReviewSmartList" type="any" />
+<cfparam name="rc.accountPaymentApplied" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiMessageDisplay />
-	
-	<div class="row-fluid">
-		<div class="span6">
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.orderSmartList#" 
-					recordDetailAction="admin:entity.detailorder">
-				<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-				<cf_HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
-				<cf_HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" />
-				<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
-			</cf_HibachiListingDisplay>
-			<br />
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.productReviewSmartList#" 
-					recordDetailAction="admin:entity.detailproductreview">
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="product.calculatedTitle" />
-				<cf_HibachiListingColumn propertyIdentifier="reviewerName" />
-				<cf_HibachiListingColumn propertyIdentifier="reviewTitle" />
-			</cf_HibachiListingDisplay>
-		</div>
-		<div class="span6">
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
-			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="30" />
-		</div>
-	</div>
+	<cf_HibachiEntityDetailForm object="#rc.accountPaymentApplied#" edit="#rc.edit#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.accountPaymentApplied#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied.getAccountPayment()#" property="accountPaymentID">
+				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied#" property="accountPayment">
+				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied.getOrderPayment()#" property="orderPaymentID">
+				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied#" property="orderPayment">
+				
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityDetailForm>
 </cfoutput>
