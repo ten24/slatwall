@@ -1,2 +1,2 @@
-component output="false" accessors="true" extends="org.Hibachi.HibachiAuditService" {
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiAuditService" {
 }
