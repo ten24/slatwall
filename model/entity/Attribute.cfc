@@ -105,7 +105,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="attributeType"); 
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="attributeType"); 
 			smartList.addOrder("type|ASC");
 			variables.attributeTypeOptions = smartList.getRecords();
 		}
@@ -117,7 +117,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="validationType"); 
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="validationType"); 
 			variables.validationTypeOptions = smartList.getRecords();
 			arrayPrepend(variables.validationTypeOptions, {value="", name=rbKey('define.none')});
 		}
@@ -129,7 +129,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			var smartList = getService("attributeOption").getAttributeOptionSmartList();
 			smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
 			smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
-			smartList.addFilter(propertyIdentifier="attribute_attributeID", value="#variables.attributeID#"); 
+			smartList.addFilter(propertyIdentifier="attribute.attributeID", value="#variables.attributeID#"); 
 			smartList.addOrder("sortOrder|ASC");
 			variables.attributeOptionsOptions = smartList.getRecords();
 			if(variables.attributeType.getSystemCode() == "atSelect") {
