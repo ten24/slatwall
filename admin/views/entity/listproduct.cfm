@@ -52,22 +52,21 @@ Notes:
 <cfset subscriptionDisabled = "" />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
-		
+
+	<cf_HibachiListingDisplay type="listing" smartList="#rc.productSmartList#"
+			recordEditAction="admin:entity.editproduct"
+			recorddetailaction="admin:entity.detailproduct"
+			showCreate="true">
+			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiListingDisplayButtonGroup >
 			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
 				<cf_HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" disabled="#!$.slatwall.getService("contentService").getContentSmartList().getRecordsCount()#" disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" type="list" />
 				<cf_HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
 				<cf_HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" disabled="#!$.slatwall.getService("contentService").getSubscriptionTermSmartList().getRecordsCount() or !$.slatwall.getService("contentService").getSubscriptionBenefitSmartList().getRecordsCount()#"  disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoSubscriptionBenefitOrTerm')#" type="list" />
 			</cf_HibachiActionCallerDropdown>
-		</cf_HibachiEntityActionBarButtonGroup>
-		
-	</cf_HibachiEntityActionBar>
-	
-	<cf_HibachiListingDisplay smartList="#rc.productSmartList#"
-			recordEditAction="admin:entity.editproduct"
-			recorddetailaction="admin:entity.detailproduct">
+		</cf_HibachiListingDisplayButtonGroup>
+			
 		<cf_HibachiListingColumn propertyIdentifier="productType.productTypeName" />
 		<cf_HibachiListingColumn propertyIdentifier="brand.brandName" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />

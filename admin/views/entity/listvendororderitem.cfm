@@ -52,7 +52,6 @@ Notes:
 <cfset rc.vendorOrderItemSmartList.addOrder("vendorOrder.createdDateTime|DESC") />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.vendorOrderItemSmartList#" showCreate="false" />
 	
 	<cf_HibachiListingDisplay smartList="#rc.vendorOrderItemSmartList#"
 							   recorddetailaction="admin:entity.detailvendororderitem"

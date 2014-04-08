@@ -50,8 +50,6 @@ Notes:
 
 <cfset rc.sessionSmartList.addOrder('lastRequestDateTime|DESC') />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.sessionSmartList#" showCreate="false" />
-
 <cf_HibachiListingDisplay smartList="#rc.sessionSmartList#">
 	<cf_HibachiListingColumn propertyIdentifier="lastRequestDateTime" />
 	<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
