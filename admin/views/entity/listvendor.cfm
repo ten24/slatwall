@@ -54,7 +54,7 @@ Notes:
 						      
 	<!--- Create ---> 
 	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createvendor" entity="vendor" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+		<cf_HibachiProcessCaller action="admin:entity.createvendor" entity="vendor" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.vendor')#" />
 	</cf_HibachiListingDisplayButtonGroup>
 	
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="vendorName" search="true" />

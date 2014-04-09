@@ -49,21 +49,21 @@ Notes:
 <cfparam name="rc.brandSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.brandSmartList#" />
 
-<cf_HibachiListingDisplay smartList="#rc.brandSmartList#"
-						recordDetailAction="admin:entity.detailbrand"
-						recordEditAction="admin:entity.editbrand"
-						showCreate="false">
+	<cf_HibachiListingDisplay smartList="#rc.brandSmartList#"
+							recordDetailAction="admin:entity.detailbrand"
+							recordEditAction="admin:entity.editbrand"
+							showCreate="false">
+		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createbrand" entity="brand" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="false" />
+			<cf_HibachiProcessCaller action="admin:entity.createbrand" entity="brand" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.brand')#" modal="false" />
 		</cf_HibachiListingDisplayButtonGroup>
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="brandName" />
-	<cf_HibachiListingColumn propertyIdentifier="brandWebsite" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="brandName" />
+		<cf_HibachiListingColumn propertyIdentifier="brandWebsite" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

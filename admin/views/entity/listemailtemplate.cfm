@@ -50,18 +50,18 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
-						   recordDetailAction="admin:entity.detailemailTemplate"
-						   recordEditAction="admin:entity.editemailTemplate">
-	
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createemailtemplate" entity="emailtemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-	</cf_HibachiListingDisplayButtonGroup>
-	
-	<cf_HibachiListingColumn propertyIdentifier="emailTemplateName" />
-	<cf_HibachiListingColumn propertyIdentifier="emailTemplateObject" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
+							   recordDetailAction="admin:entity.detailemailTemplate"
+							   recordEditAction="admin:entity.editemailTemplate">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createemailtemplate" entity="emailtemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.emailtemplate')#" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn propertyIdentifier="emailTemplateName" />
+		<cf_HibachiListingColumn propertyIdentifier="emailTemplateObject" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

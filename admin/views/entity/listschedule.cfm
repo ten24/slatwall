@@ -56,7 +56,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createschedule" entity="schedule" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+			<cf_HibachiProcessCaller action="admin:entity.createschedule" entity="schedule" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.schedule')#" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />

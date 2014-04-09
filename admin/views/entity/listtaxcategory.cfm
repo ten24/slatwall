@@ -50,18 +50,18 @@ Notes:
 
 <cfoutput>
 	
-<cf_HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
-						   recordEditAction="admin:entity.editTaxCategory"
-						   recordDetailAction="admin:entity.detailTaxCategory">
-						      
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createtaxcategory" entity="taxcategory" processContext="create" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
-	
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryName" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
+							   recordEditAction="admin:entity.editTaxCategory"
+							   recordDetailAction="admin:entity.detailTaxCategory">
+							      
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createtaxcategory" entity="taxcategory" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.taxcategory')#" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryName" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

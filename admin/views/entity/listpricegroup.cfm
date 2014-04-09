@@ -50,18 +50,18 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.priceGroupSmartList#" 
-							recordDetailAction="admin:entity.detailpricegroup"
-							recordEditAction="admin:entity.editpricegroup">
-							
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createpricegroup" entity="pricegroup" processContext="create" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
-	
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
-	<cf_HibachiListingColumn propertyIdentifier="priceGroupCode" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.priceGroupSmartList#" 
+								recordDetailAction="admin:entity.detailpricegroup"
+								recordEditAction="admin:entity.editpricegroup">
+								
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createpricegroup" entity="pricegroup" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.pricegroups')#" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
+		<cf_HibachiListingColumn propertyIdentifier="priceGroupCode" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>

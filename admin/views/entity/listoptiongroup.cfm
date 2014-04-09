@@ -56,7 +56,7 @@ Notes:
 							   sortProperty="sortOrder">
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createoptiongroup" entity="optiongroup" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+			<cf_HibachiProcessCaller action="admin:entity.createoptiongroup" entity="optiongroup" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.optiongroup')#" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="optionGroupName" />

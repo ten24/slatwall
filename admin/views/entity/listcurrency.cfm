@@ -49,6 +49,7 @@ Notes:
 <cfparam name="rc.currencySmartList" type="any" />
 
 <cfoutput>
+	
 	<cf_HibachiListingDisplay smartList="#rc.currencySmartList#"
 							   recordDetailAction="admin:entity.detailcurrency"
 							   recordDetailModal="true"
@@ -57,7 +58,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createcurrency" entity="currency" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+			<cf_HibachiProcessCaller action="admin:entity.createcurrency" entity="currency" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.currency')#" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="currencyName" />
@@ -65,4 +66,5 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="currencyCode" />
 		<cf_HibachiListingColumn propertyIdentifier="formattedExample" />
 	</cf_HibachiListingDisplay>
+	
 </cfoutput>

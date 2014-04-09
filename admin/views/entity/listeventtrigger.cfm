@@ -50,20 +50,20 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.eventTriggerSmartList#"
-						   recordDetailAction="admin:entity.detaileventtrigger"
-						   recordEditAction="admin:entity.editeventtrigger">
-						      
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createeventtrigger" entity="eventtrigger" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-	</cf_HibachiListingDisplayButtonGroup>
-	
-	<cf_HibachiListingColumn propertyIdentifier="eventTriggerName" />
-	<cf_HibachiListingColumn propertyIdentifier="eventTriggerType" />
-	<cf_HibachiListingColumn propertyIdentifier="eventTriggerObject" />
-	<cf_HibachiListingColumn propertyIdentifier="eventName" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.eventTriggerSmartList#"
+							   recordDetailAction="admin:entity.detaileventtrigger"
+							   recordEditAction="admin:entity.editeventtrigger">
+							      
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createeventtrigger" entity="eventtrigger" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.eventtrigger')#" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn propertyIdentifier="eventTriggerName" />
+		<cf_HibachiListingColumn propertyIdentifier="eventTriggerType" />
+		<cf_HibachiListingColumn propertyIdentifier="eventTriggerObject" />
+		<cf_HibachiListingColumn propertyIdentifier="eventName" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

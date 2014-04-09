@@ -40,23 +40,21 @@ Notes:
 
 <cfoutput>
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.loyaltyTermSmartList#" />
-
-<cfset rc.loyaltyTermSmartList.addOrder("loyaltyTermName|ASC") />
-
-<cf_HibachiListingDisplay smartList="#rc.loyaltyTermSmartList#"
-						   recorddetailaction="admin:entity.detailloyaltyterm"
-						   recordEditAction="admin:entity.editloyaltyterm">
+	<cfset rc.loyaltyTermSmartList.addOrder("loyaltyTermName|ASC") />
 	
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" processContext="create" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
-	
-	<cf_HibachiListingColumn propertyIdentifier="loyaltyTermName" />
-	<cf_HibachiListingColumn propertyIdentifier="loyaltyTermStartDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="loyalty.loyaltyName" />
-	<cf_HibachiListingColumn propertyIdentifier="term.termName" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.loyaltyTermSmartList#"
+							   recorddetailaction="admin:entity.detailloyaltyterm"
+							   recordEditAction="admin:entity.editloyaltyterm">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.loyaltyterm')#" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn propertyIdentifier="loyaltyTermName" />
+		<cf_HibachiListingColumn propertyIdentifier="loyaltyTermStartDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="loyalty.loyaltyName" />
+		<cf_HibachiListingColumn propertyIdentifier="term.termName" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>

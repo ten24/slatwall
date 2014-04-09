@@ -50,16 +50,17 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
-						recordDetailAction="admin:entity.detailsubscriptionterm"
-						recordEditAction="admin:entity.editsubscriptionterm">
-						
+	<cf_HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
+							recordDetailAction="admin:entity.detailsubscriptionterm"
+							recordEditAction="admin:entity.editsubscriptionterm">
+							
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" processContext="create" class="btn btn-primary" icon="plus icon-white"/>
-		</cf_HibachiListingDisplayButtonGroup>					
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
-</cf_HibachiListingDisplay>
+			<cf_HibachiProcessCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.subscriptionterm')#" />
+		</cf_HibachiListingDisplayButtonGroup>	
+							
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

@@ -50,14 +50,16 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.permissionGroupSmartList#" recordDetailAction="admin:entity.detailpermissiongroup" recordEditAction="admin:entity.editpermissiongroup">
-	
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createpermissiongroup" entity="permissiongroup" processContext="create" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
-	
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="permissionGroupName" search="true" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.permissionGroupSmartList#" 
+							  recordDetailAction="admin:entity.detailpermissiongroup" 
+							  recordEditAction="admin:entity.editpermissiongroup">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createpermissiongroup" entity="permissiongroup" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.permissiongroup')#" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="permissionGroupName" search="true" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>

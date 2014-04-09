@@ -50,22 +50,22 @@ Notes:
 
 <cfoutput>
 
-<cfset rc.promotionSmartList.addOrder("promotionName|ASC") />
-
-<cf_HibachiListingDisplay smartList="#rc.promotionSmartList#"
-						   recorddetailaction="admin:entity.detailpromotion"
-						   recordEditAction="admin:entity.editpromotion">
-						      
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createpromotion" entity="promotion" processContext="create" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
+	<cfset rc.promotionSmartList.addOrder("promotionName|ASC") />
 	
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotionName" />
-	<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="modifiedDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="currentFlag" sort=false search=false range=false filter=false />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.promotionSmartList#"
+							   recorddetailaction="admin:entity.detailpromotion"
+							   recordEditAction="admin:entity.editpromotion">
+							      
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createpromotion" entity="promotion" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.promotion')#" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotionName" />
+		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="modifiedDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+		<cf_HibachiListingColumn propertyIdentifier="currentFlag" sort=false search=false range=false filter=false />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>

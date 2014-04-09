@@ -50,21 +50,21 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.termSmartList#"
-						   recordEditAction="admin:entity.editterm"
-						   recordEditQueryString="redirectAction=admin:entity.listterm"
-						   recordEditModal="true"
-						   recordDeleteAction="admin:entity.deleteterm"
-						   sortProperty="sortOrder">
-						      
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createterm" entity="term" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-	</cf_HibachiListingDisplayButtonGroup>
-						      
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
-	
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.termSmartList#"
+							   recordEditAction="admin:entity.editterm"
+							   recordEditQueryString="redirectAction=admin:entity.listterm"
+							   recordEditModal="true"
+							   recordDeleteAction="admin:entity.deleteterm"
+							   sortProperty="sortOrder">
+							      
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.createterm" entity="term" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.term')#" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+							      
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
+		
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

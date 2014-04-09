@@ -55,7 +55,7 @@ Notes:
 						      
 	<!--- Create ---> 
 	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createaddresszone" entity="addresszone" processContext="create" class="btn btn-primary" icon="plus icon-white" />
+		<cf_HibachiProcessCaller action="admin:entity.createaddresszone" entity="addresszone" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.addresszone')#" />
 	</cf_HibachiListingDisplayButtonGroup>
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="addresszoneName" search="true" />
 </cf_HibachiListingDisplay>
