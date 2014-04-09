@@ -18,6 +18,14 @@ textarea {
 .btn-group > .popover {
   font-size: 13px;
 }
+
+.btn-group{
+	position:relative;
+	margin:0px;
+	padding:0px;
+	top:-3.5px;
+}
+
 .navbar {
   height: 40px;
   line-height: 18px;
