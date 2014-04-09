@@ -82,6 +82,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================== START: Save Overrides ===========================
 	
 	// ======================  END: Save Overrides ============================
+
+		// ====================== START: Delete Overrides =========================
+	
+	public boolean function deleteLocation(required any location) {
+		
+		//Remove this location from all order defaultstocklocation assignments
+		var defaultStockLocationOrders=getLocationDAO().getOrderDefaultStockLocations(arguments.location);
+		for(var i=1; i<=arrayLen(defaultStockLocationOrders); i++) {
+				defaultStockLocationOrders[i].setDefaultStockLocation(javaCast('null',''));
+		}
+		
+		return super.delete(arguments.location);
+	}
+	
+	// ======================  END: Delete Overrides ==========================
 	
 	// ==================== START: Smart List Overrides =======================
 	

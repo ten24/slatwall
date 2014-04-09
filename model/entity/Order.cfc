@@ -116,6 +116,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderPaymentRefundOptions" persistent="false";
 	property name="orderRequirementsList" persistent="false";
 	property name="orderTypeOptions" persistent="false";
+	property name="defaultStockLocationOptions" persistent="false";
 	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
@@ -570,7 +571,16 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return variables.orderTypeOptions;
 	}
-	
+
+	public array function getDefaultStockLocationOptions() {
+		if(!structKeyExists(variables, "defaultStockLocationOptions")) {
+			var defaultStockLocationOptions=getService("locationService").getLocationOptions();
+			arrayPrepend(defaultStockLocationOptions, {"name"=rbKey('define.none'),"value"=""});
+			variables.defaultStockLocationOptions=defaultStockLocationOptions;
+		}
+		return variables.defaultStockLocationOptions;
+	}
+		
 	public string function getPromotionCodeList() {
 		var promotionCodeList = "";
 		
@@ -839,7 +849,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public void function removeAppliedPromotion(required any appliedPromotion) {
 		arguments.appliedPromotion.removeOrder( this );
 	}
-	
+
 	// Promotion Codes (many-to-many - owner)
 	public void function addPromotionCode(required any promotionCode) {
 		if(arguments.promotionCode.isNew() or !hasPromotionCode(arguments.promotionCode)) {
@@ -859,7 +869,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			arrayDeleteAt(arguments.promotionCode.getOrders(), thatIndex);
 		}
 	}
-	
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================

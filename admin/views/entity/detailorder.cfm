@@ -114,9 +114,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.order#" property="orderType" edit="#rc.edit#">
 
 				<!--- Default Stock Location --->
-				<cfif !isNull(rc.order.getDefaultStockLocation())>
-					<cf_HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
-				</cfif>
+				<cf_HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
 				
 				<!--- Referenced Order --->
 				<cfif !isNull(rc.order.getReferencedOrder())>
