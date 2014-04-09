@@ -81,14 +81,4 @@ component extends="HibachiDAO" {
 			return result[1]["thecount"];
 		}
 	}
-
-	public any function getOrderDefaultStockLocations(required any location){
-		var params = [arguments.location.getLocationID()];
-		var hql = " select o from 
-					SlatwallOrder o
-					WHERE o.defaultStockLocation.locationID = ?";
-		var result=ormExecuteQuery(hql,params,false);
-		return result;
-	}
-
 }

@@ -88,7 +88,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public boolean function deleteLocation(required any location) {
 		
 		//Remove this location from all order defaultstocklocation assignments
-		var defaultStockLocationOrders=getLocationDAO().getOrderDefaultStockLocations(arguments.location);
+		var orderSmartList=getService("OrderService").getOrderSmartlist();
+		orderSmartList.addFilter('defaultstocklocation.locationID',arguments.location.getLocationID());
+		var defaultStockLocationOrders=orderSmartList.getRecords();
 		for(var i=1; i<=arrayLen(defaultStockLocationOrders); i++) {
 				defaultStockLocationOrders[i].setDefaultStockLocation(javaCast('null',''));
 		}
