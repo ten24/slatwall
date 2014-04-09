@@ -90,22 +90,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public void function default(required struct rc) {
-		rc.productSmartList = getProductService().getProductSmartList();
-		rc.productSmartList.addOrder("modifiedDateTime|DESC");
-		rc.productSmartList.setPageRecordsShow(10);
-		
 		rc.orderSmartList = getOrderService().getOrderSmartList();
-		rc.orderSmartList.addFilter("orderStatusType.systemCode", "ostNew");
+		rc.orderSmartList.addInFilter("orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled");
 		rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
 		rc.orderSmartList.setPageRecordsShow(10);
 		
 		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
 		rc.productReviewSmartList.addFilter("activeFlag", 0);
 		rc.productReviewSmartList.setPageRecordsShow(10);
-		
-		rc.vendorOrderSmartList = getVendorService().getVendorOrderSmartList();
-		rc.vendorOrderSmartList.addOrder("modifiedDateTime|DESC");
-		rc.vendorOrderSmartList.setPageRecordsShow(10);
 	}
 
 	public void function saveImage(required struct rc){
