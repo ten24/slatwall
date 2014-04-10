@@ -323,12 +323,6 @@ Notes:
 
 		<div class="container-fluid">
 			<div class="row-fluid">
-				<script type="text/javascript">
-					var expectedController = '#replace(replace(rc.slatAction,'.','-','all'),':','-','all')#';
-					console.log( ngSlatwall.controller( expectedController ) );
-					
-				</script>
-				
 				<div class="span12">
 					#body#
 				</div>
