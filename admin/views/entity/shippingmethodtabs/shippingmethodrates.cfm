@@ -64,7 +64,6 @@ Notes:
 		<cf_HibachiListingColumn propertyidentifier="defaultAmount" />
 	</cf_HibachiListingDisplay>
 	
-	<!--- TODO[jubs] : look here for how the dropdown works on shippingMethod's --->
 	<cf_HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.shippingmethodrate')#" icon="plus" buttonClass="btn-inverse">
 		<cfset local.integrationOptions = rc.shippingMethod.getShippingMethodRateIntegrationOptions()>
 		<cfloop array="#local.integrationOptions#" index="local.integration">
