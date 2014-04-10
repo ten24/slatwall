@@ -49,14 +49,18 @@ Notes:
 <cfparam name="rc.subscriptionTermSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.subscriptionTermSmartList#" />
 
-<cf_HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
-						recordDetailAction="admin:entity.detailsubscriptionterm"
-						recordEditAction="admin:entity.editsubscriptionterm">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
+							recordDetailAction="admin:entity.detailsubscriptionterm"
+							recordEditAction="admin:entity.editsubscriptionterm">
+							
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiListingDisplayButtonGroup>	
+							
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 
