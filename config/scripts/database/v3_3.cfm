@@ -59,7 +59,7 @@ Notes:
 		FROM
 			infoTables
 		WHERE
-			TABLE_NAME = 'SwAccountPaymentApplied'
+			LOWER(TABLE_NAME) = 'swaccountpaymentapplied'
 	</cfquery>
 	
 	<cfif local.hasTable.recordCount>
@@ -97,6 +97,28 @@ Notes:
 				)
 			</cfquery>
 		</cfloop>
+		
+		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" table="SwAccountPayment" name="local.infoColumns" />
+	
+		<cfquery name="local.hasColumn" dbtype="query">
+			SELECT
+				* 
+			FROM
+				infoColumns
+			WHERE
+				COLUMN_NAME = 'amount'
+		</cfquery>
+		
+		<!--- Allow nulls in the AccountPayment amount field since we are using AccountPaymentApplied --->
+		<cfif local.hasColumn.recordCount>
+			<cfquery name="local.allowNull">
+				 <cfif getApplicationValue("databaseType") eq "MySQL">
+					ALTER TABLE SwAccountPayment MODIFY COLUMN amount decimal(19,2) NULL
+				<cfelse>
+					ALTER TABLE SwAccountPayment ALTER COLUMN amount decimal(19,2) NULL
+				</cfif>
+			</cfquery>
+		</cfif>
 	</cfif>
 	
 	<cfcatch>

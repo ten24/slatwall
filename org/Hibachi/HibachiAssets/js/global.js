@@ -332,6 +332,7 @@ function setupEventHandlers() {
 		jQuery('#adminModal').load( modalLink, function(){
 
 			initUIElements('#adminModal');			
+			angularCompileModal();
 			
 			// make width 90% of screen, 80% height
 			jQuery('#adminModal').css({	
