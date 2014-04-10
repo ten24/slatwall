@@ -48,8 +48,8 @@ Notes:
 							      
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createloyalty" entity="loyalty" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.loyalty')#" />
-		</cf_HibachiListingDisplayButtonGroup>			
+			<cf_HibachiActionCaller action="admin:entity.createloyalty" entity="loyalty" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiListingDisplayButtonGroup>		
 				
 		<cf_HibachiListingColumn propertyIdentifier="loyaltyName" />
 		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />

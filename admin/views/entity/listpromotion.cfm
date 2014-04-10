@@ -58,7 +58,7 @@ Notes:
 							      
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createpromotion" entity="promotion" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.promotion')#" />
+			<cf_HibachiActionCaller action="admin:entity.createpromotion" entity="promotion" class="btn btn-primary" icon="plus icon-white" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotionName" />

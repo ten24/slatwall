@@ -48,7 +48,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.loyaltyterm')#" />
+			<cf_HibachiActionCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" class="btn btn-primary" icon="plus icon-white" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn propertyIdentifier="loyaltyTermName" />

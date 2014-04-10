@@ -59,7 +59,7 @@ Notes:
 							      
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createterm" entity="term" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.term')#" modal="true" />
+			<cf_HibachiActionCaller action="admin:entity.createterm" entity="term" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</cf_HibachiListingDisplayButtonGroup>
 							      
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />

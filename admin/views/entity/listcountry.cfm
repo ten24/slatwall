@@ -53,7 +53,7 @@ Notes:
 						  recordEditAction="admin:entity.editcountry">
 	<!--- Create ---> 
 	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiProcessCaller action="admin:entity.createcountry" entity="country" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.country')#" />
+		<cf_HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
 	</cf_HibachiListingDisplayButtonGroup>
 	
 	<cf_HibachiListingColumn propertyIdentifier="countryName" />

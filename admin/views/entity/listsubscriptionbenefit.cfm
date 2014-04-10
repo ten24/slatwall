@@ -56,7 +56,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createsubscriptionbenefit" entity="subscriptionbenefit" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.subscriptionbenefit')#" modal="true" />
+			<cf_HibachiActionCaller action="admin:entity.createsubscriptionbenefit" entity="subscriptionbenefit" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</cf_HibachiListingDisplayButtonGroup>
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionBenefitName" />
 	

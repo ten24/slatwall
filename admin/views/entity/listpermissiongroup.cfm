@@ -56,7 +56,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createpermissiongroup" entity="permissiongroup" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.permissiongroup')#" />
+			<cf_HibachiActionCaller action="admin:entity.createpermissiongroup" entity="permissiongroup" class="btn btn-primary" icon="plus icon-white" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="permissionGroupName" search="true" />

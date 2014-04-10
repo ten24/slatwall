@@ -56,7 +56,7 @@ Notes:
 							      
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.createprinttemplate" entity="printtemplate" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.printtemplate')#" modal="true" />
+			<cf_HibachiActionCaller action="admin:entity.createprinttemplate" entity="printtemplate" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
