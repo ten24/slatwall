@@ -17,7 +17,7 @@ ngSlatwall.factory('reloadService', ["$rootScope", "$compile", function ($rootSc
     return {
         recompile: function () {
             $compile($('#adminModal'))($rootScope); // Recompile the admin modal for the new elements we added
-            $rootScope.$digest(); // Processes all wathers for the current scope
+            $rootScope.$digest(); // Processes all watchers for the current scope
             return true;
         }
     }
