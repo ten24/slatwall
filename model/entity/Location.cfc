@@ -57,7 +57,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// Related Object Properties (One-to-Many)
 	property name="locationAddresses" singularname="locationAddress" cfc="LocationAddress" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
-	
+
 	// Related Object Properties (Many-to-Many - owner)
 	
 	// Related Object Properties (many-to-many - inverse)

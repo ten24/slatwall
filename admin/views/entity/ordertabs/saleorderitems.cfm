@@ -70,8 +70,14 @@ Notes:
 		<cfset rc.addSkuAddStockType = "oitSale" />
 		
 		<cf_HibachiTabGroup tabLocation="top">
-			<cf_HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
-			<cf_HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
+			<cfif !isnull(rc.order.getDefaultStockLocation())>
+				<cf_HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
+				<cf_HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+			<cfelse>
+				<cf_HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+				<cf_HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
+			</cfif>
+			
 		</cf_HibachiTabGroup>
 	</cfif>
 	
