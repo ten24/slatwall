@@ -1,7 +1,6 @@
 var ngSlatwall = angular.module('ng-slatwall', []);
 
 ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', function($scope, $compile) {
-	console.log($compile);
 	$scope.updateSubTotal = function() {
 		$scope.totalAmountToApply = 0;
 		
@@ -23,7 +22,7 @@ ngSlatwall.factory('reloadService', ["$rootScope", "$compile", function ($rootSc
     }
 }]);
 
-
+//Compiles the new modal form elements into the angular scope using the angular reloadService
 function angularCompileModal() {
 	//get your angular controller
     var elem = angular.element(document.querySelector('[ng-controller]'));
