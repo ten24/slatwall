@@ -103,6 +103,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function saveFile(required any file, struct data, string context="save") {
 		
+		// Create urlTitle
+		if (isNull(arguments.file.getURLTitle())) {
+			   
+			// Look for URL Title in the data
+			if (structKeyExists(arguments, "data") && structKeyExists(arguments.data, "urlTitle") && isSimpleValue(arguments.data.urlTitle) && len(arguments.data.urlTitle)) {
+				arguments.file.setURLTitle(getService("dataService").createUniqueURLTitle(titleString=arguments.data.urlTitle, tableName=getMetaData(arguments.file).table));
+				
+			// Look for fileName in the data to set a urlTitle
+			} else if (structKeyExists(arguments, "data") && structKeyExists(arguments.data, "filename") && isSimpleValue(arguments.data.filename) && len(arguments.data.filename)) {
+				arguments.file.setURLTitle(getService("dataService").createUniqueURLTitle(titleString=arguments.data.filename, tableName=getMetaData(arguments.file).table));
+				
+			// Look for an non null filename to set the urlTitle
+			} else if (!isNull(arguments.file.getFileName())) {
+				arguments.file.setURLTitle(getService("dataService").createUniqueURLTitle(titleString=arguments.file.getFileName(), tableName=getMetaData(arguments.file).table));
+				
+			}
+		}
+		
 		arguments.file = save(entity=arguments.file, data=arguments.data, context=arguments.context);
 		
 		// Only execute file operations when a file is submitted

@@ -148,16 +148,6 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	// ==================  END:  Overridden Methods ========================    
 	    
 	// =================== START: ORM Event Hooks  =========================    
-	
-	public void function preInsert() {
-		setURLTitle(getService("dataService").createUniqueURLTitle(titleString=getFileName(), tableName=getMetaData(this).table));
-		super.preInsert();
-	}
-	
-	public void function preUpdate(struct oldData) {
-		setURLTitle(getService("dataService").createUniqueURLTitle(titleString=getFileName(), tableName=getMetaData(this).table));
-		super.preUpdate(argumentCollection=arguments);
-	}
 	  
 	// ===================  END:  ORM Event Hooks  =========================    
 	    
