@@ -12,7 +12,7 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 	}
 });
 
-
+//Service with scope and compile dependencies
 ngSlatwall.factory('reloadService', ["$rootScope", "$compile", function ($rootScope, $compile) {
     return {
         recompile: function () {
