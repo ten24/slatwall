@@ -74,6 +74,9 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">
+				<cfif not rc.file.getNewFlag()>
+					<cf_HibachiPropertyDisplay object="#rc.file#" property="urlTitle" edit="#rc.edit#">
+				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
