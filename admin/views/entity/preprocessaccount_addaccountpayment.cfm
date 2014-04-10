@@ -51,7 +51,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <!--- Set AngularJS controller --->
-<div ng-controller="admin-entity-preprocessaccount_addaccountpayment">
+<div ng-controller="admin-entity-preprocessaccount_addaccountpayment" id="ngNewModal">
 <cfoutput>
 	<cf_HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount">
 		

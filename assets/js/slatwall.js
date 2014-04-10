@@ -1,7 +1,7 @@
 var ngSlatwall = angular.module('ng-slatwall', []);
 
 ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', function($scope, $compile) {
-	alert("Loaded Controller");
+	console.log($compile);
 	$scope.updateSubTotal = function() {
 		$scope.totalAmountToApply = 0;
 		
@@ -10,11 +10,29 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 			$scope.totalAmountToApply += parseFloat(value);
 	    });
 	}
-	
-	$scope.recompile = function() {
-		alert("CALLED REFRESH");
-		console.log("test");
-		//$compile($('html'))($scope);
-		
-	}
 });
+
+
+ngSlatwall.factory('reloadService', ["$rootScope", "$compile", function ($rootScope, $compile) {
+    return {
+        recompile: function () {
+            $compile($('#adminModal'))($rootScope); // Recompile the admin modal for the new elements we added
+            $rootScope.$digest(); // Processes all wathers for the current scope
+            return true;
+        }
+    }
+}]);
+
+
+function angularCompileModal() {
+	//get your angular controller
+    var elem = angular.element(document.querySelector('[ng-controller]'));
+    
+    //get the injector.
+    var injector = elem.injector();
+    
+    //get the service.
+    var myService = injector.get('reloadService');
+
+    myService.recompile();
+}
