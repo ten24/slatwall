@@ -152,7 +152,9 @@ Notes:
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetReceived')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnReceived')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetDueDate')#</th>
+				<th>#$.slatwall.rbKey('entity.Account.Type')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAmount')#</th>
+				
 			</tr>
 			<cfset i=0 />
 			<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
@@ -164,6 +166,10 @@ Notes:
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
 					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
 					<td>
+						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments.chargeType#i#' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' />
+						<!---<cf_HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />--->
+					</td>
+					<td>
 						<input type="text" name="appliedOrderPayments[#i#].amount" value="" class="span1" />
 						<input type="hidden" name="appliedOrderPayments[#i#].orderPaymentID" value="#orderPayment.getOrderPaymentID()#" />
 					</td>
@@ -171,7 +177,7 @@ Notes:
 			</cfloop>
 				
 			<tr>
-				<td colspan="5"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
+				<td colspan="6"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
 				<td>
 					<input type="text" name="appliedOrderPayments[#i+1#].amount" value="" class="span1" />
 					<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value="" />
