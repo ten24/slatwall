@@ -49,18 +49,22 @@ Notes:
 <cfparam name="rc.orderOriginSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.orderOriginSmartList#" createModal="true" />
 
-<cf_HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
-		recordEditAction="admin:entity.editorderorigin"
-		recordEditQueryString="redirectAction=admin:entity.listorderorigin"
-		recordDeleteAction="admin:entity.deleteorderorigin"
-		recordEditModal="true">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="orderOriginName" />
-	<cf_HibachiListingColumn propertyIdentifier="orderOriginType" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
+			recordEditAction="admin:entity.editorderorigin"
+			recordEditQueryString="redirectAction=admin:entity.listorderorigin"
+			recordDeleteAction="admin:entity.deleteorderorigin"
+			recordEditModal="true">
+			
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiActionCaller action="admin:entity.createorderorigin" entity="orderorigin" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="orderOriginName" />
+		<cf_HibachiListingColumn propertyIdentifier="orderOriginType" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

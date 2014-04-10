@@ -49,14 +49,18 @@ Notes:
 <cfparam name="rc.subscriptionBenefitSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.subscriptionBenefitSmartList#" createModal="true" />
 
-<cf_HibachiListingDisplay smartList="#rc.subscriptionBenefitSmartList#"
-						   recordDetailAction="admin:entity.detailsubscriptionbenefit"
-						   recordEditAction="admin:entity.editsubscriptionbenefit">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionBenefitName" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.subscriptionBenefitSmartList#"
+							   recordDetailAction="admin:entity.detailsubscriptionbenefit"
+							   recordEditAction="admin:entity.editsubscriptionbenefit">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiActionCaller action="admin:entity.createsubscriptionbenefit" entity="subscriptionbenefit" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionBenefitName" />
+	
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

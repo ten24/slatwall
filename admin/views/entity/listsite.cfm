@@ -49,11 +49,17 @@ Notes:
 <cfparam name="rc.siteSmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.siteSmartList#" createmodal="true" />
 	
 	<cf_HibachiListingDisplay smartList="#rc.siteSmartList#"
 							   recordEditAction="admin:entity.editSite"
 							   recordDetailAction="admin:entity.detailSite">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiActionCaller action="admin:entity.createsite" entity="site" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
 	</cf_HibachiListingDisplay>
+	
 </cfoutput>

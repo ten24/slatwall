@@ -65,6 +65,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderType";
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
 	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID";
+	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	
 	// Related Object Properties (one-To-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
@@ -115,6 +116,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderPaymentRefundOptions" persistent="false";
 	property name="orderRequirementsList" persistent="false";
 	property name="orderTypeOptions" persistent="false";
+	property name="defaultStockLocationOptions" persistent="false";
 	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
@@ -186,8 +188,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getOrderNumber() {
 		if(isNull(variables.orderNumber)) {
-			variables.orderNumber = "";
 			confirmOrderNumberOpenDateCloseDatePaymentAmount();
+			if(isNull(variables.orderNumber)) {
+				return "";
+			}
 		}
 		return variables.orderNumber;
 	}
@@ -289,7 +293,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				
 				if(orderItem.getQuantityDelivered()) {
 					
-					variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getExtendedPriceAfterDiscount()));
+					variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getItemTotal()));
 					
 					if(!listFindNoCase(fulfillmentChargeAddedList, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
 						
@@ -567,7 +571,16 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return variables.orderTypeOptions;
 	}
-	
+
+	public array function getDefaultStockLocationOptions() {
+		if(!structKeyExists(variables, "defaultStockLocationOptions")) {
+			var defaultStockLocationOptions=getService("locationService").getLocationOptions();
+			arrayPrepend(defaultStockLocationOptions, {"name"=rbKey('define.none'),"value"=""});
+			variables.defaultStockLocationOptions=defaultStockLocationOptions;
+		}
+		return variables.defaultStockLocationOptions;
+	}
+		
 	public string function getPromotionCodeList() {
 		var promotionCodeList = "";
 		
@@ -836,7 +849,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public void function removeAppliedPromotion(required any appliedPromotion) {
 		arguments.appliedPromotion.removeOrder( this );
 	}
-	
+
 	// Promotion Codes (many-to-many - owner)
 	public void function addPromotionCode(required any promotionCode) {
 		if(arguments.promotionCode.isNew() or !hasPromotionCode(arguments.promotionCode)) {
@@ -856,7 +869,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			arrayDeleteAt(arguments.promotionCode.getOrders(), thatIndex);
 		}
 	}
-	
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
@@ -920,7 +933,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public void function preUpdate(Struct oldData){
-		super.preUpdate();
+		super.preUpdate(argumentCollection=arguments);
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
 	}
 	

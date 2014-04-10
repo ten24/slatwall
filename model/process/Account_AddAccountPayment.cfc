@@ -58,7 +58,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName";
 	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
-
+	property name="appliedOrderPayments" type="array" hb_populateArray="true";
+	
 	// Cached Properties
 	property name="accountPaymentMethodIDOptions";
 	property name="paymentMethodIDOptions";
