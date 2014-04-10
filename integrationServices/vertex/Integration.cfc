@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,15 +45,37 @@
 
 Notes:
 
---->
-<cfparam name="rc.integrationSmartList" type="any" />
-<cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
-
-<cfoutput>
+*/
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
-
-</cfoutput>
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "tax";
+	}
+	
+	public string function getDisplayName() {
+		return "Vertex";
+	}
+	
+	public struct function getSettings() {
+		var settings = {
+			accountNo = {fieldType="text"},
+			password = {fieldType="password", encryptValue=true},
+			transactionKey = {fieldType="text"},
+			meterNo = {fieldType="text"},
+			productType = {fieldType="text"},
+			testingFlag = {fieldType="yesno", defaultValue="1"},
+			shipperStreet = {fieldType="text"},
+			shipperCity = {fieldType="text"},
+			shipperStateCode = {fieldType="text"},
+			shipperPostalCode = {fieldType="text"},
+			shipperCountryCode = {fieldType="text"}
+		};
+		
+		return settings;
+	}
+	
+}
