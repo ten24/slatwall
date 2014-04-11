@@ -50,6 +50,8 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
+<!--- Set AngularJS controller --->
+<div ng-controller="admin-entity-preprocessaccount_addaccountpayment">
 <cfoutput>
 	<cf_HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount">
 		
@@ -152,9 +154,7 @@ Notes:
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetReceived')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnReceived')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetDueDate')#</th>
-				<th>#$.slatwall.rbKey('entity.Account.Type')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAmount')#</th>
-				
 			</tr>
 			<cfset i=0 />
 			<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
@@ -166,24 +166,26 @@ Notes:
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
 					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
 					<td>
-						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments.chargeType#i#' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' />
-					</td>
-					<td>
-						<input type="text" name="appliedOrderPayments[#i#].amount" value="" class="span1" />
+						<input type="text" name="appliedOrderPayments[#i#].amount" class="span1" ng-model="appliedOrderPayment.amount#i#" placeholder="0" ng-change="updateSubTotal()" />
 						<input type="hidden" name="appliedOrderPayments[#i#].orderPaymentID" value="#orderPayment.getOrderPaymentID()#" />
 					</td>
 				</tr>
 			</cfloop>
 				
 			<tr>
-				<td colspan="6"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
+				<td colspan="5"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
 				<td>
-					<input type="text" name="appliedOrderPayments[#i+1#].amount" value="" class="span1" />
+					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="span1" ng-model="appliedOrderPayment.amount#i+1#" placeholder="0" ng-change="updateSubTotal()" />
 					<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value="" />
 				</td>
 			</tr>	
-				
+			<tr>
+				<td colspan="4"></td>
+				<td><strong>Subtotal</strong></td>
+				<td>{{totalAmountToApply | number:2}}</td>
+			</tr>
 		</table>
 		
 	</cf_HibachiEntityProcessForm>
 </cfoutput>
+</div>
