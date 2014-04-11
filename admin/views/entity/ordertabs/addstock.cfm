@@ -50,6 +50,11 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" />
 
+<!--- Setup default stock location filter--->
+<cfif !isnull(rc.order.getDefaultStockLocation())>
+	<cfset rc.order.getAddOrderItemStockOptionsSmartList().addFilter("location.locationName", "#rc.order.getDefaultStockLocation().getLocationName()#")>
+</cfif>
+
 <cfoutput>
 	<cf_HibachiListingDisplay smartList="#rc.order.getAddOrderItemStockOptionsSmartList()#"
 							  recordProcessAction="admin:entity.processOrder"
@@ -58,7 +63,7 @@ Notes:
 							  recordProcessEntity="#rc.order#"
 							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
 		
-		<cf_HibachiListingColumn propertyIdentifier="location.locationName" />					    
+		<cf_HibachiListingColumn propertyIdentifier="location.locationName" filter="true" />					    
 		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.product.productCode" />
 		<cf_HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />

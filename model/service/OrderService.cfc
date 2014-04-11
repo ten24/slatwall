@@ -696,6 +696,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( len(arguments.processObject.getOrderOriginID()) ) {
 			arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
 		}
+
+		// Setup the Default Stock Location
+		if( len(arguments.processObject.getDefaultStockLocationID()) ) {
+			arguments.order.setDefaultStockLocation( getSettingService().getLocation(arguments.processObject.getDefaultStockLocationID()) );
+		}
 		
 		// Setup the Currency Code
 		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
@@ -1734,15 +1739,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.entityName = "SlatwallOrderItem";
 	
 		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-		
 		smartList.joinRelatedProperty("SlatwallOrderItem", "order", "inner", true);
+		smartList.joinRelatedProperty("SlatwallOrderItem", "sku", "left", true);
+		smartList.joinRelatedProperty("SlatwallSku", "product", "left", true);
 		smartList.joinRelatedProperty("SlatwallOrderItem", "orderItemType", "inner", true);
 		smartList.joinRelatedProperty("SlatwallOrderItem", "orderItemStatusType", "inner", true);
 		smartList.joinRelatedProperty("SlatwallOrder", "orderOrigin", "left");
 		smartList.joinRelatedProperty("SlatwallOrder", "account", "left");
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left");
-		
 		smartList.addKeywordProperty(propertyIdentifier="order.orderNumber", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="order.account.firstName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="order.account.lastName", weight=1);
@@ -1750,10 +1755,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="order.account.primaryEmailAddress.emailAddress", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="order.account.primaryPhoneNumber.phoneNumber", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="order.orderOrigin.orderOriginName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.skuCode", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.product.calculatedTitle", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="orderItemStatusType.type", weight=1);
 		
 		return smartList;
 	}
-	
+
 	// ====================  END: Smart List Overrides ========================
 	
 	// ====================== START: Get Overrides ============================

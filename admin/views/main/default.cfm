@@ -54,6 +54,7 @@ Notes:
 	
 	<div class="row-fluid">
 		<div class="span6">
+
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.orderSmartList#" 
 					recordDetailAction="admin:entity.detailorder">
@@ -71,6 +72,7 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="reviewerName" />
 				<cf_HibachiListingColumn propertyIdentifier="reviewTitle" />
 			</cf_HibachiListingDisplay>
+
 		</div>
 		<div class="span6">
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
