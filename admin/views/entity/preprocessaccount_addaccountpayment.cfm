@@ -167,7 +167,6 @@ Notes:
 					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
 					<td>
 						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments.chargeType#i#' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' />
-						<!---<cf_HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />--->
 					</td>
 					<td>
 						<input type="text" name="appliedOrderPayments[#i#].amount" value="" class="span1" />
