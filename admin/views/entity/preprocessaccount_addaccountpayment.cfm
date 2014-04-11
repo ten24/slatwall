@@ -183,7 +183,12 @@ Notes:
 					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="span1" ng-model="appliedOrderPayment.amount#i+1#" placeholder="0" ng-change="updateSubTotal()" />
 					<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value="" />
 				</td>
-			</tr>	
+			</tr>
+			<tr>
+ -				<td colspan="5"></td>
+ -				<td><strong>Subtotal</strong></td>
+ -				<td>{{totalAmountToApply | number:2}}</td>
+ -			</tr>
 				
 		</table>
 		
