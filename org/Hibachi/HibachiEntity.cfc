@@ -1,6 +1,7 @@
 component output="false" accessors="true" persistent="false" extends="HibachiTransient" {
 
 	property name="newFlag" type="boolean" persistent="false";
+	property name="rollbackFlag" type="boolean" persistent="false";
 	property name="printTemplates" type="struct" persistent="false";
 	property name="emailTemplates" type="struct" persistent="false";
 	property name="simpleRepresentation" type="string" persistent="false";
@@ -627,6 +628,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean function getRollbackFlag() {
+		if(isNull(variables.rollbackFlag) || !isBoolean(variables.rollbackFlag)) {
+			variables.rollbackFlag = false;
+		}
+		return variables.rollbackFlag;
 	}
 	
 	public array function getPrintTemplates() {

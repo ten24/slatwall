@@ -174,6 +174,11 @@ component extends="HibachiService" accessors="true" {
 				if (!isNull(arguments.oldData)) {
 					structDelete(arguments, "oldData");
 				}
+				
+			// Audit type is rollback
+			} else if (arguments.entity.getRollbackFlag()) {
+				audit.setAuditType("rollback");
+				
 			// Audit type is update
 			} else {
 				audit.setAuditType("update");
@@ -390,22 +395,38 @@ component extends="HibachiService" accessors="true" {
 		
 		// Aggregate property changes by traversing backwards from current state
 		var rollbackData = {};
+		var propertiesStruct = relatedEntity.getAuditablePropertiesStruct();
 		for (var i=1; i<=rollbackIndex; i++) {
 			var currentData = deserializeJSON(audits[i].getData());
-			
-			// No need for values from the newest property changes because the most recent state is known
-			if (i != 1) {
-				structAppend(rollbackData, currentData.newPropertyData, true);
+			for (var propertyName in propertiesStruct) {				
+				if (structKeyExists(currentData.newPropertyData, propertyName)) {
+					// Convert empty strings representing null entity property values into proper null struct format
+					if (structKeyExists(propertiesStruct[propertyName], "cfc") && isSimpleValue(currentData.newPropertyData[propertyName])) {
+						currentData.newPropertyData["#propertyName#"] = {"#getPrimaryIDPropertyNameByEntityName(propertiesStruct[propertyName].cfc)#"=""};
+					}
+					
+					// If necessary check oldPropertyData
+					if (structKeyExists(currentData, "oldPropertyData") && !structKeyExists(currentData.oldPropertyData, propertyName)) {
+						// Manually set empty string to represent null value because property must have been null in oldPropertyData and not null in newPropertyData
+						if (structKeyExists(propertiesStruct[propertyName], "cfc")) {
+							currentData.oldPropertyData["#propertyName#"] = {"#getPrimaryIDPropertyNameByEntityName(propertiesStruct[propertyName].cfc)#"=""};
+						}
+					}
+				}
 			}
 			
-			// No need for the values from the old property changes at the rollback point, we'd be beyond the rollback point
+			// Prior to reaching rollback point only the oldPropertyData contains relevant data, if oldPropertyData used at rollback state would be beyond desired rollback point
 			if (i != rollbackIndex) {
 				structAppend(rollbackData, currentData.oldPropertyData, true);
+			
+			// Only newPropertyData is relevant when the rollback point is reached
+			} else {
+				structAppend(rollbackData, currentData.newPropertyData, true);
 			}
 		}
 		
-		// TODO we need to make sure that the new audit.auditType is "rollback" rather than the default "update" which is happening
 		// Save new version of entity with aggregated rollback changes
+		relatedEntity.setRollbackFlag(true);
 		getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod("save#arguments.audit.getBaseObject()#", {1=relatedEntity,2=rollbackData});
 		
 		return arguments.audit;
