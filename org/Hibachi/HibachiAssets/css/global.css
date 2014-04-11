@@ -17,12 +17,17 @@ textarea {
 .btn-group > .dropdown-menu,
 .btn-group > .popover {
   font-size: 13px;
+  text-align: left;
 }
 .groups {
   position: relative;
   text-align: right;
   font-size: 0px;
   top: -3.5px;
+}
+.groups .dropdown-menu {
+  position: absolute;
+  top: 30px;
 }
 .navbar {
   height: 40px;

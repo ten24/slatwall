@@ -298,57 +298,48 @@
 			<thead>
 				<cfif not thistag.expandable and attributes.showheader>
 				<tr>
-					
-						<th class="listing-display-header" colspan='#thistag.columnCount#'>
+					<th class="listing-display-header" colspan='#thistag.columnCount#'>
 							
-							<div class="span8">
-								<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
-							</div>
-							<div class="span4">
-								
-								
-								<div class="groups">
-									
-									
-									<div class="btn-group">
-										<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
-										<ul class="dropdown-menu pull-right">
-											<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-										</ul>
-									</div>
-									
-									<!--- Listing: Button Groups --->
-									<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
-										<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
-											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-													<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
-															#buttonGroup.generatedContent#
-													<cfelse>
-														<div class="btn-group">
-															#buttonGroup.generatedContent#
-														</div>
-													</cfif>
-											</cfif>
-										</cfloop>
-									</cfif>
-								
-									<!--- Listing: Create --->
-									<cfif len(attributes.createAction)>
-										<div class="btn-group">
-											<cfif attributes.createModal>
-												<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
-											<cfelse>
-												<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
-											</cfif>
-										</div>
-									</cfif>	
-									
-									
+						<div class="span8">
+							<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+						</div>
+						<div class="span4">
+							<div class="groups">
+								<div class="btn-group">
+									<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+									<ul class="dropdown-menu pull-right">
+										<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+									</ul>
 								</div>
+									
+								<!--- Listing: Button Groups --->
+								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
+									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
+										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+											<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
+													#buttonGroup.generatedContent#
+											<cfelse>
+												<div class="btn-group">
+													#buttonGroup.generatedContent#
+												</div>
+											</cfif>
+										</cfif>
+									</cfloop>
+								</cfif>
 								
-							
-						</th>
-
+								<!--- Listing: Create --->
+								<cfif len(attributes.createAction)>
+									<div class="btn-group">
+										<cfif attributes.createModal>
+											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+										<cfelse>
+											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+										</cfif>
+									</div>
+								</cfif>		
+							</div>
+						</div>		
+					</th>
 				</tr>
 				</cfif>
 				<tr>
