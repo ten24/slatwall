@@ -151,8 +151,6 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		}
 		
-		
-		WriteDump(var=processObject.getAppliedOrderPayments(), top=3, abort=true);
 		// Loop over all account payments and link them to the AccountPaymentApplied object
 		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
 			
@@ -163,7 +161,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
 				
 				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
-				
+				WriteDump(var=newAccountPaymentApplied, top=3, abort=true);
 				// Link to the order payment if the payment is assigned to a term order
 				if(!isNull(orderPayment)) {
 					newAccountPaymentApplied.setOrderPayment( orderPayment );

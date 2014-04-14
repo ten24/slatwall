@@ -7,11 +7,11 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 	
 	$scope.updateSubTotal = function() {
 		$scope.totalAmountToApply = 0; //Reset the subtotal before we loop
-
+		console.log($scope.appliedOrderPayment);
 		//Loop through all the amount fields and create a running subtotal
 		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
 			//Reset the object value to null if there is no value or only value is NaN
-			if(obj.amount.length == 0 || (isNaN(obj.amount) && obj.amount.length == 1)) {
+			if(obj.amount == undefined || obj.amount.length == 0 || (isNaN(obj.amount) && obj.amount.length == 1)) {
 					obj.amount = null;
 			} else {
 				//Trim off invalid characters
