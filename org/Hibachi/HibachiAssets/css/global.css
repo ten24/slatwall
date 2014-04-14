@@ -19,11 +19,15 @@ textarea {
   font-size: 13px;
   text-align: left;
 }
+@-moz-document url-prefix() {
+  .groups {
+    position: relative;
+    top: -3.5px;
+  }
+}
 .groups {
-  position: relative;
   text-align: right;
   font-size: 0px;
-  top: -3.5px;
 }
 .groups .dropdown-menu {
   position: absolute;
