@@ -19,14 +19,12 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 					obj.amount = obj.amount.substring(0, obj.amount.length - 1);
 				
 				//Charge / Credit condition for subtotal
-				if(obj.chargeType=='444df32dd2b0583d59a19f1b77869025') {
+				if(obj.paymentType=='444df32dd2b0583d59a19f1b77869025')
 					$scope.totalAmountToApply += parseFloat(obj.amount);
-				} else if(obj.chargeType=='444df32e9b448ea196c18c66e1454c46') {
+				else if(obj.paymentType=='444df32e9b448ea196c18c66e1454c46')
 					$scope.totalAmountToApply -= parseFloat(obj.amount);
-				}
 			}
 	    });
-
 	}
 });
 

@@ -57,6 +57,7 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	// Related Object Properties (many-to-one)
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID" hb_optionsNullRBKey="define.select";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID" hb_optionsNullRBKey="define.select";
+	property name="accountPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=accountPaymentType";
 	
 	// Related Object Properties (one-to-many)
 	

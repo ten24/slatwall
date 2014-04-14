@@ -169,7 +169,7 @@ Notes:
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
 					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
 					<td>
-						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayment.chargeType#i#' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.chargeType' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.chargeType = ""444df32dd2b0583d59a19f1b77869025""'" />
+						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i#].paymentType' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.paymentType' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />
 					</td>
 					<td>
 						<input type="text" name="appliedOrderPayments[#i#].amount" class="span1" ng-model="appliedOrderPayment.input#i#.amount" placeholder="0" ng-change="updateSubTotal()" />
@@ -183,7 +183,7 @@ Notes:
 			<tr>
 				<td colspan="5"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
 				<td>
-					<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayment.chargeType#i+1#' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i+1#.chargeType' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i+1#.chargeType = ""444df32dd2b0583d59a19f1b77869025""'" />
+					<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i+1#].paymentType' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i+1#.paymentType' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i+1#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />
 				</td>
 				<td>
 					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="span1" ng-model="appliedOrderPayment.input#i+1#.amount" placeholder="0" ng-change="updateSubTotal()" />
