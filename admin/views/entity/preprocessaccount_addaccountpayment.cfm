@@ -159,6 +159,7 @@ Notes:
 				
 			</tr>
 			<cfset i=0 />
+			<cfset orderPaymentUnrecieved=0 />
 			<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
 				<cfset i++ />
 				<tr>
@@ -175,6 +176,8 @@ Notes:
 						<input type="hidden" name="appliedOrderPayments[#i#].orderPaymentID" value="#orderPayment.getOrderPaymentID()#" />
 					</td>
 				</tr>
+				
+				<cfset orderPaymentUnrecieved = orderPaymentUnrecieved + orderPayment.getOrder().getPaymentAmountDue() />
 			</cfloop>
 				
 			<tr>
@@ -189,7 +192,12 @@ Notes:
 			</tr>
 			<tr>
  				<td colspan="5"></td>
- 				<td><strong>Subtotal</strong></td>
+ 				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termTotalUnReceived')#</strong></td>
+ 				<td>#orderPaymentUnrecieved#</td>
+ 			</tr>
+ 			<tr>
+ 				<td colspan="5"></td>
+ 				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termSubtotal')#</strong></td>
  				<td>{{totalAmountToApply | number:2}}</td>
  			</tr>				
 		</table>
