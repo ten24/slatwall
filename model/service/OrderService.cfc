@@ -494,6 +494,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
 			
+		} else if(newOrderPayment.hasErrors()) {
+			arguments.order.addError('addOrderPayment', newOrderPayment.getErrors());
+			
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
 		} else if (!newOrderPayment.hasErrors() && arguments.processObject.getSaveAccountPaymentMethodFlag() && isNull(newOrderPayment.getAccountPaymentMethod())) {
 				
