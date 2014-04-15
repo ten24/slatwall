@@ -684,21 +684,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			var account = getAccountService().getAccount(processObject.getAccountID());
 		}
-		arguments.order.setAccount(account);
 		
-		// Setup Order Type
-		arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+		if(account.hasErrors()) {
+			arguments.order.addError('create', account.getErrors());
+		} else {
+			arguments.order.setAccount(account);
 		
-		// Setup the Order Origin
-		if( len(arguments.processObject.getOrderOriginID()) ) {
-			arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
+			// Setup Order Type
+			arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+			
+			// Setup the Order Origin
+			if( len(arguments.processObject.getOrderOriginID()) ) {
+				arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
+			}
+			
+			// Setup the Currency Code
+			arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			
+			// Save the order
+			arguments.order = this.saveOrder(arguments.order);
 		}
 		
-		// Setup the Currency Code
-		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
-		
-		// Save the order
-		arguments.order = this.saveOrder(arguments.order);
 		
 		return arguments.order;
 	}
