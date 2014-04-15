@@ -125,6 +125,26 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 		structDelete(variables, "orderPayment");    
 	}
 	
+	// Account Payment Type (many-to-one)    
+	public void function setAccountPaymentType(required any accountPaymentType) {    
+		variables.orderPayment = arguments.orderPayment;    
+		if(isNew() or !arguments.orderPayment.hasAppliedAccountPayment( this )) {    
+			arrayAppend(arguments.orderPayment.getAppliedAccountPayments(), this);    
+		}    
+	}    
+	public void function removeOrderPayment(any orderPayment) {    
+		if(!structKeyExists(arguments, "orderPayment")) {    
+			arguments.accountPayment = variables.orderPayment;    
+		}    
+		var index = arrayFind(arguments.orderPayment.getAppliedAccountPayments(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.orderPayment.getAppliedAccountPayments(), index);    
+		}    
+		structDelete(variables, "orderPayment");    
+	}
+	
+	
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
