@@ -11,7 +11,24 @@ label, input, button, select, textarea {
 }
 .btn-group>.btn, .btn-group>.dropdown-menu, .btn-group>.popover {
 	font-size:13px;
+	text-align:left;
 }
+
+@-moz-document url-prefix() {
+	.groups {
+		position:relative;
+		top:-3.5px;
+	}
+}
+.groups {
+	text-align: right;
+	font-size:0px;
+	.dropdown-menu {
+		position:absolute;
+		top: 30px;
+	}
+}
+
 .navbar {
 	height: 40px;
 	line-height:18px;
