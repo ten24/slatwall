@@ -161,7 +161,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
 				
 				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
-				newAccountPaymentApplied.setAccountPaymentType( appliedOrderPayment.paymentType );
+
+				newAccountPaymentApplied.setAccountPaymentType( getSettingService().getType( appliedOrderPayment.paymentTypeID  ) );
 
 				// Link to the order payment if the payment is assigned to a term order
 				if(!isNull(orderPayment)) {

@@ -4,20 +4,24 @@ var ngSlatwall = angular.module('ng-slatwall', []);
 
 ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', function($scope, $compile) {
 	$scope.totalAmountToApply = 0; //Default value to show on new form
-	
+	$scope.paymentTypeName = "Charge"
+
+	$scope.updatePaymentType = function() {
+
+		if($scope.paymentType=="444df32dd2b0583d59a19f1b77869025")
+			$scope.paymentTypeName = "Charge"
+		else if($scope.paymentType=="444df32e9b448ea196c18c66e1454c46")
+			$scope.paymentTypeName = "Credit"
+	}
+
+
 	$scope.updateSubTotal = function() {
 		$scope.totalAmountToApply = 0; //Reset the subtotal before we loop
 
 		//Loop through all the amount fields and create a running subtotal
 		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
-			//Reset the object value to null if there is no value or only value is NaN
-			if(obj.amount == undefined || obj.amount.length == 0 || (isNaN(obj.amount) && obj.amount.length == 1)) {
-					obj.amount = null;
-			} else {
-				//Trim off invalid characters
-				if(obj.amount.length > 1 && isNaN(obj.amount))
-					obj.amount = obj.amount.substring(0, obj.amount.length - 1);
-				
+			//Don't count the field if its undefied or not a number
+			if(obj.amount != undefined && !isNaN(obj.amount)) {
 				//Charge / Credit condition for subtotal
 				if(obj.paymentType=='444df32dd2b0583d59a19f1b77869025')
 					$scope.totalAmountToApply += parseFloat(obj.amount);
@@ -25,6 +29,8 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 					$scope.totalAmountToApply -= parseFloat(obj.amount);
 			}
 	    });
+
+	    $scope.amountUnapplied = $scope.amount - $scope.totalAmountToApply;
 	}
 });
 
