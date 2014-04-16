@@ -123,27 +123,7 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 			arrayDeleteAt(arguments.orderPayment.getAppliedAccountPayments(), index);    
 		}    
 		structDelete(variables, "orderPayment");    
-	}
-	
-	// Account Payment Type (many-to-one)    
-	public void function setAccountPaymentType(required any accountPaymentType) {    
-		variables.accountPaymentType = arguments.accountPaymentType;    
-		if(isNew() or !arguments.accountPaymentType.hasAppliedAccountPayment( this )) {    
-			arrayAppend(arguments.accountPaymentType.getAppliedAccountPayments(), this);    
-		}    
-	}    
-	public void function removeAccountPaymentType(any accountPaymentType) {    
-		if(!structKeyExists(arguments, "accountPaymentType")) {    
-			arguments.accountPaymentType = variables.accountPaymentType;    
-		}    
-		var index = arrayFind(arguments.accountPaymentType.getAppliedAccountPayments(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.accountPaymentType.getAppliedAccountPayments(), index);    
-		}    
-		structDelete(variables, "accountPaymentType");    
-	}
-	
-	
+	}	
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
