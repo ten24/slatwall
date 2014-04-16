@@ -12,25 +12,48 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 			$scope.paymentTypeName = "Charge"
 		else if($scope.paymentType=="444df32e9b448ea196c18c66e1454c46")
 			$scope.paymentTypeName = "Credit"
+	
+		//Change all order payment types here
+		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
+			obj.paymentType=$scope.paymentType;
+		});
+
+		//Update the subtotal now that we changed the payment type s
+		$scope.updateSubTotal();
 	}
 
 
 	$scope.updateSubTotal = function() {
 		$scope.totalAmountToApply = 0; //Reset the subtotal before we loop
+		$scope.unassignedWarning = "";
 
 		//Loop through all the amount fields and create a running subtotal
 		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
 			//Don't count the field if its undefied or not a number
 			if(obj.amount != undefined && !isNaN(obj.amount)) {
-				//Charge / Credit condition for subtotal
-				if(obj.paymentType=='444df32dd2b0583d59a19f1b77869025')
-					$scope.totalAmountToApply += parseFloat(obj.amount);
-				else if(obj.paymentType=='444df32e9b448ea196c18c66e1454c46')
-					$scope.totalAmountToApply -= parseFloat(obj.amount);
+				//Charge condition for subtotal
+				if($scope.paymentType=="444df32dd2b0583d59a19f1b77869025") {
+					if(obj.paymentType=='444df32dd2b0583d59a19f1b77869025')
+						$scope.totalAmountToApply += parseFloat(obj.amount);
+					else if(obj.paymentType=='444df32e9b448ea196c18c66e1454c46')
+						$scope.totalAmountToApply -= parseFloat(obj.amount);
+
+				//Credit condition for subtotal
+				} else if($scope.paymentType=="444df32e9b448ea196c18c66e1454c46") {
+					if(obj.paymentType=='444df32dd2b0583d59a19f1b77869025')
+						$scope.totalAmountToApply -= parseFloat(obj.amount);
+					else if(obj.paymentType=='444df32e9b448ea196c18c66e1454c46')
+						$scope.totalAmountToApply += parseFloat(obj.amount);
+				}
 			}
 	    });
+	    
+		//The amount not applied to an order
+	    $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply) * 100) / 100);
 
-	    $scope.amountUnapplied = $scope.amount - $scope.totalAmountToApply;
+	    if($scope.amountUnapplied != 0) {
+	    	$scope.unassignedWarning = "Warning: There is " + $scope.amountUnapplied + " that will not be assigned to any orders";
+	    }
 	}
 });
 

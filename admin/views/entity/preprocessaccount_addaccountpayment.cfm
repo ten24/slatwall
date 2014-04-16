@@ -193,21 +193,27 @@ Notes:
 				<td><strong>#orderPaymentAmount#</strong></td>
 				<td><strong>#orderPaymentRecieved#</strong></td>
 				<td><strong>#orderPaymentUnrecieved#</strong></td>
-				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
+				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong><br />
+
+
+				<strong class='text-error span2' ng-bind="unassignedWarning"></strong>
+
+
+				</td>
 				<td>
-					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="uneditable-input span1" placeholder="0" readonly ng-model="amountUnapplied"/>
+					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="uneditable-input span1" placeholder="0" readonly ng-model="amountUnapplied" />
 					<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value="" />
 				</td>
 			</tr>
 			<tr>
  				<td colspan="6"></td>
  				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetTotal')# {{paymentTypeName}} #$.slatwall.rbKey('entity.AccountPayment.termOffsetAmount')#</strong></td>
- 				<td>#orderPaymentUnrecieved#</td>
+ 				<td>{{amount | number:2}}</td>
  			</tr>
  			<tr>
  				<td colspan="6"></td>
  				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAccountBalance')#</strong></td>
- 				<td>{{totalAmountToApply | number:2}}</td>
+ 				<td>{{amountUnapplied | number:2}}</td>
  			</tr>				
 		</table>
 		
