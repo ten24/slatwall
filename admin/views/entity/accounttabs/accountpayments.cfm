@@ -62,5 +62,5 @@ Notes:
 	</cf_HibachiListingDisplay>
 
 
-	<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn" icon="plus" modal="true" modalFullWidth="true" />
+	<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn" icon="plus" modalFullWidth="true" />
 </cfoutput>
