@@ -116,24 +116,6 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 		structDelete(variables, "orderFulfillment");
 	}
 
-	// Shipping Method Rate (many-to-one)
-	public void function setShippingMethodRate(required any shippingMethodRate) {
-		variables.shippingMethodRate = arguments.shippingMethodRate;
-		if(isNew() or !arguments.shippingMethodRate.hasShippingMethodOption( this )) {
-			arrayAppend(arguments.shippingMethodRate.getShippingMethodOptions(), this);
-		}
-	}
-	public void function removeShippingMethodRate(any shippingMethodRate) {
-		if(!structKeyExists(arguments, "shippingMethodRate")) {
-			arguments.shippingMethodRate = variables.shippingMethodRate;
-		}
-		var index = arrayFind(arguments.shippingMethodRate.getShippingMethodOptions(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.shippingMethodRate.getShippingMethodOptions(), index);
-		}
-		structDelete(variables, "shippingMethodRate");
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// =============== START: Custom Validation Methods ====================

@@ -187,9 +187,9 @@ Notes:
 			
 			if(!isNull(emailTemplate)) {
 				var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(emailTemplate.getEmailTemplateObject());
-				var templateObject = '';
+				var templateObject = javaCast('null','');
 				
-				if(structKeyExists(arguments.data, emailTemplate.getEmailTemplateObject())) {
+				if(structKeyExists(arguments.data, emailTemplate.getEmailTemplateObject()) && isObject(arguments.data[emailTemplate.getEmailTemplateObject()])) {
 					// Set the template object from the passed object
 					templateObject = arguments.data[ emailTemplate.getEmailTemplateObject() ];
 					
@@ -198,7 +198,7 @@ Notes:
 					templateObject = getServiceByEntityName( emailTemplate.getEmailTemplateObject() ).invokeMethod("get#emailTemplate.getEmailTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
 				}
 				
-				if(!isNull(templateObject)) {
+				if(!isNull(templateObject) && isObject(templateObject) && structKeyExists(templateObject, "stringReplace")) {
 						
 					// Setup the email values
 					arguments.email.setEmailTo( templateObject.stringReplace( emailTemplate.setting('emailToAddress'), false, true ) );
