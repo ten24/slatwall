@@ -5,14 +5,9 @@ var ngSlatwall = angular.module('ng-slatwall', []);
 ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', function($scope, $compile) {
 	$scope.totalAmountToApply = 0; //Default value to show on new form
 	$scope.paymentTypeName = "Charge"
+	$scope.paymentTypeLock = true; //Used to lock down the order payment type dropdowns
 
 	$scope.updatePaymentType = function() {
-
-		if($scope.paymentType=="444df32dd2b0583d59a19f1b77869025")
-			$scope.paymentTypeName = "Charge"
-		else if($scope.paymentType=="444df32e9b448ea196c18c66e1454c46")
-			$scope.paymentTypeName = "Credit"
-	
 		//Change all order payment types here
 		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
 			obj.paymentType=$scope.paymentType;
@@ -20,6 +15,16 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 
 		//Update the subtotal now that we changed the payment type s
 		$scope.updateSubTotal();
+
+		if($scope.paymentType=="444df32dd2b0583d59a19f1b77869025") {
+			$scope.paymentTypeName = "Charge"
+			$scope.paymentTypeLock = true;
+		} else if($scope.paymentType=="444df32e9b448ea196c18c66e1454c46") {
+			$scope.paymentTypeName = "Credit"
+			$scope.paymentTypeLock = true;
+		} else {
+			$scope.paymentTypeLock = false;
+		}
 	}
 
 
@@ -47,7 +52,7 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 				}
 			}
 	    });
-	    
+
 		//The amount not applied to an order
 	    $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply) * 100) / 100);
 

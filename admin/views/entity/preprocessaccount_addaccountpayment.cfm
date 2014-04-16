@@ -174,7 +174,7 @@ Notes:
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
 					
 					<td>
-						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i#].paymentTypeID' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.paymentType' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />
+						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i#].paymentTypeID' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.paymentType' ng-hide='paymentTypeLock' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />{{paymentTypeName}}
 					</td>
 					<td>
 						<input type="number" name="appliedOrderPayments[#i#].amount" class="span1" ng-model="appliedOrderPayment.input#i#.amount" placeholder="0" min="0" step="0.01" ng-change="updateSubTotal()" />
