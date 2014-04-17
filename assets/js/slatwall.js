@@ -4,7 +4,7 @@ var ngSlatwall = angular.module('ng-slatwall', []);
 
 ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', function($scope, $compile) {
 	$scope.totalAmountToApply = 0; //Default value to show on new form
-	$scope.paymentTypeName = "Charge"
+	$scope.paymentTypeName = "Charge" //Default payment type
 	$scope.paymentTypeLock = true; //Used to lock down the order payment type dropdowns
 
 	$scope.updatePaymentType = function() {

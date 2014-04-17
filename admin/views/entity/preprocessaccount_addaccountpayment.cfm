@@ -163,6 +163,7 @@ Notes:
 			<cfset orderPaymentAmount=0 />
 			<cfset orderPaymentRecieved=0 />
 			<cfset orderPaymentUnrecieved=0 />
+			
 			<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
 				<cfset i++ />
 				<tr>
@@ -214,7 +215,7 @@ Notes:
  			<tr>
  				<td colspan="6"></td>
  				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAccountBalance')#</strong></td>
- 				<td>{{amountUnapplied | number:2}}</td>
+ 				<td>{{#rc.account.getTermAccountBalance()# + amountUnapplied | number:2}}</td>
  			</tr>				
 		</table>
 		
