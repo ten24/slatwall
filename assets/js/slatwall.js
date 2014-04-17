@@ -13,18 +13,22 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 			obj.paymentType=$scope.paymentType;
 		});
 
-		//Update the subtotal now that we changed the payment type s
-		$scope.updateSubTotal();
-
+		
 		if($scope.paymentType=="444df32dd2b0583d59a19f1b77869025") {
 			$scope.paymentTypeName = "Charge"
 			$scope.paymentTypeLock = true;
 		} else if($scope.paymentType=="444df32e9b448ea196c18c66e1454c46") {
 			$scope.paymentTypeName = "Credit"
 			$scope.paymentTypeLock = true;
-		} else {
+		} else if($scope.paymentType=="68e3fb57d8102b47acc0003906d16ddd") {
 			$scope.paymentTypeLock = false;
+			$scope.paymentTypeName = "Adjustment"
+			$scope.amount = 0;
 		}
+		
+		//Update the subtotal now that we changed the payment type
+		$scope.updateSubTotal();
+
 	}
 
 
@@ -36,8 +40,8 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
 			//Don't count the field if its undefied or not a number
 			if(obj.amount != undefined && !isNaN(obj.amount)) {
-				//Charge condition for subtotal
-				if($scope.paymentType=="444df32dd2b0583d59a19f1b77869025") {
+				//Charge / adjustment condition for subtotal
+				if($scope.paymentType=="444df32dd2b0583d59a19f1b77869025" || $scope.paymentType == '68e3fb57d8102b47acc0003906d16ddd') {
 					if(obj.paymentType=='444df32dd2b0583d59a19f1b77869025')
 						$scope.totalAmountToApply += parseFloat(obj.amount);
 					else if(obj.paymentType=='444df32e9b448ea196c18c66e1454c46')
