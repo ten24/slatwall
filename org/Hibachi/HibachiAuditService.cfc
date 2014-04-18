@@ -55,6 +55,58 @@ component extends="HibachiService" accessors="true" {
 		return getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod("get#arguments.audit.getBaseObject()#", {1=arguments.audit.getBaseID()});
 	}
 	
+	public void function addAuditToCommit(any audit) {
+		// Group related audits together by the base object's primary ID
+		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
+		if (len(arguments.audit.getBaseID()) && !structKeyExists(auditStruct, arguments.audit.getBaseID())) {
+			structInsert(auditStruct, audit.getBaseID(), {});
+		}
+		
+		var auditType = "";
+		if (arguments.audit.getAuditType() == "create") {
+			auditType = "create";
+		} else if (listFindNoCase("update,rollback,merge", arguments.audit.getAuditType())) {
+			auditType = "update";
+		} else if (arguments.audit.getAuditType() == "delete") {
+			auditType = "delete";
+		}
+		
+		if (len(auditType)) {
+			structInsert(auditStruct[audit.getBaseID()], auditType, arguments.audit);
+		}
+	}
+	
+	public any function getExistingAuditToCommit(string baseID, string auditType) {
+		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
+		if (structKeyExists(auditStruct, arguments.baseID) && structKeyExists(auditStruct[arguments.baseID], arguments.auditType)) {
+			return auditStruct[arguments.baseID][arguments.auditType];
+		}
+		
+		return javaCast("null", "");
+	}
+	
+	public void function commitAudits() {
+		var commitTotal = 0;
+		for (var auditID in getHibachiScope().getAuditsToCommitStruct()) {
+			for (var auditType in ["create", "update", "delete"]) {
+				if (structKeyExists(getHibachiScope().getAuditsToCommitStruct()[auditID], auditType)) {
+					this.saveAudit(getHibachiScope().getAuditsToCommitStruct()[auditID][auditType]);
+					commitTotal++;
+				}
+			}
+		}
+		
+		if (!getHibachiScope().getORMHasErrors()) {
+			getHibachiDAO().flushORMSession();
+		}
+		
+		getHibachiScope().clearAuditsToCommitStruct();
+		
+		if (commitTotal) {
+			logHibachi("Audits were committed, (#commitTotal#) total");
+		}
+	}
+	
 	public any function getChangeDetailsForAudit(any audit) {
 		var changeData = deserializeJSON(arguments.audit.getData());
 		
@@ -147,6 +199,7 @@ component extends="HibachiService" accessors="true" {
 		if (listFindNoCase("login,logout", arguments.auditType)) {
 			var audit = this.newAudit();
 			audit.setAuditType(arguments.auditType);
+			// Immediately commit audit, no need to defer commit
 			this.saveAudit(audit);
 		}
 	}
@@ -157,18 +210,17 @@ component extends="HibachiService" accessors="true" {
 		audit.setBaseID(arguments.entity.getPrimaryIDValue());
 		audit.setBaseObject(arguments.entity.getClassName());
 		audit.setTitle(arguments.entity.getSimpleRepresentation());
-		this.saveAudit(audit);
+		// Defer audit commit to end of request
+		addAuditToCommit(audit);
 	}
 	
 	public any function logEntityModify(any entity, struct oldData) {
 		if (arguments.entity.getAuditableFlag()) {
-			var audit = this.newAudit();
-			audit.setBaseID(arguments.entity.getPrimaryIDValue());
-			audit.setBaseObject(arguments.entity.getClassName());
 			
+			var auditType = "";
 			// Audit type is create when no old data available or no previous audit log data available
 			if (isNull(arguments.oldData) || (arguments.entity.getAuditSmartList().getRecordsCount()  == 0)) {
-				audit.setAuditType("create");
+				auditType = "create";
 				
 				// Remove oldData from arguments if it was provided because it is not applicable for property change data
 				if (!isNull(arguments.oldData)) {
@@ -177,11 +229,23 @@ component extends="HibachiService" accessors="true" {
 				
 			// Audit type is rollback
 			} else if (arguments.entity.getRollbackFlag()) {
-				audit.setAuditType("rollback");
+				auditType = "rollback";
 				
 			// Audit type is update
 			} else {
-				audit.setAuditType("update");
+				auditType = "update";
+			}
+			
+			// An audit may already exist in the request waiting to commit with the same related base object and similar audit type
+			// We can just update the existing audit and consolidate rather than create a new audit 
+			var audit = getExistingAuditToCommit(baseID=arguments.entity.getPrimaryIDValue(), auditType=auditType);
+			var commitPendingFlag = true;
+			if (isNull(audit)) {
+				audit = this.newAudit();
+				audit.setBaseID(arguments.entity.getPrimaryIDValue());
+				audit.setBaseObject(arguments.entity.getClassName());
+				audit.setAuditType(auditType);
+				commitPendingFlag = false;
 			}
 			
 			try {
@@ -190,8 +254,31 @@ component extends="HibachiService" accessors="true" {
 				audit.setTitle(rbKey("entity.audit.nosummary"));
 			}
 			
-			audit.setData(serializeJSON(generatePropertyChangeDataForEntity(argumentCollection=arguments)));
-			this.saveAudit(audit);
+			// Determine property change data
+			var propertyChangeData = generatePropertyChangeDataForEntity(argumentCollection=arguments);
+			
+			// If audit commit was already pending, just append new property change data to existing property change data 
+			if (!isNull(audit.getData()) && isJSON(audit.getData())) {
+				var existingPropertyChangeData = deserializeJSON(audit.getData());
+				
+				// Append existing to new without overwriting new
+				structAppend(propertyChangeData.newPropertyData, existingPropertyChangeData.newPropertyData, false);
+				
+				// Append existing to new without overwriting new
+				if (structKeyExists(propertyChangeData, "oldPropertyData") && structKeyExists(existingPropertyChangeData, "oldPropertyData")) {
+					structAppend(propertyChangeData.oldPropertyData, existingPropertyChangeData.oldPropertyData, false);
+				// Insert entire struct from existing to new because oldPropertyData not present in new
+				} else if (structKeyExists(existingPropertyChangeData, "oldPropertyData")) {
+					structInsert(propertyChangeData, "oldPropertyData", existingPropertyChangeData.oldPropertyData);
+				}
+			}
+			
+			audit.setData(serializeJSON(propertyChangeData));
+			
+			// Defer audit commit to end of request if not already pending
+			if (!commitPendingFlag) {
+				addAuditToCommit(audit);
+			}
 		}
 	}
 	
