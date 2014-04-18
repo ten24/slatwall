@@ -87,10 +87,10 @@ component extends="HibachiService" accessors="true" {
 	
 	public void function commitAudits() {
 		var commitTotal = 0;
-		for (var auditID in getHibachiScope().getAuditsToCommitStruct()) {
+		for (var baseID in getHibachiScope().getAuditsToCommitStruct()) {
 			for (var auditType in ["create", "update", "delete"]) {
-				if (structKeyExists(getHibachiScope().getAuditsToCommitStruct()[auditID], auditType)) {
-					this.saveAudit(getHibachiScope().getAuditsToCommitStruct()[auditID][auditType]);
+				if (structKeyExists(getHibachiScope().getAuditsToCommitStruct()[baseID], auditType)) {
+					this.saveAudit(getHibachiScope().getAuditsToCommitStruct()[baseID][auditType]);
 					commitTotal++;
 				}
 			}
