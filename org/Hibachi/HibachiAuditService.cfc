@@ -196,87 +196,71 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public struct function generatePropertyChangeDataForEntity(any entity, struct oldData) {		
-		// Note: The new and old property value mapping data structs used below effectively allow us to make linear comparisons
-		// To reduce the complexity of comparing the new and old nested property values, we simplify the process by flattening out the entire property
-		// structure using a single-level struct with matching keys that are used to map the respective property values of new and old data.
-		// We can then determine the "deltas" by performing a linear simple value comparisons using the key/value pairs in the property value mapping data structs
+		// Note: The new and old property value mapping data structs used below effectively allow us to make linear comparisons, each's associated key/values contain simple values only
+		// To reduce the complexity of comparing the new and old nested property values, we simplify the process by flattening out the properties of the entity
+		// into a single-level struct with matching keys that are used to map the respective simplified property values of new and old data.
+		// Then we can determine the relevant "deltas" by performing a linear simple value comparisons using the key/value pairs in the property value mapping data structs
 		
+		var oldDataExistsFlag = !isNull(arguments.oldData);
 		var auditablePropertiesStruct = arguments.entity.getAuditablePropertiesStruct();
 		
-		// Holds the actual property values that will be serialized as JSON when persisted to the database
+		// Struct holds the actual property values that will be serialized as JSON when persisted to the database
 		var propertyChangeData = {};
 		propertyChangeData["newPropertyData"] = {};
+		
+		// STEP 1. Convert old and new values into a standardized and simplified format that can be easily compared and serialized to JSON
 		
 		var newPropertyValueMappingData = {};
 		// Track all new auditable properties initially
 		for (var propertyName in auditablePropertiesStruct) {
-			propertyChangeData.newPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.entity.invokeMethod("get#propertyName#"), mappingData=newPropertyValueMappingData, mappingPath=propertyName);
+			propertyChangeData.newPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.entity.invokeMethod("get#propertyName#"), propertyMetaData=auditablePropertiesStruct[propertyName], mappingData=newPropertyValueMappingData, mappingPath=propertyName, className=arguments.entity.getClassName());
 		}
 		
 		var oldPropertyValueMappingData = {};
 		// Track all old auditable properties initially
-		if (!isNull(arguments.oldData)) {
+		if (oldDataExistsFlag) {
 			propertyChangeData["oldPropertyData"] = {};
 			for (var propertyName in auditablePropertiesStruct) {
 				if (structKeyExists(arguments.oldData, propertyName)) {
-					propertyChangeData.oldPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.oldData[propertyName], mappingData=oldPropertyValueMappingData, mappingPath=propertyName);
+					propertyChangeData.oldPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.oldData[propertyName], propertyMetaData=auditablePropertiesStruct[propertyName], mappingData=oldPropertyValueMappingData, mappingPath=propertyName, className=arguments.entity.getClassName());
 					
-					// Immediately delete empty value because it is irrelevant
-					if (isSimpleValue(propertyChangeData.oldPropertyData[propertyName]) && !len(propertyChangeData.oldPropertyData[propertyName])) {
-						structDelete(propertyChangeData.oldPropertyData, propertyName);
-					}
+				// Add empty string to represent old null value
+				} else if (!structKeyExists(auditablePropertiesStruct[propertyName], "fieldType") || auditablePropertiesStruct[propertyName].fieldType == "column") {
+					propertyChangeData.oldPropertyData[propertyName] = "";
+					structInsert(oldPropertyValueMappingData, "#propertyName#", "", true);
+					
+				// Add empty primaryIDProperyName primaryID key/value paid to represent old null value
+				} else if (structKeyExists(auditablePropertiesStruct[propertyName], "cfc")) {
+					propertyChangeData.oldPropertyData[propertyName] = {'#getPrimaryIDPropertyNameByEntityName(auditablePropertiesStruct[propertyName].cfc)#'=""};
+					structInsert(oldPropertyValueMappingData, "#propertyName#-#getPrimaryIDPropertyNameByEntityName(auditablePropertiesStruct[propertyName].cfc)#", "", true);
 				}
 			}
 		}
 		
-		// Note: If oldPropertyData has been populated, propertyChangeData.oldPropertyData should not contain any empty property values
+		// STEP 2. Calculate delta between old and new values by performing simple linear comparisons
 		
-		// Further process new property values to filter out any empty values under certain conditions
-		for (var propertyName in propertyChangeData.newPropertyData) {
-			var newPropertyValue = propertyChangeData.newPropertyData[propertyName];
-			
-			// Keep new empty values only when they differ from their respective old non-empty values
-			if (isSimpleValue(newPropertyValue) && !len(newPropertyValue)) {
-				// Filter out new empty value because it is irrelevant since no old version of the value existed
-				if (isNull(arguments.oldData) || !structKeyExists(propertyChangeData.oldPropertyData, propertyName)) {
-					structDelete(propertyChangeData.newPropertyData, propertyName);
-				}
-			}
-		}
-		
-		// NOTE: All empty arrays, structs, and null values in the property change data should have been converted to empty strings during standardization
-		// Create a union of changed properties by complete 2-way comparisons of both new and old property value mapping data
 		var changedPropertyNames = [];
 		
-		// Compare new against old
-		for (var propertyValueMappingKey in newPropertyValueMappingData) {
-			// Derive top level property name based on property value mapping key
-			var matchResult = reMatchNoCase("(\S+?)(\b)", propertyValueMappingKey);
-			var topLevelPropertyName = matchResult[1];
-			
-			// Skip unecessary comparison because property is already known to differ
-			if (!arrayContains(changedPropertyNames, topLevelPropertyName)) {
-				// Change detected by default because only new data contains property value or if new/old values differ
-				if (!structKeyExists(oldPropertyValueMappingData, propertyValueMappingKey) || (newPropertyValueMappingData[propertyValueMappingKey] != oldPropertyValueMappingData[propertyValueMappingKey])) {
-					if (len(newPropertyValueMappingData[propertyValueMappingKey])) {
-						arrayAppend(changedPropertyNames, topLevelPropertyName);
-					}
-				}
-			}
+		// Note: comparison sets used only for a tidy purpose to simply swap variables to avoid duplicating code
+		var comparisonSets = [{source=newPropertyValueMappingData, target=oldPropertyValueMappingData}];
+		
+		// When oldData present add to comparison set to trigger 2-way cross comparison of both new and old property values
+		if (oldDataExistsFlag) {
+			arrayAppend(comparisonSets, {source=oldPropertyValueMappingData, target=newPropertyValueMappingData});
 		}
 		
-		// Compare old against new
-		if (!isNull(arguments.oldData)) {
-			for (var propertyValueMappingKey in oldPropertyValueMappingData) {
+		// Determine the changed properties when only new values exists or when new values and old values both exist but differ
+		for (var comparison in comparisonSets) {
+			for (var propertyValueMappingKey in comparison.source) {
 				// Derive top level property name based on property value mapping key
-				var matchResult = reMatchNoCase("(\S+?)(\b)", propertyValueMappingKey);
-				var topLevelPropertyName = matchResult[1];
+				var topLevelPropertyName = listFirst(propertyValueMappingKey, "-");
 				
-				// Skip unecessary comparison because property is already known to differ
+				// If property was already known to differ then skip an unecessary comparison
 				if (!arrayContains(changedPropertyNames, topLevelPropertyName)) {
-					// Change detected by default because only old data contains property value or if new/old values differ
-					if (!structKeyExists(newPropertyValueMappingData, propertyValueMappingKey) || (newPropertyValueMappingData[propertyValueMappingKey] != oldPropertyValueMappingData[propertyValueMappingKey])) {
-						if (len(oldPropertyValueMappingData[propertyValueMappingKey])) {
+					// Change detected when value only exists in source or when source/target values differ
+					if (!structKeyExists(comparison.target, propertyValueMappingKey) || (comparison.source[propertyValueMappingKey] != comparison.target[propertyValueMappingKey])) {
+						auditablePropertiesStruct[topLevelPropertyName];
+						if (len(comparison.source[propertyValueMappingKey])) {
 							arrayAppend(changedPropertyNames, topLevelPropertyName);
 						}
 					}
@@ -292,7 +276,7 @@ component extends="HibachiService" accessors="true" {
 		}
 		
 		// Remove all irrelevant property values from old property change data
-		if (!isNull(arguments.oldData)) {
+		if (oldDataExistsFlag) {
 			for (var propertyName in propertyChangeData.oldPropertyData) {
 				if (!arrayContains(changedPropertyNames, propertyName)) {
 					structDelete(propertyChangeData.oldPropertyData, propertyName);
@@ -303,34 +287,38 @@ component extends="HibachiService" accessors="true" {
 		return propertyChangeData;
 	}
 	
-	public any function getStandardizedValue(any propertyValue, struct mappingData, string mappingPath="") {
+	public any function getStandardizedValue(any propertyValue, struct propertyMetaData, struct mappingData, string mappingPath="", string className) {
 		var standardizedValue = "";
 		
-		// Convert undefined or null property value to empty string
-		if (!isDefined("arguments.propertyValue") || isNull(arguments.propertyValue)) {
-			arguments.propertyValue = "";
-		}
-		
 		// Simple Value
-		if (isSimpleValue(arguments.propertyValue)) {
-			standardizedValue = arguments.propertyValue;
+		if (!structKeyExists(arguments.propertyMetaData, "fieldType") || arguments.propertyMetaData.fieldType == "column") {
+			// Set only when defined and not null, otherwise leave 'standardizedValue' as empty string
+			if (isDefined("arguments.propertyValue") && !isNull(arguments.propertyValue) && isSimpleValue(arguments.propertyValue)) {
+				standardizedValue = arguments.propertyValue;
+			}
 			
 			// Updates mapping data
 			structInsert(arguments.mappingData, "#arguments.mappingPath#", standardizedValue, true);
 		// Entity
-		} else if (isObject(arguments.propertyValue) && arguments.propertyValue.isPersistent()) {
+		} else if (structKeyExists(arguments.propertyMetaData, "cfc")) {
+			var entityPrimaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.propertyMetaData.cfc);
+			
 			standardizedValue = {};
-			// Primary ID of entity is only relevant value
-			standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"] = arguments.propertyValue.getPrimaryIDValue();
-			if (structKeyExists(arguments.propertyValue, "getSimpleRepresentation")) {
-				try {
-					standardizedValue["title"] = arguments.propertyValue.getSimpleRepresentation();
-				} catch (any e) {}
+			standardizedValue['#entityPrimaryIDPropertyName#'] = "";
+			
+			if (!isNull(arguments.propertyValue)) {
+				standardizedValue["#entityPrimaryIDPropertyName#"] = arguments.propertyValue.getPrimaryIDValue();
+				if (structKeyExists(arguments.propertyValue, "getSimpleRepresentation")) {
+					try {
+						standardizedValue["title"] = arguments.propertyValue.getSimpleRepresentation();
+					} catch (any e) {}
+				}
 			}
 			
 			// Updates mapping data
-			structInsert(arguments.mappingData, "#arguments.mappingPath#[#arguments.propertyValue.getPrimaryIDPropertyName()#]", standardizedValue["#arguments.propertyValue.getPrimaryIDPropertyName()#"], true);
-		
+			structInsert(arguments.mappingData, "#arguments.mappingPath#-#entityPrimaryIDPropertyName#", standardizedValue["#entityPrimaryIDPropertyName#"], true);
+		} else {
+			throw(message="#getClassName()# unable to determine standardized value of property '#arguments.className#.#arguments.propertyMetaData.name#'. Additional logic probably needs to be implemented.");
 		}
 		/*
 		// Array
