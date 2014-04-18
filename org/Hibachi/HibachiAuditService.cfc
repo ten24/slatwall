@@ -65,7 +65,7 @@ component extends="HibachiService" accessors="true" {
 			changeDetails.columnList = listAppend(changeDetails.columnList, "old");
 		}
 		
-		var properties = entityNew(getService("hibachiService").getProperlyCasedFullEntityName(arguments.audit.getBaseObject())).getAuditableProperties();
+		var properties = getEntityObject(arguments.audit.getBaseObject()).getAuditableProperties();
 		for (var currentProperty in properties) {
 			var changeDetail = {};
 			changeDetail['propertyName'] = currentProperty.name;
@@ -86,8 +86,8 @@ component extends="HibachiService" accessors="true" {
 					} else if (structKeyExists(currentProperty, "cfc")) {
 						if (isStruct(dataValue)) {
 							// Get actual reference to entity
+							var entityPrimaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
 							var entityService = getService("hibachiService").getServiceByEntityName(currentProperty.cfc);
-							var entityPrimaryIDPropertyName = entityService.getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
 							if (structKeyExists(dataValue, entityPrimaryIDPropertyName)) {
 								columnValue = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=dataValue[entityPrimaryIDPropertyName],2=false});
 								
@@ -386,22 +386,6 @@ component extends="HibachiService" accessors="true" {
 		var propertiesStruct = relatedEntity.getAuditablePropertiesStruct();
 		for (var i=1; i<=rollbackIndex; i++) {
 			var currentData = deserializeJSON(audits[i].getData());
-			for (var propertyName in propertiesStruct) {				
-				if (structKeyExists(currentData.newPropertyData, propertyName)) {
-					// Convert empty strings representing null entity property values into proper null struct format
-					if (structKeyExists(propertiesStruct[propertyName], "cfc") && isSimpleValue(currentData.newPropertyData[propertyName])) {
-						currentData.newPropertyData["#propertyName#"] = {"#getPrimaryIDPropertyNameByEntityName(propertiesStruct[propertyName].cfc)#"=""};
-					}
-					
-					// If necessary check oldPropertyData
-					if (structKeyExists(currentData, "oldPropertyData") && !structKeyExists(currentData.oldPropertyData, propertyName)) {
-						// Manually set empty string to represent null value because property must have been null in oldPropertyData and not null in newPropertyData
-						if (structKeyExists(propertiesStruct[propertyName], "cfc")) {
-							currentData.oldPropertyData["#propertyName#"] = {"#getPrimaryIDPropertyNameByEntityName(propertiesStruct[propertyName].cfc)#"=""};
-						}
-					}
-				}
-			}
 			
 			// Prior to reaching rollback point only the oldPropertyData contains relevant data, if oldPropertyData used at rollback state would be beyond desired rollback point
 			if (i != rollbackIndex) {
