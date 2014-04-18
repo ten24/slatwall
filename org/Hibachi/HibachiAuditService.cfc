@@ -87,7 +87,7 @@ component extends="HibachiService" accessors="true" {
 						if (isStruct(dataValue)) {
 							// Get actual reference to entity
 							var entityPrimaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
-							var entityService = getService("hibachiService").getServiceByEntityName(currentProperty.cfc);
+							var entityService = getServiceByEntityName(currentProperty.cfc);
 							if (structKeyExists(dataValue, entityPrimaryIDPropertyName)) {
 								columnValue = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=dataValue[entityPrimaryIDPropertyName],2=false});
 								
