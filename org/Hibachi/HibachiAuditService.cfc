@@ -453,6 +453,9 @@ component extends="HibachiService" accessors="true" {
 	// ===================== START: Process Methods ===========================
 	
 	public any function processAudit_rollback(required any audit) {
+		// In the future this will be passed in as an argument in order to apply the rollback only to explicit properties
+		var explicitPropertyList = "";
+		
 		var relatedEntity = arguments.audit.getRelatedEntity();
 		auditSL = relatedEntity.getAuditSmartList();
 		auditSL.addInFilter("auditType", "create,update,rollback");
@@ -481,6 +484,15 @@ component extends="HibachiService" accessors="true" {
 			// Only newPropertyData is relevant when the rollback point is reached
 			} else {
 				structAppend(rollbackData, currentData.newPropertyData, true);
+			}
+		}
+		
+		// If necessary apply explicitPropertyList filter on rollbackData
+		if (listLen(explicitPropertyList)) {
+			for (var propertyName in rollbackData) {
+				if (!listFindNoCase(explicitPropertyList, propertyName)) {
+					structDelete(rollbackData, propertyName);
+				}
 			}
 		}
 		
