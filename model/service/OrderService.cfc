@@ -494,6 +494,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
 			
+		} else if(newOrderPayment.hasErrors()) {
+			arguments.order.addError('addOrderPayment', newOrderPayment.getErrors());
+			
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
 		} else if (!newOrderPayment.hasErrors() && arguments.processObject.getSaveAccountPaymentMethodFlag() && isNull(newOrderPayment.getAccountPaymentMethod())) {
 				
@@ -687,26 +690,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			var account = getAccountService().getAccount(processObject.getAccountID());
 		}
-		arguments.order.setAccount(account);
 		
-		// Setup Order Type
-		arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+		if(account.hasErrors()) {
+			arguments.order.addError('create', account.getErrors());
+		} else {
+			arguments.order.setAccount(account);
 		
-		// Setup the Order Origin
-		if( len(arguments.processObject.getOrderOriginID()) ) {
-			arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
-		}
+			// Setup Order Type
+			arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+			
+			// Setup the Order Origin
+			if( len(arguments.processObject.getOrderOriginID()) ) {
+				arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
+			}
+			
+			// Setup the Default Stock Location
+			if( len(arguments.processObject.getDefaultStockLocationID()) ) {
+				arguments.order.setDefaultStockLocation( getSettingService().getLocation(arguments.processObject.getDefaultStockLocationID()) );
+			}
+			
+			// Setup the Currency Code
+			arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			
+			// Save the order
+			arguments.order = this.saveOrder(arguments.order);
 
-		// Setup the Default Stock Location
-		if( len(arguments.processObject.getDefaultStockLocationID()) ) {
-			arguments.order.setDefaultStockLocation( getSettingService().getLocation(arguments.processObject.getDefaultStockLocationID()) );
 		}
 		
-		// Setup the Currency Code
-		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
-		
-		// Save the order
-		arguments.order = this.saveOrder(arguments.order);
 		
 		return arguments.order;
 	}
