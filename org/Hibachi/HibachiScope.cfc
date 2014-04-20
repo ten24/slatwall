@@ -7,6 +7,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
+	property name="auditsToCommitStruct" type="struct";
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
 	property name="successfulActions" type="array";
@@ -37,6 +38,17 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
 		returnHTML &= '<script type="text/javascript">(function( $ ){$.#lcase(getApplicationValue('applicationKey'))# = new Hibachi(#serializeJSON(config)#);})( jQuery );</script>';
 		return returnHTML;
+	}
+	
+	public struct function getAuditsToCommitStruct() {
+		if(!structKeyExists(variables, "auditsToCommitStruct")) {
+			variables.auditsToCommitStruct = {};
+		}
+		return variables.auditsToCommitStruct;
+	}
+	
+	public void function clearAuditsToCommitStruct() {
+		variables.auditsToCommitStruct = {};
 	}
 	
 	public boolean function getLoggedInFlag() {
@@ -209,5 +221,4 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function authenticateEntityProperty( required string crudType, required string entityName, required string propertyName ) {
 		return getService("hibachiAuthenticationService").authenticateEntityPropertyCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, account=getAccount() );
 	}
-	
 }
