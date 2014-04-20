@@ -209,7 +209,11 @@ component extends="HibachiService" accessors="true" {
 		audit.setAuditType("delete");
 		audit.setBaseID(arguments.entity.getPrimaryIDValue());
 		audit.setBaseObject(arguments.entity.getClassName());
-		audit.setTitle(arguments.entity.getSimpleRepresentation());
+		try {
+			audit.setTitle(arguments.entity.getSimpleRepresentation());
+		} catch (any e) {
+			audit.setTitle(rbKey("entity.audit.nosummary"));
+		}
 		// Defer audit commit to end of request
 		addAuditToCommit(audit);
 	}
