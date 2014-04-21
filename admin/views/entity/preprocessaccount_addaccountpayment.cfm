@@ -197,10 +197,9 @@ Notes:
 				<td><strong>#orderPaymentUnrecieved#</strong></td>
 				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong><br />
 
-
-				<strong class='text-error span2' ng-bind="unassignedWarning"></strong>
-
-
+				<div ng-if="amountUnapplied != 0 && amountUnapplied != null">
+					<strong class='text-error span2'>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnappliedWarning1')# {{amountUnapplied}} #$.slatwall.rbKey('entity.AccountPayment.termOffsetUnappliedWarning2')#</strong>
+				</div>
 				</td>
 				<td>
 					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="uneditable-input span1" placeholder="0" readonly ng-model="amountUnapplied" />
@@ -215,7 +214,7 @@ Notes:
  			<tr>
  				<td colspan="6"></td>
  				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAccountBalance')#</strong></td>
- 				<td>{{#rc.account.getTermAccountBalance()# + amountUnapplied | number:2}}</td>
+ 				<td>{{#rc.account.getTermAccountBalance()# + accountBalanceChange | number:2}}</td>
  			</tr>				
 		</table>
 		

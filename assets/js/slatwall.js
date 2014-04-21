@@ -59,10 +59,12 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 
 		//The amount not applied to an order
 	    $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply) * 100) / 100);
+		$scope.accountBalanceChange = $scope.amount;
+		
+		//Switch the account balance display amount to a negative if you are doing a charge
+		if($scope.paymentType=='444df32dd2b0583d59a19f1b77869025')
+			$scope.accountBalanceChange = $scope.accountBalanceChange * -1;
 
-	    if($scope.amountUnapplied != 0) {
-	    	$scope.unassignedWarning = "Warning: There is " + $scope.amountUnapplied + " that will not be assigned to any orders";
-	    }
 	}
 });
 
