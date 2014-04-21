@@ -49,7 +49,7 @@ Notes:
 
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="ng-slatwall">
 	<head>
 		<meta charset="utf-8">
 		<title>#rc.pageTitle# &##124; Slatwall</title>
@@ -79,6 +79,10 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
+		
+		<!--- New Angular Includes --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/angular.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/slatwall.js"></script>
 		
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">

@@ -49,13 +49,20 @@ Notes:
 <cfparam name="rc.locationSmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.locationSmartList#" createModal="true" />
-	
-	<cf_HibachiListingDisplay smartList="#rc.locationSmartList#"
-							  recordDetailAction="admin:entity.detaillocation"
-							  recordEditAction="admin:entity.editlocation">
-							    
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationName" />
+
+	<cf_HibachiListingDisplay smartList="#rc.locationSmartList#" 
+							  recordEditAction="admin:entity.editlocation" 
+							  recordEditQueryString="redirectAction=admin:entity.listlocation" 
+							  recordEditModal="true" 
+							  recordDeleteAction="admin:entity.deletelocation">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiActionCaller action="admin:entity.createlocation" entity="location" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationName" search="true" />
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
+
 </cfoutput>

@@ -49,8 +49,6 @@ Notes:
 <cfparam name="rc.measurementUnitSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.measurementUnitSmartList#" showCreate="false" />
 
 <cf_HibachiListingDisplay smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="unitName" />

@@ -52,23 +52,22 @@ Notes:
 <cfset subscriptionDisabled = "" />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
-		
+
+	<cf_HibachiListingDisplay type="listing" smartList="#rc.productSmartList#"
+			recordEditAction="admin:entity.editproduct"
+			recorddetailaction="admin:entity.detailproduct"
+			showCreate="false">
+			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiListingDisplayButtonGroup >
 			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" disabled="#!$.slatwall.getSmartList("SubscriptionTerm").getRecordsCount() or !$.slatwall.getSmartList("SubscriptionBenefit").getRecordsCount()#"  disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoSubscriptionBenefitOrTerm')#" />
 			</cf_HibachiActionCallerDropdown>
-		</cf_HibachiEntityActionBarButtonGroup>
-		
-	</cf_HibachiEntityActionBar>
-	
-	<cf_HibachiListingDisplay smartList="#rc.productSmartList#"
-			recordEditAction="admin:entity.editproduct"
-			recorddetailaction="admin:entity.detailproduct">
+		</cf_HibachiListingDisplayButtonGroup>
+			
 		<cf_HibachiListingColumn propertyIdentifier="productType.productTypeName" />
 		<cf_HibachiListingColumn propertyIdentifier="brand.brandName" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />

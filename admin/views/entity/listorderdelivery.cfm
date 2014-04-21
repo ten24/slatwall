@@ -49,7 +49,6 @@ Notes:
 <cfparam name="rc.orderDeliverySmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.orderDeliverySmartList#" showCreate="false" />
 	
 	<cf_HibachiListingDisplay smartList="#rc.orderDeliverySmartList#"
 			recorddetailaction="admin:entity.detailorderdelivery">

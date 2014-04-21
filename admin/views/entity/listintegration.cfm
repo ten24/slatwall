@@ -50,7 +50,6 @@ Notes:
 <cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.integrationSmartList#" showCreate="false" />
 	
 	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />

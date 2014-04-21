@@ -455,6 +455,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return getSku().getProduct().getTitle() & " - " & getSku().getSimpleRepresentation(); 
 	}
 	
+	public string function getSimpleRepresentationPropertyName(){
+		return "orderItemID";
+	}
+
 	public any function getAssignedAttributeSetSmartList(){
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
 			

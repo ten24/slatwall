@@ -57,6 +57,7 @@ Notes:
 	
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList>
+			<cfif isnull(rc.processObject.getAccountID())>
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="newAccountFlag" edit="#rc.edit#" fieldType="yesno">
 			<cf_HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="#rc.processObject.getNewAccountFlag()#">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="firstName" edit="#rc.edit#">
@@ -75,9 +76,14 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,primaryAddress.simpleRepresentation" edit="true">
 			</cf_HibachiDisplayToggle>
 			<hr />
+			<cfelse>
+				<cf_HibachiFormField fieldName="accountID" value="#rc.processObject.getAccountID()#" fieldType="hidden">
+				<cf_HibachiFormField fieldName="newAccountFlag" value="#rc.processObject.getNewAccountFlag()#" fieldType="hidden">	
+			</cfif>
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeID" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderOriginID" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="defaultStockLocationID" edit="#rc.edit#">
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 	

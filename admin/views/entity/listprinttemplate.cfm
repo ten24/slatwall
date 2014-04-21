@@ -49,14 +49,18 @@ Notes:
 <cfparam name="rc.printTemplateSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.printTemplateSmartList#" createModal="true" />
 
-<cf_HibachiListingDisplay smartList="#rc.printTemplateSmartList#"
-						   recordDetailAction="admin:entity.detailPrintTemplate"
-						   recordEditAction="admin:entity.editPrintTemplate">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.printTemplateSmartList#"
+							   recordDetailAction="admin:entity.detailPrintTemplate"
+							   recordEditAction="admin:entity.editPrintTemplate">
+							      
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiActionCaller action="admin:entity.createprinttemplate" entity="printtemplate" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>
 

@@ -51,17 +51,17 @@ Notes:
 <cfparam name="rc.orderSmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.orderSmartList#" showCreate="false">
-		<!--- Create --->
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay smartList="#rc.orderSmartList#" 
-							  recordDetailAction="admin:entity.detailorder"
-							  recordEditAction="admin:entity.editorder">
-							    
+	<cf_HibachiListingDisplay type="listing" smartList="#rc.orderSmartList#"
+			recordDetailAction="admin:entity.detailorder"
+			recordEditAction="admin:entity.editorder"
+			showCreate="true">
+			
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
+			
 		<cfif rc.slatAction eq "admin:entity.listorder">
 			<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
 			<cf_HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
@@ -75,4 +75,5 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
 	</cf_HibachiListingDisplay>
+
 </cfoutput>
