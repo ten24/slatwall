@@ -63,7 +63,9 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 		
 		//Switch the account balance display amount to a negative if you are doing a charge
 		if($scope.paymentType=='444df32dd2b0583d59a19f1b77869025')
-			$scope.accountBalanceChange = $scope.accountBalanceChange * -1;
+			$scope.accountBalanceChange = $scope.accountBalanceChange * -1; //If charge, change to neg since we are lowering account balance
+		else if($scope.paymentType=='68e3fb57d8102b47acc0003906d16ddd')
+			$scope.accountBalanceChange += $scope.amountUnapplied; //If adjustment, use the amount unapplied to determine the balance change
 
 	}
 });

@@ -198,7 +198,7 @@ Notes:
 				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong><br />
 
 				<div ng-if="amountUnapplied != 0 && amountUnapplied != null">
-					<strong class='text-error span2'>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnappliedWarning1')# {{amountUnapplied}} #$.slatwall.rbKey('entity.AccountPayment.termOffsetUnappliedWarning2')#</strong>
+					<strong class='text-error span2'>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnappliedWarning1')# {{amountUnapplied | number:2}} #$.slatwall.rbKey('entity.AccountPayment.termOffsetUnappliedWarning2')#</strong>
 				</div>
 				</td>
 				<td>
