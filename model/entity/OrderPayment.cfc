@@ -621,7 +621,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public void function setCreditCardNumber(required string creditCardNumber) {
 		if(len(arguments.creditCardNumber)) {
-			variables.creditCardNumber = REReplace('arguments.creditCardNumber', '[^[:digit:]]', '', 'ALL');
+			variables.creditCardNumber = REReplaceNoCase('arguments.creditCardNumber', '[^[:digit:]]', '', 'ALL');
 			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
 			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
 		} else {
