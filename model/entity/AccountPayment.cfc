@@ -214,6 +214,16 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		
 	}	
 	
+	public array function getAccountPaymentAppliedOptions( ) {
+		if(!structKeyExists(variables, "appliedAccountPaymentsOptions")) {
+			var smartList = getService('settingService').getTypeSmartList();
+			smartList.addInFilter('systemCode','aptCredit,aptCharge');
+			smartList.addSelect('type','name');
+			smartList.addSelect('typeID','value');
+			variables.appliedAccountPaymentsOptions = smartList.getRecords();
+		}
+		return variables.appliedAccountPaymentsOptions;
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

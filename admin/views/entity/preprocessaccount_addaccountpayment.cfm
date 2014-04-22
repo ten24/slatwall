@@ -175,7 +175,7 @@ Notes:
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
 					
 					<td>
-						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i#].paymentTypeID' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentTypeOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.paymentType' ng-hide='paymentTypeLock' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />
+						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i#].paymentTypeID' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentAppliedOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.paymentType' ng-hide='paymentTypeLock' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />
 						<div ng-if="paymentTypeLock">{{paymentTypeName}}</div>
 					</td>
 					<td>
@@ -217,7 +217,6 @@ Notes:
  				<td>{{#rc.account.getTermAccountBalance()# + accountBalanceChange | number:2}}</td>
  			</tr>				
 		</table>
-		
 	</cf_HibachiEntityProcessForm>
 </cfoutput>
 </div>

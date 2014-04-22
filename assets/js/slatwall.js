@@ -5,34 +5,34 @@ var ngSlatwall = angular.module('ng-slatwall', []);
 ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', function($scope, $compile) {
 	//Define the different payment types used here
 	var paymentType = {aptCharge:"444df32dd2b0583d59a19f1b77869025",aptCredit:"444df32e9b448ea196c18c66e1454c46", aptAdjustment:"68e3fb57d8102b47acc0003906d16ddd"};
+	
 	$scope.totalAmountToApply = 0; //Default value to show on new form
-	$scope.paymentTypeName = "Charge" //Default payment type
+	$scope.paymentTypeName = $.slatwall.rbKey('define.charge'); //Default payment type
 	$scope.paymentTypeLock = true; //Used to lock down the order payment type dropdowns
 
 	$scope.updatePaymentType = function() {
 		//Change all order payment types here
 		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
-			obj.paymentType=$scope.paymentType;
+			//Only change the payment type if the type isn't adjustment'
+			if($scope.paymentType!=paymentType.aptAdjustment)
+				obj.paymentType=$scope.paymentType;
 		});
-
 		
 		if($scope.paymentType==paymentType.aptCharge) {
-			$scope.paymentTypeName = "Charge"
+			$scope.paymentTypeName = $.slatwall.rbKey('define.charge');
 			$scope.paymentTypeLock = true;
 		} else if($scope.paymentType==paymentType.aptCredit) {
-			$scope.paymentTypeName = "Credit"
+			$scope.paymentTypeName = $.slatwall.rbKey('define.credit');
 			$scope.paymentTypeLock = true;
 		} else if($scope.paymentType==paymentType.aptAdjustment) {
 			$scope.paymentTypeLock = false;
-			$scope.paymentTypeName = "Adjustment"
+			$scope.paymentTypeName = $.slatwall.rbKey('define.adjustment');
 			$scope.amount = 0;
 		}
 		
 		//Update the subtotal now that we changed the payment type
 		$scope.updateSubTotal();
-
 	}
-
 
 	$scope.updateSubTotal = function() {
 		$scope.totalAmountToApply = 0; //Reset the subtotal before we loop
