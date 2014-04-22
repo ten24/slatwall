@@ -88,7 +88,7 @@ component accessors="true" output="false" persistent="false" {
 		var urlRootPath = replace(expandPath('/'), '\','/','all');
 		
 		// Remove the URLRootPath from the rest of the path
-		return replace(arguments.path, urlRootPath, '/');
+		return replaceNoCase(arguments.path, urlRootPath, '/');
 	}
 	
 	// ==========================  END: FRAMEWORK ACCESS ============================================
