@@ -916,6 +916,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		arguments.attributeValue.removeSku( this );    
 	}
 	
+	// Event Registrations (one-to-many)    
+	public void function addEventRegistrations(required any eventRegistration) {    
+		arguments.eventRegistration.setSku( this );    
+	}    
+	public void function removeEventRegistration(required any eventRegistration) {    
+		arguments.eventRegistration.removeSku( this );    
+	}
+	
 	// Sku Currencies (one-to-many)    
 	public void function addSkuCurrency(required any skuCurrency) {    
 		arguments.skuCurrency.setSku( this );    

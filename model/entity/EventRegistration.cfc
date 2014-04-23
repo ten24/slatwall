@@ -137,6 +137,61 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+ 	// Order Item (many-to-one)    
+  	public void function setOrderItem(required any orderItem) {    
+  		variables.orderItem = arguments.orderItem;    
+  		if(isNew() or !arguments.orderItem.hasEventRegistration( this )) {    
+  			arrayAppend(arguments.orderItem.getEventRegistrations(), this);    
+  		}    
+  	}    
+  	public void function removeOrderItem(any orderItem) {    
+  		if(!structKeyExists(arguments, "orderItem")) {    
+  			arguments.orderItem = variables.orderItem;    
+  		}    
+  		var index = arrayFind(arguments.orderItem.getEventRegistrations(), this);    
+  		if(index > 0) {    
+  			arrayDeleteAt(arguments.orderItem.getEventRegistrations(), index);    
+  		}    
+  		structDelete(variables, "orderItem");    
+  	}
+  	
+  	// Sku (many-to-one)    
+  	public void function setSku(required any sku) {    
+  		variables.sku = arguments.sku;    
+  		if(isNew() or !arguments.sku.hasEventRegistration( this )) {    
+  			arrayAppend(arguments.sku.getEventRegistrations(), this);    
+  		}    
+  	}    
+  	public void function removeSku(any sku) {    
+  		if(!structKeyExists(arguments, "sku")) {    
+  			arguments.sku = variables.sku;    
+  		}    
+  		var index = arrayFind(arguments.sku.getEventRegistrations(), this);    
+  		if(index > 0) {    
+  			arrayDeleteAt(arguments.sku.getEventRegistrations(), index);    
+  		}    
+  		structDelete(variables, "sku");    
+  	}
+  	
+  	// Account (many-to-one)    
+  	public void function setAccount(required any account) {    
+  		variables.account = arguments.account;    
+  		if(isNew() or !arguments.account.hasEventRegistration( this )) {    
+  			arrayAppend(arguments.account.getEventRegistrations(), this);    
+  		}    
+  	}    
+  	public void function removeAccount(any account) {    
+  		if(!structKeyExists(arguments, "account")) {    
+  			arguments.account = variables.account;    
+  		}    
+  		var index = arrayFind(arguments.account.getEventRegistrations(), this);    
+  		if(index > 0) {    
+  			arrayDeleteAt(arguments.account.getEventRegistrations(), index);    
+  		}    
+  		structDelete(variables, "account");    
+  	}
+  	
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
