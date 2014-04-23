@@ -346,7 +346,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Disconnect this sku from any recurring schedule
 				if(!isNull(arguments.sku.getProductSchedule())) {
-  					arguments.sku.setProductSchedule( arguments.sku.getProductSchedule() );
+  					arguments.sku.removeProductSchedule( arguments.sku.getProductSchedule() );
   				}
 			}
 			

@@ -62,7 +62,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_populateEnabled="public";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="eventRegistrationStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventRegistrationStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventRegistrationStatusType";
 	
 	// Related Object Properties (one-to-many)
