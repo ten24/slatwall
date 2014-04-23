@@ -295,11 +295,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		else if(arguments.processObject.getEditScope() == "single" || isNull(arguments.sku.getProductSchedule()) ){
 			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations(),","); lc++) {
 				var thisLocationConfig = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
-				sku.removeLocationConfiguration( thisLocationConfig );
+				arguments.sku.removeLocationConfiguration( thisLocationConfig );
 			}
 			// Remove this sku from product schedule
 			if(!isNull(arguments.sku.getProductSchedule())) {
-				arguments.sku.setProductSchedule(javaCast("null", ""));
+				arguments.sku.removeProductSchedule( arguments.sku.getProductSchedule() );
 			}
 		} else if(arguments.processObject.getEditScope() == "all"){
 			
@@ -345,19 +345,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.sku.setEndReservationDateTime(arguments.processObject.getEndReservationDateTime());
 
 				// Disconnect this sku from any recurring schedule
-				arguments.sku.setProductSchedule(javaCast("null",""));
+				if(!isNull(arguments.sku.getProductSchedule())) {
+  					arguments.sku.removeProductSchedule( arguments.sku.getProductSchedule() );
+  				}
 			}
 			
 		
 		} else if(arguments.processObject.getEditScope() == "all"){
 			for(var thisSku in arguments.sku.getProductSchedule().getSkus()) {
 				var lcList = arguments.processObject.getLocationConfigurations();
-				if(thisSku.geteventStartDateTime() > now()) {
-					var newEventStartDateTime = createDateTime(year(thisSku.getEventStartDateTime()),month(thisSku.getEventStartDateTime()),day(thisSku.getEventStartDateTime()),hour(arguments.processObject.getEventStartTime()),minute(arguments.processObject.getEventStartTime()),0);
-					var newEventEndDateTime = createDateTime(year(thisSku.getEventEndDateTime()),month(thisSku.getEventEndDateTime()),day(thisSku.getEventEndDateTime()),hour(arguments.processObject.getEventEndTime()),minute(arguments.processObject.getEventEndTime()),0);
-					var newReservationStartDateTime = createDateTime(year(thisSku.getStartReservationDateTime()),month(thisSku.getStartReservationDateTime()),day(thisSku.getStartReservationDateTime()),hour(arguments.processObject.getReservationStartTime()),minute(arguments.processObject.getReservationStartTime()),0);
-					var newReservationEndDateTime = createDateTime(year(thisSku.getEndReservationDateTime()),month(thisSku.getEndReservationDateTime()),day(thisSku.getEndReservationDateTime()),hour(arguments.processObject.getReservationEndTime()),minute(arguments.processObject.getReservationEndTime()),0);
-					thisSku.setEventStartDateTime(newEventStartDateTime);
+				if(thisSku.getEventStartDateTime() > now()) {
+  					var newEventStartDateTime = createDateTime(year(thisSku.getEventStartDateTime()),month(thisSku.getEventStartDateTime()),day(thisSku.getEventStartDateTime()),hour(arguments.processObject.getEventStartDateTime()),minute(arguments.processObject.getEventStartDateTime()),0);
+  					var newEventEndDateTime = createDateTime(year(thisSku.getEventEndDateTime()),month(thisSku.getEventEndDateTime()),day(thisSku.getEventEndDateTime()),hour(arguments.processObject.getEventEndDateTime()),minute(arguments.processObject.getEventEndDateTime()),0);
+  					var newReservationStartDateTime = createDateTime(year(thisSku.getStartReservationDateTime()),month(thisSku.getStartReservationDateTime()),day(thisSku.getStartReservationDateTime()),hour(arguments.processObject.getStartReservationDateTime()),minute(arguments.processObject.getStartReservationDateTime()),0);
+  					var newReservationEndDateTime = createDateTime(year(thisSku.getEndReservationDateTime()),month(thisSku.getEndReservationDateTime()),day(thisSku.getEndReservationDateTime()),hour(arguments.processObject.getEndReservationDateTime()),minute(arguments.processObject.getEndReservationDateTime()),0);
+  					thisSku.setEventStartDateTime(newEventStartDateTime);
 					thisSku.setEventEndDateTime(newEventEndDateTime);
 					thisSku.setStartReservationDateTime(newReservationStartDateTime);
 					thisSku.setEndReservationDateTime(newReservationEndDateTime);
@@ -404,15 +406,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		if(listLen(locationIDList)) {
+			locationIDList = listQualify(locationIDList,"'",",","char" );
 			// Build smartlist of conflicting events schedules
-			var smartlist = getService("SkuService").getSkuSmartList();
-			smartlist.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
-			smartlist.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
-			smartlist.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
-			smartlist.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=arguments.sku.getSkuID()});
-			smartlist.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
-			smartlist.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
-	
+			var smartList = getService("SkuService").getSkuSmartList();
+  			smartList.joinRelatedProperty("SlatwallSku", "locationConfigurations", "left");
+  			smartList.joinRelatedProperty("SlatwallLocationConfiguration", "location", "left");
+  			smartList.addWhereCondition("aslatwalllocation.locationID IN (:lcIDs)",{lcIDs=locationIDList});
+  			smartList.addWhereCondition("aslatwallsku.skuID <> :thisSkuID",{thisSkuID=arguments.sku.getSkuID()});
+  			smartList.addWhereCondition("aslatwallsku.eventStartDateTime < :thisEndDateTime",{thisEndDateTime=arguments.eventEndDateTime});
+  			smartList.addWhereCondition("aslatwallsku.eventEndDateTime > :thisStartDateTime",{thisStartDateTime=arguments.eventStartDateTime});
+ 
 			// Do we have conflicts?
 			if(smartList.getRecordsCount() > 0) {
 				result = true;

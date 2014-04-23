@@ -50,9 +50,9 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// Persistent Properties
 	property name="eventRegistrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="firstName" ormtype="string" ;
-	property name="lastName" ormtype="string" ;
-	property name="emailAddress" ormtype="string" ;
+	property name="firstName" ormtype="string" hb_populateEnabled="public" ;
+	property name="lastName" ormtype="string" hb_populateEnabled="public" ;
+	property name="emailAddress" ormtype="string" hb_populateEnabled="public" ;
 	property name="phoneNumber" ormtype="string" ;
 	property name="waitlistQueueDateTime" ormtype="timestamp" hb_formatType="dateTime" hint="Datetime registrant was added to waitlist.";
 	property name="pendingClaimDateTime" ormtype="timestamp" hb_formatType="dateTime" hint="Datetime registrant was changed to pending claim.";
@@ -61,7 +61,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
-	property name="Sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="eventRegistrationStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventRegistrationStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventRegistrationStatusType";
 	
@@ -136,6 +136,61 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+ 	// Order Item (many-to-one)    
+  	public void function setOrderItem(required any orderItem) {    
+  		variables.orderItem = arguments.orderItem;    
+  		if(isNew() or !arguments.orderItem.hasEventRegistration( this )) {    
+  			arrayAppend(arguments.orderItem.getEventRegistrations(), this);    
+  		}    
+  	}    
+  	public void function removeOrderItem(any orderItem) {    
+  		if(!structKeyExists(arguments, "orderItem")) {    
+  			arguments.orderItem = variables.orderItem;    
+  		}    
+  		var index = arrayFind(arguments.orderItem.getEventRegistrations(), this);    
+  		if(index > 0) {    
+  			arrayDeleteAt(arguments.orderItem.getEventRegistrations(), index);    
+  		}    
+  		structDelete(variables, "orderItem");    
+  	}
+  	
+  	// Sku (many-to-one)    
+  	public void function setSku(required any sku) {    
+  		variables.sku = arguments.sku;    
+  		if(isNew() or !arguments.sku.hasEventRegistration( this )) {    
+  			arrayAppend(arguments.sku.getEventRegistrations(), this);    
+  		}    
+  	}    
+  	public void function removeSku(any sku) {    
+  		if(!structKeyExists(arguments, "sku")) {    
+  			arguments.sku = variables.sku;    
+  		}    
+  		var index = arrayFind(arguments.sku.getEventRegistrations(), this);    
+  		if(index > 0) {    
+  			arrayDeleteAt(arguments.sku.getEventRegistrations(), index);    
+  		}    
+  		structDelete(variables, "sku");    
+  	}
+  	
+  	// Account (many-to-one)    
+  	public void function setAccount(required any account) {    
+  		variables.account = arguments.account;    
+  		if(isNew() or !arguments.account.hasEventRegistration( this )) {    
+  			arrayAppend(arguments.account.getEventRegistrations(), this);    
+  		}    
+  	}    
+  	public void function removeAccount(any account) {    
+  		if(!structKeyExists(arguments, "account")) {    
+  			arguments.account = variables.account;    
+  		}    
+  		var index = arrayFind(arguments.account.getEventRegistrations(), this);    
+  		if(index > 0) {    
+  			arrayDeleteAt(arguments.account.getEventRegistrations(), index);    
+  		}    
+  		structDelete(variables, "account");    
+  	}
+  	
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
