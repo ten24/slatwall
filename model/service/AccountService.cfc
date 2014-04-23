@@ -58,7 +58,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="siteService" type="any";
 	property name="loyaltyService" type="any";
 	property name="validationService" type="any";
-	
+	property name="orderService" type="any";
 	
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -151,6 +151,32 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		}
 		
+		
+		
+		// Loop over all account payments and link them to the AccountPaymentApplied object
+		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
+			
+			if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
+				var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+				
+				var newAccountPaymentApplied = this.newAccountPaymentApplied();
+				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
+				
+				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
+				
+				// Link to the order payment if the payment is assigned to a term order
+				if(!isNull(orderPayment)) {
+					newAccountPaymentApplied.setOrderPayment( orderPayment );
+					
+					
+					
+				}
+				
+				// Save the account payment applied
+				newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied ); 
+			}
+		}
+
 		// Save the newAccountPayment
 		newAccountPayment = this.saveAccountPayment( newAccountPayment );
 		
@@ -160,7 +186,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 		// If no errors, then we can process a transaction
 		} else {
-			
 			var transactionData = {
 				amount = newAccountPayment.getAmount()
 			};
@@ -176,7 +201,23 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
-				
+			
+			//Loop over the newaccountpayment.getAppliedPayments
+			for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
+				if(!IsNull(appliedAccountPayment.getOrderPayment())) {
+					transactionData = {
+						amount = appliedAccountPayment.getAmount()
+					};
+					
+					if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
+						transactionData.transactionType = 'receive';
+					} else {
+						transactionData.transactionType = 'credit';
+					}
+					
+					getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
+				}
+			}
 		}
 		
 		return arguments.account;

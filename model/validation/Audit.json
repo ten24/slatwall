@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"auditType":						[{"contexts":"save","inList":"create,update,delete,rollback,merge,login,logout"},{"contexts":"rollback","inList":"create,update,rollback"}],
+		"auditID":							[{"contexts":"delete","maxLength":0}]
+	}
+}

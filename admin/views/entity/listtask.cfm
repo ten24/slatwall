@@ -50,11 +50,14 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiEntityActionBar type="listing" object="#rc.taskSmartList#" createmodal="true" />
-
 	<cf_HibachiListingDisplay smartlist="#rc.taskSmartList#" 
 	                          recorddetailaction="admin:entity.detailtask"
 							  recordeditaction="admin:entity.edittask">
+		
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiActionCaller action="admin:entity.createtask" entity="task" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="taskName" />
 		<cf_HibachiListingColumn propertyidentifier="runningFlag" />

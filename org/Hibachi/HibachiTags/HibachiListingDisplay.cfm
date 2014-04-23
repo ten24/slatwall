@@ -1,4 +1,4 @@
-<cfif thisTag.executionMode eq "end">
+<cfif thisTag.executionMode is "start">
 	<!--- Implicit --->
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />	
 	
@@ -45,6 +45,9 @@
 	<cfparam name="attributes.tableattributes" type="string" default="" />  <!--- Pass in additional html attributes for the table --->
 	<cfparam name="attributes.tableclass" type="string" default="" />  <!--- Pass in additional classes for the table --->	
 	<cfparam name="attributes.adminattributes" type="string" default="" />
+
+	<!--- Settings --->
+	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
 	
 	<!--- ThisTag Variables used just inside --->
 	<cfparam name="thistag.columns" type="array" default="#arrayNew(1)#" />
@@ -55,7 +58,18 @@
 	<cfparam name="thistag.expandable" type="string" default="false" />
 	<cfparam name="thistag.sortable" type="string" default="false" />
 	<cfparam name="thistag.exampleEntity" type="string" default="" />
-
+	<cfparam name="thistag.buttonGroup" type="array" default="#arrayNew(1)#" />
+	
+	<!--- Basic Action Caller Overrides --->
+	<cfparam name="attributes.createModal" type="boolean" default="false" />
+	<cfparam name="attributes.createAction" type="string" default="" />
+	<cfparam name="attributes.createQueryString" type="string" default="" />
+	<cfparam name="attributes.exportAction" type="string" default="" />
+	
+	<cfif not len(attributes.exportAction)>
+		<cfset attributes.exportAction = "admin:entity.export#attributes.smartList.getBaseEntityName()#" />
+	</cfif>
+<cfelse>
 	<cfsilent>
 		<cfif isSimpleValue(attributes.smartList)>
 			<cfset attributes.smartList = attributes.hibachiScope.getService("hibachiService").getServiceByEntityName( attributes.smartList ).invokeMethod("get#attributes.smartList#SmartList") />
@@ -185,7 +199,8 @@
 				sort = true,
 				filter = false,
 				range = false,
-				editable = false
+				editable = false,
+				buttonGroup = true
 			}) />
 		</cfif>
 		
@@ -277,9 +292,56 @@
 		<cfif attributes.administativeCount>
 		</cfif>
 	</cfsilent>
+
 	<cfoutput>
 		<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 			<thead>
+				<cfif not thistag.expandable and attributes.showheader>
+				<tr>
+					<th class="listing-display-header" colspan='#thistag.columnCount#'>
+							
+						<div class="span8">
+							<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+						</div>
+						<div class="span4">
+							<div class="groups">
+								<div class="btn-group">
+									<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+									<ul class="dropdown-menu pull-right">
+										<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+									</ul>
+								</div>
+									
+								<!--- Listing: Button Groups --->
+								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
+									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
+										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+											<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
+													#buttonGroup.generatedContent#
+											<cfelse>
+												<div class="btn-group">
+													#buttonGroup.generatedContent#
+												</div>
+											</cfif>
+										</cfif>
+									</cfloop>
+								</cfif>
+								
+								<!--- Listing: Create --->
+								<cfif len(attributes.createAction)>
+									<div class="btn-group">
+										<cfif attributes.createModal>
+											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+										<cfelse>
+											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+										</cfif>
+									</div>
+								</cfif>		
+							</div>
+						</div>		
+					</th>
+				</tr>
+				</cfif>
 				<tr>
 					<!--- Selectable --->
 					<cfif thistag.selectable>

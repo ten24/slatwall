@@ -49,8 +49,6 @@ Notes:
 <cfparam name="rc.stockReceiverSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.stockReceiverSmartList#" showCreate="false" />
 
 <cf_HibachiListingDisplay smartList="#rc.stockReceiverSmartList#"
 						   recordDetailAction="admin:entity.detailstockreceiver"

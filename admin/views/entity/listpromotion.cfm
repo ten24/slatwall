@@ -49,19 +49,23 @@ Notes:
 <cfparam name="rc.promotionSmartList" type="any" />
 
 <cfoutput>
+
+	<cfset rc.promotionSmartList.addOrder("promotionName|ASC") />
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.promotionSmartList#" />
-
-<cfset rc.promotionSmartList.addOrder("promotionName|ASC") />
-
-<cf_HibachiListingDisplay smartList="#rc.promotionSmartList#"
-						   recorddetailaction="admin:entity.detailpromotion"
-						   recordEditAction="admin:entity.editpromotion">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotionName" />
-	<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="modifiedDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="currentFlag" sort=false search=false range=false filter=false />
-</cf_HibachiListingDisplay>
+	<cf_HibachiListingDisplay smartList="#rc.promotionSmartList#"
+							   recorddetailaction="admin:entity.detailpromotion"
+							   recordEditAction="admin:entity.editpromotion">
+							      
+		<!--- Create ---> 
+		<cf_HibachiListingDisplayButtonGroup >
+			<cf_HibachiActionCaller action="admin:entity.createpromotion" entity="promotion" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotionName" />
+		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="modifiedDateTime" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+		<cf_HibachiListingColumn propertyIdentifier="currentFlag" sort=false search=false range=false filter=false />
+	</cf_HibachiListingDisplay>
 
 </cfoutput>

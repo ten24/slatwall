@@ -17,6 +17,21 @@ textarea {
 .btn-group > .dropdown-menu,
 .btn-group > .popover {
   font-size: 13px;
+  text-align: left;
+}
+@-moz-document url-prefix() {
+  .groups {
+    position: relative;
+    top: -3.5px;
+  }
+}
+.groups {
+  text-align: right;
+  font-size: 0px;
+}
+.groups .dropdown-menu {
+  position: absolute;
+  top: 30px;
 }
 .navbar {
   height: 40px;
@@ -270,6 +285,13 @@ range-filter-upper {
 }
 .table .depth10 {
   margin-left: 200px;
+}
+.general-listing-search {
+  margin-bottom: 0 !important;
+}
+.listing-display-header {
+  background-color: #efefef;
+  border-bottom: 1px solid #cccccc;
 }
 .table-section {
   font-weight: bold;
