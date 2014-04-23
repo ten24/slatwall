@@ -70,6 +70,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="bundleFlag" ormtype="boolean" default="0";
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
+	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";

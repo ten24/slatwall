@@ -50,9 +50,9 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// Persistent Properties
 	property name="eventRegistrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="firstName" ormtype="string" ;
-	property name="lastName" ormtype="string" ;
-	property name="emailAddress" ormtype="string" ;
+	property name="firstName" ormtype="string" hb_populateEnabled="public" ;
+	property name="lastName" ormtype="string" hb_populateEnabled="public" ;
+	property name="emailAddress" ormtype="string" hb_populateEnabled="public" ;
 	property name="phoneNumber" ormtype="string" ;
 	property name="waitlistQueueDateTime" ormtype="timestamp" hb_formatType="dateTime" hint="Datetime registrant was added to waitlist.";
 	property name="pendingClaimDateTime" ormtype="timestamp" hb_formatType="dateTime" hint="Datetime registrant was changed to pending claim.";
@@ -61,8 +61,8 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
-	property name="Sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_populateEnabled="public";
 	property name="eventRegistrationStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="eventRegistrationStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=eventRegistrationStatusType";
 	
 	// Related Object Properties (one-to-many)

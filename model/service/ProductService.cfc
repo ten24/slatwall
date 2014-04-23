@@ -61,6 +61,7 @@ component extends="HibachiService" accessors="true" {
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
 	property name="optionService" type="any";
+	property name="eventRegistrationService" type="any";
 	
 	
 	// ===================== START: Logical Methods ===========================
@@ -512,11 +513,20 @@ component extends="HibachiService" accessors="true" {
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setBundleFlag( true );
 
+  		if(listLen( arguments.processObject.getSkus() )) {
+  			var skuArray = listToArray( arguments.processObject.getSkus() );
+  		
+  			if(arguments.product.getBaseProductType() == "event") {
+  				newSku.setEventStartDateTime( getSkuService().getSku( skuArray[1] ).getEventStartDateTime() );
+  				newSku.setEventEndDateTime( getSkuService().getSku( skuArray[arrayLen(skuArray)] ).getEventEndDateTime() );
+  				newSku.setEventAttendanceCode( getEventRegistrationService().generateAttendanceCode(8) );
+  			}
+  		}
+  		
 		// Persist the new sku
 		newSku = getSkuService().saveSku( newSku );
 		
-		if(listLen( arguments.processObject.getSkus() )) {
-			var skuArray = listToArray( arguments.processObject.getSkus() );
+		if(arrayLen(skuArray)) {
 			
 			// Loop over skus from the process object and create entries for sku bundles	
 			for(var i=1; i<=arrayLen(skuArray); i++) {
