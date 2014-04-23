@@ -232,7 +232,9 @@ component extends="FW1.framework" {
 		request.context.$[ variables.framework.applicationKey ] = getHibachiScope();
 		request.context.pagetitle = request.context.$[ variables.framework.applicationKey ].rbKey( request.context[ getAction() ] );
 		request.context.edit = false;
-		request.context.ajaxRequest = false;
+		if(!structKeyExists(request.context,"ajaxRequest")) {
+  			request.context.ajaxRequest = false;
+  		}
 		request.context.ajaxResponse = {};
 		if(!structKeyExists(request.context, "messages")) {
 			request.context.messages = [];	
@@ -462,7 +464,9 @@ component extends="FW1.framework" {
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
-			request.context.ajaxResponse["messages"] = request.context.messages;
+			if(isStruct(request.context.ajaxResponse)){
+  				request.context.ajaxResponse["messages"] = request.context.messages;
+  			}
 			writeOutput( serializeJSON(request.context.ajaxResponse) );
 			abort;
 		}
