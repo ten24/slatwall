@@ -55,6 +55,7 @@ component extends="HibachiService" accessors="true" {
 	
 	property name="dataService" type="any";  
 	property name="contentService" type="any";
+	property name="hibachiEventService" type="any";  
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
 	property name="optionService" type="any";
@@ -262,6 +263,12 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveProduct(required any product, required struct data) {
+		// Add the entity as the word entity to arguments for consistent event announcements
+	    arguments.entity = arguments.product;
+	    
+	    // Announce Before Event
+	    getHibachiEventService().announceEvent("beforeProductSave", arguments);
+		
 		// populate bean from values in the data Struct
 		arguments.product.populate(arguments.data);
 		
@@ -285,6 +292,14 @@ component extends="HibachiService" accessors="true" {
 		// If the product passed validation then call save in the DAO, otherwise set the errors flag
         if(!arguments.product.hasErrors()) {
         	arguments.product = getHibachiDAO().save(target=arguments.product);
+        	
+        	// Announce After Events for Success
+			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
+			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
+        } else {
+        	// Announce After Events for Failure
+			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
+			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
         }
         
         // Return the product
