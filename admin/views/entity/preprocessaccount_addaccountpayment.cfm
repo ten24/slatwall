@@ -192,9 +192,9 @@ Notes:
 			<tr>
 				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetTotals')#</strong></td>
 				<td colspan="2"></td>
-				<td><strong>#orderPaymentAmount#</strong></td>
-				<td><strong>#orderPaymentRecieved#</strong></td>
-				<td><strong>#orderPaymentUnrecieved#</strong></td>
+				<td><strong>#NumberFormat(orderPaymentAmount, '0.00')#</strong></td>
+				<td><strong>#NumberFormat(orderPaymentRecieved, '0.00')#</strong></td>
+				<td><strong>#NumberFormat(orderPaymentUnrecieved, '0.00')#</strong></td>
 				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong><br />
 
 				<div ng-if="amountUnapplied != 0 && amountUnapplied != null">
