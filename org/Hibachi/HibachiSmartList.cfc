@@ -477,7 +477,15 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		}
 		var aliasedProperty = getAliasedProperty(propertyIdentifier=propertyIdentifier);
 		if(len(aliasedProperty)) {
-			arrayAppend(variables.orders, {property=aliasedProperty, direction=orderDirection});
+			var found = false;
+			for(var existingOrder in variables.orders) {
+				if(existingOrder.property == aliasedProperty) {
+					found = true;
+				}
+			}
+			if(!found) {
+				arrayAppend(variables.orders, {property=aliasedProperty, direction=orderDirection});	
+			}
 		}
 	}
 
