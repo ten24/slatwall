@@ -303,7 +303,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!structKeyExists(variables, "termOrderPaymentsByDueDateSmartList")) {
 			variables.termOrderPaymentsByDueDateSmartList = getService('orderService').getOrderPaymentSmartList();
 			variables.termOrderPaymentsByDueDateSmartList.addFilter('order.account.accountId', this.getAccountID());
-			variables.termOrderPaymentsByDueDateSmartList.addFilter("order.orderStatusType.systemCode", "ostProcessing");
+			variables.termOrderPaymentsByDueDateSmartList.addInFilter("order.orderStatusType.systemCode", "ostProcessing,ostNew,ostOnHold");
 			variables.termOrderPaymentsByDueDateSmartList.addFilter('paymentMethod.paymentMethodType', 'termPayment');
 			variables.termOrderPaymentsByDueDateSmartList.addOrder('paymentDueDate|ASC');
 		}
