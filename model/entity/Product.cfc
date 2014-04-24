@@ -115,7 +115,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
-	property name="nextSkuCodeCount" persisten="false";
+	property name="nextSkuCodeCount" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";

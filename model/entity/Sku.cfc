@@ -70,6 +70,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="bundleFlag" ormtype="boolean" default="0";
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
+	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -913,6 +914,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}    
 	public void function removeAttributeValue(required any attributeValue) {    
 		arguments.attributeValue.removeSku( this );    
+	}
+	
+	// Event Registrations (one-to-many)    
+	public void function addEventRegistrations(required any eventRegistration) {    
+		arguments.eventRegistration.setSku( this );    
+	}    
+	public void function removeEventRegistration(required any eventRegistration) {    
+		arguments.eventRegistration.removeSku( this );    
 	}
 	
 	// Sku Currencies (one-to-many)    

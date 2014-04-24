@@ -89,7 +89,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "skusSmartList")) {
 			variables.skusSmartList = getService("skuService").getSkuSmartList();
 			variables.skusSmartList.addFilter('activeFlag', 1);
-			variables.skusSmartList.addFilter('bundleFlag', "NULL");
+			variables.skusSmartList.addFilter('bundleFlag', 0);
 		}
 		return variables.skusSmartList;
 	}
