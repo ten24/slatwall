@@ -245,7 +245,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	
 		
 	public void function rbData( required struct rc ) {
-		arguments.rc.ajaxResponse['rbData'] = getHibachiRBService().getResourceBundle("en");
+		arguments.rc.ajaxResponse['rbData'] = getHibachiRBService().getAggregateResourceBundle(getHibachiScope().getRBLocale());
 	}
 	
 }

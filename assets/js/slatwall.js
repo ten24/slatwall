@@ -9,7 +9,8 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 	$scope.totalAmountToApply = 0; //Default value to show on new form
 	$scope.paymentTypeName = $.slatwall.rbKey('define.charge'); //Default payment type
 	$scope.paymentTypeLock = true; //Used to lock down the order payment type dropdowns
-
+	$scope.amount = 0;
+	
 	$scope.updatePaymentType = function() {
 		//Change all order payment types here
 		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
@@ -36,8 +37,7 @@ ngSlatwall.controller('admin-entity-preprocessaccount_addaccountpayment', functi
 
 	$scope.updateSubTotal = function() {
 		$scope.totalAmountToApply = 0; //Reset the subtotal before we loop
-		$scope.unassignedWarning = "";
-
+		
 		//Loop through all the amount fields and create a running subtotal
 		angular.forEach($scope.appliedOrderPayment, function(obj, key) {
 			//Don't count the field if its undefied or not a number
