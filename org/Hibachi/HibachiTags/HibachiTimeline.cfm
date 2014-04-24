@@ -56,26 +56,33 @@ Notes:
 	
 	<cfset thisTag.hibachiAuditService = attributes.hibachiScope.getService('HibachiAuditService') />
 	<cfset thisTag.mode = "" />
-	<cfset thisTag.auditSmartList = "" />
 	<cfset thisTag.auditArray = [] />
 	
+	<!--- AuditSmartList was passed in, so use as is --->
 	<cfif isObject(attributes.auditSmartList)>
 		<cfset thisTag.mode = "auditSmartList" />
-		<cfset thisTag.auditSmartList = attributes.auditSmartList />
-	<cfelseif isObject(attributes.object) >
+		
+	<!--- There is a specific entity, so use that entities auditSmartList --->
+	<cfelseif isObject(attributes.object) && attributes.object.isPersistent()>
 		<cfset thisTag.mode = "object" />
-		<cfset thisTag.auditSmartList = attributes.object.getAuditSmartList() />
+		<cfset attributes.auditSmartList = attributes.object.getAuditSmartList() />
+		
+	<!--- No AuditSmartList was pased in, and no object was passed in so just create a new auditSmartList --->
 	<cfelse>
 		<cfset thisTag.mode = "baseObjectList" />
+		<cfset attributes.auditSmartList = thisTag.hibachiAuditService.getAuditSmartList() />
+		
 		<!--- Determine which base object types to display --->
-		<cfset thisTag.auditSmartList = thisTag.hibachiAuditService.getAuditSmartList() />
 		<cfif listLen(attributes.baseObjectList)>
-			<cfset thisTag.auditSmartList.addInFilter("baseObject", attributes.baseObjectList) />
+			<cfset attributes.auditSmartList.addInFilter("baseObject", attributes.baseObjectList) />
 		</cfif>
+		
+		<!--- Only add the orderBy here, because all other options would already have an orderBy defined --->
+		<cfset attributes.auditSmartList.addOrder("auditDateTime|DESC") />
 	</cfif>
 	
 	<cfif listLen(attributes.auditTypeList)>
-		<cfset thisTag.auditSmartList.addInFilter("auditType", attributes.auditTypeList) />
+		<cfset attributes.auditSmartList.addInFilter("auditType", attributes.auditTypeList) />
 	</cfif>
 	
 	<!---
@@ -84,15 +91,12 @@ Notes:
 		
 	--->
 	
-	
-	<cfset thisTag.auditSmartList.addOrder("auditDateTime|DESC") />
-	
 	<!--- Display page or all --->
 	<cfif isNumeric(attributes.recordsShow) and attributes.recordsShow gt 0>
-		<cfset thisTag.auditSmartList.setPageRecordsShow(attributes.recordsShow) />
-		<cfset thisTag.auditArray = thisTag.auditSmartList.getPageRecords() />
+		<cfset attributes.auditSmartList.setPageRecordsShow(attributes.recordsShow) />
+		<cfset thisTag.auditArray = attributes.auditSmartList.getPageRecords() />
 	<cfelse>
-		<cfset thisTag.auditArray = thisTag.auditSmartList.getRecords() />
+		<cfset thisTag.auditArray = attributes.auditSmartList.getRecords() />
 	</cfif>
 	
 	<cfset thisTag.columnCount = 5 />
