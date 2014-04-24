@@ -7,6 +7,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="simpleRepresentation" type="string" persistent="false";
 	property name="persistableErrors" type="array" persistent="false";
 	property name="processObjects" type="struct" persistent="false";
+	property name="auditSmartList" type="any" persistent="false";
 	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
@@ -252,10 +253,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	// @hint Returns a smart list of audits related to this entity
 	public any function getAuditSmartList() {
-		variables.auditLogSmartList = getService("hibachiAuditService").getAuditSmartList();
-		variables.auditLogSmartList.addFilter("baseID", getPrimaryIDValue());
-		variables.auditLogSmartList.addOrder("auditDateTime|DESC");
-		return variables.auditLogSmartList;
+		if(!structKeyExists(variables, "auditSmartList")) {
+			variables.auditSmartList = getService("hibachiAuditService").getAuditSmartList();
+			variables.auditSmartList.addFilter("baseID", getPrimaryIDValue());
+			variables.auditSmartList.addOrder("auditDateTime|DESC");
+		}
+		
+		return variables.auditSmartList;
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity
