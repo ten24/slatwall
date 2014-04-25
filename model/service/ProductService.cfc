@@ -55,14 +55,14 @@ component extends="HibachiService" accessors="true" {
 	
 	property name="dataService" type="any";  
 	property name="contentService" type="any";
+	property name="eventRegistrationService" type="any";
+	property name="hibachiEventService" type="any";
 	property name="locationService" type="any";
+	property name="optionService" type="any";
 	property name="productScheduleService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
-	property name="optionService" type="any";
-	property name="eventRegistrationService" type="any";
-	
 	
 	// ===================== START: Logical Methods ===========================
 	
