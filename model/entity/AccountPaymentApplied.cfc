@@ -57,6 +57,7 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	// Related Object Properties (many-to-one)
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID" hb_optionsNullRBKey="define.select";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID" hb_optionsNullRBKey="define.select";
+	property name="accountPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=accountPaymentType";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -115,14 +116,14 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	}    
 	public void function removeOrderPayment(any orderPayment) {    
 		if(!structKeyExists(arguments, "orderPayment")) {    
-			arguments.accountPayment = variables.orderPayment;    
+			arguments.orderPayment = variables.orderPayment;    
 		}    
 		var index = arrayFind(arguments.orderPayment.getAppliedAccountPayments(), this);    
 		if(index > 0) {    
 			arrayDeleteAt(arguments.orderPayment.getAppliedAccountPayments(), index);    
 		}    
 		structDelete(variables, "orderPayment");    
-	}
+	}	
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
