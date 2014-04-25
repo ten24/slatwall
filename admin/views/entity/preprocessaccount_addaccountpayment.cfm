@@ -64,9 +64,9 @@ Notes:
 				<!--- Add a hidden field for the accountID --->
 				<input type="hidden" name="newAccountPayment.account.accountID" value="#rc.account.getAccountID()#" />
 				
-				<!---<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="amount" fieldName="newAccountPayment.amount" edit="#rc.edit#">--->
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="amount" fieldName="newAccountPayment.amount" edit="#rc.edit#"fieldAttributes="ng-model='amount' ng-change='updateSubTotal()' placeholder='0' ng-readonly='!paymentTypeLock'">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" fieldName="newAccountPayment.currencyCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#" fieldAttributes="ng-model='paymentType' ng-change='updatePaymentType()' ng-init='paymentType = ""444df32dd2b0583d59a19f1b77869025""'">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethodID" edit="#rc.edit#">
 				</cf_HibachiPropertyList>
 				<cf_HibachiPropertyList divClass="span6">
@@ -151,41 +151,72 @@ Notes:
 			<tr>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetOrderNum')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetTerm')#</th>
+				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetDueDate')#</th>
+				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetTotalAmount')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetReceived')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnReceived')#</th>
-				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetDueDate')#</th>
+				<th>#$.slatwall.rbKey('entity.Account.Type')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAmount')#</th>
+				
 			</tr>
 			<cfset i=0 />
+			<cfset orderPaymentAmount=0 />
+			<cfset orderPaymentRecieved=0 />
+			<cfset orderPaymentUnrecieved=0 />
+			
 			<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
 				<cfset i++ />
 				<tr>
 					<td>#orderPayment.getOrder().getOrderNumber()#</td>
 					<td>#orderPayment.getPaymentTerm().getPaymentTermName()#</td>
+					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
+					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountTotal')#</td>
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountReceivedTotal')#</td>
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
-					<td>#orderPayment.getFormattedValue('paymentDueDate', 'date' )#</td>
+					
 					<td>
-						<input type="text" name="appliedOrderPayments[#i#].amount" class="span1" ng-model="appliedOrderPayment.amount#i#" placeholder="0" ng-change="updateSubTotal()" />
+						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i#].paymentTypeID' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentAppliedOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.paymentType' ng-hide='paymentTypeLock' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />
+						<div ng-if="paymentTypeLock">{{paymentTypeName}}</div>
+					</td>
+					<td>
+						<input type="number" name="appliedOrderPayments[#i#].amount" class="span1" ng-model="appliedOrderPayment.input#i#.amount" placeholder="0" min="0" step="0.01" ng-change="updateSubTotal()" />
 						<input type="hidden" name="appliedOrderPayments[#i#].orderPaymentID" value="#orderPayment.getOrderPaymentID()#" />
 					</td>
 				</tr>
-			</cfloop>
 				
+				<cfset orderPaymentAmount = orderPaymentAmount + orderPayment.getOrder().getPaymentAmountTotal() />
+				<cfset orderPaymentRecieved = orderPaymentRecieved + orderPayment.getOrder().getPaymentAmountReceivedTotal() />
+				<cfset orderPaymentUnrecieved = orderPaymentUnrecieved + orderPayment.getOrder().getPaymentAmountDue() />
+			</cfloop>
+			
 			<tr>
-				<td colspan="5"><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong></td>
+				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetTotals')#</strong></td>
+				<td colspan="2"></td>
+				<td><strong>#NumberFormat(orderPaymentAmount, '0.00')#</strong></td>
+				<td><strong>#NumberFormat(orderPaymentRecieved, '0.00')#</strong></td>
+				<td><strong>#NumberFormat(orderPaymentUnrecieved, '0.00')#</strong></td>
+				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnassigned')#</strong><br />
+
+				<div ng-if="amountUnapplied != 0 && amountUnapplied != null">
+					<strong class='text-error span2'>#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnappliedWarning1')# {{amountUnapplied | number:2}} #$.slatwall.rbKey('entity.AccountPayment.termOffsetUnappliedWarning2')#</strong>
+				</div>
+				</td>
 				<td>
-					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="span1" ng-model="appliedOrderPayment.amount#i+1#" placeholder="0" ng-change="updateSubTotal()" />
+					<input type="text" name="appliedOrderPayments[#i+1#].amount" class="uneditable-input span1" placeholder="0" readonly ng-model="amountUnapplied" />
 					<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value="" />
 				</td>
-			</tr>	
-			<tr>
-				<td colspan="4"></td>
-				<td><strong>Subtotal</strong></td>
-				<td>{{totalAmountToApply | number:2}}</td>
 			</tr>
+			<tr>
+ 				<td colspan="6"></td>
+ 				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetTotal')# {{paymentTypeName}} #$.slatwall.rbKey('entity.AccountPayment.termOffsetAmount')#</strong></td>
+ 				<td>{{amount | number:2}}</td>
+ 			</tr>
+ 			<tr>
+ 				<td colspan="6"></td>
+ 				<td><strong>#$.slatwall.rbKey('entity.AccountPayment.termOffsetAccountBalance')#</strong></td>
+ 				<td>{{#rc.account.getTermAccountBalance()# + accountBalanceChange | number:2}}</td>
+ 			</tr>				
 		</table>
-		
 	</cf_HibachiEntityProcessForm>
 </cfoutput>
 </div>

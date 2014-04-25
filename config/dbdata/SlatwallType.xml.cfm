@@ -11,6 +11,7 @@
 		<Record typeID="444df32cee42886828d43a685445e6a0" typeIDPath="444df32cee42886828d43a685445e6a0" parentTypeID="NULL" type="Account Payment Types" systemCode="accountPaymentType" />
 		<Record typeID="444df32dd2b0583d59a19f1b77869025" typeIDPath="444df32cee42886828d43a685445e6a0,444df32dd2b0583d59a19f1b77869025" parentTypeID="444df32cee42886828d43a685445e6a0" type="Charge" systemCode="aptCharge" />
 		<Record typeID="444df32e9b448ea196c18c66e1454c46" typeIDPath="444df32cee42886828d43a685445e6a0,444df32e9b448ea196c18c66e1454c46" parentTypeID="444df32cee42886828d43a685445e6a0" type="Credit" systemCode="aptCredit" />
+		<Record typeID="68e3fb57d8102b47acc0003906d16ddd" typeIDPath="444df32cee42886828d43a685445e6a0,68e3fb57d8102b47acc0003906d16ddd" parentTypeID="444df32cee42886828d43a685445e6a0" type="Adjustment" systemCode="aptAdjustment" />
 		
 		<Record typeID="444df29db643e69a26c071dabe619e8a" typeIDPath="444df29db643e69a26c071dabe619e8a" parentTypeID="NULL" type="Account Phone Types" systemCode="accountPhoneType" />
 		<Record typeID="444df29eaef3cfd1af021d4d31205328" typeIDPath="444df29db643e69a26c071dabe619e8a,444df29eaef3cfd1af021d4d31205328" parentTypeID="444df29db643e69a26c071dabe619e8a" type="Home Phone" systemCode="aptHome" />

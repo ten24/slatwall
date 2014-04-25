@@ -152,8 +152,6 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		}
 		
-		
-		
 		// Loop over all account payments and link them to the AccountPaymentApplied object
 		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
 			
@@ -164,13 +162,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
 				
 				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
-				
-				// Link to the order payment if the payment is assigned to a term order
+
+				// Link to the order payment if the payment is assigned to a term order. Also set the payment type
 				if(!isNull(orderPayment)) {
 					newAccountPaymentApplied.setOrderPayment( orderPayment );
-					
-					
-					
+					newAccountPaymentApplied.setAccountPaymentType( getSettingService().getType( appliedOrderPayment.paymentTypeID  ) );
 				}
 				
 				// Save the account payment applied

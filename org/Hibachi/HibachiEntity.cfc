@@ -1,12 +1,13 @@
 component output="false" accessors="true" persistent="false" extends="HibachiTransient" {
 
 	property name="newFlag" type="boolean" persistent="false";
-	property name="rollbackFlag" type="boolean" persistent="false";
+	property name="rollbackProcessedFlag" type="boolean" persistent="false";
 	property name="printTemplates" type="struct" persistent="false";
 	property name="emailTemplates" type="struct" persistent="false";
 	property name="simpleRepresentation" type="string" persistent="false";
 	property name="persistableErrors" type="array" persistent="false";
 	property name="processObjects" type="struct" persistent="false";
+	property name="auditSmartList" type="any" persistent="false";
 	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
@@ -241,6 +242,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return true;
 	}
 	
+	public boolean function getAuditRollbackValidFlag() {
+		return !getService("hibachiValidationService").validate(object=this, context="auditRollback", setErrors=false).hasErrors();
+	}
+	
 	// @hint public method to determine if this entity is audited
 	public any function getAuditableFlag() {
 		var metaData = getThisMetaData();
@@ -252,10 +257,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	// @hint Returns a smart list of audits related to this entity
 	public any function getAuditSmartList() {
-		variables.auditLogSmartList = getService("hibachiAuditService").getAuditSmartList();
-		variables.auditLogSmartList.addFilter("baseID", getPrimaryIDValue());
-		variables.auditLogSmartList.addOrder("auditDateTime|DESC");
-		return variables.auditLogSmartList;
+		if(!structKeyExists(variables, "auditSmartList")) {
+			variables.auditSmartList = getService("hibachiAuditService").getAuditSmartList();
+			variables.auditSmartList.addFilter("baseID", getPrimaryIDValue());
+			variables.auditSmartList.addOrder("auditDateTime|DESC");
+		}
+		
+		return variables.auditSmartList;
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity
@@ -630,11 +638,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return false;
 	}
 	
-	public boolean function getRollbackFlag() {
-		if(isNull(variables.rollbackFlag) || !isBoolean(variables.rollbackFlag)) {
-			variables.rollbackFlag = false;
+	public boolean function getRollbackProcessedFlag() {
+		if(isNull(variables.rollbackProcessedFlag) || !isBoolean(variables.rollbackProcessedFlag)) {
+			variables.rollbackProcessedFlag = false;
 		}
-		return variables.rollbackFlag;
+		return variables.rollbackProcessedFlag;
 	}
 	
 	public array function getPrintTemplates() {

@@ -52,9 +52,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="fileDAO" type="any";
 	
 	public any function downloadFile(required string fileID) {
-		var file = this.getFile(arguments.fileID);
+		var file = this.getFile(arguments.fileID, true);
 		
-		if (!isNull(file) && fileExists(file.getFilePath())) {
+		if (!file.getNewFlag() && fileExists(file.getFilePath())) {
 			// Download file
 			try {
 				getService("hibachiUtilityService").downloadFile(fileName=file.getURLTitle(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);

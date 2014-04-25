@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="HibachiAuditService" hb_auditable="false" {
+component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="HibachiAuditService" hb_defaultOrderProperty="auditDateTime" hb_auditable="false" {
 	
 	// Persistent Properties
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -125,6 +125,17 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
+	
+	public boolean function getAuditRollbackValidFlag() {
+		var validationResult = true;
+		
+		// If necessary delegate validation to related entity
+		if (!isNull(getRelatedEntity())) {
+			validationResult = getRelatedEntity().getAuditRollbackValidFlag();
+		}
+		
+		return validationResult;
+	}
 	
 	// ===============  END: Custom Validation Methods =====================
 	

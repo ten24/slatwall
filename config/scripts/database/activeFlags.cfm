@@ -67,7 +67,13 @@ Notes:
 	UPDATE SwProductType SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
+<!--- Shipping Rate --->
+<cfquery name="local.activeFlag">
+	UPDATE SwShippingMethodRate SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+</cfquery>
+
 <!--- Sku --->
 <cfquery name="local.activeFlag">
 	UPDATE SwSku SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
+
