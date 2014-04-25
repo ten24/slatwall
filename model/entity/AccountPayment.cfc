@@ -110,6 +110,8 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	property name="originalAuthorizationProviderTransactionID" persistent="false";
 	property name="originalChargeProviderTransactionID" persistent="false";
 	property name="originalProviderTransactionID" persistent="false";
+	property name="paymentMethodOptions" persistent="false";
+	property name="appliedAccountPaymentOptions" persistent="false";
 	property name="paymentMethodType" persistent="false";
 	property name="securityCode" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
@@ -213,17 +215,6 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		}
 		
 	}	
-	
-	public array function getAccountPaymentAppliedOptions( ) {
-		if(!structKeyExists(variables, "appliedAccountPaymentsOptions")) {
-			var smartList = getService('settingService').getTypeSmartList();
-			smartList.addInFilter('systemCode','aptCredit,aptCharge');
-			smartList.addSelect('type','name');
-			smartList.addSelect('typeID','value');
-			variables.appliedAccountPaymentsOptions = smartList.getRecords();
-		}
-		return variables.appliedAccountPaymentsOptions;
-	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -361,6 +352,17 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 			variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( accountPaymentID=getAccountPaymentID() );
 		}
 		return variables.originalProviderTransactionID;
+	}
+	
+	public array function getAccountPaymentAppliedOptions( ) {
+		if(!structKeyExists(variables, "appliedAccountPaymentOptions")) {
+			var smartList = getService('settingService').getTypeSmartList();
+			smartList.addInFilter('systemCode','aptCredit,aptCharge');
+			smartList.addSelect('type','name');
+			smartList.addSelect('typeID','value');
+			variables.appliedAccountPaymentOptions = smartList.getRecords();
+		}
+		return variables.appliedAccountPaymentOptions;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
