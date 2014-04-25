@@ -290,6 +290,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice) {
+		// Make sure that the rate is active
+		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
+			return false;
+		}
+		
 		// Make sure that the address is in the address zone
 		if(!isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddress, arguments.shippingMethodRate.getAddressZone())) {
 			return false;

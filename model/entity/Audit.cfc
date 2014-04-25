@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="HibachiAuditService" hb_auditable="false" {
+component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="HibachiAuditService" hb_defaultOrderProperty="auditDateTime" hb_auditable="false" {
 	
 	// Persistent Properties
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
