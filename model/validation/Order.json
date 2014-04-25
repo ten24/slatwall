@@ -8,7 +8,8 @@
 												{"contexts":"cancelOrder,closeOrder","inList":"ostNew,ostProcessing,ostOnHold"},
 												{"contexts":"createReturn","inList":"ostNew,ostProcessing,ostOnHold,ostClosed"},
 												{"contexts":"takeOffHold","inList":"ostOnHold"},
-												{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"}
+												{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"},
+												{"contexts":"auditRollback","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold,ostCanceled"}
 		],
 		"quantityDelivered":				[
 												{"contexts":"cancelOrder","maxValue":0},

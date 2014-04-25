@@ -126,6 +126,17 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 
 	// =============== START: Custom Validation Methods ====================
 	
+	public boolean function getAuditRollbackValidFlag() {
+		validationResult = super.getAuditRollbackValidFlag();
+		
+		// If necessary delegate validation to related entity
+		if (validationResult && !isNull(getRelatedEntity())) {
+			validationResult = getRelatedEntity().getAuditRollbackValidFlag();
+		}
+		
+		return validationResult;
+	}
+	
 	// ===============  END: Custom Validation Methods =====================
 	
 	// =============== START: Custom Formatting Methods ====================

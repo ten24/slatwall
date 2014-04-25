@@ -241,6 +241,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return true;
 	}
 	
+	public boolean function getAuditRollbackValidFlag() {
+		return !getService("hibachiValidationService").validate(object=this, context="auditRollback", setErrors=false).hasErrors();
+	}
+	
 	// @hint public method to determine if this entity is audited
 	public any function getAuditableFlag() {
 		var metaData = getThisMetaData();
