@@ -87,7 +87,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getEventRegistrationByOrderItem(required orderItem) {
 		var smartList = this.getEventRegistrationSmartList();
-		smartlist.addFilter("orderItem",arguments.orderItem);
+		smartlist.addFilter("orderItem.orderItemID",arguments.orderItem);
 		if(smartlist.getRecordsCount() > 0) {
 			return smartlist.getRecords()[1].getOrderItem();
 		} else {
