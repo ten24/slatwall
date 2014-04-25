@@ -165,10 +165,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			
 			if(!isNull(getOrder().getAccount()) && len(getOrder().getAccount().setting('accountEligiblePaymentTerms'))) {
 				paymentTermSmartList.addInFilter("paymentTermID", getOrder().getAccount().setting('accountEligiblePaymentTerms'));
-				var paymentTermsArray = paymentTermSmartList.getRecords();
 			} 
 			if(!isNull(getOrder().getAccount()) && !len(getOrder().getAccount().setting('accountEligiblePaymentTerms'))) {
 				var paymentTermsArray = [];
+			} else {
+				var paymentTermsArray = paymentTermSmartList.getRecords();
 			}
 				
 			for (var paymentTerm in paymentTermsArray) {
