@@ -621,9 +621,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public void function setCreditCardNumber(required string creditCardNumber) {
 		if(len(arguments.creditCardNumber)) {
-			variables.creditCardNumber = arguments.creditCardNumber;
-			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
-			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
+			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');	
+			setCreditCardLastFour( right(variables.creditCardNumber, 4) );
+			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(variables.creditCardNumber) );
 		} else {
 			structDelete(variables, "creditCardNumber");
 			setCreditCardLastFour(javaCast("null", ""));
