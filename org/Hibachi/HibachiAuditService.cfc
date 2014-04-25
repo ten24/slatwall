@@ -232,7 +232,7 @@ component extends="HibachiService" accessors="true" {
 				}
 				
 			// Audit type is rollback
-			} else if (arguments.entity.getRollbackFlag()) {
+			} else if (arguments.entity.getRollbackProcessedFlag()) {
 				auditType = "rollback";
 				
 			// Audit type is update
@@ -501,7 +501,7 @@ component extends="HibachiService" accessors="true" {
 		}
 		
 		// Save new version of entity with aggregated rollback changes
-		relatedEntity.setRollbackFlag(true);
+		relatedEntity.setRollbackProcessedFlag(true);
 		getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod("save#arguments.audit.getBaseObject()#", {1=relatedEntity,2=rollbackData});
 		
 		return arguments.audit;
