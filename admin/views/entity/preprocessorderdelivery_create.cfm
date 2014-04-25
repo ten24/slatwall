@@ -75,8 +75,18 @@ Notes:
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
 				</cfif>
+				<!---<cfdump var=#rc.processObject.getOrder().getOrderPayments().getPaymentMethodType()# top=3 abort=true />--->
+				<cfset orderPayments = #rc.processObject.getOrder().getOrderPayments()# />
+				<cfset foundCredit = false />
+				<cfloop array='#orderPayments#' index="payment">
+					<cfif payment.getPaymentMethodType() eq 'creditCard'>
+						<cfset foundCredit = true />
+						<cfbreak>
+					</cfif>
+				</cfloop>
 				
-				<cfif rc.processObject.getCapturableAmount() gt 0>
+				<!---<cfif rc.processObject.getCapturableAmount() gt 0 AND rc.processObject.getOrder().getOrderPayments().getPaymentMethodType() eq 'creditCard'>--->
+				<cfif rc.processObject.getCapturableAmount() gt 0 AND foundCredit>
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
 				</cfif>
