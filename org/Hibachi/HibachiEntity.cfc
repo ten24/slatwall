@@ -1,7 +1,7 @@
 component output="false" accessors="true" persistent="false" extends="HibachiTransient" {
 
 	property name="newFlag" type="boolean" persistent="false";
-	property name="rollbackFlag" type="boolean" persistent="false";
+	property name="rollbackProcessedFlag" type="boolean" persistent="false";
 	property name="printTemplates" type="struct" persistent="false";
 	property name="emailTemplates" type="struct" persistent="false";
 	property name="simpleRepresentation" type="string" persistent="false";
@@ -638,11 +638,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return false;
 	}
 	
-	public boolean function getRollbackFlag() {
-		if(isNull(variables.rollbackFlag) || !isBoolean(variables.rollbackFlag)) {
-			variables.rollbackFlag = false;
+	public boolean function getRollbackProcessedFlag() {
+		if(isNull(variables.rollbackProcessedFlag) || !isBoolean(variables.rollbackProcessedFlag)) {
+			variables.rollbackProcessedFlag = false;
 		}
-		return variables.rollbackFlag;
+		return variables.rollbackProcessedFlag;
 	}
 	
 	public array function getPrintTemplates() {
