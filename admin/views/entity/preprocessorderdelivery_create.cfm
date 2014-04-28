@@ -75,7 +75,8 @@ Notes:
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
 				</cfif>
-				<!---<cfdump var=#rc.processObject.getOrder().getOrderPayments().getPaymentMethodType()# top=3 abort=true />--->
+				
+				<!---Loop through order payments to see if we paid with a credit card--->
 				<cfset orderPayments = #rc.processObject.getOrder().getOrderPayments()# />
 				<cfset foundCredit = false />
 				<cfloop array='#orderPayments#' index="payment">
