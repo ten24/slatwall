@@ -560,36 +560,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			comment = getCommentService().saveComment(comment, arguments.data);
 		}
 		
-		// Loop over all the orderItems and set them to 0
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-			arguments.order.getOrderItems()[i].setQuantity(0);
-			
-			// Remove any promotionsApplied
-			for(var p=arrayLen(arguments.order.getOrderItems()[i].getAppliedPromotions()); p>=1; p--) {
-				arguments.order.getOrderItems()[i].getAppliedPromotions()[p].removeOrderItem();
-			}
-			
-			// Remove any taxApplied
-			for(var t=arrayLen(arguments.order.getOrderItems()[i].getAppliedTaxes()); t>=1; t--) {
-				arguments.order.getOrderItems()[i].getAppliedTaxes()[t].removeOrderItem();
-			}
-		}
-		
-		// Loop over all the fulfillments and remove any fulfillmentCharges, and promotions applied
-		for(var i=1; i<=arrayLen(arguments.order.getOrderFulfillments()); i++) {
-			arguments.order.getOrderFulfillments()[i].setFulfillmentCharge(0);
-			// Remove over any promotionsApplied
-			for(var p=arrayLen(arguments.order.getOrderFulfillments()[i].getAppliedPromotions()); p>=1; p--) {
-				arguments.order.getOrderFulfillments()[i].getAppliedPromotions()[p].removeOrderFulfillment();
-			}
-		}
-		
-		// Loop over all of the order discounts and remove them
-		for(var p=arrayLen(arguments.order.getAppliedPromotions()); p>=1; p--) {
-			arguments.order.getAppliedPromotions()[p].removeOrder();
-		}
-		
-		// Loop over all the payments and credit for any charges, and set paymentAmount to 0
+		// Loop over all the payments and credit for any charges
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 			
 			if(orderPayment.getStatusCode() eq "opstActive") {
@@ -601,9 +572,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					};
 					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 				}
-				
-				// Set payment amount to 0
-				orderPayment.setAmount(0);
 			}
 		}
 		
