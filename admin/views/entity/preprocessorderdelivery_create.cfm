@@ -86,7 +86,6 @@ Notes:
 					</cfif>
 				</cfloop>
 				
-				<!---<cfif rc.processObject.getCapturableAmount() gt 0 AND rc.processObject.getOrder().getOrderPayments().getPaymentMethodType() eq 'creditCard'>--->
 				<cfif rc.processObject.getCapturableAmount() gt 0 AND foundCredit>
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
