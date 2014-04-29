@@ -68,7 +68,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		getHibachiDAO().flushORMSession();
 		
 		// If the current order is not new, and has an account, and  orderitems array length is greater than 1
-		if( NOT getHibachiScope().getSession().getOrder().getNewFlag() && !isNull(getHibachiScope().getSession().getOrder().getAccount()) && arrayLen(getHibachiScope().getSession().getOrder().getOrderItems())){
+		if( !getHibachiScope().getSession().getOrder().getNewFlag() && !isNull(getHibachiScope().getSession().getOrder().getAccount()) && arrayLen(getHibachiScope().getSession().getOrder().getOrderItems())){
 			getService('orderService').processOrder( getHibachiScope().getCart(), {}, 'updateOrderAmounts');	
 		}
 		
