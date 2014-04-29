@@ -92,6 +92,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		// order params
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_PAYMENTACTION", value="SALE");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#orderPayment.getAmount()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_CURRENCYCODE", value="#orderPayment.getCurrencyCode()#");
 		httpRequest.addParam(type="formfield", name="PAYERID", value="#listLast(orderPayment.getProviderToken(), "~")#");
 		httpRequest.addParam(type="formfield", name="token", value="#listFirst(orderPayment.getProviderToken(), "~")#");
 		
@@ -127,7 +128,15 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	
 	public struct function getInitiatePaymentData( required any paymentMethod, required any order ) {
 		var responseData = {};
-		var returnURL = paymentMethod.getIntegration().setting('externalPaymentReturnURL') & "?slatAction=paypalexpress:main.processResponse";
+		var returnURL = paymentMethod.getIntegration().setting('externalPaymentReturnURL');
+		
+		if(findNoCase("?", returnURL)) {
+			var returnURL &= "&slatAction=paypalexpress:main.processResponse";	
+		} else {
+			var returnURL &= "?slatAction=paypalexpress:main.processResponse";
+		}
+		var returnURL &= "&paymentMethodID=#arguments.paymentMethod.getPaymentMethodID()#";
+		
 		
 		var httpRequest = new http();
 		httpRequest.setMethod("POST");
