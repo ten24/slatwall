@@ -67,6 +67,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		// Force persistance
 		getHibachiDAO().flushORMSession();
 		
+		getService('orderService').processOrder( getHibachiScope().getCart(), {}, 'updateOrderAmounts');
+		
 		// Add the CKFinder Permissions
 		session[ "#getApplicationValue('applicationKey')#CKFinderAccess"] = getHibachiScope().authenticateAction("admin:main.ckfinder");
 	}
