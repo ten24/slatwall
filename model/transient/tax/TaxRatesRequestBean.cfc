@@ -46,28 +46,20 @@
 Notes:
 
 */
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
-	
+
+component accessors="true" output="false" extends="Slatwall.model.transient.RequestBean" {
+
+	property name="INFO" type="string" default="";
+
 	public any function init() {
-		return this;
-	}
-	
-	public string function getIntegrationTypes() {
-		return "tax";
-	}
-	
-	public string function getDisplayName() {
-		return "Vertex";
-	}
-	
-	public struct function getSettings() {
-		var settings = {
-			accountNo = {fieldType="text"},
-			password = {fieldType="password", encryptValue=true},
-			testingFlag = {fieldType="yesno", defaultValue="1"}
-		};
+		// Set defaults
+		variables.TaxRateItemRequestBeans = [];
 		
-		return settings;
+		return super.init();
+	}
+	
+	public void function addTaxRateItem() {
+		arrayAppend(getTaxRateItemRequestBeans(), new TaxRateItemRequestBean(argumentcollection=arguments));
 	}
 	
 }

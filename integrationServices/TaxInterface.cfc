@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,29 +45,13 @@
 
 Notes:
 
-*/
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+--->
+<cfinterface>
+	<cffunction name="init" access="public" returntype="any">
+	</cffunction>
 	
-	public any function init() {
-		return this;
-	}
-	
-	public string function getIntegrationTypes() {
-		return "tax";
-	}
-	
-	public string function getDisplayName() {
-		return "Vertex";
-	}
-	
-	public struct function getSettings() {
-		var settings = {
-			accountNo = {fieldType="text"},
-			password = {fieldType="password", encryptValue=true},
-			testingFlag = {fieldType="yesno", defaultValue="1"}
-		};
-		
-		return settings;
-	}
-	
-}
+	<cffunction name="getTaxRates" access="public" returntype="any">
+		<cfargument name="requestBean" type="any" required="true" />
+	</cffunction>
+
+</cfinterface>

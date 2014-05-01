@@ -46,28 +46,31 @@
 Notes:
 
 */
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+component extends="Slatwall.org.Hibachi.HibachiObject" {
 	
 	public any function init() {
 		return this;
 	}
 	
-	public string function getIntegrationTypes() {
-		return "tax";
+	public string function getTaxRates() {
+		return "";
 	}
 	
-	public string function getDisplayName() {
-		return "Vertex";
+	// @hint helper function to return a Setting
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+		}
+		return super.setting(argumentcollection=arguments);
 	}
 	
-	public struct function getSettings() {
-		var settings = {
-			accountNo = {fieldType="text"},
-			password = {fieldType="password", encryptValue=true},
-			testingFlag = {fieldType="yesno", defaultValue="1"}
-		};
-		
-		return settings;
+	// @hint helper function to return the integration entity that this belongs to
+	public any function getIntegration() {
+		return getService("integrationService").getIntegrationByIntegrationPackage(getPackageName());
 	}
 	
+	// @hint helper function to return the packagename of this integration
+	public any function getPackageName() {
+		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	}
 }
