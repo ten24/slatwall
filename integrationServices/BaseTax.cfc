@@ -52,8 +52,8 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return this;
 	}
 	
-	public string function getTaxRates() {
-		return "";
+	public any function getTaxRates() {
+		return getTransient("TaxRatesResponseBean");
 	}
 	
 	// @hint helper function to return a Setting
