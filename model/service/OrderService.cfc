@@ -494,6 +494,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
 			
+		} else if(newOrderPayment.hasErrors()) {
+			arguments.order.addError('addOrderPayment', newOrderPayment.getErrors());
+			
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
 		} else if (!newOrderPayment.hasErrors() && arguments.processObject.getSaveAccountPaymentMethodFlag() && isNull(newOrderPayment.getAccountPaymentMethod())) {
 				
@@ -557,36 +560,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			comment = getCommentService().saveComment(comment, arguments.data);
 		}
 		
-		// Loop over all the orderItems and set them to 0
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-			arguments.order.getOrderItems()[i].setQuantity(0);
-			
-			// Remove any promotionsApplied
-			for(var p=arrayLen(arguments.order.getOrderItems()[i].getAppliedPromotions()); p>=1; p--) {
-				arguments.order.getOrderItems()[i].getAppliedPromotions()[p].removeOrderItem();
-			}
-			
-			// Remove any taxApplied
-			for(var t=arrayLen(arguments.order.getOrderItems()[i].getAppliedTaxes()); t>=1; t--) {
-				arguments.order.getOrderItems()[i].getAppliedTaxes()[t].removeOrderItem();
-			}
-		}
-		
-		// Loop over all the fulfillments and remove any fulfillmentCharges, and promotions applied
-		for(var i=1; i<=arrayLen(arguments.order.getOrderFulfillments()); i++) {
-			arguments.order.getOrderFulfillments()[i].setFulfillmentCharge(0);
-			// Remove over any promotionsApplied
-			for(var p=arrayLen(arguments.order.getOrderFulfillments()[i].getAppliedPromotions()); p>=1; p--) {
-				arguments.order.getOrderFulfillments()[i].getAppliedPromotions()[p].removeOrderFulfillment();
-			}
-		}
-		
-		// Loop over all of the order discounts and remove them
-		for(var p=arrayLen(arguments.order.getAppliedPromotions()); p>=1; p--) {
-			arguments.order.getAppliedPromotions()[p].removeOrder();
-		}
-		
-		// Loop over all the payments and credit for any charges, and set paymentAmount to 0
+		// Loop over all the payments and credit for any charges
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 			
 			if(orderPayment.getStatusCode() eq "opstActive") {
@@ -598,9 +572,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					};
 					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 				}
-				
-				// Set payment amount to 0
-				orderPayment.setAmount(0);
 			}
 		}
 		
@@ -687,26 +658,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			var account = getAccountService().getAccount(processObject.getAccountID());
 		}
-		arguments.order.setAccount(account);
 		
-		// Setup Order Type
-		arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+		if(account.hasErrors()) {
+			arguments.order.addError('create', account.getErrors());
+		} else {
+			arguments.order.setAccount(account);
 		
-		// Setup the Order Origin
-		if( len(arguments.processObject.getOrderOriginID()) ) {
-			arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
-		}
+			// Setup Order Type
+			arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+			
+			// Setup the Order Origin
+			if( len(arguments.processObject.getOrderOriginID()) ) {
+				arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
+			}
+			
+			// Setup the Default Stock Location
+			if( len(arguments.processObject.getDefaultStockLocationID()) ) {
+				arguments.order.setDefaultStockLocation( getSettingService().getLocation(arguments.processObject.getDefaultStockLocationID()) );
+			}
+			
+			// Setup the Currency Code
+			arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			
+			// Save the order
+			arguments.order = this.saveOrder(arguments.order);
 
-		// Setup the Default Stock Location
-		if( len(arguments.processObject.getDefaultStockLocationID()) ) {
-			arguments.order.setDefaultStockLocation( getSettingService().getLocation(arguments.processObject.getDefaultStockLocationID()) );
 		}
 		
-		// Setup the Currency Code
-		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
-		
-		// Save the order
-		arguments.order = this.saveOrder(arguments.order);
 		
 		return arguments.order;
 	}

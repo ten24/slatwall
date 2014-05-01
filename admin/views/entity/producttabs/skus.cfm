@@ -48,7 +48,7 @@ Notes:
 --->
 <cfoutput>
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
-	<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", true) />
+	<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", false) />
 	
 	<cf_HibachiListingDisplay smartList="#local.skusSmartList#"
 							   edit="#rc.edit#"

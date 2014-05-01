@@ -49,6 +49,9 @@
 		
 		public boolean function delete(required any entity){
 			
+			// Add the entity by it's name to the arguments for calling events
+	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
+			
 			// Announce Before Event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
 			
@@ -136,6 +139,9 @@
 	    	if(!isObject(arguments.entity) || !arguments.entity.isPersistent()) {
 	    		throw("The entity being passed to this service is not a persistent entity. READ THIS!!!! -> Make sure that you aren't calling the oMM method with named arguments. Also, make sure to check the spelling of your 'fieldname' attributes.");
 	    	}
+	    	
+	    	// Add the entity by it's name to the arguments for calling events
+	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 	    	
 	    	// Announce Before Event
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);

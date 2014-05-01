@@ -147,8 +147,11 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 				arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.generateToken'), value="generateToken"});
 				arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.authorize'), value="authorize"});
 				arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.authorizeAndCharge'), value="authorizeAndCharge"});
-			} else if (!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "external") {
-				// TODO [issue #1765]: Get external transaction types here
+			} else if (!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "external" && !isNull(getPaymentIntegration())) {
+				var integrationChargeTransactionTypes = getPaymentIntegration().getIntegrationCFC( "payment" ).getSupportedChargeTransactionTypes();
+				for(var i=1; i<=listLen(integrationChargeTransactionTypes); i++) {
+					arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.#listGetAt(integrationChargeTransactionTypes, i)#'), value="#listGetAt(integrationChargeTransactionTypes, i)#"});	
+				}
 			} else {
 				arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.receive'), value="receive"});
 			}
@@ -163,11 +166,15 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 			// If the payment method type isn't null then we can look at the active integrations with those payment method types
 			if(!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "creditCard") {
 				arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.generateToken'), value="generateToken"});
-			} else if (!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "external") {
-				// TODO [issue #1765]: Get external transaction types here
+				arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.credit'), value="credit"});
+			} else if (!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "external" && !isNull(getPaymentIntegration())) {
+				var integrationCreditTransactionTypes = getPaymentIntegration().getIntegrationCFC( "payment" ).getSupportedCreditTransactionTypes();
+				for(var i=1; i<=listLen(integrationCreditTransactionTypes); i++) {
+					arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.#listGetAt(integrationCreditTransactionTypes, i)#'), value="#listGetAt(integrationCreditTransactionTypes, i)#"});	
+				}
+			} else {
+				arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.credit'), value="credit"});	
 			}
-			
-			arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.credit'), value="credit"});
 			
 		}
 		return variables.placeOrderCreditTransactionTypeOptions;

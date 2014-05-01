@@ -57,6 +57,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.unlimited";
 	property name="defaultAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
 	property name="shippingIntegrationMethod" ormtype="string";
+	property name="activeFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
 	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
@@ -207,14 +208,6 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 			arrayDeleteAt(arguments.shippingMethod.getShippingMethodRates(), index);
 		}
 		structDelete(variables, "shippingMethod");
-	}
-	
-	// Shipping Method Options (one-to-many)    
-	public void function addShippingMethodOption(required any shippingMethodOption) {    
-		arguments.shippingMethodOption.setShippingMethodRate( this );    
-	}    
-	public void function removeShippingMethodOption(required any shippingMethodOption) {    
-		arguments.shippingMethodOption.removeShippingMethodRate( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

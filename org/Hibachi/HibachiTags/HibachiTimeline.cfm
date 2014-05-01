@@ -48,7 +48,7 @@ Notes:
 --->
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
-	<cfparam name="attributes.auditTypeList" type="string" default="create,update,delete" />
+	<cfparam name="attributes.auditTypeList" type="string" default="create,update,rollback,delete" />
 	<cfparam name="attributes.baseObjectList" type="string" default="" />
 	<cfparam name="attributes.object" type="any" default="" />
 	<cfparam name="attributes.recordsShow" type="string" default="10" />
@@ -56,26 +56,33 @@ Notes:
 	
 	<cfset thisTag.hibachiAuditService = attributes.hibachiScope.getService('HibachiAuditService') />
 	<cfset thisTag.mode = "" />
-	<cfset thisTag.auditSmartList = "" />
 	<cfset thisTag.auditArray = [] />
 	
+	<!--- AuditSmartList was passed in, so use as is --->
 	<cfif isObject(attributes.auditSmartList)>
 		<cfset thisTag.mode = "auditSmartList" />
-		<cfset thisTag.auditSmartList = attributes.auditSmartList />
-	<cfelseif isObject(attributes.object) >
+		
+	<!--- There is a specific entity, so use that entities auditSmartList --->
+	<cfelseif isObject(attributes.object) && attributes.object.isPersistent()>
 		<cfset thisTag.mode = "object" />
-		<cfset thisTag.auditSmartList = attributes.object.getAuditSmartList() />
+		<cfset attributes.auditSmartList = attributes.object.getAuditSmartList() />
+		
+	<!--- No AuditSmartList was pased in, and no object was passed in so just create a new auditSmartList --->
 	<cfelse>
 		<cfset thisTag.mode = "baseObjectList" />
+		<cfset attributes.auditSmartList = thisTag.hibachiAuditService.getAuditSmartList() />
+		
 		<!--- Determine which base object types to display --->
-		<cfset thisTag.auditSmartList = thisTag.hibachiAuditService.getAuditSmartList() />
 		<cfif listLen(attributes.baseObjectList)>
-			<cfset thisTag.auditSmartList.addInFilter("baseObject", attributes.baseObjectList) />
+			<cfset attributes.auditSmartList.addInFilter("baseObject", attributes.baseObjectList) />
 		</cfif>
+		
+		<!--- Only add the orderBy here, because all other options would already have an orderBy defined --->
+		<cfset attributes.auditSmartList.addOrder("auditDateTime|DESC") />
 	</cfif>
 	
 	<cfif listLen(attributes.auditTypeList)>
-		<cfset thisTag.auditSmartList.addInFilter("auditType", attributes.auditTypeList) />
+		<cfset attributes.auditSmartList.addInFilter("auditType", attributes.auditTypeList) />
 	</cfif>
 	
 	<!---
@@ -84,15 +91,12 @@ Notes:
 		
 	--->
 	
-	
-	<cfset thisTag.auditSmartList.addOrder("auditDateTime|DESC") />
-	
 	<!--- Display page or all --->
 	<cfif isNumeric(attributes.recordsShow) and attributes.recordsShow gt 0>
-		<cfset thisTag.auditSmartList.setPageRecordsShow(attributes.recordsShow) />
-		<cfset thisTag.auditArray = thisTag.auditSmartList.getPageRecords() />
+		<cfset attributes.auditSmartList.setPageRecordsShow(attributes.recordsShow) />
+		<cfset thisTag.auditArray = attributes.auditSmartList.getPageRecords() />
 	<cfelse>
-		<cfset thisTag.auditArray = thisTag.auditSmartList.getRecords() />
+		<cfset thisTag.auditArray = attributes.auditSmartList.getRecords() />
 	</cfif>
 	
 	<cfset thisTag.columnCount = 5 />
@@ -153,21 +157,20 @@ Notes:
 						</cfif>
 						
 						<tr>
-							<!--- TODO: Change to just time --->
 							<td style="white-space:nowrap;width:1%;"><cfif showTime>#currentAudit.getFormattedValue("auditDateTime", "time")# - </cfif>
 								#currentAudit.getSessionAccountFullName()#
 							</td>
 							<td class="primary">
-								<cfif thisTag.mode neq 'object'>#currentAudit.getFormattedValue('auditType')# #currentAudit.getBaseObject()# - 
-								<cfif listFindNoCase("create,update", currentAudit.getAuditType())>
+								#currentAudit.getFormattedValue('auditType')#<cfif thisTag.mode neq 'object'> #currentAudit.getBaseObject()# - 
+								<cfif listFindNoCase("create,update,rollback", currentAudit.getAuditType())>
 									<cf_HibachiActionCaller action="admin:entity.detail#currentAudit.getBaseObject()#" queryString="#currentAudit.getBaseObject()#ID=#currentAudit.getBaseID()#" text="#currentAudit.getTitle()#" />
 								<cfelse>
 									#currentAudit.getTitle()#
 								</cfif>
-								<br />
 								</cfif>
-								<cfif currentAudit.getAuditType() eq 'update'>
-									<em>#attributes.hibachiScope.rbKey("entity.audit.changeDetails.propertyChanged")#: 
+								<br />
+								<cfif listFindNoCase('update,rollback,create', currentAudit.getAuditType())>
+									<em>#attributes.hibachiScope.rbKey("entity.audit.changeDetails.propertyChanged.#currentAudit.getAuditType()#")#: 
 									<cfset data = deserializeJSON(currentAudit.getData()) />
 									<cfset isFirstFlag = true />
 									<cfloop collection="#data.newPropertyData#" item="property"><cfif not isFirstFlag>,</cfif> #attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#<cfset isFirstFlag = false /></cfloop></em>
