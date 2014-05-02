@@ -49,6 +49,15 @@ Notes:
 
 component output="false" accessors="true" extends="Slatwall.model.transient.RequestBean" {
 
+	// Bill To Address Properties
+	property name="taxStreetAddress" type="string";  
+	property name="taxStreet2Address" type="string";
+	property name="taxLocality" type="string";
+	property name="taxCity" type="string";   
+	property name="taxStateCode" type="string";   
+	property name="taxPostalCode" type="string";   
+	property name="taxCountryCode" type="string";  
+	
 	// Price and Quantity Properies
 	property name="price" type="string" default="";
 	property name="quantity" type="string" default="";
