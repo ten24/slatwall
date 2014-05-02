@@ -76,12 +76,21 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public array function getTaxAddressLookupOptions() {
-		variables.taxAddressLookupOptions = [{name='shipping,billing', value='shipping,billing'},
+		variables.taxAddressLookupOptions = [
+			{name='shipping,billing', value='shipping,billing'},
 			{name='billing,shipping', value='billing,shipping'},
 			{name='shipping', value='shipping'},
 			{name='billing', value='billing'}
 		];
 		return variables.taxAddressLookupOptions;
+	}
+	
+		
+	public any function getTaxAddressLookup() {
+		if(isNull(variables.taxAddressLookup)) {
+			variables.taxAddressLookup = 'shipping,billing';
+		}
+		return variables.taxAddressLookup;
 	}
 	
 	public boolean function getTaxCategoryRatesDeletableFlag() {
