@@ -76,13 +76,11 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public array function getTaxAddressLookupOptions() {
-		if(!structKeyExists(variables, "TaxAddressLookupOptions")) {
-			variables.taxAddressLookupOptions = [{name='shipping,billing', value='shipping,billing'},
-				{name='billing,shipping', value='billing,shipping'},
-				{name='shipping', value='shipping'},
-				{name='billing', value='billing'}
-			];
-		}
+		variables.taxAddressLookupOptions = [{name='shipping,billing', value='shipping,billing'},
+			{name='billing,shipping', value='billing,shipping'},
+			{name='shipping', value='shipping'},
+			{name='billing', value='billing'}
+		];
 		return variables.taxAddressLookupOptions;
 	}
 	
