@@ -77,6 +77,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(isObject(taxAddress)) {
 						// Loop over our rates to see if any of the rates use an integration
 						
+						
 						// Loop over our integrations and call the integrationAPI's getTaxRates() function that takes in a requestBean and passesBack a response Bean
 						
 						// Now when we loop over this, we will be able to check again if the rate used and integration, and if so use the rate that came back from the integration, instead of the manual logic

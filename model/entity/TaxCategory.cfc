@@ -52,7 +52,7 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	property name="taxCategoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="taxCategoryName" ormtype="string";
-	property name="taxAddressLookup" ormtype="string" hb_formFieldType="select";
+	property name="taxAddressLookup" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	
 	// Related Object Properties (one-to-many)
 	property name="taxCategoryRates" singularname="taxCategoryRate" cfc="TaxCategoryRate" type="array" fieldtype="one-to-many" fkcolumn="taxCategoryID" inverse="true" cascade="all-delete-orphan";
@@ -77,10 +77,10 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	
 	public array function getTaxAddressLookupOptions() {
 		variables.taxAddressLookupOptions = [
-			{name='shipping,billing', value='shipping,billing'},
-			{name='billing,shipping', value='billing,shipping'},
-			{name='shipping', value='shipping'},
-			{name='billing', value='billing'}
+			{name=rbKey('entity.taxCategory.taxAddressLookup.shipping_billing'), value='shipping,billing'},
+			{name=rbKey('entity.taxCategory.taxAddressLookup.billing_shipping'), value='billing,shipping'},
+			{name=rbKey('entity.taxCategory.taxAddressLookup.shipping'), value='shipping'},
+			{name=rbKey('entity.taxCategory.taxAddressLookup.billing'), value='billing'}
 		];
 		return variables.taxAddressLookupOptions;
 	}
