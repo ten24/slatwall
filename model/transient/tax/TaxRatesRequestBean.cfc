@@ -48,8 +48,31 @@ Notes:
 */
 
 component accessors="true" output="false" extends="Slatwall.model.transient.RequestBean" {
+	
+	// Ship To Address Properties
+	property name="shipToStreetAddress" type="string" default="";
+	property name="shipToStreet2Address" type="string" default="";
+	property name="shipToLocality" type="string" default="";
+	property name="shipToCity" type="string" default="";
+	property name="shipToStateCode" type="string" default="";
+	property name="shipToPostalCode" type="string" default="";
+	property name="shipToCountryCode" type="string" default="";
+	
+	// Bill To Address Properties
+	property name="billingStreetAddress" type="string";  
+	property name="billingStreet2Address" type="string";
+	property name="billingLocality" type="string";
+	property name="billingCity" type="string";   
+	property name="billingStateCode" type="string";   
+	property name="billingPostalCode" type="string";   
+	property name="billingCountryCode" type="string";  
 
-	property name="taxAddress" type="string" default="";
+	// Price and Quantity Properies
+	property name="price" type="string" default="";
+	property name="quantity" type="string" default="";
+	property name="extendedPrice" type="string" default="";
+	
+	//TaxItemRequestBean 
 	property name="taxItemRequestBeans" type="array";
 	
 	public any function init() {
@@ -63,20 +86,4 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		arrayAppend(getTaxRateItemRequestBeans(), new TaxRateItemRequestBean(argumentcollection=arguments));
 	}
 	
-	public void function populateTaxAddress(required any address) {
-		if(!isNull(arguments.address.getTaxAddress())) {
-			setShipToName(arguments.address.getTaxAdress());
-		}
-	}
-	
-	public numeric function getTotalValue() {
-		var totalValue = 0;
-		for(var i=1; i<=arrayLen(getTaxItemRequestBeans()); i++) {
-			if(isNumeric(getTaxItemRequestBeans()[i].getValue())) {
-				totalValue = precisionEvaluate(totalValue + (round(getTaxItemRequestBeans()[i].getValue() * getTaxItemRequestBeans()[i].getQuantity() * 100) / 100));
-			}
-		}
-		return totalValue;
-	}
-
 }
