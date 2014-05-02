@@ -59,18 +59,13 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="shipToCountryCode" type="string" default="";
 	
 	// Bill To Address Properties
-	property name="billingStreetAddress" type="string";  
-	property name="billingStreet2Address" type="string";
-	property name="billingLocality" type="string";
-	property name="billingCity" type="string";   
-	property name="billingStateCode" type="string";   
-	property name="billingPostalCode" type="string";   
-	property name="billingCountryCode" type="string";  
-
-	// Price and Quantity Properies
-	property name="price" type="string" default="";
-	property name="quantity" type="string" default="";
-	property name="extendedPrice" type="string" default="";
+	property name="billToStreetAddress" type="string";  
+	property name="billToStreet2Address" type="string";
+	property name="billToLocality" type="string";
+	property name="billToCity" type="string";   
+	property name="billToStateCode" type="string";   
+	property name="billToPostalCode" type="string";   
+	property name="billToCountryCode" type="string";  
 	
 	//TaxItemRequestBean 
 	property name="taxItemRequestBeans" type="array";
