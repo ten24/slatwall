@@ -67,6 +67,11 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		// Force persistance
 		getHibachiDAO().flushORMSession();
 		
+		// If the current order is not new, and has an account, and  orderitems array length is greater than 1
+		if( !getHibachiScope().getSession().getOrder().getNewFlag() && !isNull(getHibachiScope().getSession().getOrder().getAccount()) && arrayLen(getHibachiScope().getSession().getOrder().getOrderItems())){
+			getService('orderService').processOrder( getHibachiScope().getCart(), {}, 'updateOrderAmounts');	
+		}
+		
 		// Add the CKFinder Permissions
 		session[ "#getApplicationValue('applicationKey')#CKFinderAccess"] = getHibachiScope().authenticateAction("admin:main.ckfinder");
 	}
