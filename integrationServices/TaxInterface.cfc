@@ -47,6 +47,7 @@ Notes:
 
 --->
 <cfinterface>
+	
 	<cffunction name="init" access="public" returntype="any">
 	</cffunction>
 	

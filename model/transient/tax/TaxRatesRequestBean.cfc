@@ -48,9 +48,28 @@ Notes:
 */
 
 component accessors="true" output="false" extends="Slatwall.model.transient.RequestBean" {
-
-	property name="INFO" type="string" default="";
-
+	
+	// Ship To Address Properties
+	property name="shipToStreetAddress" type="string" default="";
+	property name="shipToStreet2Address" type="string" default="";
+	property name="shipToLocality" type="string" default="";
+	property name="shipToCity" type="string" default="";
+	property name="shipToStateCode" type="string" default="";
+	property name="shipToPostalCode" type="string" default="";
+	property name="shipToCountryCode" type="string" default="";
+	
+	// Bill To Address Properties
+	property name="billToStreetAddress" type="string";  
+	property name="billToStreet2Address" type="string";
+	property name="billToLocality" type="string";
+	property name="billToCity" type="string";   
+	property name="billToStateCode" type="string";   
+	property name="billToPostalCode" type="string";   
+	property name="billToCountryCode" type="string";  
+	
+	//TaxItemRequestBean 
+	property name="taxItemRequestBeans" type="array";
+	
 	public any function init() {
 		// Set defaults
 		variables.TaxRateItemRequestBeans = [];
