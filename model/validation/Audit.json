@@ -1,6 +1,6 @@
 {
 	"properties":{
-		"auditType":						[{"contexts":"save","inList":"create,update,delete,rollback,merge,login,logout"},{"contexts":"rollback","inList":"create,update,rollback"}],
-		"auditID":							[{"contexts":"delete","maxLength":0}]
+		"auditType":						[{"contexts":"save","inList":"create,update,delete,rollback,archive,login,logout"},{"contexts":"rollback","inList":"create,update,rollback,archive"}],
+		"archiveProcessedFlag":				[{"contexts":"delete","eq":true}]
 	}
 }
