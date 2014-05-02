@@ -52,7 +52,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return this;
 	}
 	
-	public any function getTaxRates() {
+	public any function getTaxRates(required any requestBean) {
 		return getTransient("TaxRatesResponseBean");
 	}
 	
