@@ -52,7 +52,7 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	property name="taxCategoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="taxCategoryName" ormtype="string";
-	property name="taxAddressLookup" ormtype="string";
+	property name="taxAddressLookup" ormtype="string" hb_formFieldType="select";
 	
 	// Related Object Properties (one-to-many)
 	property name="taxCategoryRates" singularname="taxCategoryRate" cfc="TaxCategoryRate" type="array" fieldtype="one-to-many" fkcolumn="taxCategoryID" inverse="true" cascade="all-delete-orphan";
