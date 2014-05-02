@@ -49,7 +49,7 @@ Notes:
 
 component output="false" accessors="true" extends="Slatwall.model.transient.RequestBean" {
 
-	// Bill To Address Properties
+	// Tax Address Properties
 	property name="taxStreetAddress" type="string";  
 	property name="taxStreet2Address" type="string";
 	property name="taxLocality" type="string";
