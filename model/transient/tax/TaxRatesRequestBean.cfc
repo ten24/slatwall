@@ -49,8 +49,9 @@ Notes:
 
 component accessors="true" output="false" extends="Slatwall.model.transient.RequestBean" {
 
-	property name="INFO" type="string" default="";
-
+	property name="taxAddress" type="string" default="";
+	property name="taxItemRequestBeans" type="array";
+	
 	public any function init() {
 		// Set defaults
 		variables.TaxRateItemRequestBeans = [];
@@ -62,4 +63,20 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		arrayAppend(getTaxRateItemRequestBeans(), new TaxRateItemRequestBean(argumentcollection=arguments));
 	}
 	
+	public void function populateTaxAddress(required any address) {
+		if(!isNull(arguments.address.getTaxAddress())) {
+			setShipToName(arguments.address.getTaxAdress());
+		}
+	}
+	
+	public numeric function getTotalValue() {
+		var totalValue = 0;
+		for(var i=1; i<=arrayLen(getTaxItemRequestBeans()); i++) {
+			if(isNumeric(getTaxItemRequestBeans()[i].getValue())) {
+				totalValue = precisionEvaluate(totalValue + (round(getTaxItemRequestBeans()[i].getValue() * getTaxItemRequestBeans()[i].getQuantity() * 100) / 100));
+			}
+		}
+		return totalValue;
+	}
+
 }
