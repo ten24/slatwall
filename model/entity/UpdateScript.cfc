@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallUpdateScript" table="SwUpdateScript" persistent="true" accessors="true" output="true" extends="HibachiEntity" hb_serviceName="updateService" {
+component entityname="SlatwallUpdateScript" table="SwUpdateScript" persistent="true" accessors="true" output="true" extends="HibachiEntity" hb_serviceName="updateService" hb_auditable="false" {
 	
 	// Persistent Properties
 	property name="updateScriptID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
