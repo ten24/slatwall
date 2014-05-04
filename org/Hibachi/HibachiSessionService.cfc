@@ -82,6 +82,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiEventService().announceEvent("onSessionAccountLogin");
 	}
 	
+	public void function loginAccountInvalid(struct data) {
+		arguments.auditType="loginInvalid";
+		getHibachiAuditService().logAccountActivity(argumentCollection=arguments);
+	}
+	
 	public void function logoutAccount() {
 		var currentSession = getHibachiScope().getSession();
 		
