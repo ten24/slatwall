@@ -115,7 +115,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	}
 	
 	public function getRelatedEntity() {
-		if (!structKeyExists(variables, "relatedEntity")) {
+		if (!structKeyExists(variables, "relatedEntity") && !isNull(getBaseObject()) && len(getBaseObject())) {
 			variables.relatedEntity = getService("HibachiAuditService").getRelatedEntityForAudit(this);
 		}
 		

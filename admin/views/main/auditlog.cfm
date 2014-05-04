@@ -1,0 +1,1 @@
+<cf_HibachiTimeline auditTypeList="create,update,rollback,delete,archive,login,loginInvalid,logout" recordsShow="100" />

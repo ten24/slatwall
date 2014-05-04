@@ -161,18 +161,23 @@ Notes:
 								#currentAudit.getSessionAccountFullName()#
 							</td>
 							<td class="primary">
-								#currentAudit.getFormattedValue('auditType')#<cfif thisTag.mode neq 'object'> #currentAudit.getBaseObject()# - </cfif>
-								<cfif listFindNoCase("create,update,rollback,archive", currentAudit.getAuditType())>
-									<cf_HibachiActionCaller action="admin:entity.detail#currentAudit.getBaseObject()#" queryString="#currentAudit.getBaseObject()#ID=#currentAudit.getBaseID()#" text="#currentAudit.getTitle()#" />
+								<cfif not listFindNoCase("login,loginInvalid,logout", currentAudit.getAuditType())>
+									#currentAudit.getFormattedValue('auditType')#<cfif thisTag.mode neq 'object'> #currentAudit.getBaseObject()# - </cfif>
+									<cfif listFindNoCase("create,update,rollback,archive", currentAudit.getAuditType())>
+										<cf_HibachiActionCaller action="admin:entity.detail#currentAudit.getBaseObject()#" queryString="#currentAudit.getBaseObject()#ID=#currentAudit.getBaseID()#" text="#currentAudit.getTitle()#" />
+									<cfelse>
+										#currentAudit.getTitle()#
+									</cfif>
+									<br />
+									<cfif listFindNoCase('update,rollback,create,archive', currentAudit.getAuditType())>
+										<em>#attributes.hibachiScope.rbKey("entity.audit.changeDetails.propertyChanged.#currentAudit.getAuditType()#")#: 
+										<cfset data = deserializeJSON(currentAudit.getData()) />
+										<cfset isFirstFlag = true />
+										<cfloop collection="#data.newPropertyData#" item="property"><cfif not isFirstFlag>,</cfif> #attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#<cfset isFirstFlag = false /></cfloop></em>
+									</cfif>
 								<cfelse>
-									#currentAudit.getTitle()#
-								</cfif>
-								<br />
-								<cfif listFindNoCase('update,rollback,create,archive', currentAudit.getAuditType())>
-									<em>#attributes.hibachiScope.rbKey("entity.audit.changeDetails.propertyChanged.#currentAudit.getAuditType()#")#: 
-									<cfset data = deserializeJSON(currentAudit.getData()) />
-									<cfset isFirstFlag = true />
-									<cfloop collection="#data.newPropertyData#" item="property"><cfif not isFirstFlag>,</cfif> #attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#<cfset isFirstFlag = false /></cfloop></em>
+									#currentAudit.getFormattedValue('auditType')#<br/>
+									#currentAudit.getSessionAccountEmailAddress()# (#currentAudit.getSessionIPAddress()#)
 								</cfif>
 							</td>
 							<td class="admin admin1">
