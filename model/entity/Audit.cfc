@@ -135,7 +135,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// =============== START: Custom Validation Methods ====================
 	
 	public boolean function getAuditRollbackValidFlag() {
-		var validationResult = true;
+		var validationResult = !getService("hibachiValidationService").validate(object=this, context="rollback", setErrors=false).hasErrors();
 		
 		// If necessary delegate validation to related entity
 		if (!isNull(getRelatedEntity())) {
