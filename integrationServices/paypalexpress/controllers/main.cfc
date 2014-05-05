@@ -112,6 +112,10 @@ component accessors="true" output="false" {
 				paymentData.newOrderPayment.order.orderID = rc.$.slatwall.cart().getOrderID();
 				paymentData.newOrderPayment.orderPaymentType.typeID = '8aac86674079189801407a81b456000a';
 				
+				// Populate Method - Before
+				// paymentData.newOrderPayment.providerToken = responseData.token & '~' & responseData.payerID;
+				
+				// Manual Set Method - After
 				var addOrderPaymentProcessObject = rc.$.slatwall.cart().getProcessObject('addOrderPayment');
 				addOrderPaymentProcessObject.getNewOrderPayment().setProviderToken(responseData.token & '~' & responseData.payerID);
 				

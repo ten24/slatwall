@@ -158,6 +158,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
+			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10},
+			globalAuditCommitMode = {fieldType="select", defaultValue="thread", valueOptions=[{name="separate thread",value="thread"}, {name="same request",value="sameRequest"}]},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
 			globalEncryptionEncoding = {fieldType="select",defaultValue="Base64"},
 			globalEncryptionKeyLocation = {fieldType="text"},

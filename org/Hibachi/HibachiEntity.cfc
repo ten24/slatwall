@@ -249,7 +249,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint public method to determine if this entity is audited
 	public any function getAuditableFlag() {
 		var metaData = getThisMetaData();
-		if(isPersistent() && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
+		if(isPersistent() && (setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
 			return true;
 		}
 		return false;
@@ -264,6 +264,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 		
 		return variables.auditSmartList;
+	}
+	
+	public void function clearAuditSmartList() {
+		if (structKeyExists(variables, "auditSmartList")) {
+			structDelete(variables, "auditSmartList");
+		}
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity

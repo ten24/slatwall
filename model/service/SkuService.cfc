@@ -551,6 +551,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="alternateSkuCodes.alternateSkuCode", weight=1);
+		
+		// Must be set to distinct so that we can search alternate sku codes
+		smartList.setSelectDistinctFlag( true );
 				
 		return smartList;
 	}
