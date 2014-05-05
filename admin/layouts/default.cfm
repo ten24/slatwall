@@ -49,7 +49,7 @@ Notes:
 
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en" ng-app="ng-slatwall">
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>#rc.pageTitle# &##124; Slatwall</title>
@@ -93,7 +93,7 @@ Notes:
 			.navbar .brand {margin-left:0px;}
 		</style>
 	</head>
-	<body>
+	<body ng-app="slatwallngapp">
 		<div class="navbar navbar-fixed-top navbar-inverse">
 			<div class="navbar-inner">
 				<div class="container-fluid">
