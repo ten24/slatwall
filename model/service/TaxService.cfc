@@ -77,18 +77,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					if(isObject(taxAddress)) {
 						
-						var taxIntegrationList = [];
-						// Loop over our rates to see if any of the rates use an integration						
-						for(var c=1; m<=arrayLen(taxCategory); c++) {	
-							var taxCategoryRates = taxCategory[c].getTaxCategoryRates();
-							for(var r=1; r<=arrayLen(tacCategoryRates); r++) {
-								// Add any tax integrations to the taxIntegrationsList
-								if(!isNull(taxCategoryRates[r].getTaxIntegration())) {
-									arrayAppend(taxIntegrationList, taxCategoryRates[r].getTaxIntegration());
-								}
+						var taxIntegrationArr = [];
+						// Loop over our rates to see if any of the rates use an integration
+						for(var i=1; i <= arrayLen(taxCategory.getTaxCategoryRates()); i++){
+							if(!isNull(taxCategory.getTaxCategoryRates()[i].getTaxIntegration())){
+								arrayAppend(taxIntegrationArr, taxCategory.getTaxCategoryRates()[i].getTaxIntegration());
 							}
-						}
-									
+						}		
 						
 						
 						// Loop over our integrations and call the integrationAPI's getTaxRates() function that takes in a requestBean and passesBack a response Bean
