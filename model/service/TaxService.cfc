@@ -83,7 +83,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var taxCategoryRates = taxCategory[c].getTaxCategoryRates();
 							for(var r=1; r<=arrayLen(tacCategoryRates); r++) {
 								// Add any tax integrations to the taxIntegrationsList
-								if(!isNull(taxCategoryRates[r].getTaxIntegration()) && !arrayFind(integrations, taxCategoryRates[r].getTaxIntegration())) {
+								if(!isNull(taxCategoryRates[r].getTaxIntegration())) {
 									arrayAppend(taxIntegrationList, taxCategoryRates[r].getTaxIntegration());
 								}
 							}
