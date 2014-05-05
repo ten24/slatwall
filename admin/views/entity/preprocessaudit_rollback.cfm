@@ -49,7 +49,11 @@ Notes:
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfset rc.pageTitle = "#rc.audit.getTitle()#" />
+<cfif not listFindNoCase("login,loginInvalid,logout", rc.audit.getAuditType())>
+	<cfset rc.pageTitle = "#rc.audit.getTitle()#" />
+<cfelse>
+	<cfset rc.pageTitle = rc.audit.getFormattedValue('auditType') />
+</cfif>
 
 <cfoutput>
 	<cfif !isNull(rc.audit.getChangeDetails())>
@@ -93,9 +97,15 @@ Notes:
 			<cf_HibachiPropertyList divclass="span12">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
-				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
-				<cfif !isNull(rc.audit.getChangeDetails())>
-					<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountFullName">
+				<cfif not listFindNoCase("login,loginInvalid,logout", rc.audit.getAuditType())>
+					<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
+					<cfif !isNull(rc.audit.getChangeDetails())>
+						<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+					</cfif>
+				<cfelse>
+					<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountEmailAddress">
+					<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionIPAddress">
 				</cfif>
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
