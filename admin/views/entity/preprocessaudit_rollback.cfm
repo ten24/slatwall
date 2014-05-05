@@ -88,7 +88,7 @@ Notes:
 		</cfsavecontent>
 	</cfif>
 	
-	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">		
+	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#!rc.audit.getAuditRollbackValidFlag()#">		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divclass="span12">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
