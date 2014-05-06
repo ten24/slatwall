@@ -75,13 +75,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getAllSettingMetaData() {
 		var allSettingMetaData = {};
+		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
 		
-		var isl = this.getIntegrationSmartList();
-		isl.addFilter('installedFlag', 1);
-		
-		for(var integration in isl.getRecords()) {
-			for(var settingName in integration.getSettings()) {
-				allSettingMetaData['integration#integration.getIntegrationPackage()##settingName#'] = integration.getSettings()[ settingName ];
+		// Loop over each integration in the integration directory
+		for(var i=1; i<= arrayLen(dirList); i++) {
+			
+			var fileInfo = getFileInfo(dirList[i]);
+			
+			if(fileInfo.type == "directory" && fileExists("#fileInfo.path#/Integration.cfc") ) {
+				var integrationPackage = listLast(dirList[i],"\/");
+				var integrationCFC = createObject("component", "Slatwall.integrationServices.#integrationPackage#.Integration").init();
+				var integrationMeta = getMetaData(integrationCFC);
+				
+				if(structKeyExists(integrationMeta, "Implements") && structKeyExists(integrationMeta.implements, "Slatwall.integrationServices.IntegrationInterface")) {
+					
+					for(var settingName in integrationCFC.getSettings()) {
+						allSettingMetaData['integration#integrationPackage##settingName#'] = integrationCFC.getSettings()[ settingName ];
+					}
+					
+				}
 			}
 		}
 		
