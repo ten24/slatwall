@@ -61,14 +61,11 @@ Notes:
 						
 		<cfif rc.edit>
 			<input type="hidden" name="taxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<input type="hidden" name="taxCategory.getTaxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
+			<input type="hidden" name="taxCategory.TaxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
 			<cfif isObject(rc.integration)>
 				<input type="hidden" name="taxIntegration.integrationID" value="#rc.integration.getIntegrationID()#" />
 			</cfif>
 		</cfif>
-		<input type="hidden" name="taxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-
-		<input type="hidden" name="taxCategory.taxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
 		
 		<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#">
 		<cfset rc.taxCategoryRate.getAddressZoneOptions()[1]["name"] = request.slatwallScope.rbKey('define.all') />
