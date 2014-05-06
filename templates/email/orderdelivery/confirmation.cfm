@@ -179,37 +179,6 @@ Notes:
 						</div>
 					</cfif>
 				</cfloop>
-				<table id="total" style="border-spacing: 0px; border-collapse: collapse; border: 1px solid ##d8d8d8; text-align: left; font-size: 12px; width:200px; float:left;">
-					<thead>
-						<tr>
-							<th colspan="2" style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Totals</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Subtotal</strong></td>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#orderDelivery.order.getFormattedValue('subtotal', 'currency')#</td>
-							</tr>
-							<tr>
-								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Delivery Charges</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#orderDelivery.order.getFormattedValue('fulfillmentTotal', 'currency')#</td>
-						</tr>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Tax</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#orderDelivery.order.getFormattedValue('taxTotal', 'currency')#</td>
-						</tr>
-						<cfif orderDelivery.order.getDiscountTotal()>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Discounts</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px; color:##cc0000;">-#orderDelivery.order.getFormattedValue('discountTotal', 'currency')#</td>
-						</tr>
-						</cfif>
-						<tr>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Total</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#orderDelivery.order.getFormattedValue('total', 'currency')#</td>
-						</tr>
-					</tbody>
-				</table>
 			</div>
 			
 			<br style="clear:both;" />
@@ -224,8 +193,8 @@ Notes:
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#orderPayment.getShippingMethod().getShippingMethodName()#</td>
-                            <td style="border: 1px solid ##d8d8d8; padding:0px 5px; width:100px;">#orderPayment.getTrackingNumber()#</td>
+                            <td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#orderDelivery.getShippingMethod().getShippingMethodName()#</td>
+                            <td style="border: 1px solid ##d8d8d8; padding:0px 5px; width:100px;">#orderDelivery.getTrackingNumber()#</td>
                         </tr>
                     </tbody>
                 </table>
@@ -236,7 +205,10 @@ Notes:
 </cfsavecontent>
 <cfsavecontent variable="emailData.emailBodyText">
 	<cfoutput>
-		Order Number: #orderDelivery.order.getOrderNumber()#
+        Order Delivery Confirmation
+        ---------------------------
+
+        Order Number: #orderDelivery.order.getOrderNumber()#
 		Order Placed: #DateFormat(orderDelivery.order.getOrderOpenDateTime(), "DD/MM/YYYY")# - #TimeFormat(orderDelivery.order.getOrderOpenDateTime(), "short")#
 		Customer: #orderDelivery.order.getAccount().getFirstName()# #orderDelivery.order.getAccount().getLastName()#
 		
@@ -250,13 +222,9 @@ Notes:
 		</cfloop>
 		
 		===========================================================================
-		Subtotal: #orderDelivery.order.getFormattedValue('Subtotal', 'currency')#
-		<cfif orderDelivery.order.getDiscountTotal() GT 0> 
-			Discount: #orderDelivery.order.getFormattedValue('discountTotal', 'currency')#
-		</cfif>
-		Delivery Charges: #orderDelivery.order.getFormattedValue('fulfillmentTotal', 'currency')#
-		Tax: #orderDelivery.order.getFormattedValue('taxTotal', 'currency')#
-		Total: #orderDelivery.order.getFormattedValue('total', 'currency')#
+        Shipping Method : #orderDelivery.getShippingMethod().getShippingMethodName()#
+        Tracking Number : #orderDelivery.getTrackingNumber()#
+
 	</cfoutput>
 </cfsavecontent>
 
