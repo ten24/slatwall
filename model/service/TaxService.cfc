@@ -64,7 +64,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// Get this sku's taxCategory
 				var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
-				
+
 				if(!isNull(taxCategory)) {
 					
 					var taxAddress = "";
@@ -83,6 +83,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arrayAppend(taxIntegrationArr, taxCategoryRate.getTaxIntegration());
 							}
 						}
+						
+						
+						
+						
 
 						// Loop over our integrations and call the integrationAPI's getTaxRates() function that takes in a requestBean and passesBack a response Bean
 						
