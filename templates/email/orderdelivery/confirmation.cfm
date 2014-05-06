@@ -89,23 +89,23 @@ Notes:
 					<tbody>
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Order Number:</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.order.getOrderNumber()#</td>
+							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getOrder().getOrderNumber()#</td>
 						</tr>
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Order Placed:</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #DateFormat(orderDelivery.order.getOrderOpenDateTime(), "DD/MM/YYYY")# - #TimeFormat(orderDelivery.order.getOrderOpenDateTime(), "short")#</td>
+							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #DateFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "DD/MM/YYYY")# - #TimeFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "short")#</td>
 						</tr>
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Customer:</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.order.getAccount().getFirstName()# #orderDelivery.order.getAccount().getLastName()#</td>
+							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getOrder().getAccount().getFirstName()# #orderDelivery.getOrder().getAccount().getLastName()#</td>
 						</tr>
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Email:</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> <a href="mailto:#orderDelivery.order.getAccount().getEmailAddress()#">#orderDelivery.order.getAccount().getEmailAddress()#</a></td>
+							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> <a href="mailto:#orderDelivery.getOrder().getAccount().getEmailAddress()#">#orderDelivery.getOrder().getAccount().getEmailAddress()#</a></td>
 						</tr>
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Phone:</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.order.getAccount().getPhoneNumber()#</td>
+							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #orderDelivery.getOrder().getAccount().getPhoneNumber()#</td>
 						</tr>
 					</tbody>
 				</table>
@@ -126,7 +126,7 @@ Notes:
 						</tr>
 					</thead>
 					<tbody>
-						<cfloop array="#orderDelivery.order.getOrderItems()#" index="local.orderItem">
+						<cfloop array="#orderDelivery.getOrder().getOrderItems()#" index="local.orderItem">
 							<tr>
 								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#local.orderItem.getSku().getSkuCode()#</td>
 								<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#local.orderItem.getSku().getProduct().getTitle()#</td>
@@ -150,7 +150,7 @@ Notes:
 			<br style="clear:both;" />
 	
 			<div id="bottom" style="margin-top: 15px; float: left; clear: both; width: 600px;">
-				<cfloop array="#orderDelivery.order.getOrderFulfillments()#" index="local.orderFulfillment">
+				<cfloop array="#orderDelivery.getOrder().getOrderFulfillments()#" index="local.orderFulfillment">
 					<cfif local.orderFulfillment.getFulfillmentMethodType() EQ "shipping">
 						<cfif not local.orderFulfillment.getAddress().getNewFlag()>
 							<div id="shippingAddress" style="width:190px; margin-right:10px; float:left;">
@@ -208,13 +208,13 @@ Notes:
         Order Delivery Confirmation
         ---------------------------
 
-        Order Number: #orderDelivery.order.getOrderNumber()#
-		Order Placed: #DateFormat(orderDelivery.order.getOrderOpenDateTime(), "DD/MM/YYYY")# - #TimeFormat(orderDelivery.order.getOrderOpenDateTime(), "short")#
-		Customer: #orderDelivery.order.getAccount().getFirstName()# #orderDelivery.order.getAccount().getLastName()#
+        Order Number: #orderDelivery.getOrder().getOrderNumber()#
+		Order Placed: #DateFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "DD/MM/YYYY")# - #TimeFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "short")#
+		Customer: #orderDelivery.getOrder().getAccount().getFirstName()# #orderDelivery.getOrder().getAccount().getLastName()#
 		
 		Items:
 		===========================================================================
-		<cfloop array="#orderDelivery.order.getOrderItems()#" index="orderItem">
+		<cfloop array="#orderDelivery.getOrder().getOrderItems()#" index="orderItem">
 		#orderItem.getSku().getProduct().getTitle()#
 		<cfif len(orderItem.getSku().displayOptions())>#orderItem.getSku().displayOptions()#</cfif>
 		#orderItem.getFormattedValue('price', 'currency')# | #NumberFormat(orderItem.getQuantity())# | #orderItem.getFormattedValue('extendedPrice', 'currency')# 
