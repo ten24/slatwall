@@ -47,6 +47,8 @@ Notes:
 
 --->
 <cfoutput>
+	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
+	<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", false) />
 	
 	<cfset local.bundleSkusSmartList = rc.product.getBundleSkusSmartList() />
 	
