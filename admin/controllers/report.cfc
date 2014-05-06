@@ -91,9 +91,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(arguments.rc.ajaxRequest && structKeyExists(arguments.rc, "reportName")) {
 			arguments.rc.ajaxResponse["report"] = {};
-			arguments.rc.ajaxResponse["report"]["chartData"] = arguments.rc.report.getChartData();
-			arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
-			arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
+			if(structKeyExists(arguments.rc, "currentPage") && len(arguments.rc.currentPage) && isNumeric(arguments.rc.currentPage)) {
+				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
+			} else {
+				arguments.rc.ajaxResponse["report"]["chartData"] = arguments.rc.report.getChartData();
+				arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
+				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();	
+			}
 		} else {
 			arguments.rc.pageTitle = arguments.rc.report.getReportTitle();
 		}

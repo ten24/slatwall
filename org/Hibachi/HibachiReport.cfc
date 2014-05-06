@@ -28,11 +28,42 @@
 	<cfproperty name="chartData" />
 	<cfproperty name="tableDataQuery" />
 	
+	<!--- Paging --->
+	<cfproperty name="currentPage"  />
+	<cfproperty name="pageShow" />
+	<cfproperty name="dataTableStartRow" />
+	<cfproperty name="dataTableEndRow" />
+	
 	<!--- Rendered Data Properties --->
 	<cfproperty name="reportDataTable" />
 	
 	<!--- Currency Code --->
 	<cfproperty name="currencyCode" />
+	
+	<cffunction name="getCurrentPage" access="public" output="false">
+		 <cfif not structKeyExists(variables, "currentPage")>
+		 	<cfset variables.currentPage = 1 />
+		 </cfif>
+		 
+		 <cfreturn variables.currentPage />
+	</cffunction>
+		
+	<cffunction name="getPageShow" access="public" output="false">
+		 <cfif not structKeyExists(variables, "pageShow")>
+		 	<cfset variables.pageShow = 25 />
+		 </cfif>
+		 
+		 <cfreturn variables.pageShow />
+	</cffunction>
+		
+	<cffunction name="getDataTableStartRow" access="public" output="false">
+		 <cfreturn ((getCurrentPage() * getPageShow()) - getPageShow()) + 1 />
+	</cffunction>	
+	
+	<cffunction name="getDataTableEndRow" access="public" output="false">
+		 <cfreturn getDataTableStartRow() + getPageShow() />
+	</cffunction>
+	
 	
 	<!--- Currency Code Method --->
 	<cffunction name="getCurrencyCode" access="public" output="false">
@@ -614,7 +645,7 @@
 	<!--- ====================  END: CHART FUNCTIONS ========================= --->
 		
 	<!--- ==================== START: TABLE FUNCTIONS ======================== --->
-		
+	
 	<cffunction name="getTotalsQuery" access="public" output="false">
 		<cfif not structKeyExists(variables, "totalsQuery")>
 			

@@ -805,6 +805,12 @@ function setupEventHandlers() {
 		jQuery('input[name="metrics"]').val( vArr.join(',').trim() );
 		updateReport();
 	});
+	jQuery('body').on('click', '.hibachi-report-data-table-load', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		updateReport( jQuery(this).data('page') );
+	});
+	
 	
 }
 
@@ -1450,7 +1456,7 @@ function updateGlobalSearchResults() {
 	}
 }
 
-function updateReport() {
+function updateReport( page ) {
 	
 	var data = {
 		slatAction: 'admin:report.default',
@@ -1467,6 +1473,10 @@ function updateReport() {
 		metrics: jQuery('input[name="metrics"]').val()
 	};
 	
+	if(page != undefined) {
+		data.currentPage = page;
+	}
+	
 	jQuery.ajax({
 		url: hibachiConfig.baseURL + '/',
 		method: 'post',
@@ -1478,9 +1488,14 @@ function updateReport() {
 			removeLoadingDiv( 'hibachi-report' );
 		},
 		success: function( r ) {
-			jQuery('#hibachi-report-chart').highcharts(r.report.chartData);
-			jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);
-			jQuery('#hibachi-report-table').html(r.report.dataTable);
+			if(r.report.chartData != undefined && r.report.configureBar != undefined && r.report.dataTable != undefined) {
+				jQuery('#hibachi-report-chart').highcharts(r.report.chartData);
+				jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);
+				jQuery('#hibachi-report-table').html(r.report.dataTable);
+			} else if (page != undefined && r.report.dataTable != undefined) {
+				jQuery('#hibachi-report-table').html(r.report.dataTable);
+			}
+			
 			initUIElements('#hibachi-report');
 			removeLoadingDiv( 'hibachi-report' );
 		}
