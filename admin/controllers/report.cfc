@@ -99,7 +99,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 	
-	public void function export(required struct rc) {
+	public void function exportxls(required struct rc) {
 		param name="arguments.rc.reportID" default="";
 		
 		var report = getHibachiReportService().getReportCFC( arguments.rc.reportName, arguments.rc );
@@ -110,6 +110,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}	
 		
 		report.exportSpreadsheet();
+		
+		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
+	}
+	
+	public void function exportcsv(required struct rc) {
+		param name="arguments.rc.reportID" default="";
+		
+		var report = getHibachiReportService().getReportCFC( arguments.rc.reportName, arguments.rc );
+		
+		var reportEntity = getHibachiReportService().getReport( arguments.rc.reportID );
+		if(!isNull(reportEntity)){
+			report.setReportEntity( reportEntity );
+		}	
+		
+		report.exportCSV();
 		
 		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
 	}

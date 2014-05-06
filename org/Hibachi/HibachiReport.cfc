@@ -873,14 +873,24 @@
 	<!--- =============== START: EXPORT SPREADSHEET FUNCTIONS ================ --->
 	
 	<cffunction name="getSpreadsheetHeaderRow">
+		<cfargument name="includeQuotes" default="false" />
+		
 		<cfset var headers = "" />
 		<cfset var i = "" />
 		
 		<cfloop list="#getDimensions()#" index="i">
-			<cfset headers = listAppend(headers, getDimensionTitle(i)) />
+			<cfif arguments.includeQuotes>
+				<cfset headers = listAppend(headers, '"#getDimensionTitle(i)#"') />
+			<cfelse>
+				<cfset headers = listAppend(headers, getDimensionTitle(i)) />
+			</cfif>
 		</cfloop>
 		<cfloop list="#getMetrics()#" index="i">
-			<cfset headers = listAppend(headers, getMetricTitle(i)) />
+			<cfif arguments.includeQuotes>
+				<cfset headers = listAppend(headers, '"#getMetricTitle(i)#"') />
+			<cfelse>
+				<cfset headers = listAppend(headers, getMetricTitle(i)) />
+			</cfif>
 			<cfif getReportCompareFlag()>
 				<cfset headers = listAppend(headers, ' ') />
 			</cfif>
@@ -890,6 +900,8 @@
 	</cffunction>
 	
 	<cffunction name="getSpreadsheetHeaderCompareRow">
+		<cfargument name="includeQuotes" default="false" />
+		
 		<cfset var headerCompare = "" />
 		<cfset var i = "" />
 		
@@ -897,14 +909,21 @@
 			<cfset headerCompare = listAppend(headerCompare, ' ') />
 		</cfloop>
 		<cfloop list="#getMetrics()#" index="i">
-			<cfset headerCompare = listAppend(headerCompare, "#dateFormat(getReportStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportEndDateTime(), 'yyyy/mm/dd')#") />
-			<cfset headerCompare = listAppend(headerCompare, "#dateFormat(getReportCompareStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportCompareEndDateTime(), 'yyyy/mm/dd')#") />
+			<cfif arguments.includeQuotes>
+				<cfset headerCompare = listAppend(headerCompare, '"#dateFormat(getReportStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportEndDateTime(), 'yyyy/mm/dd')#"') />
+				<cfset headerCompare = listAppend(headerCompare, '"#dateFormat(getReportCompareStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportCompareEndDateTime(), 'yyyy/mm/dd')#"') />
+			<cfelse>
+				<cfset headerCompare = listAppend(headerCompare, '#dateFormat(getReportStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportEndDateTime(), 'yyyy/mm/dd')#') />
+				<cfset headerCompare = listAppend(headerCompare, '#dateFormat(getReportCompareStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportCompareEndDateTime(), 'yyyy/mm/dd')#') />
+			</cfif>
 		</cfloop>
 		
 		<cfreturn headerCompare />
 	</cffunction>
 
 	<cffunction name="getSpreadsheetTotals">
+		<cfargument name="includeQuotes" default="false" />
+		
 		<cfset var totals = "" />
 		<cfset var i = "" />
 		
@@ -917,9 +936,17 @@
 			<cfset totals = listAppend(totals, ' ') />
 		</cfloop>
 		<cfloop list="#getMetrics()#" index="i">
-			<cfset totals = listAppend(totals, totalsQuery[ i ][1] ) />
+			<cfif arguments.includeQuotes>
+				<cfset totals = listAppend(totals, '"#totalsQuery[ i ][1]#"' ) />
+			<cfelse>
+				<cfset totals = listAppend(totals, totalsQuery[ i ][1] ) />
+			</cfif>
 			<cfif getReportCompareFlag()>
-				<cfset totals = listAppend(totals, totalsCompareQuery[ i ][1] ) />
+				<cfif arguments.includeQuotes>
+					<cfset totals = listAppend(totals, '"#totalsCompareQuery[ i ][1]#"' ) />
+				<cfelse>
+					<cfset totals = listAppend(totals, totalsCompareQuery[ i ][1] ) />
+				</cfif>
 			</cfif>
 		</cfloop>
 		
@@ -949,7 +976,8 @@
 		<cfreturn data />
 	</cffunction>
 	
-	<cffunction name="exportSpreadsheet" access="public" output="false">
+	<cffunction name="getExportFilename">
+		<cfargument name="extension" default="xls" />
 		
 		<!--- Create the filename variables --->
 		<cfset var filename = "" />
@@ -964,11 +992,17 @@
 		<cfset filename &= replace(getReportStartDateTime(), "-", "", "all") />
 		<cfset filename &= "-" />
 		<cfset filename &= replace(getReportEndDateTime(), "-", "", "all") />
-		<cfset filename &= ".xls" />
+		<cfset filename &= ".#arguments.extension#" />
 		<cfif structKeyExists(server, "railo")>
 			<cfset filename = right(filename, 31) />
 		</cfif>
+		<cfreturn filename />
+	</cffunction>
+	
+	<cffunction name="exportSpreadsheet" access="public" output="false">
 		
+		<!--- Create the filename variables --->
+		<cfset var filename = getExportFilename('xls') />
 		<cfset var filepath = "#getHibachiTempDirectory()#" />
 		<cfset var fullFilename = filepath & filename />
 		
@@ -1032,6 +1066,35 @@
 				<cfrethrow />
 			</cfcatch>
 		</cftry>
+	</cffunction>
+	
+	<cffunction name="exportCSV" access="public" output="false">
+		<!--- Create the filename variables --->
+		<cfset var filename = getExportFilename('csv') />
+		<cfset var filepath = "#getHibachiTempDirectory()#" />
+		<cfset var fullFilename = filepath & filename />
+		
+		<!--- Fields --->
+		<cfset var fields = "" />
+		<cfset var i = "" />
+		
+		<cfloop list="#getDimensions()#" index="i">
+			<cfset fields = listAppend(fields, i) />
+		</cfloop>
+		<cfloop list="#getMetrics()#" index="i">
+			<cfset fields = listAppend(fields, i) />
+			<cfif getReportCompareFlag()>
+				<cfset fields = listAppend(fields, '#i#Compare') />
+			</cfif>
+		</cfloop>
+		
+		<cffile action="write" file="#fullFilename#" output="#getSpreadsheetHeaderRow( includeQuotes=true )#" />
+		<cfif getReportCompareFlag()>
+			<cffile action="append" file="#fullFilename#" output="#getSpreadsheetHeaderCompareRow( includeQuotes=true )#" />
+		</cfif>
+		<cffile action="append" file="#fullFilename#" output="#getService("hibachiUtilityService").queryToCSV( getSpreadsheetData(), fields, false )##getSpreadsheetTotals( includeQuotes=true )#" />
+		
+		<cfset getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true ) /> 
 	</cffunction>
 	
 	<!--- ===============  END: EXPORT SPREADSHEET FUNCTIONS  ================ --->
