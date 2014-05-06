@@ -49,7 +49,8 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="addressService" type="any";
-
+	property name="integrationService" type="any";
+	
 	public void function updateOrderAmountsWithTaxes(required any order) {
 		
 		for(var orderItem in arguments.order.getOrderItems()) {
@@ -63,7 +64,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// Get this sku's taxCategory
 				var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
-				
+
 				if(!isNull(taxCategory)) {
 					
 					var taxAddress = "";
@@ -75,9 +76,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					if(isObject(taxAddress)) {
+						var taxIntegrationArr = [];
 						// Loop over our rates to see if any of the rates use an integration
+						for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+							if(!isNull(taxCategoryRate.getTaxIntegration()) && !arrayFind(taxIntegrationArr, taxCategoryRate.getTaxIntegration())){
+								arrayAppend(taxIntegrationArr, taxCategoryRate.getTaxIntegration());
+							}
+						}
 						
 						
+						
+						
+
 						// Loop over our integrations and call the integrationAPI's getTaxRates() function that takes in a requestBean and passesBack a response Bean
 						
 						// Now when we loop over this, we will be able to check again if the rate used and integration, and if so use the rate that came back from the integration, instead of the manual logic
@@ -117,7 +127,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 	}
-	
+
 
 	// ===================== START: Logical Methods ===========================
 	

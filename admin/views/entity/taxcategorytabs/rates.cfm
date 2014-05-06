@@ -63,7 +63,7 @@ Notes:
 </cf_HibachiListingDisplay>
 
 
-<cf_HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.taxcategory')#" icon="plus" buttonClass="btn-inverse">
+<cf_HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.taxCategory.taxCategoryRate')#" icon="plus" buttonClass="btn-inverse">
 	<cfset local.integrationOptions = rc.taxCategory.getTaxCategoryRateIntegrationOptions()>
 	<cfloop array="#local.integrationOptions#" index="local.integration">
 		<cf_HibachiActionCaller text="#local.integration['name']# #request.slatwallScope.rbKey('define.rate')#" action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#&integrationID=#local.integration['value']#" modal="true" />
