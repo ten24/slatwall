@@ -78,8 +78,8 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 
 	public array function getTaxAddressLookupOptions() {
 		variables.taxAddressLookupOptions = [
-			{name=rbKey('entity.taxCategory.taxAddressLookup.shipping_billing'), value='shipping,billing'},
-			{name=rbKey('entity.taxCategory.taxAddressLookup.billing_shipping'), value='billing,shipping'},
+			{name=rbKey('entity.taxCategory.taxAddressLookup.shipping_billing'), value='shipping_billing'},
+			{name=rbKey('entity.taxCategory.taxAddressLookup.billing_shipping'), value='billing_shipping'},
 			{name=rbKey('entity.taxCategory.taxAddressLookup.shipping'), value='shipping'},
 			{name=rbKey('entity.taxCategory.taxAddressLookup.billing'), value='billing'}
 		];

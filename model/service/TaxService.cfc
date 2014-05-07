@@ -242,13 +242,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getTaxAddressByTaxCategoryRate(required any taxCategoryRate, required struct taxAddresses) {
-		if(taxCategoryRate.getTaxAddressLookup() eq 'shipping,billing') {
+		if(taxCategoryRate.getTaxAddressLookup() eq 'shipping_billing') {
 			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
 				return arguments.taxAddresses.taxShippingAddress;
 			} else if (structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
 				return arguments.taxAddresses.taxBillingAddress;
 			}
-		} else if(taxCategoryRate.getTaxAddressLookup() eq 'billing,shipping') {
+		} else if(taxCategoryRate.getTaxAddressLookup() eq 'billing_shipping') {
 			if(structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
 				return arguments.taxAddresses.taxBillingAddress;
 			} else if (structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
