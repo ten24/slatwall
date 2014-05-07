@@ -198,13 +198,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Else if there is no itegration, then just calculate based on this rate data store in our DB
 							} else {
 								
-								var newAppliedTax = this.newTaxApplied();
-								newAppliedTax.setAppliedType("orderItem");
-								newAppliedTax.setTaxAmount( round(orderItem.getExtendedPriceAfterDiscount() * originalAppliedTax.getTaxRate()) / 100 );
-								newAppliedTax.setTaxRate( originalAppliedTax.getTaxRate() );
-								newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
-								newAppliedTax.setOrderItem( orderItem );
-								
+								for(var r=1; r<= arrayLen(taxCategory.getTaxCategoryRates()); r++) {
+									if(isNull(taxCategory.getTaxCategoryRates()[r].getAddressZone()) || (getAddressService().isAddressInZone(address=taxAddress, addressZone=taxCategory.getTaxCategoryRates()[r].getAddressZone()))) {
+										var newAppliedTax = this.newTaxApplied();
+										newAppliedTax.setAppliedType("orderItem");
+										newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxCategory.getTaxCategoryRates()[r].getTaxRate()) / 100);
+										newAppliedTax.setTaxRate(taxCategory.getTaxCategoryRates()[r].getTaxRate());
+										newAppliedTax.setTaxCategoryRate(taxCategory.getTaxCategoryRates()[r]);
+										newAppliedTax.setOrderItem(orderItem);
+									}
+								}								
 							}
 							
 						}
@@ -239,23 +242,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getTaxAddressByTaxCategoryRate(required any taxCategoryRate, required struct taxAddresses) {
-		if(taxCategoryRate.taxAddressLookup() eq 'shipping,billing') {
+		if(taxCategoryRate.getTaxAddressLookup() eq 'shipping_billing') {
 			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
 				return arguments.taxAddresses.taxShippingAddress;
 			} else if (structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
 				return arguments.taxAddresses.taxBillingAddress;
 			}
-		} else if(taxCategoryRate.taxAddressLookup() eq 'billing,shipping') {
+		} else if(taxCategoryRate.getTaxAddressLookup() eq 'billing_shipping') {
 			if(structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
 				return arguments.taxAddresses.taxBillingAddress;
 			} else if (structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
 				return arguments.taxAddresses.taxShippingAddress;
 			}
-		} else if(taxCategoryRate.taxAddressLookup() eq 'shipping') {
+		} else if(taxCategoryRate.getTaxAddressLookup() eq 'shipping') {
 			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
 				return arguments.taxAddresses.taxShippingAddress;
 			}
-		} else if(taxCategoryRate.taxAddressLookup() eq 'billing') {
+		} else if(taxCategoryRate.getTaxAddressLookup() eq 'billing') {
 			if (structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
 				return arguments.taxAddresses.taxBillingAddress;
 			}

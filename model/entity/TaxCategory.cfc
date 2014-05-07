@@ -53,9 +53,6 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	property name="activeFlag" ormtype="boolean";
 	property name="taxCategoryName" ormtype="string";
 	
-	// TODO [jubs]: Move this to the taxCategoryRate 
-	property name="taxAddressLookup" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
-	
 	// Related Object Properties (one-to-many)
 	property name="taxCategoryRates" singularname="taxCategoryRate" cfc="TaxCategoryRate" type="array" fieldtype="one-to-many" fkcolumn="taxCategoryID" inverse="true" cascade="all-delete-orphan";
 	
@@ -76,24 +73,7 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	property name="taxCategoryRatesDeletableFlag" type="boolean" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
-	
-	public array function getTaxAddressLookupOptions() {
-		variables.taxAddressLookupOptions = [
-			{name=rbKey('entity.taxCategory.taxAddressLookup.shipping_billing'), value='shipping,billing'},
-			{name=rbKey('entity.taxCategory.taxAddressLookup.billing_shipping'), value='billing,shipping'},
-			{name=rbKey('entity.taxCategory.taxAddressLookup.shipping'), value='shipping'},
-			{name=rbKey('entity.taxCategory.taxAddressLookup.billing'), value='billing'}
-		];
-		return variables.taxAddressLookupOptions;
-	}
-	
-		
-	public any function getTaxAddressLookup() {
-		if(isNull(variables.taxAddressLookup)) {
-			variables.taxAddressLookup = 'shipping,billing';
-		}
-		return variables.taxAddressLookup;
-	}
+
 	
 	public boolean function getTaxCategoryRatesDeletableFlag() {
 		if(!structKeyExists(variables,"taxCategoryRatesDeletableFlag")) {

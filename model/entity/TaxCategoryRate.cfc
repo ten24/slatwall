@@ -51,6 +51,7 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 	// Persistent Properties
 	property name="taxCategoryRateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="taxRate" ormtype="float" hb_formatType="percentage";
+	property name="taxAddressLookup" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	
 	// Related Object Properties (many-to-one)
 	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID" hb_optionsNullRBKey="define.all";
@@ -73,7 +74,25 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+
+
+	public array function getTaxAddressLookupOptions() {
+		variables.taxAddressLookupOptions = [
+			{name=rbKey('entity.taxCategoryRate.taxAddressLookup.shipping_billing'), value='shipping_billing'},
+			{name=rbKey('entity.taxCategoryRate.taxAddressLookup.billing_shipping'), value='billing_shipping'},
+			{name=rbKey('entity.taxCategoryRate.taxAddressLookup.shipping'), value='shipping'},
+			{name=rbKey('entity.taxCategoryRate.taxAddressLookup.billing'), value='billing'}
+		];
+		return variables.taxAddressLookupOptions;
+	}
 	
+		
+	public any function getTaxAddressLookup() {
+		if(isNull(variables.taxAddressLookup)) {
+			variables.taxAddressLookup = 'shipping_billing';
+		}
+		return variables.taxAddressLookup;
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
