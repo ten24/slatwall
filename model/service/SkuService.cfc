@@ -587,7 +587,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Build list of unavailable locations from sku list
 		var concurrentSkus = skuSmartList.getRecords();
-		arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
+		//arguments.unavailableLocationsList = listQualify(arguments.unavailableLocationsList,"'",",","char" );
 		for( var thisSku in concurrentSkus ) {
 			if(arrayLen(thisSku.getLocationConfigurations())) {
 				for( var thisLocation in thisSku.getLocations()) {
