@@ -795,5 +795,20 @@
 			getHibachiDAO().updateRecordSortOrder(argumentcollection=arguments);
 		}
 		
+		 // @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
+		public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
+			return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, "._") );
+		}
+		
+		// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
+		public boolean function getEntityHasAttributeByEntityName( required string entityName, required string attributeCode ) {
+			var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.entityName)#"});
+			if(listFindNoCase(attributeCodesList, arguments.attributeCode)) {
+				return true;
+			}
+			
+			return false; 
+		}		
+		
 	</cfscript>
 </cfcomponent>
