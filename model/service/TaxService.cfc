@@ -125,8 +125,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
 						
 						// If a unique integration is found, then we add it to the integrations to call
-					/*	writeDump(var="#taxCategoryRate.getTaxIntegration()#");
-						abort;*/
 						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == integration.getIntegrationID()){
 							
 							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
