@@ -55,14 +55,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup the taxIntegrationArray
 		var taxIntegrationArr = [];
-		
-		// Setup the order level taxBillingAddress variable
-		var taxBillingAddress = javaCast('null', '');
+		var taxAddresses = {};
 		
 		// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 			if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !isNull(orderPayment.getBillingAddress())) {
-				taxBillingAddress = orderPayment.getBillingAddress();
+				taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
 			}
 		}
 		
@@ -105,8 +103,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var taxRatesRequestBean = getTransient("TaxRatesRequestBean");
 			
 			// Populate the ratesRequestBean with a billingAddress
-			if(!isNull(taxBillingAddress)) {
-				taxRatesRequestBean.populateBillToWithAddress( taxBillingAddress );	
+			if(structKeyExists(taxAddresses,"taxBillingAddress")) {
+				taxRatesRequestBean.populateBillToWithAddress( taxAddresses.taxBillingAddress );	
 			}
 			
 			// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
@@ -118,9 +116,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!isNull(taxCategory)) {
 					
 					// Setup the orderItem level taxShippingAddress
-					var taxShippingAddress = javaCast('null', '');
+					structDelete(taxAddresses, "taxShippingAddress");
 					if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress())) {
-						var taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
+						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
 					}
 					
 					// Loop over the rates of that category, looking for a unique integration
@@ -129,7 +127,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						// If a unique integration is found, then we add it to the integrations to call
 						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration() == integration){
 							
-							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxShippingAddress=taxShippingAddress, taxBillingAddress=taxBillingAddress);
+							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
 							
 							if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
 								// taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
@@ -179,15 +177,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!isNull(taxCategory)) {
 					
 					// Setup the orderItem level taxShippingAddress
-					var taxShippingAddress = javaCast('null', '');
+					structDelete(taxAddresses, "taxShippingAddress");
 					if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress())) {
-						var taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
+						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
 					}
 					
 					// Loop over the rates of that category, to potentially apply
 					for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
 						
-						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxShippingAddress=taxShippingAddress, taxBillingAddress=taxBillingAddress);
+						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
 						
 						if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
 							
@@ -240,26 +238,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
-	public any function getTaxAddressByTaxCategoryRate(required any taxCategoryRate, any taxShippingAddress, any taxBillingAddress) {
+	public any function getTaxAddressByTaxCategoryRate(required any taxCategoryRate, required struct taxAddresses) {
 		if(taxCategoryRate.taxAddressLookup() eq 'shipping,billing') {
-			if(!isNull(arguments.taxShippingAddress)) {
-				return arguments.taxShippingAddress;
-			} else if (!isNull(arguments.taxBillingAddress)) {
-				return arguments.taxBillingAddress;
+			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
+				return arguments.taxAddresses.taxShippingAddress;
+			} else if (structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
+				return arguments.taxAddresses.taxBillingAddress;
 			}
 		} else if(taxCategoryRate.taxAddressLookup() eq 'billing,shipping') {
-			if(!isNull(arguments.taxBillingAddress)) {
-				return arguments.taxBillingAddress;
-			} else if (!isNull(arguments.taxShippingAddress)) {
-				return arguments.taxShippingAddress;
+			if(structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
+				return arguments.taxAddresses.taxBillingAddress;
+			} else if (structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
+				return arguments.taxAddresses.taxShippingAddress;
 			}
 		} else if(taxCategoryRate.taxAddressLookup() eq 'shipping') {
-			if(!isNull(arguments.taxShippingAddress)) {
-				return arguments.taxShippingAddress;
+			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
+				return arguments.taxAddresses.taxShippingAddress;
 			}
 		} else if(taxCategoryRate.taxAddressLookup() eq 'billing') {
-			if (!isNull(arguments.taxBillingAddress)) {
-				return arguments.taxBillingAddress;
+			if (structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
+				return arguments.taxAddresses.taxBillingAddress;
 			}
 		}
 	}
