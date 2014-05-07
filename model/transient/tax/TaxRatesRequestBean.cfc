@@ -49,6 +49,7 @@ Notes:
 
 component accessors="true" output="false" extends="Slatwall.model.transient.RequestBean" {
 	
+	/*
 	// Ship To Address Properties
 	property name="shipToStreetAddress" type="string" default="";
 	property name="shipToStreet2Address" type="string" default="";
@@ -57,6 +58,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="shipToStateCode" type="string" default="";
 	property name="shipToPostalCode" type="string" default="";
 	property name="shipToCountryCode" type="string" default="";
+	*/
 	
 	// Bill To Address Properties
 	property name="billToStreetAddress" type="string";  
@@ -125,8 +127,17 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 	}
 	
-	public void function addTaxRateItem() {
-		arrayAppend(getTaxRateItemRequestBeans(), new TaxRateItemRequestBean(argumentcollection=arguments));
+	public void function addTaxItemRequestBean(required any orderItem, any taxAddress) {
+		
+		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
+		
+		if(!isNull(taxAddress)) {
+			// Set the taxAddressValues
+		}
+		
+		// TODO [jubs]: Populate with orderItem quantities, price, etc & taxAddress fields
+		
+		arrayAppend(getTaxRateItemRequestBeans(), taxRateItemRequestBean);
 	}
 	
 }

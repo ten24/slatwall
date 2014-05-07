@@ -48,5 +48,7 @@ Notes:
 */
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
 
-
+	property name="orderItemID" type="string" default="";
+	property name="taxAmount" type="numeric";
+	
 }

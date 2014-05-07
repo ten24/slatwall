@@ -59,6 +59,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="taxCountryCode" type="string";  
 	
 	// Price and Quantity Properies
+	property name="orderItemID" type="string" default="";
 	property name="price" type="string" default="";
 	property name="quantity" type="string" default="";
 	property name="extendedPrice" type="string" default="";
