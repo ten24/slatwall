@@ -84,11 +84,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 						
-						
-						
-						
-
 						// Loop over our integrations and call the integrationAPI's getTaxRates() function that takes in a requestBean and passesBack a response Bean
+						for(var i=1; i<=arrayLen(taxIntegrationArr); i++) {
+							var integrationTaxAPI = taxIntegrationArr[i].getIntegrationCFC("tax");  
+								
+							// Create rates request bean and populate it with the taxCategory Info
+							var ratesRequestBean = getTransient("TaxRatesRequestBean");
+							
+							if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress()) && !orderItem.getOrderFulfillment().getAddress().getNewFlag()) {
+								var taxAddress = orderItem.getOrderFulfillment().getShippingAddress();
+								ratesRequestBean.populateShipToWithAddress( taxAddress );
+							} else if (arrayLen(orderItem.getOrder().getOrderPayments()) eq 1 and !isNull(orderItem.getOrder().getOrderPayments()[1].getBillingAddress())) {
+								var taxAddress = orderItem.getOrder().getOrderPayments()[1].getBillingAddress();
+								ratesRequestBean.populateBillToWithAddress( taxAddress );
+							}
+
+							logHibachi('#taxIntegrationArr[i].getIntegrationName()# Tax Integration Rates Request - Started');
+							// Inside of a try/catch call the 'getTaxRates' method of the integraion
+							try {
+								responseBeans[ taxIntegrationArr[i].getIntegrationID() ] = integrationTaxAPI.getTaxRates( ratesRequestBean );
+							} catch(any e) {
+								logHibachi('An error occured with the #taxIntegrationArr[i].getIntegrationName()# integration when trying to call getTaxRates()', true);
+								logHibachiException(e);
+							}
+							logHibachi('#taxIntegrationArr[i].getIntegrationName()# Tax Integration Rates Request - Finished');
+						}
+
 						
 						// Now when we loop over this, we will be able to check again if the rate used and integration, and if so use the rate that came back from the integration, instead of the manual logic
 						for(var r=1; r<= arrayLen(taxCategory.getTaxCategoryRates()); r++) {
