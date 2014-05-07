@@ -138,7 +138,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 		var validationResult = !getService("hibachiValidationService").validate(object=this, context="rollback", setErrors=false).hasErrors();
 		
 		// If necessary delegate validation to related entity
-		if (!isNull(getRelatedEntity())) {
+		if (validationResult && !isNull(getRelatedEntity())) {
 			validationResult = getRelatedEntity().getAuditRollbackValidFlag();
 		}
 		
