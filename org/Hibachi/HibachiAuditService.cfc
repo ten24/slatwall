@@ -515,43 +515,51 @@ component extends="HibachiService" accessors="true" {
 		
 		var audits = auditSL.getRecords();
 		
-		// Locate rollback index
+		// Locate rollback index relative to the audit the rollback is being processed on (the audit just before)
 		var rollbackIndex = 1;
 		for (var i=1; i<=arraylen(audits); i++) {
 			if (audits[i].getAuditID() == arguments.audit.getAuditID()) {
-				rollbackIndex = i;
+				// Need to rollback 1 position beyond the audit being processed
+				rollbackIndex = i + 1;
 				break;
 			}
 		}
 		
-		// Aggregate property changes by traversing backwards from current state
-		var rollbackData = {};
-		var propertiesStruct = relatedEntity.getAuditablePropertiesStruct();
-		for (var i=1; i<=rollbackIndex; i++) {
-			var currentData = deserializeJSON(audits[i].getData());
-			
-			// Prior to reaching rollback point only the oldPropertyData contains relevant data, if oldPropertyData used at rollback state would be beyond desired rollback point
-			if (i != rollbackIndex) {
-				structAppend(rollbackData, currentData.oldPropertyData, true);
-			
-			// Only newPropertyData is relevant when the rollback point is reached
-			} else {
-				structAppend(rollbackData, currentData.newPropertyData, true);
-			}
+		// Check just in case to make sure we do not attempt to reference an audit that does not exist for any reason
+		if (rollbackIndex > arraylen(audits)) {
+			arguments.audit.addError('rollback', rbKey('validate.audit.rollback.rollbackPointDoesNotExist'));
 		}
 		
-		// If necessary apply explicitPropertyList filter on rollbackData
-		if (listLen(explicitPropertyList)) {
-			for (var propertyName in rollbackData) {
-				if (!listFindNoCase(explicitPropertyList, propertyName)) {
-					structDelete(rollbackData, propertyName);
+		if (!arguments.audit.hasErrors()) {
+			// Aggregate property changes by traversing backwards from current state
+			var rollbackData = {};
+			var propertiesStruct = relatedEntity.getAuditablePropertiesStruct();
+			for (var i=1; i<=rollbackIndex; i++) {
+				var currentData = deserializeJSON(audits[i].getData());
+				
+				// Prior to reaching rollback point only the oldPropertyData contains relevant data, if oldPropertyData used at rollback state would be beyond desired rollback point
+				if (i != rollbackIndex) {
+					structAppend(rollbackData, currentData.oldPropertyData, true);
+				
+				// Only newPropertyData is relevant when the rollback point is reached
+				} else {
+					structAppend(rollbackData, currentData.newPropertyData, true);
 				}
 			}
+			
+			// If necessary apply explicitPropertyList filter on rollbackData
+			if (listLen(explicitPropertyList)) {
+				for (var propertyName in rollbackData) {
+					if (!listFindNoCase(explicitPropertyList, propertyName)) {
+						structDelete(rollbackData, propertyName);
+					}
+				}
+			}
+			
+			// Save new version of entity with aggregated rollback changes
+			relatedEntity.setRollbackProcessedFlag(true);
+			getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod('save#arguments.audit.getBaseObject()#', {1=relatedEntity,2=rollbackData});
 		}
-		
-		// Save new version of entity with aggregated rollback changes
-		relatedEntity.setRollbackProcessedFlag(true);
-		getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod('save#arguments.audit.getBaseObject()#', {1=relatedEntity,2=rollbackData});
 		
 		return arguments.audit;
 	}
