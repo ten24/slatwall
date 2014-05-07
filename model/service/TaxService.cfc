@@ -89,15 +89,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var integrationTaxAPI = taxIntegrationArr[i].getIntegrationCFC("tax");  
 								
 							// Create rates request bean and populate it with the taxCategory Info
-							var ratesRequestBean = getTransient("TaxRatesRequestBean");
-							
-							if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress()) && !orderItem.getOrderFulfillment().getAddress().getNewFlag()) {
-								var taxAddress = orderItem.getOrderFulfillment().getShippingAddress();
-								ratesRequestBean.populateShipToWithAddress( taxAddress );
-							} else if (arrayLen(orderItem.getOrder().getOrderPayments()) eq 1 and !isNull(orderItem.getOrder().getOrderPayments()[1].getBillingAddress())) {
-								var taxAddress = orderItem.getOrder().getOrderPayments()[1].getBillingAddress();
-								ratesRequestBean.populateBillToWithAddress( taxAddress );
-							}
+							var ratesRequestBean = getTransient("TaxRatesRequestBean");				
+							ratesRequestBean.populateShipToWithAddress( taxAddress );
+
 
 							logHibachi('#taxIntegrationArr[i].getIntegrationName()# Tax Integration Rates Request - Started');
 							// Inside of a try/catch call the 'getTaxRates' method of the integraion

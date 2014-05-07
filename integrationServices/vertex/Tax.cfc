@@ -53,6 +53,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	}
 
 	public any function getTaxRates(required any requestBean) {
+		var ratesResponseBean = getTransient('TaxRatesResponseBean');
 		return ratesResponseBean;
 	}
 
