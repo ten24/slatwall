@@ -77,6 +77,54 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		return super.init();
 	}
 	
+	public void function populateShipToWithAddress(required any address) {
+		if(!isNull(arguments.address.getStreetAddress())) {
+			setShipToStreetAddress(arguments.address.getStreetAddress());
+		}
+		if(!isNull(arguments.address.getStreet2Address())) {
+			setShipToStreet2Address(arguments.address.getStreet2Address());
+		}
+		if(!isNull(arguments.address.getLocality())) {
+			setShipToLocality(arguments.address.getLocality());
+		}
+		if(!isNull(arguments.address.getCity())) {
+			setShipToCity(arguments.address.getCity());
+		}
+		if(!isNull(arguments.address.getStateCode())) {
+			setShipToStateCode(arguments.address.getStateCode());
+		}
+		if(!isNull(arguments.address.getPostalCode())) {
+			setShipToPostalCode(arguments.address.getPostalCode());
+		}
+		if(!isNull(arguments.address.getCountryCode())) {
+			setShipToCountryCode(arguments.address.getCountryCode());
+		}
+	}
+	
+	public void function populateBillToWithAddress(required any address) {
+		if(!isNull(arguments.address.getStreetAddress())) {
+			setBillToStreetAddress(arguments.address.getStreetAddress());
+		}
+		if(!isNull(arguments.address.getStreet2Address())) {
+			setBillToStreet2Address(arguments.address.getStreet2Address());
+		}
+		if(!isNull(arguments.address.getLocality())) {
+			setBillToLocality(arguments.address.getLocality());
+		}
+		if(!isNull(arguments.address.getCity())) {
+			setBillToCity(arguments.address.getCity());
+		}
+		if(!isNull(arguments.address.getStateCode())) {
+			setBillToStateCode(arguments.address.getStateCode());
+		}
+		if(!isNull(arguments.address.getPostalCode())) {
+			setBillToPostalCode(arguments.address.getPostalCode());
+		}
+		if(!isNull(arguments.address.getCountryCode())) {
+			setBillToCountryCode(arguments.address.getCountryCode());
+		}
+	}
+	
 	public void function addTaxRateItem() {
 		arrayAppend(getTaxRateItemRequestBeans(), new TaxRateItemRequestBean(argumentcollection=arguments));
 	}

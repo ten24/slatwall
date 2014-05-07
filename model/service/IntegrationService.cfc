@@ -126,7 +126,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getTaxIntegrationCFC(required any integration) {
 		if(!structKeyExists(variables.taxIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
 			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Tax").init();
-			variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
+			variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
 		}
 		return variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
