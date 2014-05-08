@@ -59,7 +59,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="billToCountryCode" type="string";  
 	
 	//TaxRateItemRequestBeans 
-	property name="TaxRateItemRequestBeans" type="array";
+	property name="taxRateItemRequestBeans" type="array";
 	
 	public any function init() {
 		// Set defaults

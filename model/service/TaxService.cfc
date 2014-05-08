@@ -188,56 +188,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
 						
 						if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
-							/* 
 							
-							
-							
-							
-							
-							
-							Figure Out Where to Add Dummy Tax Info So That This Actually Can Run
-							
-							
-							
-							
-							
-							
-							
-							 */
 							// If this rate has an integration, then try to pull the data from the response bean for that integration
 							if(!isNull(taxCategoryRate.getTaxIntegration())) {
 								// Look for all of the rates responses for this interation, on this orderItem
 								if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
 									var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];	
-		
+									
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
 										
 										if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
 											// Add a new AppliedTax 
 											var newAppliedTax = this.newTaxApplied();
 											newAppliedTax.setAppliedType("orderItem");
-											newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxRateItemResponse.getTaxRate()) / 100);
-											newAppliedTax.setTaxRate(taxRateItemResponse.getTaxRate());
-											newAppliedTax.setTaxCategoryRate(taxRateItemResponse.getTaxCategoryRate());
+											newAppliedTax.setTaxAmount( taxRateItemResponse.getTaxAmount() );
+											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
+											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 											newAppliedTax.setOrderItem(orderItem);
-											
-											break;
 										}
+										
 									}
+									
 								}
 							// Else if there is no itegration or if there was supposed to be a response bean but we didn't get one, then just calculate based on this rate data store in our DB
 							} else {
-								
-								for(var r=1; r<= arrayLen(taxCategory.getTaxCategoryRates()); r++) {
-									if(isNull(taxCategory.getTaxCategoryRates()[r].getAddressZone()) || (getAddressService().isAddressInZone(address=taxAddress, addressZone=taxCategory.getTaxCategoryRates()[r].getAddressZone()))) {
-										var newAppliedTax = this.newTaxApplied();
-										newAppliedTax.setAppliedType("orderItem");
-										newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxCategory.getTaxCategoryRates()[r].getTaxRate()) / 100);
-										newAppliedTax.setTaxRate(taxCategory.getTaxCategoryRates()[r].getTaxRate());
-										newAppliedTax.setTaxCategoryRate(taxCategory.getTaxCategoryRates()[r]);
-										newAppliedTax.setOrderItem(orderItem);
-									}
-								}								
+						
+								var newAppliedTax = this.newTaxApplied();
+								newAppliedTax.setAppliedType("orderItem");
+								newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxCategoryRate.getTaxRate()) / 100);
+								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
+								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
+								newAppliedTax.setOrderItem( orderItem );
+														
 							}
 							
 						}
