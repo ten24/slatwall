@@ -49,35 +49,35 @@ Notes:
 
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
 
-	property name="taxRateItemResponseBean" type="array";
+	property name="taxRateItemResponseBeans" type="array";
 	
 	public any function init() {
 		// Set Defaults
-		setTaxRateItemResponseBean([]);
+		setTaxRateItemResponseBeans([]);
 		
 		// Return the Base entity init and pass arguments
 		return super.init(argumentcollection=arguments);
 	}
 	
-	public void function addTaxRates(required any orderItem, any taxApplied) {
+	public void function addTaxRateItem(required any orderItemID, any taxAmount) {
 		
-		var taxRateItemResponseBean = getTransient('TaxRateItemResponseBean');
+		var taxRateItemResponseBeans = getTransient('TaxRateItemResponseBean');
 		
 		if(!isNull(taxApplied)) {
 			// Set the taxAmount Value
-			if(!isNull(arguments.taxApplied.getTaxAmount())) {
-				taxRateItemResponseBean.taxApplied.setTaxAmount(arguments.taxApplied.getTaxAmount());
+			if(!isNull(arguments.taxAmount)) {
+				taxRateItemResponseBeans.setTaxAmount(arguments.taxAmount);
 			}
 		}
 		
 		// Populate orderItemID 
 		if(!isNull(orderItemID)){
-			if(!isNull(arguments.orderItem.getOrderItemID())) {
-				taxRateItemResponseBean.orderItem.setOrderItemID(arguments.orderItem.getOrderItemID());
+			if(!isNull(arguments.orderItemID)) {
+				taxRateItemResponseBeans.setOrderItemID(arguments.orderItemID);
 			}
 		}
 
-		arrayAppend(getTaxRateItemResponseBean(), new taxRateItemResponseBean(argumentcollection=arguments));
+		arrayAppend(getTaxRateItemResponseBeans(), new taxRateItemResponseBeans(argumentcollection=arguments));
 	}
 	
 }
