@@ -76,7 +76,7 @@ Notes:
 		</div>
 		<div class="span6">
 			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
-			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="30" />
+			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
 		</div>
 	</div>
 </cfoutput>
