@@ -76,6 +76,9 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeHint" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="defaultValue" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeType" valueDefault="444df2a5a9088e72342c0b5eaf731c64" edit="#rc.edit and rc.attribute.isNew()#">
+				<cf_HibachiDisplayToggle selector="select[name='attributeType.typeID']" valueAttribute="systemcode" showValues="atRelatedObjectSelect,atReleatedObjectMultiselect" loadVisable="#(!isNull(rc.attribute.getAttributeType()) && listFindNoCase('atRelatedObjectSelect,atReleatedObjectMultiselect', rc.attribute.getAttributeType().getSystemCode()))#">
+					<cf_HibachiPropertyDisplay object="#rc.attribute#" property="relatedObject" edit="#rc.edit and rc.attribute.isNew()#">
+				</cf_HibachiDisplayToggle>
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 

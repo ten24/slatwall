@@ -74,7 +74,7 @@ component entityname="SlatwallEventTrigger" table="SwEventTrigger" persistent="t
 	
 	// Non-Persistent Properties
 	property name="eventNameOptions" persistent="false";
-	property name="eventTriggerObjectTypeOptions" persistent="false";
+	property name="eventTriggerObjectOptions" persistent="false";
 	property name="eventTriggerTypeOptions" persistent="false";
 	
 	

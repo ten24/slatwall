@@ -55,7 +55,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Persistent Properties
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="attributeValue" ormtype="string" length="4000";
+	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
 	property name="attributeValueEncrypted" ormtype="string";
 	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
 	
@@ -522,6 +522,17 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		
 		return validationClass;
+	}
+	
+	public string function getAttributeValueFormatted() {
+		if(getAttribute().getAttributeType().getSystemCode() eq 'atRelatedObjectSelect') {
+			var thisEntityService = getService('hibachiService').getServiceByEntityName( getAttribute().getRelatedObject() );
+			var thisRelatedEntity = thisEntityService.invokeMethod("get#getAttribute().getRelatedObject()#", {1=getAttributeValue()});
+			if(!isNull(thisRelatedEntity)) {
+				return thisRelatedEntity.getSimpleRepresentation();
+			}
+		}
+		return getAttributeValue();
 	}
 	
 	// ==================  END:  Overridden Methods ========================
