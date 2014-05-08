@@ -73,7 +73,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		// Populate orderItemID 
 		if(!isNull(orderItemID)){
 			if(!isNull(arguments.orderItem.getOrderItemID())) {
-				taxRateItemRequestBean.orderItem.setOrderItemID(arguments.orderItem.getOrderItemID());
+				taxRateItemResponseBean.orderItem.setOrderItemID(arguments.orderItem.getOrderItemID());
 			}
 		}
 
