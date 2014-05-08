@@ -132,6 +132,15 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			if(!isNull(arguments.orderItem.getOrderItemID())) {
 				taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
 			}
+			if(!isNull(arguments.orderItem.getExtendedPrice())) {
+				taxRateItemRequestBean.setExtendedPrice(arguments.orderItem.getExtendedPrice());
+			}
+			if(!isNull(arguments.orderItem.getDiscountAmount())) {
+				taxRateItemRequestBean.setDiscountAmount(arguments.orderItem.getDiscountAmount());
+			}
+			if(!isNull(arguments.orderItem.getExtendedPriceAfterDiscounts())) {
+				taxRateItemRequestBean.setExtendedPriceAfterDiscounts(arguments.orderItem.getExtendedPriceAfterDiscounts());
+			}
 		}
 		arrayAppend(getTaxRateItemRequestBeans(), taxRateItemRequestBean);
 	}

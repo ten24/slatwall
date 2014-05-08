@@ -193,7 +193,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(!isNull(taxCategoryRate.getTaxIntegration())) {
 							
 								// TODO [jubs]: Look for all of the rates responses for this interation, on this orderItem
-								
 							
 							// Else if there is no itegration, then just calculate based on this rate data store in our DB
 							} else {
