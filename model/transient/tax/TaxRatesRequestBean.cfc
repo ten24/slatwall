@@ -49,17 +49,6 @@ Notes:
 
 component accessors="true" output="false" extends="Slatwall.model.transient.RequestBean" {
 	
-	/*
-	// Ship To Address Properties
-	property name="shipToStreetAddress" type="string" default="";
-	property name="shipToStreet2Address" type="string" default="";
-	property name="shipToLocality" type="string" default="";
-	property name="shipToCity" type="string" default="";
-	property name="shipToStateCode" type="string" default="";
-	property name="shipToPostalCode" type="string" default="";
-	property name="shipToCountryCode" type="string" default="";
-	*/
-	
 	// Bill To Address Properties
 	property name="billToStreetAddress" type="string";  
 	property name="billToStreet2Address" type="string";
@@ -69,38 +58,14 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="billToPostalCode" type="string";   
 	property name="billToCountryCode" type="string";  
 	
-	//TaxItemRequestBean 
-	property name="taxItemRequestBeans" type="array";
+	//TaxRateItemRequestBeans 
+	property name="TaxRateItemRequestBeans" type="array";
 	
 	public any function init() {
 		// Set defaults
 		variables.TaxRateItemRequestBeans = [];
 		
 		return super.init();
-	}
-	
-	public void function populateShipToWithAddress(required any address) {
-		if(!isNull(arguments.address.getStreetAddress())) {
-			setShipToStreetAddress(arguments.address.getStreetAddress());
-		}
-		if(!isNull(arguments.address.getStreet2Address())) {
-			setShipToStreet2Address(arguments.address.getStreet2Address());
-		}
-		if(!isNull(arguments.address.getLocality())) {
-			setShipToLocality(arguments.address.getLocality());
-		}
-		if(!isNull(arguments.address.getCity())) {
-			setShipToCity(arguments.address.getCity());
-		}
-		if(!isNull(arguments.address.getStateCode())) {
-			setShipToStateCode(arguments.address.getStateCode());
-		}
-		if(!isNull(arguments.address.getPostalCode())) {
-			setShipToPostalCode(arguments.address.getPostalCode());
-		}
-		if(!isNull(arguments.address.getCountryCode())) {
-			setShipToCountryCode(arguments.address.getCountryCode());
-		}
 	}
 	
 	public void function populateBillToWithAddress(required any address) {
@@ -127,16 +92,47 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 	}
 	
-	public void function addTaxItemRequestBean(required any orderItem, any taxAddress) {
+	public void function addTaxRateItemRequestBean(required any orderItem, any taxAddress) {
 		
 		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
 		
 		if(!isNull(taxAddress)) {
 			// Set the taxAddressValues
+			if(!isNull(arguments.taxAddress.getStreetAddress())) {
+				taxRateItemRequestBean.setTaxStreetAddress(arguments.taxAddress.getStreetAddress());
+			}
+			if(!isNull(arguments.taxAddress.getStreet2Address())) {
+				taxRateItemRequestBean.setTaxStreet2Address(arguments.taxAddress.getStreet2Address());
+			}
+			if(!isNull(arguments.taxAddress.getLocality())) {
+				taxRateItemRequestBean.setTaxLocality(arguments.taxAddress.getLocality());
+			}
+			if(!isNull(arguments.taxAddress.getCity())) {
+				taxRateItemRequestBean.setTaxCity(arguments.taxAddress.getCity());
+			}
+			if(!isNull(arguments.taxAddress.getStateCode())) {
+				taxRateItemRequestBean.setTaxStateCode(arguments.taxAddress.getStateCode());
+			}
+			if(!isNull(arguments.taxAddress.getPostalCode())) {
+				taxRateItemRequestBean.setTaxPostalCode(arguments.taxAddress.getPostalCode());
+			}
+			if(!isNull(arguments.taxAddress.getCountryCode())) {
+				taxRateItemRequestBean.setTaxCountryCode(arguments.taxAddress.getCountryCode());
+			}
 		}
 		
-		// TODO [jubs]: Populate with orderItem quantities, price, etc & taxAddress fields
-		
+		// Populate with orderItem quantities, price, and orderItemID fields
+		if(!isNull(orderItem)){
+			if(!isNull(arguments.orderItem.getQuantity())) {
+				taxRateItemRequestBean.setQuantity(arguments.orderItem.getQuantity());
+			}
+			if(!isNull(arguments.orderItem.getPrice())) {
+				taxRateItemRequestBean.setPrice(arguments.orderItem.getPrice());
+			}
+			if(!isNull(arguments.orderItem.getOrderItemID())) {
+				taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
+			}
+		}
 		arrayAppend(getTaxRateItemRequestBeans(), taxRateItemRequestBean);
 	}
 	

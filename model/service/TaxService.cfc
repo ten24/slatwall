@@ -125,12 +125,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
 						
 						// If a unique integration is found, then we add it to the integrations to call
-						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration() == integration){
+						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == integration.getIntegrationID()){
 							
 							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
 							
 							if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
-								// taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
+								taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
 							}
 						}
 						
@@ -141,9 +141,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} // End OrderItem Loop
 			
 			// Make sure that the ratesRequestBean actually has OrderItems on it
-			if(arrayLen(taxRatesRequestBean.getTaxItemRequestBeans())) {
+			if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
 				
-				logHibachi('#taxIntegrationArr[i].getIntegrationName()# Tax Integration Rates Request - Started');
+				logHibachi('#integration.getIntegrationName()# Tax Integration Rates Request - Started');
 				
 				// Inside of a try/catch call the 'getTaxRates' method of the integraion
 				try {
@@ -156,7 +156,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 				} catch(any e) {
 					
-					logHibachi('An error occured with the #taxIntegrationArr[i].getIntegrationName()# integration when trying to call getTaxRates()', true);
+					logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call getTaxRates()', true);
 					logHibachiException(e);
 				}
 				
