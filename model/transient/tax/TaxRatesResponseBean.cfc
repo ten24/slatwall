@@ -49,18 +49,35 @@ Notes:
 
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
 
-	property name="TaxRatesResponseBeans" type="array";
+	property name="taxRateItemResponseBean" type="array";
 	
 	public any function init() {
 		// Set Defaults
-		setTaxRatesResponseBeans([]);
+		setTaxRateItemResponseBean([]);
 		
 		// Return the Base entity init and pass arguments
 		return super.init(argumentcollection=arguments);
 	}
 	
-	public any function addTaxRates() {
-		arrayAppend(getTaxRatesResponseBeans(), new TaxRatesResponseBean(argumentcollection=arguments));
+	public void function addTaxRates(required any orderItem, any taxAmount) {
+		
+		var taxRateItemResponseBean = getTransient('TaxRateItemResponseBean');
+		
+		if(!isNull(taxAmount)) {
+			// Set the taxAmount Value
+			if(!isNull(arguments.taxAmount.getTaxAmount())) {
+				taxRateItemResponseBean.setTaxAmount(arguments.taxAmount.getTaxAmount());
+			}
+		}
+		
+		// Populate orderItemID 
+		if(!isNull(orderItemID)){
+			if(!isNull(arguments.orderItem.getOrderItemID())) {
+				taxRateItemRequestBean.orderItem.setOrderItemID(arguments.orderItem.getOrderItemID());
+			}
+		}
+
+		arrayAppend(getTaxRateItemResponseBean(), new taxRateItemResponseBean(argumentcollection=arguments));
 	}
 	
 }

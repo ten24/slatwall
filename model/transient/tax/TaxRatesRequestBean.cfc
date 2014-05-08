@@ -132,6 +132,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			if(!isNull(arguments.orderItem.getOrderItemID())) {
 				taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
 			}
+			if(!isNull(arguments.orderItem.getExtendedPrice())) {
+				taxRateItemRequestBean.setExtendedPrice(arguments.orderItem.getExtendedPrice());
+			}
 		}
 		arrayAppend(getTaxRateItemRequestBeans(), taxRateItemRequestBean);
 	}
