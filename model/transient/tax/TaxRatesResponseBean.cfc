@@ -59,14 +59,14 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		return super.init(argumentcollection=arguments);
 	}
 	
-	public void function addTaxRates(required any orderItem, any taxAmount) {
+	public void function addTaxRates(required any orderItem, any taxApplied) {
 		
 		var taxRateItemResponseBean = getTransient('TaxRateItemResponseBean');
 		
-		if(!isNull(taxAmount)) {
+		if(!isNull(taxApplied)) {
 			// Set the taxAmount Value
-			if(!isNull(arguments.taxAmount.getTaxAmount())) {
-				taxRateItemResponseBean.taxAmount.setTaxAmount(arguments.taxAmount.getTaxAmount());
+			if(!isNull(arguments.taxApplied.getTaxAmount())) {
+				taxRateItemResponseBean.taxApplied.setTaxAmount(arguments.taxApplied.getTaxAmount());
 			}
 		}
 		
