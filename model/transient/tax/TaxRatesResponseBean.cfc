@@ -63,7 +63,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		
 		var taxRateItemResponseBeans = getTransient('TaxRateItemResponseBean');
 		
-		if(!isNull(taxApplied)) {
+		if(!isNull(taxAmount)) {
 			// Set the taxAmount Value
 			if(!isNull(arguments.taxAmount)) {
 				taxRateItemResponseBeans.setTaxAmount(arguments.taxAmount);
