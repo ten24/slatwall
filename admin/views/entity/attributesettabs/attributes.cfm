@@ -58,11 +58,13 @@ Notes:
 							   sortProperty="sortOrder"
 							   sortContextIDColumn="attributeSetID"
 							   sortContextIDValue="#rc.attributeSet.getAttributeSetID()#">
-							      
+		
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />					      
 		<cf_HibachiListingColumn propertyIdentifier="attributeCode" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="attributeType.type" />
+		<cf_HibachiListingColumn propertyIdentifier="relatedObject" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 	
 	<cf_HibachiActionCaller action="admin:entity.createattribute" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailattributeset&attributesetid=#rc.attributeset.getAttributeSetID()#" modal=true />
