@@ -52,6 +52,9 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="auditType" ormType="string" hb_formatType="rbKey"; // create, update, delete, rollback, archive, merge, scheduleUpdate, login, logout
 	property name="auditDateTime" ormtype="timestamp";
+	// auditArchiveStartDateTime <- This will hold the beginning of the archive range
+	// auditArchiveEndDateTime == auditDateTime
+	// auditArchiveCreatedDateTime <- This will hold the actual date that this audit record was created
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
 	property name="data" ormType="string" length="8000";
