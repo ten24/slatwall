@@ -588,6 +588,7 @@ component extends="HibachiService" accessors="true" {
 			if (recordsToAggregate > 1) {
 				var audits = auditSmartList.getRecords();
 				var mostRecentAuditInArchive = javaCast("null", "");
+				var oldestAuditInArchive = javaCast("null", "");
 				
 				// Step through audits sequentially from oldest to newest
 				for (var i=1; i<=recordsToAggregate; i++) {
@@ -611,6 +612,9 @@ component extends="HibachiService" accessors="true" {
 					var archiveAudit = this.newAudit();
 					archiveAudit.setAuditType('archive');
 					archiveAudit.setAuditDateTime(mostRecentAuditInArchive.getAuditDateTime());
+					archiveAudit.setAuditArchiveStartDateTime(audits[1].getAuditDateTime());
+					archiveAudit.setAuditArchiveEndDateTime(mostRecentAuditInArchive.getAuditDateTime());
+					archiveAudit.setAuditArchiveCreatedDateTime(now());
 					archiveAudit.setBaseID(mostRecentAuditInArchive.getBaseID());
 					archiveAudit.setBaseObject(mostRecentAuditInArchive.getBaseObject());
 					archiveAudit.setTitle(mostRecentAuditInArchive.getTitle());
