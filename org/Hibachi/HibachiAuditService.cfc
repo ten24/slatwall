@@ -510,10 +510,12 @@ component extends="HibachiService" accessors="true" {
 		var explicitPropertyList = '';
 		
 		var relatedEntity = arguments.audit.getRelatedEntity();
-		auditSL = relatedEntity.getAuditSmartList();
-		auditSL.addInFilter('auditType', 'create,update,rollback,archive');
 		
-		var audits = auditSL.getRecords();
+		var auditSmartList = this.getAuditSmartList();
+		auditSmartList.addFilter("baseID", relatedEntity.getPrimaryIDValue());
+		auditSmartList.addOrder("auditDateTime|DESC");
+		auditSmartList.addInFilter('auditType', 'create,update,rollback,archive');
+		var audits = auditSmartList.getRecords();
 		
 		// Locate rollback index relative to the audit the rollback is being processed on (the audit just before)
 		var rollbackIndex = 1;
@@ -568,26 +570,23 @@ component extends="HibachiService" accessors="true" {
 		if (!isNull(arguments.audit.getRelatedEntity())) {
 			var autoArchiveVersionLimit = getHibachiScope().setting('globalAuditAutoArchiveVersionLimit');
 			
-			// If 'rollback' process called in the same request the auditSmartList will not be configured as expected because it was cached in the request
-			audit.getRelatedEntity().clearAuditSmartList();
-			
-			var auditSL = audit.getRelatedEntity().getAuditSmartList();
-			// Need to call auditSL.applyData() because auditSL.addOrder() does not override existing order
 			// We will aggregate any auditTypes of update, rollback, archive
-			auditSL.applyData({'orderBy'='auditDateTime|ASC'});
-			auditSL.addInFilter('auditType', 'update,rollback,archive');
+			var auditSmartList = this.getAuditSmartList();
+			auditSmartList.addFilter("baseID", audit.getRelatedEntity().getPrimaryIDValue());
+			auditSmartList.addOrder("auditDateTime|ASC");
+			auditSmartList.addInFilter('auditType', 'update,rollback,archive');
 			
 			var archiveData = {'newPropertyData'={}, 'oldPropertyData'={}};
 			
 			// Add 1 to include the initial 'create' audit in the calculation
-			var recordsOverLimitCount = 1 + auditSL.getRecordsCount() - autoArchiveVersionLimit;
+			var recordsOverLimitCount = 1 + auditSmartList.getRecordsCount() - autoArchiveVersionLimit;
 			
 			// Limits the aggregation to the actual records available if autoArchiveVersionLimit setting is changed to too small of a value
-			var recordsToAggregate = min(auditSL.getRecordsCount(), recordsOverLimitCount + 1);
+			var recordsToAggregate = min(auditSmartList.getRecordsCount(), recordsOverLimitCount + 1);
 			
 			// Archive required
 			if (recordsToAggregate > 1) {
-				var audits = auditSL.getRecords();
+				var audits = auditSmartList.getRecords();
 				var mostRecentAuditInArchive = javaCast("null", "");
 				
 				// Step through audits sequentially from oldest to newest

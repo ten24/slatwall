@@ -266,12 +266,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables.auditSmartList;
 	}
 	
-	public void function clearAuditSmartList() {
-		if (structKeyExists(variables, "auditSmartList")) {
-			structDelete(variables, "auditSmartList");
-		}
-	}
-	
 	// @hint public method that returns the value from the primary ID of this entity
 	public string function getPrimaryIDValue() {
 		return this.invokeMethod("get#getPrimaryIDPropertyName()#");
