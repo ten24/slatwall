@@ -50,180 +50,19 @@ Notes:
 component extends="HibachiService" accessors="true" {
 	
 	// ===================== START: Logical Methods ===========================
+	
 	public any function getRelatedEntityForAudit(any audit) {
 		// TODO What if the entity has been deleted? Or perhaps all of the prior related audit logs shouldn't even exist so this would never be a problem?
 		return getServiceByEntityName(arguments.audit.getBaseObject()).invokeMethod('get#arguments.audit.getBaseObject()#', {1=arguments.audit.getBaseID()});
 	}
 	
-	public void function addAuditToCommit(any audit) {
-		// Group related audits together by the base object's primary ID
-		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
-		if (len(arguments.audit.getBaseID()) && !structKeyExists(auditStruct, arguments.audit.getBaseID())) {
-			structInsert(auditStruct, audit.getBaseID(), {});
+	public any function getAuditSmartListForEntity(any entity, string auditTypeList="") {
+		var auditSmartList = this.getAuditSmartList();
+		auditSmartList.addFilter("baseID", arguments.entity.getPrimaryIDValue());
+		if (len(arguments.auditTypeList)) {
+			auditSmartList.addInFilter('auditType', arguments.auditTypeList);
 		}
-		
-		var auditType = '';
-		if (arguments.audit.getAuditType() == 'create') {
-			auditType = 'create';
-		} else if (listFindNoCase('update,rollback', arguments.audit.getAuditType())) {
-			auditType = 'update';
-		} else if (arguments.audit.getAuditType() == 'delete') {
-			auditType = 'delete';
-		}
-		
-		if (len(auditType)) {
-			structInsert(auditStruct[audit.getBaseID()], auditType, arguments.audit);
-		}
-	}
-	
-	public any function getExistingAuditToCommit(string baseID, string auditType) {
-		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
-		if (structKeyExists(auditStruct, arguments.baseID) && structKeyExists(auditStruct[arguments.baseID], arguments.auditType)) {
-			return auditStruct[arguments.baseID][arguments.auditType];
-		}
-		
-		return javaCast("null", "");
-	}
-	
-	public void function commitAudits() {
-		var commitTotal = 0;
-		var archiveCandidates = [];
-		for (var baseID in getHibachiScope().getAuditsToCommitStruct()) {
-			for (var auditType in ['create', 'update', 'delete']) {
-				if (structKeyExists(getHibachiScope().getAuditsToCommitStruct()[baseID], auditType)) {
-					this.saveAudit(getHibachiScope().getAuditsToCommitStruct()[baseID][auditType]);
-					commitTotal++;
-					
-					// Audit needs to be checked because archiving may need to occur
-					if (auditType == 'update') {
-						arrayAppend(archiveCandidates, getHibachiScope().getAuditsToCommitStruct()[baseID][auditType]);
-					}
-				}
-			}
-		}
-		
-		if (!getHibachiScope().getORMHasErrors()) {
-			getHibachiDAO().flushORMSession();
-		}
-		
-		if (commitTotal) {
-			logHibachi("Audits were committed, (#commitTotal#) total");
-		}
-		
-		if (arraylen(archiveCandidates)) {
-			// Threaded process of audits that may need to be archived
-			if (getHibachiScope().setting('globalAuditCommitMode') == 'thread') {
-				thread name="archiveThread" action="run" archiveCandidates="#archiveCandidates#" {
-					for (var audit in archiveCandidates) {
-						this.processAudit(audit, 'archive');
-					}
-					
-					if (!getHibachiScope().getORMHasErrors()) {
-						getHibachiDAO().flushORMSession();
-					}
-				}
-			// Non-threaded process of audits that may need to be archived
-			} else {
-				for (var audit in archiveCandidates) {
-					this.processAudit(audit, 'archive');
-				}
-				
-				if (!getHibachiScope().getORMHasErrors()) {
-					getHibachiDAO().flushORMSession();
-				}
-			}
-		}
-		
-		
-		getHibachiScope().clearAuditsToCommitStruct();
-	}
-	
-	public any function getChangeDetailsForAudit(any audit) {
-		var changeData = deserializeJSON(arguments.audit.getData());
-		
-		var changeDetails = {};
-		changeDetails.properties = [];
-		changeDetails.columnList = 'new';
-		if (listFindNoCase('update,rollback,archive', arguments.audit.getAuditType())) {
-			changeDetails.columnList = listAppend(changeDetails.columnList, 'old');
-		}
-		
-		var properties = getEntityObject(arguments.audit.getBaseObject()).getAuditableProperties();
-		for (var currentProperty in properties) {
-			var changeDetail = {};
-			changeDetail['propertyName'] = currentProperty.name;
-			
-			for (var column in listToArray(changeDetails.columnList)) {
-				if (structKeyExists(changeData['#column#PropertyData'], currentProperty.name)) {
-					var columnValue = "";
-					var dataValue = changeData['#column#PropertyData'][currentProperty.name];
-					
-					// Column/Simple Value
-					if (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") {
-						if (isBoolean(dataValue) && structKeyExists(currentProperty, "ormtype") && currentProperty.ormtype == "boolean") {
-							columnValue = rbKey('define.#yesNoFormat(dataValue)#');
-						} else {
-							columnValue = dataValue;
-						}
-					// Entity
-					} else if (structKeyExists(currentProperty, 'cfc')) {
-						if (isStruct(dataValue)) {
-							// Get actual reference to entity
-							var entityPrimaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
-							var entityService = getServiceByEntityName(currentProperty.cfc);
-							if (structKeyExists(dataValue, entityPrimaryIDPropertyName)) {
-								columnValue = entityService.invokeMethod( 'get#listLast(currentProperty.cfc,'.')#', {1=dataValue[entityPrimaryIDPropertyName],2=false});
-								
-								// Use simple representation or primaryID in case that the referenced entity had been deleted and no longer exists
-								if (isNull(columnValue)) {
-									if (structKeyExists(dataValue, 'title')) {
-										columnValue = dataValue.title;
-									} else {
-										columnValue = dataValue[entityPrimaryIDPropertyName];
-									}
-								}
-							}
-						}
-					}
-					
-					changeDetail[column] = columnValue;
-				}
-			}
-			
-			// Only include the relevant auditable properties
-			if (listFindNoCase(structKeyList(changeDetail), 'new') || listFindNoCase(structKeyList(changeDetail), 'old')) {
-				// Make sure matching 'old' key exists when appropriately required
-				if (listFindNoCase(changeDetails.columnList, 'old') && !structKeyExists(changeDetail, 'old')) {
-					// Blank when missing
-					changeDetail['old'] = "";
-				}
-				
-				// Make sure matching 'new' key exists when appropriately required
-				if (listFindNoCase(changeDetails.columnList, 'new') && !structKeyExists(changeDetail, 'new')) {
-					// Blank when missing
-					changeDetail['new'] = "";
-				}
-				
-				arrayAppend(changeDetails.properties, changeDetail);
-			}
-		}
-		
-		return changeDetails;
-	}
-	
-	public any function newAudit() {
-		var audit = this.new('Audit');
-		audit.setAuditDateTime(now());
-		audit.setSessionIPAddress(CGI.REMOTE_ADDR);
-		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-			audit.setSessionAccountID(getHibachiScope().getAccount().getAccountID());
-			audit.setSessionAccountFullName(getHibachiScope().getAccount().getFullName());
-			if (!isNull(getHibachiScope().getAccount().getEmailAddress())) {
-				audit.setSessionAccountEmailAddress(getHibachiScope().getAccount().getEmailAddress());
-			}
-		}
-		
-		return audit;
+		return auditSmartList;
 	}
 	
 	public void function logAccountActivity(string auditType, struct data) {
@@ -271,15 +110,9 @@ component extends="HibachiService" accessors="true" {
 		if (arguments.entity.getAuditableFlag()) {
 			
 			var auditType = '';
-			// Audit type is create when no old data available or no previous audit log data available
-			if (isNull(arguments.oldData) || (arguments.entity.getAuditSmartList().getRecordsCount()  == 0)) {
+			// Audit type is create when no old data available
+			if (isNull(arguments.oldData)) {
 				auditType = 'create';
-				
-				// Remove oldData from arguments if it was provided because it is not applicable for property change data
-				if (!isNull(arguments.oldData)) {
-					structDelete(arguments, 'oldData');
-				}
-				
 			// Audit type is rollback
 			} else if (arguments.entity.getRollbackProcessedFlag()) {
 				auditType = 'rollback';
@@ -294,11 +127,28 @@ component extends="HibachiService" accessors="true" {
 			var audit = getExistingAuditToCommit(baseID=arguments.entity.getPrimaryIDValue(), auditType=auditType);
 			var commitPendingFlag = true;
 			if (isNull(audit)) {
+				commitPendingFlag = false;
 				audit = this.newAudit();
 				audit.setBaseID(arguments.entity.getPrimaryIDValue());
 				audit.setBaseObject(arguments.entity.getClassName());
 				audit.setAuditType(auditType);
-				commitPendingFlag = false;
+				
+				// Additional population logic for 'create'
+				if (audit.getAuditType() == 'create') {
+					// Set auditDateTime using entity.createdDate
+					if(structKeyExists(arguments.entity, 'getCreatedDateTime') && isDate(arguments.entity.getCreatedDateTime())) {
+						audit.setAuditDateTime(arguments.entity.getCreatedDateTime());
+					}
+					
+					// Set session account information using entity.getCreatedByAccount
+					if(structKeyExists(arguments.entity, 'getCreatedByAccount') && !isNull(arguments.entity.getCreatedByAccount())) {
+						audit.setSessionAccountID(arguments.entity.getCreatedByAccount().getAccountID());
+						audit.setSessionAccountFullName(arguments.entity.getCreatedByAccount().getFullName());
+						if (!isNull(arguments.entity.getCreatedByAccount().getEmailAddress())) {
+							audit.setSessionAccountEmailAddress(arguments.entity.getCreatedByAccount().getEmailAddress());
+						}
+					}
+				}
 			}
 			
 			try {
@@ -332,6 +182,21 @@ component extends="HibachiService" accessors="true" {
 			if (!commitPendingFlag) {
 				addAuditToCommit(audit);
 			}
+			
+			// If no previous audit create data available, manually add a 'create' audit for legacy data and make necessary adjustments to the data
+			var auditSmartList = getAuditSmartListForEntity(entity=arguments.entity, auditTypeList='create');
+			if (!isNull(arguments.oldData) && auditSmartList.getRecordsCount()  == 0) {
+				var auditLegacyCreate = logEntityModify(arguments.entity);
+				
+				// Remove oldData from arguments if it was provided because it is not applicable for property change data
+				var propertyChangeDataForLegacyCreate = generatePropertyChangeDataForEntity(entity=arguments.entity);
+				
+				// Revert new values back to the old values to capture an initial state
+				structAppend(propertyChangeDataForLegacyCreate.newPropertyData, propertyChangeData.oldPropertyData);
+				auditLegacyCreate.setData(serializeJSON(propertyChangeDataForLegacyCreate));
+			}
+			
+			return audit;
 		}
 	}
 	
@@ -497,6 +362,162 @@ component extends="HibachiService" accessors="true" {
 		return standardizedValue;
 	}
 	
+	public void function addAuditToCommit(any audit) {
+		// Group related audits together by the base object's primary ID
+		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
+		if (len(arguments.audit.getBaseID()) && !structKeyExists(auditStruct, arguments.audit.getBaseID())) {
+			structInsert(auditStruct, audit.getBaseID(), {});
+		}
+		
+		var auditType = '';
+		if (arguments.audit.getAuditType() == 'create') {
+			auditType = 'create';
+		} else if (listFindNoCase('update,rollback', arguments.audit.getAuditType())) {
+			auditType = 'update';
+		} else if (arguments.audit.getAuditType() == 'delete') {
+			auditType = 'delete';
+		}
+		
+		if (len(auditType)) {
+			structInsert(auditStruct[audit.getBaseID()], auditType, arguments.audit);
+		}
+	}
+	
+	public any function getExistingAuditToCommit(string baseID, string auditType) {
+		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
+		if (structKeyExists(auditStruct, arguments.baseID) && structKeyExists(auditStruct[arguments.baseID], arguments.auditType)) {
+			return auditStruct[arguments.baseID][arguments.auditType];
+		}
+		
+		return javaCast("null", "");
+	}
+	
+	public void function commitAudits() {
+		var commitTotal = 0;
+		var archiveCandidates = [];
+		for (var baseID in getHibachiScope().getAuditsToCommitStruct()) {
+			for (var auditType in ['create', 'update', 'delete']) {
+				if (structKeyExists(getHibachiScope().getAuditsToCommitStruct()[baseID], auditType)) {
+					this.saveAudit(getHibachiScope().getAuditsToCommitStruct()[baseID][auditType]);
+					commitTotal++;
+					
+					// Audit needs to be checked because archiving may need to occur
+					if (auditType == 'update') {
+						arrayAppend(archiveCandidates, getHibachiScope().getAuditsToCommitStruct()[baseID][auditType]);
+					}
+				}
+			}
+		}
+		
+		if (!getHibachiScope().getORMHasErrors()) {
+			getHibachiDAO().flushORMSession();
+		}
+		
+		if (commitTotal) {
+			logHibachi("Audits were committed, (#commitTotal#) total");
+		}
+		
+		if (arraylen(archiveCandidates)) {
+			// Threaded process of audits that may need to be archived
+			if (getHibachiScope().setting('globalAuditCommitMode') == 'thread') {
+				thread name="archiveThread" action="run" archiveCandidates="#archiveCandidates#" {
+					for (var audit in archiveCandidates) {
+						this.processAudit(audit, 'archive');
+					}
+					
+					if (!getHibachiScope().getORMHasErrors()) {
+						getHibachiDAO().flushORMSession();
+					}
+				}
+			// Non-threaded process of audits that may need to be archived
+			} else {
+				for (var audit in archiveCandidates) {
+					this.processAudit(audit, 'archive');
+				}
+				
+				if (!getHibachiScope().getORMHasErrors()) {
+					getHibachiDAO().flushORMSession();
+				}
+			}
+		}
+		
+		
+		getHibachiScope().clearAuditsToCommitStruct();
+	}
+	
+	public any function getChangeDetailsForAudit(any audit) {
+		var changeData = deserializeJSON(arguments.audit.getData());
+		
+		var changeDetails = {};
+		changeDetails.properties = [];
+		changeDetails.columnList = 'new';
+		if (listFindNoCase('update,rollback,archive', arguments.audit.getAuditType())) {
+			changeDetails.columnList = listAppend(changeDetails.columnList, 'old');
+		}
+		
+		var properties = getEntityObject(arguments.audit.getBaseObject()).getAuditableProperties();
+		for (var currentProperty in properties) {
+			var changeDetail = {};
+			changeDetail['propertyName'] = currentProperty.name;
+			
+			for (var column in listToArray(changeDetails.columnList)) {
+				if (structKeyExists(changeData['#column#PropertyData'], currentProperty.name)) {
+					var columnValue = "";
+					var dataValue = changeData['#column#PropertyData'][currentProperty.name];
+					
+					// Column/Simple Value
+					if (!structKeyExists(currentProperty, "fieldType") || currentProperty.fieldType == "column") {
+						if (isBoolean(dataValue) && structKeyExists(currentProperty, "ormtype") && currentProperty.ormtype == "boolean") {
+							columnValue = rbKey('define.#yesNoFormat(dataValue)#');
+						} else {
+							columnValue = dataValue;
+						}
+					// Entity
+					} else if (structKeyExists(currentProperty, 'cfc')) {
+						if (isStruct(dataValue)) {
+							// Get actual reference to entity
+							var entityPrimaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(currentProperty.cfc);
+							var entityService = getServiceByEntityName(currentProperty.cfc);
+							if (structKeyExists(dataValue, entityPrimaryIDPropertyName)) {
+								columnValue = entityService.invokeMethod( 'get#listLast(currentProperty.cfc,'.')#', {1=dataValue[entityPrimaryIDPropertyName],2=false});
+								
+								// Use simple representation or primaryID in case that the referenced entity had been deleted and no longer exists
+								if (isNull(columnValue)) {
+									if (structKeyExists(dataValue, 'title')) {
+										columnValue = dataValue.title;
+									} else {
+										columnValue = dataValue[entityPrimaryIDPropertyName];
+									}
+								}
+							}
+						}
+					}
+					
+					changeDetail[column] = columnValue;
+				}
+			}
+			
+			// Only include the relevant auditable properties
+			if (listFindNoCase(structKeyList(changeDetail), 'new') || listFindNoCase(structKeyList(changeDetail), 'old')) {
+				// Make sure matching 'old' key exists when appropriately required
+				if (listFindNoCase(changeDetails.columnList, 'old') && !structKeyExists(changeDetail, 'old')) {
+					// Blank when missing
+					changeDetail['old'] = "";
+				}
+				
+				// Make sure matching 'new' key exists when appropriately required
+				if (listFindNoCase(changeDetails.columnList, 'new') && !structKeyExists(changeDetail, 'new')) {
+					// Blank when missing
+					changeDetail['new'] = "";
+				}
+				
+				arrayAppend(changeDetails.properties, changeDetail);
+			}
+		}
+		
+		return changeDetails;
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
@@ -511,10 +532,8 @@ component extends="HibachiService" accessors="true" {
 		
 		var relatedEntity = arguments.audit.getRelatedEntity();
 		
-		var auditSmartList = this.getAuditSmartList();
-		auditSmartList.addFilter("baseID", relatedEntity.getPrimaryIDValue());
+		var auditSmartList = getAuditSmartListForEntity(entity=relatedEntity, auditTypeList='create,update,rollback,archive');
 		auditSmartList.addOrder("auditDateTime|DESC");
-		auditSmartList.addInFilter('auditType', 'create,update,rollback,archive');
 		var audits = auditSmartList.getRecords();
 		
 		// Locate rollback index relative to the audit the rollback is being processed on (the audit just before)
@@ -571,10 +590,8 @@ component extends="HibachiService" accessors="true" {
 			var autoArchiveVersionLimit = getHibachiScope().setting('globalAuditAutoArchiveVersionLimit');
 			
 			// We will aggregate any auditTypes of update, rollback, archive
-			var auditSmartList = this.getAuditSmartList();
-			auditSmartList.addFilter("baseID", audit.getRelatedEntity().getPrimaryIDValue());
+			var auditSmartList = getAuditSmartListForEntity(entity=audit.getRelatedEntity(), auditTypeList='update,rollback,archive');
 			auditSmartList.addOrder("auditDateTime|ASC");
-			auditSmartList.addInFilter('auditType', 'update,rollback,archive');
 			
 			var archiveData = {'newPropertyData'={}, 'oldPropertyData'={}};
 			
@@ -607,7 +624,7 @@ component extends="HibachiService" accessors="true" {
 					mostRecentAuditInArchive = audits[i];
 				}
 				
-				// commit the new archive
+				// Commit the new archive
 				if (!isNull(mostRecentAuditInArchive)) {
 					var archiveAudit = this.newAudit();
 					archiveAudit.setAuditType('archive');
@@ -620,8 +637,6 @@ component extends="HibachiService" accessors="true" {
 					archiveAudit.setTitle(mostRecentAuditInArchive.getTitle());
 					archiveAudit.setData(serializeJSON(archiveData));
 					this.saveAudit(archiveAudit);
-					
-					// TODO store archive start date, and date when archive created
 					
 					// Delete audits that have been aggregated into the archive
 					for (var i=1; i<=recordsToAggregate; i++) {
@@ -650,6 +665,21 @@ component extends="HibachiService" accessors="true" {
 	// ====================  END: Smart List Overrides ========================
 	
 	// ====================== START: Get Overrides ============================
+	
+	public any function newAudit() {
+		var audit = this.new('Audit');
+		audit.setAuditDateTime(now());
+		audit.setSessionIPAddress(CGI.REMOTE_ADDR);
+		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+			audit.setSessionAccountID(getHibachiScope().getAccount().getAccountID());
+			audit.setSessionAccountFullName(getHibachiScope().getAccount().getFullName());
+			if (!isNull(getHibachiScope().getAccount().getEmailAddress())) {
+				audit.setSessionAccountEmailAddress(getHibachiScope().getAccount().getEmailAddress());
+			}
+		}
+		
+		return audit;
+	}
 	
 	// ======================  END: Get Overrides =============================
 	
