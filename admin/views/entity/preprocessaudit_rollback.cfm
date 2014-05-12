@@ -100,6 +100,13 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountFullName">
 				<cfif not listFindNoCase("login,loginInvalid,logout", rc.audit.getAuditType())>
 					<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
+					
+					<cfif rc.audit.getAuditType() eq "archive">
+						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveStartDateTime">
+						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveEndDateTime">
+						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveCreatedDateTime">
+					</cfif>
+					
 					<cfif !isNull(rc.audit.getChangeDetails())>
 						<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
 					</cfif>

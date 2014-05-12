@@ -258,18 +258,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint Returns a smart list of audits related to this entity
 	public any function getAuditSmartList() {
 		if(!structKeyExists(variables, "auditSmartList")) {
-			variables.auditSmartList = getService("hibachiAuditService").getAuditSmartList();
-			variables.auditSmartList.addFilter("baseID", getPrimaryIDValue());
+			variables.auditSmartList = getService("hibachiAuditService").getAuditSmartListForEntity(entity=this);
 			variables.auditSmartList.addOrder("auditDateTime|DESC");
 		}
 		
 		return variables.auditSmartList;
-	}
-	
-	public void function clearAuditSmartList() {
-		if (structKeyExists(variables, "auditSmartList")) {
-			structDelete(variables, "auditSmartList");
-		}
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity
