@@ -135,7 +135,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="rc.process" default="0";
 		param name="rc.branchType" default="standard";
 		
-		/*
 		if(rc.process) {
 			logHibachi("Update Called", true);
 			
@@ -149,7 +148,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.$.slatwall.showMessageKey("admin.main.update_success");
 			getFW().redirect(action="admin:main.default", preserve="messages", queryString="#getApplicationValue('applicationReloadKey')#=#getApplicationValue('applicationReloadPassword')#&#getApplicationValue('applicationUpdateKey')#=#getApplicationValue('applicationUpdatePassword')#");
 		}
-		*/
 		
 		var versions = getUpdateService().getAvailableVersions();
 		rc.availableDevelopVersion = versions.develop;
