@@ -50,7 +50,7 @@
 		
 	<cffunction name="getPageShow" access="public" output="false">
 		 <cfif not structKeyExists(variables, "pageShow")>
-		 	<cfset variables.pageShow = 25 />
+		 	<cfset variables.pageShow = 20 />
 		 </cfif>
 		 
 		 <cfreturn variables.pageShow />
@@ -61,7 +61,7 @@
 	</cffunction>	
 	
 	<cffunction name="getDataTableEndRow" access="public" output="false">
-		 <cfreturn getDataTableStartRow() + getPageShow() />
+		 <cfreturn getDataTableStartRow() + getPageShow() - 1 />
 	</cffunction>
 	
 	
