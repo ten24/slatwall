@@ -183,22 +183,24 @@ Notes:
 			
 			<br style="clear:both;" />
 			
-            <div id="orderPayments" style="margin-top: 15px; float: left; clear: both; width: 600px;">
-                <table id="payment" style="border-spacing: 0px; border-collapse: collapse; border: 1px solid ##d8d8d8; text-align: left; font-size: 12px; width:600px;">
-                    <thead>
-                        <tr>
-                            <th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Shipping Method</th>
-                            <th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Tracking Number</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#orderDelivery.getShippingMethod().getShippingMethodName()#</td>
-                            <td style="border: 1px solid ##d8d8d8; padding:0px 5px; width:100px;">#orderDelivery.getTrackingNumber()#</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+			<cfif local.orderFulfillment.getFulfillmentMethodType() EQ "shipping">
+	            <div id="shippingDetails" style="margin-top: 15px; float: left; clear: both; width: 600px;">
+	                <table id="payment" style="border-spacing: 0px; border-collapse: collapse; border: 1px solid ##d8d8d8; text-align: left; font-size: 12px; width:600px;">
+	                    <thead>
+	                        <tr>
+	                            <th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Shipping Method</th>
+	                            <th style="background: ##f9f9f9; border: 1px solid ##d8d8d8; padding: 0px 5px;">Tracking Number</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody>
+	                        <tr>
+	                            <td style="border: 1px solid ##d8d8d8; padding:0px 5px;">#orderDelivery.getShippingMethod().getShippingMethodName()#</td>
+	                            <td style="border: 1px solid ##d8d8d8; padding:0px 5px; width:100px;">#orderDelivery.getTrackingNumber()#</td>
+	                        </tr>
+	                    </tbody>
+	                </table>
+	            </div>
+            </cfif>
 
 		</div>
 	</cfoutput>
@@ -220,10 +222,11 @@ Notes:
 		#orderItem.getFormattedValue('price', 'currency')# | #NumberFormat(orderItem.getQuantity())# | #orderItem.getFormattedValue('extendedPrice', 'currency')# 
 		---------------------------------------------------------------------------
 		</cfloop>
-		
+		<cfif local.orderFulfillment.getFulfillmentMethodType() EQ "shipping">
 		===========================================================================
         Shipping Method : #orderDelivery.getShippingMethod().getShippingMethodName()#
         Tracking Number : #orderDelivery.getTrackingNumber()#
+		</cfif>
 
 	</cfoutput>
 </cfsavecontent>
