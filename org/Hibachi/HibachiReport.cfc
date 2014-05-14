@@ -50,7 +50,7 @@
 		
 	<cffunction name="getPageShow" access="public" output="false">
 		 <cfif not structKeyExists(variables, "pageShow")>
-		 	<cfset variables.pageShow = 20 />
+		 	<cfset variables.pageShow = 25 />
 		 </cfif>
 		 
 		 <cfreturn variables.pageShow />
