@@ -51,15 +51,24 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function all_entity_properties_have_keys() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		var allFound = true;
+		
 		for(var entityName in allEntities) {
+			
+			var thisEntityName = replace(entityName, "Slatwall","","all");
 			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			
 			for(var property in properties) {
-				var keyValue = request.slatwallScope.rbKey('entity.#entityName#.#property.name#');
-				if(right(keyValue,8) == '_missing') {
-					debug(keyValue);
+				if(!structKeyExists(property, "persistent") || property.persistent) {
+					var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#.#property.name#');
+					if(right(keyValue,8) == '_missing') {
+						debug(keyValue);
+						allFound = false;
+					}	
 				}
 			}
 		}
+		
+		assert(allFound);
 	}
 	
 }
