@@ -290,12 +290,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		for(var i=1; i<=arrayLen(getTermAccountOrderPayments()); i++) {
 			termAccountBalance = precisionEvaluate(termAccountBalance + getTermAccountOrderPayments()[i].getAmountUnreceived());
 		}
-		
+
 		// Now look for the unasigned payment amount 
 		for(var i=1; i<=arrayLen(getAccountPayments()); i++) {
 			termAccountBalance = precisionEvaluate(termAccountBalance - getAccountPayments()[i].getAmountUnassigned());
 		}
-		
 		return termAccountBalance;
 	}
 	
