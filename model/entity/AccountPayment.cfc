@@ -314,8 +314,19 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	}
 	
 	public numeric function getAmountUnassigned() {
-		// This is temporary until we get the assignment of accountPayments to orderPayments
-		return precisionEvaluate(getAmountReceived()-getAmountCredited());
+		var amountUnassigned = 0;
+		
+		for(var accountPaymentApplied in getAppliedAccountPayments()) {
+			if(!isNull(accountPaymentApplied.getOrderPayment())) {
+				if(accountPaymentApplied.getAccountPaymentType().getSystemCode() == "aptCharge") {
+					amountUnassigned = precisionEvaluate(amountUnassigned + accountPaymentApplied.getAmount());		
+				} else {
+					amountUnassigned = precisionEvaluate(amountUnassigned - accountPaymentApplied.getAmount());
+				}
+			}
+		}
+		
+		return amountUnassigned;
 	}
 	
 	public boolean function getCreditCardOrProviderTokenExistsFlag() {
