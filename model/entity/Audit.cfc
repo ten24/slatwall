@@ -138,7 +138,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// =============== START: Custom Validation Methods ====================
 	
 	public boolean function getAuditRollbackValidFlag() {
-		var validationResult = !getService("hibachiValidationService").validate(object=this, context="rollback", setErrors=false).hasErrors();
+		var validationResult = !validateAuditRollback().hasErrors();
 		
 		// If necessary delegate validation to related entity
 		if (validationResult && !isNull(getRelatedEntity())) {
@@ -146,6 +146,10 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 		}
 		
 		return validationResult;
+	}
+	
+	public any function validateAuditRollback(boolean setErrors=false) {
+		return getService("hibachiValidationService").validate(object=this, context="rollback", setErrors=arguments.setErrors);
 	}
 	
 	// ===============  END: Custom Validation Methods =====================
