@@ -139,6 +139,10 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 			}
 		}
 		
+		if(this.hasErrors()) {
+			getHibachiScope().setORMHasErrors( true );
+		}
+		
 		return getHibachiErrors();
 	}
 	
