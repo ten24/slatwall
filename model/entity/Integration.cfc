@@ -112,7 +112,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	}
 	
 	public any function getSettings() {
-		return getIntegrationCFC().getSettings();
+		if(!isNull(getInstalledFlag()) && getInstalledFlag()) {
+			return getIntegrationCFC().getSettings();	
+		}
+		return {};
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
