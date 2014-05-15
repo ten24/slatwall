@@ -156,7 +156,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			if(!isNull(thisAttribute)) {
 				newAttributeValue.setAttribute( thisAttribute );
 			}
-
+			//newAttributeValue.invokeMethod("set#getClassName()#", {1=this});
 			return newAttributeValue;
 
 		}
