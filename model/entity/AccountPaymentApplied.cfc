@@ -137,6 +137,13 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	
 	// ============== START: Overridden Implicit Getters ===================
 	
+	public any function getAccountPaymentType() {
+		if(!isNull(variables.accountPaymentType)) {
+			return variables.accountPaymentType; 
+		}
+		return getAccountPayment().getAccountPaymentType();
+	}
+	
 	// ==============  END: Overridden Implicit Getters ====================
 	
 	// ============= START: Overridden Smart List Getters ==================
@@ -144,6 +151,7 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+	
 	public string function getSimpleRepresentationPropertyName() {
 		return "accountPaymentAppliedID";
 	}
