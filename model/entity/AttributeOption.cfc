@@ -57,11 +57,11 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	// Related Object Properties (Many-To-One)
 	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID";	
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	
 	public string function getAttributeOptionLabel() {
