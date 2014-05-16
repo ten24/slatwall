@@ -74,11 +74,11 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="subscriptionUsage" cfc="SubscriptionUsage" fieldtype="many-to-one" fkcolumn="subscriptionUsageID";
 	property name="task" cfc="Task" fieldtype="many-to-one" fkcolumn="taskID";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	public struct function getSettingMetaData() {
 		return getService("settingService").getSettingMetaData(settingName=getSettingName());
