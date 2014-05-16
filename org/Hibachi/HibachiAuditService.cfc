@@ -760,8 +760,4 @@ component extends="HibachiService" accessors="true" {
 		return baseTitle;
 	}
 	
-	public any function getAttributeByAttributeCode(string attributeCode) {
-		return getHibachiCacheService().getOrCacheFunctionValue('hibachiAuditService_getAttributeByAttributeCode_#arguments.attributeCode#', 'hibachiService', 'getAttributeByAttributeCode', arguments);
-	}
-	
 }

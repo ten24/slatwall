@@ -64,6 +64,15 @@ component  extends="HibachiService" accessors="true" {
 		return attributeCodeList;
 	}
 	
+	public any function getAttributeNameByAttributeCode(string attributeCode) {
+		var attribute = getHibachiCacheService().getOrCacheFunctionValue('attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#', this, 'getAttributeByAttributeCode', arguments);
+		if (!isNull(attribute)) {
+			return attribute.getAttributeName();
+		}
+		
+		return "";
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================

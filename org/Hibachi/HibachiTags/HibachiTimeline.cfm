@@ -177,9 +177,9 @@ Notes:
 											<cfif not isFirstFlag>,</cfif>
 											<!--- propertyName is attribute --->
 											<cfif !thisTag.hibachiAuditService.getEntityHasPropertyByEntityName(entityName=currentAudit.getBaseObject(), propertyName=propertyName) and attributes.hibachiScope.getService('hibachiService').getEntityHasAttributeByEntityName(entityName=currentAudit.getBaseObject(), attributeCode=propertyName)>
-												<cfset attribute = thisTag.hibachiAuditService.getAttributeByAttributeCode(propertyName) />
-												<cfif !isNull(attribute)>
-													#attribute.getAttributeName()#
+												<cfset attributeName = attributes.hibachiScope.getService('AttributeService').getAttributeNameByAttributeCode(propertyName) />
+												<cfif len(attributeName)>
+													#attributeName#
 												<cfelse>
 													#attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#propertyName#")#
 												</cfif>
