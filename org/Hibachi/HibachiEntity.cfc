@@ -9,6 +9,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="processObjects" type="struct" persistent="false";
 	property name="auditSmartList" type="any" persistent="false";
 	
+	// Audit Properties
+	property name="createdByAccount" persistent="false";
+	property name="modifiedByAccount" persistent="false";
+	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
@@ -650,6 +654,24 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	public array function getEmailTemplates() {
 		return [];
+	}
+	
+	public any function getCreatedByAccount() {
+		if(structKeyExists(this, "getCreatedByAccountID")) {
+			var accountID = this.getCreatedByAccountID();
+			if(!isNull(accountID)) {
+				return getService('accountService').getAccount( accountID );	
+			}
+		}
+	}
+	
+	public any function getModifiedByAccount() {
+		if(structKeyExists(this, "getModifiedByAccountID")) {
+			var accountID = this.getModifiedByAccountID();
+			if(!isNull(accountID)) {
+				return getService('accountService').getAccount( accountID );	
+			}
+		}
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
