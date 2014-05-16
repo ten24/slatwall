@@ -761,7 +761,7 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function getAttributeByAttributeCode(string attributeCode) {
-		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, "hibachiService", "getAttributeByAttributeCode", arguments);
+		return getHibachiCacheService().getOrCacheFunctionValue('hibachiAuditService_getAttributeByAttributeCode_#arguments.attributeCode#', 'hibachiService', 'getAttributeByAttributeCode', arguments);
 	}
 	
 }
