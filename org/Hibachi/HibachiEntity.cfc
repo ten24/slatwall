@@ -716,13 +716,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			updateCalculatedProperties();
 			
 			// Set createdByAccount
-			if(structKeyExists(this,"setCreatedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setCreatedByAccount( getHibachiScope().getAccount() );	
+			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );	
 			}
 			
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount());
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount( getHibachiScope().getAccount().getAccountID() );
 			}
 			
 			// Setup the first sortOrder
@@ -766,8 +766,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			updateCalculatedProperties();
 		
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount());
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
 		}
 		
