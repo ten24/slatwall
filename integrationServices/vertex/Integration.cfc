@@ -65,7 +65,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			accountNo = {fieldType="text"},
 			password = {fieldType="password", encryptValue=true},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
-			vertexServer = {fieldType="text"}
+			trustedID = {fieldType="text"},
+			serverURL = {fieldType="text"}
 		};
 		
 		return settings;
