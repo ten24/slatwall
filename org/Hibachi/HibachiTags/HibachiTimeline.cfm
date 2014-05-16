@@ -173,7 +173,23 @@ Notes:
 										<em>#attributes.hibachiScope.rbKey("entity.audit.changeDetails.propertyChanged.#currentAudit.getAuditType()#")#: 
 										<cfset data = deserializeJSON(currentAudit.getData()) />
 										<cfset isFirstFlag = true />
-										<cfloop collection="#data.newPropertyData#" item="property"><cfif not isFirstFlag>,</cfif> #attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#property#")#<cfset isFirstFlag = false /></cfloop></em>
+										<cfloop collection="#data.newPropertyData#" item="propertyName">
+											<cfif not isFirstFlag>,</cfif>
+											<!--- propertyName is attribute --->
+											<cfif !thisTag.hibachiAuditService.getEntityHasPropertyByEntityName(entityName=currentAudit.getBaseObject(), propertyName=propertyName) and attributes.hibachiScope.getService('hibachiService').getEntityHasAttributeByEntityName(entityName=currentAudit.getBaseObject(), attributeCode=propertyName)>
+												<cfset attribute = thisTag.hibachiAuditService.getAttributeByAttributeCode(propertyName) />
+												<cfif !isNull(attribute)>
+													#attribute.getAttributeName()#
+												<cfelse>
+													#attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#propertyName#")#
+												</cfif>
+											<!--- propertyName is entity property --->
+											<cfelse>
+												#attributes.hibachiScope.rbKey("entity.#currentAudit.getBaseObject()#.#propertyName#")#
+											</cfif>
+											<cfset isFirstFlag = false />
+										</cfloop>
+										</em>
 									</cfif>
 								<cfelse>
 									#currentAudit.getFormattedValue('auditType')#<br/>
