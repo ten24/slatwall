@@ -64,7 +64,9 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		var settings = {
 			accountNo = {fieldType="text"},
 			password = {fieldType="password", encryptValue=true},
-			testingFlag = {fieldType="yesno", defaultValue="1"}
+			testingFlag = {fieldType="yesno", defaultValue="1"},
+			trustedID = {fieldType="text"},
+			serverURL = {fieldType="text"}
 		};
 		
 		return settings;
