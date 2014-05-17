@@ -106,7 +106,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	public function getChangeDetails() {
 		if (!structKeyExists(variables, "changeDetails")) {
 			if (listFindNoCase("create,update,rollback,archive", getAuditType())) {
-				variables.changeDetails = getService("HibachiAuditService").getChangeDetailsForAudit(this);
+				variables.changeDetails = getService("HibachiAuditService").getPropertyChangeDetailsForAudit(this);
 			}
 		}
 		

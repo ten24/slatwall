@@ -475,7 +475,7 @@ component extends="HibachiService" accessors="true" {
 		getHibachiScope().clearAuditsToCommitStruct();
 	}
 	
-	public any function getChangeDetailsForAudit(any audit) {
+	public any function getPropertyChangeDetailsForAudit(any audit) {
 		var changeData = deserializeJSON(arguments.audit.getData());
 		
 		var changeDetails = {};
@@ -485,10 +485,15 @@ component extends="HibachiService" accessors="true" {
 			changeDetails.columnList = listAppend(changeDetails.columnList, 'old');
 		}
 		
-		var properties = getEntityObject(arguments.audit.getBaseObject()).getAuditableProperties();
-		for (var currentProperty in properties) {
+		for (var currentProperty in getEntityObject(arguments.audit.getBaseObject()).getAuditableProperties()) {
 			var changeDetail = {};
 			changeDetail['propertyName'] = currentProperty.name;
+			changeDetail['attributeFlag'] = false;
+			
+			// Set flag to indicate whether this is an actual entity property or an attribute
+			if (structKeyExists(currentProperty, 'attributeFlag')) {
+				changeDetail.attributeFlag = currentProperty.attributeFlag;
+			}
 			
 			for (var column in listToArray(changeDetails.columnList)) {
 				if (structKeyExists(changeData['#column#PropertyData'], currentProperty.name)) {

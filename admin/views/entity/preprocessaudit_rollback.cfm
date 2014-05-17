@@ -77,7 +77,16 @@ Notes:
 					
 					<cfloop array="#changeDetails.properties#" index="changeDetail">
 						<tr>
-							<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+							<cfif changeDetail.attributeFlag>
+								<cfset attributeName = request.context.fw.getHibachiScope().getService('AttributeService').getAttributeNameByAttributeCode(changeDetail.propertyName) />
+								<cfif len(attributeName)>
+									<td>#attributeName#</td>
+								<cfelse>
+									<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+								</cfif>
+							<cfelse>
+								<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+							</cfif>
 							<cfif listFindNoCase(changeDetails.columnList, "old")>
 								<cfif isSimpleValue(changeDetail.old)>
 									<td>#changeDetail.old#</td>

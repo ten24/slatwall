@@ -65,12 +65,20 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	public any function getAttributeNameByAttributeCode(string attributeCode) {
-		var attribute = getHibachiCacheService().getOrCacheFunctionValue('attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#', this, 'getAttributeByAttributeCode', arguments);
-		if (!isNull(attribute)) {
-			return attribute.getAttributeName();
+		var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#';
+		if(getHibachiCacheService().hasCachedValue(key)) {
+			return getHibachiCacheService().getCachedValue(key);
 		}
 		
-		return "";
+		var attribute = getHibachiCacheService().getOrCacheFunctionValue('attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#', this, 'getAttributeByAttributeCode', arguments);
+		var atributeName = "";
+		if (!isNull(attribute)) {
+			atributeName = attribute.getAttributeName();
+		}
+		
+		getHibachiCacheService().setCachedValue(key, atributeName);
+		
+		return atributeName;
 	}
 	
 	// =====================  END: Logical Methods ============================
