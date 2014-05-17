@@ -58,6 +58,12 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	property name="parentType" cfc="Type" fieldtype="many-to-one" fkcolumn="parentTypeID";
 	property name="childTypes" singularname="childType" type="array" cfc="Type" fieldtype="one-to-many" fkcolumn="parentTypeID" cascade="all" inverse="true";
 	
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
+	
 	public any function getChildTypes() {
 		if(!isDefined('variables.childTypes')) {
 			variables.childTypes = arraynew(1);
