@@ -535,7 +535,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 	
 	public string function getAuditablePropertyExclusionList() {
-		return "createdByAccount,createdDateTime,modifiedByAccount,modifiedDateTime,remoteID";
+		return "createdByAccount,createdByAccountID,createdDateTime,modifiedByAccount,modifiedByAccountID,modifiedDateTime,remoteID";
 	}
 	
 	public array function getAuditableProperties() {
