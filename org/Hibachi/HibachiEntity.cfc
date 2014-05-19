@@ -9,6 +9,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="processObjects" type="struct" persistent="false";
 	property name="auditSmartList" type="any" persistent="false";
 	
+	// Audit Properties
+	property name="createdByAccount" persistent="false";
+	property name="modifiedByAccount" persistent="false";
+	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
@@ -656,6 +660,24 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return [];
 	}
 	
+	public any function getCreatedByAccount() {
+		if(structKeyExists(this, "getCreatedByAccountID")) {
+			var accountID = this.getCreatedByAccountID();
+			if(!isNull(accountID)) {
+				return getService('accountService').getAccount( accountID );	
+			}
+		}
+	}
+	
+	public any function getModifiedByAccount() {
+		if(structKeyExists(this, "getModifiedByAccountID")) {
+			var accountID = this.getModifiedByAccountID();
+			if(!isNull(accountID)) {
+				return getService('accountService').getAccount( accountID );	
+			}
+		}
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
@@ -698,13 +720,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			updateCalculatedProperties();
 			
 			// Set createdByAccount
-			if(structKeyExists(this,"setCreatedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setCreatedByAccount( getHibachiScope().getAccount() );	
+			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );	
 			}
 			
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount());
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount( getHibachiScope().getAccount().getAccountID() );
 			}
 			
 			// Setup the first sortOrder
@@ -748,8 +770,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			updateCalculatedProperties();
 		
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount());
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
 		}
 		
