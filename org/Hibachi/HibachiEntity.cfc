@@ -247,7 +247,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 	
 	public boolean function getAuditRollbackValidFlag() {
-		return !getService("hibachiValidationService").validate(object=this, context="auditRollback", setErrors=false).hasErrors();
+		return !validateAuditRollback().hasErrors();
+	}
+	
+	public any function validateAuditRollback(boolean setErrors=false) {
+		return getService("hibachiValidationService").validate(object=this, context="auditRollback", setErrors=arguments.setErrors);
 	}
 	
 	// @hint public method to determine if this entity is audited

@@ -2,6 +2,7 @@
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.entity" type="any" />
 	<cfparam name="attributes.disableProcess" type="boolean" default="false" />
+	<cfparam name="attributes.disableProcessText" type="string" default="" />
 	<cfparam name="attributes.processAction" type="string" default="#request.context.entityActionDetails.processaction#" />
 	<cfparam name="attributes.processActionQueryString" type="string" default="" />
 	<cfparam name="attributes.processActionHash" type="string" default="" />
@@ -62,9 +63,7 @@
 					<cfif attributes.edit>
 						<div class="btn-group">
 							<a href="##" class="btn btn-inverse" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</a>
-							<cfif not attributes.disableProcess>
-								<button type="submit" class="btn btn-success"><i class="icon-ok icon-white"></i> #attributes.hibachiScope.rbKey( "entity.#attributes.entity.getClassName()#.process.#attributes.processContext#" )#</button>
-							</cfif>
+							<cf_HibachiActionCaller type="button" action="##" class="btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
 						</div>
 					</cfif>
 				</div>
