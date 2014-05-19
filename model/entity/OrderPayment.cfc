@@ -605,6 +605,17 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		return variables.billingAddress;
 	}
 	
+	public any function getCurrencyCode() {
+		if( !structKeyExists(variables, "currencyCode") ) {
+			if(!isNull(getOrder()) && !isNull(getOrder().getCurrencyCode())) {
+				variables.currencyCode = getOrder().getCurrencyCode();
+			} else {
+				variables.currencyCode = setting('skuCurrency');
+			}
+		}
+		return variables.currencyCode;
+	}
+	
 	public any function getOrderPaymentType() {
 		if( !structKeyExists(variables, "orderPaymentType") ) {
 			variables.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge");
