@@ -55,22 +55,27 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entitiesWithoutAuditProperties = "";
 		
 		for(var entityName in allEntities) {
+			//Sets auditPropertyBoolean to 0 each loop
+			var auditPropertyBoolean = 0;
 			
 			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
-
+			//Loop over all the properties checking for audit properties
 			for(var property in properties) {
-				if(structKeyExists(property, "name") && property.name != "createdDateTime" 
-						|| property.name != "createdByAccountID" 
-						|| property.name != "modifiedDateTime" 
-						|| property.name != "modifiedByAccountID") {
+				//If logic finds an audit property, break from this entity's properties loop
+				if(structKeyExists(property, "name") && property.name == "createdDateTime" 
+						|| property.name == "createdByAccountID" 
+						|| property.name == "modifiedDateTime" 
+						|| property.name == "modifiedByAccountID") {
 					
-					 if (!listContains(entitiesWithoutAuditProperties, entityName)) {
-						entitiesWithoutAuditProperties = ListAppend(entitiesWithoutAuditProperties, entityName);
-					 }
-					
-					
-					hasAuditProperties = false;	
+					auditPropertyBoolean = 1;
+					break;
 				}
+			
+			}
+			//If the entity's auditPropertyBoolean is 0 and entitiesWithoutAuditProperties list does not contain the new entity
+			if (!listContains(entitiesWithoutAuditProperties, entityName) && auditPropertyBoolean == 0) {
+				entitiesWithoutAuditProperties = ListAppend(entitiesWithoutAuditProperties, entityName);
+				hasAuditProperties = false;	
 			}
 		}
 		entitiesWithoutAuditPropertiesArr = listToArray(entitiesWithoutAuditProperties);
