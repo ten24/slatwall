@@ -48,6 +48,39 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
+	//Entity Audit Properties Test
+	public void function all_entity_properties_have_audit_properties() {
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		var hasAuditProperties = true;
+		var entitiesWithoutAuditProperties = "";
+		
+		for(var entityName in allEntities) {
+			
+			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+
+			for(var property in properties) {
+				if(structKeyExists(property, "name") && property.name != "createdDateTime" 
+						|| property.name != "createdByAccountID" 
+						|| property.name != "modifiedDateTime" 
+						|| property.name != "modifiedByAccountID") {
+					
+					 if (!listContains(entitiesWithoutAuditProperties, entityName)) {
+						entitiesWithoutAuditProperties = ListAppend(entitiesWithoutAuditProperties, entityName);
+					 }
+					
+					
+					hasAuditProperties = false;	
+				}
+			}
+		}
+		entitiesWithoutAuditPropertiesArr = listToArray(entitiesWithoutAuditProperties);
+		
+		for(i = 1; i <= ArrayLen(entitiesWithoutAuditPropertiesArr); i++){
+			debug(entitiesWithoutAuditPropertiesArr[i]);
+		}
+		assert(hasAuditProperties);
+	}
+	
 	// Oracle Naming tests
 	public void function oracle_entity_table_name_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
