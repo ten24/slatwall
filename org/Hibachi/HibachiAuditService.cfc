@@ -323,7 +323,13 @@ component extends="HibachiService" accessors="true" {
 		if (!structKeyExists(arguments.propertyMetaData, "fieldType") || arguments.propertyMetaData.fieldType == "column") {
 			// Set only when defined and not null, otherwise leave 'standardizedValue' as empty string
 			if (isDefined('arguments.propertyValue') && !isNull(arguments.propertyValue) && isSimpleValue(arguments.propertyValue)) {
-				standardizedValue = arguments.propertyValue;
+				
+				// Explicitly set boolean to 'true' or 'false' so there are no mixes with '1' and '0'
+				if (structKeyExists(arguments.propertyMetaData, "ormtype") && arguments.propertyMetaData.ormtype == "boolean") {
+					standardizedValue = arguments.propertyValue == true;
+				} else {
+					standardizedValue = arguments.propertyValue;
+				}
 			}
 			
 			// Updates mapping data
@@ -589,7 +595,7 @@ component extends="HibachiService" accessors="true" {
 		if (!arguments.audit.hasErrors()) {
 			// Aggregate property changes by traversing backwards from current state
 			var rollbackData = {};
-			var propertiesStruct = relatedEntity.getAuditablePropertiesStruct();
+			
 			for (var i=1; i<=rollbackIndex; i++) {
 				var currentData = deserializeJSON(audits[i].getData());
 				
