@@ -53,7 +53,18 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	}
 
 	public any function getTaxRates(required any requestBean) {
+		
+		// Create a responseBean
 		var ratesResponseBean = getTransient('TaxRatesResponseBean');
+		
+		for(var rateItemRequest in requestBean.getTaxRateItemRequestBeans()) {
+			
+			// Generate a random tax amount
+			var taxAmount = round(rand()*100);
+			
+			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
+		}
+		
 		return ratesResponseBean;
 	}
 

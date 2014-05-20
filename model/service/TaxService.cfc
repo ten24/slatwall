@@ -125,12 +125,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
 						
 						// If a unique integration is found, then we add it to the integrations to call
-						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration() == integration){
+						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == integration.getIntegrationID()){
 							
 							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
 							
 							if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
-								// taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
+								taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
 							}
 						}
 						
@@ -141,9 +141,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} // End OrderItem Loop
 			
 			// Make sure that the ratesRequestBean actually has OrderItems on it
-			if(arrayLen(taxRatesRequestBean.getTaxItemRequestBeans())) {
+			if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
 				
-				logHibachi('#taxIntegrationArr[i].getIntegrationName()# Tax Integration Rates Request - Started');
+				logHibachi('#integration.getIntegrationName()# Tax Integration Rates Request - Started');
 				
 				// Inside of a try/catch call the 'getTaxRates' method of the integraion
 				try {
@@ -152,11 +152,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var integrationTaxAPI = integration.getIntegrationCFC("tax");
 					
 					// Call the API and store the responseBean by integrationID
-					responseBeans[ integration.getIntegrationID() ] = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
+					ratesResponseBeans[ integration.getIntegrationID() ] = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
 					
 				} catch(any e) {
 					
-					logHibachi('An error occured with the #taxIntegrationArr[i].getIntegrationName()# integration when trying to call getTaxRates()', true);
+					logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call getTaxRates()', true);
 					logHibachiException(e);
 				}
 				
@@ -191,20 +191,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							// If this rate has an integration, then try to pull the data from the response bean for that integration
 							if(!isNull(taxCategoryRate.getTaxIntegration())) {
-							
-								// TODO [jubs]: Look for all of the rates responses for this interation, on this orderItem
-								
-							
-							// Else if there is no itegration, then just calculate based on this rate data store in our DB
+								// Look for all of the rates responses for this interation, on this orderItem
+								if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
+									var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];	
+									
+									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
+										
+										if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
+											// Add a new AppliedTax 
+											var newAppliedTax = this.newTaxApplied();
+											newAppliedTax.setAppliedType("orderItem");
+											newAppliedTax.setTaxAmount( taxRateItemResponse.getTaxAmount() );
+											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
+											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
+											newAppliedTax.setOrderItem(orderItem);
+										}
+										
+									}
+									
+								}
+							// Else if there is no itegration or if there was supposed to be a response bean but we didn't get one, then just calculate based on this rate data store in our DB
 							} else {
-								
+						
 								var newAppliedTax = this.newTaxApplied();
 								newAppliedTax.setAppliedType("orderItem");
-								newAppliedTax.setTaxAmount( round(orderItem.getExtendedPriceAfterDiscount() * originalAppliedTax.getTaxRate()) / 100 );
-								newAppliedTax.setTaxRate( originalAppliedTax.getTaxRate() );
-								newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
+								newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxCategoryRate.getTaxRate()) / 100);
+								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
+								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 								newAppliedTax.setOrderItem( orderItem );
-								
+														
 							}
 							
 						}
@@ -239,23 +254,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getTaxAddressByTaxCategoryRate(required any taxCategoryRate, required struct taxAddresses) {
-		if(taxCategoryRate.taxAddressLookup() eq 'shipping,billing') {
+		if(taxCategoryRate.getTaxAddressLookup() eq 'shipping_billing') {
 			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
 				return arguments.taxAddresses.taxShippingAddress;
 			} else if (structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
 				return arguments.taxAddresses.taxBillingAddress;
 			}
-		} else if(taxCategoryRate.taxAddressLookup() eq 'billing,shipping') {
+		} else if(taxCategoryRate.getTaxAddressLookup() eq 'billing_shipping') {
 			if(structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
 				return arguments.taxAddresses.taxBillingAddress;
 			} else if (structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
 				return arguments.taxAddresses.taxShippingAddress;
 			}
-		} else if(taxCategoryRate.taxAddressLookup() eq 'shipping') {
+		} else if(taxCategoryRate.getTaxAddressLookup() eq 'shipping') {
 			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
 				return arguments.taxAddresses.taxShippingAddress;
 			}
-		} else if(taxCategoryRate.taxAddressLookup() eq 'billing') {
+		} else if(taxCategoryRate.getTaxAddressLookup() eq 'billing') {
 			if (structKeyExists(arguments.taxAddresses, "taxBillingAddress")) {
 				return arguments.taxAddresses.taxBillingAddress;
 			}
