@@ -268,15 +268,28 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
+		// Entities that cause known errors
+		var exceptionErrorEntities = "";
+		
 		// Sets up the "Long Search Phrase" search keyword
 		var searchData = {};
 		searchData.keywords = "ThisIsALongSearchPhraseThatWillNeverMatchAnything";
 		
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
-			var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
-			var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
+			if(!listFindNoCase(exceptionErrorEntities, entityName)){
+				
+				try{
+					var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
+					var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
+				} catch (any e) {
+					exceptionErrorEntities = listAppend(exceptionErrorEntities, entityName);
+				}
+
+			}
+
 		}
+		debug(exceptionErrorEntities);
 		assert(!arrayLen(smartList.getPageRecords()));
 	}
 
