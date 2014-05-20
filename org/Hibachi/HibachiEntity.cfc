@@ -79,13 +79,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint returns the propety who's value is a simple representation of this entity.  This can be overridden when necessary
 	public string function getSimpleRepresentationPropertyName() {
 		
-		// Get the meta data for all of the porperties
-		var properties = getProperties();
-		
 		// Look for a property that's last 4 is "name"
-		for(var i=1; i<=arrayLen(properties); i++) {
-			if(properties[i].name == getClassName() & "name") {
-				return properties[i].name;
+		for(var thisProperty in getProperties()) {
+			if((!structKeyExists(thisProperty, "persistent") || thisProperty.persistent) && thisProperty.name == "#getClassName()#name") {
+				return thisProperty.name;
 			}
 		}
 		

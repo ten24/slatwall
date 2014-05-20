@@ -277,10 +277,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
-				
+			
 			try{
 				var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
-				var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
+				var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
 				smartList.getPageRecords();
 			} catch (any e) {
 				arrayAppend(exceptionErrorEntities, entityName);
@@ -291,6 +291,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		debug(exceptionErrorEntities);
 		
 		assert(!arrayLen(exceptionErrorEntities));
+	}
+	
+	public void function quickT() {
+		var ent = entityNew("SlatwallShippingMethodRate");
+		debug(ent.getSimpleRepresentationPropertyName());
 	}
 	
 	public void function all_smart_list_search_return_no_results_with_invalid_keywords() {
@@ -308,7 +313,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var entityName in allEntities){
 			
 			var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
-			var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
+			var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
 			if(arrayLen(smartList.getPageRecords())) {
 				arrayAppend(nonFilteredEntities, entityName);	
 			}
@@ -319,5 +324,5 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(!arrayLen(nonFilteredEntities));
 	}
-
+	
 }
