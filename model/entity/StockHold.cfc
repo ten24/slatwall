@@ -52,17 +52,16 @@ component entityname="SlatwallStockHold" table="SwStockHold" persistent=true acc
 	property name="stockHoldID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="stockHoldExpirationDateTime" ormtype="timestamp";
 	
-	// Audit properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
-	
 	// Related Object Properties (many-to-one)
 	property name="orderItem" fieldtype="many-to-one" fkcolumn="orderItemID" cfc="OrderItem";
 	property name="sku" fieldtype="many-to-one" fkcolumn="skuID" cfc="Sku";
 	property name="stock" fieldtype="many-to-one" fkcolumn="stockID" cfc="Stock";
 	
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

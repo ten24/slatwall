@@ -89,11 +89,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="amountAuthorized" type="numeric" hb_formatType="currency" persistent="false";
@@ -603,6 +603,17 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			return getService("addressService").newAddress();
 		}
 		return variables.billingAddress;
+	}
+	
+	public any function getCurrencyCode() {
+		if( !structKeyExists(variables, "currencyCode") ) {
+			if(!isNull(getOrder()) && !isNull(getOrder().getCurrencyCode())) {
+				variables.currencyCode = getOrder().getCurrencyCode();
+			} else {
+				variables.currencyCode = setting('skuCurrency');
+			}
+		}
+		return variables.currencyCode;
 	}
 	
 	public any function getOrderPaymentType() {

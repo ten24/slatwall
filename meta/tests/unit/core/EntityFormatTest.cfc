@@ -48,6 +48,65 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
+	//Entity Audit Properties Test
+	public void function all_entity_properties_have_audit_properties() {
+		
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		
+		var entitiesThatDontHaveAuditPropertiesArray = [];
+		
+		// Exception Entities with no properties
+		var entitiesWithNoAuditPropsRequired = "SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript";
+		
+		// Exception Entities that only require the createdByAccountID & createdDateTime
+		var entitiesWithCreatedOnlyProperties = "SlatwallComment,SlatwallEmail,SlatwallInventory,SlatwallPrint,SlatwallShippingMethodOption,SlatwallStockReceiverItem";
+		
+		// Exception Entities that only required createdDateTime & modifiedDateTime
+		var entitiesWithCreatedAndModifiedTimeOnlyProperties = "SlatwallSession";
+		
+		
+		for(var entityName in allEntities) {
+			
+			if(!listFindNoCase(entitiesWithNoAuditPropsRequired, entityName)) {
+				
+				var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+				var auditPropertiesFoundCount = 0;
+				
+				for(var property in properties) {
+					
+					// If logic finds an audit property, break from this entity's properties loop
+					if( (listFindNoCase(entitiesWithCreatedOnlyProperties, entityName) && listFindNoCase("createdDateTime,createdByAccountID", property.name))
+						||
+						(listFindNoCase(entitiesWithCreatedAndModifiedTimeOnlyProperties, entityName) && listFindNoCase("createdDateTime,modifiedDateTime", property.name))
+						||
+						(!listFindNoCase(entitiesWithCreatedOnlyProperties, entityName) && !listFindNoCase(entitiesWithCreatedAndModifiedTimeOnlyProperties, entityName) && listFindNoCase("createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID", property.name))
+						) {
+						var auditPropertiesFoundCount += 1;
+					}
+					
+				}
+
+				// If logic finds an audit property, break from this entity's properties loop
+				if( (listFindNoCase(entitiesWithCreatedOnlyProperties, entityName) && auditPropertiesFoundCount != 2)
+					||
+					(listFindNoCase(entitiesWithCreatedAndModifiedTimeOnlyProperties, entityName) && auditPropertiesFoundCount != 2)
+					||
+					(!listFindNoCase(entitiesWithCreatedOnlyProperties, entityName) && !listFindNoCase(entitiesWithCreatedAndModifiedTimeOnlyProperties, entityName) && auditPropertiesFoundCount != 4)
+					) {
+					
+					arrayAppend(entitiesThatDontHaveAuditPropertiesArray, entityName);
+					
+				}
+				
+			}
+			
+		}
+		
+		debug(entitiesThatDontHaveAuditPropertiesArray);
+		
+		assert(!arrayLen(entitiesThatDontHaveAuditPropertiesArray));
+	}
+	
 	// Oracle Naming tests
 	public void function oracle_entity_table_name_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();

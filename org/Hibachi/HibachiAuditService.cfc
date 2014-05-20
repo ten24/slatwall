@@ -107,12 +107,22 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function logEntityModify(any entity, struct oldData) {
+		
 		if (arguments.entity.getAuditableFlag()) {
 			
 			var auditType = '';
+			var baseID = getBaseIDForEntity( arguments.entity );
+			var baseObject = getBaseObjectForEntity( arguments.entity );
+			var baseTitle = getBaseTitleForEntity( arguments.entity );
+			
+			// AuditType for attributeValue is always an update
+			if (arguments.entity.getClassName() == "AttributeValue") {
+				auditType = 'update';
+				
 			// Audit type is create when no old data available
-			if (isNull(arguments.oldData)) {
+			} else if (isNull(arguments.oldData)) {
 				auditType = 'create';
+				
 			// Audit type is rollback
 			} else if (arguments.entity.getRollbackProcessedFlag()) {
 				auditType = 'rollback';
@@ -123,14 +133,18 @@ component extends="HibachiService" accessors="true" {
 			}
 			
 			// An audit may already exist in the request waiting to commit with the same related base object and similar audit type
-			// We can just update the existing audit and consolidate rather than create a new audit 
-			var audit = getExistingAuditToCommit(baseID=arguments.entity.getPrimaryIDValue(), auditType=auditType);
+			// We can just update the existing audit and consolidate rather than create a new audit
+			if (arguments.entity.getClassName() == "AttributeValue") {
+				var audit = getExistingAuditToCommit(baseID=baseID, auditType='update,create');
+			} else {
+				var audit = getExistingAuditToCommit(baseID=baseID, auditType=auditType);	
+			} 
 			var commitPendingFlag = true;
 			if (isNull(audit)) {
 				commitPendingFlag = false;
 				audit = this.newAudit();
-				audit.setBaseID(arguments.entity.getPrimaryIDValue());
-				audit.setBaseObject(arguments.entity.getClassName());
+				audit.setBaseID(baseID);
+				audit.setBaseObject(baseObject);
 				audit.setAuditType(auditType);
 				
 				// Additional population logic for 'create'
@@ -151,14 +165,22 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 			
-			try {
-				audit.setTitle(arguments.entity.getSimpleRepresentation());
-			} catch (any e) {
-				audit.setTitle(rbKey('entity.audit.nosummary'));
-			}
+			audit.setTitle(baseTitle);
 			
 			// Determine property change data
-			var propertyChangeData = generatePropertyChangeDataForEntity(argumentCollection=arguments);
+			if(arguments.entity.getClassName() == "AttributeValue") {
+				var propertyChangeData = {};
+				propertyChangeData['newPropertyData'] = {};
+				propertyChangeData['newPropertyData'][arguments.entity.getAttribute().getAttributeCode()] = arguments.entity.getAttributeValue();
+				
+				propertyChangeData['oldPropertyData'] = {};
+				propertyChangeData['oldPropertyData'][arguments.entity.getAttribute().getAttributeCode()] = "";
+				if(structKeyExists(arguments, "oldData") && structKeyExists(arguments.oldData, "attributeValue")) {
+					propertyChangeData['oldPropertyData'][arguments.entity.getAttribute().getAttributeCode()] = arguments.oldData.attributeValue;	
+				}
+			} else {
+				var propertyChangeData = generatePropertyChangeDataForEntity(argumentCollection=arguments);	
+			}
 			
 			// If audit commit was already pending, just append new property change data to existing property change data 
 			if (!isNull(audit.getData()) && isJSON(audit.getData())) {
@@ -184,16 +206,18 @@ component extends="HibachiService" accessors="true" {
 			}
 			
 			// If no previous audit create data available, manually add a 'create' audit for legacy data and make necessary adjustments to the data
-			var auditSmartList = getAuditSmartListForEntity(entity=arguments.entity, auditTypeList='create');
-			if (!isNull(arguments.oldData) && auditSmartList.getRecordsCount()  == 0) {
-				var auditLegacyCreate = logEntityModify(arguments.entity);
-				
-				// Remove oldData from arguments if it was provided because it is not applicable for property change data
-				var propertyChangeDataForLegacyCreate = generatePropertyChangeDataForEntity(entity=arguments.entity);
-				
-				// Revert new values back to the old values to capture an initial state
-				structAppend(propertyChangeDataForLegacyCreate.newPropertyData, propertyChangeData.oldPropertyData);
-				auditLegacyCreate.setData(serializeJSON(propertyChangeDataForLegacyCreate));
+			if(!arguments.entity.getClassName() == "AttributeValue") {
+				var auditSmartList = getAuditSmartListForEntity(entity=arguments.entity, auditTypeList='create');
+				if (!isNull(arguments.oldData) && auditSmartList.getRecordsCount()  == 0) {
+					var auditLegacyCreate = logEntityModify(arguments.entity);
+					
+					// Remove oldData from arguments if it was provided because it is not applicable for property change data
+					var propertyChangeDataForLegacyCreate = generatePropertyChangeDataForEntity(entity=arguments.entity);
+					
+					// Revert new values back to the old values to capture an initial state
+					structAppend(propertyChangeDataForLegacyCreate.newPropertyData, propertyChangeData.oldPropertyData);
+					auditLegacyCreate.setData(serializeJSON(propertyChangeDataForLegacyCreate));
+				}
 			}
 			
 			return audit;
@@ -299,7 +323,13 @@ component extends="HibachiService" accessors="true" {
 		if (!structKeyExists(arguments.propertyMetaData, "fieldType") || arguments.propertyMetaData.fieldType == "column") {
 			// Set only when defined and not null, otherwise leave 'standardizedValue' as empty string
 			if (isDefined('arguments.propertyValue') && !isNull(arguments.propertyValue) && isSimpleValue(arguments.propertyValue)) {
-				standardizedValue = arguments.propertyValue;
+				
+				// Explicitly set boolean to 'true' or 'false' so there are no mixes with '1' and '0'
+				if (structKeyExists(arguments.propertyMetaData, "ormtype") && arguments.propertyMetaData.ormtype == "boolean") {
+					standardizedValue = arguments.propertyValue == true;
+				} else {
+					standardizedValue = arguments.propertyValue;
+				}
 			}
 			
 			// Updates mapping data
@@ -384,12 +414,18 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function getExistingAuditToCommit(string baseID, string auditType) {
-		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
-		if (structKeyExists(auditStruct, arguments.baseID) && structKeyExists(auditStruct[arguments.baseID], arguments.auditType)) {
-			return auditStruct[arguments.baseID][arguments.auditType];
+		if(arguments.auditType == 'rollback') {
+			arguments.auditType = 'update';
 		}
-		
-		return javaCast("null", "");
+		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
+		if (structKeyExists(auditStruct, arguments.baseID)) {
+			for(var i=1; i<=listLen(arguments.auditType); i++) {
+				var thisAuditType = listGetAt(arguments.auditType, i);
+				if(structKeyExists(auditStruct[arguments.baseID], thisAuditType)) {
+					return auditStruct[arguments.baseID][thisAuditType];	 
+				}
+			}
+		}
 	}
 	
 	public void function commitAudits() {
@@ -402,7 +438,7 @@ component extends="HibachiService" accessors="true" {
 					commitTotal++;
 					
 					// Audit needs to be checked because archiving may need to occur
-					if (auditType == 'update') {
+					if (getHibachiScope().getAuditsToCommitStruct()[baseID][auditType].getAuditType() == 'update') {
 						arrayAppend(archiveCandidates, getHibachiScope().getAuditsToCommitStruct()[baseID][auditType]);
 					}
 				}
@@ -445,7 +481,7 @@ component extends="HibachiService" accessors="true" {
 		getHibachiScope().clearAuditsToCommitStruct();
 	}
 	
-	public any function getChangeDetailsForAudit(any audit) {
+	public any function getPropertyChangeDetailsForAudit(any audit) {
 		var changeData = deserializeJSON(arguments.audit.getData());
 		
 		var changeDetails = {};
@@ -455,10 +491,15 @@ component extends="HibachiService" accessors="true" {
 			changeDetails.columnList = listAppend(changeDetails.columnList, 'old');
 		}
 		
-		var properties = getEntityObject(arguments.audit.getBaseObject()).getAuditableProperties();
-		for (var currentProperty in properties) {
+		for (var currentProperty in getEntityObject(arguments.audit.getBaseObject()).getAuditableProperties()) {
 			var changeDetail = {};
 			changeDetail['propertyName'] = currentProperty.name;
+			changeDetail['attributeFlag'] = false;
+			
+			// Set flag to indicate whether this is an actual entity property or an attribute
+			if (structKeyExists(currentProperty, 'attributeFlag')) {
+				changeDetail.attributeFlag = currentProperty.attributeFlag;
+			}
 			
 			for (var column in listToArray(changeDetails.columnList)) {
 				if (structKeyExists(changeData['#column#PropertyData'], currentProperty.name)) {
@@ -554,7 +595,7 @@ component extends="HibachiService" accessors="true" {
 		if (!arguments.audit.hasErrors()) {
 			// Aggregate property changes by traversing backwards from current state
 			var rollbackData = {};
-			var propertiesStruct = relatedEntity.getAuditablePropertiesStruct();
+			
 			for (var i=1; i<=rollbackIndex; i++) {
 				var currentData = deserializeJSON(audits[i].getData());
 				
@@ -686,5 +727,48 @@ component extends="HibachiService" accessors="true" {
 	// ===================== START: Delete Overrides ==========================
 	
 	// =====================  END: Delete Overrides ===========================
+	
+	public any function getBaseIDForEntity(any entity) {
+		var baseID = arguments.entity.getPrimaryIDValue();
+
+		// AttributeValue needs to reference related entity instead of itself
+		if (arguments.entity.getClassName() == "AttributeValue") {
+			var baseObjectEntity = arguments.entity.invokeMethod("get#arguments.entity.getAttributeValueType()#");
+			if(!isNull(baseObjectEntity)) {
+				baseID = baseObjectEntity.getPrimaryIDValue();	
+			}
+		}
+
+		return baseID;
+	}
+
+	public any function getBaseObjectForEntity(any entity) {
+		var baseObject = arguments.entity.getClassName();
+
+		// AttributeValue needs to reference related entity instead of itself
+		if (arguments.entity.getClassName() == "AttributeValue") {
+			var baseObjectEntity = arguments.entity.invokeMethod("get#arguments.entity.getAttributeValueType()#");
+			if(!isNull(baseObjectEntity)) {
+				baseObject = baseObjectEntity.getClassName();	
+			}
+		}
+
+		return baseObject;
+	}
+	
+	public any function getBaseTitleForEntity(any entity) {
+		var baseTitle = "";
+		var baseObjectEntity = arguments.entity;
+		if (arguments.entity.getClassName() == "AttributeValue") {
+			var baseObjectEntity = arguments.entity.invokeMethod("get#arguments.entity.getAttributeValueType()#");
+		}
+		try {
+			baseTitle = baseObjectEntity.getSimpleRepresentation();
+		} catch (any e) {
+			baseTitle = rbKey('entity.audit.nosummary');
+		}
+		
+		return baseTitle;
+	}
 	
 }

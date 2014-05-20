@@ -48,6 +48,12 @@ Notes:
 --->
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.disableProcess" default="#!rc.audit.getAuditRollbackValidFlag()#" />
+<cfparam name="rc.disableProcessText" default="#rc.audit.validateAuditRollback().getAllErrorsHTML()#" />
+
+<cfif !isNull(rc.audit.getRelatedEntity())>
+	<cfset rc.disableProcessText &= rc.audit.getRelatedEntity().validateAuditRollback().getAllErrorsHTML() />
+</cfif>
 
 <cfif not listFindNoCase("login,loginInvalid,logout", rc.audit.getAuditType())>
 	<cfset rc.pageTitle = "#rc.audit.getTitle()#" />
@@ -71,7 +77,16 @@ Notes:
 					
 					<cfloop array="#changeDetails.properties#" index="changeDetail">
 						<tr>
-							<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+							<cfif changeDetail.attributeFlag>
+								<cfset attributeName = request.context.fw.getHibachiScope().getService('AttributeService').getAttributeNameByAttributeCode(changeDetail.propertyName) />
+								<cfif len(attributeName)>
+									<td>#attributeName#</td>
+								<cfelse>
+									<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+								</cfif>
+							<cfelse>
+								<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+							</cfif>
 							<cfif listFindNoCase(changeDetails.columnList, "old")>
 								<cfif isSimpleValue(changeDetail.old)>
 									<td>#changeDetail.old#</td>
@@ -92,7 +107,7 @@ Notes:
 		</cfsavecontent>
 	</cfif>
 	
-	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#!rc.audit.getAuditRollbackValidFlag()#">		
+	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#rc.disableProcess#" disableProcessText="#rc.disableProcessText#">		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divclass="span12">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">

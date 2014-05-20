@@ -84,9 +84,9 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="amount" persistent="false" type="numeric" hb_formatType="currency";
@@ -314,8 +314,19 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	}
 	
 	public numeric function getAmountUnassigned() {
-		// This is temporary until we get the assignment of accountPayments to orderPayments
-		return precisionEvaluate(getAmountReceived()-getAmountCredited());
+		var amountUnassigned = 0;
+		
+		for(var accountPaymentApplied in getAppliedAccountPayments()) {
+			if(isNull(accountPaymentApplied.getOrderPayment())) {
+				if(accountPaymentApplied.getAccountPaymentType().getSystemCode() == "aptCharge") {
+					amountUnassigned = precisionEvaluate(amountUnassigned + accountPaymentApplied.getAmount());		
+				} else {
+					amountUnassigned = precisionEvaluate(amountUnassigned - accountPaymentApplied.getAmount());
+				}
+			}
+		}
+		
+		return amountUnassigned;
 	}
 	
 	public boolean function getCreditCardOrProviderTokenExistsFlag() {

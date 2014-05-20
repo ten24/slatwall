@@ -56,6 +56,12 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	property name="relatedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="relatedAccountID" hb_optionsNullRBKey="define.select";
 	property name="relationshipType" cfc="Type" fieldtype="many-to-one" fkcolumn="relationshipTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=relationshipType";
 	
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================

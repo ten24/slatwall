@@ -59,7 +59,7 @@ Notes:
 			showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiListingDisplayButtonGroup>
 			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
