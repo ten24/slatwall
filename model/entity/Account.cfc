@@ -612,7 +612,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.superUserFlag;
 	}
 	
-	
+	public string function getSimpleRepresentation() {
+		return getFullName();
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

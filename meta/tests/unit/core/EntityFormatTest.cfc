@@ -293,11 +293,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!arrayLen(exceptionErrorEntities));
 	}
 	
-	public void function quickT() {
-		var ent = entityNew("SlatwallShippingMethodRate");
-		debug(ent.getSimpleRepresentationPropertyName());
-	}
-	
 	public void function all_smart_list_search_return_no_results_with_invalid_keywords() {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
