@@ -265,44 +265,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	public void function all_smart_list_search_actually_works() {
-		// TODO [jubs] : Add a loop to do the actually filters and doesn't error test
-	}
-	
-	public void function example_smart_list_search_works() {
-		var entityName = "Product";
+		// Get all entities
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
+		// Sets up the "Long Search Phrase" search keyword
 		var searchData = {};
 		searchData.keywords = "ThisIsALongSearchPhraseThatWillNeverMatchAnything";
 		
-		var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
-		var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
-		
+		// Loops over all of the entities and tests entity smartlists using the search keyword
+		for(var entityName in allEntities){
+			var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
+			var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
+		}
 		assert(!arrayLen(smartList.getPageRecords()));
 	}
-	
-	public void function example_smart_list_search_errors() {
-		var entityName = "OrderPayment";
-		
-		var searchData = {};
-		searchData.keywords = "ThisIsALongSearchPhraseThatWillNeverMatchAnything";
-		
-		var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
-		var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
-		
-		assert(!arrayLen(smartList.getPageRecords()));
-	}
-	
-	public void function example_smart_list_search_doesnt_filter() {
-		var entityName = "AccountEmailAddress";
-		
-		var searchData = {};
-		searchData.keywords = "ThisIsALongSearchPhraseThatWillNeverMatchAnything";
-		
-		var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
-		var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
-		
-		assert(!arrayLen(smartList.getPageRecords()));
-	}
-	
 
 }
