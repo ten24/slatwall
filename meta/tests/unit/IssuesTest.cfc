@@ -153,13 +153,13 @@ component extends="SlatwallUnitTestBase" {
 		};
 		 
 		var account = entityNew("SlatwallAccount");
-		var account2 = entityNew("SlatwallAccount");
 		
 		account = accountService.processAccount(account, accountData, 'create'); 
 		var accountHasErrors = account.hasErrors();
 		
 		ormFlush();
 		
+		var account2 = entityNew("SlatwallAccount");
 		accountData.firstName="1376 - 2";
 		
 		account2 = accountService.processAccount(account2, accountData, 'create');
@@ -171,8 +171,8 @@ component extends="SlatwallUnitTestBase" {
 		account2.setPrimaryEmailAddress(javaCast("null",""));
 		account2.setPrimaryPhoneNumber(javaCast("null",""));
 		
-		entityDelete(account);
-		entityDelete(account2);
+		entityDelete( account );
+		entityDelete (account2 );
 		
 		ormFlush();
 		

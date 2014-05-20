@@ -156,7 +156,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			if(!isNull(thisAttribute)) {
 				newAttributeValue.setAttribute( thisAttribute );
 			}
-
+			//newAttributeValue.invokeMethod("set#getClassName()#", {1=this});
 			return newAttributeValue;
 
 		}
@@ -239,6 +239,27 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if(structKeyExists(variables, "attributeValuesByAttributeCodeStruct")) {
 			structDelete(variables, "attributeValuesByAttributeCodeStruct");
 		}
+	}
+	
+	public array function getAuditableProperties() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
+			var auditableProperties = super.getAuditableProperties();
+			
+			for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
+			
+				// Loop over attributes
+				for(var attribute in attributeSet.getAttributes()) {
+					if (!listFindNoCase(getAuditablePropertyExclusionList(), attribute.getAttributeCode())) {
+						arrayAppend(auditableProperties, {name=attribute.getAttributeCode(), attributeFlag=true});
+					}
+				}
+				
+			}
+
+			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
+		}
+
+		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
 	}
 
 	public array function getPrintTemplates() {

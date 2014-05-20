@@ -69,10 +69,10 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
-	property name="createdDateTime" ormtype="timestamp";
-	property name="createdByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
-	property name="modifiedDateTime" ormtype="timestamp";
-	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	
@@ -137,6 +137,13 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	
 	// ============== START: Overridden Implicit Getters ===================
 	
+	public any function getAccountPaymentType() {
+		if(!isNull(variables.accountPaymentType)) {
+			return variables.accountPaymentType; 
+		}
+		return getAccountPayment().getAccountPaymentType();
+	}
+	
 	// ==============  END: Overridden Implicit Getters ====================
 	
 	// ============= START: Overridden Smart List Getters ==================
@@ -144,6 +151,7 @@ component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentAppl
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+	
 	public string function getSimpleRepresentationPropertyName() {
 		return "accountPaymentAppliedID";
 	}

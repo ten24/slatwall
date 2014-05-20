@@ -54,6 +54,12 @@ component entityname="SlatwallVendorAddress" table="SwVendorAddress" persistent=
 	// Related Object Properties
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
 	property name="address" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID" cascade="all";
+	
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// ============ START: Non-Persistent Property Methods =================
 	
