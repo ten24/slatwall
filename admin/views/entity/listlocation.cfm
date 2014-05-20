@@ -51,10 +51,8 @@ Notes:
 <cfoutput>
 
 	<cf_HibachiListingDisplay smartList="#rc.locationSmartList#" 
-							  recordEditAction="admin:entity.editlocation" 
-							  recordEditQueryString="redirectAction=admin:entity.listlocation" 
-							  recordEditModal="true" 
-							  recordDeleteAction="admin:entity.deletelocation">
+							  recordDetailAction="admin:entity.detaillocation"
+							  recordEditAction="admin:entity.editlocation">
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
