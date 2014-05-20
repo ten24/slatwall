@@ -48,6 +48,94 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
+	//Entity Audit Properties Test
+	public void function all_entity_properties_have_audit_properties() {
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		var hasAuditProperties = true;
+		var entitiesWithoutAuditProperties = "";
+		//Exception Entities
+		var entitiesWithNoProps = "SlatwallCommentRelationship,SlatwallAudit,SlatwallShortReference,SlatwallUpdateScript";
+		var entitiesWithTwoProps = "SlatwallComment,SlatwallEmail,SlatwallInventory,SlatwallPrint,SlatwallShippingMethodOption,SlatwallStock,SlatwallStockReceiverItem";
+		// SlatwallSession has createdDateTime & modifiedDateTime only
+		var SlatwallSession = "SlatwallSession";
+		
+		for(var entityName in allEntities) {
+			//Sets auditPropertyBoolean to 0 each loop
+			var auditPropertyBoolean = 0;
+
+			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			//Loop over all the properties checking for audit properties
+			if((!listFindNoCase(entitiesWithNoProps, entityName)) && (!listFindNoCase(entitiesWithTwoProps, entityName))){
+				for(var property in properties) {
+					//If logic finds an audit property, break from this entity's properties loop
+					if(structKeyExists(property, "name") && (listFindNoCase("createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID", property.name))){
+						auditPropertyBoolean = 1;
+						break;
+					}
+				}
+				//If the entity's auditPropertyBoolean is 0 and entitiesWithoutAuditProperties list does not contain the new entity
+				if (!listContains(entitiesWithoutAuditProperties, entityName) && auditPropertyBoolean == 0) {
+					entitiesWithoutAuditProperties = listAppend(entitiesWithoutAuditProperties, entityName);
+					hasAuditProperties = false;	
+				}
+			// Ensure that the Entities that are not supposed to have audit props, dont
+			} else if((!listFindNoCase(entitiesWithNoProps, entityName))){
+				for(var property in properties) {
+					//If logic finds any audit properties, break
+					if(structKeyExists(property, "name") && (!listFindNoCase("createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID", property.name))){
+						auditPropertyBoolean = 1;
+						break;
+					}
+				}
+				//If the entity's auditPropertyBoolean is 0 and entitiesWithoutAuditProperties list does not contain the new entity
+				if (!listContains(entitiesWithoutAuditProperties, entityName) && auditPropertyBoolean == 0) {
+					entitiesWithoutAuditProperties = listAppend(entitiesWithoutAuditProperties, entityName);
+					hasAuditProperties = false;	
+				}
+			// Loop over the entities that are only supposed to have createdDateTime & createdByAccountID only have those two
+			} else if((listFindNoCase(entitiesWithTwoProps, entityName))){
+				for(var property in properties) {
+					//If logic finds the correct audit properties, break
+					if((structKeyExists(property, "name"))
+							&& (listFindNoCase("createdDateTime,createdByAccountID", property.name) 
+							&& (!listFindNoCase("modifiedDateTime,modifiedByAccountID", property.name)))){
+						
+						auditPropertyBoolean = 1;
+						break;
+					}
+				}
+				//If the entity's auditPropertyBoolean is 0 and entitiesWithoutAuditProperties list does not contain the new entity
+				if (!listContains(entitiesWithoutAuditProperties, entityName) && auditPropertyBoolean == 0) {
+					entitiesWithoutAuditProperties = listAppend(entitiesWithoutAuditProperties, entityName);
+					hasAuditProperties = false;	
+				}
+			} else if((listFindNoCase(SlatwallSession, entityName))){
+				for(var property in properties) {
+					//If logic finds the correct audit properties, break
+					if((structKeyExists(property, "name"))
+							&& (listFindNoCase("createdDateTime,modifiedDateTime", property.name) 
+							&& (!listFindNoCase("createdByAccountID,modifiedByAccountID", property.name)))){
+						
+						auditPropertyBoolean = 1;
+						break;
+					}
+				}
+				//If the entity's auditPropertyBoolean is 0 and entitiesWithoutAuditProperties list does not contain the new entity
+				if (!listContains(entitiesWithoutAuditProperties, entityName) && auditPropertyBoolean == 0) {
+					entitiesWithoutAuditProperties = listAppend(entitiesWithoutAuditProperties, entityName);
+					hasAuditProperties = false;	
+				}
+			}
+		}
+
+		entitiesWithoutAuditPropertiesArr = listToArray(entitiesWithoutAuditProperties);
+		
+		for(i = 1; i <= ArrayLen(entitiesWithoutAuditPropertiesArr); i++){
+			debug(entitiesWithoutAuditPropertiesArr[i]);
+		}
+		assert(hasAuditProperties);
+	}
+	
 	// Oracle Naming tests
 	public void function oracle_entity_table_name_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
