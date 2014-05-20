@@ -264,20 +264,60 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(pass);
 	}
 
-	public void function all_smart_list_search_actually_works() {
+	public void function all_smart_list_search_dont_have_errors() {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
+		// Entities that cause known errors
+		var exceptionErrorEntities = [];
+		
 		// Sets up the "Long Search Phrase" search keyword
 		var searchData = {};
-		searchData.keywords = "ThisIsALongSearchPhraseThatWillNeverMatchAnything";
+		searchData.keywords = "ThisIsALongSearchStringThatShouldReturnNoResults";
 		
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
+				
+			try{
+				var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
+				var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
+				smartList.getPageRecords();
+			} catch (any e) {
+				arrayAppend(exceptionErrorEntities, entityName);
+			}
+
+		}
+		
+		debug(exceptionErrorEntities);
+		
+		assert(!arrayLen(exceptionErrorEntities));
+	}
+	
+	public void function all_smart_list_search_return_no_results_with_invalid_keywords() {
+		// Get all entities
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		
+		// Entities that cause known errors
+		var nonFilteredEntities = [];
+		
+		// Sets up the "Long Search Phrase" search keyword
+		var searchData = {};
+		searchData.keywords = "ThisIsALongSearchStringThatShouldReturnNoResults";
+		
+		// Loops over all of the entities and tests entity smartlists using the search keyword
+		for(var entityName in allEntities){
+			
 			var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
 			var smartList = entityService.invokeMethod("get#entityName#SmartList", {1=searchData});
+			if(arrayLen(smartList.getPageRecords())) {
+				arrayAppend(nonFilteredEntities, entityName);	
+			}
+			
 		}
-		assert(!arrayLen(smartList.getPageRecords()));
+		
+		debug(nonFilteredEntities);
+		
+		assert(!arrayLen(nonFilteredEntities));
 	}
 
 }
