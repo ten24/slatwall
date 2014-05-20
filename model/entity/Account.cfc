@@ -557,10 +557,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	// ================== START: Overridden Methods ========================
 	
-	public string function getSimpleRepresentationPropertyName() {
-		return "fullName";
-	}
-	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
