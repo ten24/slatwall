@@ -109,6 +109,10 @@ component entityname="SlatwallShortReference" table="SwShortReference" persisten
 
 	// ================== START: Overridden Methods ========================
 	
+	public any function getSimpleRepresentationPropertyName() {
+		return "referenceObject";
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================

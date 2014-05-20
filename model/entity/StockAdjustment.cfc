@@ -221,10 +221,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 		}
 		return variables.stockAdjustmentStatusType;
 	}
-	
-	public string function getSimpleRepresentationPropertyName() {
-		return "displayName";
-	}
+
 	
 	// ==============  END: Overridden Implicet Getters ====================
 	
