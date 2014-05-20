@@ -77,13 +77,13 @@
 	      <Country>UNITED STATES</Country>
 	      <CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
 	    </Destination>
-	    <AdministrativeOrigin>
+	    <AdministrativeDestination>
 	      <City>New York</City>
 	      <MainDivision>NY</MainDivision>
 	      <PostalCode>10010</PostalCode>
 	      <Country>UNITED STATES</Country>
 	      <CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-	    </AdministrativeOrigin>
+	    </AdministrativeDestination>
 	  </Customer>
 	  <LineItem lineItemNumber="1">
 	    <ExtendedPrice>100</ExtendedPrice>
