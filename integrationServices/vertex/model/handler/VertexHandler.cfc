@@ -46,32 +46,10 @@
 Notes:
 
 */
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+component {
 	
-	public any function init() {
-		return this;
-	}
-	
-	public string function getIntegrationTypes() {
-		return "tax";
-	}
-	
-	public string function getDisplayName() {
-		return "Vertex";
-	}
-	
-	public struct function getSettings() {
-		var settings = {
-			accountNo = {fieldType="text"},
-			password = {fieldType="password", encryptValue=true},
-			testingFlag = {fieldType="yesno", defaultValue="1"}
-		};
-		
-		return settings;
-	}
-	
-	public array function getEventHandlers() {
-		return ["Slatwall.integrationServices.vertex.model.handler.VertexHandler"];
+	public void function afterOrderProcess_PlaceOrderSuccess() {
+		// You can add logic here that will automatically happen every time an order is successfully placed
 	}
 	
 }
