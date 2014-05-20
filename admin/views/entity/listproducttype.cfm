@@ -55,9 +55,7 @@ Notes:
 	<cf_HibachiListingDisplay smartList="#rc.productTypeSmartList#" 
 								recordEditAction="admin:entity.editproducttype"
 								recordDetailAction="admin:entity.detailproducttype">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="productTypeName" sort="false" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" sort="false" />
-		
+								
 		<!--- Create --->
 		<cf_HibachiListingDisplayButtonGroup>
 			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
@@ -66,5 +64,9 @@ Notes:
 				<cf_HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=subscription" type="list" />
 			</cf_HibachiActionCallerDropdown>
 		</cf_HibachiListingDisplayButtonGroup>
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="productTypeName" sort="false" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" sort="false" />
+	
 	</cf_HibachiListingDisplay>
 </cfoutput>
