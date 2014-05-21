@@ -47,51 +47,62 @@
 	
 --->
 <cfoutput>
-	<InvoiceRequest documentDate="2013-12-19" documentNumber="ORDER_NUMBER" transactionId="UNIQUE_ID" transactionType="SALE">
-	  <Currency isoCurrencyCodeAlpha="USD"/>
-	  <Seller>
-	    <Company>NAIPARENT</Company>
-	    <Division>SLATWALL</Division>
-	    <Department>NAI</Department>
-	    <PhysicalLocation>
-	      <City>New York</City>
-	      <MainDivision>NY</MainDivision>
-	      <PostalCode>10010</PostalCode>
-	      <Country>UNITED STATES</Country>
-	      <CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-	    </PhysicalLocation>
-	    <AdministrativeOrigin>
-	      <City>New York</City>
-	      <MainDivision>NY</MainDivision>
-	      <PostalCode>10010</PostalCode>
-	      <Country>UNITED STATES</Country>
-	      <CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-	    </AdministrativeOrigin>
-	  </Seller>
-	  <Customer>
-	    <CustomerCode>CUST_NUMBER</CustomerCode>
-	    <Destination>
-	      <City>New York</City>
-	      <MainDivision>NY</MainDivision>
-	      <PostalCode>10010</PostalCode>
-	      <Country>UNITED STATES</Country>
-	      <CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-	    </Destination>
-	    <AdministrativeDestination>
-	      <City>New York</City>
-	      <MainDivision>NY</MainDivision>
-	      <PostalCode>10010</PostalCode>
-	      <Country>UNITED STATES</Country>
-	      <CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-	    </AdministrativeDestination>
-	  </Customer>
-	  <LineItem lineItemNumber="1">
-	    <ExtendedPrice>100</ExtendedPrice>
-	    <FlexibleFields>
-	      <FlexibleCodeField fieldId="7">CUST_NANE</FlexibleCodeField>
-	      <FlexibleCodeField fieldId="11">TAX_CODE</FlexibleCodeField>
-	      <FlexibleCodeField fieldId="12">PRODUCT_NAME</FlexibleCodeField>
-	    </FlexibleFields>
-	  </LineItem>
-	</InvoiceRequest>
+	<VertexEnvelope>
+		<Login>
+			<!--- Left the Username and Password
+			 because it was in the Documentation,
+			 but I believe TrustedID is all we'll need --->
+			<Username></Username>
+			<Password></Password>
+			<TrustedID></TrustedID>
+		</Login>
+		<InvoiceRequest documentDate="2013-12-19" documentNumber="ORDER_NUMBER" transactionId="UNIQUE_ID" transactionType="SALE">
+		  	<Currency isoCurrencyCodeAlpha="USD"/>
+		  	<Seller>
+		    	<Company>NAIPARENT</Company>
+		    	<Division>SLATWALL</Division>
+		    	<Department>NAI</Department>
+		    	<PhysicalLocation>
+		      		<City>New York</City>
+		      		<MainDivision>NY</MainDivision>
+		      		<PostalCode>10010</PostalCode>
+		      		<Country>UNITED STATES</Country>
+		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
+		    	</PhysicalLocation>
+		    	<AdministrativeOrigin>
+		      		<City>New York</City>
+		      		<MainDivision>NY</MainDivision>
+		      		<PostalCode>10010</PostalCode>
+		     		<Country>UNITED STATES</Country>
+		     		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
+		   		</AdministrativeOrigin>
+		  	</Seller>
+		  	<Customer>
+		    	<CustomerCode>CUST_NUMBER</CustomerCode>
+		    	<Destination>
+		      		<City>New York</City>
+		      		<MainDivision>NY</MainDivision>
+		      		<PostalCode>10010</PostalCode>
+		      		<Country>UNITED STATES</Country>
+		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
+		    	</Destination>
+		    	<AdministrativeDestination>
+		      		<City>New York</City>
+		      		<MainDivision>NY</MainDivision>
+		      		<PostalCode>10010</PostalCode>
+		      		<Country>UNITED STATES</Country>
+		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
+		    	</AdministrativeDestination>
+			 </Customer>
+			 <LineItem lineItemNumber="1">
+			  		<!--- Note to Jubs: Check Documentation for Below Section --->
+			    	<ExtendedPrice>100</ExtendedPrice>
+			   	 	<FlexibleFields>
+			      		<FlexibleCodeField fieldId="7">CUST_NANE</FlexibleCodeField>
+			      		<FlexibleCodeField fieldId="11">TAX_CODE</FlexibleCodeField>
+			      		<FlexibleCodeField fieldId="12">PRODUCT_NAME</FlexibleCodeField>
+			    	</FlexibleFields>
+			  </LineItem>
+		</InvoiceRequest>
+	</VertexEnvelope>
 </cfoutput>
