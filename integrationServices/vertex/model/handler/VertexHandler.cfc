@@ -48,8 +48,9 @@ Notes:
 */
 component {
 	
-	public void function afterOrderProcess_PlaceOrderSuccess() {
-		// You can add logic here that will automatically happen every time an order is successfully placed
+	public void function afterOrderProcess_PlaceOrderSuccess(required any slatwallScope, required any order) {
+		// Automatically update the order amounts with taxes
+		arguments.slatwallScope.getService("taxService").updateOrderAmountsWithTaxes(arguments.order);
 	}
 	
-}
+}	
