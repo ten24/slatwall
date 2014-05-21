@@ -192,6 +192,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		setSessionValue('printQueue', []);
 	}
 	
+	// =================== JS helper methods  ===========================
+
+	public any function getAccountJSON() {
+		var data = {};
+		var propertyList = "accountID,firstName,lastName,company,emailAddress";
+		
+		for(var property in listToArray(propertyList)){
+			data[property] = getAccount().getValueByPropertyIdentifier(property);
+		}
+		
+		return data;
+	}
+
+	public any function getCartJSON() {
+		var data = {};
+		var propertyList = "orderID,orderOpenDateTime,calculatedTotal";
+		
+		for(var property in listToArray(propertyList)){
+			data[property] = getCart().getValueByPropertyIdentifier(property);
+		}
+		
+		return data;
+	}
+
 	// =================== Image Access ===========================
 	
 	public string function getBaseImageURL() {
