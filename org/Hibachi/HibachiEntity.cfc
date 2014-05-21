@@ -79,18 +79,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint returns the propety who's value is a simple representation of this entity.  This can be overridden when necessary
 	public string function getSimpleRepresentationPropertyName() {
 		
-		// Get the meta data for all of the porperties
-		var properties = getProperties();
-		
 		// Look for a property that's last 4 is "name"
-		for(var i=1; i<=arrayLen(properties); i++) {
-			if(properties[i].name == getClassName() & "name") {
-				return properties[i].name;
+		for(var thisProperty in getProperties()) {
+			if((!structKeyExists(thisProperty, "persistent") || thisProperty.persistent) && thisProperty.name == "#getClassName()#name") {
+				return thisProperty.name;
 			}
 		}
 		
 		// If no properties could be identified as a simpleRepresentaition 
-		throw("There is no Simple Representation Property Name for #getClassName()#.  You can either override getSimpleRepresentation() or override getSimpleRepresentationPropertyName() in the entity, but be sure to do it at the bottom inside of commented section for overrides.");
+		return getPrimaryIDPropertyName();
 	}
 	
 	// @hint checks a one-to-many property for the first entity with errors, if one isn't found then it returns a new one

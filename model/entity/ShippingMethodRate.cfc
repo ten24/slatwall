@@ -222,10 +222,6 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	
 	// ================== START: Overridden Methods ========================
 	
-	public string function getSimpleRepresentationPropertyName() {
-		return "shippingMethodRateName";
-	}
-	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
