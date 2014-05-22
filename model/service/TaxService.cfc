@@ -70,7 +70,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress()) && !orderItem.getOrderFulfillment().getAddress().getNewFlag()) {
 						var taxAddress = orderItem.getOrderFulfillment().getShippingAddress();
-					} else if (arrayLen(orderItem.getOrder().getOrderPayments()) eq 1 and !isNull(orderItem.getOrder().getOrderPayments()[1].getBillingAddress())) {
+					} else if (arrayLen(orderItem.getOrder().getOrderPayments()) eq 1 and !isNull(orderItem.getOrder().getBillingAddress()) || !isNull(orderItem.getOrder().getOrderPayments()[1].getBillingAddress())) {
 						var taxAddress = orderItem.getOrder().getOrderPayments()[1].getBillingAddress();
 					}
 					
