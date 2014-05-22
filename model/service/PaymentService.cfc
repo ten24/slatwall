@@ -320,8 +320,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// ======== CORE PROCESSING ==========
 					
-					// INTEGRATION EXISTS
-					if(listFindNoCase("creditCard,giftCard,external", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType()) && !isNull(arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration())) {
+					
+					
+					// If this isn't a creditOffline or receiveOffline, and an INTEGRATION EXISTS
+					if(!listFindNoCase("creditOffline,receiveOffline", arguments.data.transactionType) && listFindNoCase("creditCard,giftCard,external", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType()) && !isNull(arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration())) {
 						
 						// Get the PaymentCFC
 						var integration = arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration();
@@ -467,12 +469,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						// TODO [issue #36]: Add Gift Card Logic Here
 						
 						// Setup amountReceived
-						if( listFindNoCase("receive", arguments.data.transactionType) ) {
+						if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
 							arguments.paymentTransaction.setAmountReceived( arguments.data.amount );	
 						}
 						
 						// Setup amountCredited
-						if( listFindNoCase("credit", arguments.data.transactionType) ) {
+						if( listFindNoCase("credit,creditOffline", arguments.data.transactionType) ) {
 							arguments.paymentTransaction.setAmountCredited( arguments.data.amount );
 						}
 						

@@ -296,6 +296,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Take the email address and get all of the user accounts by primary e-mail address
 		var accountAuthentications = getInternalAccountAuthenticationsByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
+		var invalidData = {emailAddress=arguments.processObject.getEmailAddress()};
 		
 		if(arrayLen(accountAuthentications)) {
 			for(var i=1; i<=arrayLen(accountAuthentications); i++) {
@@ -306,9 +307,13 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 			arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
+			invalidData.account = accountAuthentications[1].getAccount();
 		} else {
 			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
 		}
+		
+		// Login was invalid
+		getHibachiSessionService().loginAccountInvalid(data=invalidData);
 		
 		return arguments.account;
 	}
@@ -1013,7 +1018,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccount";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left");
@@ -1032,7 +1037,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountEmailAddressSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountEmailAddress";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccountEmailAddress", "accountEmailType", "left");
 		
@@ -1042,7 +1047,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountPhoneNumberSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountPhoneNumber";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccountPhoneNumber", "accountPhoneType", "left");
 		

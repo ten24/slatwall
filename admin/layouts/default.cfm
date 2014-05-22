@@ -49,7 +49,7 @@ Notes:
 
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en" ng-app="ng-slatwall">
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>#rc.pageTitle# &##124; Slatwall</title>
@@ -93,7 +93,7 @@ Notes:
 			.navbar .brand {margin-left:0px;}
 		</style>
 	</head>
-	<body>
+	<body ng-app="slatwallngapp">
 		<div class="navbar navbar-fixed-top navbar-inverse">
 			<div class="navbar-inner">
 				<div class="container-fluid">
@@ -197,6 +197,7 @@ Notes:
 								<cf_HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
 								<cf_HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true" />
 								<cf_HibachiActionCaller action="admin:main.log" type="list">
+								<cf_HibachiActionCaller action="admin:main.auditlog" type="list">
 								<cf_HibachiActionCaller action="admin:main.update" type="list">
 								<cfif $.slatwall.getAccount().getSuperUserFlag()>
 									<cf_HibachiActionCaller action="admin:main.default" querystring="reload=true" type="list" text="Reload Slatwall">

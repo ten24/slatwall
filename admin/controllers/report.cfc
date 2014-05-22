@@ -91,15 +91,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(arguments.rc.ajaxRequest && structKeyExists(arguments.rc, "reportName")) {
 			arguments.rc.ajaxResponse["report"] = {};
-			arguments.rc.ajaxResponse["report"]["chartData"] = arguments.rc.report.getChartData();
-			arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
-			arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
+			if(structKeyExists(arguments.rc, "currentPage") && len(arguments.rc.currentPage) && isNumeric(arguments.rc.currentPage)) {
+				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
+			} else {
+				arguments.rc.ajaxResponse["report"]["chartData"] = arguments.rc.report.getChartData();
+				arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
+				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();	
+			}
 		} else {
 			arguments.rc.pageTitle = arguments.rc.report.getReportTitle();
 		}
 	}
 	
-	public void function export(required struct rc) {
+	public void function exportxls(required struct rc) {
 		param name="arguments.rc.reportID" default="";
 		
 		var report = getHibachiReportService().getReportCFC( arguments.rc.reportName, arguments.rc );
@@ -110,6 +114,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}	
 		
 		report.exportSpreadsheet();
+		
+		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
+	}
+	
+	public void function exportcsv(required struct rc) {
+		param name="arguments.rc.reportID" default="";
+		
+		var report = getHibachiReportService().getReportCFC( arguments.rc.reportName, arguments.rc );
+		
+		var reportEntity = getHibachiReportService().getReport( arguments.rc.reportID );
+		if(!isNull(reportEntity)){
+			report.setReportEntity( reportEntity );
+		}	
+		
+		report.exportCSV();
 		
 		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
 	}

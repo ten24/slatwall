@@ -80,6 +80,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.receive'), value="receive"});
 			}
 			
+			arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.receiveOffline'), value="receiveOffline"});
+			arrayAppend(variables.transactionTypeOptions, {name=rbKey('define.creditOffline'), value="creditOffline"});
+			
 		}
 		return variables.transactionTypeOptions;
 	}

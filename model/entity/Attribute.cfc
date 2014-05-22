@@ -61,6 +61,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="validationMessage" ormtype="string";
 	property name="validationRegex" ormtype="string";
 	property name="decryptValueInAdminFlag" ormtype="boolean";
+	property name="relatedObject" ormtype="string" hb_formFieldType="select";
 	
 	// Related Object Properties (Many-To-One)
 	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
@@ -69,17 +70,18 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 
 	// Related Object Properties (One-To-Many)
 	property name="attributeOptions" singularname="attributeOption" cfc="AttributeOption" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
-	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="all-delete-orphan";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="delete-orphan";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="formFieldType" persistent="false";
 	property name="attributeTypeOptions" persistent="false";
+	property name="formFieldType" persistent="false";
+	property name="relatedObjectOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
 	
 	public array function getAttributeOptions(string orderby, string sortType="text", string direction="asc") {
@@ -92,32 +94,51 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 
     // ============ START: Non-Persistent Property Methods =================
     
-	public string function getFormFieldType() {
-		if(!structKeyExists(variables, "formFieldType")) {
-			var attributeTypeSystemCode = getAttributeType().getSystemCode();
-			variables.formFieldType = right(attributeTypeSystemCode, len(attributeTypeSystemCode)-2);
-		}
-		return variables.formFieldType;
-	}
-	
 	public array function getAttributeTypeOptions() {
 		if(!structKeyExists(variables, "attributeTypeOptions")) {
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="attributeType"); 
+			smartList.addSelect(propertyIdentifier="systemCode", alias="systemCode");
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="attributeType"); 
 			smartList.addOrder("type|ASC");
 			variables.attributeTypeOptions = smartList.getRecords();
 		}
 		return variables.attributeTypeOptions;
     }
+    
+	public string function getFormFieldType() {
+		if(!structKeyExists(variables, "formFieldType")) {
+			var attributeTypeSystemCode = getAttributeType().getSystemCode();
+			variables.formFieldType = right(attributeTypeSystemCode, len(attributeTypeSystemCode)-2);
+			if(variables.formFieldType eq 'relatedObjectSelect') {
+				variables.formFieldType = 'select';
+			} else if (variables.formFieldType eq 'releatedObjectMultiselect') {
+				variables.formFieldType = 'listingMultiselect';	
+			}
+		}
+		return variables.formFieldType;
+	}
+	
+	public array function getRelatedObjectOptions() {
+		if(!structKeyExists(variables, "relatedObjectOptions")) {
+			var emd = getService("hibachiService").getEntitiesMetaData();
+			var enArr = listToArray(structKeyList(emd));
+			arraySort(enArr,"text");
+			variables.relatedObjectOptions = [{name=getHibachiScope().rbKey('define.select'), value=''}];
+			for(var i=1; i<=arrayLen(enArr); i++) {
+				arrayAppend(variables.relatedObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
+			}
+		}
+		return variables.relatedObjectOptions;
+	}
    
     public array function getValidationTypeOptions() {
 		if(!structKeyExists(variables, "validationTypeOptions")) {
 			var smartList = getService("settingService").getTypeSmartList();
 			smartList.addSelect(propertyIdentifier="type", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="validationType"); 
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="validationType"); 
 			variables.validationTypeOptions = smartList.getRecords();
 			arrayPrepend(variables.validationTypeOptions, {value="", name=rbKey('define.none')});
 		}
@@ -126,15 +147,24 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
-			var smartList = getService("attributeOption").getAttributeOptionSmartList();
-			smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
-			smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
-			smartList.addFilter(propertyIdentifier="attribute_attributeID", value="#variables.attributeID#"); 
-			smartList.addOrder("sortOrder|ASC");
-			variables.attributeOptionsOptions = smartList.getRecords();
-			if(variables.attributeType.getSystemCode() == "atSelect") {
-				arrayPrepend(variables.attributeOptionsOptions, {value="", name=rbKey('define.select')});
+			variables.attributeOptionsOptions = [];
+			if(listFindNoCase('atCheckBoxGroup,atMultiSelect,atRadioGroup,atSelect', getAttributeType().getSystemCode())) {
+				var smartList = this.getAttributeOptionsSmartList();
+				smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
+				smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
+				smartList.addOrder("sortOrder|ASC");
+				variables.attributeOptionsOptions = smartList.getRecords();	
+			} else if(listFindNoCase('atRelatedObjectSelect', getAttributeType().getSystemCode()) && !isNull(getRelatedObject())) {
+				var entityService = getService( "hibachiService" ).getServiceByEntityName( getRelatedObject() );
+				var smartList = entityService.invokeMethod("get#getRelatedObject()#SmartList");
+				var exampleEntity = entityService.invokeMethod("new#getRelatedObject()#");
+				
+				smartList.addSelect(propertyIdentifier=exampleEntity.getSimpleRepresentationPropertyName(), alias="name");
+				smartList.addSelect(propertyIdentifier=getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( getRelatedObject() ), alias="value");
+				
+				variables.attributeOptionsOptions = smartList.getRecords();	
 			}
+			
 		}
 		return variables.attributeOptionsOptions;
     }

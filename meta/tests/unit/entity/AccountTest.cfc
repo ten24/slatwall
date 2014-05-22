@@ -56,6 +56,31 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
 	}
 	
+	public void function accountCanBeDeleted() {
+		var accountService = request.slatwallScope.getService("accountService");
+		
+		var accountData = {
+			firstName = "Account",
+			lastName = "Delete",
+			phoneNumber = "1234567890",
+			createAuthenticationFlag = 0
+		};
+		 
+		var account = entityNew("SlatwallAccount");
+		
+		account = accountService.processAccount(account, accountData, 'create'); 
+		var accountHasErrors = account.hasErrors();
+		
+		ormFlush();
+		
+		var deleteOK = accountService.deleteAccount(account); 
+		
+		debug(request.slatwallScope.getAuditsToCommitStruct());
+		
+		assert(deleteOk);
+		
+		ormFlush();
+	}
 	
 }
 

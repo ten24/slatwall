@@ -1,4 +1,4 @@
-var ngSlatwall = angular.module('ng-slatwall', []);
+var ngSlatwall = angular.module('slatwallngapp', []);
 
 //============= START: Controllers ===================
 

@@ -50,8 +50,11 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// Persistent Properties
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="auditType" ormType="string" hb_formatType="rbKey"; // create, update, delete, rollback, merge, scheduleUpdate, login, logout
+	property name="auditType" ormType="string" hb_formatType="rbKey"; // create, update, delete, rollback, archive, merge, scheduleUpdate, login, logout
 	property name="auditDateTime" ormtype="timestamp";
+	property name="auditArchiveStartDateTime" ormtype="timestamp";
+	property name="auditArchiveEndDateTime" ormtype="timestamp";
+	property name="auditArchiveCreatedDateTime" ormtype="timestamp";
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
 	property name="data" ormType="string" length="8000";
@@ -82,6 +85,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// Non-Persistent Properties
 	property name="changeDetails" type="any" persistent="false";
 	property name="relatedEntity" type="any" persistent="false";
+	property name="archiveProcessedFlag" type="boolean" persistent="false";
 	
 	// Deprecated Properties
 
@@ -92,10 +96,17 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public boolean function getArchiveProcessedFlag() {
+		if(isNull(variables.archiveProcessedFlag) || !isBoolean(variables.archiveProcessedFlag)) {
+			variables.archiveProcessedFlag = false;
+		}
+		return variables.archiveProcessedFlag;
+	}
+	
 	public function getChangeDetails() {
 		if (!structKeyExists(variables, "changeDetails")) {
-			if (listFindNoCase("create,update,rollback", getAuditType())) {
-				variables.changeDetails = getService("HibachiAuditService").getChangeDetailsForAudit(this);
+			if (listFindNoCase("create,update,rollback,archive", getAuditType())) {
+				variables.changeDetails = getService("HibachiAuditService").getPropertyChangeDetailsForAudit(this);
 			}
 		}
 		
@@ -107,7 +118,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	}
 	
 	public function getRelatedEntity() {
-		if (!structKeyExists(variables, "relatedEntity")) {
+		if (!structKeyExists(variables, "relatedEntity") && !isNull(getBaseObject()) && len(getBaseObject())) {
 			variables.relatedEntity = getService("HibachiAuditService").getRelatedEntityForAudit(this);
 		}
 		
@@ -127,14 +138,18 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	// =============== START: Custom Validation Methods ====================
 	
 	public boolean function getAuditRollbackValidFlag() {
-		var validationResult = true;
+		var validationResult = !validateAuditRollback().hasErrors();
 		
 		// If necessary delegate validation to related entity
-		if (!isNull(getRelatedEntity())) {
+		if (validationResult && !isNull(getRelatedEntity())) {
 			validationResult = getRelatedEntity().getAuditRollbackValidFlag();
 		}
 		
 		return validationResult;
+	}
+	
+	public any function validateAuditRollback(boolean setErrors=false) {
+		return getService("hibachiValidationService").validate(object=this, context="rollback", setErrors=arguments.setErrors);
 	}
 	
 	// ===============  END: Custom Validation Methods =====================

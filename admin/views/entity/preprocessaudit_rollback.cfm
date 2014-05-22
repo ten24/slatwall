@@ -48,8 +48,18 @@ Notes:
 --->
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.disableProcess" default="#!rc.audit.getAuditRollbackValidFlag()#" />
+<cfparam name="rc.disableProcessText" default="#rc.audit.validateAuditRollback().getAllErrorsHTML()#" />
 
-<cfset rc.pageTitle = "#rc.audit.getTitle()#" />
+<cfif !isNull(rc.audit.getRelatedEntity())>
+	<cfset rc.disableProcessText &= rc.audit.getRelatedEntity().validateAuditRollback().getAllErrorsHTML() />
+</cfif>
+
+<cfif not listFindNoCase("login,loginInvalid,logout", rc.audit.getAuditType())>
+	<cfset rc.pageTitle = "#rc.audit.getTitle()#" />
+<cfelse>
+	<cfset rc.pageTitle = rc.audit.getFormattedValue('auditType') />
+</cfif>
 
 <cfoutput>
 	<cfif !isNull(rc.audit.getChangeDetails())>
@@ -67,7 +77,16 @@ Notes:
 					
 					<cfloop array="#changeDetails.properties#" index="changeDetail">
 						<tr>
-							<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+							<cfif changeDetail.attributeFlag>
+								<cfset attributeName = request.context.fw.getHibachiScope().getService('AttributeService').getAttributeNameByAttributeCode(changeDetail.propertyName) />
+								<cfif len(attributeName)>
+									<td>#attributeName#</td>
+								<cfelse>
+									<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+								</cfif>
+							<cfelse>
+								<td>#request.context.fw.getHibachiScope().rbKey("entity.#rc.audit.getBaseObject()#.#changeDetail.propertyName#")#</td>
+							</cfif>
 							<cfif listFindNoCase(changeDetails.columnList, "old")>
 								<cfif isSimpleValue(changeDetail.old)>
 									<td>#changeDetail.old#</td>
@@ -88,14 +107,27 @@ Notes:
 		</cfsavecontent>
 	</cfif>
 	
-	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#!rc.audit.getAuditRollbackValidFlag()#">		
+	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#rc.disableProcess#" disableProcessText="#rc.disableProcessText#">		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList divclass="span12">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
-				<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
-				<cfif !isNull(rc.audit.getChangeDetails())>
-					<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+				<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountFullName">
+				<cfif not listFindNoCase("login,loginInvalid,logout", rc.audit.getAuditType())>
+					<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
+					
+					<cfif rc.audit.getAuditType() eq "archive">
+						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveStartDateTime">
+						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveEndDateTime">
+						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveCreatedDateTime">
+					</cfif>
+					
+					<cfif !isNull(rc.audit.getChangeDetails())>
+						<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+					</cfif>
+				<cfelse>
+					<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountEmailAddress">
+					<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionIPAddress">
 				</cfif>
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>

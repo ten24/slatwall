@@ -55,7 +55,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Persistent Properties
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="attributeValue" ormtype="string" length="4000";
+	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
 	property name="attributeValueEncrypted" ormtype="string";
 	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
 	
@@ -84,11 +84,11 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
@@ -484,6 +484,17 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		
 		return validationClass;
+	}
+	
+	public string function getAttributeValueFormatted() {
+		if(getAttribute().getAttributeType().getSystemCode() eq 'atRelatedObjectSelect') {
+			var thisEntityService = getService('hibachiService').getServiceByEntityName( getAttribute().getRelatedObject() );
+			var thisRelatedEntity = thisEntityService.invokeMethod("get#getAttribute().getRelatedObject()#", {1=getAttributeValue()});
+			if(!isNull(thisRelatedEntity)) {
+				return thisRelatedEntity.getSimpleRepresentation();
+			}
+		}
+		return getAttributeValue();
 	}
 	
 	// ==================  END:  Overridden Methods ========================

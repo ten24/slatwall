@@ -93,11 +93,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="remoteCustomerID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="remoteContactID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non Persistent
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
@@ -287,13 +287,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		var termAccountBalance = 0;
 		
 		// First look at all the unreceived open order payment
-		for(var i=1; i<=arrayLen(getTermAccountOrderPayments()); i++) {
-			termAccountBalance = precisionEvaluate(termAccountBalance + getTermAccountOrderPayments()[i].getAmountUnreceived());
+		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
+			termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
 		}
 		
 		// Now look for the unasigned payment amount 
-		for(var i=1; i<=arrayLen(getAccountPayments()); i++) {
-			termAccountBalance = precisionEvaluate(termAccountBalance - getAccountPayments()[i].getAmountUnassigned());
+		for(var accountPayment in getAccountPayments()) {
+			termAccountBalance = precisionEvaluate(termAccountBalance - accountPayment.getAmountUnassigned());
 		}
 		
 		return termAccountBalance;
@@ -557,10 +557,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	// ================== START: Overridden Methods ========================
 	
-	public string function getSimpleRepresentationPropertyName() {
-		return "fullName";
-	}
-	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
@@ -616,7 +612,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.superUserFlag;
 	}
 	
-	
+	public string function getSimpleRepresentation() {
+		return getFullName();
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

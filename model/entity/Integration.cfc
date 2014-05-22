@@ -59,11 +59,11 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	property name="integrationTypeList" ormtype="string"; 
 	
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-persistent properties
 	property name="enabledFlag" type="boolean" persistent="false";
@@ -110,7 +110,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	}
 	
 	public any function getSettings() {
-		return getIntegrationCFC().getSettings();
+		if(!isNull(getInstalledFlag()) && getInstalledFlag()) {
+			return getIntegrationCFC().getSettings();	
+		}
+		return {};
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
