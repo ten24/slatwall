@@ -57,11 +57,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxIntegrationArr = [];
 		var taxAddresses = {};
 		
-		// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
-		for(var orderPayment in arguments.order.getOrderPayments()) {
-			if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !isNull(orderPayment.getBillingAddress())) {
-				taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
-			}
+		// If the order has a billing address, use that to potentially calculate taxes for all items
+		if(!isNull(arguments.order.getBillingAddress())) {
+			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
+		} else {
+			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
+			for(var orderPayment in arguments.order.getOrderPayments()) {
+				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
+					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
+					break;
+				}
+			}	
 		}
 		
 		// First Loop over the orderItems to remove existing taxes
