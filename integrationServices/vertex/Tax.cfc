@@ -54,7 +54,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 
 	public any function getTaxRates(required any requestBean) {
 		// Build Request XML
-		var xmlPacket = "";
+	/*	var xmlPacket = "";
 		
 		savecontent variable="xmlPacket" {
 			include "InvoiceRequest.cfm";
@@ -73,7 +73,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			httpRequest.setUrl("");
 		}
 		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="XML", name="name",value=xmlPacket);
+		httpRequest.addParam(type="XML", name="name",value=xmlPacket);*/
         
 		// Create a responseBean
 		var ratesResponseBean = getTransient('TaxRatesResponseBean');
