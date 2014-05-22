@@ -143,12 +143,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	
     	//Check Order for Shipping Address
     	} else if(!isNull(getOrder().getShippingAddress())){
-    		
-    		// Set the shipping address with the shipping address found in Order
-    		setShippingAddress(getOrder().getShippingAddress());
-    		
-    		// Now return the shipping address
-    		return getShippingAddress();
+
+    		// return the shipping address
+    		return getOrder().getShippingAddress();
     	
     	} else {
     		
