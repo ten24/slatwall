@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,15 +45,39 @@
 
 Notes:
 
---->
-<cfparam name="rc.integrationSmartList" type="any" />
-<cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
+*/
 
-<cfoutput>
+component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
+
+	property name="taxRateItemResponseBeans" type="array";
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+	public any function init() {
+		// Set Defaults
+		setTaxRateItemResponseBeans([]);
+		
+		// Return the Base entity init and pass arguments
+		return super.init(argumentcollection=arguments);
+	}
+	
+	public void function addTaxRateItem(required any orderItemID, any taxAmount) {
+		
+		var taxRateItemResponseBeans = getTransient('TaxRateItemResponseBean');
+		
+		if(!isNull(taxAmount)) {
+			// Set the taxAmount Value
+			if(!isNull(arguments.taxAmount)) {
+				taxRateItemResponseBeans.setTaxAmount(arguments.taxAmount);
+			}
+		}
+		
+		// Populate orderItemID 
+		if(!isNull(orderItemID)){
+			if(!isNull(arguments.orderItemID)) {
+				taxRateItemResponseBeans.setOrderItemID(arguments.orderItemID);
+			}
+		}
 
-</cfoutput>
+		arrayAppend(getTaxRateItemResponseBeans(), taxRateItemResponseBeans);
+	}
+	
+}

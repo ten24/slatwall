@@ -267,10 +267,6 @@ component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" tab
 		}
 	}
 
-	public string function getSimpleRepresentationPropertyName() {
-		return "DisplayName";
-	}
-	
 	public string function getDisplayName(){
 		return getPriceGroup().getPriceGroupName() & " - " & getAmount() & " - " & getAmountType();
 	}

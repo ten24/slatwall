@@ -687,15 +687,12 @@
 			var populatedSiteIDs = getMuraPluginConfig().getCustomSetting("populatedSiteIDs");
 			
 			var integration = $.slatwall.getService("integrationService").getIntegrationByIntegrationPackage("mura");
-			if(!integration.getFW1ActiveFlag()) {
-				integration.setFW1ActiveFlag(1);
+			if(isNull(integration.getActiveFlag()) || !integration.getActiveFlag()) {
+				integration.setActiveFlag(1);
 				var ehArr = integration.getIntegrationCFC().getEventHandlers();
 				for(var e=1; e<=arrayLen(ehArr); e++) {
 					$.slatwall.getService("hibachiEventService").registerEventHandler(ehArr[e]);
 				}
-			}
-			if(isNull(integration.getAuthenticationActiveFlag()) || !integration.getAuthenticationActiveFlag()) {
-				integration.setAuthenticationActiveFlag(1);
 			}
 			
 			// Flush the ORM Session

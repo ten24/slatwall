@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,15 +45,24 @@
 
 Notes:
 
---->
-<cfparam name="rc.integrationSmartList" type="any" />
-<cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
+*/
 
-<cfoutput>
+component output="false" accessors="true" extends="Slatwall.model.transient.RequestBean" {
+
+	// Tax Address Properties
+	property name="taxStreetAddress" type="string";  
+	property name="taxStreet2Address" type="string";
+	property name="taxLocality" type="string";
+	property name="taxCity" type="string";   
+	property name="taxStateCode" type="string";   
+	property name="taxPostalCode" type="string";   
+	property name="taxCountryCode" type="string";  
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
-
-</cfoutput>
+	// Price and Quantity Properies
+	property name="orderItemID" type="string" default="";
+	property name="price" type="string" default="";
+	property name="quantity" type="string" default="";
+	property name="extendedPrice" type="string" default="";
+	property name="discountAmount" type="string" default="";
+	property name="extendedPriceAfterDiscounts" type="string" default="";
+}

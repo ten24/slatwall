@@ -1044,7 +1044,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccount";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left");
@@ -1063,7 +1063,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountEmailAddressSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountEmailAddress";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccountEmailAddress", "accountEmailType", "left");
 		
@@ -1073,7 +1073,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountPhoneNumberSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountPhoneNumber";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccountPhoneNumber", "accountPhoneType", "left");
 		

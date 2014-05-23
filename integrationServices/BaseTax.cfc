@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,15 +45,32 @@
 
 Notes:
 
---->
-<cfparam name="rc.integrationSmartList" type="any" />
-<cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
-
-<cfoutput>
+*/
+component extends="Slatwall.org.Hibachi.HibachiObject" {
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
-
-</cfoutput>
+	public any function init() {
+		return this;
+	}
+	
+	public any function getTaxRates(required any requestBean) {
+		return getTransient("TaxRatesResponseBean");
+	}
+	
+	// @hint helper function to return a Setting
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+		}
+		return super.setting(argumentcollection=arguments);
+	}
+	
+	// @hint helper function to return the integration entity that this belongs to
+	public any function getIntegration() {
+		return getService("integrationService").getIntegrationByIntegrationPackage(getPackageName());
+	}
+	
+	// @hint helper function to return the packagename of this integration
+	public any function getPackageName() {
+		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	}
+}

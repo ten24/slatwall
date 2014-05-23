@@ -29,7 +29,12 @@
 			
 			if(structKeyExists(arguments.data, "keyword") || structKeyExists(arguments.data, "keywords")) {
 				var example = this.new(arguments.entityName);
-				smartList.addKeywordProperty(propertyIdentifier=example.getSimpleRepresentationPropertyName(), weight=1);
+				var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
+				var primaryIDPropertyName = example.getPrimaryIDPropertyName();
+				smartList.addKeywordProperty(propertyIdentifier=primaryIDPropertyName, weight=1);
+				if(simpleRepresentationPropertyName != primaryIDPropertyName) {
+					smartList.addKeywordProperty(propertyIdentifier=simpleRepresentationPropertyName, weight=1);	
+				}
 			}
 			
 			return smartList;

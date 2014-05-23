@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,15 +45,48 @@
 
 Notes:
 
---->
-<cfparam name="rc.integrationSmartList" type="any" />
-<cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
-
-<cfoutput>
+*/
+component accessors="true" output="false" displayname="Vertex" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+	public any function init() {
+		return this;
+	}
 
-</cfoutput>
+	public any function getTaxRates(required any requestBean) {
+		// Build Request XML
+	/*	var xmlPacket = "";
+		
+		savecontent variable="xmlPacket" {
+			include "InvoiceRequest.cfm";
+        }
+        
+         // Setup Request to push to Vertex
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+		//TODO [jubs] : Determine what port to use
+		httpRequest.setPort("443");
+		httpRequest.setTimeout(45);
+		if(setting('testingFlag')) {
+			//TODO [jubs] : Determine https request URLs
+			httpRequest.setUrl("");
+		} else {
+			httpRequest.setUrl("");
+		}
+		httpRequest.setResolveurl(false);
+		httpRequest.addParam(type="XML", name="name",value=xmlPacket);*/
+        
+		// Create a responseBean
+		var ratesResponseBean = getTransient('TaxRatesResponseBean');
+		
+		for(var rateItemRequest in requestBean.getTaxRateItemRequestBeans()) {
+			
+			// Generate a random tax amount
+			var taxAmount = round(rand()*100);
+			
+			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
+		}
+		
+		return ratesResponseBean;
+	}
+
+}

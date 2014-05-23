@@ -132,10 +132,6 @@ component entityname="SlatwallPhysicalCount" table="SwPhysicalCount" persistent=
 
 	// ================== START: Overridden Methods ========================
 	
-	public string function getSimpleRepresentationPropertyName() {
-		return "location";
-	}
-	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
