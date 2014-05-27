@@ -57,24 +57,16 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
-				<cfif rc.integration.getAuthenticationReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="authenticationActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getFW1ReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="fw1ActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getShippingReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="shippingActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getPaymentReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="paymentActiveFlag" edit="#rc.edit#" />
-				</cfif>
+				<cf_HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" />
+				
 			</cf_HibachiPropertyList>
+			
+			
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.integration#">
 			<cf_HibachiTab view="admin:entity/integrationtabs/settings" />
-			<!--- <cf_HibachiTab view="admin:entity/integrationtabs/paymenttest" /> --->
+			<cf_HibachiTab view="admin:entity/integrationtabs/paymenttest" />
 		</cf_HibachiTabGroup>
 		
 	</cf_HibachiEntityDetailForm>

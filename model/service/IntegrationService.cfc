@@ -55,24 +55,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	variables.paymentIntegrationCFCs = {};
 	variables.shippingIntegrationCFCs = {};
 	variables.authenticationIntegrationCFCs = {};
+	variables.taxIntegrationCFCs = {};
 	variables.jsObjectAdditions = '';
 	
 	public void function clearActiveFW1Subsystems() {
 		structDelete(variables, "activeFW1Subsystems");
 	}
-	
+
 	public array function getActiveFW1Subsystems() {
 		if( !structKeyExists(variables, "activeFW1Subsystems") ) {
-			var afs = [];
-			var integrations = this.listIntegration({fw1ActiveFlag=1, fw1ReadyFlag=1, installedFlag=1});
-			for(var i=1; i<=arrayLen(integrations); i++) {
-				arrayAppend(afs, {subsystem=integrations[i].getIntegrationPackage(), name=integrations[i].getIntegrationName()});
-			}
-			variables.activeFW1Subsystems = afs;
+			var integrationSmartlist = this.getIntegrationSmartList();
+			integrationSmartlist.addFilter('activeFlag', '1');
+			integrationSmartlist.addFilter('installedFlag', '1');
+			integrationSmartlist.addLikeFilter('integrationTypeList', '%fw1%');
+			integrationSmartlist.addSelect('integrationName', 'name');
+			integrationSmartlist.addSelect('integrationPackage', 'subsystem');
+			variables.activeFW1Subsystems = integrationSmartlist.getRecords();
 		}
 		return variables.activeFW1Subsystems;
-	}
-	
+	}	
+
 	public any function getAllSettingMetaData() {
 		var allSettingMetaData = {};
 		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
@@ -132,6 +134,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
+
+	public any function getTaxIntegrationCFC(required any integration) {
+		if(!structKeyExists(variables.taxIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
+			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Tax").init();
+			variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
+		}
+		return variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+	}
 	
 	public any function updateIntegrationsFromDirectory( required any beanFactory ) {
 		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
@@ -157,74 +167,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					integration.setInstalledFlag(1);
 					integration.setIntegrationPackage(integrationPackage);
 					integration.setIntegrationName(integrationCFC.getDisplayName());
-					
-					integration.setAuthenticationReadyFlag(0);
-					integration.setCustomReadyFlag(0);
-					integration.setFW1ReadyFlag(0);
-					integration.setPaymentReadyFlag(0);
-					integration.setShippingReadyFlag(0);
-					
-					var integrationTypes = integrationCFC.getIntegrationTypes();
-					
-					// Start: Get Integration Types
-					for(var it=1; it<=listLen(integrationTypes); it++) {
-						
-						var thisType = listGetAt(integrationTypes, it);
-						
-						switch (thisType) {
-							case "authentication": {
-								integration.setAuthenticationReadyFlag(1);
-								break;
-							}
-							case "custom": {
-								integration.setCustomReadyFlag(1);
-								break;
-							}
-							case "fw1": {
-								integration.setFW1ReadyFlag(1);
-								
-								// Update the authentication subsystems
-								var hibachiConfig = getApplicationValue('hibachiConfig');
-								hibachiConfig.authenticationSubsystems = listAppend(hibachiConfig.authenticationSubsystems, integrationPackage);
-								setApplicationValue('hibachiConfig', hibachiConfig);
-								
-								break;
-							}
-							case "payment": {
-								var paymentCFC = createObject("component", "Slatwall.integrationServices.#integrationPackage#.Payment").init();
-								var paymentMeta = getMetaData(paymentCFC);
-								if(structKeyExists(paymentMeta, "Implements") && structKeyExists(paymentMeta.implements, "Slatwall.integrationServices.PaymentInterface")) {
-									integration.setPaymentReadyFlag(1);
-								}
-								break;
-							}
-							case "shipping": {
-								var shippingCFC = createObject("component", "Slatwall.integrationServices.#integrationPackage#.Shipping").init();
-								var shippingMeta = getMetaData(shippingCFC);
-								if(structKeyExists(shippingMeta, "Implements") && structKeyExists(shippingMeta.implements, "Slatwall.integrationServices.ShippingInterface")) {
-									integration.setShippingReadyFlag(1);
-								}
-								break;
-							}
-						}
-					}
-					
-					if(isNull(integration.getAuthenticationActiveFlag()) || (integration.getAuthenticationActiveFlag() && !integration.getAuthenticationReadyFlag())) {
-						integration.setAuthenticationActiveFlag(0);
-					}
-					if(isNull(integration.getCustomActiveFlag()) || (integration.getCustomActiveFlag() && !integration.getCustomReadyFlag())) {
-						integration.setCustomActiveFlag(0);
-					}
-					if(isNull(integration.getFW1ActiveFlag()) || (integration.getFW1ActiveFlag() && !integration.getFW1ReadyFlag())) {
-						integration.setFW1ActiveFlag(0);
-					}
-					if(isNull(integration.getPaymentActiveFlag()) || (integration.getPaymentActiveFlag() && !integration.getPaymentReadyFlag())) {
-						integration.setPaymentActiveFlag(0);
-					}
-					if(isNull(integration.getShippingActiveFlag()) || (integration.getShippingActiveFlag() && !integration.getShippingReadyFlag())) {
-						integration.setShippingActiveFlag(0);
-					}
-					
+					integration.setIntegrationTypeList( integrationCFC.getIntegrationTypes() );
+
 					
 					// Call Entity Save so that any new integrations get persisted
 					getHibachiDAO().save( integration );
@@ -268,16 +212,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			if(!listFindNoCase(installedIntegrationList, integrationEntity.getIntegrationPackage())) {
 				integrationEntity.setInstalledFlag(0);
-				integrationEntity.setAuthenticationReadyFlag(0);
-				integrationEntity.setCustomReadyFlag(0);
-				integrationEntity.setFW1ReadyFlag(0);
-				integrationEntity.setPaymentReadyFlag(0);
-				integrationEntity.setShippingReadyFlag(0);
-				integrationEntity.setAuthenticationActiveFlag(0);
-				integrationEntity.setCustomActiveFlag(0);
-				integrationEntity.setFW1ActiveFlag(0);
-				integrationEntity.setPaymentActiveFlag(0);
-				integrationEntity.setShippingActiveFlag(0);
+				integrationEntity.setActiveFlag(0);
 				
 				getHibachiDAO().flushORMSession();
 			}
@@ -293,7 +228,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var returnArr = [];
 		
 		var isl = this.getIntegrationSmartList();
-		isl.addFilter('fw1ActiveFlag', 1);
+		isl.addFilter('activeFlag', 1);
 		isl.addFilter('installedFlag', 1);
 		
 		var authInts = isl.getRecords();
@@ -312,8 +247,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var returnArr = [];
 		
 		var isl = this.getIntegrationSmartList();
-		isl.addFilter('authenticationActiveFlag', 1);
+		isl.addFilter('activeFlag', 1);
 		isl.addFilter('installedFlag', 1);
+		isl.addLikeFilter('integrationPackage', '%authentication%');
 		
 		var authInts = isl.getRecords();
 		for(var i=1; i<=arrayLen(authInts); i++) {

@@ -46,14 +46,13 @@
 Notes:
 
 --->
-<cfparam name="rc.integrationSmartList" type="any" />
-<cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
-
-<cfoutput>
+<cfinterface>
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+	<cffunction name="init" access="public" returntype="any">
+	</cffunction>
+	
+	<cffunction name="getTaxRates" access="public" returntype="any">
+		<cfargument name="requestBean" type="any" required="true" />
+	</cffunction>
 
-</cfoutput>
+</cfinterface>

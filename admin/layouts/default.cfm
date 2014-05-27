@@ -159,7 +159,7 @@ Notes:
 						<cfif arrayLen(local.integrationSubsystems)>
 							<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.integrations_nav')#" icon="random icon-white" type="nav">
 								<cfloop array="#local.integrationSubsystems#" index="local.intsys">
-									<cf_HibachiActionCaller action="#local.intsys.subsystem#:main.default" text="#local.intsys.name#" type="list">
+									<cf_HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['name']#" type="list">
 								</cfloop>
 							</cf_HibachiActionCallerDropdown>
 						</cfif>
