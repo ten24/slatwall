@@ -61,12 +61,16 @@ component output="false" accessors="true" {
 		getFW().setView("public:main.blank");
 	}
 
-	public void function account( ) {
-		rc.ajaxResponse["account"] = rc.$.slatwall.getAccountJSON();	
+	public void function account( struct rc ) {
+		param name="rc.propertyList" default=""; 
+		
+		rc.ajaxResponse["account"] = rc.$.slatwall.getAccountData( rc.propertyList );	
 	}
 	
-	public void function cart( ) {
-		rc.ajaxResponse["cart"] = rc.$.slatwall.getCartJSON();	
+	public void function cart( struct rc  ) {
+		param name="rc.propertyList" default=""; 
+		
+		rc.ajaxResponse["cart"] = rc.$.slatwall.getCartData( rc.propertyList );	
 	}
 	
 	public void function country( required struct rc ) {

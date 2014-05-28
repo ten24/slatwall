@@ -115,14 +115,14 @@
 				return rbData[key];
 			},
 			
-			getAccount : function( reload, cbs, cbf ) {
+			getAccount : function( reload, data, cbs, cbf ) {
 				
 				reload = reload || false;
 				if(!reload && account != undefined){
 					return account;
 				}
 				
-				var doasync = arguments.length > 1;
+				var doasync = arguments.length > 2;
 				var s = cbs || function(r) {result=r.account;account = r.account;};
 				var f = cbf || s;
 				var result = {};
@@ -131,6 +131,7 @@
 					url: config.baseURL + '/index.cfm?slatAction=public:ajax.account',
 					method: 'get',
 					async: doasync,
+					data: data,
 					dataType: 'json',
 					beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
 					success: s,
@@ -140,14 +141,14 @@
 				return result;
 			},
 			
-			getCart : function( reload, cbs, cbf ) {
+			getCart : function( reload, data, cbs, cbf ) {
 				
 				reload = reload || false;
 				if(!reload && cart != undefined){
 					return cart;
 				}
 				
-				var doasync = arguments.length > 1;
+				var doasync = arguments.length > 2;
 				var s = cbs || function(r) {result=r.cart; cart=r.cart;};
 				var f = cbf || s;
 				var result = {};
@@ -156,6 +157,7 @@
 					url: config.baseURL + '/index.cfm?slatAction=public:ajax.cart',
 					method: 'get',
 					async: doasync,
+					data: data,
 					dataType: 'json',
 					beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
 					success: s,
