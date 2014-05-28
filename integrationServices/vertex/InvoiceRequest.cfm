@@ -52,9 +52,9 @@
 			<!--- Left the Username and Password
 			 because it was in the Documentation,
 			 but I believe TrustedID is all we'll need --->
-			<Username></Username>
-			<Password></Password>
-			<TrustedID></TrustedID>
+			<Username>#setting('username')#</Username>
+			<Password>#setting('password')#</Password>
+			<TrustedID>#setting('trustedID')#</TrustedID>
 		</Login>
 		<InvoiceRequest documentDate="2013-12-19" documentNumber="ORDER_NUMBER" transactionId="UNIQUE_ID" transactionType="SALE">
 		  	<Currency isoCurrencyCodeAlpha="USD"/>
@@ -62,6 +62,7 @@
 		    	<Company>NAIPARENT</Company>
 		    	<Division>SLATWALL</Division>
 		    	<Department>NAI</Department>
+				<!--- Needs to be populated with Company Address Info --->
 		    	<PhysicalLocation>
 		      		<City>New York</City>
 		      		<MainDivision>NY</MainDivision>
@@ -80,17 +81,17 @@
 		  	<Customer>
 		    	<CustomerCode>CUST_NUMBER</CustomerCode>
 		    	<Destination>
-		      		<City>New York</City>
-		      		<MainDivision>NY</MainDivision>
-		      		<PostalCode>10010</PostalCode>
-		      		<Country>UNITED STATES</Country>
+		      		<City>#arguments.taxAddress.getCity()#</City>
+		      		<MainDivision>#arguments.taxAddress.getStateCode()#</MainDivision>
+		      		<PostalCode>#arguments.taxAddress.getPostalCode()#</PostalCode>
+		      		<Country>#arguments.taxAddress.getCountryCode()#</Country>
 		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
 		    	</Destination>
 		    	<AdministrativeDestination>
-		      		<City>New York</City>
-		      		<MainDivision>NY</MainDivision>
-		      		<PostalCode>10010</PostalCode>
-		      		<Country>UNITED STATES</Country>
+		      		<City>#arguments.taxAddress.getCity()#</City>
+		      		<MainDivision>#arguments.taxAddress.getStateCode()#</MainDivision>
+		      		<PostalCode>#arguments.taxAddress.getPostalCode()#</PostalCode>
+		      		<Country>#arguments.taxAddress.getCountryCode()#</Country>
 		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
 		    	</AdministrativeDestination>
 			 </Customer>

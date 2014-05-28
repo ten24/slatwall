@@ -62,7 +62,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	
 	public struct function getSettings() {
 		var settings = {
-			accountNo = {fieldType="text"},
+			username = {fieldType="text"},
 			password = {fieldType="password", encryptValue=true},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			trustedID = {fieldType="text"},

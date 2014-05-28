@@ -53,35 +53,33 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	}
 
 	public any function getTaxRates(required any requestBean) {
-		// Build Request XML
-	/*	var xmlPacket = "";
-		
-		savecontent variable="xmlPacket" {
-			include "InvoiceRequest.cfm";
-        }
-        
-         // Setup Request to push to Vertex
-        var httpRequest = new http();
-        httpRequest.setMethod("POST");
-		//TODO [jubs] : Determine what port to use
-		httpRequest.setPort("443");
-		httpRequest.setTimeout(45);
-		if(setting('testingFlag')) {
-			//TODO [jubs] : Determine https request URLs
-			httpRequest.setUrl("");
-		} else {
-			httpRequest.setUrl("");
-		}
-		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="XML", name="name",value=xmlPacket);*/
         
 		// Create a responseBean
 		var ratesResponseBean = getTransient('TaxRatesResponseBean');
 		
 		for(var rateItemRequest in requestBean.getTaxRateItemRequestBeans()) {
 			
-			// Generate a random tax amount
-			var taxAmount = round(rand()*100);
+			// Build Request XML
+			var xmlPacket = "";
+			
+			savecontent variable="xmlPacket" {
+				include "InvoiceRequest.cfm";
+	        }
+	        
+	         // Setup Request to push to Vertex
+	        var httpRequest = new http();
+	        httpRequest.setMethod("POST");
+			//TODO [jubs] : Determine what port to use.  22?
+			httpRequest.setPort("22");
+			httpRequest.setTimeout(45);
+			if(setting('testingFlag')) {
+				//TODO [jubs] : Determine https request URLs
+				httpRequest.setUrl("http://192.168.89.51/vertex-ws/services/CalculateTax60?wsdl");
+			} /*else {
+				httpRequest.setUrl("");
+			}*/
+			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
+			
 			
 			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
 		}
