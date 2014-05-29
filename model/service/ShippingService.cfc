@@ -75,7 +75,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var r=1; r<=arrayLen(shippingMethodRates); r++) {
 					
 					// check to make sure that this rate applies to the current orderFulfillment
-					if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotal())) {
+					if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts())) {
 						// Add any new shipping integrations in any of the rates the the shippingIntegrations array that we are going to query for rates later
 						if(!isNull(shippingMethodRates[r].getShippingIntegration()) && !arrayFind(integrations, shippingMethodRates[r].getShippingIntegration())) {
 							arrayAppend(integrations, shippingMethodRates[r].getShippingIntegration());
@@ -115,7 +115,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var r=1; r<=arrayLen(shippingMethodRates); r++) {
 					
 					// again, check to make sure that this rate applies to the current orderFulfillment
-					if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotal())) {
+					if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts())) {
 						
 						// If this rate is a manual one, then use the default amount
 						if(isNull(shippingMethodRates[r].getShippingIntegration())) {
@@ -195,7 +195,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setTotalCharge( rateToUse.totalCharge );
 							arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setTotalShippingWeight( arguments.orderFulfillment.getTotalShippingWeight() );
-							arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotal() );
+							arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotalAfterDiscounts() );
 							arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setShipToPostalCode( arguments.orderFulfillment.getAddress().getPostalCode() );
 							arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setShipToStateCode( arguments.orderFulfillment.getAddress().getStateCode() );
 							arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e].setShipToCountryCode( arguments.orderFulfillment.getAddress().getCountryCode() );
@@ -211,7 +211,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						newOption.setTotalCharge( rateToUse.totalCharge );
 						newOption.setTotalShippingWeight( arguments.orderFulfillment.getTotalShippingWeight() );
-						newOption.setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotal() );
+						newOption.setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotalAfterDiscounts() );
 						newOption.setShipToPostalCode( arguments.orderFulfillment.getAddress().getPostalCode() );
 						newOption.setShipToStateCode( arguments.orderFulfillment.getAddress().getStateCode() );
 						newOption.setShipToCountryCode( arguments.orderFulfillment.getAddress().getCountryCode() );
