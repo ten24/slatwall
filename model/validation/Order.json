@@ -1,4 +1,24 @@
 {
+	"conditions":{
+		"streetAddressRequired":{
+	        "country.streetAddressRequiredFlag":{"eq":true}
+	    },
+	    "street2AddressRequired":{
+	        "country.street2AddressRequiredFlag":{"eq":true}
+	    },
+	    "localityRequired":{
+	        "country.localityRequiredFlag":{"eq":true}
+	    },
+	    "cityRequired":{
+	        "country.cityRequiredFlag":{"eq":true}
+	    },
+	    "stateCodeRequired":{
+	        "country.stateCodeRequiredFlag":{"eq":true}
+	    },
+	    "postalCodeRequired":{
+	        "country.postalCodeRequiredFlag":{"eq":true}
+	    }
+	},
 	"properties":{
 		"orderType":						[{"contexts":"save","required":true}],
 		"orderStatusType":					[{"contexts":"save","required":true}],
@@ -20,10 +40,10 @@
 	},
 	"populatedPropertyValidation":{
 	    "billingAddress":[
-	    	{"conditions":"country,streetAddress,locality,city,stateCode,postalCode","validate":"full"}
+	    	{"conditions":"streetAddressRequired,street2AddressRequired,localityRequired,cityRequired,stateCodeRequired,postalCodeRequired","validate":"full"}
 	    ],
 	    "shippingAddress":[
-	    	{"conditions":"country,streetAddress,locality,city,stateCode,postalCode","validate":"full"}
+	    	{"conditions":"streetAddressRequired,street2AddressRequired,localityRequired,cityRequired,stateCodeRequired,postalCodeRequired","validate":"full"}
 	    ]
 	}
 }
