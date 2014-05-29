@@ -17,5 +17,13 @@
 		],
 		"quantityReceived":					[{"contexts":"cancelOrder","maxValue":0}],
 		"orderItems":						[{"contexts":"placeOrder,addOrderPayment","minCollection":1}]
+	},
+	"populatedPropertyValidation":{
+	    "billingAddress":[
+	    	{"conditions":"country,streetAddress,locality,city,stateCode,postalCode","validate":"full"}
+	    ],
+	    "shippingAddress":[
+	    	{"conditions":"country,streetAddress,locality,city,stateCode,postalCode","validate":"full"}
+	    ]
 	}
 }

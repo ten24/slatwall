@@ -29,13 +29,5 @@
 		"stateCode":		[{"contexts":"full,location","conditions":"stateCodeRequired","required":true}],
 		"postalCode":		[{"contexts":"full,location","conditions":"postalCodeRequired","required":true}],
 		"emailAddress":		[{"contexts":"save","dataType":"email"}]
-	},
-	"populatedPropertyValidation":{
-	    "billingAddress":[
-	    	{"conditions":"country,streetAddress,locality,city,stateCode,postalCode","validate":"full"}
-	    ],
-	    "shippingAddress":[
-	    	{"conditions":"country,streetAddress,locality,city,stateCode,postalCode","validate":"full"}
-	    ]
 	}
 }
