@@ -50,7 +50,7 @@ component {
 	
 	public void function afterOrderProcess_PlaceOrderSuccess(required any slatwallScope, required any order) {
 		// Automatically update the order amounts with taxes
-	//	arguments.slatwallScope.getService("taxService").updateOrderAmountsWithTaxes(arguments.order);
+		//arguments.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('vertex').getIntegrationCFC('tax').postOrderInvoice(arguments.order);
 	}
 	
 }	
