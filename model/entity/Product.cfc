@@ -417,7 +417,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				for(var option in sku.getOptions()) {
 					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
 						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
-						break;
 					}
 				}
 				if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
