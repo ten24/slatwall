@@ -46,64 +46,66 @@
 	Notes:
 	
 --->
-<cfoutput>
-	<VertexEnvelope>
-		<Login>
-			<!--- Left the Username and Password
-			 because it was in the Documentation,
-			 but I believe TrustedID is all we'll need --->
-			<Username>#setting('username')#</Username>
-			<Password>#setting('password')#</Password>
-			<TrustedID>#setting('trustedID')#</TrustedID>
-		</Login>
-		<InvoiceRequest documentDate="2013-12-19" documentNumber="ORDER_NUMBER" transactionId="UNIQUE_ID" transactionType="SALE">
-		  	<Currency isoCurrencyCodeAlpha="USD"/>
-		  	<Seller>
-		    	<Company>NAIPARENT</Company>
-		    	<Division>SLATWALL</Division>
-		    	<Department>NAI</Department>
-				<!--- Needs to be populated with Company Address Info --->
-		    	<PhysicalLocation>
-		      		<City>New York</City>
-		      		<MainDivision>NY</MainDivision>
-		      		<PostalCode>10010</PostalCode>
-		      		<Country>UNITED STATES</Country>
-		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-		    	</PhysicalLocation>
-		    	<AdministrativeOrigin>
-		      		<City>New York</City>
-		      		<MainDivision>NY</MainDivision>
-		      		<PostalCode>10010</PostalCode>
-		     		<Country>UNITED STATES</Country>
-		     		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-		   		</AdministrativeOrigin>
-		  	</Seller>
-		  	<Customer>
-		    	<CustomerCode>CUST_NUMBER</CustomerCode>
-		    	<Destination>
-		      		<City>#arguments.taxAddress.getCity()#</City>
-		      		<MainDivision>#arguments.taxAddress.getStateCode()#</MainDivision>
-		      		<PostalCode>#arguments.taxAddress.getPostalCode()#</PostalCode>
-		      		<Country>#arguments.taxAddress.getCountryCode()#</Country>
-		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-		    	</Destination>
-		    	<AdministrativeDestination>
-		      		<City>#arguments.taxAddress.getCity()#</City>
-		      		<MainDivision>#arguments.taxAddress.getStateCode()#</MainDivision>
-		      		<PostalCode>#arguments.taxAddress.getPostalCode()#</PostalCode>
-		      		<Country>#arguments.taxAddress.getCountryCode()#</Country>
-		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-		    	</AdministrativeDestination>
-			 </Customer>
-			 <LineItem lineItemNumber="1">
-			  		<!--- Note to Jubs: Check Documentation for Below Section --->
-			    	<ExtendedPrice>100</ExtendedPrice>
-			   	 	<FlexibleFields>
-			      		<FlexibleCodeField fieldId="7">CUST_NANE</FlexibleCodeField>
-			      		<FlexibleCodeField fieldId="11">TAX_CODE</FlexibleCodeField>
-			      		<FlexibleCodeField fieldId="12">PRODUCT_NAME</FlexibleCodeField>
-			    	</FlexibleFields>
-			  </LineItem>
-		</InvoiceRequest>
-	</VertexEnvelope>
-</cfoutput>
+<cfsavecontent variable="xmlPackage">
+	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:vertexinc:o-series:tps:6:0">
+	   	<soapenv:Header/>
+	   	<soapenv:Body>
+	      	<urn:VertexEnvelope>
+	         	<urn:Login>
+	            	<urn:UserName>tmurray</urn:UserName>
+	            	<urn:Password>vertex</urn:Password>
+	         	</urn:Login>
+				<urn:InvoiceRequest documentDate="2013-12-19" documentNumber="ORDER_NUMBER" transactionId="UNIQUE_ID" transactionType="SALE">
+				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
+				  	<urn:Seller>
+				    	<urn:Company>NAIPARENT</urn:Company>
+				    	<urn:Division>SLATWALL</urn:Division>
+				    	<urn:Department>NAI</urn:Department>
+				    	<urn:PhysicalLocation>
+				      		<urn:City>New York</urn:City>
+				      		<urn:MainDivision>NY</urn:MainDivision>
+				      		<urn:PostalCode>10010</urn:PostalCode>
+				      		<urn:Country>UNITED STATES</urn:Country>
+				      		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				    	</urn:PhysicalLocation>
+						<!--- Note to Self: Determine the difference between Physical Location and Admin Origin --->
+				    	<urn:AdministrativeOrigin>
+				      		<urn:City>New York</urn:City>
+				      		<urn:MainDivision>NY</urn:MainDivision>
+				      		<urn:PostalCode>10010</urn:PostalCode>
+				     		<urn:Country>UNITED STATES</urn:Country>
+				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				   		</urn:AdministrativeOrigin>
+				  	</urn:Seller>
+				  	<urn:Customer>
+				    	<urn:CustomerCode>CUST_NUMBER</urn:CustomerCode>
+				    	<urn:Destination>
+				      		<urn:City>arguments.taxAddress.getCity()</urn:City>
+				      		<urn:MainDivision>arguments.taxAddress.getStateCode()</urn:MainDivision>
+				      		<urn:PostalCode>arguments.taxAddress.getPostalCode()</urn:PostalCode>
+				      		<urn:Country>arguments.taxAddress.getCountryCode()</urn:Country>
+				      		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				    	</urn:Destination>
+						<!--- Note to Self: Determine the what Destination and Admin Destination is for Customer --->
+				    	<urn:AdministrativeDestination>
+				      		<urn:City>arguments.taxAddress.getCity()</urn:City>
+				      		<urn:MainDivision>arguments.taxAddress.getStateCode()</urn:MainDivision>
+				      		<urn:PostalCode>arguments.taxAddress.getPostalCode()</urn:PostalCode>
+				      		<urn:Country>arguments.taxAddress.getCountryCode()</urn:Country>
+				      		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				    	</urn:AdministrativeDestination>
+					 </urn:Customer>
+					 <urn:LineItem lineItemNumber="1">
+							<!--- Note to Self: Check documentation for below child tags --->
+					    	<urn:ExtendedPrice>100</urn:ExtendedPrice>
+					   	 	<urn:FlexibleFields>
+					      		<urn:FlexibleCodeField fieldId="7">CUST_NANE</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="12">PRODUCT_NAME</urn:FlexibleCodeField>
+					    	</urn:FlexibleFields>
+					  </urn:LineItem>
+				</urn:InvoiceRequest>
+			</urn:VertexEnvelope>
+		</soapenv:Body>
+	</soapenv:Envelope>
+</cfsavecontent>

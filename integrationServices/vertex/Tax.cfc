@@ -65,23 +65,23 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			savecontent variable="xmlPacket" {
 				include "InvoiceRequest.cfm";
 	        }
-	        
-	         // Setup Request to push to Vertex
+	
+			 // Setup request to post to Vertex and result value
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
-			//TODO [jubs] : Determine what port to use.  22?
-			httpRequest.setPort("22");
-			httpRequest.setTimeout(45);
+	        httpRequest.setResult("invoiceResponse");
+	        
 			if(setting('testingFlag')) {
-				//TODO [jubs] : Determine https request URLs
+				// Set the Request URL and result
 				httpRequest.setUrl("http://192.168.89.51/vertex-ws/services/CalculateTax60?wsdl");
-			} /*else {
-				httpRequest.setUrl("");
-			}*/
-			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
-			
-			
+			}
+			httpRequest.addParam(type="XML", value="xmlPacket"); 
+	
+
+			/*
+			// Temporary Comment
 			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
+			*/
 		}
 		
 		return ratesResponseBean;
