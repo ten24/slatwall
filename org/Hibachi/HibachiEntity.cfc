@@ -739,7 +739,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		
-		getService("hibachiAuditService").logEntityModify(entity=this);
+		// Log audit only if admin user
+		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+			getService("hibachiAuditService").logEntityModify(entity=this);
+		}
 	}
 	
 	public void function preUpdate(struct oldData){
@@ -772,14 +775,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		
-		// Manually populate primary ID in old data because it doesn't exist by default
-		arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
+		// Log audit only if admin user
+		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
 		
-		getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+			// Manually populate primary ID in old data because it doesn't exist by default
+			arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
+		
+			getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+		}
 	}
 	
 	public void function preDelete() {
-		getService("hibachiAuditService").logEntityDelete(this);
+		// Log audit only if admin user
+		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+			getService("hibachiAuditService").logEntityDelete(this);
+		}
 	}
 	
 	/*
