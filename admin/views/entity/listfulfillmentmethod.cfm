@@ -48,7 +48,7 @@ Notes:
 --->
 <cfparam name="rc.fulfillmentMethodSmartList" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.fulfillmentMethodSmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.fulfillmentMethodSmartList#"
 		recordEditAction="admin:entity.editfulfillmentmethod"
 		recordDetailAction="admin:entity.detailfulfillmentmethod"
 		sortProperty="sortOrder">

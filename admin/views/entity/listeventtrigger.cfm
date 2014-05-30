@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.eventTriggerSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.eventTriggerSmartList#"
 							   recordDetailAction="admin:entity.detaileventtrigger"
 							   recordEditAction="admin:entity.editeventtrigger">
 							      

@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.termSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.termSmartList#"
 							   recordEditAction="admin:entity.editterm"
 							   recordEditQueryString="redirectAction=admin:entity.listterm"
 							   recordEditModal="true"

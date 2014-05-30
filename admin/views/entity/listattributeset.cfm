@@ -48,7 +48,7 @@ Notes:
 --->
 <cfparam name="rc.attributeSetSmartList" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.attributeSetSmartList#"
 						   recordDetailAction="admin:entity.detailattributeset"
 						   recordEditAction="admin:entity.editattributeset"
 						   sortProperty="sortOrder">

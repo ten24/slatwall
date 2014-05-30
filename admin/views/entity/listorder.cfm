@@ -51,7 +51,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay type="listing" smartList="#rc.orderSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" type="listing" smartList="#rc.orderSmartList#"
 			recordDetailAction="admin:entity.detailorder"
 			recordEditAction="admin:entity.editorder"
 			showCreate="true">

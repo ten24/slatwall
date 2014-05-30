@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.emailTemplateSmartList#"
 							   recordDetailAction="admin:entity.detailemailTemplate"
 							   recordEditAction="admin:entity.editemailTemplate">
 		

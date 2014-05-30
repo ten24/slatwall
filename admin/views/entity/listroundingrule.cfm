@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.roundingruleSmartList#" rc="#rc#" recordEditAction="admin:entity.editroundingrule" recordEditQueryString="redirectAction=admin:entity.listroundingrule" recordEditModal="true" recordDeleteAction="admin:entity.deleteroundingrule">
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.roundingruleSmartList#" rc="#rc#" recordEditAction="admin:entity.editroundingrule" recordEditQueryString="redirectAction=admin:entity.listroundingrule" recordEditModal="true" recordDeleteAction="admin:entity.deleteroundingrule">
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >

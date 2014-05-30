@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.paymentTermSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.paymentTermSmartList#"
 							  recordEditAction="admin:entity.editpaymentTerm"
 							  recordEditQueryString="redirectAction=admin:entity.listpaymentterm"
 							  recordEditModal="true"
