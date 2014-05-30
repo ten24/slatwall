@@ -52,7 +52,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.productTypeSmartList#" 
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productTypeSmartList#" 
 								recordEditAction="admin:entity.editproducttype"
 								recordDetailAction="admin:entity.detailproducttype">
 								

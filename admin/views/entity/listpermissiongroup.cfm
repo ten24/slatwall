@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.permissionGroupSmartList#" 
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.permissionGroupSmartList#" 
 							  recordDetailAction="admin:entity.detailpermissiongroup" 
 							  recordEditAction="admin:entity.editpermissiongroup">
 		

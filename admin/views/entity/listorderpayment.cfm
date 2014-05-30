@@ -53,7 +53,7 @@ Notes:
 <cfset rc.orderPaymentSmartList.addInFilter("order.orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceld") />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.orderPaymentSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderPaymentSmartList#"
 							   recorddetailaction="admin:entity.detailorderpayment">
 		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
 		<cf_HibachiListingColumn propertyIdentifier="order.account.firstName" />

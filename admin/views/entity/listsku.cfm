@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay type="listing" smartList="#rc.skuSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.skuSmartList#"
 			recordEditAction="admin:entity.editsku"
 			recorddetailaction="admin:entity.detailsku">
 			

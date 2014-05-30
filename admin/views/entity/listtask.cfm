@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartlist="#rc.taskSmartList#" 
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.taskSmartList#" 
 	                          recorddetailaction="admin:entity.detailtask"
 							  recordeditaction="admin:entity.edittask">
 		

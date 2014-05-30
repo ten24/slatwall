@@ -52,7 +52,7 @@ Notes:
 	
 	<cfset rc.loyaltyTermSmartList.addOrder("loyaltyTermName|ASC") />
 	
-	<cf_HibachiListingDisplay smartList="#rc.loyaltyTermSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.loyaltyTermSmartList#"
 							   recorddetailaction="admin:entity.detailloyaltyterm"
 							   recordEditAction="admin:entity.editloyaltyterm">
 		

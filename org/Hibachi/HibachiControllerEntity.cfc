@@ -121,7 +121,8 @@ component output="false" accessors="true" extends="HibachiController" {
 		if(right(arguments.rc.pageTitle, 8) eq "_missing") {
 			var replaceData = {
 				entityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'),
-				itemEntityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#')
+				itemEntityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'),
+				itemEntityNamePlural=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#_plural')
 			};
 			
 			if(left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 4) eq "list") {
