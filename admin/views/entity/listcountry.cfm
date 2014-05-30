@@ -48,7 +48,7 @@ Notes:
 --->
 <cfparam name="rc.countrySmartList" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.countrySmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.countrySmartList#"
 						  recordDetailAction="admin:entity.detailcountry"
 						  recordEditAction="admin:entity.editcountry">
 	<!--- Create ---> 

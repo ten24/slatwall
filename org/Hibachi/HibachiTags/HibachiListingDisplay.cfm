@@ -6,6 +6,9 @@
 	<cfparam name="attributes.smartList" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
 	
+	<!--- Optional --->
+	<cfparam name="attributes.title" type="string" default="" />
+	
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
 	<cfparam name="attributes.recordEditQueryString" type="string" default="" />
@@ -303,6 +306,12 @@
 							<div class="span8">
 								<cfif not thistag.expandable>
 									<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+								</cfif>
+								<cfif not thistag.expandable and len(attributes.title)>
+									<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
+								</cfif>
+								<cfif len(attributes.title)>
+									<span style="font-size:14px;color:##666666;">#attributes.title#</span>
 								</cfif>
 							</div>
 							<div class="span4">

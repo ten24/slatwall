@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay type="listing" smartList="#rc.stockAdjustmentSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.stockAdjustmentSmartList#"
 			recordeditaction="admin:entity.editstockadjustment"
 			recorddetailaction="admin:entity.detailstockadjustment"
 			showCreate="true">

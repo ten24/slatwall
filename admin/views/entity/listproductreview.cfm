@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.productReviewSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productReviewSmartList#"
 								recordDetailAction="admin:entity.detailproductreview"
 								recordEditAction="admin:entity.editproductreview">
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="reviewTitle" />
