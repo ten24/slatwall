@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="unitName" />
 	<cf_HibachiListingColumn propertyIdentifier="unitCode" />
 	<cf_HibachiListingColumn propertyIdentifier="measurementType" />

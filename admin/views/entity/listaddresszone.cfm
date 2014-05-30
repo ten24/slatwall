@@ -48,7 +48,7 @@ Notes:
 --->
 <cfparam name="rc.addresszoneSmartList" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.addresszoneSmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.addresszoneSmartList#"
 						   recordDetailAction="admin:entity.detailaddresszone"
 						   recordEditAction="admin:entity.editaddresszone"
 						   recordDeleteAction="admin:entity.deleteaddresszone">

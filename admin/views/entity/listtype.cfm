@@ -49,7 +49,7 @@ Notes:
 <cfparam name="rc.typeSmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.typeSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.typeSmartList#"
 							   recordDetailModal=true
 							   recordDetailAction="admin:entity.detailtype"
 							   recordEditModal=true

@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.orderDeliverySmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderDeliverySmartList#"
 			recorddetailaction="admin:entity.detailorderdelivery">
 		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
 		<cf_HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />

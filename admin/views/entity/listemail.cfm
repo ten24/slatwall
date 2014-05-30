@@ -52,7 +52,7 @@ Notes:
 	
 <cf_HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" createModal="true" />
 
-<cf_HibachiListingDisplay smartList="#rc.emailSmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.emailSmartList#"
 						   recordDetailAction="admin:entity.detailemail"
 						   recordEditAction="admin:entity.editemail"
 						   recordEditQueryString="redirectAction=admin:entity.listemail">
