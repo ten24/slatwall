@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.currencySmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.currencySmartList#"
 							   recordDetailAction="admin:entity.detailcurrency"
 							   recordDetailModal="true"
 							   recordEditAction="admin:entity.editcurrency"

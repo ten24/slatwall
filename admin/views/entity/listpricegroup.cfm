@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.priceGroupSmartList#" 
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.priceGroupSmartList#" 
 								recordDetailAction="admin:entity.detailpricegroup"
 								recordEditAction="admin:entity.editpricegroup">
 								

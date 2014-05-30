@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderOriginSmartList#"
 			recordEditAction="admin:entity.editorderorigin"
 			recordEditQueryString="redirectAction=admin:entity.listorderorigin"
 			recordDeleteAction="admin:entity.deleteorderorigin"

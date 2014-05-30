@@ -52,7 +52,7 @@ Notes:
 
 	<cfset rc.promotionSmartList.addOrder("promotionName|ASC") />
 	
-	<cf_HibachiListingDisplay smartList="#rc.promotionSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.promotionSmartList#"
 							   recorddetailaction="admin:entity.detailpromotion"
 							   recordEditAction="admin:entity.editpromotion">
 							      

@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartlist="#rc.physicalSmartList#" 
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.physicalSmartList#" 
 	                          recordeditaction="admin:entity.editphysical"
 							  recorddetailaction="admin:entity.detailphysical">
 		

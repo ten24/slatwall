@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.stockReceiverSmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.stockReceiverSmartList#"
 						   recordDetailAction="admin:entity.detailstockreceiver"
 						   recordEditAction="admin:entity.editstockreceiver">
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="packingSlipNumber" />
