@@ -49,7 +49,7 @@ Notes:
 component extends="CFSelenium.CFSeleniumTestCase" {
 
 	public void function beforeTests(){
-	    variables.browserURL = "http://cf9.slatwall/";
+	    variables.browserURL = "http://localhost:8500/Slatwall/";
 	    super.beforeTests();
 	}
 	
