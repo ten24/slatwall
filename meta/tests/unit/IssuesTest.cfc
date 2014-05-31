@@ -75,6 +75,8 @@ component extends="SlatwallUnitTestBase" {
 		var smartList = request.slatwallScope.getService("productService").getProductSmartList();
 		
 		// This test can only run if there are products in the database
+		assert(smartList.getRecordsCount() >= 2, "Not enough data present to adequately test. Failing...");
+		
 		if(smartList.getRecordsCount() >= 2) {
 			smartList.setPageRecordsShow(1);
 		

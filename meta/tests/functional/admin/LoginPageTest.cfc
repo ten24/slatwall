@@ -1,10 +1,5 @@
 component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 
-	function setUp(){
-		super.setUp();
-		Login = new LoginPage(selenium);
-	}
-	
 	//basic version
 	function invalid_credentials_fail(){
 		Login.login("foo", "bar");
@@ -30,14 +25,15 @@ component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 	*/
 	function invalid_credentials_all_fail(credentials){
 		var dashboard = Login.login(credentials.u, credentials.p);
-		assertEquals(Login.getTitle(), selenium.getTitle());
-		assertFalse(Dashboard.isLoaded());
+		assertPageIsLoaded(Login);
+//		assertEquals(Login.getTitle(), selenium.getTitle());
+//		assertFalse(Dashboard.isLoaded());
 	}
 	
 	function valid_credentials_login(){
 		var dashboard = Login.login("uitest@ten24web.com", "uitest01");
 		assertEquals(Dashboard.getTitle(), selenium.getTitle());
-		assertTrue(Dashboard.isLoaded());
+		assertPageIsLoaded(dashboard);
 	}
 	
 	

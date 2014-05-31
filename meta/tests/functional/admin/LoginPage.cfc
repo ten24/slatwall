@@ -1,12 +1,6 @@
-component {
+component extends="PageObject"{
 	
-	function init(selenium){
-		structAppend(variables, arguments);
-	}
-	
-	function getTitle(){
-		return "Login | Slatwall";
-	}
+	variables.title = "Login | Slatwall";
 	
 	function login(username, password) {
 		logout();

@@ -54,8 +54,26 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("dataService");
 	}
 	
-		
-	public void function getUrlTitle() {
+	
+	
+	titleStrings = ["Gift Card-$50", "Gift Card $50", "Gift - Card - $50", "Gift -- Card -- $50"];
+	
+	/**
+	* @mxunit:dataprovider titleStrings
+	*/
+	public void function getUrlTitle(titleString) {
+		debug(arguments);
+		var expectedTitle = "gift-card-50";
+		var urlTitle = variables.service.createUniqueURLTitle(titleString=arguments.titleString, tableName="SwProduct");
+		assert(urlTitle eq expectedTitle);
+		urlTitle = variables.service.createUniqueURLTitle(titleString=lcase(arguments.titleString), tableName="SwProduct");
+		assert(urlTitle eq expectedTitle);
+		urlTitle = variables.service.createUniqueURLTitle(titleString=ucase(arguments.titleString), tableName="SwProduct");
+		assert(urlTitle eq expectedTitle);
+	}
+	
+	
+	public void function getUrlTitle_old() {
 		
 		//Gift Card-$50
 		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift Card-$50", tableName="SwProduct");
