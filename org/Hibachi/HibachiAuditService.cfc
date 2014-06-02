@@ -288,7 +288,6 @@ component extends="HibachiService" accessors="true" {
 				if (!arrayContains(changedPropertyNames, topLevelPropertyName)) {
 					// Change detected when value only exists in source or when source/target values differ
 					if (!structKeyExists(comparison.target, propertyValueMappingKey) || (comparison.source[propertyValueMappingKey] != comparison.target[propertyValueMappingKey])) {
-						auditablePropertiesStruct[topLevelPropertyName];
 						if (len(comparison.source[propertyValueMappingKey])) {
 							arrayAppend(changedPropertyNames, topLevelPropertyName);
 						}
