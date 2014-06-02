@@ -532,7 +532,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 	
 	public string function getAuditablePropertyExclusionList() {
-		return "createdByAccount,createdByAccountID,createdDateTime,modifiedByAccount,modifiedByAccountID,modifiedDateTime,remoteID";
+		return "createdByAccount,createdByAccountID,createdDateTime,modifiedByAccount,modifiedByAccountID,modifiedDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID";
 	}
 	
 	public array function getAuditableProperties() {
@@ -782,13 +782,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
 		
 			getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
-		}
-	}
-	
-	public void function preDelete() {
-		// Log audit only if admin user
-		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
-			getService("hibachiAuditService").logEntityDelete(this);
 		}
 	}
 	
