@@ -107,11 +107,12 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function logEntityModify(any entity, struct oldData) {
+		var baseID = getBaseIDForEntity( arguments.entity );
 		
-		if (arguments.entity.getAuditableFlag()) {
+		// Entity must be auditable and modifications should not have been triggered by a delete
+		if (arguments.entity.getAuditableFlag() && (!structKeyExists(getHibachiScope().getAuditsToCommitStruct(), baseID) || !structKeyExists(getHibachiScope().getAuditsToCommitStruct()[baseID], 'delete'))) {
 			
 			var auditType = '';
-			var baseID = getBaseIDForEntity( arguments.entity );
 			var baseObject = getBaseObjectForEntity( arguments.entity );
 			var baseTitle = getBaseTitleForEntity( arguments.entity );
 			
