@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,36 +45,12 @@
 
 Notes:
 
---->
-<cfparam name="rc.taxCategoryRate" type="any" />
-<cfparam name="rc.taxCategory" type="any" default="#rc.taxCategoryRate.getTaxCategory()#" />
-<cfparam name="rc.integration" type="any" default="" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.taxCategoryRate#" srenderItem="detailtaxCategory" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.taxCategoryRate#" edit="#rc.edit#" 
-						backAction="admin:entity.detailtaxCategory" 
-						backQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#"
-						cancelAction="admin:entity.detailtaxCategory"
-						cancelQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" />
-						
-		<cfif rc.edit>
-			<input type="hidden" name="taxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<input type="hidden" name="taxCategory.TaxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<cfif isObject(rc.integration)>
-				<input type="hidden" name="taxIntegration.integrationID" value="#rc.integration.getIntegrationID()#" />
-			</cfif>
-		</cfif>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxAddressLookup" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#">
-				<cfset rc.taxCategoryRate.getAddressZoneOptions()[1]["name"] = request.slatwallScope.rbKey('define.all') />
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+*/
+component {
+	
+	public void function afterOrderProcess_PlaceOrderSuccess(required any slatwallScope, required any order) {
+		// Automatically update the order amounts with taxes
+		//arguments.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('vertex').getIntegrationCFC('tax').postOrderInvoice(arguments.order);
+	}
+	
+}	

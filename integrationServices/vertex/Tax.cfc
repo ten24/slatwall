@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,36 +45,48 @@
 
 Notes:
 
---->
-<cfparam name="rc.taxCategoryRate" type="any" />
-<cfparam name="rc.taxCategory" type="any" default="#rc.taxCategoryRate.getTaxCategory()#" />
-<cfparam name="rc.integration" type="any" default="" />
-<cfparam name="rc.edit" type="boolean" />
+*/
+component accessors="true" output="false" displayname="Vertex" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
+	
+	public any function init() {
+		return this;
+	}
 
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.taxCategoryRate#" srenderItem="detailtaxCategory" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.taxCategoryRate#" edit="#rc.edit#" 
-						backAction="admin:entity.detailtaxCategory" 
-						backQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#"
-						cancelAction="admin:entity.detailtaxCategory"
-						cancelQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" />
-						
-		<cfif rc.edit>
-			<input type="hidden" name="taxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<input type="hidden" name="taxCategory.TaxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<cfif isObject(rc.integration)>
-				<input type="hidden" name="taxIntegration.integrationID" value="#rc.integration.getIntegrationID()#" />
-			</cfif>
-		</cfif>
+	public any function getTaxRates(required any requestBean) {
+		// Build Request XML
+	/*	var xmlPacket = "";
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxAddressLookup" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#">
-				<cfset rc.taxCategoryRate.getAddressZoneOptions()[1]["name"] = request.slatwallScope.rbKey('define.all') />
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		savecontent variable="xmlPacket" {
+			include "InvoiceRequest.cfm";
+        }
+        
+         // Setup Request to push to Vertex
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+		//TODO [jubs] : Determine what port to use
+		httpRequest.setPort("443");
+		httpRequest.setTimeout(45);
+		if(setting('testingFlag')) {
+			//TODO [jubs] : Determine https request URLs
+			httpRequest.setUrl("");
+		} else {
+			httpRequest.setUrl("");
+		}
+		httpRequest.setResolveurl(false);
+		httpRequest.addParam(type="XML", name="name",value=xmlPacket);*/
+        
+		// Create a responseBean
+		var ratesResponseBean = getTransient('TaxRatesResponseBean');
+		
+		for(var rateItemRequest in requestBean.getTaxRateItemRequestBeans()) {
+			
+			// Generate a random tax amount
+			var taxAmount = round(rand()*100);
+			
+			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
+		}
+		
+		return ratesResponseBean;
+	}
 
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+}

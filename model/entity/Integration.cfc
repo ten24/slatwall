@@ -54,16 +54,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	property name="integrationName" ormtype="string";
 	property name="installedFlag" ormtype="boolean";
 	
-	property name="authenticationReadyFlag" ormtype="boolean";
-	property name="authenticationActiveFlag" ormtype="boolean";
-	property name="customReadyFlag" ormtype="boolean";
-	property name="customActiveFlag" ormtype="boolean";
-	property name="fw1ReadyFlag" ormtype="boolean";
-	property name="fw1ActiveFlag" ormtype="boolean";
-	property name="paymentReadyFlag" ormtype="boolean";
-	property name="paymentActiveFlag" ormtype="boolean";
-	property name="shippingReadyFlag" ormtype="boolean";
-	property name="shippingActiveFlag" ormtype="boolean";
+	//Active Flag and IntegrationTypeList
+	property name="activeFlag" ormtype="boolean";
+	property name="integrationTypeList" ormtype="string"; 
+	
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -76,21 +70,21 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	
 	
 	public boolean function getEnabledFlag() {
-		return getCustomActiveFlag() || getFW1ActiveFlag() || getPaymentActiveFlag() || getShippingActiveFlag();
+		return getActiveFlag();
 	}
 	
-	public array function getShippingMethodOptions( ) {
+	public array function getShippingMethodOptions() {
 		if(!structKeyExists(variables, "shippingMethodOptions")) {
-			variables.shippingMethodOptions = [];
-			var shippingMethodsStruct = getService("integrationService").getShippingIntegrationCFC( this ).getShippingMethods();
-			for(var key in shippingMethodsStruct) {
-				arrayAppend(variables.shippingMethodOptions, {name=shippingMethodsStruct[key], value=key});
-			}
+			var integrationSmartlist = getService("integrationService").getIntegrationSmartList();
+			integrationSmartlist.addFilter('activeFlag', '1');
+			integrationSmartlist.addLikeFilter('integrationTypeList', '%shipping%');
+			integrationSmartlist.addSelect('integrationName', 'name');
+			integrationSmartlist.addSelect('integrationID', 'value');
+			variables.shippingMethodOptions = integrationSmartlist.getRecords();
 		}
 		return variables.shippingMethodOptions;
-	}
-	
-	
+	}	
+
 	public any function getIntegrationCFC( string integrationType="" ) {
 		switch (arguments.integrationType) {
 			case "authentication" : {
@@ -103,6 +97,10 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 			}
 			case "shipping" : {
 				return getService("integrationService").getShippingIntegrationCFC(this);
+				break;
+			}
+			case "tax" : {
+				return getService("integrationService").getTaxIntegrationCFC(this);
 				break;
 			}
 			default : {

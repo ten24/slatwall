@@ -600,8 +600,13 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
+			if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
+				return getOrder().getBillingAddress();
+			}
+			
 			return getService("addressService").newAddress();
 		}
+		
 		return variables.billingAddress;
 	}
 	

@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,36 +45,35 @@
 
 Notes:
 
---->
-<cfparam name="rc.taxCategoryRate" type="any" />
-<cfparam name="rc.taxCategory" type="any" default="#rc.taxCategoryRate.getTaxCategory()#" />
-<cfparam name="rc.integration" type="any" default="" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.taxCategoryRate#" srenderItem="detailtaxCategory" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.taxCategoryRate#" edit="#rc.edit#" 
-						backAction="admin:entity.detailtaxCategory" 
-						backQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#"
-						cancelAction="admin:entity.detailtaxCategory"
-						cancelQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" />
-						
-		<cfif rc.edit>
-			<input type="hidden" name="taxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<input type="hidden" name="taxCategory.TaxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<cfif isObject(rc.integration)>
-				<input type="hidden" name="taxIntegration.integrationID" value="#rc.integration.getIntegrationID()#" />
-			</cfif>
-		</cfif>
+*/
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+	
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "tax";
+	}
+	
+	public string function getDisplayName() {
+		return "Vertex";
+	}
+	
+	public struct function getSettings() {
+		var settings = {
+			accountNo = {fieldType="text"},
+			password = {fieldType="password", encryptValue=true},
+			testingFlag = {fieldType="yesno", defaultValue="1"},
+			trustedID = {fieldType="text"},
+			serverURL = {fieldType="text"}
+		};
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxAddressLookup" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#">
-				<cfset rc.taxCategoryRate.getAddressZoneOptions()[1]["name"] = request.slatwallScope.rbKey('define.all') />
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+		return settings;
+	}
+	
+	public array function getEventHandlers() {
+		return ["Slatwall.integrationServices.vertex.model.handler.VertexHandler"];
+	}
+	
+}

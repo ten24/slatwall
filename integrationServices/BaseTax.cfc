@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,36 +45,32 @@
 
 Notes:
 
---->
-<cfparam name="rc.taxCategoryRate" type="any" />
-<cfparam name="rc.taxCategory" type="any" default="#rc.taxCategoryRate.getTaxCategory()#" />
-<cfparam name="rc.integration" type="any" default="" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.taxCategoryRate#" srenderItem="detailtaxCategory" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.taxCategoryRate#" edit="#rc.edit#" 
-						backAction="admin:entity.detailtaxCategory" 
-						backQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#"
-						cancelAction="admin:entity.detailtaxCategory"
-						cancelQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" />
-						
-		<cfif rc.edit>
-			<input type="hidden" name="taxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<input type="hidden" name="taxCategory.TaxCategoryID" value="#rc.taxCategory.getTaxCategoryID()#" />
-			<cfif isObject(rc.integration)>
-				<input type="hidden" name="taxIntegration.integrationID" value="#rc.integration.getIntegrationID()#" />
-			</cfif>
-		</cfif>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxAddressLookup" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#">
-				<cfset rc.taxCategoryRate.getAddressZoneOptions()[1]["name"] = request.slatwallScope.rbKey('define.all') />
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+*/
+component extends="Slatwall.org.Hibachi.HibachiObject" {
+	
+	public any function init() {
+		return this;
+	}
+	
+	public any function getTaxRates(required any requestBean) {
+		return getTransient("TaxRatesResponseBean");
+	}
+	
+	// @hint helper function to return a Setting
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+		}
+		return super.setting(argumentcollection=arguments);
+	}
+	
+	// @hint helper function to return the integration entity that this belongs to
+	public any function getIntegration() {
+		return getService("integrationService").getIntegrationByIntegrationPackage(getPackageName());
+	}
+	
+	// @hint helper function to return the packagename of this integration
+	public any function getPackageName() {
+		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	}
+}

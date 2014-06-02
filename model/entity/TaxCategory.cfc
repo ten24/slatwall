@@ -73,6 +73,7 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	property name="taxCategoryRatesDeletableFlag" type="boolean" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
+
 	
 	public boolean function getTaxCategoryRatesDeletableFlag() {
 		if(!structKeyExists(variables,"taxCategoryRatesDeletableFlag")) {
@@ -87,6 +88,14 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 		return variables.taxCategoryRatesDeletableFlag;
 	}
 	
+	public array function getTaxCategoryRateIntegrationOptions() {
+		var optionsSL = getService("integrationService").getIntegrationSmartList();
+		optionsSL.addFilter('activeFlag', '1');
+		optionsSL.addLikeFilter('integrationTypeList', '%tax%');
+		optionsSL.addSelect('integrationName', 'name');
+		optionsSL.addSelect('integrationID', 'value');
+		return optionsSL.getRecords();
+	}	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
