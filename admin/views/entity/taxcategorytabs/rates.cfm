@@ -58,7 +58,9 @@ Notes:
 						   recordDeleteAction="admin:entity.deletetaxcategoryrate"
 						   recordDeleteQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#&redirectAction=admin:entity.detailtaxcategory">
 		
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxRate" />
+	
+	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxIntegration.integrationName" />
+	<cf_HibachiListingColumn propertyIdentifier="taxRate" />
 	<cf_HibachiListingColumn propertyIdentifier="addressZone.addressZoneName" />
 </cf_HibachiListingDisplay>
 
