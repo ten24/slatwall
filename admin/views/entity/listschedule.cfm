@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.scheduleSmartList#"
 							  recorddetailaction="admin:entity.detailschedule" 
 	                          recordeditaction="admin:entity.editschedule">
 		

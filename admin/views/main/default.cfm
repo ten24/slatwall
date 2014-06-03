@@ -55,8 +55,7 @@ Notes:
 	<div class="row-fluid">
 		<div class="span6">
 
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.orderSmartList#" 
+			<cf_HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" smartList="#rc.orderSmartList#" 
 					recordDetailAction="admin:entity.detailorder">
 				<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
 				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
@@ -65,8 +64,7 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
 			</cf_HibachiListingDisplay>
 			<br />
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.productReviewSmartList#" 
+			<cf_HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" smartList="#rc.productReviewSmartList#" 
 					recordDetailAction="admin:entity.detailproductreview">
 				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="product.calculatedTitle" />
 				<cf_HibachiListingColumn propertyIdentifier="reviewerName" />
@@ -75,7 +73,7 @@ Notes:
 
 		</div>
 		<div class="span6">
-			<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>
+			<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
 			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
 		</div>
 	</div>

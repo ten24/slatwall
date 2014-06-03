@@ -48,7 +48,7 @@ Notes:
 --->
 <cfparam name="rc.paymentMethodSmartList" type="any" />
 
-	<cf_HibachiListingDisplay type="listing" smartList="#rc.paymentMethodSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" type="listing" smartList="#rc.paymentMethodSmartList#"
 			recordDetailAction="admin:entity.detailpaymentmethod"
 			recordEditAction="admin:entity.editpaymentmethod"
 			sortProperty="sortOrder"

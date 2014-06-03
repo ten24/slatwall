@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageSmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionUsageSmartList#"
 						   recordDetailAction="admin:entity.detailsubscriptionUsage"
 						   recordEditAction="admin:entity.editsubscriptionUsage">
 

@@ -46,21 +46,21 @@
 Notes:
 
 --->
+<cfparam name="rc.auditSmartList" type="any" />
 
-<cfparam name="rc.taskHistorySmartList" type="any"/>
+<cfset rc.auditSmartList.addOrder('auditDateTime|DESC') />
 
-<cfif !arrayLen(rc.taskHistorySmartList.getOrders())>
-	<cfset rc.taskHistorySmartList.addOrder("createdDateTime|DESC") />
-</cfif>	
+<cf_HibachiListingDisplay smartList="#rc.auditSmartList#"
+						   recordDetailAction="admin:entity.preprocessaudit"
+						   recordDetailQueryString="processContext=rollback"
+						   recordDetailModal=true>
+	
+	<cf_HibachiListingColumn propertyIdentifier="auditDateTime" />
+	<cf_HibachiListingColumn propertyIdentifier="sessionAccountFullName" />					      
+	<cf_HibachiListingColumn propertyIdentifier="auditType" filter="true" />
+	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
+	<cf_HibachiListingColumn propertyIdentifier="baseObject" />
+	<cf_HibachiListingColumn propertyIdentifier="baseID" />
+	
+</cf_HibachiListingDisplay>
 
-<cfoutput>
-
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.taskHistorySmartList#" >
-		<cf_HibachiListingColumn propertyidentifier="startTime" />
-		<cf_HibachiListingColumn propertyidentifier="endTime" />
-		<cf_HibachiListingColumn propertyidentifier="task.taskName" tdclass="primary" />
-		<cf_HibachiListingColumn propertyidentifier="successFlag" />
-		<cf_HibachiListingColumn propertyidentifier="response" />
-	</cf_HibachiListingDisplay>
-
-</cfoutput>

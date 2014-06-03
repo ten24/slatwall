@@ -54,7 +54,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.vendorOrderSmartList#"
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorOrderSmartList#"
 							   recordDetailAction="admin:entity.detailvendororder"
 							   recordEditAction="admin:entity.editvendororder">
 							      

@@ -50,7 +50,7 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.optionGroupSmartList#" 
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.optionGroupSmartList#" 
 							   recordDetailAction="admin:entity.detailoptiongroup"
 							   recordEditAction="admin:entity.editoptiongroup"
 							   sortProperty="sortOrder">
