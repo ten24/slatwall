@@ -54,34 +54,33 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 
 	public any function getTaxRates(required any requestBean) {
 		// Build Request XML
-	/*	var xmlPacket = "";
+		var xmlPacket = "";
 		
 		savecontent variable="xmlPacket" {
-			include "InvoiceRequest.cfm";
+			include "QuotationRequest.cfm";
         }
-        
+     
          // Setup Request to push to Vertex
         var httpRequest = new http();
         httpRequest.setMethod("POST");
-		//TODO [jubs] : Determine what port to use
-		httpRequest.setPort("443");
-		httpRequest.setTimeout(45);
-		if(setting('testingFlag')) {
-			//TODO [jubs] : Determine https request URLs
-			httpRequest.setUrl("");
-		} else {
-			httpRequest.setUrl("");
-		}
-		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="XML", name="name",value=xmlPacket);*/
-        
-		// Create a responseBean
-		var ratesResponseBean = getTransient('TaxRatesResponseBean');
 		
+		httpRequest.setUrl("http://192.168.89.51/vertex-ws/services/CalculateTax60?wsdl");
+
+		httpRequest.addParam(type="XML", name="name",value=xmlPacket);
+		
+		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+		var taxTotal = xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren[2].xmlChildren[6].XmlText;
+		
+		writeDump(var="#xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren[2].xmlChildren[6].XmlText#");
+		abort;
+		
+		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
+		responseBean.setData(xmlResponse);
+
 		for(var rateItemRequest in requestBean.getTaxRateItemRequestBeans()) {
 			
 			// Generate a random tax amount
-			var taxAmount = round(rand()*100);
+			var taxAmount = "";
 			
 			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
 		}
