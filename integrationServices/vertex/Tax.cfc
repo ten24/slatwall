@@ -71,7 +71,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
 		var taxTotal = "#xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren[2].xmlChildren[6].XmlText#";
 		
-		writeDump(var="#xmlResponse#");
+		writeDump(var="#taxTotal#");
 		abort;
 		
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
