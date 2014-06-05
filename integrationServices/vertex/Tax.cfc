@@ -69,9 +69,9 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		httpRequest.addParam(type="XML", name="name",value=xmlPacket);
 		
 		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-		var taxTotal = xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren[2].xmlChildren[6].XmlText;
+		var taxTotal = "#xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren[2].xmlChildren[6].XmlText#";
 		
-		writeDump(var="#xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren[2].xmlChildren[6].XmlText#");
+		writeDump(var="#xmlResponse#");
 		abort;
 		
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
@@ -79,10 +79,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 
 		for(var rateItemRequest in requestBean.getTaxRateItemRequestBeans()) {
 			
-			// Generate a random tax amount
-			var taxAmount = "";
-			
-			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
+			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxTotal);	
 		}
 		
 		return ratesResponseBean;

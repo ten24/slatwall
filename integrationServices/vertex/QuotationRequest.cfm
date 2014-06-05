@@ -72,10 +72,10 @@
 				  	<urn:Customer>
 				    	<urn:CustomerCode></urn:CustomerCode>
 				    	<urn:Destination>
-				      		<urn:City>New York</urn:City>
-				      		<urn:MainDivision>NY</urn:MainDivision>
-				      		<urn:PostalCode>10010</urn:PostalCode>
-				     		<urn:Country>UNITED STATES</urn:Country>
+				      		<urn:City>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCity()#</urn:City>
+				      		<urn:MainDivision>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStateCode()#</urn:MainDivision>
+				      		<urn:PostalCode>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxPostalCode()#</urn:PostalCode>
+				     		<urn:Country>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCountryCode()#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				    	</urn:Destination>
 					 </urn:Customer>
