@@ -1904,14 +1904,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function saveOrderPayment(required any orderPayment, struct data={}, string context="save") {
 		
-		var oldPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();
+		var oldPaymentTermID = "";
+		var newPaymentTermID = "";
+		
+		if(!isNull(arguments.orderPayment.getPaymentTerm())) {
+			var oldPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();	
+		}
 		
 		// Call the generic save method to populate and validate
 		arguments.orderPayment = save(arguments.orderPayment, arguments.data, arguments.context);
 		
-		var newPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();
+		if(!isNull(arguments.orderPayment.getPaymentTerm())) {
+			var newPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();
+		}
 
-		//Only do this check if the order has already been placed, and this a term payment
+		// Only do this check if the order has already been placed, and this a term payment
 		if(orderPayment.getPaymentMethodType() == 'termPayment' && orderPayment.getOrder().getOrderStatusType().getSystemCode() != 'ostNotPlaced' && oldPaymentTermID != newPaymentTermID && !isNull(orderPayment.getPaymentTerm())) {
 			if(orderPayment.getCreatedDateTime() > orderPayment.getOrder().getOrderOpenDateTime()) {
 				orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate ( startDate=orderPayment.getCreatedDateTime() ) );

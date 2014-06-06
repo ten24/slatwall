@@ -191,8 +191,10 @@ component extends="FW1.framework" {
 		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());
+		
 		// Verify Authentication before anything happens
-		if(!getHibachiScope().authenticateAction( action=request.context[ getAction() ] )) {
+		if(!authorizationDetails.authorizedFlag) {
 			
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
@@ -221,6 +223,8 @@ component extends="FW1.framework" {
 				}	
 			}
 			
+		} else if(authorizationDetails.authorizedFlag && authorizationDetails.publicAccessFlag) {
+			getHibachiScope().setPublicPopulateFlag( true );
 		}
 		
 		// Setup structured Data if a request context exists meaning that a full action was called
