@@ -1,4 +1,24 @@
 {
+	"conditions":{
+		"streetAddressRequired":{
+	        "country.streetAddressRequiredFlag":{"eq":true}
+	    },
+	    "street2AddressRequired":{
+	        "country.street2AddressRequiredFlag":{"eq":true}
+	    },
+	    "localityRequired":{
+	        "country.localityRequiredFlag":{"eq":true}
+	    },
+	    "cityRequired":{
+	        "country.cityRequiredFlag":{"eq":true}
+	    },
+	    "stateCodeRequired":{
+	        "country.stateCodeRequiredFlag":{"eq":true}
+	    },
+	    "postalCodeRequired":{
+	        "country.postalCodeRequiredFlag":{"eq":true}
+	    }
+	},
 	"properties":{
 		"orderType":						[{"contexts":"save","required":true}],
 		"orderStatusType":					[{"contexts":"save","required":true}],
@@ -17,5 +37,13 @@
 		],
 		"quantityReceived":					[{"contexts":"cancelOrder","maxValue":0}],
 		"orderItems":						[{"contexts":"placeOrder,addOrderPayment","minCollection":1}]
+	},
+	"populatedPropertyValidation":{
+	    "billingAddress":[
+	    	{"conditions":"streetAddressRequired,street2AddressRequired,localityRequired,cityRequired,stateCodeRequired,postalCodeRequired","validate":"full"}
+	    ],
+	    "shippingAddress":[
+	    	{"conditions":"streetAddressRequired,street2AddressRequired,localityRequired,cityRequired,stateCodeRequired,postalCodeRequired","validate":"full"}
+	    ]
 	}
 }
