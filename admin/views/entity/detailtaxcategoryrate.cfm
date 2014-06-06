@@ -51,6 +51,10 @@ Notes:
 <cfparam name="rc.integration" type="any" default="" />
 <cfparam name="rc.edit" type="boolean" />
 
+<cfif not isNull(rc.taxCategoryRate.getTaxIntegration())>
+	<cfset rc.integration = rc.taxCategoryRate.getTaxIntegration() />
+</cfif>
+
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.taxCategoryRate#" srenderItem="detailtaxCategory" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.taxCategoryRate#" edit="#rc.edit#" 
@@ -70,7 +74,9 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxAddressLookup" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#">
+				<cfif not isObject(rc.integration)>
+					<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#" />
+				</cfif>
 				<cfset rc.taxCategoryRate.getAddressZoneOptions()[1]["name"] = request.slatwallScope.rbKey('define.all') />
 				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
