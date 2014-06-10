@@ -57,6 +57,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxIntegrationArr = [];
 		var taxAddresses = {};
 		
+		//Order and Address Properties for XML QuotationRequest
+		//TODO [jubs] : Put these vars into a structure
+		var orderID = arguments.order.getOrderID();
+		var modifiedDateTime = arguments.order.getModifiedDateTime();
+		var accountID = arguments.order.getAccountID();
+		
+		
 		// If the order has a billing address, use that to potentially calculate taxes for all items
 		if(!isNull(arguments.order.getBillingAddress())) {
 			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
@@ -112,6 +119,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(structKeyExists(taxAddresses,"taxBillingAddress")) {
 				taxRatesRequestBean.populateBillToWithAddress( taxAddresses.taxBillingAddress );	
 			}
+			
+			//Populate ratesRequestBean with orderID, accountID, and modifiedDateTime
+			taxRatesRequestBean.populateHeaderElementProperties(orderID=orderID, modifiedDateTime=modifiedDateTime, accountID=accountID);
 			
 			// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
 			for(var orderItem in arguments.order.getOrderItems()) {

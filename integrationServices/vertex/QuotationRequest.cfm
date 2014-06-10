@@ -55,7 +55,7 @@
 	            	<urn:UserName>tmurray</urn:UserName>
 	            	<urn:Password>vertex</urn:Password>
 	         	</urn:Login>
-				<urn:QuotationRequest documentDate="2014-06-02" documentNumber="12345" transactionId="#createUUID()#" transactionType="SALE">
+				<urn:QuotationRequest documentDate="#arguments.requestBean.getModifiedDateTime()#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
 				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
 				  	<urn:Seller>
 				    	<urn:Company>NAIPARENT</urn:Company>
@@ -70,7 +70,7 @@
 				   		</urn:PhysicalOrigin>
 				  	</urn:Seller>
 				  	<urn:Customer>
-				    	<urn:CustomerCode></urn:CustomerCode>
+				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
 				    	<urn:Destination>
 				      		<urn:City>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCity()#</urn:City>
 				      		<urn:MainDivision>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStateCode()#</urn:MainDivision>
@@ -80,7 +80,7 @@
 				    	</urn:Destination>
 					 </urn:Customer>
 					 <cfloop from="1" to="#arrayLen(arguments.requestBean.getTaxRateItemRequestBeans())#" index="i">
-					 	 <urn:LineItem lineItemNumber="1">
+					 	 <urn:LineItem lineItemNumber="#arguments.requestBean.getTaxRateItemRequestBeans()[i].getOrderItemID()#">
 					    	<urn:ExtendedPrice>#arguments.requestBean.getTaxRateItemRequestBeans()[i].getExtendedPrice()#</urn:ExtendedPrice>
 					   	 	<urn:FlexibleFields>
 					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
