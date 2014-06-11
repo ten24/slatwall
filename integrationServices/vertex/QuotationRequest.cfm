@@ -72,22 +72,26 @@
 				  	<urn:Customer>
 				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
 				    	<urn:Destination>
-				      		<urn:City>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCity()#</urn:City>
+				    		<urn:StreetAddress1>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStreetAddress()#</urn:StreetAddress1>
+				      		<urn:StreetAddress2>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStreet2Address()#</urn:StreetAddress2>
+							<urn:City>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCity()#</urn:City>
 				      		<urn:MainDivision>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStateCode()#</urn:MainDivision>
 				      		<urn:PostalCode>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxPostalCode()#</urn:PostalCode>
 				     		<urn:Country>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCountryCode()#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				    	</urn:Destination>
 					 </urn:Customer>
+					 <cfset counter=1 />
 					 <cfloop from="1" to="#arrayLen(arguments.requestBean.getTaxRateItemRequestBeans())#" index="i">
-					 	 <urn:LineItem lineItemNumber="#arguments.requestBean.getTaxRateItemRequestBeans()[i].getOrderItemID()#">
+					 	 <urn:LineItem lineItemNumber="#counter#" materialCode="#arguments.requestBean.getTaxRateItemRequestBeans()[i].getOrderItemID()#">
 					    	<urn:ExtendedPrice>#arguments.requestBean.getTaxRateItemRequestBeans()[i].getExtendedPrice()#</urn:ExtendedPrice>
-					   	 	<urn:FlexibleFields>
+							<urn:FlexibleFields>
 					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
 					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>
 					      		<urn:FlexibleCodeField fieldId="12">PRODUCT_NAME</urn:FlexibleCodeField>
 					    	</urn:FlexibleFields>
 					  	</urn:LineItem>
+						<cfset counter = counter + 1 />
 					</cfloop>			 
 				</urn:QuotationRequest>
 			</urn:VertexEnvelope>

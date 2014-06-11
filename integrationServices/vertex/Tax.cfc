@@ -55,19 +55,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	public any function getTaxRates(required any requestBean) {
 		// Build Request XML
 		var xmlPacket = "";
-		
-		//Temporary loop to generate script of xml elements
-		/* var xmlLineItems = <cfloop from="1" to="#arrayLen(arguments.requestBean.getTaxRateItemRequestBeans())#" index="i">
-		 	 <urn:LineItem lineItemNumber="#arguments.requestBean.getTaxRateItemRequestBeans()[i].getOrderItemID()#">
-		    	<urn:ExtendedPrice>#arguments.requestBean.getTaxRateItemRequestBeans()[i].getExtendedPrice()#</urn:ExtendedPrice>
-		   	 	<urn:FlexibleFields>
-		      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
-		      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>
-		      		<urn:FlexibleCodeField fieldId="12">PRODUCT_NAME</urn:FlexibleCodeField>
-		    	</urn:FlexibleFields>
-		  	</urn:LineItem>
-		</cfloop>
-		*/
+
 		savecontent variable="xmlPacket" {
 			include "QuotationRequest.cfm";
         }
@@ -75,41 +63,38 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
         // Setup Request to push to Vertex
         var httpRequest = new http();
         httpRequest.setMethod("POST");
-		
 		httpRequest.setUrl("http://192.168.89.51/vertex-ws/services/CalculateTax60?wsdl");
-
 		httpRequest.addParam(type="XML", name="name",value=xmlPacket);
 		
+		// Parse response and set to variable
 		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-		//var taxAmount = "#xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren[2].xmlChildren[6].XmlText#";
-		
-		writeDump(var="#xmlResponse#");
-		abort;
+
+		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Resquest
+		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
 		
 		// Searches for the totalTax in xmlChild
+		var counter = 1;
 		for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
 			if(n1.xmlName == "QuotationResponse") {
 				for(var n2 in n1.xmlChildren) {
 					if(n2.xmlName == "LineItem") {
-						var orderItemID = n2.xmlText;
-						for(var n3 in n2.xmlChildren) {
-							if(n3.xmlName == "TotalTax") {
-								// add rates response
-								var taxAmount = n3.xmlText;
-								
+						if(n2.xmlAttributes.lineItemNumber == "#counter#"){
+							var orderItemID = n2.xmlAttributes.materialCode;
+							for(var n3 in n2.xmlChildren) {
+								if(n3.xmlName == "TotalTax") {
+									var taxAmount = n3.xmlText;
+								}
 							}
 						}
+						responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount);
+						counter++;
 					}
 				}
-				break;
+				
 			}
 		}
 		
-		
-		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
-		responseBean.setData(xmlResponse);
-		
-		return ratesResponseBean;
+		return responseBean;
 	}
 
 }

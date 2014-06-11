@@ -165,6 +165,5 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		if(!isNull(arguments.accountID)){
 			setAccountID(arguments.accountID);
 		}
-		
 	}
 }

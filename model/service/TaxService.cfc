@@ -58,7 +58,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxAddresses = {};
 		
 		//Order and Address Properties for XML QuotationRequest
-		//TODO [jubs] : Put these vars into a structure
 		var orderID = arguments.order.getOrderID();
 		var modifiedDateTime = arguments.order.getModifiedDateTime();
 		var accountID = arguments.order.getAccountID();
