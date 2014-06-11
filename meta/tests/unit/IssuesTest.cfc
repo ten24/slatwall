@@ -109,21 +109,7 @@ component extends="SlatwallUnitTestBase" {
 		assertFalse( product.isProcessable('addOptionGroup') );
 	}
 	
-	public void function issue_1335() {
 
-		var skuCurrency = entityNew("SlatwallSkuCurrency");
-
-		skuCurrency.setPrice( -20 );
-		skuCurrency.setListPrice( 'test' );
-		
-		skuCurrency.validate(context="save");
-		
-		assert( skuCurrency.hasError('price') );
-		assert( skuCurrency.hasError('listPrice') );
-		
-		assert( right( skuCurrency.getError('price')[1], 8) neq "_missing");
-		assert( right( skuCurrency.getError('listPrice')[1], 8) neq "_missing");
-	}
 	
 	public void function issue_1348() {
 		var product = entityNew("SlatwallProduct");
@@ -139,8 +125,8 @@ component extends="SlatwallUnitTestBase" {
 		assert( right( sku.getError('price')[1], 8) neq "_missing");
 	}
 	
-	public void function issue_1376() {
-		
+	public void function two_accounts_with_same_primary_email_cannot_be_saved() {
+		//GH issue 1376
 		var accountService = request.slatwallScope.getService("accountService");
 		
 		var accountData = {

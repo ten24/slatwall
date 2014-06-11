@@ -46,21 +46,29 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	public void function all_entity_properties_have_keys() {
-		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
-		var allFound = true;
-		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
-			for(var property in properties) {
-				var keyValue = request.slatwallScope.rbKey('entity.#entityName#.#property.name#');
-				if(right(keyValue,8) == '_missing') {
-					//TODO: add an assertion that causes the test to fail if expected conditions aren't met
-					debug(keyValue);
-				}
-			}
-		}
+	// @hint put things in here that you want to run befor EACH test
+	public void function SetUp() {
+		super.setup();
+		
+		variables.entity = request.slatwallScope.getService("skuService").newSkuCurrency();
+	}
+	
+	public void function skuCurrency_should_not_save_with_negative_price() {
+		//issue 1335
+		var skuCurrency = entityNew("SlatwallSkuCurrency");
+
+		skuCurrency.setPrice( -20 );
+		skuCurrency.setListPrice( 'test' );
+		
+		skuCurrency.validate(context="save");
+		
+		assert( skuCurrency.hasError('price') );
+		assert( skuCurrency.hasError('listPrice') );
+		
+		assert( right( skuCurrency.getError('price')[1], 8) neq "_missing");
+		assert( right( skuCurrency.getError('listPrice')[1], 8) neq "_missing");
 	}
 	
 }

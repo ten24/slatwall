@@ -54,8 +54,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("dataService");
 	}
 	
-	
-	
 	titleStrings = ["Gift Card-$50", "Gift Card $50", "Gift - Card - $50", "Gift -- Card -- $50"];
 	
 	/**
@@ -65,36 +63,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		debug(arguments);
 		var expectedTitle = "gift-card-50";
 		var urlTitle = variables.service.createUniqueURLTitle(titleString=arguments.titleString, tableName="SwProduct");
-		assert(urlTitle eq expectedTitle);
+		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
 		urlTitle = variables.service.createUniqueURLTitle(titleString=lcase(arguments.titleString), tableName="SwProduct");
-		assert(urlTitle eq expectedTitle);
+		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
 		urlTitle = variables.service.createUniqueURLTitle(titleString=ucase(arguments.titleString), tableName="SwProduct");
-		assert(urlTitle eq expectedTitle);
+		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
 	}
-	
-	
-	public void function getUrlTitle_old() {
-		
-		//Gift Card-$50
-		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift Card-$50", tableName="SwProduct");
-		assert(urlTitle eq "gift-card-50");
-		debug(var="#urlTitle#");
-		
-		//Gift Card $50
-		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift Card $50", tableName="SwProduct");
-		assert(urlTitle eq "gift-card-50");
-		debug(var="#urlTitle#");
-		
-		//Gift - Card - $50
-		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift - Card - $50", tableName="SwProduct");
-		assert(urlTitle eq "gift-card-50");
-		debug(var="#urlTitle#");
-		
-		//Gift    Card  --  $50
-		var urlTitle = variables.service.createUniqueURLTitle(titleString="Gift    Card  --  $50", tableName="SwProduct");
-		assert(urlTitle eq "gift-card-50");
-		debug(var="#urlTitle#");
-
-	}
-	
 }
