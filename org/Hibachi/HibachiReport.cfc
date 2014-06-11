@@ -522,6 +522,7 @@
 			
 			<cfset var chartDataStruct = structNew() />
 			<cfset var chartDataQuery = getChartDataQuery() />
+
 			<cfif getReportCompareFlag()>
 				<cfset var chartCompareDataQuery = getChartCompareDataQuery() />
 			</cfif>
@@ -590,15 +591,16 @@
 				<cfif m eq 1>
 					<cfset variables.chartData["series"][dataSeriesID]["type"] = "area" />
 				</cfif>
-				
+
 				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#getReportEndDateTime()#" datepart="#loopdatepart#">
 					<cfset var thisData = [] />
 					<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
-					<cfif year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow] and 
-							(!listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy()) or month(thisDate) eq chartDataQuery['reportDateTimeMonth'][chartRow]) and
-							(!listFindNoCase('week,day,hour', getReportDateTimeGroupBy()) or (week(thisDate) - weekAdjustment) eq chartDataQuery['reportDateTimeWeek'][chartRow]) and
-							(!listFindNoCase('day,hour', getReportDateTimeGroupBy()) or day(thisDate) eq chartDataQuery['reportDateTimeDay'][chartRow]) and
-							(!listFindNoCase('hour', getReportDateTimeGroupBy()) or hour(thisDate) eq chartDataQuery['reportDateTimeHour'][chartRow])>
+ 
+					<cfif year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow] OR 
+							(!listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy()) AND month(thisDate) eq chartDataQuery['reportDateTimeMonth'][chartRow]) OR
+							(!listFindNoCase('week,day,hour', getReportDateTimeGroupBy()) AND (week(thisDate) - weekAdjustment) eq chartDataQuery['reportDateTimeWeek'][chartRow]) OR
+							(!listFindNoCase('day,hour', getReportDateTimeGroupBy()) AND day(thisDate) eq chartDataQuery['reportDateTimeDay'][chartRow]) OR 
+							(!listFindNoCase('hour', getReportDateTimeGroupBy()) AND isDefined('chartDataQuery.reportDateTimeHour') AND hour(thisDate) eq chartDataQuery['reportDateTimeHour'][chartRow])>
 						<cfset arrayAppend(thisData, chartDataQuery[ metricDefinition.alias ][ chartRow ]) />
 						<cfset chartRow ++ />
 					<cfelse>
@@ -622,11 +624,11 @@
 					<cf_HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#getReportCompareEndDateTime()#" datepart="#loopdatepart#">
 						<cfset var thisData = [] />
 						<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
-						<cfif year(thisDate) eq chartCompareDataQuery['reportDateTimeYear'][chartRow] and 
-								(!listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy()) or month(thisDate) eq chartCompareDataQuery['reportDateTimeMonth'][chartRow]) and
-								(!listFindNoCase('week,day,hour', getReportDateTimeGroupBy()) or (week(thisDate) - 1) eq chartCompareDataQuery['reportDateTimeWeek'][chartRow]) and
-								(!listFindNoCase('day,hour', getReportDateTimeGroupBy()) or day(thisDate) eq chartCompareDataQuery['reportDateTimeDay'][chartRow]) and
-								(!listFindNoCase('hour', getReportDateTimeGroupBy()) or hour(thisDate) eq chartCompareDataQuery['reportDateTimeHour'][chartRow])>
+						<cfif year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow] OR 
+								(!listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy()) AND month(thisDate) eq chartDataQuery['reportDateTimeMonth'][chartRow]) OR
+								(!listFindNoCase('week,day,hour', getReportDateTimeGroupBy()) AND (week(thisDate) - weekAdjustment) eq chartDataQuery['reportDateTimeWeek'][chartRow]) OR
+								(!listFindNoCase('day,hour', getReportDateTimeGroupBy()) AND day(thisDate) eq chartDataQuery['reportDateTimeDay'][chartRow]) OR 
+								(!listFindNoCase('hour', getReportDateTimeGroupBy()) AND isDefined('chartDataQuery.reportDateTimeHour') AND hour(thisDate) eq chartDataQuery['reportDateTimeHour'][chartRow])>
 							<cfset arrayAppend(thisData, chartCompareDataQuery[ metricDefinition.alias ][ chartRow ]) />
 							<cfset chartRow ++ />
 						<cfelse>
@@ -638,7 +640,7 @@
 			</cfloop>
 
 		</cfif>
-		
+
 		<cfreturn variables.chartData />
 	</cffunction>
 	
