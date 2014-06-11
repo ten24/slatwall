@@ -2,6 +2,7 @@ component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 
 	function beforeTests(){
 		//Dashboard is set in the superclass
+		super.beforeTests();
 		menuItems = flattenMenuItems(Dashboard.getMenuItems());
 		
 	}

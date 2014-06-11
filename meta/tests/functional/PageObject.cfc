@@ -11,6 +11,12 @@ component {
 		return variables.title;
 	}
 	
+	function waitFor(time=10000) {
+		var start = getTickCount();
+		selenium.waitForPageToLoad(time);
+		return getTickCount() - start;
+	}
+	
 	function isLoaded(){
 		if(selenium.getTitle() eq getTitle() && selenium.isElementPresent("global-search")){
 			return true;

@@ -1,9 +1,9 @@
 component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 
-	//basic version
-	function invalid_credentials_fail(){
-		Login.login("foo", "bar");
-		assertEquals(Login.getTitle(), selenium.getTitle());
+	function valid_credentials_login(){
+		var dashboard = Login.login("uitest@ten24web.com", "uitest01");
+		assertEquals(Dashboard.getTitle(), selenium.getTitle());
+		assertPageIsLoaded(dashboard);
 	}
 	
 	
@@ -18,22 +18,19 @@ component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 		{u:"<img src='' onerror='alert()'>", p:"<script>alert('pwnd')</script>"}
 	];
 	
-	//supercharged
 	/**
-	*
 	* @mxunit:dataprovider invalidLogins
 	*/
 	function invalid_credentials_all_fail(credentials){
 		var dashboard = Login.login(credentials.u, credentials.p);
 		assertPageIsLoaded(Login);
-//		assertEquals(Login.getTitle(), selenium.getTitle());
-//		assertFalse(Dashboard.isLoaded());
 	}
 	
-	function valid_credentials_login(){
-		var dashboard = Login.login("uitest@ten24web.com", "uitest01");
-		assertEquals(Dashboard.getTitle(), selenium.getTitle());
-		assertPageIsLoaded(dashboard);
+	//example of how to take a screenshot; only works on firefox
+	private function screenshotTest(){
+		var path = expandPath("screenshot.png");
+		debug(path);
+		selenium.captureEntirePageScreenshot(path, "");
 	}
 	
 	

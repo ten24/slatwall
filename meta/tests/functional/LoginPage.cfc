@@ -7,14 +7,15 @@ component extends="PageObject"{
 		selenium.type("emailAddress", username);
 		selenium.type("password", password);
 		selenium.submit("adminLoginForm");
-		selenium.waitForPageToLoad(30000);
+		var waited = waitFor();
+		writeLog("Login took #waited# ms to load");
 		return new Dashboard(selenium);
 	}
 	
 	function logout(){
 		if(selenium.getTitle() neq getTitle()){
 			selenium.open("?slatAction=main.logout");
-			selenium.waitForPageToLoad(30000);
+			waitFor();
 		}
 	}
 }

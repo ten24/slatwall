@@ -52,7 +52,6 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		readLocalConfiguration();
 	    browserURL = variables.configuration.ui.browserUrl; 
 	    browserCommand = variables.configuration.ui.browserCommand;
-	    writeLog("browser command is #browserCommand#");
 	    super.beforeTests();
 	    
 	    //ensure each TestCase starts with a fresh session
@@ -64,15 +63,16 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		assertEquals(pageObject.getTitle(), selenium.getTitle());
 	}
 	
+	
 	/*
 	* Thanks to Joe Rinehart and Brian Kotek
 	*/
-	private function readLocalconfiguration(){
+	private function readLocalConfiguration(){
 		variables.configuration = structNew();
 		var hostname = createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
 		var configPath = expandPath( "/slatwall/meta/tests/conf/#hostname#.ini" );
 		if(not fileExists(configPath)){
-			throw("Can't load local configuration: #configPath# should exist! If you're seeing this, simply copy one of the other .ini files from the conf directory and update any values with your environment-specific details");
+			throw("Can't load local configuration: #configPath# should exist! If you're seeing this, copy conf/sample.ini and name it #hostname#.ini, then update any values with your environment-specific details");
 		}
 		
 		var sections = getProfileSections(configPath);
