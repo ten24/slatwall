@@ -46,37 +46,29 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	public void function setUp() {
+	// @hint put things in here that you want to run befor EACH test
+	public void function SetUp() {
 		super.setup();
 		
-		variables.smartList = request.slatwallScope.getSmartList("Product");
+		variables.entity = request.slatwallScope.getService("skuService").newSkuCurrency();
 	}
+	
+	public void function skuCurrency_should_not_save_with_negative_price() {
+		//issue 1335
+		var skuCurrency = entityNew("SlatwallSkuCurrency");
 
-	// buildURL()
-	public void function buildURL_1() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?p:current=2");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?p:current=3');
-	}
-	
-	public void function buildURL_2() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?f:productName=hello&p:current=2");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?f:productname=hello&p:current=3');
-	}
-	
-	public void function buildURL_3() {
-		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="?f:productName=hello");
-		addToDebug(urlResponse);	
-		assertEquals('?c=1', urlResponse);
-	}
-	
-	public void function buildURL_4() {	
-		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="/");
-		addToDebug(urlResponse);
-		assert(urlResponse eq '?f:productName=hello');
+		skuCurrency.setPrice( -20 );
+		skuCurrency.setListPrice( 'test' );
+		
+		skuCurrency.validate(context="save");
+		
+		assert( skuCurrency.hasError('price') );
+		assert( skuCurrency.hasError('listPrice') );
+		
+		assert( right( skuCurrency.getError('price')[1], 8) neq "_missing");
+		assert( right( skuCurrency.getError('listPrice')[1], 8) neq "_missing");
 	}
 	
 }
