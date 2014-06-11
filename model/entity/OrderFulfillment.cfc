@@ -124,34 +124,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return getService("shippingService").verifyOrderFulfillmentShippingMethodRate( this );
 	}
 	
-	// Helper method to return either the shippingAddress or accountAddress to be used
+	// Deprecated... now just delegates to getShippingAddress
     public any function getAddress(){
-    	
-    	// If the shipping address is not null, then we can return it
-    	if(!isNull(getShippingAddress())){
-    		
-    		return getShippingAddress();
-    		
-    	// This is a hook to fix deprecated methodology
-    	} else if(!isNull(getAccountAddress())) {
-    		
-    		// Get the account address, copy it, and save as the shipping address
-    		setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-    		
-    		// Now return the shipping address
-    		return getShippingAddress();
-    	
-    	//Check Order for Shipping Address
-    	} else if(!isNull(getOrder().getShippingAddress())){
-
-    		// return the shipping address
-    		return getOrder().getShippingAddress();
-    	
-    	} else {
-    		
-    		// If no address, then just return a new one.
-    		return getService("addressService").newAddress();
-    	}
+    	return getShippingAddress();
     }
     
     public void function checkNewAccountAddressSave() {
@@ -422,6 +397,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	
 	// ================== START: Overridden Methods ========================
 	
+	
 	public numeric function getFulfillmentCharge() {
 		if(!structKeyExists(variables, "fulfillmentCharge")) {
 			variables.fulfillmentCharge = 0;
@@ -434,6 +410,22 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			variables.manualFulfillmentChargeFlag = 0;
 		}
 		return variables.manualFulfillmentChargeFlag;
+	}
+	
+	public any function getShippingAddress() {
+		if(!structKeyExists(variables, "shippingAddress")) {
+			
+			if(!isNull(getAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+    			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+			} else if (!isNull(getOrder().getShippingAddress()) ) {
+				return getOrder().getShippingAddress();
+			}
+			
+			return getService("addressService").newAddress();
+		}
+		
+		return variables.shippingAddress;
 	}
 	
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
@@ -482,6 +474,32 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
 	public any function populate() {
+		/*
+		TODO[rob]: Something like this
+		
+		var accountAddressIDBefore = "";
+		var accountAddressIDAfter = "";
+		if(!isNull(getAccountAddress())) {
+			accountAddressIDBefore = getAccountAddress().getAccountAddressID();
+		}
+		
+		super.populate();
+		
+		if(!isNull(getAccountAddress())) {
+			accountAddressIDAfter = getAccountAddress().getAccountAddressID();
+		}
+		
+		if(accountAddressIDBefore != accountAddressIDAfter) {
+			
+			do the big logic block below...
+			
+		}
+		
+		*/
+		
+		
+		
+		
 		super.populate( argumentcollection=arguments );
 		
 		// If after populating, there is an account address, and shipping address then we update the shipping address

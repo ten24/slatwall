@@ -66,6 +66,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
 	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID";
 	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	
+	// TODO[rob]: add accountShippingAddress & accountBillingAddress
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID" hb_populateEnabled="public";
 	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_populateEnabled="public";
 	
@@ -230,10 +232,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
 			
+			
+			// TODO [rob]: Remove this chunk 
 			// Loop over the order fulfillments to remove and accountAddresses
 			for(var orderFulfillment in getOrderFulfillments()) {
 				orderFulfillment.setAccountAddress( javaCast("null", "") );
 			}
+			
+			
 		}
 		
 		// If the order is closed, and has no close dateTime
@@ -875,6 +881,19 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
+	
+	
+	// TODO[ rob ] : uncomment, and add same stuff but for billingAddress/accountBillingAddress
+	/*
+	public any function getShippingAddress() {
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
+		} else if (!isNull(getAccountShippingAddress())) {
+			setShippingAddress( getAccountShippingAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+		}
+	}
+	*/
 	
 	public any function getOrderStatusType() {
 		if(isNull(variables.orderStatusType)) {

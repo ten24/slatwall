@@ -600,6 +600,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
+			// TODO[rob] : make this look to a new accountAddress property like orderFulfillment does
+			
 			if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
 				return getOrder().getBillingAddress();
 			}

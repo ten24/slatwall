@@ -73,6 +73,8 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<!--- TODO[rob] : duplicate method above... Important note, on orders there needs to be multiple updates... one for billing & one for shipping --->
+	
 	<cffunction name="getInternalAccountAuthenticationsByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		
