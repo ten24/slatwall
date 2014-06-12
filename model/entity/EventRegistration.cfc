@@ -228,7 +228,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	public any function getEmailAddress() {
 		if(!isNull(getAccount())) {
 			variables.emailAddress = javaCast("null","" );
-			return getAccount().getPrimaryEmailAddress();
+			return getAccount().getPrimaryEmailAddress().getEmailAddress();
 		}
 		if(structKeyExists(variables,"emailAddress")) {
 			return variables.emailAddress;
