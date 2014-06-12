@@ -530,10 +530,6 @@
 			<cfset var thisDate = "" />
 			<cfset var m = 1 />
 			<cfset var loopdatepart = "d" />
-			<cfset var weekAdjustment = 0 />
-			<cfif getApplicationValue('databaseType') eq "MySQL">
-				<cfset var weekAdjustment = 1 />
-			</cfif>
 			
 			<cfif getReportDateTimeGroupBy() eq 'year'>
 				<cfset loopdatepart = "yyyy" />
@@ -544,6 +540,16 @@
 			<cfelseif getReportDateTimeGroupBy() eq 'hour'>
 				<cfset loopdatepart = "h" />	
 			</cfif>
+			
+			<cfset var chartReportEndDateTime = getReportEndDateTime() />
+			<cfset var chartReportCompareEndDateTime = getReportCompareEndDateTime() />
+			
+			<!---
+			<cfif getReportDateTimeGroupBy() eq 'week'>
+				<cfset chartReportEndDateTime = dateAdd('d', 7 - dayOfWeek( getReportEndDateTime() ), getReportEndDateTime()) />
+				<cfset chartReportCompareEndDateTime = dateAdd('d', 7 - dayOfWeek( getReportCompareEndDateTime() ), getReportCompareEndDateTime()) />
+			</cfif>
+			--->
 			
 			<cfset variables.chartData = {} />
 			<cfset variables.chartData["chart"] = {} />
@@ -592,35 +598,10 @@
 					<cfset variables.chartData["series"][dataSeriesID]["type"] = "area" />
 				</cfif>
 				
-				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#getReportEndDateTime()#" datepart="#loopdatepart#">
+				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
 					<cfset var thisData = [] />
 					<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
- 					<cfif 	(
-								year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow]
-							) 
-							AND 
-							( 
-								!listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy())
-							  OR
-								( listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy()) AND month(thisDate) eq chartDataQuery['reportDateTimeMonth'][chartRow] ) 
-							)
-							AND
-							(
-								!listFindNoCase('week,day,hour', getReportDateTimeGroupBy())
-							  OR 
-							  	( listFindNoCase('week,day,hour', getReportDateTimeGroupBy()) AND week(thisDate) eq chartDataQuery['reportDateTimeWeek'][chartRow])
-							)
-							AND
-							(
-								!listFindNoCase('day,hour', getReportDateTimeGroupBy())
-							  OR
-							  	( listFindNoCase('day,hour', getReportDateTimeGroupBy()) AND day(thisDate) eq chartDataQuery['reportDateTimeDay'][chartRow])
-							)
-							AND
-							(
-								!listFindNoCase('hour', getReportDateTimeGroupBy())
-							  OR ( listFindNoCase('hour', getReportDateTimeGroupBy()) AND hour(thisDate) eq chartDataQuery['reportDateTimeHour'][chartRow])
-							)>
+ 					<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
 						<cfset arrayAppend(thisData, chartDataQuery[ metricDefinition.alias ][ chartRow ]) />
 						<cfset chartRow ++ />
 					<cfelse>
@@ -641,36 +622,10 @@
 					<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 1 />
 					<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['compareColor'] />
 					
-					<cf_HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#getReportCompareEndDateTime()#" datepart="#loopdatepart#">
+					<cf_HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
 						<cfset var thisData = [] />
 						<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
-						<cfif 	(
-								year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow]
-							) 
-							AND 
-							( 
-								!listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy())
-							  OR
-								( listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy()) AND month(thisDate) eq chartDataQuery['reportDateTimeMonth'][chartRow] ) 
-							)
-							AND
-							(
-								!listFindNoCase('week,day,hour', getReportDateTimeGroupBy())
-							  OR 
-							  	( listFindNoCase('week,day,hour', getReportDateTimeGroupBy()) AND week(thisDate) eq chartDataQuery['reportDateTimeWeek'][chartRow])
-							)
-							AND
-							(
-								!listFindNoCase('day,hour', getReportDateTimeGroupBy())
-							  OR
-							  	( listFindNoCase('day,hour', getReportDateTimeGroupBy()) AND day(thisDate) eq chartDataQuery['reportDateTimeDay'][chartRow])
-							)
-							AND
-							(
-								!listFindNoCase('hour', getReportDateTimeGroupBy())
-							  OR
-							  	( listFindNoCase('hour', getReportDateTimeGroupBy()) AND hour(thisDate) eq chartDataQuery['reportDateTimeHour'][chartRow])
-						)>
+						<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
 							<cfset arrayAppend(thisData, chartCompareDataQuery[ metricDefinition.alias ][ chartRow ]) />
 							<cfset chartRow ++ />
 						<cfelse>
@@ -680,13 +635,13 @@
 					</cf_HibachiDateLoop>
 				</cfif>
 			</cfloop>
-
+			
 		</cfif>
 
 		<cfreturn variables.chartData />
 	</cffunction>
 	
-	<cffunction name="dateIsPartOf" access="private" output="false">
+	<cffunction name="addChartSeriesDataCheck" access="private" output="false">
 		<cfargument name="thisDate" />
 		<cfargument name="reportDateTimeGroupBy" />
 		<cfargument name="chartDataQuery" />
