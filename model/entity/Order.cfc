@@ -66,11 +66,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
 	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID";
 	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
-
-	// TODO[rob]: add accountShippingAddress & accountBillingAddress  <<< does the fkcolumn change??
 	property name="shippingAccountAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingaccountAddressID" hb_populateEnabled="public";
 	property name="billingAccountAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingaccountAddressID" hb_populateEnabled="public";
-
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID" hb_populateEnabled="public";
 	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_populateEnabled="public";
 
@@ -879,7 +876,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// ============== START: Overridden Implicet Getters ===================
 
 
-	// TODO[ rob ] : uncomment, and add same stuff but for billingAddress/accountBillingAddress
+	public any function getBillingAddress() {
+		if(structKeyExists(variables, "billingAddress")) {
+			return variables.billingAddress;
+		} else if (!isNull(getBillingAccountAddress())) {
+			setbillingAddress( getAccountBillingAddress().getAddress().copyAddress( true ) );
+			return variables.billingAddress;
+		}
+	}
+
 
 	public any function getShippingAddress() {
 		if(structKeyExists(variables, "shippingAddress")) {
@@ -891,37 +896,24 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 
-	public any function getBillingAddress() {
-		if(structKeyExists(variables, "billingAddress")) {
-			return variables.billingAddress;
-		} else if (!isNull(getAccountBillingAddress())) {
-			setbillingAddress( getAccountBillingAddress().getAddress().copyAddress( true ) );
-			return variables.billingAddress;
-		}
-	}
-
-
-	public any function getAccountBillingAddress() {
+	public any function getBillingAccountAddress() {
 		if(structKeyExists(variables, "AccountBillingAddress")) {
 			return variables.accountBillingAddress;
-		} else if (!isNull(getAccountBillingAddress())) {
-			setAccountBillingAddress( getAccountBillingAddress().getAddress().copyAddress( true ) );
-			return variables.accountBillingAddress;
+		} else if (!isNull(getBillingAccountAddress())) {
+			setBillingAccountAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.billingAccountAddress;
 		}
 	}
 
 
-	public any function getAccountShippingAddress() {
+	public any function getShippingAccountAddress() {
 		if(structKeyExists(variables, "AccountShippingAddress")) {
-			return variables.accountShippingAddress;
-		} else if (!isNull(getAccountShippingAddress())) {
-			setAccountShippingAddress( getAccountShippingAddress().getAddress().copyAddress( true ) );
-			return variables.accountShippingAddress;
+			return variables.shippingAccountAddress;
+		} else if (!isNull(getShippingAccountAddress())) {
+			setShippingAccountAddress( getShippingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAccountAddress;
 		}
 	}
-
-
-	//// DONE?
 
 
 	public any function getOrderStatusType() {

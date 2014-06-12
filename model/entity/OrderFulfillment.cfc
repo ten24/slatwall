@@ -491,9 +491,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
 	public any function populate() {
-		/*
-		TODO[rob]: Something like this   <<< like that?? :)
-		*/
 
 		var accountAddressIDBefore = "";
 		var accountAddressIDAfter = "";

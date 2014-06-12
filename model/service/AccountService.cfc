@@ -1081,7 +1081,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return delete( arguments.account );
 	}
-	// TODO [rob]: deleteAccountAddress()
 
 	public boolean function deleteAccountAddress(required any accountAddress) {
 
@@ -1097,6 +1096,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return delete( arguments.account );
 	}
+	
 	public boolean function deleteAccountEmailAddress(required any accountEmailAddress) {
 		
 		// Check delete validation
