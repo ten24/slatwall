@@ -1081,7 +1081,22 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return delete( arguments.account );
 	}
-	
+	// TODO [rob]: deleteAccountAddress()
+
+	public boolean function deleteAccountAddress(required any accountAddress) {
+
+		// Check delete validation
+		if(arguments.accountAddress.isDeletable()) {
+
+			getAccountDAO().removeAccountAddressFromOrderFulfillments( arguments.accountAddress.getAccountAddressID() );
+			getAccountDAO().removeAccountAddressFromOrderPayments( arguments.accountAddress.getAccountAddressID() );
+			getAccountDAO().removeAccountAddressFromOrders( arguments.accountAddress.getAccountAddressID() );
+
+			return delete( arguments.account );
+		}
+
+		return delete( arguments.account );
+	}
 	public boolean function deleteAccountEmailAddress(required any accountEmailAddress) {
 		
 		// Check delete validation

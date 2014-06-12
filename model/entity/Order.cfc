@@ -66,7 +66,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
 	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID";
 	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
-	
+
+	// TODO[rob]: add accountShippingAddress & accountBillingAddress  <<< does the fkcolumn change??
+	property name="shippingAccountAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingaccountAddressID" hb_populateEnabled="public";
+	property name="billingAccountAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingaccountAddressID" hb_populateEnabled="public";
+
+	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID" hb_populateEnabled="public";
+	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_populateEnabled="public";
+
 	// Related Object Properties (one-To-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" hb_populateEnabled="public" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
@@ -228,10 +235,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
 			
-			// Loop over the order fulfillments to remove and accountAddresses
-			for(var orderFulfillment in getOrderFulfillments()) {
-				orderFulfillment.setAccountAddress( javaCast("null", "") );
-			}
+
 		}
 		
 		// If the order is closed, and has no close dateTime
@@ -873,7 +877,53 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
-	
+
+
+	// TODO[ rob ] : uncomment, and add same stuff but for billingAddress/accountBillingAddress
+
+	public any function getShippingAddress() {
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
+		} else if (!isNull(getAccountShippingAddress())) {
+			setShippingAddress( getAccountShippingAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+		}
+	}
+
+
+	public any function getBillingAddress() {
+		if(structKeyExists(variables, "billingAddress")) {
+			return variables.billingAddress;
+		} else if (!isNull(getAccountBillingAddress())) {
+			setbillingAddress( getAccountBillingAddress().getAddress().copyAddress( true ) );
+			return variables.billingAddress;
+		}
+	}
+
+
+	public any function getAccountBillingAddress() {
+		if(structKeyExists(variables, "AccountBillingAddress")) {
+			return variables.accountBillingAddress;
+		} else if (!isNull(getAccountBillingAddress())) {
+			setAccountBillingAddress( getAccountBillingAddress().getAddress().copyAddress( true ) );
+			return variables.accountBillingAddress;
+		}
+	}
+
+
+	public any function getAccountShippingAddress() {
+		if(structKeyExists(variables, "AccountShippingAddress")) {
+			return variables.accountShippingAddress;
+		} else if (!isNull(getAccountShippingAddress())) {
+			setAccountShippingAddress( getAccountShippingAddress().getAddress().copyAddress( true ) );
+			return variables.accountShippingAddress;
+		}
+	}
+
+
+	//// DONE?
+
+
 	public any function getOrderStatusType() {
 		if(isNull(variables.orderStatusType)) {
 			variables.orderStatusType = getService("settingService").getTypeBySystemCode('ostNotPlaced');
