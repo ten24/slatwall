@@ -66,7 +66,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			password = {fieldType="password", encryptValue=true},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			trustedID = {fieldType="text"},
-			serverURL = {fieldType="text"}
+			serverURL = {fieldType="text"},
+			sendInvoiceFlag = {fieldType="yesno", defaultValue="1"}
 		};
 		
 		return settings;
