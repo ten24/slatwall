@@ -53,7 +53,7 @@
 	      	<urn:VertexEnvelope>
 	         	<urn:Login>
 	            	<urn:UserName>#setting('username')#</urn:UserName>
-	            	<urn:Password>vertex</urn:Password>
+	            	<urn:Password>#setting('password')#</urn:Password>
 	         	</urn:Login>
 				<urn:QuotationRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
 				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
