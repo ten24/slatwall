@@ -119,8 +119,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				taxRatesRequestBean.populateBillToWithAddress( taxAddresses.taxBillingAddress );	
 			}
 			
-			//Populate ratesRequestBean with orderID, accountID, and modifiedDateTime
-			taxRatesRequestBean.populateHeaderElementProperties(orderID=orderID, modifiedDateTime=modifiedDateTime, accountID=accountID);
+			taxRatesRequestBean.setOrderID( arguments.order.getOrderID() );
+			taxRatesRequestBean.setAccountID( arguments.order.getAccount().getAccountID() );
 			
 			// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
 			for(var orderItem in arguments.order.getOrderItems()) {

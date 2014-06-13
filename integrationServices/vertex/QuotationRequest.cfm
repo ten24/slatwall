@@ -52,20 +52,20 @@
 	   	<soapenv:Body>
 	      	<urn:VertexEnvelope>
 	         	<urn:Login>
-	            	<urn:UserName>tmurray</urn:UserName>
+	            	<urn:UserName>#setting('username')#</urn:UserName>
 	            	<urn:Password>vertex</urn:Password>
 	         	</urn:Login>
-				<urn:QuotationRequest documentDate="#arguments.requestBean.getModifiedDateTime()#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
+				<urn:QuotationRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
 				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
 				  	<urn:Seller>
-				    	<urn:Company>NAIPARENT</urn:Company>
-				    	<urn:Division>SLATWALL</urn:Division>
-				    	<urn:Department>NAI</urn:Department>
+				    	<urn:Company>#setting('company')#</urn:Company>
+				    	<urn:Division>#setting('division')#</urn:Division>
+				    	<urn:Department>#setting('department')#</urn:Department>
 				    	<urn:PhysicalOrigin>
-				      		<urn:City>New York</urn:City>
-				      		<urn:MainDivision>NY</urn:MainDivision>
-				      		<urn:PostalCode>10010</urn:PostalCode>
-				     		<urn:Country>UNITED STATES</urn:Country>
+				      		<urn:City>#setting('city')#</urn:City>
+				      		<urn:MainDivision>#setting('mainDivision')#</urn:MainDivision>
+				      		<urn:PostalCode>#setting('postalCode')#</urn:PostalCode>
+				     		<urn:Country>#setting('country')#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				   		</urn:PhysicalOrigin>
 				  	</urn:Seller>

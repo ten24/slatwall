@@ -64,7 +64,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	//Header Element Properties 
 	property name="orderID" type="string";
 	property name="accountID" type="string";
-	property name="modifiedDateTime" type="string";
 	
 	public any function init() {
 		// Set defaults
@@ -147,23 +146,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 				taxRateItemRequestBean.setExtendedPriceAfterDiscounts(arguments.orderItem.getExtendedPriceAfterDiscounts());
 			}
 		}
-		
-		
+
 		arrayAppend(getTaxRateItemRequestBeans(), taxRateItemRequestBean);
 	}
 	
-	// These are set to collect data for header elements in vertex XML request
-	public void function populateHeaderElementProperties(any orderID, any modifiedDateTime, any accountID){
-		//Populate with order and account fields
-		if(!isNull(arguments.orderID)){
-			setOrderID(arguments.orderID);
-		}
-		if(!isNull(arguments.modifiedDateTime)){
-			var modifiedDateTime = dateFormat(arguments.modifiedDateTime, "yyyy-mm-dd");
-			setModifiedDateTime(modifiedDateTime);
-		}
-		if(!isNull(arguments.accountID)){
-			setAccountID(arguments.accountID);
-		}
-	}
 }
