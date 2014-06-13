@@ -428,7 +428,23 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		return variables.manualFulfillmentChargeFlag;
 	}
-	
+
+	public any function getShippingAddress() {
+		if(!structKeyExists(variables, "shippingAddress")) {
+
+			if(!isNull(getAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+    			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+			} else if (!isNull(getOrder().getShippingAddress()) ) {
+				return getOrder().getShippingAddress();
+			}
+
+			return getService("addressService").newAddress();
+		}
+
+		return variables.shippingAddress;
+	}
+
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
 	public void function setShippingMethod( any shippingMethod ) {
 		if(structKeyExists(arguments, "shippingMethod")) {
@@ -475,37 +491,55 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
 	public any function populate() {
-		super.populate( argumentcollection=arguments );
-		
-		// If after populating, there is an account address, and shipping address then we update the shipping address
-		if ( !isNull(getAccountAddress()) && !isNull(getShippingAddress()) ) {
-    		
-    		getShippingAddress().setName( getAccountAddress().getAddress().getName() );
-			getShippingAddress().setCompany( getAccountAddress().getAddress().getCompany() );
-			getShippingAddress().setStreetAddress( getAccountAddress().getAddress().getStreetAddress() );
-			getShippingAddress().setStreet2Address( getAccountAddress().getAddress().getStreet2Address() );
-			getShippingAddress().setLocality( getAccountAddress().getAddress().getLocality() );
-			getShippingAddress().setCity( getAccountAddress().getAddress().getCity() );
-			getShippingAddress().setStateCode( getAccountAddress().getAddress().getStateCode() );
-			getShippingAddress().setPostalCode( getAccountAddress().getAddress().getPostalCode() );
-			getShippingAddress().setCountryCode( getAccountAddress().getAddress().getCountryCode() );
-		
-			getShippingAddress().setSalutation( getAccountAddress().getAddress().getSalutation() );
-			getShippingAddress().setFirstName( getAccountAddress().getAddress().getFirstName() );
-			getShippingAddress().setLastName( getAccountAddress().getAddress().getLastName() );
-			getShippingAddress().setMiddleName( getAccountAddress().getAddress().getMiddleName() );
-			getShippingAddress().setMiddleInitial( getAccountAddress().getAddress().getMiddleInitial() );
-		
-			getShippingAddress().setPhoneNumber( getAccountAddress().getAddress().getPhoneNumber() );
-			getShippingAddress().setEmailAddress( getAccountAddress().getAddress().getEmailAddress() );
-		
-		// If there is an accountAddress, and no shippingAddress, then create a shipping address
-		} else if ( !isNull(getAccountAddress()) && isNull(getShippingAddress()) ) {
-			
-			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-			
-    	}
-		
+
+		var accountAddressIDBefore = "";
+		var accountAddressIDAfter = "";
+
+		if(!isNull(getAccountAddress())) {
+			accountAddressIDBefore = getAccountAddress().getAccountAddressID();
+		}
+
+		super.populate();
+
+		if(!isNull(getAccountAddress())) {
+			accountAddressIDAfter = getAccountAddress().getAccountAddressID();
+		}
+
+		if(accountAddressIDBefore != accountAddressIDAfter) {
+
+			super.populate( argumentcollection=arguments );
+
+			// If after populating, there is an account address, and shipping address then we update the shipping address
+			if ( !isNull(getAccountAddress()) && !isNull(getShippingAddress()) ) {
+
+	    		getShippingAddress().setName( getAccountAddress().getAddress().getName() );
+				getShippingAddress().setCompany( getAccountAddress().getAddress().getCompany() );
+				getShippingAddress().setStreetAddress( getAccountAddress().getAddress().getStreetAddress() );
+				getShippingAddress().setStreet2Address( getAccountAddress().getAddress().getStreet2Address() );
+				getShippingAddress().setLocality( getAccountAddress().getAddress().getLocality() );
+				getShippingAddress().setCity( getAccountAddress().getAddress().getCity() );
+				getShippingAddress().setStateCode( getAccountAddress().getAddress().getStateCode() );
+				getShippingAddress().setPostalCode( getAccountAddress().getAddress().getPostalCode() );
+				getShippingAddress().setCountryCode( getAccountAddress().getAddress().getCountryCode() );
+
+				getShippingAddress().setSalutation( getAccountAddress().getAddress().getSalutation() );
+				getShippingAddress().setFirstName( getAccountAddress().getAddress().getFirstName() );
+				getShippingAddress().setLastName( getAccountAddress().getAddress().getLastName() );
+				getShippingAddress().setMiddleName( getAccountAddress().getAddress().getMiddleName() );
+				getShippingAddress().setMiddleInitial( getAccountAddress().getAddress().getMiddleInitial() );
+
+				getShippingAddress().setPhoneNumber( getAccountAddress().getAddress().getPhoneNumber() );
+				getShippingAddress().setEmailAddress( getAccountAddress().getAddress().getEmailAddress() );
+
+			// If there is an accountAddress, and no shippingAddress, then create a shipping address
+			} else if ( !isNull(getAccountAddress()) && isNull(getShippingAddress()) ) {
+
+				setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+
+	    	}
+
+		}
+
 		return this;
 	}
 	
