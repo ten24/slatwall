@@ -79,6 +79,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		// Check each of the orderFulfillments to see if they are ready to process
 		for(var i = 1; i <= arrayLen(arguments.order.getOrderFulfillments()); i++) {
+			
+			// for a event product fulfillments are not complete until event attendees have been added
+			for(var orderItem in arguments.order.getOrderFulfillments()[i].getOrderFulfillmentItems()) {
+				if(orderItem.getSku().getProduct().getBaseProductType() == 'event' && orderItem.getQuantity() > 1 && orderItem.getQuantity() > arrayLen(orderItem.getEventRegistrations())) {
+					orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
+					break;
+				}	
+			}
+			
 			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" ) || arguments.order.getOrderFulfillments()[i].hasErrors()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
 				break;
