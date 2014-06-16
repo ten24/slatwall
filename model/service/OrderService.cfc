@@ -83,7 +83,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// for a event product fulfillments are not complete until event attendees have been added
 			for(var orderItem in arguments.order.getOrderFulfillments()[i].getOrderFulfillmentItems()) {
 				if(orderItem.getSku().getProduct().getBaseProductType() == 'event' && orderItem.getQuantity() > 1 && orderItem.getQuantity() > arrayLen(orderItem.getEventRegistrations())) {
-					arguments.order.getOrderFulfillments()[i].addError( "fulfillment","Not enough registrants" );
+					orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
 					break;
 				}	
 			}
