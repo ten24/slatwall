@@ -53,7 +53,6 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 	property name="taxRate" ormtype="float" hb_formatType="percentage";
 	property name="taxAddressLookup" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="taxCategoryRateCode" ormtype="string" index="PI_TAXCATEGORYRATECODE";
-	property name="taxRateInclusiveFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
 	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID" hb_optionsNullRBKey="define.all";

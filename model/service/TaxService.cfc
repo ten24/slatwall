@@ -59,7 +59,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//Order and Address Properties for XML QuotationRequest
 		var orderID = arguments.order.getOrderID();
-		var modifiedDateTime = arguments.order.getModifiedDateTime();
 		var accountID = arguments.order.getAccountID();
 		
 		
@@ -143,9 +142,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == integration.getIntegrationID()){
 							
 							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
-							
+														
 							if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
 								taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
+								taxRatesRequestBean.addBillingOrShippingTaxAddressToStruct(orderItem=orderItem, taxAddress=taxAddress);
 							}
 						}
 						
