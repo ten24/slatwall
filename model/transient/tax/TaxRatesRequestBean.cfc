@@ -61,13 +61,20 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	//TaxRateItemRequestBeans 
 	property name="taxRateItemRequestBeans" type="array";
 	
+	//Tax Address Struct Billing vs Shipping 
+	property name="taxAddressTypeStruct" type="struct" hint="billing or shipping";
+	
+	//Header Element Properties 
+	property name="orderID" type="string";
+	property name="accountID" type="string";
+	
 	public any function init() {
 		// Set defaults
 		variables.TaxRateItemRequestBeans = [];
 		
 		return super.init();
 	}
-	
+
 	public void function populateBillToWithAddress(required any address) {
 		if(!isNull(arguments.address.getStreetAddress())) {
 			setBillToStreetAddress(arguments.address.getStreetAddress());
@@ -142,7 +149,24 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 				taxRateItemRequestBean.setExtendedPriceAfterDiscounts(arguments.orderItem.getExtendedPriceAfterDiscounts());
 			}
 		}
+
 		arrayAppend(getTaxRateItemRequestBeans(), taxRateItemRequestBean);
 	}
 	
+	public void function addBillingOrShippingTaxAddressToStruct(required orderItem, any taxAddress){
+		
+		var orderItemID = arguments.orderItem.getOrderItemID();
+		
+		if(arguments.taxAddress.getStreetAddress() == getBillToStreetAddress() 
+				&& arguments.taxAddress.getStreet2Address() == getBillToStreet2Address() 
+				&& arguments.taxAddress.getLocality() == getBillToLocality()
+				&& arguments.taxAddress.getCity() == getBillToCity()
+				&& arguments.taxAddress.getStateCode() == getBillToStateCode()
+				&& arguments.taxAddress.getPostalCode() == getBillToPostalCode()
+				&& arguments.taxAddress.getCountryCode() == getBillToCountryCode() ){
+			taxAddressTypeStruct["#orderItemID#"] = 'Billing';
+		} else {
+			taxAddressTypeStruct["#orderItemID#"] = 'Shipping';
+		}	
+	}
 }

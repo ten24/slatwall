@@ -54,39 +54,47 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 
 	public any function getTaxRates(required any requestBean) {
 		// Build Request XML
-	/*	var xmlPacket = "";
-		
+		var xmlPacket = "";
+
 		savecontent variable="xmlPacket" {
-			include "InvoiceRequest.cfm";
+			include "QuotationRequest.cfm";
         }
         
-         // Setup Request to push to Vertex
+        // Setup Request to push to Vertex
         var httpRequest = new http();
         httpRequest.setMethod("POST");
-		//TODO [jubs] : Determine what port to use
-		httpRequest.setPort("443");
-		httpRequest.setTimeout(45);
-		if(setting('testingFlag')) {
-			//TODO [jubs] : Determine https request URLs
-			httpRequest.setUrl("");
-		} else {
-			httpRequest.setUrl("");
-		}
-		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="XML", name="name",value=xmlPacket);*/
-        
-		// Create a responseBean
-		var ratesResponseBean = getTransient('TaxRatesResponseBean');
+		httpRequest.setUrl("http://192.168.89.51/vertex-ws/services/CalculateTax60?wsdl");
+		httpRequest.addParam(type="XML", name="name",value=xmlPacket);
 		
-		for(var rateItemRequest in requestBean.getTaxRateItemRequestBeans()) {
-			
-			// Generate a random tax amount
-			var taxAmount = round(rand()*100);
-			
-			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
+		// Parse response and set to variable
+		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+
+		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Resquest
+		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
+		
+		// Searches for the totalTax in xmlChild
+		var counter = 1;
+		for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
+			if(n1.xmlName == "QuotationResponse") {
+				for(var n2 in n1.xmlChildren) {
+					if(n2.xmlName == "LineItem") {
+						if(n2.xmlAttributes.lineItemNumber == "#counter#"){
+							var orderItemID = n2.xmlAttributes.materialCode;
+							for(var n3 in n2.xmlChildren) {
+								if(n3.xmlName == "TotalTax") {
+									var taxAmount = n3.xmlText;
+								}
+							}
+						}
+						responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount);
+						counter++;
+					}
+				}
+				
+			}
 		}
 		
-		return ratesResponseBean;
+		return responseBean;
 	}
 
 }

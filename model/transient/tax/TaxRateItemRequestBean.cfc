@@ -65,4 +65,5 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="extendedPrice" type="string" default="";
 	property name="discountAmount" type="string" default="";
 	property name="extendedPriceAfterDiscounts" type="string" default="";
+	
 }

@@ -46,7 +46,7 @@
 	Notes:
 	
 --->
- <cfoutput>
+<cfoutput>
 	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:vertexinc:o-series:tps:6:0">
 	   	<soapenv:Header/>
 	   	<soapenv:Body>
@@ -55,7 +55,7 @@
 	            	<urn:UserName>#setting('username')#</urn:UserName>
 	            	<urn:Password>#setting('password')#</urn:Password>
 	         	</urn:Login>
-				<urn:InvoiceRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
+				<urn:QuotationRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
 				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
 				  	<urn:Seller>
 				    	<urn:Company>#setting('company')#</urn:Company>
@@ -69,7 +69,7 @@
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				   		</urn:PhysicalOrigin>
 				  	</urn:Seller>
- -		  			<urn:Customer>
+				  	<urn:Customer>
 				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
 				    	<urn:Destination>
 				    		<urn:StreetAddress1>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStreetAddress()#</urn:StreetAddress1>
@@ -93,7 +93,7 @@
 					  	</urn:LineItem>
 						<cfset counter = counter + 1 />
 					</cfloop>			 
-				</urn:InvoiceRequest>
+				</urn:QuotationRequest>
 			</urn:VertexEnvelope>
 		</soapenv:Body>
 	</soapenv:Envelope>
