@@ -145,7 +145,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 														
 							if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
 								taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
-								taxRatesRequestBean.addBillingOrShippingTaxAddressToStruct(orderItem=orderItem, taxAddress=taxAddress);
 							}
 						}
 						

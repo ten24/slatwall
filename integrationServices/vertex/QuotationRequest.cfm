@@ -72,19 +72,19 @@
 				  	<urn:Customer>
 				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
 				    	<urn:Destination>
-				    		<urn:StreetAddress1>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStreetAddress()#</urn:StreetAddress1>
-				      		<urn:StreetAddress2>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStreet2Address()#</urn:StreetAddress2>
-							<urn:City>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCity()#</urn:City>
-				      		<urn:MainDivision>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStateCode()#</urn:MainDivision>
-				      		<urn:PostalCode>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxPostalCode()#</urn:PostalCode>
-				     		<urn:Country>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCountryCode()#</urn:Country>
+				    		<urn:StreetAddress1>#taxDataByLineItemStruct.1.taxStreetAddress#</urn:StreetAddress1>
+				      		<urn:StreetAddress2>#taxDataByLineItemStruct.1.taxStreet2Address#</urn:StreetAddress2>
+							<urn:City>#taxDataByLineItemStruct.1.taxCity#</urn:City>
+				      		<urn:MainDivision>#taxDataByLineItemStruct.1.taxStateCode#</urn:MainDivision>
+				      		<urn:PostalCode>#taxDataByLineItemStruct.1.taxPostalCode#</urn:PostalCode>
+				     		<urn:Country>#taxDataByLineItemStruct.1.taxCountryCode#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				    	</urn:Destination>
 					 </urn:Customer>
 					 <cfset counter=1 />
-					 <cfloop from="1" to="#arrayLen(arguments.requestBean.getTaxRateItemRequestBeans())#" index="i">
-					 	 <urn:LineItem lineItemNumber="#counter#" materialCode="#arguments.requestBean.getTaxRateItemRequestBeans()[i].getOrderItemID()#">
-					    	<urn:ExtendedPrice>#arguments.requestBean.getTaxRateItemRequestBeans()[i].getExtendedPrice()#</urn:ExtendedPrice>
+					 <cfloop from="1" to="#arrayLen(lineItemCountArr)#" index="i">
+					 	 <urn:LineItem lineItemNumber="#counter#" materialCode="#taxDataByLineItemStruct["#counter#"].orderItemID#">
+					    	<urn:ExtendedPrice>#taxDataByLineItemStruct["#counter#"].extendedPrice#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
 					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
 					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>

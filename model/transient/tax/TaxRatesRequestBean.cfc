@@ -61,8 +61,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	//TaxRateItemRequestBeans 
 	property name="taxRateItemRequestBeans" type="array";
 	
-	//Tax Address Struct Billing vs Shipping 
-	property name="taxAddressTypeStruct" type="struct" hint="billing or shipping";
+	//Tax Address Struct 
+	property name="taxAddressGroupingStruct" type="struct";
 	
 	//Header Element Properties 
 	property name="orderID" type="string";
@@ -105,6 +105,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		
 		if(!isNull(taxAddress)) {
 			// Set the taxAddressValues
+			if(!isNull(arguments.taxAddress.getAddressID())) {
+				taxRateItemRequestBean.setAddressID(arguments.taxAddress.getAddressID());
+			}
 			if(!isNull(arguments.taxAddress.getStreetAddress())) {
 				taxRateItemRequestBean.setTaxStreetAddress(arguments.taxAddress.getStreetAddress());
 			}
@@ -130,6 +133,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		
 		// Populate with orderItem quantities, price, and orderItemID fields
 		if(!isNull(orderItem)){
+			if(!isNull(arguments.orderItem.getOrderItemID())) {
+				taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
+			}
 			if(!isNull(arguments.orderItem.getQuantity())) {
 				taxRateItemRequestBean.setQuantity(arguments.orderItem.getQuantity());
 			}
@@ -149,24 +155,16 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 				taxRateItemRequestBean.setExtendedPriceAfterDiscounts(arguments.orderItem.getExtendedPriceAfterDiscounts());
 			}
 		}
+		
+		if(!isNull(arguments.orderItem.getOrderItemID()) && !isNull(arguments.taxAddress.getAddressID())){
+			var orderItemID = arguments.orderItem.getOrderItemID();
+			var addressID = arguments.taxAddress.getAddressID();
+			
+			taxAddressGroupingStruct["#addressID#"] = orderItemID;
+		}
+		
 
 		arrayAppend(getTaxRateItemRequestBeans(), taxRateItemRequestBean);
 	}
-	
-	public void function addBillingOrShippingTaxAddressToStruct(required orderItem, any taxAddress){
-		
-		var orderItemID = arguments.orderItem.getOrderItemID();
-		
-		if(arguments.taxAddress.getStreetAddress() == getBillToStreetAddress() 
-				&& arguments.taxAddress.getStreet2Address() == getBillToStreet2Address() 
-				&& arguments.taxAddress.getLocality() == getBillToLocality()
-				&& arguments.taxAddress.getCity() == getBillToCity()
-				&& arguments.taxAddress.getStateCode() == getBillToStateCode()
-				&& arguments.taxAddress.getPostalCode() == getBillToPostalCode()
-				&& arguments.taxAddress.getCountryCode() == getBillToCountryCode() ){
-			taxAddressTypeStruct["#orderItemID#"] = 'Billing';
-		} else {
-			taxAddressTypeStruct["#orderItemID#"] = 'Shipping';
-		}	
-	}
+
 }
