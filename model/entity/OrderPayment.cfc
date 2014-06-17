@@ -597,18 +597,19 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		return variables.amount;
 	}
-
+	
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
-			// TODO[rob] : make this look to a new accountAddress property like orderFulfillment does
-			
-			if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
+
+			if(!isNull(getAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+    			setBillingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
 				return getOrder().getBillingAddress();
 			}
-			
+
 			return getService("addressService").newAddress();
 		}
-		
 		return variables.billingAddress;
 	}
 	
