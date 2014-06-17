@@ -878,7 +878,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		if(structKeyExists(variables, "billingAddress")) {
 			return variables.billingAddress;
 		} else if (!isNull(getBillingAccountAddress())) {
-			setbillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
 			return variables.billingAddress;
 		}
 	}

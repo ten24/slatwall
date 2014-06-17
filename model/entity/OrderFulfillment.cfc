@@ -397,7 +397,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	
 	// ================== START: Overridden Methods ========================
 	
-	
 	public numeric function getFulfillmentCharge() {
 		if(!structKeyExists(variables, "fulfillmentCharge")) {
 			variables.fulfillmentCharge = 0;
@@ -417,7 +416,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			
 			if(!isNull(getAccountAddress())) {
 				// Get the account address, copy it, and save as the shipping address
-    			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+				setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
 			} else if (!isNull(getOrder().getShippingAddress()) ) {
 				return getOrder().getShippingAddress();
 			}
@@ -493,7 +492,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			// If after populating, there is an account address, and shipping address then we update the shipping address
 			if ( !isNull(getAccountAddress()) && !isNull(getShippingAddress()) ) {
 
-	    		getShippingAddress().setName( getAccountAddress().getAddress().getName() );
+				getShippingAddress().setName( getAccountAddress().getAddress().getName() );
 				getShippingAddress().setCompany( getAccountAddress().getAddress().getCompany() );
 				getShippingAddress().setStreetAddress( getAccountAddress().getAddress().getStreetAddress() );
 				getShippingAddress().setStreet2Address( getAccountAddress().getAddress().getStreet2Address() );
