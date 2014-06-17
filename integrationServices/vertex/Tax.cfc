@@ -84,10 +84,12 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 					}
 				}
 			}
-			structCounter++;	
+			structCounter++;
+				
 		}
-		
-		return responseBean;
+		//Need to determine how to handle the multiple http calls before returning the responsebean	
+		//return responseBean;
+
 	}
 
 	public any function addTaxAddressData(required any requestBean){
@@ -101,12 +103,16 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		//Struct of xml responses
 		var xmlResponseStruct = {};
 		var requestCounter = 1;
+		
 		//loop over the addressID's 
 		for(j=1;j<=arrayLen(arrayOfTaxAddressIDs);j++){
+			
 			//Sets up the taxData Struct and the Struct that will hold the taxData Structs (line items)
 			var taxData = {};
 			var taxDataByLineItemStruct = {};
 			var counter = 1;
+			var lineItemCountArr = [];
+			
 			//loop over the items in the request bean
 			for(i=1;i<=arrayLen(arguments.requestBean.getTaxRateItemRequestBeans());i++){
 				if(arguments.requestBean.getTaxRateItemRequestBeans()[i].getAddressID() == arrayOfTaxAddressIDs[j]){
@@ -130,17 +136,17 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 					counter++;
 				}
 			} //End Item Request Bean Loop
+		
+			lineItemCountArr = structKeyArray(taxDataByLineItemStruct);
 
-			var lineItemCountArr = structKeyArray(taxDataByLineItemStruct);
-			
 			// Build Request XML
 			var xmlPacket = "";
-			
+				
 			savecontent variable="xmlPacket" {
 				include "QuotationRequest.cfm";
-	        }
-	       
-	        // Setup Request to push to Vertex
+			}
+			
+			// Setup Request to push to Vertex
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
 			httpRequest.setUrl("http://192.168.89.51/vertex-ws/services/CalculateTax60?wsdl");
@@ -151,9 +157,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			
 			xmlResponseStruct["#requestCounter#"] = xmlResponse;
 			
-			writeDump(var="#xmlResponseStruct#");
-			abort;
 			requestCounter++;
+		
 		} //End AddressID Loop
 		
 		
