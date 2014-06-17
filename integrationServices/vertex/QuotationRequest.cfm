@@ -72,7 +72,7 @@
 				  	<urn:Customer>
 				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
 				    	<urn:Destination>
-				    		<urn:StreetAddress1>#taxDataByLineItemStruct.1.taxStreetAddress#</urn:StreetAddress1>
+				    		<urn:StreetAddress1>#addressTaxRequestItems[ 1 ].getTaxStreetAddress()#</urn:StreetAddress1>
 				      		<urn:StreetAddress2>#taxDataByLineItemStruct.1.taxStreet2Address#</urn:StreetAddress2>
 							<urn:City>#taxDataByLineItemStruct.1.taxCity#</urn:City>
 				      		<urn:MainDivision>#taxDataByLineItemStruct.1.taxStateCode#</urn:MainDivision>
@@ -81,9 +81,10 @@
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				    	</urn:Destination>
 					 </urn:Customer>
-					 <cfset counter=1 />
-					 <cfloop from="1" to="#arrayLen(lineItemCountArr)#" index="i">
-					 	 <urn:LineItem lineItemNumber="#counter#" materialCode="#taxDataByLineItemStruct["#counter#"].orderItemID#">
+					 <cfset var count = 0 />
+					 <cfloop array="#addressTaxRequestItems#" index="taxRequestItem">
+					 	<cfset count++ />
+					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItemID()#">
 					    	<urn:ExtendedPrice>#taxDataByLineItemStruct["#counter#"].extendedPrice#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
 					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
@@ -91,7 +92,6 @@
 					      		<urn:FlexibleCodeField fieldId="12">PRODUCT_NAME</urn:FlexibleCodeField>
 					    	</urn:FlexibleFields>
 					  	</urn:LineItem>
-						<cfset counter = counter + 1 />
 					</cfloop>			 
 				</urn:QuotationRequest>
 			</urn:VertexEnvelope>

@@ -57,11 +57,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxIntegrationArr = [];
 		var taxAddresses = {};
 		
-		//Order and Address Properties for XML QuotationRequest
-		var orderID = arguments.order.getOrderID();
-		var accountID = arguments.order.getAccountID();
-		
-		
 		// If the order has a billing address, use that to potentially calculate taxes for all items
 		if(!isNull(arguments.order.getBillingAddress())) {
 			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();

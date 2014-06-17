@@ -53,92 +53,15 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	}
 	
 	public any function getTaxRates(required any requestBean) {
-		//Get an Struct of xmlResponses 
-		var xmlResponseStruct = addTaxAddressData(arguments.requestBean);
-		var xmlResponseArr = structKeyArray(xmlResponseStruct);
 		
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Resquest
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
-		var structCounter = 1;
-		for(i=1;i<=arrayLen(xmlResponseArr);i++){
-			//Set up each xmlResponse into variable to be used
-			var xmlResponse = xmlResponseStruct["#structCounter#"];
+		
+		// Loop over each unique tax address
+		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
 			
-			// Searches for the totalTax in xmlChild
-			var counter = 1;
-			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
-				if(n1.xmlName == "QuotationResponse") {
-					for(var n2 in n1.xmlChildren) {
-						if(n2.xmlName == "LineItem") {
-							if(n2.xmlAttributes.lineItemNumber == "#counter#"){
-								var orderItemID = n2.xmlAttributes.materialCode;
-								for(var n3 in n2.xmlChildren) {
-									if(n3.xmlName == "TotalTax") {
-										var taxAmount = n3.xmlText;
-									}
-								}
-							}
-							responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount);
-							counter++;
-						}
-					}
-				}
-			}
-			structCounter++;
-				
-		}
-		//Need to determine how to handle the multiple http calls before returning the responsebean	
-		//return responseBean;
-
-	}
-
-	public any function addTaxAddressData(required any requestBean){
-		
-		//Get the Tax Address Grouping Struct 
-		var taxAddressGroupingStruct = arguments.requestBean.getTaxAddressGroupingStruct();
-		
-		//Get an array of all of the unique AddressID's in the struct
-		var arrayOfTaxAddressIDs = structKeyArray(taxAddressGroupingStruct);
-		
-		//Struct of xml responses
-		var xmlResponseStruct = {};
-		var requestCounter = 1;
-		
-		//loop over the addressID's 
-		for(j=1;j<=arrayLen(arrayOfTaxAddressIDs);j++){
+			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
 			
-			//Sets up the taxData Struct and the Struct that will hold the taxData Structs (line items)
-			var taxData = {};
-			var taxDataByLineItemStruct = {};
-			var counter = 1;
-			var lineItemCountArr = [];
-			
-			//loop over the items in the request bean
-			for(i=1;i<=arrayLen(arguments.requestBean.getTaxRateItemRequestBeans());i++){
-				if(arguments.requestBean.getTaxRateItemRequestBeans()[i].getAddressID() == arrayOfTaxAddressIDs[j]){
-					
-					//Set Struct Data
-					taxData.taxStreetAddress = arguments.requestBean.getTaxRateItemRequestBeans()[i].getTaxStreetAddress();
-					taxData.taxStreet2Address = arguments.requestBean.getTaxRateItemRequestBeans()[i].getTaxStreet2Address();
-					taxData.taxCity = arguments.requestBean.getTaxRateItemRequestBeans()[i].getTaxCity();
-					taxData.taxStateCode = arguments.requestBean.getTaxRateItemRequestBeans()[i].getTaxStateCode();
-					taxData.taxTaxLocality = arguments.requestBean.getTaxRateItemRequestBeans()[i].getTaxLocality();
-					taxData.taxTaxPostalCode = arguments.requestBean.getTaxRateItemRequestBeans()[i].getTaxPostalCode();
-					taxData.taxCountryCode = arguments.requestBean.getTaxRateItemRequestBeans()[i].getTaxCountryCode();
-					taxData.orderItemID = arguments.requestBean.getTaxRateItemRequestBeans()[i].getOrderItemID();
-					taxData.price = arguments.requestBean.getTaxRateItemRequestBeans()[i].getPrice();
-					taxData.quantity = arguments.requestBean.getTaxRateItemRequestBeans()[i].getQuantity();
-					taxData.extendedPrice = arguments.requestBean.getTaxRateItemRequestBeans()[i].getExtendedPrice();
-					taxData.discountAmount = arguments.requestBean.getTaxRateItemRequestBeans()[i].getDiscountAmount();
-					taxData.extendedPriceAfterDiscounts = arguments.requestBean.getTaxRateItemRequestBeans()[i].getExtendedPriceAfterDiscounts();
-				
-					taxDataByLineItemStruct["#counter#"] = taxData;
-					counter++;
-				}
-			} //End Item Request Bean Loop
-		
-			lineItemCountArr = structKeyArray(taxDataByLineItemStruct);
-
 			// Build Request XML
 			var xmlPacket = "";
 				
@@ -151,19 +74,41 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	        httpRequest.setMethod("POST");
 			httpRequest.setUrl("http://192.168.89.51/vertex-ws/services/CalculateTax60?wsdl");
 			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
-
+	
 			// Parse response and set to struct
 			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
 			
-			xmlResponseStruct["#requestCounter#"] = xmlResponse;
+			// Searches for the totalTax in xmlChild
+			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
+				
+				if(n1.xmlName == "QuotationResponse") {
+					
+					for(var n2 in n1.xmlChildren) {
+						
+						if(n2.xmlName == "LineItem") {
+							
+							var orderItemID = n2.xmlAttributes.materialCode;
+							var taxAmount = 0;
+							
+							for(var n3 in n2.xmlChildren) {
+								if(n3.xmlName == "TotalTax") {
+									taxAmount = n3.xmlText;
+								}
+							}
+							
+							responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount);
+							
+						}
+						
+					}
+					
+				}
+				
+			}
 			
-			requestCounter++;
-		
-		} //End AddressID Loop
-		
-		
-		return xmlResponseStruct;	
+		}
+			
+		return responseBean;
 	}
-	
 
 }
