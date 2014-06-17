@@ -1,4 +1,4 @@
-component output="false" accessors="true" extends="HibachiTransient" {
+component output="false" accessors="true" extends="Slatwall.model.transient.HibachiTransient" {
 
 	property name="preProcessDisplayedFlag";
 	property name="populatedFlag";
