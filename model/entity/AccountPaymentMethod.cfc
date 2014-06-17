@@ -64,10 +64,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="providerToken" ormType="string";
 	
 	// Related Object Properties (many-to-one)
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
+	property name="billingAccountAddress" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID" hb_optionsNullRBKey="define.select";
+	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_optionsNullRBKey="define.select";
 	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" hb_optionsNullRBKey="define.select" hb_optionsAdditionalProperties="paymentMethodType" hb_optionsSmartListData="f:activeFlag=1&f:paymentMethodType=creditCard,termPayment,check,giftCard";
 	property name="paymentTerm" cfc="PaymentTerm" fieldtype="many-to-one" fkcolumn="paymentTermID" fetch="join";
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
-	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_optionsNullRBKey="define.select";
 	
 	// Related Object Properties (one-to-many)
 	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true" lazy="extra";
@@ -281,6 +282,14 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
+
+			if(!isNull(getBillingAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
+				return getOrder().getBillingAddress();
+			}
+
 			return getService("addressService").newAddress();
 		}
 		return variables.billingAddress;

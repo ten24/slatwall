@@ -67,6 +67,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
+	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
@@ -601,9 +602,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
 
-			if(!isNull(getAccountAddress())) {
+			if(!isNull(getBillingAccountAddress())) {
 				// Get the account address, copy it, and save as the shipping address
-    			setBillingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
 			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
 				return getOrder().getBillingAddress();
 			}
