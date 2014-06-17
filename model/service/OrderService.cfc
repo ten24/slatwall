@@ -239,7 +239,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public numeric function getOrderPaymentNonNullAmountTotal(required string orderID) {
 		return getOrderDAO().getOrderPaymentNonNullAmountTotal(argumentcollection=arguments);
 	}
-	
+	//funciton to compare two orderItems based on certain properties. 
+	public boolean function CompareOrderItemToProcessOrderItem(required any orderItem, required any processOrderItem){
+		
+		//check if skus match
+		if(arguments.orderItem.getSku().getSkuID() != arguments.processOrderItem.getSku().getSkuID()){
+			return false;
+		}
+		//check if the price is the same
+		if(arguments.orderItem.getPrice() != arguments.processOrderItem.getPrice()){
+			return false;
+		}
+		//check if the instock value is the same
+		if(!isNull(arguments.orderItem.getStock()) && !isNull(arguments.processOrderItem.getStock()) && arguments.orderItem.getStock().getStockID() != arguments.processOrderItem.getStock().getStockID()){
+			return false;
+		}
+		
+		//check whether the attribute values are the same
+		//verify that the item has the same amount of attributes related to it
+		var attributeValueStruct = arguments.processOrderItem.getAttributeValuesByCodeStruct();
+		
+		for(key in arguments.orderItem.getAttributeValuesByAttributeCodeStruct()){
+			//use the attributeValues that were just submitted to see if an existing orderitem already exists''
+			if(structKeyExists(attributeValueStruct) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
+				return false;
+				break;
+			}
+		}
+							
+		return true;
+	}
+		
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
@@ -364,26 +394,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
-				for(var i=1; i<=arrayLen(orderFulfillment.getOrderFulfillmentItems()); i++) {
+				for(orderItem in orderFulfillment.getOrderFulfillmentItems()){
+					// If the sku, price, attributes & stock all match then just increase the quantity
 					
-					var thisItem = orderFulfillment.getOrderFulfillmentItems()[i];
-					
-					// If the sku, price & stock all match then just increse the quantity
-					if( 	thisItem.getSku().getSkuID() == arguments.processObject.getSku().getSkuID()
-						  		&&
-							thisItem.getPrice() == arguments.processObject.getPrice()
-								&&
-							((isNull(thisItem.getStock()) && isNull(arguments.processObject.getStock())) || (!isNull(thisItem.getStock()) && !isNull(arguments.processObject.getStock()) && thisItem.getStock().getStockID() == arguments.processObject.getStock().getStockID() ))
-						) {
-							
+					if(CompareOrderItemToProcessOrderItem(orderItem,arguments.processObject)){
 						foundItem = true;
-						orderFulfillment.getOrderFulfillmentItems()[i].setQuantity(orderFulfillment.getOrderFulfillmentItems()[i].getQuantity() + arguments.processObject.getQuantity());
-						orderFulfillment.getOrderFulfillmentItems()[i].validate(context='save');
-						if(orderFulfillment.getOrderFulfillmentItems()[i].hasErrors()) {
-							arguments.order.addError('addOrderItem', orderFulfillment.getOrderFulfillmentItems()[i].getErrors());
+						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						orderItem.validate(context='save');
+						if(orderItem.hasErrors()) {
+							arguments.order.addError('addOrderItem', orderItem.getErrors());
 						}
 						break;
-						
 					}
 				}
 			}
@@ -519,7 +540,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
-		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );

@@ -61,6 +61,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="returnLocation" hb_rbKey="entity.location";
 	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 	
+	
+	
 	// New Properties
 	
 	// Data Properties (ID's)
@@ -86,10 +88,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
 	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
 	
+	
+	
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
-	
 	// Data Properties (Object / Array Populate)
+	property name="attributeValuesByCodeStruct";
 	
 	// Option Properties
 	property name="fulfillmentMethodIDOptions";
