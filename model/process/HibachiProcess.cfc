@@ -53,14 +53,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiP
 		
 		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
 		if(isDefined('this.getAssignedOrderItemAttributeSets')){
-			var attributeValueStruct = {};
-			for(attribute in this.getAssignedOrderItemAttributeSets()[1].getAttributes()){
-				if(structKeyExists(data,attribute.getAttributeCode())){
-					
-					attributeValueStruct['#attribute.getAttributeCode()#'] = data[ attribute.getAttributeCode() ];
-				}
-			} 
-			setAttributeValuesByCodeStruct( attributeValueStruct);
+			var attributeValueArray = [];
+			for(attributeSet in this.getAssignedOrderItemAttributeSets()){
+				var attributeValueStruct = {};
+				for(attribute in attributeSet.getAttributes()){
+					if(structKeyExists(data,attribute.getAttributeCode())){
+						
+						attributeValueStruct['#attribute.getAttributeCode()#'] = data[ attribute.getAttributeCode() ];
+						
+					}
+				} 
+				arrayAppend(attributeValueArray,attributeValueStruct);
+			}
+			setAttributeValuesByCodeStruct( attributeValueArray);
 		}
 		// Return this object
 		return this;
