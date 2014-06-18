@@ -61,7 +61,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
 			
 			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
-			
+
 			// Build Request XML
 			var xmlPacket = "";
 				
@@ -72,11 +72,13 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			// Setup Request to push to Vertex
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
-			httpRequest.setUrl("http://192.168.89.51/vertex-ws/services/CalculateTax60?wsdl");
+			httpRequest.setUrl(#setting('serverURL')#);
 			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
 	
 			// Parse response and set to struct
 			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+			
+			
 			
 			// Searches for the totalTax in xmlChild
 			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
