@@ -73,11 +73,11 @@
 				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
 				    	<urn:Destination>
 				    		<urn:StreetAddress1>#addressTaxRequestItems[ 1 ].getTaxStreetAddress()#</urn:StreetAddress1>
-				      		<urn:StreetAddress2>#taxDataByLineItemStruct.1.taxStreet2Address#</urn:StreetAddress2>
-							<urn:City>#taxDataByLineItemStruct.1.taxCity#</urn:City>
-				      		<urn:MainDivision>#taxDataByLineItemStruct.1.taxStateCode#</urn:MainDivision>
-				      		<urn:PostalCode>#taxDataByLineItemStruct.1.taxPostalCode#</urn:PostalCode>
-				     		<urn:Country>#taxDataByLineItemStruct.1.taxCountryCode#</urn:Country>
+				      		<urn:StreetAddress2>#addressTaxRequestItems[ 1 ].getTaxStreet2Address()#</urn:StreetAddress2>
+							<urn:City>#addressTaxRequestItems[ 1 ].getTaxCity()#</urn:City>
+				      		<urn:MainDivision>#addressTaxRequestItems[ 1 ].getTaxStateCode()#</urn:MainDivision>
+				      		<urn:PostalCode>#addressTaxRequestItems[ 1 ].getTaxPostalCode()#</urn:PostalCode>
+				     		<urn:Country>#addressTaxRequestItems[ 1 ].getTaxCountryCode()#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				    	</urn:Destination>
 					 </urn:Customer>
@@ -85,7 +85,7 @@
 					 <cfloop array="#addressTaxRequestItems#" index="taxRequestItem">
 					 	<cfset count++ />
 					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItemID()#">
-					    	<urn:ExtendedPrice>#taxDataByLineItemStruct["#counter#"].extendedPrice#</urn:ExtendedPrice>
+					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPrice()#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
 					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
 					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>

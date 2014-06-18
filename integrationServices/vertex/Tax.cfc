@@ -82,7 +82,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
 				
 				if(n1.xmlName == "QuotationResponse") {
-					
+						
 					for(var n2 in n1.xmlChildren) {
 						
 						if(n2.xmlName == "LineItem") {
@@ -95,7 +95,6 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 									taxAmount = n3.xmlText;
 								}
 							}
-							
 							responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount);
 							
 						}
