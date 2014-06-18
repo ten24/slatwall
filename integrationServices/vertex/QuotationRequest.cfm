@@ -85,7 +85,7 @@
 					 <cfloop array="#addressTaxRequestItems#" index="taxRequestItem">
 					 	<cfset count++ />
 					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItemID()#">
-					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
+					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscounts()#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
 					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
 					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>

@@ -72,7 +72,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			// Setup Request to push to Vertex
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
-			httpRequest.setUrl(#setting('serverURL')#);
+			httpRequest.setUrl("#setting('webServicesURL')#/CalculateTax60?wsdl");
 			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
 	
 			// Parse response and set to struct
