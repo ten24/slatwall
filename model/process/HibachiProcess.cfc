@@ -47,27 +47,5 @@ Notes:
 
 */
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiProcess" {
-	public any function populate( required struct data={} ) {
-		// Call the super populate to do all the standard logic
-		super.populate(argumentcollection=arguments);
-		
-		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
-		if(isDefined('this.getAssignedOrderItemAttributeSets')){
-			var attributeValueArray = [];
-			for(attributeSet in this.getAssignedOrderItemAttributeSets()){
-				var attributeValueStruct = {};
-				for(attribute in attributeSet.getAttributes()){
-					if(structKeyExists(data,attribute.getAttributeCode())){
-						
-						attributeValueStruct['#attribute.getAttributeCode()#'] = data[ attribute.getAttributeCode() ];
-						
-					}
-				} 
-				arrayAppend(attributeValueArray,attributeValueStruct);
-			}
-			setAttributeValuesByCodeStruct( attributeValueArray);
-		}
-		// Return this object
-		return this;
-	}
+	
 }

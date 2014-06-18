@@ -239,36 +239,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public numeric function getOrderPaymentNonNullAmountTotal(required string orderID) {
 		return getOrderDAO().getOrderPaymentNonNullAmountTotal(argumentcollection=arguments);
 	}
-	//funciton to compare two orderItems based on certain properties. 
-	public boolean function CompareOrderItemToProcessOrderItem(required any orderItem, required any processOrderItem){
-		
-		//check if skus match
-		if(arguments.orderItem.getSku().getSkuID() != arguments.processOrderItem.getSku().getSkuID()){
-			return false;
-		}
-		//check if the price is the same
-		if(arguments.orderItem.getPrice() != arguments.processOrderItem.getPrice()){
-			return false;
-		}
-		//check if the instock value is the same
-		if(!isNull(arguments.orderItem.getStock()) && !isNull(arguments.processOrderItem.getStock()) && arguments.orderItem.getStock().getStockID() != arguments.processOrderItem.getStock().getStockID()){
-			return false;
-		}
-		
-		//check whether the attribute values are the same
-		//verify that the item has the same amount of attributes related to it
-		var attributeValueArray = arguments.processOrderItem.getAttributeValuesByCodeStruct();
-		for(key in arguments.orderItem.getAttributeValuesByAttributeCodeStruct()){
-			//use the attributeValues that were just submitted to see if an existing orderitem already exists
-			for(attributeValueStruct in attributeValueArray){
-				if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
-					return false;
-				}
-			}
-		}
-							
-		return true;
-	}
+	
 		
 	// ===================== START: DAO Passthrough ===========================
 	
@@ -277,7 +248,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Process: Order
 	public any function processOrder_addOrderItem(required any order, required any processObject) {
 		
-		// Setup a boolean to see if we were able to just att this order item to an existing one
+		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
 		
 		// Make sure that the currencyCode gets set for this order
@@ -397,7 +368,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(orderItem in orderFulfillment.getOrderFulfillmentItems()){
 					// If the sku, price, attributes & stock all match then just increase the quantity
 					
-					if(CompareOrderItemToProcessOrderItem(orderItem,arguments.processObject)){
+					if(arguments.processObject.CompareOrderItemToProcessOrderItem(orderItem)){
 						foundItem = true;
 						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
 						orderItem.validate(context='save');
@@ -455,6 +426,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {
 				newOrderItem.setStock( arguments.processObject.getStock() );
+			}
+			
+			//If attributeValues were passed in set them
+			for(var attributeValueStruct in arguments.processObject.getAttributeValuesByCodeStruct() ) {
+				newOrderItem.setAttributeValue( attributeCode, arguments.processObject.getAttributeValuesByCodeStruct()[attributeCode] );
 			}
 			
 			// Set any customizations
