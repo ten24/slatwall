@@ -69,7 +69,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	public any function init() {
 		// Set defaults
 		variables.taxRateItemRequestBeans = [];
-		
+		variables.taxRateItemRequestBeansByAddressID = {};
 		return super.init();
 	}
 
