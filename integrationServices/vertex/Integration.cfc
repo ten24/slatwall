@@ -72,6 +72,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			mainDivision = {fieldType="text"},
 			postalCode = {fieldType="text"},
 			country = {fieldType="text"},
+			webServicesURL = {fieldType="text"},
 			username = {fieldType="text"}
 		};
 		
