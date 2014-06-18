@@ -429,9 +429,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			//If attributeValues were passed in set them
-			for(var attributeValueStruct in arguments.processObject.getAttributeValuesByCodeStruct() ) {
+		/*	for(var attributeValueStruct in arguments.processObject.getAttributeValuesByCodeStruct() ) {
 				newOrderItem.setAttributeValue( attributeCode, arguments.processObject.getAttributeValuesByCodeStruct()[attributeCode] );
-			}
+			}*/
 			
 			// Set any customizations
 			newOrderItem.populate( arguments.data );
