@@ -492,11 +492,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		//verify that the item has the same amount of attributes related to it
 		
 		var attributeValueStruct = this.getAttributeValuesByCodeStruct();
-		for(key in attributeValueStruct){
-			if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
-				return false;
+		if(!isnull(attributeValueStruct)){
+			for(key in attributeValueStruct){
+				if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
+					return false;
+				}
 			}
 		}
+		
 		
 		return true;
 	}

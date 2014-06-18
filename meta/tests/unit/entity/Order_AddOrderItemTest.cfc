@@ -48,13 +48,11 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
+	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("orderService");
 	}
-	
-	
 	public void function CompareOrderItemsByProcessObject(){
 		var sku = getTestSku('TestSku');
 		var stock = getTestStock();
@@ -70,7 +68,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		processOrderItem.setSku(sku);
 		processOrderItem.setPrice(11);
 		processOrderItem.setStock(stock);
-		var foundMatch = variables.service.CompareOrderItemToProcessOrderItem(orderItem,processOrderItem);
+		var foundMatch = processOrderItem.CompareOrderItemToProcessOrderItem(orderItem);
 		assertTrue(foundMatch);
 		
 		//different sku as orderitem
@@ -78,23 +76,36 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		processOrderItem.setSku(sku2);
 		processOrderItem.setPrice(11);
 		processOrderItem.setStock(stock);
-		var foundMatch = variables.service.CompareOrderItemToProcessOrderItem(orderItem,processOrderItem);
+		var foundMatch = processOrderItem.CompareOrderItemToProcessOrderItem(orderItem);
 		assertFalse(foundMatch);
 		
 		//different stock as orderitem
 		processOrderItem.setSku(sku);
 		processOrderItem.setPrice(11);
 		processOrderItem.setStock(stock2);
-		var foundMatch = variables.service.CompareOrderItemToProcessOrderItem(orderItem,processOrderItem);
+		var foundMatch = processOrderItem.CompareOrderItemToProcessOrderItem(orderItem);
 		assertFalse(foundMatch);
 		
 		//different price as orderitem
 		processOrderItem.setSku(sku);
 		processOrderItem.setPrice(12);
 		processOrderItem.setStock(stock);
-		var foundMatch = variables.service.CompareOrderItemToProcessOrderItem(orderItem,processOrderItem);
+		var foundMatch = processOrderItem.CompareOrderItemToProcessOrderItem(orderItem);
 		assertFalse(foundMatch);
 		
+		//attributes tests
+		/*var attributeValue = request.slatwallScope.newEntity( 'AttributeValue' );
+		
+		orderitem.addAttributeValue(attributeValue);
+		processOrderItem = order.getProcessObject( 'AddOrderItem' );
+		
+		
+		processOrderItem.setattributeValuesByCodeStruct();
+		processOrderItem.setSku(sku);
+		processOrderItem.setPrice(11);
+		processOrderItem.setStock(stock);
+		var foundMatch = variables.service.CompareOrderItemToProcessOrderItem(orderItem,processOrderItem);
+		assertFalse(foundMatch);*/
 	}
 	
 	private any function getTestSku(string testsku){
@@ -110,6 +121,5 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		stock.setStockID(CreateUUID());
 		return stock;
 	}
+	
 }
-
-
