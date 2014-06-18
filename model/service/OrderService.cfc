@@ -257,12 +257,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//check whether the attribute values are the same
 		//verify that the item has the same amount of attributes related to it
-		var attributeValueStruct = arguments.processOrderItem.getAttributeValuesByCodeStruct();
+		var attributeValueArray = arguments.processOrderItem.getAttributeValuesByCodeStruct();
 		for(key in arguments.orderItem.getAttributeValuesByAttributeCodeStruct()){
-			//use the attributeValues that were just submitted to see if an existing orderitem already exists''
-			if(structKeyExists(attributeValueStruct) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
-				return false;
-				break;
+			//use the attributeValues that were just submitted to see if an existing orderitem already exists
+			for(attributeValueStruct in attributeValueArray){
+				if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
+					return false;
+				}
 			}
 		}
 							
