@@ -61,6 +61,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="returnLocation" hb_rbKey="entity.location";
 	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 	
+	
+	
 	// New Properties
 	
 	// Data Properties (ID's)
@@ -86,10 +88,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
 	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
 	
+	
+	
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
-	
 	// Data Properties (Object / Array Populate)
+	property name="attributeValuesByCodeStruct";
 	
 	// Option Properties
 	property name="fulfillmentMethodIDOptions";
@@ -449,5 +453,55 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	// =====================  END: Helper Methods ==========================
+	
+	public any function populate( required struct data={} ) {
+		// Call the super populate to do all the standard logic
+		super.populate(argumentcollection=arguments);
+		
+		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
+		var attributeValueStruct = {};
+		for(attributeSet in getAssignedOrderItemAttributeSets()){
+			for(attribute in attributeSet.getAttributes()){
+				if(structKeyExists(data,attribute.getAttributeCode())){
+					attributeValueStruct['#attribute.getAttributeCode()#'] = data[ attribute.getAttributeCode() ];
+				}
+			} 
+		}
+		setAttributeValuesByCodeStruct( attributeValueStruct);
+		// Return this object
+		return this;
+	}
+	
+	//funciton to compare two orderItems based on certain properties. 
+	public boolean function CompareOrderItemToProcessOrderItem(required any orderItem){
+		
+		//check if skus match
+		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
+			return false;
+		}
+		//check if the price is the same
+		if(arguments.orderItem.getPrice() != this.getPrice()){
+			return false;
+		}
+		//check if the instock value is the same
+		if(!isNull(arguments.orderItem.getStock()) && !isNull(this.getStock()) && arguments.orderItem.getStock().getStockID() != this.getStock().getStockID()){
+			return false;
+		}
+		
+		//check whether the attribute values are the same
+		//verify that the item has the same amount of attributes related to it
+		
+		var attributeValueStruct = this.getAttributeValuesByCodeStruct();
+		if(!isnull(attributeValueStruct)){
+			for(key in attributeValueStruct){
+				if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
+					return false;
+				}
+			}
+		}
+		
+		
+		return true;
+	}
 	
 }
