@@ -24,6 +24,7 @@
 		
 		<!-- what's the directory name of your application? this value will be used throughout this build file; if you don't want that, just replace the references to ${application.name} with your desired values -->
 		<property name="application.name" value="slatwall" />
+		<property name="application.rootDirectory" location="../../" />
 		
 		<!-- what's the name of the directory where your tests live? Note: this is just the name of the directory, not the full path-->
 		<property name="test.dir.name" value="meta/tests" />
@@ -48,6 +49,8 @@
 		<!-- this is where the xml and html will live for the report generator and Jenkins -->
 		<property name="test.output" location="testresults" />
 		<property name="test.output.xml" location="${test.output}/xml" />
+		
+		
 
 
 		<!-- ////////   JAR FILES WE NEED FOR EXTERNAL TASKS -->
