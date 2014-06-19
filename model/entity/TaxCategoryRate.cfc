@@ -53,7 +53,7 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 	property name="taxRate" ormtype="float" hb_formatType="percentage";
 	property name="taxAddressLookup" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="taxCategoryRateCode" ormtype="string" index="PI_TAXCATEGORYRATECODE";
-	property name="taxLiabilityAppliedToItemFlag" ormtype="boolean";
+	property name="taxLiabilityAppliedToItemFlag" ormtype="boolean" default="true";
 	
 	// Related Object Properties (many-to-one)
 	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID" hb_optionsNullRBKey="define.all";
@@ -77,6 +77,10 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	public void function setTaxLiabilityAppliedToItemFlag(){
+		variables.taxLiabilityAppliedToItemFlag = {fieldType="yesno", defaultValue=1};
+	}
+	
 	public array function getTaxAddressLookupOptions() {
 		variables.taxAddressLookupOptions = [
 			{name=rbKey('entity.taxCategoryRate.taxAddressLookup.shipping_billing'), value='shipping_billing'},
