@@ -368,7 +368,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(orderItem in orderFulfillment.getOrderFulfillmentItems()){
 					// If the sku, price, attributes & stock all match then just increase the quantity
 					
-					if(arguments.processObject.CompareOrderItemToProcessOrderItem(orderItem)){
+					if(arguments.processObject.matchesOrderItem( orderItem ) ){
 						foundItem = true;
 						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
 						orderItem.validate(context='save');
@@ -428,13 +428,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.setStock( arguments.processObject.getStock() );
 			}
 			
-			//If attributeValues were passed in set them
-			for(var attributeValueStruct in arguments.processObject.getAttributeValuesByCodeStruct() ) {
+			// If attributeValues were passed in set them
+			for(var attributeCode in arguments.processObject.getAttributeValuesByCodeStruct() ) {
 				newOrderItem.setAttributeValue( attributeCode, arguments.processObject.getAttributeValuesByCodeStruct()[attributeCode] );
 			}
-			
-			// Set any customizations
-			newOrderItem.populate( arguments.data );
 			
 			// Save the new order items
 			newOrderItem = this.saveOrderItem( newOrderItem );

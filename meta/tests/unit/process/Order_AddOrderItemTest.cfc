@@ -53,7 +53,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 		
 	}
-	public void function CompareOrderItemsByProcessObject(){
+	public void function matchesOrderItem(){
 		var sku = getTestSku('TestSku');
 		var stock = getTestStock();
 		var stock2 = getTestStock();
@@ -68,7 +68,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		processOrderItem.setSku(sku);
 		processOrderItem.setPrice(11);
 		processOrderItem.setStock(stock);
-		var foundMatch = processOrderItem.CompareOrderItemToProcessOrderItem(orderItem);
+		var foundMatch = processOrderItem.matchesOrderItem(orderItem);
 		assertTrue(foundMatch);
 		
 		//different sku as orderitem
@@ -76,21 +76,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		processOrderItem.setSku(sku2);
 		processOrderItem.setPrice(11);
 		processOrderItem.setStock(stock);
-		var foundMatch = processOrderItem.CompareOrderItemToProcessOrderItem(orderItem);
+		var foundMatch = processOrderItem.matchesOrderItem(orderItem);
 		assertFalse(foundMatch);
 		
 		//different stock as orderitem
 		processOrderItem.setSku(sku);
 		processOrderItem.setPrice(11);
 		processOrderItem.setStock(stock2);
-		var foundMatch = processOrderItem.CompareOrderItemToProcessOrderItem(orderItem);
+		var foundMatch = processOrderItem.matchesOrderItem(orderItem);
 		assertFalse(foundMatch);
 		
 		//different price as orderitem
 		processOrderItem.setSku(sku);
 		processOrderItem.setPrice(12);
 		processOrderItem.setStock(stock);
-		var foundMatch = processOrderItem.CompareOrderItemToProcessOrderItem(orderItem);
+		var foundMatch = processOrderItem.matchesOrderItem(orderItem);
 		assertFalse(foundMatch);
 		
 		//attributes tests

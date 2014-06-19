@@ -61,8 +61,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="returnLocation" hb_rbKey="entity.location";
 	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 	
-	
-	
 	// New Properties
 	
 	// Data Properties (ID's)
@@ -452,28 +450,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return "";
 	}
 	
-	// =====================  END: Helper Methods ==========================
-	
-	public any function populate( required struct data={} ) {
-		// Call the super populate to do all the standard logic
-		super.populate(argumentcollection=arguments);
-		
-		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
-		var attributeValueStruct = {};
-		for(attributeSet in getAssignedOrderItemAttributeSets()){
-			for(attribute in attributeSet.getAttributes()){
-				if(structKeyExists(data,attribute.getAttributeCode())){
-					attributeValueStruct['#attribute.getAttributeCode()#'] = data[ attribute.getAttributeCode() ];
-				}
-			} 
-		}
-		setAttributeValuesByCodeStruct( attributeValueStruct);
-		// Return this object
-		return this;
-	}
-	
-	//funciton to compare two orderItems based on certain properties. 
-	public boolean function CompareOrderItemToProcessOrderItem(required any orderItem){
+	// funciton to compare two orderItems based on certain properties.
+	public boolean function matchesOrderItem(required any orderItem){
 		
 		//check if skus match
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
@@ -503,5 +481,26 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 		return true;
 	}
+	
+	// =====================  END: Helper Methods ==========================
+	
+	public any function populate( required struct data={} ) {
+		// Call the super populate to do all the standard logic
+		super.populate(argumentcollection=arguments);
+		
+		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
+		for(attributeSet in getAssignedOrderItemAttributeSets()){
+			for(attribute in attributeSet.getAttributes()){
+				if(structKeyExists(arguments.data,attribute.getAttributeCode())){
+					attributeValuesByCodeStruct[ attribute.getAttributeCode() ] = data[ attribute.getAttributeCode() ];
+				}
+			} 
+		}
+		
+		// Return this object
+		return this;
+	}
+	
+	
 	
 }
