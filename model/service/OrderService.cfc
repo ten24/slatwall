@@ -240,6 +240,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderDAO().getOrderPaymentNonNullAmountTotal(argumentcollection=arguments);
 	}
 	
+		
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
@@ -247,7 +248,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Process: Order
 	public any function processOrder_addOrderItem(required any order, required any processObject) {
 		
-		// Setup a boolean to see if we were able to just att this order item to an existing one
+		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
 		
 		// Make sure that the currencyCode gets set for this order
@@ -364,26 +365,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
-				for(var i=1; i<=arrayLen(orderFulfillment.getOrderFulfillmentItems()); i++) {
+				for(orderItem in orderFulfillment.getOrderFulfillmentItems()){
+					// If the sku, price, attributes & stock all match then just increase the quantity
 					
-					var thisItem = orderFulfillment.getOrderFulfillmentItems()[i];
-					
-					// If the sku, price & stock all match then just increse the quantity
-					if( 	thisItem.getSku().getSkuID() == arguments.processObject.getSku().getSkuID()
-						  		&&
-							thisItem.getPrice() == arguments.processObject.getPrice()
-								&&
-							((isNull(thisItem.getStock()) && isNull(arguments.processObject.getStock())) || (!isNull(thisItem.getStock()) && !isNull(arguments.processObject.getStock()) && thisItem.getStock().getStockID() == arguments.processObject.getStock().getStockID() ))
-						) {
-							
+					if(arguments.processObject.matchesOrderItem( orderItem ) ){
 						foundItem = true;
-						orderFulfillment.getOrderFulfillmentItems()[i].setQuantity(orderFulfillment.getOrderFulfillmentItems()[i].getQuantity() + arguments.processObject.getQuantity());
-						orderFulfillment.getOrderFulfillmentItems()[i].validate(context='save');
-						if(orderFulfillment.getOrderFulfillmentItems()[i].hasErrors()) {
-							arguments.order.addError('addOrderItem', orderFulfillment.getOrderFulfillmentItems()[i].getErrors());
+						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						orderItem.validate(context='save');
+						if(orderItem.hasErrors()) {
+							arguments.order.addError('addOrderItem', orderItem.getErrors());
 						}
 						break;
-						
 					}
 				}
 			}
@@ -436,8 +428,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.setStock( arguments.processObject.getStock() );
 			}
 			
-			// Set any customizations
-			newOrderItem.populate( arguments.data );
+			// If attributeValues were passed in set them
+			for(var attributeCode in arguments.processObject.getAttributeValuesByCodeStruct() ) {
+				newOrderItem.setAttributeValue( attributeCode, arguments.processObject.getAttributeValuesByCodeStruct()[attributeCode] );
+			}
 			
 			// Save the new order items
 			newOrderItem = this.saveOrderItem( newOrderItem );
@@ -519,7 +513,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
-		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
