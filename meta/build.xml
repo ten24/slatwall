@@ -23,36 +23,28 @@
 		<!-- ////////   DIRECTORY AND CFC PATH SETUP (used in all targets) -->
 		
 		<!-- what's the directory name of your application? this value will be used throughout this build file; if you don't want that, just replace the references to ${application.name} with your desired values -->
-		<property name="application.name" value="slatwall" />
-		<property name="application.rootDirectory" location="../../" />
+		<property name="slatwall.rootDirectory" location="../" />
 		
 		<!-- what's the name of the directory where your tests live? Note: this is just the name of the directory, not the full path-->
-		<property name="test.dir.name" value="meta/tests" />
+		<property name="slatwall.test.dir.name" value="meta/tests" />
 
 		<!-- where do your tests live, relative to this build file? test.dir.location will be a full path to a directory -->
-		<property name="test.dir.location" location="" />
+		<property name="slatwall.test.dir.location" location="tests" />
 
 		<!-- what is the cfc dot-notation path to that directory, as ColdFusion sees it? -->
-		<property name="test.cfcpath" value="slatwall.meta.tests" />
-		
-		<!-- ////////   MXUNIT ANT TASK SETUP (used in runtests and junitreport targets) -->
-		<echo message="Looking for properties file at conf/ant/${user.name}.properties" />
-		<property file="conf/ant/${user.name}.properties" />
+		<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
 		
 		<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
-		<property name="test.server" value="localhost" />
-		<property name="test.serverport" value="80" />
+		<property name="slatwall.test.server" value="slatwall" />
+		<property name="slatwall.test.serverport" value="80" />
 		
 		<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
-		<property name="test.runner" value="/${application.name}/${test.dir.name}/HttpAntRunner.cfc" />
+		<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/HttpAntRunner.cfc" />
 		
 		<!-- this is where the xml and html will live for the report generator and Jenkins -->
-		<property name="test.output" location="testresults" />
-		<property name="test.output.xml" location="${test.output}/xml" />
+		<property name="slatwall.test.output" location="testresults" />
+		<property name="slatwall.test.output.xml" location="${slatwall.test.output}/xml" />
 		
-		
-
-
 		<!-- ////////   JAR FILES WE NEED FOR EXTERNAL TASKS -->
 
 		<!-- where does the mxunit ant jar file live? it's easiest to copy it out of the mxunit install and put it into your app
@@ -67,7 +59,7 @@
 		<taskdef name="mxunittask" classname="org.mxunit.ant.MXUnitAntTask" classpathref="project.classpath" />
 
 		<!-- dump the properties -->
-		<echoproperties prefix="test" />
+		<echoproperties />
 	</target>
 	
 	<target name="setupDatasource" depends="init">
@@ -75,14 +67,14 @@
 	</target>
 
 	<target name="runUnitTests" depends="init">
-		<delete dir="${test.output.xml}/unit" failonerror="false"/>
-		<mkdir dir="${test.output.xml}/unit" />
+		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.xml}/unit" />
 		<runTestDirectory directoryName="unit" excludes=""/>
 	</target>
 	
 	<target name="runFunctionalTests" depends="init">
-		<delete dir="${test.output.xml}/unit" failonerror="false"/>
-		<mkdir dir="${test.output.xml}/functional" />
+		<delete dir="${slatwall.test.output.xml}/functional" failonerror="false"/>
+		<mkdir dir="${slatwall.test.output.xml}/functional" />
 		<runTestDirectory directoryName="functional" excludes=""/>		
 	</target>
 	
@@ -94,8 +86,8 @@
 		<attribute name="directoryName"/>
 		<attribute name="excludes" default=""/>
 		<sequential>
-			<mxunittask server="${test.server}" port="${test.serverport}" defaultrunner="${test.runner}" outputdir="${test.output.xml}/@{directoryName}" verbose="true" failureproperty="tests.bombed" errorproperty="tests.bombed">
-				<directory path="${test.dir.location}/@{directoryName}" recurse="true" packageName="${test.cfcpath}.@{directoryName}" componentPath="${test.cfcpath}.@{directoryName}" excludes="@{excludes}" />
+			<mxunittask server="${slatwall.test.server}" port="${slatwall.test.serverport}" defaultrunner="${slatwall.test.runner}" outputdir="${slatwall.test.output.xml}/@{directoryName}" verbose="true" failureproperty="tests.bombed" errorproperty="tests.bombed">
+				<directory path="${slatwall.test.dir.location}/@{directoryName}" recurse="true" packageName="${slatwall.test.cfcpath}.@{directoryName}" componentPath="${slatwall.test.cfcpath}.@{directoryName}" excludes="@{excludes}" />
 			</mxunittask>
 		</sequential>
 	</macrodef>
