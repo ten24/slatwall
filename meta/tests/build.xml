@@ -34,15 +34,14 @@
 		<!-- what is the cfc dot-notation path to that directory, as ColdFusion sees it? -->
 		<property name="test.cfcpath" value="slatwall.meta.tests" />
 		
-		
 		<!-- ////////   MXUNIT ANT TASK SETUP (used in runtests and junitreport targets) -->
-		
 		<echo message="Looking for properties file at conf/ant/${user.name}.properties" />
 		<property file="conf/ant/${user.name}.properties" />
 		
 		<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
 		<property name="test.server" value="localhost" />
 		<property name="test.serverport" value="80" />
+		
 		<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
 		<property name="test.runner" value="/${application.name}/${test.dir.name}/HttpAntRunner.cfc" />
 		
@@ -67,28 +66,24 @@
 		<!-- dump the properties -->
 		<echoproperties prefix="test" />
 	</target>
-
-	<target name="clean" depends="init">
-		<delete dir="${test.output.xml}" failonerror="false"/>
-		<mkdir dir="${test.output.xml}" />
+	
+	<target name="setupDatasource" depends="init">
+		
 	</target>
 
 	<target name="runUnitTests" depends="init">
+		<delete dir="${test.output.xml}/unit" failonerror="false"/>
 		<mkdir dir="${test.output.xml}/unit" />
 		<runTestDirectory directoryName="unit" excludes=""/>
 	</target>
-
-	<target name="runIntegrationTests" depends="init">
-		<mkdir dir="${test.output.xml}/integration" />
-		<runTestDirectory directoryName="integration" excludes=""/>
-	</target>
 	
 	<target name="runFunctionalTests" depends="init">
+		<delete dir="${test.output.xml}/unit" failonerror="false"/>
 		<mkdir dir="${test.output.xml}/functional" />
 		<runTestDirectory directoryName="functional" excludes=""/>		
 	</target>
 	
-	<target name="runAllTests" description="Make output directories and run the MXUnit task" depends="init,clean,runUnitTests,runIntegrationTests,runFunctionalTests">
+	<target name="runAllTests" description="Make output directories and run the MXUnit task" depends="init,runUnitTests,runFunctionalTests">
 		<fail if="tests.bombed" message="Failing the build due to test failures"/>
 	</target>
 
