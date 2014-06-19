@@ -20,11 +20,6 @@
 	
 	<target name="init">
 
-		<!-- ////////   DIRECTORY AND CFC PATH SETUP (used in all targets) -->
-		
-		<!-- what's the directory name of your application? this value will be used throughout this build file; if you don't want that, just replace the references to ${application.name} with your desired values -->
-		<property name="slatwall.rootDirectory" location="../" />
-		
 		<!-- what's the name of the directory where your tests live? Note: this is just the name of the directory, not the full path-->
 		<property name="slatwall.test.dir.name" value="meta/tests" />
 
@@ -37,6 +32,7 @@
 		<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
 		<property name="slatwall.test.server" value="slatwall" />
 		<property name="slatwall.test.serverport" value="80" />
+		<property name="slatwall.test.datasource" value="slatwall" />
 		
 		<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
 		<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/HttpAntRunner.cfc" />
@@ -46,7 +42,6 @@
 		<property name="slatwall.test.output.xml" location="${slatwall.test.output}/xml" />
 		
 		<!-- ////////   JAR FILES WE NEED FOR EXTERNAL TASKS -->
-
 		<!-- where does the mxunit ant jar file live? it's easiest to copy it out of the mxunit install and put it into your app
 			 You can also put any other ant-related jars in this directory; for example, if you want to use svnant, you'll need to put those jars here
 		-->
@@ -61,18 +56,24 @@
 		<!-- dump the properties -->
 		<echoproperties />
 	</target>
-	
-	<target name="setupDatasource" depends="init">
 		
+	<target name="setupApplicationConfig" depends="init">
+		<tstamp>
+		      <format property="touch.time" pattern="yyyymmddhhmmaa" unit="hour" />
+		</tstamp>
+		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
 	</target>
 
-	<target name="runUnitTests" depends="init">
+	<target name="runUnitTests" depends="init,setupApplicationConfig">
+		<!-- Setup test output directory -->
 		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/unit" />
+		
+		<!-- Run the tests -->
 		<runTestDirectory directoryName="unit" excludes=""/>
 	</target>
 	
-	<target name="runFunctionalTests" depends="init">
+	<target name="runFunctionalTests" depends="init,setupApplicationConfig">
 		<delete dir="${slatwall.test.output.xml}/functional" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/functional" />
 		<runTestDirectory directoryName="functional" excludes=""/>		
