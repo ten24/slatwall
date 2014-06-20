@@ -55,6 +55,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("skuService").newSkuCurrency();
 	}
 	
+	public void function getSimpleRepresentation_exists_and_is_simple() {
+		
+		var sku = request.slatwallScope.newEntity('Sku');
+		sku.setSkuCode( 'ASDF' );
+		
+		var currency = request.slatwallScope.getEntity('Currency', 'CAD');
+		
+		variables.entity.setCurrency(currency);
+		variables.entity.setSku(sku);
+		
+		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
+	}
+	
 	public void function skuCurrency_should_not_save_with_negative_price() {
 		//issue 1335
 		var skuCurrency = entityNew("SlatwallSkuCurrency");
