@@ -73,14 +73,13 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 		return getActiveFlag();
 	}
 	
-	public array function getShippingMethodOptions() {
+	public array function getShippingMethodOptions( ) {
 		if(!structKeyExists(variables, "shippingMethodOptions")) {
-			var integrationSmartlist = getService("integrationService").getIntegrationSmartList();
-			integrationSmartlist.addFilter('activeFlag', '1');
-			integrationSmartlist.addLikeFilter('integrationTypeList', '%shipping%');
-			integrationSmartlist.addSelect('integrationName', 'name');
-			integrationSmartlist.addSelect('integrationID', 'value');
-			variables.shippingMethodOptions = integrationSmartlist.getRecords();
+			variables.shippingMethodOptions = [];
+			var shippingMethodsStruct = getService("integrationService").getShippingIntegrationCFC( this ).getShippingMethods();
+			for(var key in shippingMethodsStruct) {
+				arrayAppend(variables.shippingMethodOptions, {name=shippingMethodsStruct[key], value=key});
+			}
 		}
 		return variables.shippingMethodOptions;
 	}	

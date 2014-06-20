@@ -67,7 +67,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Related Entity Populate)
 	
 	// Data Properties (Object / Array Populate)
-	
+	property name="attributeValuesByCodeStruct";
 	// Option Properties
 	property name="accountPaymentMethodIDOptions";
 	property name="paymentMethodIDOptions";
