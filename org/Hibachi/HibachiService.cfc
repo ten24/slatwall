@@ -31,7 +31,10 @@
 				var example = this.new(arguments.entityName);
 				var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
 				var primaryIDPropertyName = example.getPrimaryIDPropertyName();
-				smartList.addKeywordProperty(propertyIdentifier=primaryIDPropertyName, weight=1);
+				var pmd = example.getPropertyMetaData( primaryIDPropertyName );
+				if(pmd.ormtype != 'integer') {
+					smartList.addKeywordProperty(propertyIdentifier=primaryIDPropertyName, weight=1);	
+				}
 				if(simpleRepresentationPropertyName != primaryIDPropertyName) {
 					smartList.addKeywordProperty(propertyIdentifier=simpleRepresentationPropertyName, weight=1);	
 				}
