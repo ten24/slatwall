@@ -32,7 +32,7 @@
 				var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
 				var primaryIDPropertyName = example.getPrimaryIDPropertyName();
 				var pmd = example.getPropertyMetaData( primaryIDPropertyName );
-				if(pmd.ormtype != 'integer') {
+				if(!structKeyExists(pmd, "ormtype") || pmd.ormtype != 'integer') {
 					smartList.addKeywordProperty(propertyIdentifier=primaryIDPropertyName, weight=1);	
 				}
 				if(simpleRepresentationPropertyName != primaryIDPropertyName) {
