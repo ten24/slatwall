@@ -89,6 +89,7 @@
 						<a href="" class="hibachi-report-date-group btn btn-mini<cfif attributes.report.getReportDateTimeGroupBy() eq 'day'> active</cfif>" data-groupby="day">Day</a>
 						<a href="" class="hibachi-report-date-group btn btn-mini<cfif attributes.report.getReportDateTimeGroupBy() eq 'week'> active</cfif>" data-groupby="week">Week</a>
 						<a href="" class="hibachi-report-date-group btn btn-mini<cfif attributes.report.getReportDateTimeGroupBy() eq 'month'> active</cfif>" data-groupby="month">Month</a>
+						<a href="" class="hibachi-report-date-group btn btn-mini<cfif attributes.report.getReportDateTimeGroupBy() eq 'year'> active</cfif>" data-groupby="year">Year</a>
 					</div>
 					
 					<!--- DateTime Selector --->
