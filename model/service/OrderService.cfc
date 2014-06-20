@@ -519,7 +519,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
-		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
@@ -529,20 +528,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrder_addPromotionCode(required any order, required any processObject) {
-			
 		var pc = getPromotionService().getPromotionCodeByPromotionCode(arguments.processObject.getPromotionCode());
-		
+		//if we can't find a promotion or the promotion is no longer active then show the invalid promo message
 		if(isNull(pc) || !pc.getPromotion().getActiveFlag()) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalid'));
+		//if we have a promotion but it doesn't fall within the promos startData end date show invalid datetime message
 		} else if ( (!isNull(pc.getStartDateTime()) && pc.getStartDateTime() > now()) || (!isNull(pc.getEndDateTime()) && pc.getEndDateTime() < now()) || !pc.getPromotion().getCurrentFlag()) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invaliddatetime'));
+		//if we find an promocode is only valid for specific accounts and the order account is not in the list then show invalid account message
 		} else if (arrayLen(pc.getAccounts()) && !pc.hasAccount(arguments.order.getAccount())) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.invalidaccount'));
+		//if promo has a max account use and account related to order has used it more than the max account use, show over max account use message
 		} else if( !isNull(pc.getMaximumAccountUseCount()) && !isNull(arguments.order.getAccount()) && pc.getMaximumAccountUseCount() <= getPromotionService().getPromotionCodeAccountUseCount(pc, arguments.order.getAccount()) ) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumAccountUseCount'));
+		//if promo has a max use and the promo has been used more than the max use than display the over max use message
 		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'));
 		} else {
+			//check if whether the promo has been added already, if not then add it and update the ordr amounts
 			if(!arguments.order.hasPromotionCode( pc )) {
 				arguments.order.addPromotionCode( pc );
 				this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
@@ -1070,16 +1073,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
+		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
 			
 			// Loop over the orderItems to see if the skuPrice Changed
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
-				for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-					if(arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode() == "oitSale" && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
-						arguments.order.getOrderItems()[i].setPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
-						arguments.order.getOrderItems()[i].setSkuPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
+				for(orderItem in arguments.order.getOrderItems()){
+					var type = orderItem.getOrderItemType().getSystemCode();
+					var skuPrice = orderItem.getSkuPrice();
+					var SkuPriceByCurrencyCode = orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode());
+					if(type == "oitSale" && skuPrice != SkuPriceByCurrencyCode){
+						orderItem.setPrice(SkuPriceByCurrencyCode);
+						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
 				}
+				
 			}
 			
 			// First Re-Calculate the 'amounts' base on price groups
