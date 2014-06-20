@@ -50,14 +50,11 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	
 	// Persistent Properties
 	property name="integrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
+	property name="installedFlag" ormtype="boolean";
 	property name="integrationPackage" ormtype="string" unique="true";
 	property name="integrationName" ormtype="string";
-	property name="installedFlag" ormtype="boolean";
-	
-	//Active Flag and IntegrationTypeList
-	property name="activeFlag" ormtype="boolean";
 	property name="integrationTypeList" ormtype="string"; 
-	
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
