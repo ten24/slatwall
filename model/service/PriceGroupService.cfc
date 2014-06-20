@@ -363,12 +363,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
 		if( !isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups()) ) {
-			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++){
-				var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(arguments.order.getOrderItems()[i].getSku(), arguments.order.getAccount());
+			for(orderItem in arguments.order.getOrderItems()){
+				var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(orderItem.getSku(), arguments.order.getAccount());
 				
-				if(priceGroupDetails.price < arguments.order.getOrderItems()[i].getPrice() && isObject(priceGroupDetails.priceGroup)) {
-					arguments.order.getOrderItems()[i].setPrice( priceGroupDetails.price );
-					arguments.order.getOrderItems()[i].setAppliedPriceGroup( priceGroupDetails.priceGroup );
+				if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
+					orderItem.setPrice( priceGroupDetails.price );
+					orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
 				}
 			}	
 		}
