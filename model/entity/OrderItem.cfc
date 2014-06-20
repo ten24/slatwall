@@ -115,6 +115,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return maxQTY;
 	}
 	
+	public boolean function isSalable(){
+		return this.getOrderItemType().getSystemCode() == "oitSale";
+	}
+	
 	public boolean function hasQuantityWithinMaxOrderQuantity() {
 		if(getOrderItemType().getSystemCode() == 'oitSale') {
 			return getQuantity() <= getMaximumOrderQuantity();	

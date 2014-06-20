@@ -1073,10 +1073,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over the orderItems to see if the skuPrice Changed
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				for(orderItem in arguments.order.getOrderItems()){
-					var type = orderItem.getOrderItemType().getSystemCode();
 					var skuPrice = orderItem.getSkuPrice();
 					var SkuPriceByCurrencyCode = orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode());
-					if(type == "oitSale" && skuPrice != SkuPriceByCurrencyCode){
+					if(orderItem.isSalable() && skuPrice != SkuPriceByCurrencyCode){
 						orderItem.setPrice(SkuPriceByCurrencyCode);
 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
