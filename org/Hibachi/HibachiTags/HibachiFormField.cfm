@@ -179,10 +179,10 @@
 							<cfif len(attributes.value)>
 								<li>
 									<a href="##" class="textautocompleteadd" data-acvalue="#attributes.value#" data-acname="#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#">
-									<cfset local.counter = 0 />
+									<cfset thisTag.counter = 0 />
 									<cfloop list="#attributes.autocompletePropertyIdentifiers#" index="pi">
-										<cfset local.counter++ />
-										<cfif local.counter lte 2 and pi neq "adminIcon">
+										<cfset thisTag.counter++ />
+										<cfif thisTag.counter lte 2 and pi neq "adminIcon">
 											<span class="#listLast(pi,".")# first">
 										<cfelse>
 											<span class="#listLast(pi,".")#">
