@@ -79,6 +79,7 @@ Notes:
 				</cfif>
 				<cfset rc.taxCategoryRate.getAddressZoneOptions()[1]["name"] = request.slatwallScope.rbKey('define.all') />
 				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxCategoryRateCode" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 
