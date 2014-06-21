@@ -2,12 +2,12 @@ component extends="PageObject"{
 	
 	variables.title = "Dashboard | Slatwall";
 	
-	variables.menuItems = 
-		{"Products" = 
-			{"Products" = "ProductsPage", 
-			 "Product Types" = "ProductTypesPage"}
+	variables.menuItems = {
+		"Products" = {
+			"Products" = "ProductsPage", 
+			"Product Types" = "ProductTypesPage"
 		}
-	;
+	};
 	
 	function getMenuItems(){
 		return variables.menuItems;

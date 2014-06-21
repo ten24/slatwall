@@ -75,6 +75,9 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		var sections = getProfileSections(configPath);
 		for(var section in sections){
 			variables.configuration[section] = structNew();
+			if(!isArray(sections[section])) {
+				sections[section] = listToArray(sections[section]);
+			}
 			for(var key in sections[section]){
 				variables.configuration[ section ][ key ] = getProfileString(configPath, section, key);
 			}

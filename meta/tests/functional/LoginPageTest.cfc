@@ -1,7 +1,7 @@
 component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 
 	function valid_credentials_login(){
-		var dashboard = Login.login("t@ten24web.com", "uitest01");
+		var dashboard = Login.login(variables.configuration.common.login, variables.configuration.common.password);
 		assertEquals(Dashboard.getTitle(), selenium.getTitle());
 		assertPageIsLoaded(dashboard);
 	}
