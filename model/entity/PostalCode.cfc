@@ -49,7 +49,7 @@ Notes:
 component displayname="Postal Code" entityname="SlatwallPostalCode" table="SwPostalCode" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" {
 	
 	// Persistent Properties
-	property name="postalCode" type="string" fieldtype="id" displayname="Postal Code";
+	property name="postalCode" ormtype="string" fieldtype="id" displayname="Postal Code";
 	property name="city" ormtype="string";
 	property name="latitude" ormtype="string";
 	property name="longitude" ormtype="string";

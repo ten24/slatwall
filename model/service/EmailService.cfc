@@ -222,7 +222,7 @@ Notes:
 						}
 					}
 					
-					if(len(templateFileResponse) && !structKeyExists(local.emailData, "bodyHTML")) {
+					if(len(templateFileResponse) && !structKeyExists(local.emailData, "emailBodyHTML")) {
 						local.emailData.emailBodyHTML = templateFileResponse;
 					}
 					

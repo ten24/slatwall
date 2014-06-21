@@ -1,0 +1,4 @@
+conf/*
+!conf/sample.ini
+!conf/ant/sample.properties
+testresults
