@@ -165,6 +165,32 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return true;
 	}
 	
+	public struct function getOrderItemQualifiedDiscounts(){
+		var orderItemQualifiedDiscounts = {};
+		
+		
+		for(var orderItem in this.getOrderItems()) {
+			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
+
+			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
+				
+				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
+				
+				orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+				
+				// Insert this value into the potential discounts array
+				arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
+					promotionRewardID = "",
+					promotion = this.getPromotion(salePriceDetails.promotionID),
+					discountAmount = discountAmount
+				});
+				
+			}
+		}
+		return orderItemQualifiedDiscounts;
+	}
+		
+	
 	public struct function getAddPaymentRequirementDetails() {
 		if(!structKeyExists(variables, "addPaymentRequirementDetails")) {
 			variables.addPaymentRequirementDetails = {};

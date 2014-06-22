@@ -1080,7 +1080,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
 				}
-				
 			}
 			
 			// First Re-Calculate the 'amounts' base on price groups
