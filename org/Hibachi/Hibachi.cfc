@@ -469,7 +469,9 @@ component extends="FW1.framework" {
 		
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			if(isStruct(request.context.ajaxResponse)){
-  				request.context.ajaxResponse["messages"] = request.context.messages;
+				if(structKeyExists(request.context, "messages")) {
+					request.context.ajaxResponse["messages"] = request.context.messages;	
+				}
   				request.context.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
   				request.context.ajaxResponse["failureActions"] = getHibachiScope().getFailureActions();
   				if(structKeyExists(request.context,"returnJSONObjects")) {
