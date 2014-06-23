@@ -19,6 +19,9 @@
 	-->
 	
 	<target name="init">
+		
+		<!-- Get the computers hostname -->
+		<exec executable="hostname" outputproperty="computer.hostname"/>
 
 		<!-- what's the name of the directory where your tests live? Note: this is just the name of the directory, not the full path-->
 		<property name="slatwall.test.dir.name" value="meta/tests" />
@@ -33,6 +36,7 @@
 		<property name="slatwall.test.server" value="slatwall" />
 		<property name="slatwall.test.serverport" value="80" />
 		<property name="slatwall.test.datasource" value="slatwall" />
+		<property name="slatwall.test.functional.browser" value="*googlechrome" />
 		
 		<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
 		<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/HttpAntRunner.cfc" />
@@ -63,7 +67,21 @@
 		</tstamp>
 		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
 	</target>
+	
+	<target name="setupFunctionalTestsConfig" depends="init">
+		<echo file="tests/functional/config/${computer.hostname}.ini">
+# Parameters needed by all tests
+[common]
+login=testrunner@ten24web.com
+password=testrunner
 
+# Parameters for UI tests
+[ui]
+browserUrl=http://${slatwall.test.server}/
+browserCommand=${slatwall.test.functional.browser}
+		</echo>
+	</target>
+	
 	<target name="runUnitTests" depends="init,setupApplicationConfig">
 		<!-- Setup test output directory -->
 		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
@@ -73,7 +91,7 @@
 		<runTestDirectory directoryName="unit" excludes=""/>
 	</target>
 	
-	<target name="runFunctionalTests" depends="init,setupApplicationConfig">
+	<target name="runFunctionalTests" depends="init,setupApplicationConfig,setupFunctionalTestsConfig">
 		<delete dir="${slatwall.test.output.xml}/functional" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/functional" />
 		<runTestDirectory directoryName="functional" excludes=""/>		
@@ -82,7 +100,7 @@
 	<target name="runAllTests" description="Make output directories and run the MXUnit task" depends="init,runUnitTests,runFunctionalTests">
 		<fail if="tests.bombed" message="Failing the build due to test failures"/>
 	</target>
-
+			
 	<macrodef name="runTestDirectory">
 		<attribute name="directoryName"/>
 		<attribute name="excludes" default=""/>
@@ -92,6 +110,5 @@
 			</mxunittask>
 		</sequential>
 	</macrodef>
-
 
 </project>
