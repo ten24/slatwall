@@ -83,12 +83,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Should be 5... the 1 listed above, plus 'hasErrors' and 'errors'
 		assertEquals(structCount(ad), 3);
 		
-		assert(structKeyExists(ad, 'hasErrors'));
-		assertEquals(ad.hasErrors, false);
+		// hasErrors check
+		assert(structKeyExists(ad, 'hasErrors'), "The 'hasErrors' key exists in response data");
+		assertFalse(ad.hasErrors, "The value for 'hasErrors' is set to false");
 		
-		assert(structKeyExists(ad, 'errors'));
-		assert(isStruct(ad.errors));
-		assertEquals(structCount(ad.errors),0);
+		// errors check
+		assert(structKeyExists(ad, 'errors'), "The 'errors' key exists in response data");
+		assert(isStruct(ad.errors), "The data in the 'errors' key is a structure");
+		assertEquals(structCount(ad.errors), 0, "The error keys come back as an empty struct by default");
 	}
 	
 	public void function getAccountData_with_specific_propertyList_returns_only_those_keys() {
