@@ -150,34 +150,48 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];	
 									
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
-										//Check to make sure that the tax liability is set to be applied to items
- 										if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
- 											
- 											if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
- 												// Add a new AppliedTax 
- 												var newAppliedTax = this.newTaxApplied();
- 												newAppliedTax.setAppliedType("orderItem");
- 												newAppliedTax.setTaxAmount( taxRateItemResponse.getTaxAmount() );
- 												newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
- 												newAppliedTax.setTaxCategoryRate( taxCategoryRate );
- 												newAppliedTax.setOrderItem(orderItem);
- 											}
- 												
-  										}
-										
+											
+										if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
+											
+											
+											// Add a new AppliedTax 
+											var newAppliedTax = this.newTaxApplied();
+											newAppliedTax.setAppliedType("orderItem");
+											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
+											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
+											newAppliedTax.setOrderItem( orderItem );
+											newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
+											
+											// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
+											if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
+												newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );	
+											} else {
+												newAppliedTax.setTaxAmount( 0 );
+											}
+											
+										}
+ 										
 									}
 									
 								}
+								
 							// Else if there is no itegration or if there was supposed to be a response bean but we didn't get one, then just calculate based on this rate data store in our DB
 							} else {
 						
 								var newAppliedTax = this.newTaxApplied();
 								newAppliedTax.setAppliedType("orderItem");
-								newAppliedTax.setTaxAmount(round(orderItem.getExtendedPriceAfterDiscount() * taxCategoryRate.getTaxRate()) / 100);
 								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
 								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 								newAppliedTax.setOrderItem( orderItem );
-														
+								newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * taxCategoryRate.getTaxRate()) / 100 );
+								
+								// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
+								if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
+									newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );	
+								} else {
+									newAppliedTax.setTaxAmount( 0 );
+								}
+													
 							}
 							
 						}
@@ -198,10 +212,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						var newAppliedTax = this.newTaxApplied();
 						
 						newAppliedTax.setAppliedType("orderItem");
-						newAppliedTax.setTaxAmount( round(orderItem.getExtendedPriceAfterDiscount() * originalAppliedTax.getTaxRate()) / 100 );
 						newAppliedTax.setTaxRate( originalAppliedTax.getTaxRate() );
 						newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 						newAppliedTax.setOrderItem( orderItem );
+						newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * originalAppliedTax.getTaxRate()) / 100 );
+						
+						if(originalAppliedTax.getTaxCategoryRate().getTaxLiabilityAppliedToItemFlag() == true){
+							newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+						} else {
+							newAppliedTax.setTaxAmount( 0 );
+						}
 					}
 				}
 				

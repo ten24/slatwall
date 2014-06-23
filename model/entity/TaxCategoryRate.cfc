@@ -77,8 +77,11 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	public void function getTaxLiabilityAppliedToItemFlag(){
-		setTaxLiabilityAppliedToItemFlag(1);
+	public boolean function getTaxLiabilityAppliedToItemFlag() {
+		if(!structKeyExists(variables, "taxLiabilityAppliedToItemFlag")) {
+			variables.taxLiabilityAppliedToItemFlag = 1;
+		}
+		return variables.taxLiabilityAppliedToItemFlag;
 	}
 	
 	public array function getTaxAddressLookupOptions() {
