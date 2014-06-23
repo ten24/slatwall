@@ -55,20 +55,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup the taxIntegrationArray
 		var taxIntegrationArr = [];
-		var taxAddresses = {};
-		
-		// If the order has a billing address, use that to potentially calculate taxes for all items
-		if(!isNull(arguments.order.getBillingAddress())) {
-			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
-		} else {
-			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
-			for(var orderPayment in arguments.order.getOrderPayments()) {
-				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
-					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
-					break;
-				}
-			}	
-		}
 		
 		// First Loop over the orderItems to remove existing taxes
 		for(var orderItem in arguments.order.getOrderItems()) {
@@ -104,50 +90,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Next Loop over the taxIntegrationArray to call getTaxRates on each
 		for(var integration in taxIntegrationArr) {
-								
-			// Create rates request bean and populate it with the taxCategory Info
-			var taxRatesRequestBean = getTransient("TaxRatesRequestBean");
 			
-			// Populate the ratesRequestBean with a billingAddress
-			if(structKeyExists(taxAddresses,"taxBillingAddress")) {
-				taxRatesRequestBean.populateBillToWithAddress( taxAddresses.taxBillingAddress );	
-			}
-			
-			taxRatesRequestBean.setOrderID( arguments.order.getOrderID() );
-			taxRatesRequestBean.setAccountID( arguments.order.getAccount().getAccountID() );
-			
-			// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
-			for(var orderItem in arguments.order.getOrderItems()) {
-				
-				// Get this sku's taxCategory
-				var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
-				
-				if(!isNull(taxCategory)) {
-					
-					// Setup the orderItem level taxShippingAddress
-					structDelete(taxAddresses, "taxShippingAddress");
-					if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress())) {
-						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
-					}
-					
-					// Loop over the rates of that category, looking for a unique integration
-					for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
-						
-						// If a unique integration is found, then we add it to the integrations to call
-						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == integration.getIntegrationID()){
-							
-							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
-														
-							if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
-								taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
-							}
-						}
-						
-					} // End TaxCategoryRate Loop
-					
-				}
-				
-			} // End OrderItem Loop
+			var taxRatesRequestBean = generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 			
 			// Make sure that the ratesRequestBean actually has OrderItems on it
 			if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
@@ -171,6 +115,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				logHibachi('#integration.getIntegrationName()# Tax Integration Rates Request - Finished');	
 			}
+			
 		}
 		
 		// Final Loop over orderItems to apply taxRates either from internal calculation, or from integrations rate calculation
@@ -301,10 +246,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 
-	public void function generateRatesRequestBean( required any order ){
+	public void function generateTaxRatesRequestBeanForIntegration( required any order, required any integration ){
 		
 		var taxAddresses = {};
-		var integration = getService('integrationService').getIntegrationByIntegrationPackage('vertex');
 		
 		// If the order has a billing address, use that to potentially calculate taxes for all items
 		if(!isNull(arguments.order.getBillingAddress())) {
@@ -348,7 +292,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
 					
 					// If a unique integration is found, then we add it to the integrations to call
-					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == integration.getIntegrationID()){
+					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
 						
 						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
 													
@@ -361,29 +305,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 			}
 			
-		} 
-		// Make sure that the ratesRequestBean actually has OrderItems on it
-		if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
-			
-			logHibachi('#integration.getIntegrationName()# Tax Integration Rates InvoiceRequest - Started');
-			
-			// Inside of a try/catch call the 'postInvoiceRequestToVertex' method of the integraion
-			try {
-				
-				// Get the API we are going to call
-				var integrationTaxAPI = integration.getIntegrationCFC("tax");
-				
-				// Call the API and store the responseBean by integrationID
-				ratesResponseBeans[ integration.getIntegrationID() ] = integrationTaxAPI.postInvoiceRequestToVertex( taxRatesRequestBean );
-				
-			} catch(any e) {
-				
-				logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call postInvoiceRequestToVertex()', true);
-				logHibachiException(e);
-			}
-			
-			logHibachi('#integration.getIntegrationName()# Tax Integration Rates InvoiceRequest - Finished');	
 		}
+		
+		return taxRatesRequestBean;
+
 	}
 
 

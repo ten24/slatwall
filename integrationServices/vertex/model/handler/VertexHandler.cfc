@@ -49,8 +49,32 @@ Notes:
 component {
 	
 	public void function afterOrderProcess_PlaceOrderSuccess(required any slatwallScope, required any order) {
-		// Automatically send the invoice request to vertex for records
-		arguments.slatwallScope.getService('taxService').generateRatesRequestBean(arguments.order);
+		
+		if(arguments.slatwallScope.setting('integrationVertexSendInvoiceFlag')) {
+			
+			var integration = arguments.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage( 'vertex' );
+		
+			// Automatically send the invoice request to vertex for records
+			var taxRatesRequestBean = arguments.slatwallScope.getService('taxService').generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
+			
+			// Make sure that the ratesRequestBean actually has OrderItems on it
+			if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
+				
+				logHibachi('Vertex Tax Invoice Post - Started');
+				
+				// Inside of a try/catch call the 'postInvoiceRequestToVertex' method of the integraion
+				try {
+					integration.getIntegrationCFC("tax").postInvoiceRequestToVertex( taxRatesRequestBean );
+				} catch(any e) {
+					logHibachi('An error occured with the Vertex integration when trying to call postInvoiceRequestToVertex()', true);
+					logHibachiException(e);
+				}
+				
+				logHibachi('Vertex Tax Invoice Post - Finished');	
+			}
+			
+		}
+		
 	}
 	
 }	
