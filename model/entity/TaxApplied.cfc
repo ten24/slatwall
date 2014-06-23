@@ -54,9 +54,11 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	// Persistent Properties
 	property name="taxAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="taxAmount" ormtype="big_decimal";
+	property name="taxLiabilityAmount" ormtype="big_decimal";
 	property name="taxRate" ormtype="big_decimal";
 	property name="appliedType" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="integrationTaxRateType" ormtype="string";
 	
 	// Related Properties (many-to-one)
 	property name="taxCategoryRate" cfc="TaxCategoryRate" fieldtype="many-to-one" fkcolumn="taxCategoryRateID";
