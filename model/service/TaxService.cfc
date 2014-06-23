@@ -206,7 +206,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
 										//Check to make sure that the tax liability is set to be applied to items
-										if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
+										
 											
 											if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
 												// Add a new AppliedTax 
@@ -218,7 +218,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setOrderItem(orderItem);
 											}
 												
-										}
+										
 										
 									}
 									
@@ -298,6 +298,79 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return false;	
+	}
+
+
+	public void function generateRatesRequestBean( required any order ){
+		
+		var taxAddresses = {};
+		var integration = getService('integrationService').getIntegrationByIntegrationPackage('vertex');
+		
+		// Create rates request bean and populate it with the taxCategory Info
+		var taxRatesRequestBean = getTransient("TaxRatesRequestBean");
+		
+		// Populate the ratesRequestBean with a billingAddress
+		if(structKeyExists(taxAddresses,"taxBillingAddress")) {
+			taxRatesRequestBean.populateBillToWithAddress( taxAddresses.taxBillingAddress );	
+		}
+		
+		taxRatesRequestBean.setOrderID( arguments.order.getOrderID() );
+		taxRatesRequestBean.setAccountID( arguments.order.getAccount().getAccountID() );
+		
+		// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
+		for(var orderItem in arguments.order.getOrderItems()) {
+			
+			// Get this sku's taxCategory
+			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
+			
+			if(!isNull(taxCategory)) {
+				
+				// Setup the orderItem level taxShippingAddress
+				structDelete(taxAddresses, "taxShippingAddress");
+				if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress())) {
+					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
+				}
+				
+				// Loop over the rates of that category, looking for a unique integration
+				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+					
+					// If a unique integration is found, then we add it to the integrations to call
+					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == integration.getIntegrationID()){
+						
+						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+													
+						if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+							taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
+						}
+					}
+					
+				} // End TaxCategoryRate Loop
+				
+			}
+			
+		} 
+		// Make sure that the ratesRequestBean actually has OrderItems on it
+		if(arrayLen(taxRatesRequestBean.getTaxRateItemRequestBeans())) {
+			
+			logHibachi('#integration.getIntegrationName()# Tax Integration Rates InvoiceRequest - Started');
+			
+			// Inside of a try/catch call the 'postInvoiceRequestToVertex' method of the integraion
+			try {
+				
+				// Get the API we are going to call
+				var integrationTaxAPI = integration.getIntegrationCFC("tax");
+				
+				// Call the API and store the responseBean by integrationID
+				ratesResponseBeans[ integration.getIntegrationID() ] = integrationTaxAPI.postInvoiceRequestToVertex( taxRatesRequestBean );
+				
+			} catch(any e) {
+				
+				logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call postInvoiceRequestToVertex()', true);
+				logHibachiException(e);
+			}
+			
+			logHibachi('#integration.getIntegrationName()# Tax Integration Rates InvoiceRequest - Finished');	
+		}
 	}
 
 

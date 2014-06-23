@@ -78,7 +78,8 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	public void function setTaxLiabilityAppliedToItemFlag(){
-		variables.taxLiabilityAppliedToItemFlag = {fieldType="yesno", defaultValue=1};
+		fieldType="yesno";
+		
 	}
 	
 	public array function getTaxAddressLookupOptions() {

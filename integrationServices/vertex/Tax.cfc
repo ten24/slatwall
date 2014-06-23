@@ -111,5 +111,32 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			
 		return responseBean;
 	}
+	
+	public any function postInvoiceRequestToVertex(required any requestBean){
+
+		// Loop over each unique tax address
+		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
+			
+			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
+
+			// Build Request XML
+			var xmlPacket = "";
+				
+			savecontent variable="xmlPacket" {
+				include "InvoiceRequest.cfm";
+			}
+			
+			// Setup Request to push to Vertex
+	        var httpRequest = new http();
+	        httpRequest.setMethod("POST");
+			httpRequest.setUrl("#setting('webServicesURL')#/CalculateTax60?wsdl");
+			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
+	
+			// Parse response and set to struct
+			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+
+		}
+	}
+
 
 }

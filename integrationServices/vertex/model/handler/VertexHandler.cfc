@@ -49,8 +49,8 @@ Notes:
 component {
 	
 	public void function afterOrderProcess_PlaceOrderSuccess(required any slatwallScope, required any order) {
-		// Automatically update the order amounts with taxes
-		//arguments.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('vertex').getIntegrationCFC('tax').postOrderInvoice(arguments.order);
+		// Automatically send the invoice request to vertex for records
+		arguments.slatwallScope.getService('taxService').generateRatesRequestBean(arguments.order);
 	}
 	
 }	

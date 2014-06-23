@@ -72,27 +72,27 @@
  -		  			<urn:Customer>
 				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
 				    	<urn:Destination>
-				    		<urn:StreetAddress1>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStreetAddress()#</urn:StreetAddress1>
-				      		<urn:StreetAddress2>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStreet2Address()#</urn:StreetAddress2>
-							<urn:City>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCity()#</urn:City>
-				      		<urn:MainDivision>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxStateCode()#</urn:MainDivision>
-				      		<urn:PostalCode>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxPostalCode()#</urn:PostalCode>
-				     		<urn:Country>#arguments.requestBean.getTaxRateItemRequestBeans()[1].getTaxCountryCode()#</urn:Country>
+				    		<urn:StreetAddress1>#addressTaxRequestItems[ 1 ].getTaxStreetAddress()#</urn:StreetAddress1>
+				      		<urn:StreetAddress2>#addressTaxRequestItems[ 1 ].getTaxStreet2Address()#</urn:StreetAddress2>
+							<urn:City>#addressTaxRequestItems[ 1 ].getTaxCity()#</urn:City>
+				      		<urn:MainDivision>#addressTaxRequestItems[ 1 ].getTaxStateCode()#</urn:MainDivision>
+				      		<urn:PostalCode>#addressTaxRequestItems[ 1 ].getTaxPostalCode()#</urn:PostalCode>
+				     		<urn:Country>#addressTaxRequestItems[ 1 ].getTaxCountryCode()#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				    	</urn:Destination>
 					 </urn:Customer>
-					 <cfset counter=1 />
-					 <cfloop from="1" to="#arrayLen(arguments.requestBean.getTaxRateItemRequestBeans())#" index="i">
-					 	 <urn:LineItem lineItemNumber="#counter#" materialCode="#arguments.requestBean.getTaxRateItemRequestBeans()[i].getOrderItemID()#">
-					    	<urn:ExtendedPrice>#arguments.requestBean.getTaxRateItemRequestBeans()[i].getExtendedPrice()#</urn:ExtendedPrice>
+					 <cfset var count = 0 />
+					 <cfloop array="#addressTaxRequestItems#" index="taxRequestItem">
+					 	<cfset count++ />
+					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItemID()#">
+					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
 					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
 					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>
 					      		<urn:FlexibleCodeField fieldId="12">PRODUCT_NAME</urn:FlexibleCodeField>
 					    	</urn:FlexibleFields>
 					  	</urn:LineItem>
-						<cfset counter = counter + 1 />
-					</cfloop>			 
+					</cfloop>		 
 				</urn:InvoiceRequest>
 			</urn:VertexEnvelope>
 		</soapenv:Body>
