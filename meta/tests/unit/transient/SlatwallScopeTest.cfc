@@ -96,11 +96,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Should be 5... the 1 listed above, plus 'hasErrors' and 'errors'
 		assertEquals(structCount(ad), 3);
 		
-		debug(ad.hasErrors);
-		
 		// hasErrors check
 		assert(structKeyExists(ad, 'hasErrors'), "The 'hasErrors' key doesn't exist in response data");
-		assert(!ad.hasErrors, "The value for 'hasErrors' is set to #ad.hasErrors# when it should be set to false");
+		assert(!ad.hasErrors, "The value for 'hasErrors' is set to #ad.hasErrors# when it should be set to false... here are the errors: #serializeJSON(ad.errors)#");
 		
 		// errors check
 		assert(structKeyExists(ad, 'errors'), "The 'errors' key exists in response data");
