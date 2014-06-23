@@ -97,7 +97,10 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 									taxAmount = n3.xmlText;
 								}
 							}
+							
 							responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount);
+							// TODO [jubs]:
+							// responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount, taxRate="???", integrationTaxRateType="???");
 							
 						}
 						
