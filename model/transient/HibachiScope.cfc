@@ -196,7 +196,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 
 	public any function getAccountData(string propertyList) {
 		var data = {};
-		data["errors"] = [];
 		
 		var availablePropertyList = "accountID,firstName,lastName,company,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 							primaryAddress.accountAddressID,
@@ -216,15 +215,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		}
 		
 		// add error messages
-		data["haserrors"] = getAccount().hasErrors();
-		arrayAppend(data["errors"],getAccount().getErrors());
+		data["hasErrors"] = getAccount().hasErrors();
+		data["errors"] = getAccount().getErrors();
 		
 		return data;
 	}
 
 	public any function getCartData(string propertyList) {
 		var data = {};
-		data["errors"] = [];
 		
 		var availablePropertyList = "orderID,orderOpenDateTime,calculatedTotal,
 							orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,
@@ -255,7 +253,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		
 		// add error messages
 		data["haserrors"] = getCart().hasErrors();
-		arrayAppend(data["errors"],getCart().getErrors());
+		data["errors"] = getCart().getErrors();
 		
 		return data;
 	}

@@ -48,6 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
+	// getEntity()
 	public void function getEntity_works() {
 		assert(!isNull(request.slatwallScope.getEntity('SlatwallCountry', 'US')));
 	}
@@ -55,6 +56,83 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getEntity_works_with_struct() {
 		assert(!isNull(request.slatwallScope.getEntity('Country', {countryCode='US'})));
 	}
+	
+	// getAccountData() 
+	public void function getAccountData_returns_valid_struct() {
+		var ad = request.slatwallScope.getAccountData();
+		assert(isStruct(ad));
+	}
+	
+	public void function getAccountData_without_any_propertyList_returns_all_available_properties() {
+		var ad = request.slatwallScope.getAccountData();
+		assertEquals(structCount(ad), 10);
+	}
+	
+	public void function getAccountData_returns_errors_set_on_account() {
+		request.slatwallScope.getAccount().addError( 'firstName', 'The First Name is Required' );
+		request.slatwallScope.getAccount().addError( 'lastName', 'The First Name is Required' );
+		
+		var ad = request.slatwallScope.getAccountData( 'accountID' );
+		
+		debug(ad);
+	}
+	
+	public void function getAccountData_always_includes_hasErrors_and_errors() {
+		var ad = request.slatwallScope.getAccountData( 'accountID' );
+		
+		// Should be 5... the 1 listed above, plus 'hasErrors' and 'errors'
+		assertEquals(structCount(ad), 3);
+		
+		assert(structKeyExists(ad, 'hasErrors'));
+		assertEquals(ad.hasErrors, false);
+		
+		assert(structKeyExists(ad, 'errors'));
+		assert(isStruct(ad.errors));
+		assertEquals(structCount(ad.errors),0);
+	}
+	
+	public void function getAccountData_with_specific_propertyList_returns_only_those_keys() {
+		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
+		
+		// Should be 5... the 3 listed above, plus 'hasErrors' and 'errors'
+		assertEquals(structCount(ad), 5);
+	}
+	
+	public void function getAccountData_with_specific_propertyList_returns_correct_values() {
+		request.slatwallScope.getAccount().setFirstName( 'test-first' );
+		request.slatwallScope.getAccount().setLastName( 'test-last' );
+		
+		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
+		
+		assertEquals(structCount(ad), 5);
+		
+		// Check that each of the specific ones are there
+		assert(structKeyExists(ad, 'accountID'));
+		assertEquals(ad.accountID, '');
+		
+		assert(structKeyExists(ad, 'firstName'));
+		assertEquals(ad.firstName, 'test-first');
+		
+		assert(structKeyExists(ad, 'lastName'));
+		assertEquals(ad.lastName, 'test-last');
+	}
+	
+	public void function getAccountData_passing_invalid_property_wont_add_to_return() {
+		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName,createdDateTime' );
+		
+		assertEquals(structCount(ad), 5);
+		
+		assertFalse( structKeyExists(ad, "createdDateTime") );
+	}
+	
+	// getCartData()
+	public void function getCartData_returns_valid_struct() {
+		var cd = request.slatwallScope.getAccountData();
+		debug(cd);
+		assert(isStruct(cd));
+	}
+	
+	
 	
 }
 
