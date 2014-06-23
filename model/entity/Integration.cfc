@@ -50,14 +50,11 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	
 	// Persistent Properties
 	property name="integrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
+	property name="installedFlag" ormtype="boolean";
 	property name="integrationPackage" ormtype="string" unique="true";
 	property name="integrationName" ormtype="string";
-	property name="installedFlag" ormtype="boolean";
-	
-	//Active Flag and IntegrationTypeList
-	property name="activeFlag" ormtype="boolean";
 	property name="integrationTypeList" ormtype="string"; 
-	
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -73,14 +70,13 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 		return getActiveFlag();
 	}
 	
-	public array function getShippingMethodOptions() {
+	public array function getShippingMethodOptions( ) {
 		if(!structKeyExists(variables, "shippingMethodOptions")) {
-			var integrationSmartlist = getService("integrationService").getIntegrationSmartList();
-			integrationSmartlist.addFilter('activeFlag', '1');
-			integrationSmartlist.addLikeFilter('integrationTypeList', '%shipping%');
-			integrationSmartlist.addSelect('integrationName', 'name');
-			integrationSmartlist.addSelect('integrationID', 'value');
-			variables.shippingMethodOptions = integrationSmartlist.getRecords();
+			variables.shippingMethodOptions = [];
+			var shippingMethodsStruct = getService("integrationService").getShippingIntegrationCFC( this ).getShippingMethods();
+			for(var key in shippingMethodsStruct) {
+				arrayAppend(variables.shippingMethodOptions, {name=shippingMethodsStruct[key], value=key});
+			}
 		}
 		return variables.shippingMethodOptions;
 	}	

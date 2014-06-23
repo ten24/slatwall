@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,28 +45,45 @@
 
 Notes:
 
---->
-<cfcomponent extends="Slatwall.meta.tests.coverage.SlatwallCoverageTestBase" output="false">
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	<cffunction name="all_entities_have_test_cases" access="public" returntype="void">
-		<cfset var edQuery = "" />
-		<cfset var etdQuery = "" />
-		<cfset var missingEntityTests = [] />
+	// @hint put things in here that you want to run befor EACH test
+	public void function SetUp() {
+		super.setup();
 		
-		<cfdirectory action="list" directory="#variables.entityDirectory#" name="edQuery" filter="*.cfc">
-		<cfdirectory action="list" directory="#variables.entityTestDirectory#" name="etdQuery" filter="*.cfc">
-		
-		<cfloop query="edQuery">
-			<cfset arrayAppend(missingEntityTests, edQuery.name) />
-		</cfloop>
-		
-		<cfloop query="etdQuery">
-			<cfif arrayFind(missingEntityTests, etdQuery.name)>
-				<cfset arrayDeleteAt(missingEntityTests, arrayFind(missingEntityTests, etdQuery.name)) />
-			</cfif>
-		</cfloop>
-		
-		<cfset assertEquals("", arrayToList(missingEntityTests)) />
-	</cffunction>
+		variables.entity = request.slatwallScope.getService("skuService").newSkuCurrency();
+	}
 	
-</cfcomponent>
+	public void function getSimpleRepresentation_exists_and_is_simple() {
+		
+		var sku = request.slatwallScope.newEntity('Sku');
+		sku.setSkuCode( 'ASDF' );
+		
+		var currency = request.slatwallScope.getEntity('Currency', 'CAD');
+		
+		variables.entity.setCurrency(currency);
+		variables.entity.setSku(sku);
+		
+		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
+	}
+	
+	public void function skuCurrency_should_not_save_with_negative_price() {
+		//issue 1335
+		var skuCurrency = entityNew("SlatwallSkuCurrency");
+
+		skuCurrency.setPrice( -20 );
+		skuCurrency.setListPrice( 'test' );
+		
+		skuCurrency.validate(context="save");
+		
+		assert( skuCurrency.hasError('price') );
+		assert( skuCurrency.hasError('listPrice') );
+		
+		assert( right( skuCurrency.getError('price')[1], 8) neq "_missing");
+		assert( right( skuCurrency.getError('listPrice')[1], 8) neq "_missing");
+	}
+	
+}
+
+

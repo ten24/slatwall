@@ -456,8 +456,8 @@ component extends="HibachiService" accessors="true" {
 		if (arraylen(archiveCandidates)) {
 			// Threaded process of audits that may need to be archived
 			if (getHibachiScope().setting('globalAuditCommitMode') == 'thread') {
-				thread name="archiveThread" action="run" archiveCandidates="#archiveCandidates#" {
-					for (var audit in archiveCandidates) {
+				thread name="archiveThread-#createHibachiUUID()#" action="run" archiveCandidates="#archiveCandidates#" {
+					for (var audit in attributes.archiveCandidates) {
 						this.processAudit(audit, 'archive');
 					}
 					
