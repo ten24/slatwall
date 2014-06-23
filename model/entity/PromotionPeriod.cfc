@@ -73,7 +73,14 @@ component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" ta
 	
  	// Non-persistent properties
 	property name="currentFlag" type="boolean" persistent="false"; 
- 
+ 	
+ 	public boolean function hasMaximumAccountUseCount(){
+ 		return !isNull(this.getMaximumAccountUseCount()) && this.getMaximumAccountUseCount() gt 0;
+ 	}
+ 	
+ 	public boolean function hasMaximumUseCount(){
+ 		return !isNull(this.getMaximumUseCount()) && this.getMaximumUseCount() gt 0;
+ 	}
  
  	public boolean function isCurrent() {
 		var currentDateTime = now();

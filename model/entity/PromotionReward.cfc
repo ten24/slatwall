@@ -418,6 +418,18 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
 	}
 	
+	public boolean function hasMaximumUsePerOrder(){
+		return !isNull(this.getMaximumUsePerOrder()) && this.getMaximumUsePerOrder() > 0;
+	}
+	
+	public boolean function hasMaximumUsePerItem(){
+		return !isNull(this.getMaximumUsePerItem()) && this.getMaximumUsePerItem() > 0;
+	}
+	
+	public boolean function hasMaximumUsePerQualification(){
+		return !isNull(this.getMaximumUsePerQualification()) && this.getMaximumUsePerQualification() > 0;
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
