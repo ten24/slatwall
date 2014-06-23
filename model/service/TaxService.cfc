@@ -206,19 +206,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
 										//Check to make sure that the tax liability is set to be applied to items
-										
-											
-											if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
-												// Add a new AppliedTax 
-												var newAppliedTax = this.newTaxApplied();
-												newAppliedTax.setAppliedType("orderItem");
-												newAppliedTax.setTaxAmount( taxRateItemResponse.getTaxAmount() );
-												newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
-												newAppliedTax.setTaxCategoryRate( taxCategoryRate );
-												newAppliedTax.setOrderItem(orderItem);
-											}
-												
-										
+ 										if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
+ 											
+ 											if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
+ 												// Add a new AppliedTax 
+ 												var newAppliedTax = this.newTaxApplied();
+ 												newAppliedTax.setAppliedType("orderItem");
+ 												newAppliedTax.setTaxAmount( taxRateItemResponse.getTaxAmount() );
+ 												newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
+ 												newAppliedTax.setTaxCategoryRate( taxCategoryRate );
+ 												newAppliedTax.setOrderItem(orderItem);
+ 											}
+ 												
+  										}
 										
 									}
 									
