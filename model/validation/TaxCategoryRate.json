@@ -1,6 +1,14 @@
 {
+	"conditions":{
+	    "noIntegration":{
+	        "taxIntegration":	{"null":true}
+	    }
+	},
 	"properties":{
-		"taxRate":			[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"taxRate":			[
+								{"contexts":"save","dataType":"numeric"},
+								{"contexts":"save","conditions":"noIntegration","required":true}
+							],
 		"appliedTaxes":		[{"contexts":"delete","maxCollection":0}]
 	}
 }

@@ -46,27 +46,21 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.meta.tests.coverage.SlatwallCoverageTestBase" output="false">
+<cfparam name="rc.auditSmartList" type="any" />
 
-	<cffunction name="all_entities_have_test_cases" access="public" returntype="void">
-		<cfset var edQuery = "" />
-		<cfset var etdQuery = "" />
-		<cfset var missingEntityTests = [] />
-		
-		<cfdirectory action="list" directory="#variables.entityDirectory#" name="edQuery" filter="*.cfc">
-		<cfdirectory action="list" directory="#variables.entityTestDirectory#" name="etdQuery" filter="*.cfc">
-		
-		<cfloop query="edQuery">
-			<cfset arrayAppend(missingEntityTests, edQuery.name) />
-		</cfloop>
-		
-		<cfloop query="etdQuery">
-			<cfif arrayFind(missingEntityTests, etdQuery.name)>
-				<cfset arrayDeleteAt(missingEntityTests, arrayFind(missingEntityTests, etdQuery.name)) />
-			</cfif>
-		</cfloop>
-		
-		<cfset assertEquals("", arrayToList(missingEntityTests)) />
-	</cffunction>
+<cfset rc.auditSmartList.addOrder('auditDateTime|DESC') />
+
+<cf_HibachiListingDisplay smartList="#rc.auditSmartList#"
+						   recordDetailAction="admin:entity.preprocessaudit"
+						   recordDetailQueryString="processContext=rollback"
+						   recordDetailModal=true>
 	
-</cfcomponent>
+	<cf_HibachiListingColumn propertyIdentifier="auditDateTime" />
+	<cf_HibachiListingColumn propertyIdentifier="sessionAccountFullName" />					      
+	<cf_HibachiListingColumn propertyIdentifier="auditType" filter="true" />
+	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
+	<cf_HibachiListingColumn propertyIdentifier="baseObject" />
+	<cf_HibachiListingColumn propertyIdentifier="baseID" />
+	
+</cf_HibachiListingDisplay>
+

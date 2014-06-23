@@ -222,8 +222,8 @@ Notes:
 						}
 					}
 					
-					if(len(templateFileResponse) && !structKeyExists(local.emailData, "bodyHTML")) {
-						local.emailData.bodyHTML = templateFileResponse;
+					if(len(templateFileResponse) && !structKeyExists(local.emailData, "emailBodyHTML")) {
+						local.emailData.emailBodyHTML = templateFileResponse;
 					}
 					
 					arguments.email.populate( local.emailData );

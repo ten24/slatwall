@@ -164,6 +164,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					installedIntegrationList = listAppend(installedIntegrationList, integrationPackage);
 					
 					var integration = this.getIntegrationByIntegrationPackage(integrationPackage, true);
+					if(integration.getNewFlag()) {
+						integration.setActiveFlag(0);	
+					}
 					integration.setInstalledFlag(1);
 					integration.setIntegrationPackage(integrationPackage);
 					integration.setIntegrationName(integrationCFC.getDisplayName());

@@ -107,11 +107,12 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function logEntityModify(any entity, struct oldData) {
+		var baseID = getBaseIDForEntity( arguments.entity );
 		
-		if (arguments.entity.getAuditableFlag()) {
+		// Entity must be auditable and modifications should not have been triggered by a delete
+		if (arguments.entity.getAuditableFlag() && (!structKeyExists(getHibachiScope().getAuditsToCommitStruct(), baseID) || !structKeyExists(getHibachiScope().getAuditsToCommitStruct()[baseID], 'delete'))) {
 			
 			var auditType = '';
-			var baseID = getBaseIDForEntity( arguments.entity );
 			var baseObject = getBaseObjectForEntity( arguments.entity );
 			var baseTitle = getBaseTitleForEntity( arguments.entity );
 			
@@ -288,7 +289,6 @@ component extends="HibachiService" accessors="true" {
 				if (!arrayContains(changedPropertyNames, topLevelPropertyName)) {
 					// Change detected when value only exists in source or when source/target values differ
 					if (!structKeyExists(comparison.target, propertyValueMappingKey) || (comparison.source[propertyValueMappingKey] != comparison.target[propertyValueMappingKey])) {
-						auditablePropertiesStruct[topLevelPropertyName];
 						if (len(comparison.source[propertyValueMappingKey])) {
 							arrayAppend(changedPropertyNames, topLevelPropertyName);
 						}
@@ -456,8 +456,8 @@ component extends="HibachiService" accessors="true" {
 		if (arraylen(archiveCandidates)) {
 			// Threaded process of audits that may need to be archived
 			if (getHibachiScope().setting('globalAuditCommitMode') == 'thread') {
-				thread name="archiveThread" action="run" archiveCandidates="#archiveCandidates#" {
-					for (var audit in archiveCandidates) {
+				thread name="archiveThread-#createHibachiUUID()#" action="run" archiveCandidates="#archiveCandidates#" {
+					for (var audit in attributes.archiveCandidates) {
 						this.processAudit(audit, 'archive');
 					}
 					

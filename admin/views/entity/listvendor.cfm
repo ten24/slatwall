@@ -48,7 +48,7 @@ Notes:
 --->
 <cfparam name="rc.vendorSmartList" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.vendorSmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorSmartList#"
 						   recordEditAction="admin:entity.editvendor"
 						   recordDetailAction="admin:entity.detailvendor">
 						      

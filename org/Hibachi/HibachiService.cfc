@@ -31,7 +31,10 @@
 				var example = this.new(arguments.entityName);
 				var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
 				var primaryIDPropertyName = example.getPrimaryIDPropertyName();
-				smartList.addKeywordProperty(propertyIdentifier=primaryIDPropertyName, weight=1);
+				var pmd = example.getPropertyMetaData( primaryIDPropertyName );
+				if(!structKeyExists(pmd, "ormtype") || pmd.ormtype != 'integer') {
+					smartList.addKeywordProperty(propertyIdentifier=primaryIDPropertyName, weight=1);	
+				}
 				if(simpleRepresentationPropertyName != primaryIDPropertyName) {
 					smartList.addKeywordProperty(propertyIdentifier=simpleRepresentationPropertyName, weight=1);	
 				}
@@ -635,7 +638,7 @@
 				return "";
 			}
 			
-			throw("The entity name that you have requested: #arguments.entityname# is not in the ORM Library of entity names that is setup in coldsrping.  Please add #arguments.entityname# to the list of entity mappings in coldspring.");
+			throw("The entity name that you have requested: '#arguments.entityname#' is not configured in ORM.");
 		}
 		
 		public string function getProperlyCasedFullEntityName( required string entityName ) {
@@ -653,16 +656,18 @@
 		public any function getEntitiesMetaData() {
 			if(!structCount(variables.entitiesMetaData)) {
 				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+				var allMD = {};
 				for(var entityName in entityNamesArr) {
 					var entity = entityNew(entityName);
 					if(structKeyExists(entity, "getThisMetaData")) {
 						var entityMetaData = entityNew(entityName).getThisMetaData();
 						if(isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname")) {
 							var entityShortName = listLast(entityMetaData.fullname, '.');
-							variables.entitiesMetaData[ entityShortName ] = entityMetaData;
+							allMD[ entityShortName ] = entityMetaData;
 						}
 					}
 				}
+				variables.entitiesMetaData = allMD;
 			}
 			
 			return variables.entitiesMetaData;
