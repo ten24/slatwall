@@ -56,12 +56,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Setup the taxIntegrationArray
 		var taxIntegrationArr = [];
 		var taxAddresses = {};
+		
+		// If the order has a billing address, use that to potentially calculate taxes for all items
+		if(!isNull(arguments.order.getBillingAddress())) {
+			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
+		} else {
+			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
+			for(var orderPayment in arguments.order.getOrderPayments()) {
+				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
+					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
+					break;
+				}
+			}	
+		}
+		
 		// First Loop over the orderItems to remove existing taxes
 		for(var orderItem in arguments.order.getOrderItems()) {
 			
 			// Remove all existing tax calculations
 			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
-				orderItem.getAppliedTaxes()[ta].removeOrderItem();
+				orderItem.getAppliedTaxes()[ta].removeOrderItem(orderItem);
 			}
 		
 		}
@@ -160,7 +174,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											
 											// TODO [jubs]: this is now populated, so we should make sure it goes to the DB and also add "integrationTaxRateType"
 											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
-											
+											newAppliedTax.setIntegrationTaxRateType( taxRateItemResponse.getIntegrationTaxRateType() );
 											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 											newAppliedTax.setOrderItem( orderItem );
 											newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );

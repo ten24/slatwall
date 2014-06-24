@@ -69,13 +69,27 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 				taxRateItemResponseBeans.setTaxAmount(arguments.taxAmount);
 			}
 		}
-		
+		// Populate taxRate 
+		if(!isNull(taxRate)){
+			if(!isNull(arguments.taxRate)) {
+				taxRateItemResponseBeans.setTaxRate(arguments.taxRate);
+			}
+		}
 		// Populate orderItemID 
 		if(!isNull(orderItemID)){
 			if(!isNull(arguments.orderItemID)) {
 				taxRateItemResponseBeans.setOrderItemID(arguments.orderItemID);
 			}
 		}
+		// Populate integrationTaxRateType 
+		if(!isNull(integrationTaxRateType)){
+			if(!isNull(arguments.integrationTaxRateType)) {
+				/*writeDump(var="#arguments.integrationTaxRateType#");
+				abort;*/
+				taxRateItemResponseBeans.setIntegrationTaxRateType(arguments.integrationTaxRateType);
+			}
+		}
+		
 
 		arrayAppend(getTaxRateItemResponseBeans(), taxRateItemResponseBeans);
 	}
