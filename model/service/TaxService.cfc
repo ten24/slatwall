@@ -55,20 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup the taxIntegrationArray
 		var taxIntegrationArr = [];
-		var taxAddresses = {};
-		
-		// If the order has a billing address, use that to potentially calculate taxes for all items
-		if(!isNull(arguments.order.getBillingAddress())) {
-			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
-		} else {
-			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
-			for(var orderPayment in arguments.order.getOrderPayments()) {
-				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
-					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
-					break;
-				}
-			}	
-		}
+		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
 		// First Loop over the orderItems to remove existing taxes
 		for(var orderItem in arguments.order.getOrderItems()) {
@@ -248,6 +235,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
+	public struct function addTaxAddressesStructBillingAddressKey(required any order) {
+		var taxAddresses = {};
+		
+		// If the order has a billing address, use that to potentially calculate taxes for all items
+		if(!isNull(arguments.order.getBillingAddress())) {
+			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
+		} else {
+			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
+			for(var orderPayment in arguments.order.getOrderPayments()) {
+				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
+					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
+					break;
+				}
+			}	
+		}
+		return taxAddresses;
+	}
+	
 	public any function getTaxAddressByTaxCategoryRate(required any taxCategoryRate, required struct taxAddresses) {
 		if(taxCategoryRate.getTaxAddressLookup() eq 'shipping_billing') {
 			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
@@ -285,20 +290,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function generateTaxRatesRequestBeanForIntegration( required any order, required any integration ){
 		
-		var taxAddresses = {};
-		
-		// If the order has a billing address, use that to potentially calculate taxes for all items
-		if(!isNull(arguments.order.getBillingAddress())) {
-			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
-		} else {
-			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
-			for(var orderPayment in arguments.order.getOrderPayments()) {
-				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
-					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
-					break;
-				}
-			}	
-		}
+		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
 		// Create rates request bean and populate it with the taxCategory Info
 		var taxRatesRequestBean = getTransient("TaxRatesRequestBean");

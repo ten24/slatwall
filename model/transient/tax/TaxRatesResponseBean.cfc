@@ -87,9 +87,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 				taxRateItemResponseBeans.setIntegrationTaxRateType(arguments.integrationTaxRateType);
 			}
 		}
-		
-		/*writeDump(var="#taxRateItemResponseBeans#");
-		abort;*/
+
 		arrayAppend(getTaxRateItemResponseBeans(), taxRateItemResponseBeans);
 	}
 	
