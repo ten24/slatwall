@@ -195,7 +195,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// =================== JS helper methods  ===========================
 
 	public any function getAccountData(string propertyList) {
-		var data = {};
 		
 		var availablePropertyList = "accountID,firstName,lastName,company,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 							primaryAddress.accountAddressID,
@@ -208,11 +207,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			arguments.propertyList = availablePropertyList;
 		}
 		
-		for(var property in listToArray(propertyList)) {
-			if(listFindNoCase(availablePropertyList,property)) {
-				buildPropertyDataStruct(getAccount(),trim(property),data);
-			}
-		}
+		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getAccount(), arguments.propertyList, availablePropertyList);
 		
 		// add error messages
 		data["hasErrors"] = getAccount().hasErrors();
@@ -222,7 +217,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 
 	public any function getCartData(string propertyList) {
-		var data = {};
 		
 		var availablePropertyList = "orderID,orderOpenDateTime,calculatedTotal,
 							orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,
@@ -245,11 +239,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			arguments.propertyList = availablePropertyList;
 		}
 		
-		for(var property in listToArray(propertyList)) {
-			if(listFindNoCase(availablePropertyList,trim(property))) {
-				buildPropertyDataStruct(getCart(),trim(property),data);
-			}
-		}
+		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
 		
 		// add error messages
 		data["haserrors"] = getCart().hasErrors();
