@@ -84,13 +84,12 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		// Populate integrationTaxRateType 
 		if(!isNull(integrationTaxRateType)){
 			if(!isNull(arguments.integrationTaxRateType)) {
-				/*writeDump(var="#arguments.integrationTaxRateType#");
-				abort;*/
 				taxRateItemResponseBeans.setIntegrationTaxRateType(arguments.integrationTaxRateType);
 			}
 		}
 		
-
+		/*writeDump(var="#taxRateItemResponseBeans#");
+		abort;*/
 		arrayAppend(getTaxRateItemResponseBeans(), taxRateItemResponseBeans);
 	}
 	

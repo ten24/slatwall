@@ -108,8 +108,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 										if(n4.xmlName == "Imposition"){
 											integrationTaxRateType = n4.xmlText;
 										}
-										writeDump(var="#taxRate#");
-										abort;
+										
 										responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount, taxRate=taxRate, integrationTaxRateType=integrationTaxRateType);
 										
 									}
