@@ -286,8 +286,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			if(!isNull(getBillingAccountAddress())) {
 				// Get the account address, copy it, and save as the shipping address
     			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
-			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
-				return getOrder().getBillingAddress();
+    			return variables.billingAddress;
 			}
 
 			return getService("addressService").newAddress();

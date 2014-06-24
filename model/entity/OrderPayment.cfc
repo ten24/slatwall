@@ -605,6 +605,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			if(!isNull(getBillingAccountAddress())) {
 				// Get the account address, copy it, and save as the shipping address
     			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+    			return variables.billingAddress;
 			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
 				return getOrder().getBillingAddress();
 			}
