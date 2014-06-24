@@ -77,7 +77,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	
 			// Parse response and set to struct
 			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-
+			writeDump(var="#xmlResponse#");
+			abort;
 			// Searches for the totalTax in xmlChild
 			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
 				
@@ -93,11 +94,11 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 								
 								if(n3.xmlName == "Taxes") {
 
+									var taxAmount = 0;
+									var taxRate = 0;
+									var integrationTaxRateType = "";
+									
 									for(var n4 in n3.xmlChildren) {
-										
-										var taxAmount = 0;
-										var taxRate = 0;
-										var integrationTaxRateType = "";
 										
 										if(n4.xmlName == "CalculatedTax"){
 											taxAmount = n4.xmlText;
@@ -109,9 +110,9 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 											integrationTaxRateType = n4.xmlText;
 										}
 										
-										responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount, taxRate=taxRate, integrationTaxRateType=integrationTaxRateType);
-										
 									}
+									
+									responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount, taxRate=taxRate, integrationTaxRateType=integrationTaxRateType);
 									
 								}								
 								

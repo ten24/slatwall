@@ -159,7 +159,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											var newAppliedTax = this.newTaxApplied();
 											newAppliedTax.setAppliedType("orderItem");
 											
-											// TODO [jubs]: this is now populated, so we should make sure it goes to the DB and also add "integrationTaxRateType"
+											// TODO [jubs]: Add new properties we covered in the meeting
 											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
 											newAppliedTax.setIntegrationTaxRateType( taxRateItemResponse.getIntegrationTaxRateType() );
 											newAppliedTax.setTaxCategoryRate( taxCategoryRate );

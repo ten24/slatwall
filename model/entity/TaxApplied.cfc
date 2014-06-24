@@ -58,7 +58,14 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="taxRate" ormtype="big_decimal";
 	property name="appliedType" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
-	property name="integrationTaxRateType" ormtype="string";
+	
+	// Populated from 3rd party tax integrations
+	property name="taxImpositionID" ormtype="string";
+	property name="taxImpositionName" ormtype="string";
+	property name="taxImpositionType" ormtype="string";
+	property name="taxJurisdictionID" ormtype="string";
+	property name="taxJurisdictionName" ormtype="string";
+	property name="taxJurisdictionType" ormtype="string";
 	
 	// Related Properties (many-to-one)
 	property name="taxCategoryRate" cfc="TaxCategoryRate" fieldtype="many-to-one" fkcolumn="taxCategoryRateID";
