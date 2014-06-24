@@ -429,8 +429,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// If attributeValues were passed in set them
-			for(var attributeCode in arguments.processObject.getAttributeValuesByCodeStruct() ) {
-				newOrderItem.setAttributeValue( attributeCode, arguments.processObject.getAttributeValuesByCodeStruct()[attributeCode] );
+			if( !isNull(arguments.processObject.getAttributeValuesByCodeStruct()) ) {
+				for(var attributeCode in arguments.processObject.getAttributeValuesByCodeStruct() ) {
+					newOrderItem.setAttributeValue( attributeCode, arguments.processObject.getAttributeValuesByCodeStruct()[attributeCode] );
+				}	
 			}
 			
 			// Save the new order items
