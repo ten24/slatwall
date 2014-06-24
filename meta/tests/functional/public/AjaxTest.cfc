@@ -56,7 +56,7 @@ component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 	}
 	
 	function returnJSONObject_of_account_and_cart_when_processing_another_action() {
-		selenium.open('/?slatAction=public:cart.clear&ajaxRequest=1&returnJSONObjects=account,cart');
+		selenium.open('/?slatAction=public:account.update&ajaxRequest=1&returnJSONObjects=account,cart');
 		
 		var ajaxResponse = selenium.getBodyText();
 		
