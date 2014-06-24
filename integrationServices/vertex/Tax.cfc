@@ -137,7 +137,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	
 			// Parse response and set to struct
 			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-
+			writeDump(var="#xmlResponse#");
+			abort;
 		}
 	}
 
