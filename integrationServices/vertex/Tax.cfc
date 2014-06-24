@@ -77,9 +77,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	
 			// Parse response and set to struct
 			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-			
-			
-			
+
 			// Searches for the totalTax in xmlChild
 			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
 				
@@ -90,17 +88,36 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 						if(n2.xmlName == "LineItem") {
 							
 							var orderItemID = n2.xmlAttributes.materialCode;
-							var taxAmount = 0;
-							
+
 							for(var n3 in n2.xmlChildren) {
-								if(n3.xmlName == "TotalTax") {
-									taxAmount = n3.xmlText;
-								}
+								
+								if(n3.xmlName == "Taxes") {
+									
+
+									for(var n4 in n3.xmlChildren) {
+										
+										var taxAmount = 0;
+										var taxRate = 0;
+										var integrationTaxRateType = "";
+										
+										if(n4.xmlName == "CalculatedTax"){
+											taxAmount = n4.xmlText;
+										}
+										if(n4.xmlName == "EffectiveRate"){
+											taxRate = n4.xmlText;
+											
+										}
+										if(n4.xmlName == "Imposition"){
+											integrationTaxRateType = n4.xmlText;
+										}
+										
+										responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount, taxRate=taxRate, integrationTaxRateType=integrationTaxRateType);
+										
+									}
+									
+								}								
+								
 							}
-							
-							responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount);
-							// TODO [jubs]:
-							// responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount, taxRate="???", integrationTaxRateType="???");
 							
 						}
 						

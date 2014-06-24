@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup the taxIntegrationArray
 		var taxIntegrationArr = [];
-		
+		var taxAddresses = {};
 		// First Loop over the orderItems to remove existing taxes
 		for(var orderItem in arguments.order.getOrderItems()) {
 			
@@ -269,7 +269,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 
-	public void function generateTaxRatesRequestBeanForIntegration( required any order, required any integration ){
+	public any function generateTaxRatesRequestBeanForIntegration( required any order, required any integration ){
 		
 		var taxAddresses = {};
 		

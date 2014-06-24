@@ -59,7 +59,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 		return super.init(argumentcollection=arguments);
 	}
 	
-	public void function addTaxRateItem(required any orderItemID, any taxAmount) {
+	public void function addTaxRateItem(required any orderItemID, any taxAmount, any taxRate, any integrationTaxRateType) {
 		
 		var taxRateItemResponseBeans = getTransient('TaxRateItemResponseBean');
 		
