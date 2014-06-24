@@ -192,6 +192,103 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		setSessionValue('printQueue', []);
 	}
 	
+	// =================== JS helper methods  ===========================
+
+	public any function getAccountData(string propertyList) {
+		
+		var availablePropertyList = "accountID,firstName,lastName,company,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+							primaryAddress.accountAddressID,
+							accountAddresses.accountAddressName,accountAddresses.accountAddressID,
+							accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode";
+
+		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+
+		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
+			arguments.propertyList = availablePropertyList;
+		}
+		
+		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getAccount(), arguments.propertyList, availablePropertyList);
+		
+		// add error messages
+		data["hasErrors"] = getAccount().hasErrors();
+		data["errors"] = getAccount().getErrors();
+		
+		return data;
+	}
+
+	public any function getCartData(string propertyList) {
+		
+		var availablePropertyList = "orderID,orderOpenDateTime,calculatedTotal,
+							orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,
+							orderitems.orderFulfillment.orderFulfillmentID,
+							orderitems.sku.skuID,orderitems.sku.skuCode,
+							orderitems.sku.product.productID,orderitems.sku.product.productName,orderitems.sku.product.productCode,orderitems.sku.product.urltitle,
+							orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
+							orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,
+							orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
+							orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
+							orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
+							orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
+							orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard,
+							orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
+							orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName";
+		
+		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+		
+		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
+			arguments.propertyList = availablePropertyList;
+		}
+		
+		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
+		
+		// add error messages
+		data["haserrors"] = getCart().hasErrors();
+		data["errors"] = getCart().getErrors();
+		
+		return data;
+	}
+
+	public any function buildPropertyDataStruct(required parentObject, required string propertyIdentifier, required any data) {
+		if(listLen(arguments.propertyIdentifier, "._") eq 1) {
+			data[lcase(arguments.propertyIdentifier)] = parentObject.invokeMethod("get#arguments.propertyIdentifier#");
+			return;
+		}
+		var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '._')#");
+		if(!isNull(object) && isObject(object)) {
+			var thisProperty = lcase(listFirst(arguments.propertyIdentifier, '._'));
+			param name="data[thisProperty]" default="#structNew()#";
+			
+			if(!structKeyExists(data[thisProperty],"errors")) {
+				// add error messages
+				data[thisProperty]["haserrors"] = object.hasErrors();
+				data[thisProperty]["errors"] = object.getErrors();
+				if(object.hasErrors()) {
+					arrayAppend(data["errors"],object.getErrors());			
+				}
+			}
+			
+			buildPropertyDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "._"), data[thisProperty]);
+		} else if(!isNull(object) && isArray(object)) {
+			var thisProperty = lcase(listFirst(arguments.propertyIdentifier, '._'));
+			param name="data[thisProperty]" default="#arrayNew(1)#";
+
+			for(var i = 1; i <= arrayLen(object); i++){
+				param name="data[thisProperty][i]" default="#structNew()#";
+
+				if(!structKeyExists(data[thisProperty][i],"errors")) {
+					// add error messages
+					data[thisProperty][i]["haserrors"] = object[i].hasErrors();
+					data[thisProperty][i]["errors"] = object[i].getErrors();				
+					if(object[i].hasErrors()) {
+						arrayAppend(data["errors"],object[i].getErrors());			
+					}
+				}
+				
+				buildPropertyDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "._"), data[thisProperty][i]);
+			}
+		}
+	}
+
 	// =================== Image Access ===========================
 	
 	public string function getBaseImageURL() {

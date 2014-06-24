@@ -469,7 +469,18 @@ component extends="FW1.framework" {
 		
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			if(isStruct(request.context.ajaxResponse)){
-  				request.context.ajaxResponse["messages"] = request.context.messages;
+				if(structKeyExists(request.context, "messages")) {
+					request.context.ajaxResponse["messages"] = request.context.messages;	
+				}
+  				request.context.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
+  				request.context.ajaxResponse["failureActions"] = getHibachiScope().getFailureActions();
+  				if(structKeyExists(request.context,"returnJSONObjects")) {
+  					for(var item in listToArray(request.context.returnJSONObjects)) {
+  						if(structKeyExists(getHibachiScope(), "get#item#Data")) {
+			  				request.context.ajaxResponse[item] = getHibachiScope().invokeMethod("get#item#Data");
+  						}
+  					}
+  				}
   			}
 			writeOutput( serializeJSON(request.context.ajaxResponse) );
 			abort;

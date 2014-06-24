@@ -67,6 +67,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 	
 	// @hint put things in here that you want to run after EACH test
 	public void function tearDown() {
+		structDelete(request, 'slatwallScope');
 		//variables.slatwallFW1Application.endSlatwallLifecycle();
 		debug("Debug Messages: #arrayLen(variables.debugArray)#");
 		debug(variables.debugArray);
