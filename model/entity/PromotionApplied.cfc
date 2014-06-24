@@ -79,7 +79,10 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 	public void function setPromotion(required any promotion) {
 		variables.promotion = arguments.promotion;
 		if(isNew() or !arguments.promotion.hasAppliedPromotion( this )) {
-			arrayAppend(arguments.promotion.getAppliedPromotions(), this);
+			var appliedPromotions = arguments.promotion.getAppliedPromotions();
+			arrayAppend(appliedPromotions,this);
+			
+			arguments.promotion.setAppliedPromotions(appliedPromotions);
 		}
 	}
 	public void function removePromotion(any promotion) {

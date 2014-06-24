@@ -101,6 +101,14 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		return arraylen(getOrderItemQualifiedDiscountsItem(orderItem));
 	}
 	
+	public any function getOrderItemQualifiedDiscountItemByOrderID(required any orderID){
+		return this.getValue()[arguments.orderID];
+	}
+	
+	public any function hasOrderItemQualifiedDiscountItemByOrderID(required any orderID){
+		return structKeyExists(this.getValue(),arguments.orderID);
+	}
+	
 	public any function getOrderItemQualifiedDiscountsItem(required any orderItem){
 		return variables.value[ arguments.orderItem.getOrderItemID() ];
 	}

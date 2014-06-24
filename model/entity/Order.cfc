@@ -532,6 +532,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return totalPaymentsReceived;
 	}
 	
+	public numeric function getTotalDiscountableAmount(){
+		return getSubtotalAfterItemDiscounts() + getFulfillmentChargeAfterDiscountTotal();
+	}
+	
 	public numeric function getPaymentAmountCreditedTotal() {
 		var totalPaymentsCredited = 0;
 		
