@@ -46,7 +46,7 @@
 Notes:
 
 */
-component {
+component extends="Slatwall.org.Hibachi.HibachiObject" {
 	
 	public void function afterOrderProcess_PlaceOrderSuccess(required any slatwallScope, required any order) {
 		
