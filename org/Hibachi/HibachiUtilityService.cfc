@@ -93,9 +93,6 @@
 					// add error messages
 					data[thisProperty]["hasErrors"] = object.hasErrors();
 					data[thisProperty]["errors"] = object.getErrors();
-					if(object.hasErrors()) {
-						arrayAppend(data["errors"],object.getErrors());			
-					}
 				}
 				
 				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty]);
@@ -109,15 +106,32 @@
 					if(!structKeyExists(data[thisProperty][i],"errors")) {
 						// add error messages
 						data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-						data[thisProperty][i]["errors"] = object[i].getErrors();				
-						if(object[i].hasErrors()) {
-							arrayAppend(data["errors"],object[i].getErrors());			
-						}
+						data[thisProperty][i]["errors"] = object[i].getErrors();
 					}
 					
 					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
 				}
 			}
+		}
+		
+		public any function lcaseStructKeys( required any data ) {
+			if( isStruct(arguments.data) ) {
+				var newData = {};
+				for(var key in arguments.data) {
+					if(isNull(arguments.data[ key ])) {
+						newData[ lcase(key) ] = javaCast('null', '');	
+					} else {
+						newData[ lcase(key) ] = lcaseStructKeys(arguments.data[ key ]);	
+					}
+				}
+				return newData;
+			} else if (isArray(arguments.data)) {
+				for(var i=1; i<=arrayLen(arguments.data); i++) {
+					arguments.data[i] = lcaseStructKeys(arguments.data[i]);
+				}
+			}
+			
+			return arguments.data;
 		}
 		
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {

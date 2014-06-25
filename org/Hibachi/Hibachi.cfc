@@ -236,13 +236,14 @@ component extends="FW1.framework" {
 		request.context.$[ variables.framework.applicationKey ] = getHibachiScope();
 		request.context.pagetitle = request.context.$[ variables.framework.applicationKey ].rbKey( request.context[ getAction() ] );
 		request.context.edit = false;
-		if(!structKeyExists(request.context,"ajaxRequest")) {
-  			request.context.ajaxRequest = false;
-  		}
+		
+		param name="request.context.ajaxRequest" default="false";
+		param name="request.context.returnJSONObjects" default="";
+		param name="request.context.returnJSONLCase" default="false";
+		param name="request.context.messages" default="#arrayNew()#";
+		
 		request.context.ajaxResponse = {};
-		if(!structKeyExists(request.context, "messages")) {
-			request.context.messages = [];	
-		}
+		
 		
 		var httpRequestData = getHTTPRequestData();
 		if(structKeyExists(httpRequestData.headers, "X-Hibachi-AJAX") && isBoolean(httpRequestData.headers["X-Hibachi-AJAX"]) && httpRequestData.headers["X-Hibachi-AJAX"]) {
@@ -474,7 +475,7 @@ component extends="FW1.framework" {
 				}
   				request.context.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
   				request.context.ajaxResponse["failureActions"] = getHibachiScope().getFailureActions();
-  				if(structKeyExists(request.context,"returnJSONObjects")) {
+  				if(structKeyExists(request.context, "returnJSONObjects") && len(request.context.returnJSONObjects)) {
   					for(var item in listToArray(request.context.returnJSONObjects)) {
   						if(structKeyExists(getHibachiScope(), "get#item#Data")) {
 			  				request.context.ajaxResponse[item] = getHibachiScope().invokeMethod("get#item#Data");
@@ -482,7 +483,11 @@ component extends="FW1.framework" {
   					}
   				}
   			}
-			writeOutput( serializeJSON(request.context.ajaxResponse) );
+  			if(structKeyExists(request.context, "returnJSONLCase") && isBoolean(request.context.returnJSONLCase) && request.context.returnJSONLCase) {
+				writeOutput( serializeJSON( getHibachiScope().getService("hibachiUtilityService").lcaseStructKeys(request.context.ajaxResponse) ) );	
+			} else {
+				writeOutput( serializeJSON(request.context.ajaxResponse) );
+			}
 			abort;
 		}
 	}

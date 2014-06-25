@@ -21,6 +21,36 @@ component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 		assert( structKeyExists(dsResponse, 'account'), "We expected to find an account object, but here are the keys that came back: #structKeyList(dsResponse)#");
 	}
 	
+	function account_returns_valid_json_are_camelCase_by_default() {
+		selenium.open('/?slatAction=public:ajax.account&ajaxRequest=1');
+		
+		var ajaxResponse = selenium.getBodyText();
+		
+		assert( isJSON(ajaxResponse), "The response was expected to be valid json but this is what we got back: #ajaxResponse#" );
+		
+		var dsResponse = deserializeJSON(ajaxResponse);
+		
+		var peaStructKeyArray = listToArray(structKeyList(dsResponse.account.primaryemailaddress));
+		arraySort(peaStructKeyArray, "textNoCase");
+		
+		assertEquals(0, compare(peaStructKeyArray[1], 'accountEmailAddressID'));
+	}
+	
+	function account_returns_valid_json_that_can_be_all_lower_case() {
+		selenium.open('/?slatAction=public:ajax.account&ajaxRequest=1&returnJSONLCase=1');
+		
+		var ajaxResponse = selenium.getBodyText();
+		
+		assert( isJSON(ajaxResponse), "The response was expected to be valid json but this is what we got back: #ajaxResponse#" );
+		
+		var dsResponse = deserializeJSON(ajaxResponse);
+		
+		var peaStructKeyArray = listToArray(structKeyList(dsResponse.account.primaryemailaddress));
+		arraySort(peaStructKeyArray, "textNoCase");
+		
+		assertEquals(0, compare(peaStructKeyArray[1], 'accountemailaddressid'));
+	}
+	
 	// cart()
 	function cart_returns_valid_json() {
 		selenium.open('/?slatAction=public:ajax.cart&ajaxRequest=1');
