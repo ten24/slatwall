@@ -240,7 +240,7 @@ component extends="FW1.framework" {
 		param name="request.context.ajaxRequest" default="false";
 		param name="request.context.returnJSONObjects" default="";
 		param name="request.context.returnJSONLCase" default="false";
-		param name="request.context.messages" default="#arrayNew()#";
+		param name="request.context.messages" default="#arrayNew(1)#";
 		
 		request.context.ajaxResponse = {};
 		
