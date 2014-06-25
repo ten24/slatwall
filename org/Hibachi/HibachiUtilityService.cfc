@@ -80,27 +80,27 @@
 		}
 		
 		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
-			if(listLen(arguments.propertyIdentifier, "._") eq 1) {
-				data[lcase(arguments.propertyIdentifier)] = parentObject.invokeMethod("get#arguments.propertyIdentifier#");
+			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
+				data[ arguments.propertyIdentifier ] = parentObject.invokeMethod("get#arguments.propertyIdentifier#");
 				return;
 			}
-			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '._')#");
+			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
 			if(!isNull(object) && isObject(object)) {
-				var thisProperty = lcase(listFirst(arguments.propertyIdentifier, '._'));
+				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
 				param name="data[thisProperty]" default="#structNew()#";
 				
 				if(!structKeyExists(data[thisProperty],"errors")) {
 					// add error messages
-					data[thisProperty]["haserrors"] = object.hasErrors();
+					data[thisProperty]["hasErrors"] = object.hasErrors();
 					data[thisProperty]["errors"] = object.getErrors();
 					if(object.hasErrors()) {
 						arrayAppend(data["errors"],object.getErrors());			
 					}
 				}
 				
-				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "._"), data[thisProperty]);
+				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty]);
 			} else if(!isNull(object) && isArray(object)) {
-				var thisProperty = lcase(listFirst(arguments.propertyIdentifier, '._'));
+				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
 				param name="data[thisProperty]" default="#arrayNew(1)#";
 	
 				for(var i = 1; i <= arrayLen(object); i++){
@@ -108,14 +108,14 @@
 	
 					if(!structKeyExists(data[thisProperty][i],"errors")) {
 						// add error messages
-						data[thisProperty][i]["haserrors"] = object[i].hasErrors();
+						data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
 						data[thisProperty][i]["errors"] = object[i].getErrors();				
 						if(object[i].hasErrors()) {
 							arrayAppend(data["errors"],object[i].getErrors());			
 						}
 					}
 					
-					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "._"), data[thisProperty][i]);
+					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
 				}
 			}
 		}

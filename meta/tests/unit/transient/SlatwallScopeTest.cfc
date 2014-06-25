@@ -65,6 +65,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getAccountData_without_any_propertyList_returns_all_available_properties() {
 		var ad = request.slatwallScope.getAccountData();
+		
+		debug(ad);
+		
 		assertEquals(structCount(ad), 10);
 	}
 	
