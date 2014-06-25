@@ -118,7 +118,7 @@
 			if( isStruct(arguments.data) ) {
 				var newData = {};
 				for(var key in arguments.data) {
-					if(isNull(arguments.data[ key ])) {
+					if(!structKeyExists(arguments.data, key )) {
 						newData[ lcase(key) ] = javaCast('null', '');	
 					} else {
 						newData[ lcase(key) ] = lcaseStructKeys(arguments.data[ key ]);	

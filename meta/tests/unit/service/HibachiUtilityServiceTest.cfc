@@ -103,8 +103,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		data = variables.service.lcaseStructKeys( data );
 		
-		debug(data);
+		var peaStructKeyArray = listToArray(structKeyList(data.primaryemailaddress));
+		arraySort(peaStructKeyArray, "textNoCase");
 		
+		assertEquals(0, compare(peaStructKeyArray[1], 'accountemailaddressid'));
+	}
+	
+	public void function lcaseStructKeys_lcases_structure_keys_with_null_values() {
+		
+		var data = {};
+		data['myNullKeyValue'] = javaCast('null', '');
+		data['myValidKeyValue'] = 1;
+		
+		variables.service.lcaseStructKeys( data );
+
+		assertEquals(2, structCount(data));
 	}
 	
 }
