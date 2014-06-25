@@ -52,7 +52,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 	property name="taxRate" type="numeric";
 	property name="taxAmount" type="numeric";
 	
-	property name="taxImpositionID" ormtype="string";
 	property name="taxImpositionName" ormtype="string";
 	property name="taxImpositionType" ormtype="string";
 	property name="taxJurisdictionID" ormtype="string";

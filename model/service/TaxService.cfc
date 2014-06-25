@@ -151,17 +151,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];	
 									
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
-											
+										
 										if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
-											
-											
+
 											// Add a new AppliedTax 
 											var newAppliedTax = this.newTaxApplied();
 											newAppliedTax.setAppliedType("orderItem");
-											
-											// TODO [jubs]: Add new properties we covered in the meeting
 											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
-											newAppliedTax.setIntegrationTaxRateType( taxRateItemResponse.getIntegrationTaxRateType() );
+											newAppliedTax.setTaxImpositionName( taxRateItemResponse.getTaxImpositionName() );
+											newAppliedTax.setTaxImpositionType( taxRateItemResponse.getTaxImpositionType() );
+											newAppliedTax.setTaxJurisdictionID( taxRateItemResponse.getTaxJurisdictionID() );
+											newAppliedTax.setTaxJurisdictionName( taxRateItemResponse.getTaxJurisdictionName() );
+											newAppliedTax.setTaxJurisdictionType( taxRateItemResponse.getTaxJurisdictionType() );
 											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 											newAppliedTax.setOrderItem( orderItem );
 											newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );

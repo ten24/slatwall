@@ -77,8 +77,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	
 			// Parse response and set to struct
 			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-			writeDump(var="#xmlResponse#");
-			abort;
+		
 			// Searches for the totalTax in xmlChild
 			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
 				
@@ -96,10 +95,19 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 
 									var taxAmount = 0;
 									var taxRate = 0;
-									var integrationTaxRateType = "";
+									var taxImpositionID = "";
+									var taxImpositionType = "";
+									var taxJurisdictionID = "";
+									var taxJurisdictionName = "";
+									var taxJurisdictionType = "";
 									
 									for(var n4 in n3.xmlChildren) {
 										
+										if(n4.xmlName == "Jurisdiction"){
+											taxJurisdictionName = n4.xmlText;
+											taxJurisdictionID = n4.xmlAttributes.jurisdictionId;
+											taxJurisdictionType = n4.xmlAttributes.jurisdictionLevel;
+										}
 										if(n4.xmlName == "CalculatedTax"){
 											taxAmount = n4.xmlText;
 										}
@@ -107,12 +115,21 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 											taxRate = n4.xmlText;
 										}
 										if(n4.xmlName == "Imposition"){
-											integrationTaxRateType = n4.xmlText;
+											taxImpositionName = n4.xmlText;
+											taxImpositionType = n4.xmlAttributes.impositionType;
 										}
 										
 									}
 									
-									responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount, taxRate=taxRate, integrationTaxRateType=integrationTaxRateType);
+									responseBean.addTaxRateItem(
+											orderItemID=orderItemID, 
+											taxAmount=taxAmount, 
+											taxRate=taxRate, 
+											taxJurisdictionName=taxJurisdictionName,
+											taxJurisdictionID=taxJurisdictionID,
+											taxJurisdictionType=taxJurisdictionType,
+											taxImpositionName=taxImpositionName,
+											taxImpositionType=taxImpositionType);
 									
 								}								
 								
