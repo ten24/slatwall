@@ -547,7 +547,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
 			}
 		}		
-		
 		return arguments.order;
 	}
 	
@@ -991,20 +990,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrder_removePromotionCode(required any order, required struct data) {
 		
-		if(structKeyExists(arguments.data, "promotionCodeID")) {
-			var promotionCode = getPromotionService().getPromotionCode( arguments.data.promotionCodeID );
-		} else if (structKeyExists(arguments.data, "promotionCode")) {
-			var promotionCode = getPromotionService().getPromotionCodeByPromotionCode( arguments.data.promotionCode );	
-		}
-		
-		if(!isNull(promotionCode)) {
-			arguments.order.removePromotionCode( promotionCode );
-		}
-		
-		// Call saveOrder to recalculate all the orderTotal stuff
-		arguments.order = this.saveOrder(arguments.order);
-		
-		return arguments.order;
+			if(structKeyExists(arguments.data, "promotionCodeID")) {
+				var promotionCode = getPromotionService().getPromotionCode( arguments.data.promotionCodeID );
+			} else if (structKeyExists(arguments.data, "promotionCode")) {
+				var promotionCode = getPromotionService().getPromotionCodeByPromotionCode( arguments.data.promotionCode );	
+			}
+			
+			if(!isNull(promotionCode)) {
+				arguments.order.removePromotionCode( promotionCode );
+			}
+			
+			// Call saveOrder to recalculate all the orderTotal stuff
+			arguments.order = this.saveOrder(arguments.order);
+			return arguments.order;
 	}
 	
 	public any function processOrder_takeOffHold(required any order, struct data={}) {
@@ -1077,7 +1075,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(orderItem in arguments.order.getOrderItems()){
 					var skuPrice = orderItem.getSkuPrice();
 					var SkuPriceByCurrencyCode = orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode());
-					if(orderItem.isSalable() && skuPrice != SkuPriceByCurrencyCode){
+					if(orderItem.getOrderItemType().getSystemCode() == "oitSale" && skuPrice != SkuPriceByCurrencyCode){
 						orderItem.setPrice(SkuPriceByCurrencyCode);
 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
@@ -1086,7 +1084,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// First Re-Calculate the 'amounts' base on price groups
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
-			
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 			
