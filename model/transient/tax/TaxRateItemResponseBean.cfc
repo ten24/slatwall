@@ -48,9 +48,15 @@ Notes:
 */
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
 
-	property name="orderItemID" type="string" default="";
-	property name="integrationTaxRateType" type="string";
+	property name="orderItemID" type="string";
 	property name="taxRate" type="numeric";
 	property name="taxAmount" type="numeric";
+	
+	property name="taxImpositionID" ormtype="string";
+	property name="taxImpositionName" ormtype="string";
+	property name="taxImpositionType" ormtype="string";
+	property name="taxJurisdictionID" ormtype="string";
+	property name="taxJurisdictionName" ormtype="string";
+	property name="taxJurisdictionType" ormtype="string";
 	
 }
