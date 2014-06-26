@@ -66,6 +66,16 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	property name="enabledFlag" type="boolean" persistent="false";
 	
 	
+	public any function init() {
+		super.init();
+		
+		if(this.getNewFlag()) {
+			this.setActiveFlag(0);
+		}
+		
+		return this;
+	}
+	
 	public boolean function getEnabledFlag() {
 		return getActiveFlag();
 	}
