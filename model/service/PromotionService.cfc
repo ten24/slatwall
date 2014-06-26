@@ -47,90 +47,330 @@ Notes:
 
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
-
 	property name="promotionDAO" type="any";
-
 	property name="addressService" type="any";
 	property name="roundingRuleService" type="any";
 	
+	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
+		// Clear all previously applied promotions for order items
+		for(orderItem in arguments.orderItems){
+			for(var pa=arrayLen(orderItem.getAppliedPromotions()); pa >= 1; pa--) {
+				orderItem.getAppliedPromotions()[pa].removeOrderItem();
+			}
+		}
+	}
+	
+	private void function clearPreviouslyAppliedPromotionsForOrderFulfillments(required array orderFulfillments){
+		// Clear all previously applied promotions for fulfillment
+		for(orderFulfillment in arguments.orderFulfillments){
+			for(var pa=arrayLen(orderFulfillment.getAppliedPromotions()); pa >= 1; pa--) {
+				orderFulfillment.getAppliedPromotions()[pa].removeOrderFulfillment();
+			}
+		}
+	}
+	
+	private void function clearPreviouslyAppliedPromotionsForOrder(required any order){
+		// Clear all previously applied promotions for order
+		for(appliedPromotion in arguments.order.getAppliedPromotions()){
+			appliedPromotion.removeOrder();
+		}
+	}
+	
+	private void function clearPreviouslyAppliedPromotions(required any order){
+		clearPreviouslyAppliedPromotionsForOrderItems(arguments.order.getOrderItems());
+		clearPreviouslyAppliedPromotionsForOrderFulfillments(arguments.order.getOrderFulfillments());
+		clearPreviouslyAppliedPromotionsForOrder(arguments.order);
+	}
+	
+	private void function setupPromotionRewardUsageDetails(required any promotionReward, required any promotionRewardUsageDetails){
+		// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
+		if(!structKeyExists(arguments.promotionRewardUsageDetails, arguments.promotionReward.getPromotionRewardID())) {
+			arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ] = {
+				usedInOrder = 0,
+				maximumUsePerOrder = 1000000,
+				maximumUsePerItem = 1000000,
+				maximumUsePerQualification = 1000000,
+				orderItemsUsage = []
+			};
+			
+			if( !isNull(arguments.promotionReward.getMaximumUsePerOrder()) && arguments.promotionReward.getMaximumUsePerOrder() > 0) {
+				arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder = arguments.promotionReward.getMaximumUsePerOrder();
+			}
+			if( !isNull(arguments.promotionReward.getMaximumUsePerItem()) && arguments.promotionReward.getMaximumUsePerItem() > 0 ) {
+				arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerItem = arguments.promotionReward.getMaximumUsePerItem();
+			}
+			if( !isNull(arguments.promotionReward.getMaximumUsePerQualification()) && arguments.promotionReward.getMaximumUsePerQualification() > 0 ) {
+				arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification = arguments.promotionReward.getMaximumUsePerQualification();
+			}
+		}
+	}
+	
+	private void function setupOrderItemQualifiedDiscounts(required any order, required struct orderItemQualifiedDiscounts){
+		// Loop over orderItems and add Sale Prices to the qualified discounts
+			
+		for(var orderItem in arguments.order.getOrderItems()) {
+			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
+
+			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
+				
+				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
+				
+				arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+				
+				// Insert this value into the potential discounts array
+				arrayAppend(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
+					promotionRewardID = "",
+					promotion = this.getPromotion(salePriceDetails.promotionID),
+					discountAmount = discountAmount
+				});
+			}
+		}
 		
-	// ----------------- START: Apply Promotion Logic ------------------------- 
+		
+	}
+	
+	private void function processOrderFulfillmentRewards(required any order, required any promotionPeriodQualifications, required any promotionReward){
+		// Loop over all the fulfillments
+		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
+			
+			// Verify that this fulfillment is in the list & the methods match
+			if( arrayFind(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].qualifiedFulfillmentIDs, orderFulfillment.getOrderFulfillmentID())
+				&&
+				( !arrayLen(arguments.promotionReward.getFulfillmentMethods()) || arguments.promotionReward.hasFulfillmentMethod(orderFulfillment.getFulfillmentMethod()) ) 
+				&&
+				( !arrayLen(arguments.promotionReward.getShippingMethods()) || (!isNull(orderFulfillment.getShippingMethod()) && arguments.promotionReward.hasShippingMethod(orderFulfillment.getShippingMethod()) ) ) ) {
+				
+				var addressIsInZone = true;
+				if(arrayLen(arguments.promotionReward.getShippingAddressZones())) {
+					addressIsInZone = false;
+					if(!isNull(orderFulfillment.getAddress()) && !orderFulfillment.getAddress().isNew()) {
+						for(var az=1; az<=arrayLen(arguments.promotionReward.getShippingAddressZones()); az++) {
+							if(getAddressService().isAddressInZone(address=orderFulfillment.getAddress(), addressZone=arguments.promotionReward.getShippingAddressZones()[az])) {
+								addressIsInZone = true;
+								break;
+							}
+						}
+					}
+				}
+				
+				// Address In Zone
+				if(addressIsInZone) {
+					
+					var discountAmount = getDiscountAmount(reward, orderFulfillment.getFulfillmentCharge(), 1);
+					
+					var addNew = false;
+						
+					// First we make sure that the discountAmount is > 0 before we check if we should add more discount
+					if(discountAmount > 0) {
+						
+						// If there aren't any promotions applied to this order fulfillment yet, then we can add this one
+						if(!arrayLen(orderFulfillment.getAppliedPromotions())) {
+							addNew = true;
+							
+						// If one has already been set then we just need to check if this new discount amount is greater
+						} else if ( orderFulfillment.getAppliedPromotions()[1].getDiscountAmount() < discountAmount ) {
+							
+							// If the promotion is the same, then we just update the amount
+							if(orderFulfillment.getAppliedPromotions()[1].getPromotion().getPromotionID() == reward.getPromotionPeriod().getPromotion().getPromotionID()) {
+								orderFulfillment.getAppliedPromotions()[1].setDiscountAmount(discountAmount);
+								
+							// If the promotion is a different then remove the original and set addNew to true
+							} else {
+								orderFulfillment.getAppliedPromotions()[1].removeOrderFulfillment();
+								addNew = true;
+							}
+						}
+					}
+					
+					// Add the new appliedPromotion
+					if(addNew) {
+						applyPromotionToOrderFulfillment(orderFulfillment,reward.getPromotionPeriod().getPromotion(),discountAmount);
+					}
+					
+				} // END: Address In Zone
+				
+			} // END: Method Match
+			
+		} // Loop
+	}
+	
+	private void function processOrderItemRewards(required any order, required any promotionPeriodQualifications, required any promotionRewardUsageDetails, required any orderItemQualifiedDiscounts, required any promotionReward){
+		// Loop over all the orderItems
+		for(var orderItem in arguments.order.getOrderItems()) {
+			
+			// Verify that this is an item being sold
+			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
+				
+				// Make sure that this order item is in the acceptable fulfillment list
+				if(arrayFind(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].qualifiedFulfillmentIDs, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
+					
+					// Now that we know the fulfillment is ok, lets check and cache then number of times this orderItem qualifies based on the promotionPeriod
+					if(!structKeyExists(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems, orderItem.getOrderItemID())) {
+						arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ] = getPromotionPeriodOrderItemQualificationCount(promotionPeriod=arguments.promotionReward.getPromotionPeriod(), orderItem=orderItem, order=arguments.order);
+					}
+					
+					// If the qualification count for this order item is > 0 then we can try to apply the reward
+					if(arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ]) {
+						
+						// Check the reward settings to see if this orderItem applies
+						if( getOrderItemInReward(arguments.promotionReward, orderItem) ) {
+							var qualificationQuantity = arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ];
+							if((qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification) lt arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder) {
+								arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerOrder = (qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification);
+							}
+							
+							// setup the discountQuantity based on the qualification quantity.  If there were no qualification constrints than this will just be the orderItem quantity
+							var discountQuantity = qualificationQuantity * arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerQualification;
+							// If the discountQuantity is > the orderItem quantity then just set it to the orderItem quantity
+							if(discountQuantity > orderItem.getQuantity()) {
+								discountQuantity = orderItem.getQuantity();
+							}
+							
+							// If the discountQuantity is > than maximumUsePerItem then set it to maximumUsePerItem
+							if(discountQuantity > arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerItem) {
+								discountQuantity = arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].maximumUsePerItem;
+							}
+							// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
+							if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
+								
+								// Calculate based on price, which could be a priceGroup price
+								var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity);
+								
+							} else {
+								
+								// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
+								var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity);
+								
+								// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
+								var discountAmount = precisionEvaluate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice()));
+								
+							}
+							
+							// If the discountAmount is gt 0 then we can add the details in order to the potential orderItem discounts
+							
+							if(discountAmount > 0) {
+								
+								// First thing that we are going to want to do is add this orderItem to the orderItemQualifiedDiscounts if it doesn't already exist
+								if(!structKeyExists(orderItemQualifiedDiscounts, orderItem.getOrderItemID())) {
+									// Set it as a blank array
+									orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+								}
+								
+								// If there are already values in the array then figure out where to insert
+								var discountAdded = false;
+								// loop over any discounts that might be already in assigned and pick an index where the discount amount is best
+								for(var d=1; d<=arrayLen(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ; d++) {
+									if(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][d].discountAmount < discountAmount) {
+										// Insert this value into the potential discounts array
+										arrayInsertAt(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], d, {
+											promotionRewardID = arguments.promotionReward.getPromotionRewardID(),
+											promotion = arguments.promotionReward.getPromotionPeriod().getPromotion(),
+											discountAmount = discountAmount
+										});
+										
+										discountAdded = true;
+										break;
+									}
+								}
+								
+								if(!discountAdded) {
+									// Insert this value into the potential discounts array
+									arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
+										promotionRewardID = arguments.promotionReward.getPromotionRewardID(),
+										promotion = arguments.promotionReward.getPromotionPeriod().getPromotion(),
+										discountAmount = discountAmount
+									});
+									
+								}
+								
+								// Increment the number of times this promotion reward has been used
+								
+								arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].usedInOrder += discountQuantity;
+								var discountPerUseValue = precisionEvaluate(discountAmount / discountQuantity);
+								
+								var usageAdded = false;
+								
+								// loop over any previous orderItemUsage of this reward an place it in ASC order based on discountPerUseValue
+								for(var oiu=1; oiu<=arrayLen(arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].orderItemsUsage) ; oiu++) {
+									if(arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].orderItemsUsage[oiu].discountPerUseValue > discountPerUseValue) {
+										// Insert this value into the potential discounts array
+										arrayInsertAt(arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].orderItemsUsage, oiu, {
+											orderItemID = orderItem.getOrderItemID(),
+											discountQuantity = discountQuantity,
+											discountPerUseValue = discountPerUseValue
+										});
+										
+										usageAdded = true;
+										break;
+									}
+								}
+								if(!usageAdded) {
+									
+									// Insert this value into the potential discounts array
+										
+									arrayAppend(arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ].orderItemsUsage, {
+										orderItemID = orderItem.getOrderItemID(),
+										discountQuantity = discountQuantity,
+										discountPerUseValue = discountPerUseValue
+									});
+									
+								}
+							
+							}
+							
+						} // End OrderItem in reward IF
+						
+					} // End orderItem qualification count > 0
+					
+				} // End orderItem fulfillment in qualifiedFulfillment list
+					
+			} // END Sale Item If
+			
+		} // End Order Item For Loop
+	}
+	
+	private void function processOrderRewards(required any order, required any promotionReward){
+		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts() + arguments.order.getFulfillmentChargeAfterDiscountTotal();
+						
+		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1);
+					
+		var addNew = false;
+			
+		// First we make sure that the discountAmount is > 0 before we check if we should add more discount
+		if(discountAmount > 0) {
+			
+			// If there aren't any promotions applied to this order fulfillment yet, then we can add this one
+			if(!arrayLen(arguments.order.getAppliedPromotions())) {
+				addNew = true;
+				
+			// If one has already been set then we just need to check if this new discount amount is greater
+			} else if ( arguments.order.getAppliedPromotions()[1].getDiscountAmount() < discountAmount ) {
+				
+				// If the promotion is the same, then we just update the amount
+				if(arguments.order.getAppliedPromotions()[1].getPromotion().getPromotionID() == arguments.promotionReward.getPromotionPeriod().getPromotion().getPromotionID()) {
+					arguments.order.getAppliedPromotions()[1].setDiscountAmount(discountAmount);
+					
+				// If the promotion is a different then remove the original and set addNew to true
+				} else {
+					arguments.order.getAppliedPromotions()[1].removeOrder();
+					addNew = true;
+				}
+			}
+		}
+		
+		// Add the new appliedPromotion
+		if(addNew) {
+			applyPromotionToOrder(arguments.order,arguments.promotionReward.getPromotionPeriod().getPromotion(),discountAmount);
+		}
+		
+	}
+	
 	public void function updateOrderAmountsWithPromotions(required any order) {
 		
 		// Sale & Exchange Orders
 		if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
 			
-			// Clear all previously applied promotions for order items
-			for(var oi=1; oi<=arrayLen(arguments.order.getOrderItems()); oi++) {
-				for(var pa=arrayLen(arguments.order.getOrderItems()[oi].getAppliedPromotions()); pa >= 1; pa--) {
-					arguments.order.getOrderItems()[oi].getAppliedPromotions()[pa].removeOrderItem();
-				}
-			}
-			
-			// Clear all previously applied promotions for fulfillment
-			for(var of=1; of<=arrayLen(arguments.order.getOrderFulfillments()); of++) {
-				for(var pa=arrayLen(arguments.order.getOrderFulfillments()[of].getAppliedPromotions()); pa >= 1; pa--) {
-					arguments.order.getOrderFulfillments()[of].getAppliedPromotions()[pa].removeOrderFulfillment();
-				}
-			}
-			
-			// Clear all previously applied promotions for order
-			for(var pa=arrayLen(arguments.order.getAppliedPromotions()); pa >= 1; pa--) {
-				arguments.order.getAppliedPromotions()[pa].removeOrder();
-			}
-			
-			/*
-			This is the data structure for the below structs to keep some information about what has & hasn't been applied as well as what can be applied	
-																																							
-			promotionPeriodQualifications = {																												
-				promotionPeriodID = {																														
-					qualificationsMeet = true | false,																										
-					qualifiedFulfillmentIDs = [],																												
-					qualifierDetails = [																													
-						{																																	
-							qualifier = entity,																												
-							qualificationCount = int,																										
-							qualifiedFulfillments = [ entity ],																								
-							qualifiedOrderItemDetails = [																									
-								{																															
-									orderItem = entity,																										
-									qualificationCount = int																								
-								}																															
-							]																																
-						}																																	
-					]																																		
-				}																																			
-			}																																				
-																																							
-			promotionRewardUsageDetails = {																													
-				promotionRewardID1 = {																														
-					usedInOrder = 0,																														
-					maximumUsePerOrder = 1000000,																											
-					maximumUsePerItem = 1000000,																											
-					maximumUsePerQualification = 1000000,																									
-					orderItemsUsage = [   			Array is sorted by discountPerUseValue ASC so that we know what items to strip from if we go over		
-						{																																	
-							orderItemID = x,																												
-							discountQuantity = 0,																											
-							discountPerUseValue = 0,																										
-						}																																	
-					]																																		
-				}																																			
-			}																																				
-																																							
-			orderItemQulifiedDiscounts = {																													
-				orderItemID1 = [									Array is sorted by discountAmount DESC so we know which is best to apply				
-					{																																		
-						promotionRewardID = x,																												
-						promotion = promotionEntity																											
-						discountAmount = 0,																													
-						discountQuantity = 0,																												
-						discountPerUseValue = 0,																											
-					}																																		
-				]													Array is sorted by discountAmount DESC so we know which is best to apply				
-			};																																				
-																																							
-			*/
+			clearPreviouslyAppliedPromotions(arguments.order);
 			
 			// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
 			var promotionPeriodQualifications = {};
@@ -139,54 +379,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var promotionRewardUsageDetails = {};
 			
 			// This is a structure of orderItems with all of the potential discounts that apply to them
-			var orderItemQulifiedDiscounts = {};
+			var orderItemQualifiedDiscounts = {};
 			
-			// Loop over orderItems and add Sale Prices to the qualified discounts
-			for(var orderItem in arguments.order.getOrderItems()) {
-				var salePriceDetails = orderItem.getSku().getSalePriceDetails();
-
-				if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
-					
-					var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
-					
-					orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ] = [];
-					
-					// Insert this value into the potential discounts array
-					arrayAppend(orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ], {
-						promotionRewardID = "",
-						promotion = this.getPromotion(salePriceDetails.promotionID),
-						discountAmount = discountAmount
-					});
-					
-				}
-			}
+			setupOrderItemQualifiedDiscounts(arguments.order,orderItemQualifiedDiscounts);
 			
 			// Loop over all Potential Discounts that require qualifications
 			var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true);
 			var orderRewards = false;
 			for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
-				
 				var reward = promotionRewards[pr];
-				
 				// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
-				if(!structKeyExists(promotionRewardUsageDetails, reward.getPromotionRewardID())) {
-					promotionRewardUsageDetails[ reward.getPromotionRewardID() ] = {
-						usedInOrder = 0,
-						maximumUsePerOrder = 1000000,
-						maximumUsePerItem = 1000000,
-						maximumUsePerQualification = 1000000,
-						orderItemsUsage = []
-					};
-					if( !isNull(reward.getMaximumUsePerOrder()) && reward.getMaximumUsePerOrder() > 0) {
-						promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder = reward.getMaximumUsePerOrder();
-					}
-					if( !isNull(reward.getMaximumUsePerItem()) && reward.getMaximumUsePerItem() > 0 ) {
-						promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerItem = reward.getMaximumUsePerItem();
-					}
-					if( !isNull(reward.getMaximumUsePerQualification()) && reward.getMaximumUsePerQualification() > 0 ) {
-						promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification = reward.getMaximumUsePerQualification();
-					}
-				}
+				setupPromotionRewardUsageDetails(reward,promotionRewardUsageDetails);
 				
 				// Setup the boolean for if the promotionPeriod is okToApply based on general use count
 				if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
@@ -195,346 +398,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// If this promotion period is ok to apply based on general useCount
 				if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
-						
 					// =============== Order Item Reward ==============
 					if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess", reward.getRewardType()) ) {
-
-						// Loop over all the orderItems
-						for(var orderItem in arguments.order.getOrderItems()) {
-							
-							// Verify that this is an item being sold
-							if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
-								
-								// Make sure that this order item is in the acceptable fulfillment list
-								if(arrayFind(promotionPeriodQualifications[reward.getPromotionPeriod().getPromotionPeriodID()].qualifiedFulfillmentIDs, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
-									
-									// Now that we know the fulfillment is ok, lets check and cache then number of times this orderItem qualifies based on the promotionPeriod
-									if(!structKeyExists(promotionPeriodQualifications[reward.getPromotionPeriod().getPromotionPeriodID()].orderItems, orderItem.getOrderItemID())) {
-										promotionPeriodQualifications[reward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ] = getPromotionPeriodOrderItemQualificationCount(promotionPeriod=reward.getPromotionPeriod(), orderItem=orderItem, order=arguments.order);
-									}
-									
-									// If the qualification count for this order item is > 0 then we can try to apply the reward
-									if(promotionPeriodQualifications[reward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ]) {
-										
-										// Check the reward settings to see if this orderItem applies
-										if( getOrderItemInReward(reward, orderItem) ) {
-											
-											var qualificationQuantity = promotionPeriodQualifications[reward.getPromotionPeriod().getPromotionPeriodID()].orderItems[ orderItem.getOrderItemID() ];
-											if((qualificationQuantity * promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification) lt promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder) {
-												promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder = (qualificationQuantity * promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification);
-											}
-											
-											// setup the discountQuantity based on the qualification quantity.  If there were no qualification constrints than this will just be the orderItem quantity
-											var discountQuantity = qualificationQuantity * promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerQualification;
-											
-											// If the discountQuantity is > the orderItem quantity then just set it to the orderItem quantity
-											if(discountQuantity > orderItem.getQuantity()) {
-												discountQuantity = orderItem.getQuantity();
-											}
-											
-											// If the discountQuantity is > than maximumUsePerItem then set it to maximumUsePerItem
-											if(discountQuantity > promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerItem) {
-												discountQuantity = promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerItem;
-											}
-											
-											// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
-											if( isNull(orderItem.getAppliedPriceGroup()) || reward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
-												
-												// Calculate based on price, which could be a priceGroup price
-												var discountAmount = getDiscountAmount(reward, orderItem.getPrice(), discountQuantity);
-												
-											} else {
-												
-												// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
-												var originalDiscountAmount = getDiscountAmount(reward, orderItem.getSkuPrice(), discountQuantity);
-												
-												// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
-												var discountAmount = precisionEvaluate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice()));
-												
-											}
-											
-											// If the discountAmount is gt 0 then we can add the details in order to the potential orderItem discounts
-											if(discountAmount > 0) {
-												
-												// First thing that we are going to want to do is add this orderItem to the orderItemQulifiedDiscounts if it doesn't already exist
-												if(!structKeyExists(orderItemQulifiedDiscounts, orderItem.getOrderItemID())) {
-													// Set it as a blank array
-													orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ] = [];
-												}
-												
-												// If there are already values in the array then figure out where to insert
-												var discountAdded = false;
-												
-												// loop over any discounts that might be already in assigned and pick an index where the discount amount is best
-												for(var d=1; d<=arrayLen(orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ]) ; d++) {
-													
-													if(orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ][d].discountAmount < discountAmount) {
-														
-														// Insert this value into the potential discounts array
-														arrayInsertAt(orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ], d, {
-															promotionRewardID = reward.getPromotionRewardID(),
-															promotion = reward.getPromotionPeriod().getPromotion(),
-															discountAmount = discountAmount
-														});
-														
-														discountAdded = true;
-														break;
-													}
-												}
-												
-												if(!discountAdded) {
-													
-													// Insert this value into the potential discounts array
-													arrayAppend(orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ], {
-														promotionRewardID = reward.getPromotionRewardID(),
-														promotion = reward.getPromotionPeriod().getPromotion(),
-														discountAmount = discountAmount
-													});
-													
-												}
-												
-												// Increment the number of times this promotion reward has been used
-												promotionRewardUsageDetails[ reward.getPromotionRewardID() ].usedInOrder += discountQuantity;
-												
-												var discountPerUseValue = precisionEvaluate(discountAmount / discountQuantity);
-												
-												var usageAdded = false;
-												
-												// loop over any previous orderItemUsage of this reward an place it in ASC order based on discountPerUseValue
-												for(var oiu=1; oiu<=arrayLen(promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage) ; oiu++) {
-													
-													if(promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage[oiu].discountPerUseValue > discountPerUseValue) {
-														
-														// Insert this value into the potential discounts array
-														arrayInsertAt(promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage, oiu, {
-															orderItemID = orderItem.getOrderItemID(),
-															discountQuantity = discountQuantity,
-															discountPerUseValue = discountPerUseValue
-														});
-														
-														usageAdded = true;
-														break;
-													}
-												}
-												
-												if(!usageAdded) {
-													
-													// Insert this value into the potential discounts array
-													arrayAppend(promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage, {
-														orderItemID = orderItem.getOrderItemID(),
-														discountQuantity = discountQuantity,
-														discountPerUseValue = discountPerUseValue
-													});
-													
-												}
-												
-											}
-											
-										} // End OrderItem in reward IF
-										
-									} // End orderItem qualification count > 0
-									
-								} // End orderItem fulfillment in qualifiedFulfillment list
-									
-							} // END Sale Item If
-							
-						} // End Order Item For Loop
-
-
+						processOrderItemRewards(arguments.order, promotionPeriodQualifications, promotionRewardUsageDetails, orderItemQualifiedDiscounts, reward);
+						
 					// =============== Fulfillment Reward ======================
 					} else if (!orderRewards and reward.getRewardType() eq "fulfillment" ) {
-					
-						// Loop over all the fulfillments
-						for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
-							
-							// Verify that this fulfillment is in the list & the methods match
-							if( arrayFind(promotionPeriodQualifications[reward.getPromotionPeriod().getPromotionPeriodID()].qualifiedFulfillmentIDs, orderFulfillment.getOrderFulfillmentID())
-								&&
-								( !arrayLen(reward.getFulfillmentMethods()) || reward.hasFulfillmentMethod(orderFulfillment.getFulfillmentMethod()) ) 
-								&&
-								( !arrayLen(reward.getShippingMethods()) || (!isNull(orderFulfillment.getShippingMethod()) && reward.hasShippingMethod(orderFulfillment.getShippingMethod()) ) ) ) {
-								
-								var addressIsInZone = true;
-								if(arrayLen(reward.getShippingAddressZones())) {
-									addressIsInZone = false;
-									if(!isNull(orderFulfillment.getAddress()) && !orderFulfillment.getAddress().isNew()) {
-										for(var az=1; az<=arrayLen(reward.getShippingAddressZones()); az++) {
-											if(getAddressService().isAddressInZone(address=orderFulfillment.getAddress(), addressZone=reward.getShippingAddressZones()[az])) {
-												addressIsInZone = true;
-												break;
-											}
-										}
-									}
-								}
-								
-								// Address In Zone
-								if(addressIsInZone) {
-									
-									var discountAmount = getDiscountAmount(reward, orderFulfillment.getFulfillmentCharge(), 1);
-									
-									var addNew = false;
-										
-									// First we make sure that the discountAmount is > 0 before we check if we should add more discount
-									if(discountAmount > 0) {
-										
-										// If there aren't any promotions applied to this order fulfillment yet, then we can add this one
-										if(!arrayLen(orderFulfillment.getAppliedPromotions())) {
-											addNew = true;
-											
-										// If one has already been set then we just need to check if this new discount amount is greater
-										} else if ( orderFulfillment.getAppliedPromotions()[1].getDiscountAmount() < discountAmount ) {
-											
-											// If the promotion is the same, then we just update the amount
-											if(orderFulfillment.getAppliedPromotions()[1].getPromotion().getPromotionID() == reward.getPromotionPeriod().getPromotion().getPromotionID()) {
-												orderFulfillment.getAppliedPromotions()[1].setDiscountAmount(discountAmount);
-												
-											// If the promotion is a different then remove the original and set addNew to true
-											} else {
-												orderFulfillment.getAppliedPromotions()[1].removeOrderFulfillment();
-												addNew = true;
-											}
-										}
-									}
-									
-									// Add the new appliedPromotion
-									if(addNew) {
-										var newAppliedPromotion = this.newPromotionApplied();
-										newAppliedPromotion.setAppliedType('orderFulfillment');
-										newAppliedPromotion.setPromotion( reward.getPromotionPeriod().getPromotion() );
-										newAppliedPromotion.setOrderFulfillment( orderFulfillment );
-										newAppliedPromotion.setDiscountAmount( discountAmount );
-									}
-									
-								} // END: Address In Zone
-								
-							} // END: Method Match
-							
-						} // Loop
-					
+						processOrderFulfillmentRewards(arguments.order, promotionPeriodQualifications, Reward);
 					// ================== Order Reward =========================
 					} else if (orderRewards and reward.getRewardType() eq "order" ) {
-						
-						var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts() + arguments.order.getFulfillmentChargeAfterDiscountTotal();
-						
-						var discountAmount = getDiscountAmount(reward, totalDiscountableAmount, 1);
-									
-						var addNew = false;
-							
-						// First we make sure that the discountAmount is > 0 before we check if we should add more discount
-						if(discountAmount > 0) {
-							
-							// If there aren't any promotions applied to this order fulfillment yet, then we can add this one
-							if(!arrayLen(arguments.order.getAppliedPromotions())) {
-								addNew = true;
-								
-							// If one has already been set then we just need to check if this new discount amount is greater
-							} else if ( arguments.order.getAppliedPromotions()[1].getDiscountAmount() < discountAmount ) {
-								
-								// If the promotion is the same, then we just update the amount
-								if(arguments.order.getAppliedPromotions()[1].getPromotion().getPromotionID() == reward.getPromotionPeriod().getPromotion().getPromotionID()) {
-									arguments.order.getAppliedPromotions()[1].setDiscountAmount(discountAmount);
-									
-								// If the promotion is a different then remove the original and set addNew to true
-								} else {
-									arguments.order.getAppliedPromotions()[1].removeOrder();
-									addNew = true;
-								}
-							}
-						}
-						
-						// Add the new appliedPromotion
-						if(addNew) {
-							var newAppliedPromotion = this.newPromotionApplied();
-							newAppliedPromotion.setAppliedType('order');
-							newAppliedPromotion.setPromotion( reward.getPromotionPeriod().getPromotion() );
-							newAppliedPromotion.setOrder( arguments.order );
-							newAppliedPromotion.setDiscountAmount( discountAmount );
-						}
-						
+						processOrderRewards(arguments.order);
 					} // ============= END ALL REWARD TYPES
-					
-					
 					// This forces the loop to repeat looking for "order" discounts
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {
 						pr = 0;
 						orderRewards = true;
 					}
+					
 				
 				} // END Promotion Period OK IF
 			
 			} // END of PromotionReward Loop
-			
 			// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
-			for(var prID in promotionRewardUsageDetails) {
-				
-				// If this promotion reward was used more than it should have been, then lets start stripping out from the arrays in the correct order
-				if(promotionRewardUsageDetails[ prID ].usedInOrder > promotionRewardUsageDetails[ prID ].maximumUsePerOrder) {
-					var needToRemove = promotionRewardUsageDetails[ prID ].usedInOrder - promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder;
-					
-					// Loop over the items it was applied to an remove the quantity necessary to meet the total needToRemoveQuantity
-					for(var x=1; x<=arrayLen(promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage); x++) {
-						var orderItemID = promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage[x].orderItemID;
-						var thisDiscountQuantity = promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage[x].discountQuantity;
-						
-						if(needToRemove < thisDiscountQuantity) {
-							
-							// Loop over to find promotionReward
-							for(var y=arrayLen(orderItemQulifiedDiscounts[ orderItemID ]); y>=1; y--) {
-								if(orderItemQulifiedDiscounts[ orderItemID ][y].promotionRewardID == prID) {
-									
-									// Set the discountAmount as some fraction of the original discountAmount
-									orderItemQulifiedDiscounts[ orderItemID ][y].discountAmount = precisionEvaluate((orderItemQulifiedDiscounts[ orderItemID ][y].discountAmount / thisDiscountQuantity) * (thisDiscountQuantity - needToRemove));
-									
-									// Update the needToRemove
-									needToRemove = 0;
-									
-									// Break out of the item discount loop
-									break;
-								}
-							}
-						} else {
-							
-							// Loop over to find promotionReward
-							for(var y=arrayLen(orderItemQulifiedDiscounts[ orderItemID ]); y>=1; y--) {
-								if(orderItemQulifiedDiscounts[ orderItemID ][y].promotionRewardID == prID) {
-									
-									// Remove from the array
-									arrayDeleteAt(orderItemQulifiedDiscounts[ orderItemID ], y);
-									
-									// update the needToRemove
-									needToRemove = needToRemove - thisDiscountQuantity;
-									
-									// Break out of the item discount loop
-									break;
-								}
-							}
-						}
-						
-						// If we don't need to remove any more
-						if(needToRemove == 0) {
-							break;
-						}
-					}
-					
-				}
-				
-			} // End Promotion Reward loop for removing anything that was overused
 			
+			removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
 			// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-				
-				var orderItem = arguments.order.getOrderItems()[i];
-				
-				// If the orderItemID exists in the qualifiedDiscounts, and the discounts have at least 1 value we can apply that top 1 discount
-				if(structKeyExists(orderItemQulifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
-					var newAppliedPromotion = this.newPromotionApplied();
-					newAppliedPromotion.setAppliedType('orderItem');
-					newAppliedPromotion.setPromotion( orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
-					newAppliedPromotion.setOrderItem( orderItem );
-					newAppliedPromotion.setDiscountAmount( orderItemQulifiedDiscounts[ orderItem.getOrderItemID() ][1].discountAmount );
-				}
-				
-			}
+			applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 			
 		} // END of Sale or Exchange Loop
 		
@@ -545,6 +434,97 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 	
+	private void function applyPromotionToOrderFulfillment(required any orderFulfillment, required any promotion, required numeric discount){
+		var newAppliedPromotion = this.newPromotionApplied();
+		newAppliedPromotion.setAppliedType('orderFulfillment');
+		newAppliedPromotion.setPromotion( arguments.promotion );
+		newAppliedPromotion.setOrderFulfillment( arguments.orderFulfillment );
+		newAppliedPromotion.setDiscountAmount( arguments.discountAmount );
+	}
+	
+	private void function applyPromotionToOrder(required any order,required any promotion, required numeric discountAmount){
+		var newAppliedPromotion = this.newPromotionApplied();
+		newAppliedPromotion.setAppliedType('order');
+		newAppliedPromotion.setPromotion( arguments.promotion );
+		newAppliedPromotion.setOrder( arguments.order );
+		newAppliedPromotion.setDiscountAmount( arguments.discountAmount );
+	}
+	
+	private void function removeDiscountsExceedingMaxOrderUseCounts(required any promotionRewardUsageDetails, required any orderItemQualifiedDiscounts){
+		
+		
+		for(var prID in arguments.promotionRewardUsageDetails) {
+					
+			// If this promotion reward was used more than it should have been, then lets start stripping out from the arrays in the correct order
+			if(arguments.promotionRewardUsageDetails[ prID ].usedInOrder > arguments.promotionRewardUsageDetails[ prID ].maximumUsePerOrder) {
+				var needToRemove = arguments.promotionRewardUsageDetails[ prID ].usedInOrder - arguments.promotionRewardUsageDetails[ prID ].maximumUsePerOrder;
+				// Loop over the items it was applied to an remove the quantity necessary to meet the total needToRemoveQuantity
+				for(var x=1; x<=arrayLen(arguments.promotionRewardUsageDetails[ prID ].orderItemsUsage); x++) {
+					var orderItemID = arguments.promotionRewardUsageDetails[ prID ].orderItemsUsage[x].orderItemID;
+					var thisDiscountQuantity = arguments.promotionRewardUsageDetails[ prID ].orderItemsUsage[x].discountQuantity;
+				
+					if(needToRemove < thisDiscountQuantity) {
+						
+						// Loop over to find promotionReward
+						for(var y=arrayLen(arguments.orderItemQualifiedDiscounts[ orderItemID ]); y>=1; y--) {
+							if(arguments.orderItemQualifiedDiscounts[ orderItemID ][y].promotionRewardID == prID) {
+								
+								// Set the discountAmount as some fraction of the original discountAmount
+								arguments.orderItemQualifiedDiscounts[ orderItemID ][y].discountAmount = precisionEvaluate((arguments.orderItemQualifiedDiscounts[ orderItemID ][y].discountAmount / thisDiscountQuantity) * (thisDiscountQuantity - needToRemove));
+								
+								// Update the needToRemove
+								needToRemove = 0;
+								
+								// Break out of the item discount loop
+								break;
+							}
+						}
+					} else {
+						
+						// Loop over to find promotionReward
+						for(var y=arrayLen(arguments.orderItemQualifiedDiscounts[ orderItemID ]); y>=1; y--) {
+							if(arguments.orderItemQualifiedDiscounts[ orderItemID ][y].promotionRewardID == prID) {
+								// Remove from the array
+								arrayDeleteAt(arguments.orderItemQualifiedDiscounts[ orderItemID ], y);
+								
+								// update the needToRemove
+								needToRemove = needToRemove - thisDiscountQuantity;
+								
+								// Break out of the item discount loop
+								break;
+							}
+						}
+					}
+					
+					// If we don't need to remove any more
+					if(needToRemove == 0) {
+						break;
+					}
+				}
+				
+			}
+			
+		} // End Promotion Reward loop for removing anything that was overused
+	
+	}
+	
+	private void function applyTop1Discounts(required any order, required any orderItemQualifiedDiscounts){
+		// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
+		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+			
+			var orderItem = arguments.order.getOrderItems()[i];
+			// If the orderItemID exists in the qualifiedDiscounts, and the discounts have at least 1 value we can apply that top 1 discount
+			
+			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
+				var newAppliedPromotion = this.newPromotionApplied();
+				newAppliedPromotion.setAppliedType('orderItem');
+				newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
+				newAppliedPromotion.setOrderItem( orderItem );
+				newAppliedPromotion.setDiscountAmount( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].discountAmount );
+			}
+			
+		}
+	}
 	
 	private struct function getPromotionPeriodQualificationDetails(required any promotionPeriod, required any order) {
 		
@@ -563,7 +543,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var explicitlyQualifiedFulfillmentIDs = [];
 		
 		// Check the max use count for the promotionPeriod
-		if(!isNull(arguments.promotionPeriod.getMaximumUseCount()) && arguments.promotionPeriod.getMaximumUseCount() gt 0) {
+		if(arguments.promotionPeriod.hasMaximumUseCount()) {
 			var periodUseCount = getPromotionDAO().getPromotionPeriodUseCount(promotionPeriod = arguments.promotionPeriod);	
 			if(periodUseCount >= arguments.promotionPeriod.getMaximumUseCount()) {
 				qualificationDetails.qualificationsMeet = false;
@@ -571,7 +551,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Check the max account use count for the promotionPeriod
-		if(!isNull(arguments.promotionPeriod.getMaximumAccountUseCount()) && arguments.promotionPeriod.getMaximumAccountUseCount() gt 0) {
+		if(arguments.promotionPeriod.hasMaximumAccountUseCount()) {
 			if(!isNull(arguments.order.getAccount())) {
 				var periodAccountUseCount = getPromotionDAO().getPromotionPeriodAccountUseCount(promotionPeriod = arguments.promotionPeriod, account=arguments.order.getAccount());
 				if(periodAccountUseCount >= arguments.promotionPeriod.getMaximumAccountUseCount()) {
@@ -633,7 +613,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			qualifiedFulfillmentIDs = [],
 			qualifiedOrderItemDetails = []
 		};
-		
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
 			
@@ -920,9 +899,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public boolean function getOrderItemInReward(required any reward, required any orderItem) {
 		
-		
 		// START: Check Exclusions
-		
 		var hasExcludedProductType = false;
 		// Check all of the exclusions for an excluded product type
 		if(arrayLen(arguments.reward.getExcludedProductTypes())) {
@@ -954,9 +931,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// START: Check Inclusions
-		
 		if(arrayLen(arguments.reward.getProductTypes())) {
 			var includedPropertyTypeIDList = "";
+			
+			var productTypes = [];
+			
+			/*for(promotionReward in arguments.reward.getPromotionPeriod().getPromotionRewards()){
+				for(productType in promotionReward.getproductTypes()){
+					arrayAppend(productTypes,productType);
+				}
+			}
+		
+			for(var i=1; i<=arrayLen(productTypes); i++) {
+				includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, productTypes[i].getProductTypeID());
+			}*/
 			
 			for(var i=1; i<=arrayLen(arguments.reward.getProductTypes()); i++) {
 				includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, arguments.reward.getProductTypes()[i].getProductTypeID());
@@ -968,6 +956,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}	
 			}
 		}
+		
 		if(arguments.reward.hasProduct( arguments.orderItem.getSku().getProduct() )) {
 			return true;
 		}

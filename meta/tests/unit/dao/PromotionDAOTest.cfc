@@ -46,39 +46,35 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
 		
-		variables.entity = request.slatwallScope.newEntity( 'Order' );
-		
+		variables.dao = request.slatwallScope.getDAO("promotionDAO");
 	}
 	
-	// Orders are alowed to be saved with no data
-	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
-		variables.entity.validate(context="save");
-		assertFalse( variables.entity.hasErrors() );
+	public void function getActivePromotionRewards(){
+		
+		var order = variables.dao.new('Order');
+		var promotion = variables.dao.new('promotion');
+		promotion.setActiveFlag(true);
+		var promotionPeriod = variables.dao.new('promotionPeriod');
+		promotion.addPromotionPeriod(promotionPeriod);
+		var promotionCode = variables.dao.new('promotionCode');
+		promotion.addPromotionCode(promotionCode);
+		var promotionReward = variables.dao.new('promotionReward');
+		
+		promotionCode.setPromotionCode('TestPromotionCode');
+		
+		order.addPromotionCode(promotionCode);
+		
+		promotionCodeList = variables.dao.getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", 
+																				promotionCodeList=order.getPromotionCodeList(), 
+																				qualificationRequired=true);
 	}
-	
-	public void function getPromotionCodeList(){
-		
-		var promotionCode1 = request.slatwallScope.newEntity( 'PromotionCode' );
-		promotionCode1.setPromotionCode('TestPromotionCode1');
-		entity.addPromotionCode(promotionCode1);
-		var promotionCodeList = variables.entity.getPromotionCodeList();
-		assertEquals(promotionCodeList,'TestPromotionCode1');
-		
-		promotionCode2 = request.slatwallScope.newEntity( 'PromotionCode' );
-		promotionCode2.setPromotionCode('TestPromotionCode2');
-		entity.addPromotionCode(promotionCode2);
-		promotionCodeList = variables.entity.getPromotionCodeList();
-		
-		assertEquals(promotionCodeList,'TestPromotionCode1,TestPromotionCode2');
-		
-	}
-	
-	
+
 	
 }
+
+
