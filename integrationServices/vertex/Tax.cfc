@@ -92,33 +92,48 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 							for(var n3 in n2.xmlChildren) {
 								
 								if(n3.xmlName == "Taxes") {
-									
 
+									var taxAmount = 0;
+									var taxRate = 0;
+									var taxImpositionID = "";
+									var taxImpositionType = "";
+									var taxJurisdictionID = "";
+									var taxJurisdictionName = "";
+									var taxJurisdictionType = "";
+									
 									for(var n4 in n3.xmlChildren) {
 										
-										var taxAmount = 0;
-										var taxRate = 0;
-										var integrationTaxRateType = "";
-										
+										if(n4.xmlName == "Jurisdiction"){
+											taxJurisdictionName = n4.xmlText;
+											taxJurisdictionID = n4.xmlAttributes.jurisdictionId;
+											taxJurisdictionType = n4.xmlAttributes.jurisdictionLevel;
+										}
 										if(n4.xmlName == "CalculatedTax"){
 											taxAmount = n4.xmlText;
 										}
 										if(n4.xmlName == "EffectiveRate"){
 											taxRate = n4.xmlText;
-											
 										}
 										if(n4.xmlName == "Imposition"){
-											integrationTaxRateType = n4.xmlText;
+											taxImpositionName = n4.xmlText;
+											taxImpositionType = n4.xmlAttributes.impositionType;
 										}
-										
-										responseBean.addTaxRateItem(orderItemID=orderItemID, taxAmount=taxAmount, taxRate=taxRate, integrationTaxRateType=integrationTaxRateType);
 										
 									}
 									
+									responseBean.addTaxRateItem(
+											orderItemID=orderItemID, 
+											taxAmount=taxAmount, 
+											taxRate=taxRate, 
+											taxJurisdictionName=taxJurisdictionName,
+											taxJurisdictionID=taxJurisdictionID,
+											taxJurisdictionType=taxJurisdictionType,
+											taxImpositionName=taxImpositionName,
+											taxImpositionType=taxImpositionType);
+									
 								}								
 								
-							}
-							
+							}							
 						}
 						
 					}
