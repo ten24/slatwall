@@ -233,6 +233,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var isl = this.getIntegrationSmartList();
 		isl.addFilter('activeFlag', 1);
 		isl.addFilter('installedFlag', 1);
+		isl.addLikeFilter('integrationType', '%fw1%');
 		
 		var authInts = isl.getRecords();
 		for(var i=1; i<=arrayLen(authInts); i++) {
@@ -252,7 +253,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var isl = this.getIntegrationSmartList();
 		isl.addFilter('activeFlag', 1);
 		isl.addFilter('installedFlag', 1);
-		isl.addLikeFilter('integrationPackage', '%authentication%');
+		isl.addLikeFilter('integrationType', '%authentication%');
 		
 		var authInts = isl.getRecords();
 		for(var i=1; i<=arrayLen(authInts); i++) {
