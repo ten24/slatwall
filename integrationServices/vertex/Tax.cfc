@@ -77,10 +77,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	
 			// Parse response and set to struct
 			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-			
-			/*writeDump(var="#xmlResponse#");
-			abort;*/
-			
+
 			// Searches for the totalTax in xmlChild
 			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
 				
