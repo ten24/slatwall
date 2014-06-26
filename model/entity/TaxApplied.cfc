@@ -60,6 +60,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="currencyCode" ormtype="string" length="3";
 	
 	//Persitent Integration Properties
+	property name="taxImpositionID" ormtype="string";
 	property name="taxImpositionName" ormtype="string";
 	property name="taxImpositionType" ormtype="string";
 	property name="taxJurisdictionID" ormtype="string";

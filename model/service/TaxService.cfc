@@ -158,6 +158,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											var newAppliedTax = this.newTaxApplied();
 											newAppliedTax.setAppliedType("orderItem");
 											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
+											newAppliedTax.setTaxImpositionID( taxRateItemResponse.getTaxImpositionID() );
 											newAppliedTax.setTaxImpositionName( taxRateItemResponse.getTaxImpositionName() );
 											newAppliedTax.setTaxImpositionType( taxRateItemResponse.getTaxImpositionType() );
 											newAppliedTax.setTaxJurisdictionID( taxRateItemResponse.getTaxJurisdictionID() );
