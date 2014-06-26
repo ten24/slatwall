@@ -55,13 +55,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup the taxIntegrationArray
 		var taxIntegrationArr = [];
-		var taxAddresses = {};
+		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
+		
 		// First Loop over the orderItems to remove existing taxes
 		for(var orderItem in arguments.order.getOrderItems()) {
 			
 			// Remove all existing tax calculations
 			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
-				orderItem.getAppliedTaxes()[ta].removeOrderItem();
+				orderItem.getAppliedTaxes()[ta].removeOrderItem(orderItem);
 			}
 		
 		}
@@ -150,19 +151,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];	
 									
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
-											
+										
 										if(taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
-											
-											
+
 											// Add a new AppliedTax 
 											var newAppliedTax = this.newTaxApplied();
-											newAppliedTax.setAppliedType("orderItem");											
+											newAppliedTax.setAppliedType("orderItem");
+											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
 											newAppliedTax.setTaxImpositionName( taxRateItemResponse.getTaxImpositionName() );
 											newAppliedTax.setTaxImpositionType( taxRateItemResponse.getTaxImpositionType() );
 											newAppliedTax.setTaxJurisdictionID( taxRateItemResponse.getTaxJurisdictionID() );
 											newAppliedTax.setTaxJurisdictionName( taxRateItemResponse.getTaxJurisdictionName() );
 											newAppliedTax.setTaxJurisdictionType( taxRateItemResponse.getTaxJurisdictionType() );
-											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
 											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 											newAppliedTax.setOrderItem( orderItem );
 											newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
@@ -236,6 +236,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
+	public struct function addTaxAddressesStructBillingAddressKey(required any order) {
+		var taxAddresses = {};
+		
+		// If the order has a billing address, use that to potentially calculate taxes for all items
+		if(!isNull(arguments.order.getBillingAddress())) {
+			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
+		} else {
+			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
+			for(var orderPayment in arguments.order.getOrderPayments()) {
+				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
+					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
+					break;
+				}
+			}	
+		}
+		return taxAddresses;
+	}
+	
 	public any function getTaxAddressByTaxCategoryRate(required any taxCategoryRate, required struct taxAddresses) {
 		if(taxCategoryRate.getTaxAddressLookup() eq 'shipping_billing') {
 			if(structKeyExists(arguments.taxAddresses, "taxShippingAddress")) {
@@ -273,20 +291,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function generateTaxRatesRequestBeanForIntegration( required any order, required any integration ){
 		
-		var taxAddresses = {};
-		
-		// If the order has a billing address, use that to potentially calculate taxes for all items
-		if(!isNull(arguments.order.getBillingAddress())) {
-			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
-		} else {
-			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
-			for(var orderPayment in arguments.order.getOrderPayments()) {
-				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
-					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
-					break;
-				}
-			}	
-		}
+		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
 		// Create rates request bean and populate it with the taxCategory Info
 		var taxRatesRequestBean = getTransient("TaxRatesRequestBean");
