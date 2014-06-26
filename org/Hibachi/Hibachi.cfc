@@ -239,7 +239,7 @@ component extends="FW1.framework" {
 		
 		param name="request.context.ajaxRequest" default="false";
 		param name="request.context.returnJSONObjects" default="";
-		param name="request.context.returnJSONLCase" default="false";
+		param name="request.context.returnJSONKeyLCase" default="false";
 		param name="request.context.messages" default="#arrayNew(1)#";
 		
 		request.context.ajaxResponse = {};
@@ -483,7 +483,7 @@ component extends="FW1.framework" {
   					}
   				}
   			}
-  			if(structKeyExists(request.context, "returnJSONLCase") && isBoolean(request.context.returnJSONLCase) && request.context.returnJSONLCase) {
+  			if(structKeyExists(request.context, "returnJSONKeyLCase") && isBoolean(request.context.returnJSONKeyLCase) && request.context.returnJSONKeyLCase) {
 				writeOutput( serializeJSON( getHibachiScope().getService("hibachiUtilityService").lcaseStructKeys(request.context.ajaxResponse) ) );	
 			} else {
 				writeOutput( serializeJSON(request.context.ajaxResponse) );

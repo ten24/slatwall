@@ -37,7 +37,7 @@ component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 	}
 	
 	function account_returns_valid_json_that_can_be_all_lower_case() {
-		selenium.open('/?slatAction=public:ajax.account&ajaxRequest=1&returnJSONLCase=1');
+		selenium.open('/?slatAction=public:ajax.account&ajaxRequest=1&returnJSONKeyLCase=1');
 		
 		var ajaxResponse = selenium.getBodyText();
 		
