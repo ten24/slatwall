@@ -141,5 +141,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse( variables.entity.hasErrors(), "The order shows that it has errors event when it was populated" );
 	}
 	
+	public void function setBillingAccountAddress_updates_billingAddress_if_changed() {
+		
+	}
+	
 	
 }
