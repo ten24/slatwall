@@ -418,7 +418,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 				// Get the account address, copy it, and save as the shipping address
 				setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
 				return variables.shippingAddress;
-			} else if (!isNull(getOrder().getShippingAddress()) ) {
+			} else if (!isNull(getOrder()) && !isNull(getOrder().getShippingAddress()) ) {
 				return getOrder().getShippingAddress();
 			}
 			
