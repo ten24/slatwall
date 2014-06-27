@@ -20,6 +20,7 @@
 	},
 	"properties":{
 		"orderFulfillmentID":		[{"contexts":"delete","maxValue":0}],
+		"order":					[{"contexts":"save","required":true}],
 		"fulfillmentCharge":		[{"contexts":"save","dataType":"numeric","minValue":0}],
 		"orderFulfillmentItems":	[{"contexts":"placeOrder,fulfillItems","minCollection":1}],
 		"quantityUndelivered":		[{"contexts":"fulfillItems","minValue":0}],

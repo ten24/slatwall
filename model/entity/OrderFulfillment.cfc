@@ -457,18 +457,20 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(getOrder().getOrderStatusType().getSystemCode() neq "ostNotPlaced") {
+		if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			rep &= "#getOrder().getOrderNumber()# - ";
 		}
-		rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
-		if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
-			rep &= " - #getAddress().getStreetAddress()#";
-		}
-		if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {
-			rep &= " - #getEmailAddress()#";
-		}
-		if(getFulfillmentMethodType() eq "email" && !isNull(getAccountEmailAddress())) {
-			rep &= " - #getAccountEmailAddress().getEmailAddress()#";
+		if(!isNull(getFulfillmentMethod())) {
+			rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
+			if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
+				rep &= " - #getAddress().getStreetAddress()#";
+			}
+			if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {
+				rep &= " - #getEmailAddress()#";
+			}
+			if(getFulfillmentMethodType() eq "email" && !isNull(getAccountEmailAddress())) {
+				rep &= " - #getAccountEmailAddress().getEmailAddress()#";
+			}	
 		}
 		return rep;
 	}
@@ -482,7 +484,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			accountAddressIDBefore = getAccountAddress().getAccountAddressID();
 		}
 
-		super.populate();
+		super.populate(argumentCollection=arguments);
 
 		if(!isNull(getAccountAddress())) {
 			accountAddressIDAfter = getAccountAddress().getAccountAddressID();
