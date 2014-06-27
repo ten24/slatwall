@@ -61,4 +61,85 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse( variables.entity.hasErrors() );
 	}
 	
+	public void function validate_billingAddress_as_full_fails_when_not_fully_populated() {
+		var populateData = {
+			billingAddress = {
+				addressID = '',
+				name="Example Name",
+				countryCode="US"
+			}
+		};
+		
+		variables.entity.populate( populateData );
+		
+		variables.entity.validate( context="save" );
+		
+		assert( !isNull(variables.entity.getBillingAddress()), "The orders address was never populated in the first place" );
+		assertEquals( "Example Name", variables.entity.getBillingAddress().getName(), "The orders address was never populated in the first place" );
+		assert( variables.entity.hasErrors(), "The order doesn't show that it has errors when it should because the billing address was not fully populated" );
+	}
+	
+	public void function validate_billingAddress_as_full_passes_when_fully_populated() {
+		var populateData = {
+			billingAddress = {
+				addressID = '',
+				name="Example Name",
+				streetAddress="123 Main Street",
+				city="Encinitas",
+				stateCode="CA",
+				postalCode="92024",
+				countryCode="US"
+			}
+		};
+		
+		variables.entity.populate( populateData );
+		
+		variables.entity.validate( context="save" );
+		
+		assert( !isNull(variables.entity.getBillingAddress()), "The orders address was never populated in the first place" );
+		assertEquals( "Example Name", variables.entity.getBillingAddress().getName(), "The orders address was never populated in the first place" );
+		assertFalse( variables.entity.hasErrors(), "The order shows that it has errors event when it was populated" );
+	}
+	
+	public void function validate_shippingAddress_as_full_fails_when_not_fully_populated() {
+		var populateData = {
+			shippingAddress = {
+				addressID = '',
+				name="Example Name",
+				countryCode="US"
+			}
+		};
+		
+		variables.entity.populate( populateData );
+		
+		variables.entity.validate( context="save" );
+		
+		assert( !isNull(variables.entity.getShippingAddress()), "The orders address was never populated in the first place" );
+		assertEquals( "Example Name", variables.entity.getShippingAddress().getName(), "The orders address was never populated in the first place" );
+		assert( variables.entity.hasErrors(), "The order doesn't show that it has errors when it should because the billing address was not fully populated" );
+	}
+	
+	public void function validate_shippingAddress_as_full_passes_when_fully_populated() {
+		var populateData = {
+			shippingAddress = {
+				addressID = '',
+				name="Example Name",
+				streetAddress="123 Main Street",
+				city="Encinitas",
+				stateCode="CA",
+				postalCode="92024",
+				countryCode="US"
+			}
+		};
+		
+		variables.entity.populate( populateData );
+		
+		variables.entity.validate( context="save" );
+		
+		assert( !isNull(variables.entity.getShippingAddress()), "The orders address was never populated in the first place" );
+		assertEquals( "Example Name", variables.entity.getShippingAddress().getName(), "The orders address was never populated in the first place" );
+		assertFalse( variables.entity.hasErrors(), "The order shows that it has errors event when it was populated" );
+	}
+	
+	
 }
