@@ -241,7 +241,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxAddresses = {};
 		
 		// If the order has a billing address, use that to potentially calculate taxes for all items
-		if(!isNull(arguments.order.getBillingAddress())) {
+		if(!isNull(arguments.order.getBillingAddress()) && arguments.order.getBillingAddress().getEntityName() == "SlatwallAddress") {
 			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
 		} else {
 			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
