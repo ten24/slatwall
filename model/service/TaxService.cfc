@@ -57,18 +57,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxIntegrationArr = [];
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
-		// First Loop over the orderItems to remove existing taxes
-		for(var orderItem in arguments.order.getOrderItems()) {
-			
-			// Remove all existing tax calculations
-			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
-				orderItem.getAppliedTaxes()[ta].removeOrderItem();
-			}
-		
-		}
+		//Remove existing taxes from OrderItems
+		var orderItemsArray = removeTaxesFromAllOrderItems(arguments.order);
 		
 		// Next Loop over the orderItems and setup integrations to call
-		for(var orderItem in arguments.order.getOrderItems()) {
+		for(var orderItem in orderItemsArray) {
 			
 			// Get this sku's taxCategory
 			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
@@ -120,7 +113,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Final Loop over orderItems to apply taxRates either from internal calculation, or from integrations rate calculation
-		for(var orderItem in arguments.order.getOrderItems()) {
+		for(var orderItem in orderItemsArray) {
 			
 			// Apply Tax for sale items
 			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
@@ -236,6 +229,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 	}
+	
+	public array function removeTaxesFromAllOrderItems(required any order){
+		// First Loop over the orderItems to remove existing taxes
+		for(var orderItem in arguments.order.getOrderItems()) {
+
+			// Remove all existing tax calculations
+			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
+				orderItem.getAppliedTaxes()[ta].removeOrderItem();
+			}
+			
+		}
+		return arguments.order.getOrderItems();
+	}
+
 	
 	public struct function addTaxAddressesStructBillingAddressKey(required any order) {
 		var taxAddresses = {};
