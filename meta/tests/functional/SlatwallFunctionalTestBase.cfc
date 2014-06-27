@@ -52,15 +52,12 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		readLocalConfiguration();
 	    browserURL = variables.configuration.ui.browserUrl; 
 	    browserCommand = variables.configuration.ui.browserCommand;
-	    super.beforeTests();
 	    
-	    //ensure each TestCase starts with a fresh session
-		variables.Login = new LoginPage(selenium);
-		variables.Dashboard = Login.login(variables.configuration.common.login, variables.configuration.common.password);
+	    super.beforeTests();
 	}
 	
-	private function assertPageIsLoaded(pageObject){
-		assertEquals(pageObject.getTitle(), selenium.getTitle());
+	private function assertPageIsLoaded( required any pageObject , string message=""){
+		assertEquals(arguments.pageObject.getTitle(), variables.selenium.getTitle(), arguments.message);
 	}
 	
 	// Thanks to Joe Rinehart and Brian Kotek

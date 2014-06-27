@@ -46,55 +46,80 @@
 Notes:
 
 */
-component output="false" accessors="true" {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	property name="fw" type="any";
-	
-	property name="addressService" type="any";
-	property name="productService" type="any";
-
-	public void function init( required any fw ) {
-		setFW( arguments.fw );
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
 	
-	public void function before() {
-		getFW().setView("public:main.blank");
-	}
-
-	public void function account( struct rc ) {
-		param name="rc.propertyList" default=""; 
+	
+	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
+		var data = {};
+		data['KEY1'] = 1;
+		data['KEY2'] = 2;
+		data['KEY3'] = 3;
 		
-		rc.ajaxResponse["account"] = rc.$.slatwall.getAccountData( rc.propertyList );	
+		data = variables.service.lcaseStructKeys( data );
+		
+		var ska = listToArray(structKeyList(data));
+		arraySort(ska, "textNoCase");
+		debug(ska);
+		
+		assertEquals(0, compare(ska[1], 'key1'));
+		assertEquals(0, compare(ska[2], 'key2'));
+		assertEquals(0, compare(ska[3], 'key3'));
 	}
 	
-	public void function cart( struct rc  ) {
-		param name="rc.propertyList" default=""; 
+	public void function lcaseStructKeys_lcases_structure_keys_at_nested_array_level() {
+		var data = {};
+		data['ARRAY1'] = [];
 		
-		rc.ajaxResponse["cart"] = rc.$.slatwall.getCartData( rc.propertyList );	
-	}
-	
-	public void function country( required struct rc ) {
-		param name="rc.countryCode" type="string" default="";
+		var subData = {};
+		subData['KEY1'] = 1;
+		subData['KEY2'] = 2;
+		subData['KEY3'] = 3;
 		
-		var country = getAddressService().getCountry(rc.countryCode);
+		arrayAppend(data['ARRAY1'], subData);
+		arrayAppend(data['ARRAY1'], subData);
 		
-		// Make sure that the stateCodeOptions are in the variables scope
-		country.getStateCodeOptions();
-		
-		if(!isNull(country)) {
-			rc.ajaxResponse["country"] = country;	
+		data = variables.service.lcaseStructKeys( data );
+		debug(data);
+		for(var subDataStruct in data.array1) {
+			var ska = listToArray(structKeyList(subDataStruct));
+			arraySort(ska, "textNoCase");
+			
+			assertEquals(0, compare(ska[1], 'key1'));
+			assertEquals(0, compare(ska[2], 'key2'));
+			assertEquals(0, compare(ska[3], 'key3'));
 		}
+		
 	}
 	
-	public void function productSkuOptionDetails( required struct rc ) {
-		param name="arguments.rc.productID" type="string" default="";
-		param name="arguments.rc.selectedOptionIDList" type="string" default="";
+	public void function lcaseStructKeys_works_on_complex_nested_data() {
 		
-		var product = getProductService().getProduct( arguments.rc.productID );
+		var data = request.slatwallScope.getAccountData();
 		
-		if(!isNull(product) && product.getActiveFlag() && product.getPublishedFlag()) {
-			rc.ajaxResponse["skuOptionDetails"] = product.getSkuOptionDetails( arguments.rc.selectedOptionIDList );
-		}
+		data = variables.service.lcaseStructKeys( data );
+		
+		var peaStructKeyArray = listToArray(structKeyList(data.primaryemailaddress));
+		arraySort(peaStructKeyArray, "textNoCase");
+		
+		assertEquals(0, compare(peaStructKeyArray[1], 'accountemailaddressid'));
+	}
+	
+	public void function lcaseStructKeys_lcases_structure_keys_with_null_values() {
+		
+		var data = {};
+		data['myNullKeyValue'] = javaCast('null', '');
+		data['myValidKeyValue'] = 1;
+		
+		variables.service.lcaseStructKeys( data );
+
+		assertEquals(2, structCount(data));
 	}
 	
 }
+
+

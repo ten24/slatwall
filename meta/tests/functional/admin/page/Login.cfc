@@ -7,9 +7,10 @@ component extends="PageObject"{
 		selenium.type("emailAddress", username);
 		selenium.type("password", password);
 		selenium.submit("adminLoginForm");
-		var waited = waitFor();
-		writeLog("Login took #waited# ms to load");
-		return new Dashboard(selenium);
+		
+		var pageLoadTime = waitFor();
+		
+		return new Dashboard(selenium, pageLoadTime);
 	}
 	
 	function logout(){

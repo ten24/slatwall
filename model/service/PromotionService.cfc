@@ -469,12 +469,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// If this promotion reward was used more than it should have been, then lets start stripping out from the arrays in the correct order
 				if(promotionRewardUsageDetails[ prID ].usedInOrder > promotionRewardUsageDetails[ prID ].maximumUsePerOrder) {
-					var needToRemove = promotionRewardUsageDetails[ prID ].usedInOrder - promotionRewardUsageDetails[ reward.getPromotionRewardID() ].maximumUsePerOrder;
+					var needToRemove = promotionRewardUsageDetails[ prID ].usedInOrder - promotionRewardUsageDetails[ prID ].maximumUsePerOrder;
 					
 					// Loop over the items it was applied to an remove the quantity necessary to meet the total needToRemoveQuantity
-					for(var x=1; x<=arrayLen(promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage); x++) {
-						var orderItemID = promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage[x].orderItemID;
-						var thisDiscountQuantity = promotionRewardUsageDetails[ reward.getPromotionRewardID() ].orderItemsUsage[x].discountQuantity;
+					for(var x=1; x<=arrayLen(promotionRewardUsageDetails[ prID ].orderItemsUsage); x++) {
+						var orderItemID = promotionRewardUsageDetails[ prID ].orderItemsUsage[x].orderItemID;
+						var thisDiscountQuantity = promotionRewardUsageDetails[ prID ].orderItemsUsage[x].discountQuantity;
 						
 						if(needToRemove < thisDiscountQuantity) {
 							
