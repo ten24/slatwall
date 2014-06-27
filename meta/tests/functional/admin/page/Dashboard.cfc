@@ -4,8 +4,16 @@ component extends="PageObject"{
 	
 	variables.menuItems = {
 		"Products" = {
-			"Products" = "ProductsPage", 
-			"Product Types" = "ProductTypesPage"
+			"Products" = "ListProducts", 
+			"Product Types" = "ListProductTypes",
+			"Brands" = "ListBrands",
+			"Skus" = "ListSkus",
+			"Product Reviews" = "ListProductReviews",
+			"Option Groups" = "ListOptionGroups"
+		},
+		"Orders" = {
+			"Orders" = "ListOrders", 
+			"Carts & Quotes" = "ListCartsAndQuotes"
 		}
 	};
 	
@@ -22,21 +30,17 @@ component extends="PageObject"{
 		}
 	}
 	
-	function openMenuLink(menu, linkName){
+	function openMenuLink(menu, menuLinkTitle){
 		selenium.click("link=#menu#");
 		//We wait here to avoid any problems with selenium moving faster than the browser
-		selenium.waitForElementPresent("//a[@title='#linkName#']");
-		selenium.click("//a[@title='#linkName#']"); 
+		selenium.waitForElementPresent("//a[@title='#menuLinkTitle#']");
+		selenium.click("//a[@title='#menuLinkTitle#']"); 
 		waitFor();
-		return pageObjectFor(menu, linkName);
+		return pageObjectFor(menu, menuLinkTitle);
 	}
 	
-	function openProductsMenu(){
-		return openMenuLink("Products", "Products");
-	}
-	
-	function pageObjectFor(menu, linkName){
-		var pageObject = variables.menuItems[menu][linkName];
+	function pageObjectFor(menu, menuLinkTitle){
+		var pageObject = variables.menuItems[menu][menuLinkTitle];
 		return createObject(pageObject).init(selenium);
 	}
 }

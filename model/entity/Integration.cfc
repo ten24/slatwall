@@ -65,6 +65,13 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	// Non-persistent properties
 	property name="enabledFlag" type="boolean" persistent="false";
 	
+	public any function init() {
+		if(!len(variables.integrationID)) {
+			this.setActiveFlag(0);
+		}
+		
+		return super.init();
+	}
 	
 	public boolean function getEnabledFlag() {
 		return getActiveFlag();

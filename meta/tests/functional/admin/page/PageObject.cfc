@@ -1,9 +1,12 @@
 component {
 	
 	variables.title = "UNDEFINED";
+	variables.pageLoadTime = 0;
 	
-	function init(selenium){
+	function init(selenium, pageLoadTime){
 		variables.selenium = arguments.selenium;
+		variables.pageLoadTime = arguments.pageLoadTime;
+		
 		return this;
 	}
 	
@@ -11,9 +14,16 @@ component {
 		return variables.title;
 	}
 	
+	function getPageLoadTime(){
+		return variables.loadTime;
+	}
+	
 	function waitFor(time=10000) {
+		
 		var start = getTickCount();
-		selenium.waitForPageToLoad(time);
+		
+		variables.selenium.waitForPageToLoad(time);
+		
 		return getTickCount() - start;
 	}
 	
@@ -21,7 +31,6 @@ component {
 		if(selenium.getTitle() eq getTitle() && selenium.isElementPresent("global-search")){
 			return true;
 		} else {
-			writeLog("We don't appear to be on the Expected page. Expected page title #variables.title# but on #selenium.getTitle()#");
 			return false;
 		}
 	}
