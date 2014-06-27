@@ -236,13 +236,14 @@ component extends="FW1.framework" {
 		request.context.$[ variables.framework.applicationKey ] = getHibachiScope();
 		request.context.pagetitle = request.context.$[ variables.framework.applicationKey ].rbKey( request.context[ getAction() ] );
 		request.context.edit = false;
-		if(!structKeyExists(request.context,"ajaxRequest")) {
-  			request.context.ajaxRequest = false;
-  		}
+		
+		param name="request.context.ajaxRequest" default="false";
+		param name="request.context.returnJSONObjects" default="";
+		param name="request.context.returnJSONKeyLCase" default="false";
+		param name="request.context.messages" default="#arrayNew(1)#";
+		
 		request.context.ajaxResponse = {};
-		if(!structKeyExists(request.context, "messages")) {
-			request.context.messages = [];	
-		}
+		
 		
 		var httpRequestData = getHTTPRequestData();
 		if(structKeyExists(httpRequestData.headers, "X-Hibachi-AJAX") && isBoolean(httpRequestData.headers["X-Hibachi-AJAX"]) && httpRequestData.headers["X-Hibachi-AJAX"]) {
@@ -469,9 +470,24 @@ component extends="FW1.framework" {
 		
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			if(isStruct(request.context.ajaxResponse)){
-  				request.context.ajaxResponse["messages"] = request.context.messages;
+				if(structKeyExists(request.context, "messages")) {
+					request.context.ajaxResponse["messages"] = request.context.messages;	
+				}
+  				request.context.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
+  				request.context.ajaxResponse["failureActions"] = getHibachiScope().getFailureActions();
+  				if(structKeyExists(request.context, "returnJSONObjects") && len(request.context.returnJSONObjects)) {
+  					for(var item in listToArray(request.context.returnJSONObjects)) {
+  						if(structKeyExists(getHibachiScope(), "get#item#Data")) {
+			  				request.context.ajaxResponse[item] = getHibachiScope().invokeMethod("get#item#Data");
+  						}
+  					}
+  				}
   			}
-			writeOutput( serializeJSON(request.context.ajaxResponse) );
+  			if(structKeyExists(request.context, "returnJSONKeyLCase") && isBoolean(request.context.returnJSONKeyLCase) && request.context.returnJSONKeyLCase) {
+				writeOutput( serializeJSON( getHibachiScope().getService("hibachiUtilityService").lcaseStructKeys(request.context.ajaxResponse) ) );	
+			} else {
+				writeOutput( serializeJSON(request.context.ajaxResponse) );
+			}
 			abort;
 		}
 	}

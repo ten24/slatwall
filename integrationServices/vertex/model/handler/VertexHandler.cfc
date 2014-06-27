@@ -46,14 +46,11 @@
 Notes:
 
 */
-component extends="mxunit.framework.TestCase" output="false" {
-
-	// @hint put things in here that you want to run befor EACH test
-	public void function setUp() {
-		
-		variables.entityDirectory = getDirectoryFromPath(expandPath("/Slatwall/com/entity/"));
-		variables.entityTestDirectory = getDirectoryFromPath(expandPath("/Slatwall/meta/tests/unit/entity/"));
-		
+component {
+	
+	public void function afterOrderProcess_PlaceOrderSuccess(required any slatwallScope, required any order) {
+		// Automatically update the order amounts with taxes
+		//arguments.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('vertex').getIntegrationCFC('tax').postOrderInvoice(arguments.order);
 	}
 	
-}
+}	

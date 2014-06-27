@@ -67,6 +67,73 @@
 			return '<a href="#arguments.value#" target="_blank">' & arguments.value & '</a>';
 		}
 		
+		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
+			var responseData = {};
+			
+			for(var propertyIdentifier in listToArray(arguments.propertyIdentifierList)) {
+				if( listFindNoCase(arguments.availablePropertyIdentifierList, trim(propertyIdentifier)) ) {
+					buildPropertyIdentifierDataStruct(arguments.object, trim(propertyIdentifier), responseData);
+				}
+			}
+			
+			return responseData;
+		}
+		
+		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
+			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
+				data[ arguments.propertyIdentifier ] = parentObject.invokeMethod("get#arguments.propertyIdentifier#");
+				return;
+			}
+			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
+			if(!isNull(object) && isObject(object)) {
+				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
+				param name="data[thisProperty]" default="#structNew()#";
+				
+				if(!structKeyExists(data[thisProperty],"errors")) {
+					// add error messages
+					data[thisProperty]["hasErrors"] = object.hasErrors();
+					data[thisProperty]["errors"] = object.getErrors();
+				}
+				
+				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty]);
+			} else if(!isNull(object) && isArray(object)) {
+				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
+				param name="data[thisProperty]" default="#arrayNew(1)#";
+	
+				for(var i = 1; i <= arrayLen(object); i++){
+					param name="data[thisProperty][i]" default="#structNew()#";
+	
+					if(!structKeyExists(data[thisProperty][i],"errors")) {
+						// add error messages
+						data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+						data[thisProperty][i]["errors"] = object[i].getErrors();
+					}
+					
+					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
+				}
+			}
+		}
+		
+		public any function lcaseStructKeys( required any data ) {
+			if( isStruct(arguments.data) ) {
+				var newData = {};
+				for(var key in arguments.data) {
+					if(!structKeyExists(arguments.data, key )) {
+						newData[ lcase(key) ] = javaCast('null', '');	
+					} else {
+						newData[ lcase(key) ] = lcaseStructKeys(arguments.data[ key ]);	
+					}
+				}
+				return newData;
+			} else if (isArray(arguments.data)) {
+				for(var i=1; i<=arrayLen(arguments.data); i++) {
+					arguments.data[i] = lcaseStructKeys(arguments.data[i]);
+				}
+			}
+			
+			return arguments.data;
+		}
+		
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
 			var replacementArray = [];

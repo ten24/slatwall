@@ -147,9 +147,9 @@ Notes:
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Shipping Address</strong></td>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">
-								<cfif len(orderDelivery.getShippingAdddress().getName())>#local.orderFulfillment.getAddress().getName()#</cfif>
-								<cfif len(orderDelivery.getShippingAdddress().getStreetAddress())>#local.orderFulfillment.getAddress().getStreetAddress()#</cfif>
-								<cfif len(orderDelivery.getShippingAdddress().getStreet2Address())>#local.orderFulfillment.getAddress().getStreet2Address()#</cfif>
+								<cfif len(orderDelivery.getShippingAdddress().getName())>#orderDelivery.getShippingAdddress().getName()#</cfif>
+								<cfif len(orderDelivery.getShippingAdddress().getStreetAddress())>#orderDelivery.getShippingAdddress().getStreetAddress()#</cfif>
+								<cfif len(orderDelivery.getShippingAdddress().getStreet2Address())>#orderDelivery.getShippingAdddress().getStreet2Address()#</cfif>
 								#orderDelivery.getShippingAdddress().getCity()#, #orderDelivery.getShippingAdddress().getStateCode()# #orderDelivery.getShippingAdddress().getPostalCode()#
 								#orderDelivery.getShippingAdddress().getCountryCode()#
 							</td>
@@ -211,7 +211,7 @@ Notes:
 		Delivered Via: #orderDelivery.getFulfillmentMethod().getFulfillmentMethodName()#
 		<cfif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "email">
 		Delivery Email: #orderDelivery.getEmailAddress()#
-		<cfif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "pickup">
+		<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "pickup">
        	Picked Up From: #orderDelivery.getLocation().getLocationName()#
 		<cfelseif orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() EQ "shipping">
 		<cfif not isNull(orderDelivery.getTrackingNumber()) and len(orderDelivery.getTrackingNumber())>

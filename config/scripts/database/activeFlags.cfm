@@ -67,6 +67,11 @@ Notes:
 	UPDATE SwContent SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
+<!--- Integration --->
+<cfquery name="local.activeFlag">
+	UPDATE SwIntegration SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="0"> WHERE activeFlag is NULL
+</cfquery>
+
 <!--- Shipping Rate --->
 <cfquery name="local.activeFlag">
 	UPDATE SwShippingMethodRate SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL

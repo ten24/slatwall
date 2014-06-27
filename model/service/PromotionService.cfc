@@ -419,9 +419,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} // END Promotion Period OK IF
 			
 			} // END of PromotionReward Loop
+
 			// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
-			
 			removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
+			
 			// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
 			applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
 			

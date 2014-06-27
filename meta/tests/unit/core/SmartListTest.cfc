@@ -70,7 +70,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function buildURL_3() {
 		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="?f:productName=hello");
 		addToDebug(urlResponse);	
-		assert(urlResponse eq '?c=1');
+		assertEquals('?c=1', urlResponse);
 	}
 	
 	public void function buildURL_4() {	

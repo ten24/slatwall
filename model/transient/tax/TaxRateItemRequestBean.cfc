@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,28 +45,24 @@
 
 Notes:
 
---->
-<cfcomponent extends="Slatwall.meta.tests.coverage.SlatwallCoverageTestBase" output="false">
+*/
 
-	<cffunction name="all_entities_have_test_cases" access="public" returntype="void">
-		<cfset var edQuery = "" />
-		<cfset var etdQuery = "" />
-		<cfset var missingEntityTests = [] />
-		
-		<cfdirectory action="list" directory="#variables.entityDirectory#" name="edQuery" filter="*.cfc">
-		<cfdirectory action="list" directory="#variables.entityTestDirectory#" name="etdQuery" filter="*.cfc">
-		
-		<cfloop query="edQuery">
-			<cfset arrayAppend(missingEntityTests, edQuery.name) />
-		</cfloop>
-		
-		<cfloop query="etdQuery">
-			<cfif arrayFind(missingEntityTests, etdQuery.name)>
-				<cfset arrayDeleteAt(missingEntityTests, arrayFind(missingEntityTests, etdQuery.name)) />
-			</cfif>
-		</cfloop>
-		
-		<cfset assertEquals("", arrayToList(missingEntityTests)) />
-	</cffunction>
+component output="false" accessors="true" extends="Slatwall.model.transient.RequestBean" {
+
+	// Tax Address Properties
+	property name="taxStreetAddress" type="string";  
+	property name="taxStreet2Address" type="string";
+	property name="taxLocality" type="string";
+	property name="taxCity" type="string";   
+	property name="taxStateCode" type="string";   
+	property name="taxPostalCode" type="string";   
+	property name="taxCountryCode" type="string";  
 	
-</cfcomponent>
+	// Price and Quantity Properies
+	property name="orderItemID" type="string" default="";
+	property name="price" type="string" default="";
+	property name="quantity" type="string" default="";
+	property name="extendedPrice" type="string" default="";
+	property name="discountAmount" type="string" default="";
+	property name="extendedPriceAfterDiscounts" type="string" default="";
+}
