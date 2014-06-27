@@ -57,8 +57,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function populate_accountAddress_updates_shippingAddress() {
 		
-		//variables.entity.setOrder( request.slatwallScope.newEntity('Order') );
-		
 		var accountAddressDataOne = {
 			address = {
 				addressID = "",
@@ -96,8 +94,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function setAccountAddress_updates_shippingAddress() {
-		
-		//variables.entity.setOrder( request.slatwallScope.newEntity('Order') );
 		
 		var accountAddressDataOne = {
 			address = {
