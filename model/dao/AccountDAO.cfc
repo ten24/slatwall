@@ -89,27 +89,26 @@ Notes:
 	</cffunction>
 
 	<cffunction name="removeAccountAddressFromOrders">
-		<cfargument name="accountBillingAddressID" type="string" required="true" >
-		<cfargument name="accountShippingAddressID" type="string" required="true" >
-
+		<cfargument name="accountAddressID" type="string" required="true" >
+		
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
 			UPDATE
-				SwOrders
+				SwOrder
 			SET
 				billingAccountAddressID = null
 			WHERE
-				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountBillingAddressID#" />
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
 		</cfquery>
 
 		<cfquery name="rs">
 			UPDATE
-				SwOrders
+				SwOrder
 			SET
 				shippingAccountAddressID = null
 			WHERE
-				shippingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountShippingAddressID#" />
+				shippingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
 		</cfquery>
 
 	</cffunction>
