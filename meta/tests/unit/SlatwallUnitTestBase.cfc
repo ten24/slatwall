@@ -75,7 +75,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		debug(variables.debugArray);
 	}
 	
-	private void function addToDebug( required string output ) {
+	private void function addToDebug( required any output ) {
 		arrayAppend(variables.debugArray, arguments.output);
 	}
 	
