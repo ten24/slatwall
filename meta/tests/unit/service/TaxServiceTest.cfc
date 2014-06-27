@@ -60,8 +60,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey(newOrder);
 		assert(structIsEmpty(taxAddressesStruct));
 	}
-	
-	//Tests that addTaxAddressesStructBillingAddressKey() does NOT set billingAddress if null and entityName is NOT "SlatwallAddress"
+
 	public void function addTaxAddressesStructBillingAddressKey_sets_struct_billingAddress_key_from_order_billingAddress(){
 		var address = request.slatwallScope.getService("Address");
 		var newOrder = request.slatwallScope.newEntity('Order');
@@ -78,5 +77,22 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));	
 	}
 	
+	public void function addTaxAddressesStructBillingAddressKey_doesNOT_sets_struct_billingAddress_key_from_order_orderPayments_where_systemCode_NOT_Active(){
+		var newOrder = request.slatwallScope.newEntity('Order');
+		var newOrderPayment = request.slatwallScope.newEntity('OrderPayment');
+		newOrder.addOrderPayment(newOrderPayment);
+		newOrder.getOrderPayments()[1].getOrderPaymentStatusType().setSystemCode("notActiveTest");
+		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey(newOrder);
+		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
+	}
+	
+	public void function addTaxAddressesStructBillingAddressKey_doesNOT_sets_struct_billingAddress_key_from_order_orderPayments_where_billingAddress_newFlag(){
+		var newOrder = request.slatwallScope.newEntity('Order');
+		var newOrderPayment = request.slatwallScope.newEntity('OrderPayment');
+		newOrder.addOrderPayment(newOrderPayment);
+		newOrder.getOrderPayments()[1].getBillingAddress().setNewFlag(1);
+		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey(newOrder);
+		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
+	}
 }
 	
