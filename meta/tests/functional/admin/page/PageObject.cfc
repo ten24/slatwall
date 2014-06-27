@@ -5,7 +5,9 @@ component {
 	
 	function init(selenium, pageLoadTime){
 		variables.selenium = arguments.selenium;
-		variables.pageLoadTime = arguments.pageLoadTime;
+		if(structKeyExists(arguments, "pageLoadTime")) {
+			variables.pageLoadTime = arguments.pageLoadTime;	
+		}
 		
 		return this;
 	}

@@ -35,12 +35,12 @@ component extends="PageObject"{
 		//We wait here to avoid any problems with selenium moving faster than the browser
 		selenium.waitForElementPresent("//a[@title='#menuLinkTitle#']");
 		selenium.click("//a[@title='#menuLinkTitle#']"); 
-		waitFor();
-		return pageObjectFor(menu, menuLinkTitle);
+		var loadTime = waitFor();
+		return pageObjectFor(menu, menuLinkTitle, loadTime);
 	}
 	
-	function pageObjectFor(menu, menuLinkTitle){
+	function pageObjectFor(menu, menuLinkTitle, loadTime){
 		var pageObject = variables.menuItems[menu][menuLinkTitle];
-		return createObject(pageObject).init(selenium);
+		return createObject(pageObject).init(selenium, loadTime);
 	}
 }
