@@ -47,15 +47,16 @@ Notes:
 
 */
 component extends="mxunit.framework.TestCase" output="false" {
+	
+	variables.debugArray = [];
+	variables.persistentEntities = [];
 
+	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		//variables.slatwallFW1Application.reloadApplication();
-		
-		variables.helper = createObject("component", "Helper");
 	}
 
-	// @hint put things in here that you want to run befor EACH test
+	// BEFORE EACH TEST
 	public void function setUp() {
 		variables.slatwallFW1Application.bootstrap();
 		
@@ -63,20 +64,57 @@ component extends="mxunit.framework.TestCase" output="false" {
 		
 		// Setup a debugging output array
 		variables.debugArray = [];
+		variables.persistentEntities = [];
 	}
 	
-	// @hint put things in here that you want to run after EACH test
+	// AFTER BEACH TEST
 	public void function tearDown() {
-		structDelete(request, 'slatwallScope');
-		//variables.slatwallFW1Application.endSlatwallLifecycle();
-		
-		debug("Debug Messages: #arrayLen(variables.debugArray)#");
-		
 		debug(variables.debugArray);
+		
+		for(var persistentEntity in variables.persistentEntities) {
+			entityDelete( persistentEntity );
+			ormFlush();
+		}
+		
+		variables.debugArray = [];
+		variables.persistentEntities = [];
+		
+		structDelete(request, 'slatwallScope');
 	}
 	
 	private void function addToDebug( required any output ) {
 		arrayAppend(variables.debugArray, arguments.output);
+	}
+	
+	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean persist=true, boolean saveWithService=false ) {
+		return createTestEntity(argumentcollection=arguments);
+	}
+	
+	private any function createTestEntity( required string entityName, struct data={}, boolean persist=false, boolean saveWithService=false ) {
+		// Create the new Entity
+		var newEntity = request.slatwallScope.newEntity( arguments.entityName );
+		
+		// Save with Service
+		if(arguments.saveWithService) {
+			
+			request.slatwallScope.saveEntity( arguments.entity, arguments.data );
+		
+		// Save manually
+		} else {
+			// Populate the data
+			newEntity.populate( data );
+			
+			// Save the entity
+			entitySave(newEntity);	
+		}
+		
+		// Persist to the database
+		ormFlush();
+		
+		// Add the entity to the persistentEntities
+		arrayAppend(variables.persistentEntities, newEntity);
+		
+		return newEntity;
 	}
 	
 }
