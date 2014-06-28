@@ -94,35 +94,163 @@ component extends="mxunit.framework.TestCase" output="false" {
 		arrayAppend(variables.debugArray, arguments.output);
 	}
 	
-	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean persist=true, boolean saveWithService=false ) {
+	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true, boolean saveWithService=false ) {
 		return createTestEntity(argumentcollection=arguments);
 	}
 	
-	private any function createTestEntity( required string entityName, struct data={}, boolean persist=false, boolean saveWithService=false ) {
+	private any function createTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=false, boolean saveWithService=false ) {
 		// Create the new Entity
 		var newEntity = request.slatwallScope.newEntity( arguments.entityName );
 		
-		// Save with Service
-		if(arguments.saveWithService) {
-			
-			request.slatwallScope.saveEntity( arguments.entity, arguments.data );
+		var arguments.data = createTestEntityData( newEntity, arguments.data, arguments.createRandomData );
 		
-		// Save manually
+		// Check to see if it needs to be persisted
+		if(arguments.persist) {
+		
+			// Save with Service
+			if(arguments.saveWithService) {
+				
+				request.slatwallScope.saveEntity( arguments.entity, arguments.data );
+			
+			// Save manually
+			} else {
+				// Populate the data
+				newEntity.populate( data );
+				
+				// Save the entity
+				entitySave(newEntity);
+			}
+			
+			// Persist to the database
+			ormFlush();
+				
+			// Add the entity to the persistentEntities
+			arrayAppend(variables.persistentEntities, newEntity);
+			
 		} else {
+			
 			// Populate the data
 			newEntity.populate( data );
 			
-			// Save the entity
-			entitySave(newEntity);	
 		}
 		
-		// Persist to the database
-		ormFlush();
-		
-		// Add the entity to the persistentEntities
-		arrayAppend(variables.persistentEntities, newEntity);
-		
 		return newEntity;
+	}
+	
+	private struct function createTestEntityData( required any entity, struct data={}, boolean createRandomData=false) {
+		
+		if(arguments.createRandomData) {
+			for(var property in entity.getProperties()) {
+				
+				if( !structKeyExists(arguments.data, property.name) ) {
+					
+					if(property.name eq "activeFlag") {
+						arguments.data.activeFlag = 1;
+						
+					} else if (propertyIsPersistentColumn(property)) {
+						
+						if(propertyIsString(property)) {
+							arguments.data[ property.name ] = generateRandomString(1, 100);
+							
+						} else if (propertyIsInteger(property)) {
+							arguments.data[ property.name ] = generateRandomInteger(0, 1000);
+							
+						} else if (propertyIsDate(property)) {
+							arguments.data[ property.name ] = generateRandomDate();
+						
+						} else if (propertyIsDateTime(property)) {
+							arguments.data[ property.name ] = generateRandomDateTime();
+							
+						} else if (propertyIsDecimal(property)) {	
+							arguments.data[ property.name ] = generateRandomDecimal(0, 1000);
+							
+						}
+						
+					} 
+				}
+			}
+		}
+		
+		return arguments.data;
+	}
+	
+	private boolean function propertyIsPersistentColumn(required struct property) {
+		if(structKeyExists(arguments.property, "persistent") && !arguments.property.persistent) {
+			return false;
+		}
+		if(structKeyExists(arguments.property, "fieldType") && arguments.property.fieldType != 'column') {
+			return false;
+		}
+		if(listFindNoCase("createdByAccountID,modifiedByAccountID,remoteID", arguments.property.name)) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean function propertyIsString(required struct property) {
+		if(!structKeyExists(arguments.property, "ormtype") || arguments.property.ormtype eq "string") {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean function propertyIsInteger(required struct property) {
+		if(structKeyExists(arguments.property, "ormtype") && arguments.property.ormtype eq "integer") {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean function propertyIsDate(required struct property) {
+		if(structKeyExists(arguments.property, "ormtype") && arguments.property.ormtype eq "date") {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean function propertyIsDateTime(required struct property) {
+		if(structKeyExists(arguments.property, "ormtype") && arguments.property.ormtype eq "timestamp") {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean function propertyIsDecimal(required struct property) {
+		if(structKeyExists(arguments.property, "ormtype") && arguments.property.ormtype eq "big_decimal") {
+			return true;
+		}
+		return false;
+	}
+	
+	private string function generateRandomString(minLength, maxLength) {
+		var chars = "abcdefghijklmnopqrstuvwxyz -_";
+		chars &= ucase(chars);
+		var upper = minLength + round(rand()*maxLength);
+		
+		var returnString = "";
+		for(var i=1; i<=upper; i++ ) {
+			var randIndex = round(len(chars) * rand()) + 1;
+			
+			returnString &= right(left(chars, randIndex), 1);
+		}
+		
+		return returnString;
+	}
+	
+	private string function generateRandomInteger(minVal, maxVal) {
+		return 1;
+	}
+	
+	private string function generateRandomDate() {
+		return createDate(2014, 10, 1);
+	}
+	
+	private string function generateRandomDateTime() {
+		return createDateTime(2013, 10, 8, 5, 08, 22);
+	}
+	
+	private string function generateRandomDecimal(minVal, maxVal) {
+		return 3.45;
 	}
 	
 }
