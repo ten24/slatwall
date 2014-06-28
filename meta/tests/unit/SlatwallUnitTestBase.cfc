@@ -53,7 +53,15 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
+		
+		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
+		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.TestUtility").init( variables.slatwallFW1Application );
+		
+		// Read Config
+		variables.testUtiltiy.readLocalConfiguration();
+		
+		super.beforeTests();
 	}
 
 	// BEFORE EACH TEST
