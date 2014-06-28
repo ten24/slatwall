@@ -6,6 +6,7 @@ component extends="mxunit.runner.HttpAntRunner" {
 		
 		// Reload Slatwall
 		slatwallApplication.reloadApplication();
+		slatwallApplication.bootstrap();
 		
 		// Create test utility
 		var testUtility = createObject("component", "Slatwall.meta.tests.TestUtility").init( slatwallApplication );
