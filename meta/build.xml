@@ -68,8 +68,8 @@
 		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
 	</target>
 	
-	<target name="setupFunctionalTestsConfig" depends="init">
-		<echo file="tests/functional/config/${computer.hostname}.ini">
+	<target name="setupMachineTestsConfig" depends="init">
+		<echo file="tests/config/${computer.hostname}.ini">
 # Parameters needed by all tests
 [common]
 login=testrunner@ten24web.com
@@ -91,7 +91,7 @@ browserCommand=${slatwall.test.functional.browser}
 		<runTestDirectory directoryName="unit" excludes=""/>
 	</target>
 	
-	<target name="runFunctionalTests" depends="init,setupApplicationConfig,setupFunctionalTestsConfig">
+	<target name="runFunctionalTests" depends="init,setupApplicationConfig,setupMachineTestsConfig">
 		<delete dir="${slatwall.test.output.xml}/functional" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/functional" />
 		<runTestDirectory directoryName="functional" excludes=""/>		
