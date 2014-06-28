@@ -52,7 +52,7 @@
 	<cffunction name="startTestRun" access="remote" returntype="string">
 		<!--- Setup Components --->
 		<cfset var slatwallApplication = createObject("component", "Slatwall.Application") />
-		<cfset var testUtility = createObject("component", "Slatwall.meta.tests.TestUtility").init( slatwallApplication ) />
+		<cfset var testUtility = createObject("component", "TestUtility").init( slatwallApplication ) />
 		
 		<!--- Reload Slatwall --->
 		<cfset slatwallApplication.reloadApplication() />
