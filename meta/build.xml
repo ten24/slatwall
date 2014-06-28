@@ -82,7 +82,7 @@ browserCommand=${slatwall.test.functional.browser}
 		</echo>
 	</target>
 	
-	<target name="runUnitTests" depends="init,setupApplicationConfig">
+	<target name="runUnitTests" depends="init,setupApplicationConfig,setupMachineTestsConfig">
 		<!-- Setup test output directory -->
 		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/unit" />
