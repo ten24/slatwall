@@ -62,7 +62,7 @@
 		<!--- Make sure all the test data is up to date --->
 		<cfset testUtility.updateTestData() />
 		
-		<cfreturn super.startTestRun()>
+		<cfreturn super.startTestRun(argumentCollection=arguments)>
 	</cffunction>
 	
 </cfcomponent>

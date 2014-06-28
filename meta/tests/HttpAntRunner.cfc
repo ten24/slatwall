@@ -13,7 +13,7 @@ component extends="mxunit.runner.HttpAntRunner" {
 		// Make sure all the test data is up to date
 		testUtility.updateTestData();
 		
-		super.run();
+		super.run(argumentCollection=arguments);
 	}
 	
 } 
