@@ -9,7 +9,7 @@ component {
 	
 	// Thanks to Joe Rinehart and Brian Kotek
 	public function readLocalConfiguration(){
-		variables.configuration = structNew();
+		var configStruct = structNew();
 		var hostname = createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
 		var configPath = expandPath( "/Slatwall/meta/tests/config/#hostname#.ini" );
 		if(not fileExists(configPath)){
@@ -18,14 +18,15 @@ component {
 		
 		var sections = getProfileSections(configPath);
 		for(var section in sections){
-			variables.configuration[section] = structNew();
+			configStruct[section] = structNew();
 			if(!isArray(sections[section])) {
 				sections[section] = listToArray(sections[section]);
 			}
 			for(var key in sections[section]){
-				variables.configuration[ section ][ key ] = getProfileString(configPath, section, key);
+				configStruct[ section ][ key ] = getProfileString(configPath, section, key);
 			}
 		}
+		return configStruct;
 	}
 	
 	public function updateTestData(){
