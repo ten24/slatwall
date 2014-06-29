@@ -50,31 +50,120 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function setUp() {
 		super.setup();
-		
 		variables.dao = request.slatwallScope.getDAO("promotionDAO");
+		
+		transaction{
+			//promotion setup
+			variables.promotion = variables.dao.new('promotion');
+			variables.dao.save(variables.promotion);
+			
+			//promotion Period setup
+			variables.promotionPeriod = variables.dao.new('PromotionPeriod');
+			variables.dao.save(variables.promotionPeriod);
+			
+			//promotionCode
+			variables.promotionCode = variables.dao.new('promotionCode');
+			variables.dao.save(variables.promotionCode);
+			
+			//promotionReward
+			variables.promotionReward = variables.dao.new('promotionReward');
+			variables.dao.save(variables.promotionReward);
+			
+			//promotionApplied
+			variables.promotionApplied = variables.dao.new('promotionApplied');
+			variables.dao.save(variables.promotionApplied);
+			
+			//order
+			variables.order = variables.dao.new('order');
+			variables.dao.save(variables.order);
+			
+			//order fulfillment
+			variables.orderFulfillment = variables.dao.new('orderFulfillment');
+			variables.dao.save(variables.orderFulfillment);
+			
+			//orderItem
+			variables.orderItem = variables.dao.new('orderItem');
+			variables.dao.save(variables.orderItem);
+			
+			//product setup
+			variables.product = variables.dao.new('product');
+			variables.dao.save(variables.product);
+			
+		}
 	}
 	
-	public void function getActivePromotionRewards(){
+	public void function tearDown(){
+		//super.tearDown();
+		transaction{
+			variables.dao.delete(variables.promotion);
+			variables.dao.delete(variables.promotionPeriod);
+			variables.dao.delete(variables.promotionReward);
+			variables.dao.delete(variables.promotionCode);
+			variables.dao.delete(variables.promotionApplied);
+			variables.dao.delete(variables.order);
+			variables.dao.delete(variables.orderFulfillment);
+			variables.dao.delete(variables.orderItem);
+			variables.dao.delete(variables.product);
+		}
+	}
+	
+	//This test is dependent on no pre-exisitng promotionReward data. All promotionReward data is generated for this test
+	public void function getActivePromotionRewardsTest(){
 		
-		var order = variables.dao.new('Order');
-		var promotion = variables.dao.new('promotion');
-		promotion.setActiveFlag(true);
-		var promotionPeriod = variables.dao.new('promotionPeriod');
-		promotion.addPromotionPeriod(promotionPeriod);
-		var promotionCode = variables.dao.new('promotionCode');
-		promotion.addPromotionCode(promotionCode);
-		var promotionReward = variables.dao.new('promotionReward');
+		//create promotion reward data for the DAO
+		transaction{
+			variables.promotion.setActiveFlag(true);
+			variables.promotion.addPromotionPeriod(variables.promotionPeriod);
+			variables.promotionPeriod.setPromotion(variables.promotion);
+			variables.promotionCode.setPromotionCode('TestPromotionCode');
+			variables.promotion.addPromotionCode(variables.promotionCode);
+			variables.promotionCode.setPromotion(variables.promotion);
+			variables.promotionReward.setRewardType('order');
+			variables.promotionReward.setPromotionPeriod(variables.promotionPeriod);
+			variables.order.addPromotionCode(variables.promotionCode);
+			variables.promotionCode.addOrder(variables.order);
+		}
 		
-		promotionCode.setPromotionCode('TestPromotionCode');
-		
-		order.addPromotionCode(promotionCode);
-		
-		promotionCodeList = variables.dao.getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", 
-																				promotionCodeList=order.getPromotionCodeList(), 
+		promotionCodeList = variables.dao.getActivePromotionRewards(rewardTypeList="order", 
+																				promotionCodeList='TestPromotionCode', 
 																				qualificationRequired=true);
-	}
-
 	
+		//assert that we found our promotion reward by the promotionCode and order rewardType	
+		assertEquals(arraylen(promotionCodeList),1);
+		assertEquals(promotionCodeList[1].getPromotionRewardID(),variables.promotionReward.getPromotionRewardID());
+		
+	}
+	
+	public void function getPromotionPeriodUseCountTest(){
+		//requires promotion period
+		
+		variables.promotionPeriod.setPromotion(variables.promotion);
+		variables.promotion.addPromotionPeriod(variables.promotionPeriod);
+		
+		var PromotionPeriodCount = variables.dao.getPromotionPeriodUseCount(promotionPeriod);
+		assertEquals(0,promotionPeriodCount);
+		
+		//promotion applied 
+		transaction{
+			variables.promotionApplied.setPromotion(variables.promotion);
+			variables.promotion.addAppliedPromotion(variables.promotionApplied);
+		}
+		
+		//order setup
+		
+		variables.order.addOrderItem(variables.orderItem);
+		variables.orderItem.setOrder(variables.order);
+		variables.promotionApplied.setOrderItem(variables.orderItem);
+		variables.orderItem.addAppliedPromotion(variables.promotionApplied);
+		
+		variables.order.addOrderFulfillment(variables.orderFulfillment);
+		variables.orderFulfillment.setOrder(variables.order);
+		
+		PromotionPeriodCount = variables.dao.getPromotionPeriodUseCount(promotionPeriod);
+		//assert we were able to get our promotionPeriodUseCount
+		assertEquals(1,promotionPeriodCount);
+		
+	}
 }
 
 
