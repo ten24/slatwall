@@ -51,144 +51,104 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		variables.dao = request.slatwallScope.getDAO("promotionDAO");
-		/*
-		transaction{
-			//promotion setup
-			variables.promotion = variables.dao.new('promotion');
-			variables.dao.save(variables.promotion);
-			
-			//promotion Period setup
-			variables.promotionPeriod = variables.dao.new('PromotionPeriod');
-			variables.dao.save(variables.promotionPeriod);
-			
-			//promotionCode
-			variables.promotionCode = variables.dao.new('promotionCode');
-			variables.dao.save(variables.promotionCode);
-			
-			//promotionReward
-			variables.promotionReward = variables.dao.new('promotionReward');
-			variables.dao.save(variables.promotionReward);
-			
-			//promotionApplied
-			variables.promotionApplied = variables.dao.new('promotionApplied');
-			variables.dao.save(variables.promotionApplied);
-			
-			//order
-			variables.order = variables.dao.new('order');
-			variables.dao.save(variables.order);
-			
-			//order fulfillment
-			variables.orderFulfillment = variables.dao.new('orderFulfillment');
-			variables.dao.save(variables.orderFulfillment);
-			
-			//orderItem
-			variables.orderItem = variables.dao.new('orderItem');
-			variables.dao.save(variables.orderItem);
-			
-			//product setup
-			variables.product = variables.dao.new('product');
-			variables.product.setProductName('TestProductName');
-			variables.dao.save(variables.product);
-			
-			//sku setup
-			variables.sku = variables.dao.new('sku');
-			variables.dao.save(variables.sku);
-			
-			//roundingRuleSetup
-			variables.roundingRule = variables.dao.new('roundingRule');
-			variables.dao.save(variables.roundingRule);
-		}*/
-	}
-	
-	public void function tearDown(){
-		//super.tearDown();
-		/*transaction{
-			variables.dao.delete(variables.promotion);
-			variables.dao.delete(variables.promotionPeriod);
-			variables.dao.delete(variables.promotionReward);
-			variables.dao.delete(variables.promotionCode);
-			variables.dao.delete(variables.promotionApplied);
-			variables.dao.delete(variables.order);
-			variables.dao.delete(variables.orderFulfillment);
-			variables.dao.delete(variables.orderItem);
-			variables.dao.delete(variables.product);
-			variables.dao.delete(variables.sku);
-			variables.dao.delete(variables.roundingRule);
-		}*/
 	}
 	
 	public void function getSalePricePromotionRewardsQueryTest(){
 		var productData = {
-			product = {
-					productName = 'TestProductName'	
-			}
+			productName = 'TestProductName'
 		};
-		
 		var product = createPersistedTestEntity('product',productData);
-		var promotion = createPersistedTestEntity('promotion');
 		
-		
+		var promotionData = {
 			
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
 		
-		//sku setup
-		/*transaction{
-			variables.product.addSku(variables.sku);
-			variables.sku.setProduct(variables.product);
-			variables.sku.setPrice(10);
-			variables.promotionReward.addSku(variables.sku);
-			variables.promotionReward.setAmount(3);
-			variables.promotionReward.setRoundingRule(variables.roundingRule);
-			variables.promotionReward.setAmountType('amountOff');
-			variables.sku.addPromotionReward(variables.promotionReward);
-			variables.promotionPeriod.addPromotionReward(variables.promotionReward);
-			variables.promotionReward.setPromotionPeriod(variables.promotionPeriod);
-			variables.promotion.addPromotionPeriod(variables.promotionPeriod);
-			variables.promotionPeriod.setPromotion(variables.promotion);
-		}*/
-		/*
-		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(variables.product.getProductID());
+		var skuData = {
+			price = 10,
+			product = product
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var promotionRewardData = {
+			amount = 3,
+			amountType = 'amountOff',
+			sku = sku
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotion = promotion,
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		product.addSku(sku);
+		sku.addPromotionReward(promotionReward);
+		promotionReward.setPromotionPeriod(promotionPeriod);
+		promotion.addPromotionPeriod(promotionPeriod);
+		ormflush();
+			
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID());
 		
 		//assert amount off Price - Amount
 		assertEquals(salePricePromotionRewardsQuery.SalePrice,7.00);
 		
-		transaction{
-			variables.promotionReward.setAmountType('percentageOff');
-			variables.promotionReward.setAmount(80);
-		}
-		
-		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(variables.product.getProductID());
-		
 		//assert percentage off Price - Price * Amount/100
-		assertEquals(salePricePromotionRewardsQuery.SalePrice,2.00);
+		promotionReward.setAmountType('percentageOff');
+		promotionReward.setAmount(80);
+		ormflush();
+		var salePricePromotionRewardsQuery2 = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID());
 		
-		transaction{
-			variables.promotionReward.setAmountType('amount');
-			variables.promotionReward.setAmount(5.55);
-		}
-		
-		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(variables.product.getProductID());
+		assertEquals(salePricePromotionRewardsQuery2.SalePrice,2.00);
 		
 		//assert amount Price = Amount
-		assertEquals(salePricePromotionRewardsQuery.SalePrice,5.55);*/
+		promotionReward.setAmountType('amount');
+		promotionReward.setAmount(5.55);
+		ormflush();
 		
+		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID());
+		
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,5.55);
 	}
 	
 	//This test is dependent on no pre-exisitng promotionReward data. All promotionReward data is generated for this test
-	/*public void function getActivePromotionRewardsTest(){
+	public void function getActivePromotionRewardsTest(){
 		
 		//create promotion reward data for the DAO
-		transaction{
-			variables.promotion.setActiveFlag(true);
-			variables.promotion.addPromotionPeriod(variables.promotionPeriod);
-			variables.promotionPeriod.setPromotion(variables.promotion);
-			variables.promotionCode.setPromotionCode('TestPromotionCode');
-			variables.promotion.addPromotionCode(variables.promotionCode);
-			variables.promotionCode.setPromotion(variables.promotion);
-			variables.promotionReward.setRewardType('order');
-			variables.promotionReward.setPromotionPeriod(variables.promotionPeriod);
-			variables.order.addPromotionCode(variables.promotionCode);
-			variables.promotionCode.addOrder(variables.order);
-		}
+		
+		var promotionCodeData = {
+			promotionCode = 'TestPromotionCode'
+		};
+		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
+		
+		var promotionRewardData = {
+			rewardType = 'order'
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var promotionData = {
+			activeFlag = true,
+			promotionPeriod = promotionPeriod,
+			promotionCode = promotionCode
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		var orderData = {
+			promotionCode = promotionCode
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		promotionPeriod.setPromotion(promotion);
+		promotionCode.setPromotion(promotion);
+		promotionReward.setPromotionPeriod(promotionPeriod);
+		promotionCode.addOrder(order);
+		ormflush();
 		
 		promotionCodeList = variables.dao.getActivePromotionRewards(rewardTypeList="order", 
 																				promotionCodeList='TestPromotionCode', 
@@ -196,40 +156,66 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 		//assert that we found our promotion reward by the promotionCode and order rewardType	
 		assertEquals(arraylen(promotionCodeList),1);
-		assertEquals(promotionCodeList[1].getPromotionRewardID(),variables.promotionReward.getPromotionRewardID());
+		assertEquals(promotionCodeList[1].getPromotionRewardID(),promotionReward.getPromotionRewardID());
 		
 	}
 	
 	public void function getPromotionPeriodUseCountTest(){
 		//requires promotion period
 		
-		variables.promotionPeriod.setPromotion(variables.promotion);
-		variables.promotion.addPromotionPeriod(variables.promotionPeriod);
+		var promotionData = {
+
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		var promotionPeriodData = {
+			promotion=promotion
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		promotion.addPromotionPeriod(promotionPeriod);
 		
 		var PromotionPeriodCount = variables.dao.getPromotionPeriodUseCount(promotionPeriod);
 		assertEquals(0,promotionPeriodCount);
 		
+		var promotionAppliedData = {
+			promotion = promotion
+		};
+		var promotionApplied = createPersistedTestEntity('promotionApplied',promotionAppliedData);
+		
 		//promotion applied 
-		transaction{
-			variables.promotionApplied.setPromotion(variables.promotion);
-			variables.promotion.addAppliedPromotion(variables.promotionApplied);
-		}
+		promotion.addAppliedPromotion(promotionApplied);
+		ormflush();
 		
 		//order setup
+		var orderData = {
+			promotion = promotion
+		};
+		var order = createPersistedTestEntity('order',orderData);
 		
-		variables.order.addOrderItem(variables.orderItem);
-		variables.orderItem.setOrder(variables.order);
-		variables.promotionApplied.setOrderItem(variables.orderItem);
-		variables.orderItem.addAppliedPromotion(variables.promotionApplied);
+		var orderItemData = {
+			order = order,
+			promotionApplied = promotionApplied
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
 		
-		variables.order.addOrderFulfillment(variables.orderFulfillment);
-		variables.orderFulfillment.setOrder(variables.order);
+		var orderFulfillmentData = {
+			order = order
+		};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		
+		order.addOrderItem(orderItem);
+		promotionApplied.setOrderItem(orderItem);
+		//variables.orderItem.addAppliedPromotion(variables.promotionApplied);
+		
+		order.addOrderFulfillment(orderFulfillment);
 		
 		PromotionPeriodCount = variables.dao.getPromotionPeriodUseCount(promotionPeriod);
 		//assert we were able to get our promotionPeriodUseCount
 		assertEquals(1,promotionPeriodCount);
 		
-	}*/
+	}
 }
 
 
