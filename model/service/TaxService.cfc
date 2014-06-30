@@ -58,10 +58,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
 		//Remove existing taxes from OrderItems
-		var orderItemsArray = removeTaxesFromAllOrderItems(arguments.order);
+		removeTaxesFromAllOrderItems(arguments.order);
 		
 		// Next Loop over the orderItems and setup integrations to call
-		for(var orderItem in orderItemsArray) {
+		for(var orderItem in arguments.order.getOrderItems()) {
 			
 			// Get this sku's taxCategory
 			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
@@ -113,7 +113,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Final Loop over orderItems to apply taxRates either from internal calculation, or from integrations rate calculation
-		for(var orderItem in orderItemsArray) {
+		for(var orderItem in arguments.order.getOrderItems()) {
 			
 			// Apply Tax for sale items
 			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
@@ -230,7 +230,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
-	public array function removeTaxesFromAllOrderItems(required any order){
+	public void function removeTaxesFromAllOrderItems(required any order){
 		// First Loop over the orderItems to remove existing taxes
 		for(var orderItem in arguments.order.getOrderItems()) {
 
@@ -240,7 +240,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 		}
-		return arguments.order.getOrderItems();
+
 	}
 
 	
@@ -248,7 +248,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxAddresses = {};
 		
 		// If the order has a billing address, use that to potentially calculate taxes for all items
-		if(!isNull(arguments.order.getBillingAddress()) && arguments.order.getBillingAddress().getEntityName() == "SlatwallAddress") {
+		if(!isNull(arguments.order.getBillingAddress())) {
 			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
 		} else {
 			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment

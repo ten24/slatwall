@@ -53,46 +53,74 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getService("taxService");
 	}
-	
+
 	// Tests for addTaxAddressesStructBillingAddressKey()
 	public void function addTaxAddressesStructBillingAddressKey_returns_empty_struct_if_no_billingInfo_on_order(){
+		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
 		var newOrder = request.slatwallScope.newEntity('Order');
 		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey(newOrder);
+		
+		//Asserts that the struct that returns is empty
 		assert(structIsEmpty(taxAddressesStruct));
 	}
 
 	public void function addTaxAddressesStructBillingAddressKey_sets_struct_billingAddress_key_from_order_billingAddress(){
+		//Creates a new Address and a new Order then sets the address to the order's billing address
 		var address = request.slatwallScope.getService("Address");
 		var newOrder = request.slatwallScope.newEntity('Order');
 		newOrder.setBillingAddress( address );
+		
+		//Passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
 		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey( newOrder );
-		assert(structKeyExists(taxAddressesStruct, 'taxBillingAddress') && newOrder.getBillingAddress().getEntityName() == "SlatwallAddress");	
-	}
-	
-	public void function addTaxAddressesStructBillingAddressKey_doesNOT_sets_struct_billingAddress_key_from_order_billingAddress(){
-		var falseAddress = request.slatwallScope.getService("AccountAddress");;
-		var newOrder = request.slatwallScope.newEntity('Order');
-		newOrder.setBillingAddress( falseAddress );
-		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey( newOrder );
-		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));	
+		
+		//Asserts that the struct returned as the key 'taxBillingAddress'
+		assert(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));	
 	}
 	
 	public void function addTaxAddressesStructBillingAddressKey_doesNOT_sets_struct_billingAddress_key_from_order_orderPayments_where_systemCode_NOT_Active(){
+		//Creates new order and orderPayment then adds the orderPayment to the order
 		var newOrder = request.slatwallScope.newEntity('Order');
 		var newOrderPayment = request.slatwallScope.newEntity('OrderPayment');
 		newOrder.addOrderPayment(newOrderPayment);
+		
+		//Sets system code to dumby string for testing
 		newOrder.getOrderPayments()[1].getOrderPaymentStatusType().setSystemCode("notActiveTest");
 		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey(newOrder);
+		
+		//Asserts that the struct key 'taxBillingAddress' was not created
 		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
 	}
 	
-	public void function addTaxAddressesStructBillingAddressKey_doesNOT_sets_struct_billingAddress_key_from_order_orderPayments_where_billingAddress_newFlag(){
+	//Sets up dumby order
+	private any function dumby_order(){
+		//Creates new order
 		var newOrder = request.slatwallScope.newEntity('Order');
-		var newOrderPayment = request.slatwallScope.newEntity('OrderPayment');
-		newOrder.addOrderPayment(newOrderPayment);
-		newOrder.getOrderPayments()[1].getBillingAddress().setNewFlag(1);
-		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey(newOrder);
-		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
+		var i = 1;
+		//Iterates twice to create two orderItems with taxApplied
+		for(i=1;i<3;i++){
+			var newOrderItem = request.slatwallScope.newEntity('OrderItem');
+			var taxApplied = request.slatwallScope.newEntity('taxApplied');
+			taxApplied.setTaxAmount(2);
+			newOrderItem.addAppliedTax(taxApplied);
+			newOrder.addOrderItem(newOrderItem);
+		}
+		//Returns the dumby order
+		return newOrder;
 	}
+	
+	// Tests for removeTaxesFromAllOrderItems()
+	public void function removeTaxesFromAllOrderItems_iterates_over_orderItems_in_order_and_removes_taxes(){
+		//Uses dumby_order() as newOrder
+		var newOrder = dumby_order();
+		
+		//Asserts that the dumby order has taxes
+		assertEquals(4, newOrder.getTaxTotal());
+		
+		//Passes in the new order to remove taxes and asserts taxes were removed
+		variables.service.removeTaxesFromAllOrderItems(newOrder);
+		assertEquals(0, newOrder.getTaxTotal());
+		
+	}
+	
 }
 	
