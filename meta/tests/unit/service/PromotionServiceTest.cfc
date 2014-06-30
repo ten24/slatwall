@@ -52,6 +52,96 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("promotionService");
+		variables.dao = request.slatwallScope.getDAO("promotionDAO");
+		
+		transaction{
+			//promotion setup
+			variables.promotion = variables.dao.new('promotion');
+			variables.dao.save(variables.promotion);
+			
+			//promotion Period setup
+			variables.promotionPeriod = variables.dao.new('PromotionPeriod');
+			variables.dao.save(variables.promotionPeriod);
+			
+			//promotionCode
+			variables.promotionCode = variables.dao.new('promotionCode');
+			variables.dao.save(variables.promotionCode);
+			
+			//promotionReward
+			variables.promotionReward = variables.dao.new('promotionReward');
+			variables.dao.save(variables.promotionReward);
+			
+			//promotionApplied
+			variables.promotionApplied = variables.dao.new('promotionApplied');
+			variables.dao.save(variables.promotionApplied);
+			
+			//order
+			variables.order = variables.dao.new('order');
+			variables.dao.save(variables.order);
+			
+			//order fulfillment
+			variables.orderFulfillment = variables.dao.new('orderFulfillment');
+			variables.dao.save(variables.orderFulfillment);
+			
+			//orderItem
+			variables.orderItem = variables.dao.new('orderItem');
+			variables.dao.save(variables.orderItem);
+			
+			//product setup
+			variables.product = variables.dao.new('product');
+			variables.product.setProductName('TestProductName');
+			variables.dao.save(variables.product);
+			
+			//sku setup
+			variables.sku = variables.dao.new('sku');
+			variables.dao.save(variables.sku);
+			
+			//roundingRuleSetup
+			variables.roundingRule = variables.dao.new('roundingRule');
+			variables.dao.save(variables.roundingRule);
+			
+			//struct setup
+			variables.promotionRewardUsageDetails = {};
+			variables.promotionPeriodQualifications = {};
+			variables.orderItemQualifiedDiscounts = {};
+			
+		}
+	}
+	
+	public void function tearDown(){
+		//super.tearDown();
+		transaction{
+			variables.dao.delete(variables.promotion);
+			variables.dao.delete(variables.promotionPeriod);
+			variables.dao.delete(variables.promotionReward);
+			variables.dao.delete(variables.promotionCode);
+			variables.dao.delete(variables.promotionApplied);
+			variables.dao.delete(variables.order);
+			variables.dao.delete(variables.orderFulfillment);
+			variables.dao.delete(variables.orderItem);
+			variables.dao.delete(variables.product);
+			variables.dao.delete(variables.sku);
+			variables.dao.delete(variables.roundingRule);
+		}
+	}
+	
+	public void function setupPromotionRewardUsageDetailsTest(){
+		//create promotion reward data for the DAO
+		transaction{
+			variables.promotion.setActiveFlag(true);
+			variables.promotion.addPromotionPeriod(variables.promotionPeriod);
+			variables.promotionPeriod.setPromotion(variables.promotion);
+			variables.promotionCode.setPromotionCode('TestPromotionCode');
+			variables.promotion.addPromotionCode(variables.promotionCode);
+			variables.promotionCode.setPromotion(variables.promotion);
+			variables.promotionReward.setRewardType('order');
+			variables.promotionReward.setPromotionPeriod(variables.promotionPeriod);
+			/*variables.order.addPromotionCode(variables.promotionCode);
+			variables.promotionCode.addOrder(variables.order);*/
+		}
+		
+		//variables.service.invokeMethod('clearPreviouslyAppliedPromotionsForOrderItems',{promotionReward=variables.promotionReward, promotionRewardUsageDetails=variables.promotionRewardUsageDetails});
+		//request.debug(variables.promotionRewardUsageDetails);
 	}
 	
 }
