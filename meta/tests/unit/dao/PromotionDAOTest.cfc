@@ -87,8 +87,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			
 			//product setup
 			variables.product = variables.dao.new('product');
+			variables.product.setProductName('TestProductName');
 			variables.dao.save(variables.product);
 			
+			//sku setup
+			variables.sku = variables.dao.new('sku');
+			variables.dao.save(variables.sku);
+			
+			//roundingRuleSetup
+			variables.roundingRule = variables.dao.new('roundingRule');
+			variables.dao.save(variables.roundingRule);
 		}
 	}
 	
@@ -104,7 +112,53 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			variables.dao.delete(variables.orderFulfillment);
 			variables.dao.delete(variables.orderItem);
 			variables.dao.delete(variables.product);
+			variables.dao.delete(variables.sku);
+			variables.dao.delete(variables.roundingRule);
 		}
+	}
+	
+	public void function getSalePricePromotionRewardsQueryTest(){
+		//sku setup
+		transaction{
+			variables.product.addSku(variables.sku);
+			variables.sku.setProduct(variables.product);
+			variables.sku.setPrice(10);
+			variables.promotionReward.addSku(variables.sku);
+			variables.promotionReward.setAmount(3);
+			variables.promotionReward.setRoundingRule(variables.roundingRule);
+			variables.promotionReward.setAmountType('amountOff');
+			variables.sku.addPromotionReward(variables.promotionReward);
+			variables.promotionPeriod.addPromotionReward(variables.promotionReward);
+			variables.promotionReward.setPromotionPeriod(variables.promotionPeriod);
+			variables.promotion.addPromotionPeriod(variables.promotionPeriod);
+			variables.promotionPeriod.setPromotion(variables.promotion);
+		}
+		
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(variables.product.getProductID());
+		
+		//assert amount off Price - Amount
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,7.00);
+		
+		transaction{
+			variables.promotionReward.setAmountType('percentageOff');
+			variables.promotionReward.setAmount(80);
+		}
+		
+		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(variables.product.getProductID());
+		
+		//assert percentage off Price - Price * Amount/100
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,2.00);
+		
+		transaction{
+			variables.promotionReward.setAmountType('amount');
+			variables.promotionReward.setAmount(9);
+		}
+		
+		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(variables.product.getProductID());
+		
+		//assert amount Price = Amount
+		assertEquals(salePricePromotionRewardsQuery.SalePrice,5.55);
+		
 	}
 	
 	//This test is dependent on no pre-exisitng promotionReward data. All promotionReward data is generated for this test
