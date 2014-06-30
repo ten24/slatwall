@@ -114,19 +114,19 @@ component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" ta
 	
 	// Promotion Rewards (one-to-many)
 	public void function addPromotionReward(required any promotionReward) {
-	   arguments.promotionReward.setPromotion(this);
+	   arguments.promotionReward.setPromotionPeriod(this);
 	}
 	
 	public void function removePromotionReward(required any promotionReward) {
-		arguments.promotionReward.removePromotion(this);
+		arguments.promotionReward.removePromotionPeriod(this);
 	}
 	
 	// Promotion Qualifiers (one-to-many)    
 	public void function addPromotionQualifier(required any promotionQualifier) {    
-		arguments.promotionQualifier.setPromotion( this );    
+		arguments.promotionQualifier.setPromotionPeriod( this );    
 	}    
 	public void function removePromotionQualifier(required any promotionQualifier) {    
-		arguments.PromotionQualifier.removePromotion( this );    
+		arguments.PromotionQualifier.removePromotionPeriod( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
