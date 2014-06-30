@@ -51,42 +51,127 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	public any function init() {
 		return this;
 	}
-
+	
 	public any function getTaxRates(required any requestBean) {
-		// Build Request XML
-	/*	var xmlPacket = "";
 		
-		savecontent variable="xmlPacket" {
-			include "InvoiceRequest.cfm";
-        }
-        
-         // Setup Request to push to Vertex
-        var httpRequest = new http();
-        httpRequest.setMethod("POST");
-		//TODO [jubs] : Determine what port to use
-		httpRequest.setPort("443");
-		httpRequest.setTimeout(45);
-		if(setting('testingFlag')) {
-			//TODO [jubs] : Determine https request URLs
-			httpRequest.setUrl("");
-		} else {
-			httpRequest.setUrl("");
-		}
-		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="XML", name="name",value=xmlPacket);*/
-        
-		// Create a responseBean
-		var ratesResponseBean = getTransient('TaxRatesResponseBean');
+		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Resquest
+		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
 		
-		for(var rateItemRequest in requestBean.getTaxRateItemRequestBeans()) {
+		// Loop over each unique tax address
+		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
 			
-			// Generate a random tax amount
-			var taxAmount = round(rand()*100);
+			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
+
+			// Build Request XML
+			var xmlPacket = "";
+				
+			savecontent variable="xmlPacket" {
+				include "QuotationRequest.cfm";
+			}
 			
-			ratesResponseBean.addTaxRateItem( rateItemRequest.getOrderItemID(), taxAmount);	
+			// Setup Request to push to Vertex
+	        var httpRequest = new http();
+	        httpRequest.setMethod("POST");
+			httpRequest.setUrl("#setting('webServicesURL')#/CalculateTax60?wsdl");
+			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
+	
+			// Parse response and set to struct
+			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+
+			// Searches for the totalTax in xmlChild
+			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
+				
+				if(n1.xmlName == "QuotationResponse") {
+						
+					for(var n2 in n1.xmlChildren) {
+						
+						if(n2.xmlName == "LineItem") {
+							
+							var orderItemID = n2.xmlAttributes.materialCode;
+
+							for(var n3 in n2.xmlChildren) {
+								
+								if(n3.xmlName == "Taxes") {
+
+									var taxAmount = 0;
+									var taxRate = 0;
+									var taxImpositionID = "";
+									var taxImpositionType = "";
+									var taxJurisdictionID = "";
+									var taxJurisdictionName = "";
+									var taxJurisdictionType = "";
+									
+									for(var n4 in n3.xmlChildren) {
+										
+										if(n4.xmlName == "Jurisdiction"){
+											taxJurisdictionName = n4.xmlText;
+											taxJurisdictionID = n4.xmlAttributes.jurisdictionId;
+											taxJurisdictionType = n4.xmlAttributes.jurisdictionLevel;
+										}
+										if(n4.xmlName == "CalculatedTax"){
+											taxAmount = n4.xmlText;
+										}
+										if(n4.xmlName == "EffectiveRate"){
+											taxRate = n4.xmlText;
+										}
+										if(n4.xmlName == "Imposition"){
+											taxImpositionName = n4.xmlText;
+											taxImpositionType = n4.xmlAttributes.impositionType;
+										}
+										
+									}
+									
+									responseBean.addTaxRateItem(
+											orderItemID=orderItemID, 
+											taxAmount=taxAmount, 
+											taxRate=taxRate, 
+											taxJurisdictionName=taxJurisdictionName,
+											taxJurisdictionID=taxJurisdictionID,
+											taxJurisdictionType=taxJurisdictionType,
+											taxImpositionName=taxImpositionName,
+											taxImpositionType=taxImpositionType);
+									
+								}								
+								
+							}							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
 		}
-		
-		return ratesResponseBean;
+			
+		return responseBean;
 	}
+	
+	public any function postInvoiceRequestToVertex(required any requestBean){
+
+		// Loop over each unique tax address
+		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
+			
+			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
+
+			// Build Request XML
+			var xmlPacket = "";
+				
+			savecontent variable="xmlPacket" {
+				include "InvoiceRequest.cfm";
+			}
+			
+			// Setup Request to push to Vertex
+	        var httpRequest = new http();
+	        httpRequest.setMethod("POST");
+			httpRequest.setUrl("#setting('webServicesURL')#/CalculateTax60?wsdl");
+			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
+	
+			// Parse response and set to struct
+			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+
+		}
+	}
+
 
 }

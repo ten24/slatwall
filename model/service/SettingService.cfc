@@ -352,6 +352,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getCurrencyService().getCurrencyOptions();
 			case "skuTaxCategory":
 				var optionSL = getTaxService().getTaxCategorySmartList();
+				optionSL.addFilter('activeFlag', 1);
 				optionSL.addSelect('taxCategoryName', 'name');
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();

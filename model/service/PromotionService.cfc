@@ -937,16 +937,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			var productTypes = [];
 			
-			/*for(promotionReward in arguments.reward.getPromotionPeriod().getPromotionRewards()){
-				for(productType in promotionReward.getproductTypes()){
-					arrayAppend(productTypes,productType);
-				}
-			}
-		
-			for(var i=1; i<=arrayLen(productTypes); i++) {
-				includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, productTypes[i].getProductTypeID());
-			}*/
-			
 			for(var i=1; i<=arrayLen(arguments.reward.getProductTypes()); i++) {
 				includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, arguments.reward.getProductTypes()[i].getProductTypeID());
 			}

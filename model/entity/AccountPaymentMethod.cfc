@@ -320,16 +320,34 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		if(!isNull(getAccountPaymentMethodName()) && len(getAccountPaymentMethodName())) {
 			var rep = getAccountPaymentMethodName() & " ";	
 		}
-		if(getPaymentMethodType() == "creditCard") {
-			rep = listAppend(rep, " #getCreditCardType()# - *#getCreditCardLastFour()#", "|");
-		}
-		if(getPaymentMethodType() == "termPayment" && !getBillingAddress().getNewFlag()) {
-			rep = listAppend(rep, " #getBillingAddress().getSimpleRepresentation()#", "|");
-		}
-		if(getPaymentMethodType() == "giftCard" && !isNull(getGiftCardNumber()) && len(getGiftCardNumber())) {
-			rep = listAppend(rep, " #getGiftCardNumber()#", "|");
+		if(!isNull(getPaymentMethod())) {
+			if(getPaymentMethodType() == "creditCard") {
+				rep = listAppend(rep, " #getCreditCardType()# - *#getCreditCardLastFour()#", "|");
+			}
+			if(getPaymentMethodType() == "termPayment" && !getBillingAddress().getNewFlag()) {
+				rep = listAppend(rep, " #getBillingAddress().getSimpleRepresentation()#", "|");
+			}
+			if(getPaymentMethodType() == "giftCard" && !isNull(getGiftCardNumber()) && len(getGiftCardNumber())) {
+				rep = listAppend(rep, " #getGiftCardNumber()#", "|");
+			}
 		}
 		return rep;
+	}
+	
+	public any function setBillingAccountAddress( required any accountAddress ) {
+		
+		// If the shippingAddress is a new shippingAddress
+		if( isNull(getBillingAddress()) ) {
+			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
+		
+		// Else if there was no accountAddress before, or the accountAddress has changed
+		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+			
+		}
+		
+		// Set the actual accountAddress
+		variables.billingAccountAddress = arguments.accountAddress;
 	}
 
 	// ==================  END:  Overridden Methods ========================

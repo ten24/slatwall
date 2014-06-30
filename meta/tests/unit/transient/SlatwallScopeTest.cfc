@@ -66,8 +66,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getAccountData_without_any_propertyList_returns_all_available_properties() {
 		var ad = request.slatwallScope.getAccountData();
 		
-		debug(ad);
-		
 		assertEquals(structCount(ad), 10);
 	}
 	
@@ -151,7 +149,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getCartData_without_any_propertyList_returns_all_available_properties() {
 		var cd = request.slatwallScope.getCartData();
-		debug(cd);
+		
 		assertEquals(structCount(cd), 8);
 	}
 	

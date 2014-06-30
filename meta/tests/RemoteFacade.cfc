@@ -50,9 +50,20 @@
 	<!--- Intentionally left empty.  This works by extending the mxunit framework that should have a mapping in your CFIDE --->
 		
 	<cffunction name="startTestRun" access="remote" returntype="string">
-		<cfset createObject("component", "Slatwall.Application").reloadApplication() />
+		<!--- Create Slatwall Application --->
+		<cfset var slatwallApplication = createObject("component", "Slatwall.Application") />
 		
-		<cfreturn super.startTestRun()>
+		<!--- Reload Slatwall --->
+		<cfset slatwallApplication.reloadApplication() />
+		<cfset slatwallApplication.bootstrap() />
+		
+		<!--- Setup Test Utility --->
+		<cfset var testUtility = createObject("component", "Slatwall.meta.tests.TestUtility").init( slatwallApplication ) />
+		
+		<!--- Make sure all the test data is up to date --->
+		<cfset testUtility.updateTestData() />
+		
+		<cfreturn super.startTestRun(argumentCollection=arguments)>
 	</cffunction>
 	
 </cfcomponent>

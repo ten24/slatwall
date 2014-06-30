@@ -46,32 +46,20 @@
 Notes:
 
 */
-component {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	public any function getTestMerchandiseProduct() {
-		var product = entityNew("SlatwallProduct");
-		productData = {
-			productName = "Test Product",
-			price = 100,
-			productCode = "TESTPRODUCTXXX",
-			productType = {
-				productTypeID = "444df2f7ea9c87e60051f3cd87b435a1"
-			}
-		};
+	public void function createTestEntityData_sets_up_data_for_all_properties() {
+		var brand = request.slatwallScope.newEntity('Brand');
 		
-		request.slatwallScope.getService("productService").saveProduct(product, productData);
+		var brandData = createTestEntityData( brand, {}, true);
 		
-		ormFlush();
+		addToDebug(brandData);
 		
-		return product;
-	}
-	
-	public void function destroyTestMerchandiseProduct( required any product ) {
-		arguments.product.setDefaultSku( javaCast("null", "") );
-		
-		entityDelete(arguments.product);
-		
-		ormFlush();
+		assert(structKeyExists(brandData, "brandName"));
+		assert(structKeyExists(brandData, "brandWebsite"));
+		assert(structKeyExists(brandData, "activeFlag"));
 	}
 	
 }
+
+

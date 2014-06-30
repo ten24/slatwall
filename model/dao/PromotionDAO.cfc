@@ -60,6 +60,7 @@ Notes:
 		<cfif listFindNoCase(arguments.rewardTypeList,"order")>
 			<cfset noQualRequiredList = listAppend(noQualRequiredList, "order") />
 		</cfif>
+		
 		<cfset var hql = "SELECT spr FROM
 				SlatwallPromotionReward spr
 			  INNER JOIN FETCH

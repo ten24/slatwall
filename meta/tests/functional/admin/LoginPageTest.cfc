@@ -26,17 +26,15 @@ component extends="AdminTestBase" {
 		
 		// Make sure that the loginPage is still loaded, because we should have been bounced back there
 		assertPageIsLoaded(variables.loginPage);
-		
-		// Make sure that there is an error message
-		
 	}
 	
 	//example of how to take a screenshot; only works on firefox
+	/*
 	private function screenshotTest(){
 		var path = expandPath("screenshot.png");
-		debug(path);
+		
 		selenium.captureEntirePageScreenshot(path, "");
 	}
-	
+	*/
 	
 }

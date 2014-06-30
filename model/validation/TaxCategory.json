@@ -1,5 +1,6 @@
 {
 	"properties":{
-		"taxCategoryName":			[{"contexts":"save","required":true}]
+		"taxCategoryName":			[{"contexts":"save","required":true}],
+		"taxCategoryCode":			[{"contexts":"save","required":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}]
 	}
 }

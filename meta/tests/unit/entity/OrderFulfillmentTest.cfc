@@ -52,28 +52,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.entity = request.slatwallScope.getService("orderService").newOrderPayment();
+		variables.entity = request.slatwallScope.newEntity( 'OrderFulfillment' );
 	}
 	
-	public void function defaults_are_correct() {
-		super.defaults_are_correct();
-		assertEquals(variables.entity.getPaymentTransactions(), []);
-		assertEquals(variables.entity.getReferencingOrderPayments(), []);
-	}
-	
-	public void function getSucessfulPaymentTransactionExistsFlag_returns_false_by_default() {
-		assertFalse(variables.entity.getSucessfulPaymentTransactionExistsFlag());
-	}
-	
-	public void function getSucessfulPaymentTransactionExistsFlag_returns_true_when_should() {
-		var paymentTransaction = request.slatwallScope.newEntity('paymentTransaction');
-		paymentTransaction.setTransactionSuccessFlag(true);
-		paymentTransaction.setOrderPayment( variables.entity );
-		
-		assert(variables.entity.getSucessfulPaymentTransactionExistsFlag());
-	}
-	
-	public void function setBillingAccountAddress_updates_billingAddress() {
+	public void function populate_accountAddress_updates_shippingAddress() {
 		
 		var accountAddressDataOne = {
 			address = {
@@ -90,17 +72,55 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var accountAddressOne = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
 		var accountAddressTwo = createPersistedTestEntity( 'AccountAddress', accountAddressDataTwo );
 		
-		variables.entity.setBillingAccountAddress( accountAddressOne );
+		var data = {
+			accountAddress = {
+				accountAddressID = accountAddressOne.getAccountAddressID()
+			}
+		};
 		
-		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
+		variables.entity.populate( data );
 		
-		variables.entity.setBillingAccountAddress( accountAddressTwo );
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
 		
-		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
+		var data = {
+			accountAddress = {
+				accountAddressID = accountAddressTwo.getAccountAddressID()
+			}
+		};
+		
+		variables.entity.populate(data);
+		
+		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+	}
+	
+	public void function setAccountAddress_updates_shippingAddress() {
+		
+		var accountAddressDataOne = {
+			address = {
+				addressID = "",
+				streetAddress = "123 Main Street"
+			}
+		};
+		var accountAddressDataTwo = {
+			address = {
+				addressID = "",
+				streetAddress = "456 Main Street"
+			}
+		};
+		var accountAddressOne = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
+		var accountAddressTwo = createPersistedTestEntity( 'AccountAddress', accountAddressDataTwo );
+		
+		variables.entity.setAccountAddress( accountAddressOne );
+		
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+		
+		variables.entity.setAccountAddress( accountAddressTwo );
+		
+		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
 
 	}
 	
-	public void function setBillingAccountAddress_updates_billingAddress_without_creating_a_new_one() {
+	public void function setAccountAddress_updates_shippingAddress_without_creating_a_new_one() {
 		addressDataOne = {
 			streetAddress = '123 Main Street'
 		};
@@ -110,21 +130,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				streetAddress = "456 Main Street"
 			}
 		};
-		var billingAddress = createPersistedTestEntity( 'Address', addressDataOne );
+		var shippingAddress = createPersistedTestEntity( 'Address', addressDataOne );
 		var accountAddress = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
 		
-		variables.entity.setBillingAddress( billingAddress );
+		variables.entity.setShippingAddress( shippingAddress );
 		
-		assertEquals( addressDataOne.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
-		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
+		assertEquals( addressDataOne.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+		assertEquals( shippingAddress.getAddressID(), variables.entity.getShippingAddress().getAddressID() );
 		
-		variables.entity.setBillingAccountAddress( accountAddress );
+		variables.entity.setAccountAddress( accountAddress );
 		
-		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
-		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+		assertEquals( shippingAddress.getAddressID(), variables.entity.getShippingAddress().getAddressID() );
 	}
 	
-	public void function setBillingAccountAddress_doesnt_updates_billingAddress_when_same_aa_as_before() {
+	public void function setAccountAddress_doesnt_updates_shippingAddress_when_same_aa_as_before() {
 		var accountAddressDataOne = {
 			address = {
 				addressID = "",
@@ -134,17 +154,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var accountAddress = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
 		
-		variables.entity.setBillingAccountAddress( accountAddress );
+		variables.entity.setAccountAddress( accountAddress );
 		
-		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
 		
-		variables.entity.getBillingAddress().setStreetAddress('123 Main Street');
+		variables.entity.getShippingAddress().setStreetAddress('123 Main Street');
 		
-		variables.entity.setBillingAccountAddress( accountAddress );
+		variables.entity.setAccountAddress( accountAddress );
 		
-		assertEquals( '123 Main Street', variables.entity.getBillingAddress().getStreetAddress() );
+		assertEquals( '123 Main Street', variables.entity.getShippingAddress().getStreetAddress() );
 		
 	}
+	
+	
 }
-
-

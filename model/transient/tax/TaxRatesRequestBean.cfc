@@ -60,14 +60,19 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	
 	//TaxRateItemRequestBeans 
 	property name="taxRateItemRequestBeans" type="array";
+	property name="taxRateItemRequestBeansByAddressID" type="struct";
+	
+	//Header Element Properties 
+	property name="orderID" type="string";
+	property name="accountID" type="string";
 	
 	public any function init() {
 		// Set defaults
-		variables.TaxRateItemRequestBeans = [];
-		
+		variables.taxRateItemRequestBeans = [];
+		variables.taxRateItemRequestBeansByAddressID = {};
 		return super.init();
 	}
-	
+
 	public void function populateBillToWithAddress(required any address) {
 		if(!isNull(arguments.address.getStreetAddress())) {
 			setBillToStreetAddress(arguments.address.getStreetAddress());
@@ -96,8 +101,34 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		
 		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
 		
+		// Populate with orderItem quantities, price, and orderItemID fields
+		if(!isNull(arguments.orderItem.getOrderItemID())) {
+			taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
+		}
+		if(!isNull(arguments.orderItem.getQuantity())) {
+			taxRateItemRequestBean.setQuantity(arguments.orderItem.getQuantity());
+		}
+		if(!isNull(arguments.orderItem.getPrice())) {
+			taxRateItemRequestBean.setPrice(arguments.orderItem.getPrice());
+		}
+		if(!isNull(arguments.orderItem.getOrderItemID())) {
+			taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
+		}
+		if(!isNull(arguments.orderItem.getExtendedPrice())) {
+			taxRateItemRequestBean.setExtendedPrice(arguments.orderItem.getExtendedPrice());
+		}
+		if(!isNull(arguments.orderItem.getDiscountAmount())) {
+			taxRateItemRequestBean.setDiscountAmount(arguments.orderItem.getDiscountAmount());
+		}
+		if(!isNull(arguments.orderItem.getExtendedPriceAfterDiscount())) {
+			taxRateItemRequestBean.setExtendedPriceAfterDiscount(arguments.orderItem.getExtendedPriceAfterDiscount());
+		}
+		
 		if(!isNull(taxAddress)) {
 			// Set the taxAddressValues
+			if(!isNull(arguments.taxAddress.getAddressID())) {
+				taxRateItemRequestBean.setTaxAddressID(arguments.taxAddress.getAddressID());
+			}
 			if(!isNull(arguments.taxAddress.getStreetAddress())) {
 				taxRateItemRequestBean.setTaxStreetAddress(arguments.taxAddress.getStreetAddress());
 			}
@@ -119,30 +150,19 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			if(!isNull(arguments.taxAddress.getCountryCode())) {
 				taxRateItemRequestBean.setTaxCountryCode(arguments.taxAddress.getCountryCode());
 			}
+			
+			// If this addressID has not yet been defined in the "taxRateItemRequestBeansByAddressID" struct, then create it as an empty array
+			if(!structKeyExists(taxRateItemRequestBeansByAddressID, arguments.taxAddress.getAddressID())) {
+				taxRateItemRequestBeansByAddressID[ arguments.taxAddress.getAddressID() ] = [];
+			}
+			
+			// Add this taxRateItemRequestBean to the address specific array inside of "taxRateItemRequestBeansByAddressID"
+			arrayAppend(taxRateItemRequestBeansByAddressID[ arguments.taxAddress.getAddressID() ], taxRateItemRequestBean);
 		}
 		
-		// Populate with orderItem quantities, price, and orderItemID fields
-		if(!isNull(orderItem)){
-			if(!isNull(arguments.orderItem.getQuantity())) {
-				taxRateItemRequestBean.setQuantity(arguments.orderItem.getQuantity());
-			}
-			if(!isNull(arguments.orderItem.getPrice())) {
-				taxRateItemRequestBean.setPrice(arguments.orderItem.getPrice());
-			}
-			if(!isNull(arguments.orderItem.getOrderItemID())) {
-				taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
-			}
-			if(!isNull(arguments.orderItem.getExtendedPrice())) {
-				taxRateItemRequestBean.setExtendedPrice(arguments.orderItem.getExtendedPrice());
-			}
-			if(!isNull(arguments.orderItem.getDiscountAmount())) {
-				taxRateItemRequestBean.setDiscountAmount(arguments.orderItem.getDiscountAmount());
-			}
-			if(!isNull(arguments.orderItem.getExtendedPriceAfterDiscounts())) {
-				taxRateItemRequestBean.setExtendedPriceAfterDiscounts(arguments.orderItem.getExtendedPriceAfterDiscounts());
-			}
-		}
+		// Add this taxRateItemRequestBean to the full array
 		arrayAppend(getTaxRateItemRequestBeans(), taxRateItemRequestBean);
+		
 	}
-	
+
 }
