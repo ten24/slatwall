@@ -58,7 +58,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	
 	// Credit Card Info
 	property name="nameOnCreditCard" type="string";
-	property name="creditCardNumber" type="string"; 
+	property name="creditCardLastFour" type="string";
+	property name="creditCardNumber" type="string";
 	property name="creditCardType" type="string"; 
 	property name="expirationMonth" type="numeric";   
 	property name="expirationYear" type="numeric";
@@ -131,6 +132,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	public void function populatePaymentInfoWithAccountPayment(required any accountPayment) {
 		
 		// Populate Credit Card Info
+		if(!isNull(arguments.accountPayment.getCreditCardLastFour())) {
+			setCreditCardLastFour(arguments.accountPayment.getCreditCardLastFour());	
+		}
 		if(!isNull(arguments.accountPayment.getCreditCardNumber())) {
 			setCreditCardNumber(arguments.accountPayment.getCreditCardNumber());	
 		}
@@ -218,6 +222,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	public void function populatePaymentInfoWithOrderPayment(required any orderPayment) {
 		
 		// Populate Credit Card Info
+		if(!isNull(arguments.orderPayment.getCreditCardLastFour())) {
+			setCreditCardNumber(arguments.orderPayment.getCreditCardLastFour());
+		}
 		if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
 			setCreditCardNumber(arguments.orderPayment.getCreditCardNumber());
 		}
@@ -309,6 +316,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	public void function populatePaymentInfoWithAccountPaymentMethod(required any accountPaymentMethod) {
 		
 		// Populate Credit Card Info
+		if(!isNull(arguments.accountPaymentMethod.getCreditCardLastFour())) {
+			setCreditCardNumber(arguments.accountPaymentMethod.getCreditCardLastFour());
+		}
 		if(!isNull(arguments.accountPaymentMethod.getCreditCardNumber())) {
 			setCreditCardNumber(arguments.accountPaymentMethod.getCreditCardNumber());
 		}
