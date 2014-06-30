@@ -50,99 +50,66 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function setUp() {
 		super.setup();
-		
 		variables.service = request.slatwallScope.getService("promotionService").getVariables();
-		variables.dao = request.slatwallScope.getDAO("promotionDAO");
-		
-		transaction{
-			//promotion setup
-			variables.promotion = variables.dao.new('promotion');
-			variables.dao.save(variables.promotion);
-			
-			//promotion Period setup
-			variables.promotionPeriod = variables.dao.new('PromotionPeriod');
-			variables.dao.save(variables.promotionPeriod);
-			
-			//promotionCode
-			variables.promotionCode = variables.dao.new('promotionCode');
-			variables.dao.save(variables.promotionCode);
-			
-			//promotionReward
-			variables.promotionReward = variables.dao.new('promotionReward');
-			variables.dao.save(variables.promotionReward);
-			
-			//promotionApplied
-			variables.promotionApplied = variables.dao.new('promotionApplied');
-			variables.dao.save(variables.promotionApplied);
-			
-			//order
-			variables.order = variables.dao.new('order');
-			variables.dao.save(variables.order);
-			
-			//order fulfillment
-			variables.orderFulfillment = variables.dao.new('orderFulfillment');
-			variables.dao.save(variables.orderFulfillment);
-			
-			//orderItem
-			variables.orderItem = variables.dao.new('orderItem');
-			variables.dao.save(variables.orderItem);
-			
-			//product setup
-			variables.product = variables.dao.new('product');
-			variables.product.setProductName('TestProductName');
-			variables.dao.save(variables.product);
-			
-			//sku setup
-			variables.sku = variables.dao.new('sku');
-			variables.dao.save(variables.sku);
-			
-			//roundingRuleSetup
-			variables.roundingRule = variables.dao.new('roundingRule');
-			variables.dao.save(variables.roundingRule);
-			
-			//struct setup
-			variables.promotionRewardUsageDetails = {};
-			variables.promotionPeriodQualifications = {};
-			variables.orderItemQualifiedDiscounts = {};
-			
-		}
-	}
-	
-	public void function tearDown(){
-		//super.tearDown();
-		transaction{
-			variables.dao.delete(variables.promotion);
-			variables.dao.delete(variables.promotionPeriod);
-			variables.dao.delete(variables.promotionReward);
-			variables.dao.delete(variables.promotionCode);
-			variables.dao.delete(variables.promotionApplied);
-			variables.dao.delete(variables.order);
-			variables.dao.delete(variables.orderFulfillment);
-			variables.dao.delete(variables.orderItem);
-			variables.dao.delete(variables.product);
-			variables.dao.delete(variables.sku);
-			variables.dao.delete(variables.roundingRule);
-		}
 	}
 	
 	public void function setupPromotionRewardUsageDetailsTest(){
 		//create promotion reward data for the DAO
-		transaction{
-			variables.promotion.setActiveFlag(true);
-			variables.promotion.addPromotionPeriod(variables.promotionPeriod);
-			variables.promotionPeriod.setPromotion(variables.promotion);
-			variables.promotionCode.setPromotionCode('TestPromotionCode');
-			variables.promotion.addPromotionCode(variables.promotionCode);
-			variables.promotionCode.setPromotion(variables.promotion);
-			variables.promotionReward.setRewardType('order');
-			variables.promotionReward.setPromotionPeriod(variables.promotionPeriod);
-			
-			/*variables.order.addPromotionCode(variables.promotionCode);
-			variables.promotionCode.addOrder(variables.order);*/
-		}
+		var promotionData = {
+			activeFlag = true
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
 		
-		variables.service.setupPromotionRewardUsageDetails();
-		//request.debug(variables.promotionRewardUsageDetails);
+		var promotionRewardData = {
+			rewardType = 'order'
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotion = promotion,
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var promotionCodeData = {
+			promotionCode = 'TestPromotionCode',
+			promotion = promotion
+		};
+		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
+		
+		promotion.addPromotionPeriod(promotionPeriod);
+		promotion.addPromotionCode(promotionCode);
+		promotionReward.setPromotionPeriod(promotionPeriod);
+		ormFlush();
+		
+		promotionRewardUsageDetails = {};
+					
+		variables.service.setupPromotionRewardUsageDetails(promotionReward,promotionRewardUsageDetails);
+		
+		//assert Defaults
+		assertEquals(promotionRewardUsageDetails[promotionReward.getPromotionRewardID()].MaximumuseperItem,1000000);
+		assertEquals(promotionRewardUsageDetails[promotionReward.getPromotionRewardID()].maximumUsePerOrder,1000000);
+		assertEquals(promotionRewardUsageDetails[promotionReward.getPromotionRewardID()].MaximumuseperQualification,1000000);
+		assertEquals(promotionRewardUsageDetails[promotionReward.getPromotionRewardID()].UsedInOrder,0);
+		assertEquals(promotionRewardUsageDetails[promotionReward.getPromotionRewardID()].orderItemsUsage,[]);
+		
+		
+		promotionReward.setMaximumUsePerItem(12);
+		promotionReward.setMaximumUsePerOrder(7);
+		promotionReward.setMaximumUsePerQualification(15);
+		ormflush();
+		
+		
+		promotionRewardUsageDetails2 = {};
+		variables.service.setupPromotionRewardUsageDetails(promotionReward,promotionRewardUsageDetails2);
+		
+		//assert Defaults
+		assertEquals(promotionRewardUsageDetails2[promotionReward.getPromotionRewardID()].MaximumuseperItem,12);
+		assertEquals(promotionRewardUsageDetails2[promotionReward.getPromotionRewardID()].maximumUsePerOrder,7);
+		assertEquals(promotionRewardUsageDetails2[promotionReward.getPromotionRewardID()].MaximumuseperQualification,15);
+		assertEquals(promotionRewardUsageDetails2[promotionReward.getPromotionRewardID()].UsedInOrder,0);
+		assertEquals(promotionRewardUsageDetails2[promotionReward.getPromotionRewardID()].orderItemsUsage,[]);
+		
 	}
 	
 }
