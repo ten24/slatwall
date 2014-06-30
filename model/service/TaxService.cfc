@@ -55,6 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup the taxIntegrationArray
 		var taxIntegrationArr = [];
+		var ratesResponseBeans = {};
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
 		// First Loop over the orderItems to remove existing taxes
