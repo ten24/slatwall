@@ -59,17 +59,18 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		super.populate(argumentcollection=arguments);
 
 		// Loop over attribute sets
-		for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
-			
-			// Loop over attributes
-			for(var attribute in attributeSet.getAttributes()) {
-				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], "") );
+		if(!isnull(getAssignedAttributeSetSmartList())){
+			for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
+				
+				// Loop over attributes
+				for(var attribute in attributeSet.getAttributes()) {
+					if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
+						setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], "") );
+					}
 				}
+				
 			}
-			
 		}
-
 		// Return this object
 		return this;
 	}

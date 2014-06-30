@@ -459,18 +459,28 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "skus", "left");
 			
+			if(
+				!isnull(getSku()) &&
+				!isnull(getSku().getProduct()) &&
+				!isNull(getSku().getProduct().getProductType()) &&
+				!isnull(getSku().getProduct().getProductType().getProductTypeIDPath())
+			){
 			
-			var wc = "(";
-			wc &= " aslatwallattributeset.globalFlag = 1";
-			wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getSku().getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";
-			wc &= " OR aslatwallproduct.productID = '#getSku().getProduct().getProductID()#'";
-			if(!isNull(getSku().getProduct().getBrand())) {
-				wc &= " OR aslatwallbrand.brandID = '#getSku().getProduct().getBrand().getBrandID()#'";	
+				var wc = "(";
+				wc &= " aslatwallattributeset.globalFlag = 1";
+				wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getSku().getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";
+				wc &= " OR aslatwallproduct.productID = '#getSku().getProduct().getProductID()#'";
+				if(!isNull(getSku().getProduct().getBrand())) {
+					wc &= " OR aslatwallbrand.brandID = '#getSku().getProduct().getBrand().getBrandID()#'";	
+				}
+				wc &= " OR aslatwallsku.skuID = '#getSku().getSkuID()#'";
+				wc &= ")";
+				
+				variables.assignedAttributeSetSmartList.addWhereCondition( wc );
 			}
-			wc &= " OR aslatwallsku.skuID = '#getSku().getSkuID()#'";
-			wc &= ")";
-			
-			variables.assignedAttributeSetSmartList.addWhereCondition( wc );
+			else{
+				return [];
+			}
 		}
 		
 		return variables.assignedAttributeSetSmartList;

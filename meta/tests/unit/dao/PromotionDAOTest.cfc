@@ -207,7 +207,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		order.addOrderItem(orderItem);
 		promotionApplied.setOrderItem(orderItem);
-		//variables.orderItem.addAppliedPromotion(variables.promotionApplied);
 		
 		order.addOrderFulfillment(orderFulfillment);
 		
