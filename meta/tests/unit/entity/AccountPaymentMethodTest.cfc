@@ -52,25 +52,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.entity = request.slatwallScope.getService("orderService").newOrderPayment();
-	}
-	
-	public void function defaults_are_correct() {
-		super.defaults_are_correct();
-		assertEquals(variables.entity.getPaymentTransactions(), []);
-		assertEquals(variables.entity.getReferencingOrderPayments(), []);
-	}
-	
-	public void function getSucessfulPaymentTransactionExistsFlag_returns_false_by_default() {
-		assertFalse(variables.entity.getSucessfulPaymentTransactionExistsFlag());
-	}
-	
-	public void function getSucessfulPaymentTransactionExistsFlag_returns_true_when_should() {
-		var paymentTransaction = request.slatwallScope.newEntity('paymentTransaction');
-		paymentTransaction.setTransactionSuccessFlag(true);
-		paymentTransaction.setOrderPayment( variables.entity );
-		
-		assert(variables.entity.getSucessfulPaymentTransactionExistsFlag());
+		variables.entity = request.slatwallScope.newEntity("AccountPaymentMethod");
 	}
 	
 	public void function setBillingAccountAddress_updates_billingAddress() {

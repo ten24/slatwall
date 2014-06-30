@@ -65,7 +65,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var ska = listToArray(structKeyList(data));
 		arraySort(ska, "textNoCase");
-		debug(ska);
 		
 		assertEquals(0, compare(ska[1], 'key1'));
 		assertEquals(0, compare(ska[2], 'key2'));
@@ -85,7 +84,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		arrayAppend(data['ARRAY1'], subData);
 		
 		data = variables.service.lcaseStructKeys( data );
-		debug(data);
+		
 		for(var subDataStruct in data.array1) {
 			var ska = listToArray(structKeyList(subDataStruct));
 			arraySort(ska, "textNoCase");

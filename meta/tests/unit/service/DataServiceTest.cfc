@@ -60,7 +60,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @mxunit:dataprovider titleStrings
 	*/
 	public void function getUrlTitle(titleString) {
-		debug(arguments);
+		
 		var expectedTitle = "gift-card-50";
 		var urlTitle = variables.service.createUniqueURLTitle(titleString=arguments.titleString, tableName="SwProduct");
 		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");

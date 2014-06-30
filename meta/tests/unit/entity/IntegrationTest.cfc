@@ -56,7 +56,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function active_flag_set_to_no_by_default() {
-		debug(variables.entity.getActiveFlag());
 		assertFalse(variables.entity.getActiveFlag(), "Active flag not set to 'No' by default on integrations");
 	}
 	

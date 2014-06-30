@@ -48,10 +48,19 @@ Notes:
 */
 component extends="CFSelenium.CFSeleniumTestCase" {
 
+	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
-		readLocalConfiguration();
-	    browserURL = variables.configuration.ui.browserUrl; 
-	    browserCommand = variables.configuration.ui.browserCommand;
+		
+		// Setup Components
+		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
+		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.TestUtility").init( variables.slatwallFW1Application );
+		
+		// Read Config
+		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
+		
+		// Setup variables for Selenium
+	    variables.browserURL = variables.configuration.ui.browserUrl; 
+	    variables.browserCommand = variables.configuration.ui.browserCommand;
 	    
 	    super.beforeTests();
 	}
@@ -60,24 +69,4 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		assertEquals(arguments.pageObject.getTitle(), variables.selenium.getTitle(), arguments.message);
 	}
 	
-	// Thanks to Joe Rinehart and Brian Kotek
-	private function readLocalConfiguration(){
-		variables.configuration = structNew();
-		var hostname = createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
-		var configPath = expandPath( "/Slatwall/meta/tests/functional/config/#hostname#.ini" );
-		if(not fileExists(configPath)){
-			throw("Can't load local configuration: #configPath# should exist! If you're seeing this, copy conf/sample.ini and name it #hostname#.ini, then update any values with your environment-specific details");
-		}
-		
-		var sections = getProfileSections(configPath);
-		for(var section in sections){
-			variables.configuration[section] = structNew();
-			if(!isArray(sections[section])) {
-				sections[section] = listToArray(sections[section]);
-			}
-			for(var key in sections[section]){
-				variables.configuration[ section ][ key ] = getProfileString(configPath, section, key);
-			}
-		}
-	}
 }
