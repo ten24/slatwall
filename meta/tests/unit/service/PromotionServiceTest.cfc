@@ -51,7 +51,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getService("promotionService");
+		variables.service = request.slatwallScope.getService("promotionService").getVariables();
 		variables.dao = request.slatwallScope.getDAO("promotionDAO");
 		
 		transaction{
@@ -136,11 +136,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			variables.promotionCode.setPromotion(variables.promotion);
 			variables.promotionReward.setRewardType('order');
 			variables.promotionReward.setPromotionPeriod(variables.promotionPeriod);
+			
 			/*variables.order.addPromotionCode(variables.promotionCode);
 			variables.promotionCode.addOrder(variables.order);*/
 		}
 		
-		//variables.service.invokeMethod('clearPreviouslyAppliedPromotionsForOrderItems',{promotionReward=variables.promotionReward, promotionRewardUsageDetails=variables.promotionRewardUsageDetails});
+		variables.service.setupPromotionRewardUsageDetails();
 		//request.debug(variables.promotionRewardUsageDetails);
 	}
 	
