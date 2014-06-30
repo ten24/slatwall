@@ -91,6 +91,39 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
 	}
 	
+	// Tests for removeTaxesFromAllOrderItems()
+	public void function removeTaxesFromAllOrderItems_iterates_over_orderItems_in_order_and_removes_taxes(){
+		//Uses dumby_order() as newOrder
+		var newOrder = dumby_order();
+		
+		//Asserts that the dumby order has taxes
+		assertEquals(4, newOrder.getTaxTotal());
+		
+		//Passes in the new order to remove taxes and asserts taxes were removed
+		variables.service.removeTaxesFromAllOrderItems(newOrder);
+		assertEquals(0, newOrder.getTaxTotal());
+		
+	}
+	
+	//Tests for generateTaxIntegrationArray()
+	public void function generateTaxIntegrationArray_returns_empty_array_if_taxCategoryRate_has_NO_taxIntegration(){
+		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
+		var newOrder = request.slatwallScope.newEntity('Order');
+		var taxIntegrationArr = variables.service.generateTaxIntegrationArray(newOrder);
+		
+		//Asserts that the struct that returns is empty
+		assertEquals([], taxIntegrationArr);
+	}
+	
+	public void function generateTaxIntegrationArray_test(){
+		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
+		var newOrder = request.slatwallScope.newEntity('Order');
+		var taxIntegrationArr = variables.service.generateTaxIntegrationArray(newOrder);
+		
+		//Asserts that the struct that returns is empty
+		assertEquals([], taxIntegrationArr);
+	}
+	
 	//Sets up dumby order
 	private any function dumby_order(){
 		//Creates new order
@@ -107,20 +140,5 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Returns the dumby order
 		return newOrder;
 	}
-	
-	// Tests for removeTaxesFromAllOrderItems()
-	public void function removeTaxesFromAllOrderItems_iterates_over_orderItems_in_order_and_removes_taxes(){
-		//Uses dumby_order() as newOrder
-		var newOrder = dumby_order();
-		
-		//Asserts that the dumby order has taxes
-		assertEquals(4, newOrder.getTaxTotal());
-		
-		//Passes in the new order to remove taxes and asserts taxes were removed
-		variables.service.removeTaxesFromAllOrderItems(newOrder);
-		assertEquals(0, newOrder.getTaxTotal());
-		
-	}
-	
 }
 	

@@ -52,35 +52,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="integrationService" type="any";
 	
 	public void function updateOrderAmountsWithTaxes(required any order) {
-		
-		// Setup the taxIntegrationArray
-		var taxIntegrationArr = [];
+		//Create Tax Addresses struct and add the Tax Billing Address
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
 		//Remove existing taxes from OrderItems
 		removeTaxesFromAllOrderItems(arguments.order);
 		
-		// Next Loop over the orderItems and setup integrations to call
-		for(var orderItem in arguments.order.getOrderItems()) {
-			
-			// Get this sku's taxCategory
-			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
-			
-			// As long as there was a tax category, we can look to add that lookup to the integrations if needed
-			if(!isNull(taxCategory)) {
-				
-				// Loop over the rates of that category, looking for a unique integration
-				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
-					
-					// If a unique integration is found, then we add it to the integrations to call
-					if(!isNull(taxCategoryRate.getTaxIntegration()) && !arrayFind(taxIntegrationArr, taxCategoryRate.getTaxIntegration())){
-						
-						arrayAppend(taxIntegrationArr, taxCategoryRate.getTaxIntegration());
-					}
-				}	
-			}
-			
-		}
+		// Setup the Tax Integration Array
+		var taxIntegrationArr = generateTaxIntegrationArray(arguments.order);
 		
 		// Next Loop over the taxIntegrationArray to call getTaxRates on each
 		for(var integration in taxIntegrationArr) {
@@ -230,6 +209,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
+	//Generates an array of integrations
+	public array function generateTaxIntegrationArray(required any order){
+		// Setup the taxIntegrationArray
+		var taxIntegrationArr = [];
+		
+		for(var orderItem in arguments.order.getOrderItems()) {
+			
+			// Get this sku's taxCategory
+			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
+			
+			// As long as there was a tax category, we can look to add that lookup to the integrations if needed
+			if(!isNull(taxCategory)) {
+				
+				// Loop over the rates of that category, looking for a unique integration
+				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+					
+					// If a unique integration is found, then we add it to the integrations to call
+					if(!isNull(taxCategoryRate.getTaxIntegration()) && !arrayFind(taxIntegrationArr, taxCategoryRate.getTaxIntegration())){
+						
+						arrayAppend(taxIntegrationArr, taxCategoryRate.getTaxIntegration());
+					}
+				}	
+			}	
+		}
+		return taxIntegrationArr;
+	}
+	
+	//Removes Taxes for all Order Items
 	public void function removeTaxesFromAllOrderItems(required any order){
 		// First Loop over the orderItems to remove existing taxes
 		for(var orderItem in arguments.order.getOrderItems()) {
@@ -243,7 +250,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	
+	//Creates a struct of tax addresses and billing address key
 	public struct function addTaxAddressesStructBillingAddressKey(required any order) {
 		var taxAddresses = {};
 		
