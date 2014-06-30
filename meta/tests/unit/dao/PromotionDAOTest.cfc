@@ -151,7 +151,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		transaction{
 			variables.promotionReward.setAmountType('amount');
-			variables.promotionReward.setAmount(9);
+			variables.promotionReward.setAmount(5.55);
 		}
 		
 		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(variables.product.getProductID());
