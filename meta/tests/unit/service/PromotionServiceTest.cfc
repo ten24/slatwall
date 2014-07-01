@@ -51,18 +51,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		variables.service = request.slatwallScope.getService("promotionService");
-		makePublic(variables.service,'clearPreviouslyAppliedPromotions');
-		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrderItems');
-		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrderFulfillments');
-		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrder');
-		makePublic(variables.service,'setupPromotionRewardUsageDetails');
-		makePublic(variables.service,'getDiscountAmount');
-		makePublic(variables.service,'applyTop1Discounts');
-		makePublic(variables.service,'applyPromotionToOrderFulfillment');
-		makePublic(variables.service,'applyPromotionToOrder');
 	}
 	
 	public void function setupPromotionRewardUsageDetailsTest(){
+		makePublic(variables.service,'setupPromotionRewardUsageDetails');
+		
 		var promotionData = {
 			activeFlag = true
 		};
@@ -121,6 +114,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function clearPreviouslyAppliedPromotionsForOrderItemsTest(){
+		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrderItems');
 		var promotionAppliedToOrderItemData = {
 			
 		};
@@ -149,6 +143,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function clearPreviouslyAppliedPromotionForOrderFulfillmentsTest(){
+		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrderFulfillments');
 		//data setup begin
 		var promotionAppliedToOrderFulfillmentData = {
 			
@@ -174,6 +169,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function clearPreviouslyAppledPromotionsForOrderTest(){
+		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrder');
 		//data setup begin
 		
 		var promotionAppliedToOrderData = {
@@ -199,6 +195,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function getDiscountAmount_amountOff_withRoundingRule_Test(){
+		makePublic(variables.service,'getDiscountAmount');
 		//args promotionReward, price, quantity
 		//data setup begin
 		var promotionRewardData = {
@@ -225,6 +222,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}	
 	
 	public void function getDiscountAmount_amountOff_Test(){
+		makePublic(variables.service,'getDiscountAmount');
 		//args promotionReward, price, quantity
 		//data setup begin
 		var promotionRewardData = {
@@ -242,6 +240,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}	
 	
 	public void function getDiscountAmount_percentageOff_Test(){
+		makePublic(variables.service,'getDiscountAmount');
 		//args promotionReward, price, quantity
 		//data setup begin
 		var promotionRewardData = {
@@ -259,6 +258,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}	
 	
 	public void function getDiscountAmount_amount_Test(){
+		makePublic(variables.service,'getDiscountAmount');
 		//args promotionReward, price, quantity
 		//data setup begin
 		var promotionRewardData = {
@@ -276,6 +276,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}	
 	
 	public void function getShippingMethodOptionsDiscountAmountDetailsTest(){
+		
 		//args shippingMethodOption
 		//data setup begin
 		var shippingMethodOptionData = {
@@ -466,6 +467,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function applyTop1DiscountsTest(){
+		makePublic(variables.service,'applyTop1Discounts');
 		//data setup begin
 		
 		var orderData = {};
@@ -527,6 +529,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function applyPromotionToOrderFulfillmentTest(){
+		makePublic(variables.service,'applyPromotionToOrderFulfillment');
 		//data setup begin
 		
 		var orderData = {};
@@ -572,6 +575,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function applyPromotionToOrderTest(){
+		makePublic(variables.service,'applyPromotionToOrder');
 		//data setup begin
 		
 		var orderData = {};
