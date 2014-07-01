@@ -50,11 +50,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function setUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("promotionService").getVariables();
+		variables.service = request.slatwallScope.getService("promotionService");
+		makePublic(variables.service,'clearPreviouslyAppliedPromotions');
+		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrderItems');
+		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrderFulfillments');
+		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrder');
+		makePublic(variables.service,'setupPromotionRewardUsageDetails');
 	}
 	
 	public void function setupPromotionRewardUsageDetailsTest(){
-		//create promotion reward data for the DAO
 		var promotionData = {
 			activeFlag = true
 		};
@@ -110,6 +114,84 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(promotionRewardUsageDetails2[promotionReward.getPromotionRewardID()].UsedInOrder,0);
 		assertEquals(promotionRewardUsageDetails2[promotionReward.getPromotionRewardID()].orderItemsUsage,[]);
 		
+	}
+	
+	public void function clearPreviouslyAppliedPromotionsForOrderItemsTest(){
+		var promotionAppliedToOrderItemData = {
+			
+		};
+		var promotionAppliedToOrderItem = createPersistedTestEntity('promotionApplied',promotionAppliedToOrderItemData);
+		
+		var orderData = {
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderItemData = {
+			
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+		
+		promotionAppliedToOrderItem.setOrderItem(orderItem);
+		orderItem.addAppliedPromotion(promotionAppliedToOrderItem);
+		//assert that there is an appliedpromotion
+		assertTrue(arraylen(orderItem.getAppliedPromotions()));
+		
+		//clear it
+		variables.service.clearPreviouslyAppliedPromotionsForOrderItems([orderItem]);
+		
+		//assert that the promo was cleared		
+		assertFalse(arraylen(orderItem.getAppliedPromotions()));
+		
+	}
+	
+	public void function clearPreviouslyAppliedPromotionForOrderFulfillmentsTest(){
+		//data setup begin
+		var promotionAppliedToOrderFulfillmentData = {
+			
+		};
+		var promotionAppliedToOrderFulfillment = createPersistedTestEntity('promotionApplied',promotionAppliedToOrderFulfillmentData);
+		
+		var orderFulfillmentData = {
+			
+		};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		orderFulfillment.addAppliedPromotion(promotionAppliedToOrderFulfillment);
+		promotionAppliedToOrderFulfillment.setorderFulfillment(orderFulfillment);
+		//data setup end
+		
+		//assert that we have an applied promo to orderFulfillment
+		assertTrue(arraylen(orderFulfillment.getAppliedPromotions()));
+		//clear it
+		variables.service.clearPreviouslyAppliedPromotionsForOrderFulfillments([orderFulfillment]);
+		//assert that we have cleared the promo
+		assertFalse(arraylen(orderFulfillment.getAppliedPromotions()));
+		
+	}
+	
+	public void function clearPreviouslyAppledPromotionsForOrderTest(){
+		//data setup begin
+		
+		var promotionAppliedToOrderData = {
+			
+		};
+		var promotionAppliedToOrder = createPersistedTestEntity('promotionApplied',promotionAppliedToOrderData);
+		
+		var orderData = {
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		order.addAppliedPromotion(promotionAppliedToOrder);
+		promotionAppliedToOrder.setOrder(order);
+		//data setup end
+		
+		//assert that we have an applied promo
+		assertTrue(arraylen(order.getAppliedPromotions()));
+		
+		//clear it
+		variables.service.clearPreviouslyAppliedPromotionsForOrder(order);
+		//assert that we have cleared the applied promo
+		assertFalse(arraylen(order.getAppliedPromotions()));
 	}
 	
 }

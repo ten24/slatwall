@@ -54,26 +54,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
 		// Clear all previously applied promotions for order items
 		for(orderItem in arguments.orderItems){
-			for(var pa=arrayLen(orderItem.getAppliedPromotions()); pa >= 1; pa--) {
-				orderItem.getAppliedPromotions()[pa].removeOrderItem();
-			}
+			orderItem.getAppliedPromotions().clear();
 		}
 	}
 	
 	private void function clearPreviouslyAppliedPromotionsForOrderFulfillments(required array orderFulfillments){
 		// Clear all previously applied promotions for fulfillment
+		
+		
 		for(orderFulfillment in arguments.orderFulfillments){
-			for(var pa=arrayLen(orderFulfillment.getAppliedPromotions()); pa >= 1; pa--) {
-				orderFulfillment.getAppliedPromotions()[pa].removeOrderFulfillment();
-			}
+			orderFulfillment.getAppliedPromotions().clear();
 		}
 	}
 	
 	private void function clearPreviouslyAppliedPromotionsForOrder(required any order){
 		// Clear all previously applied promotions for order
-		for(appliedPromotion in arguments.order.getAppliedPromotions()){
-			appliedPromotion.removeOrder();
-		}
+		arguments.order.getAppliedPromotions().clear();
 	}
 	
 	private void function clearPreviouslyAppliedPromotions(required any order){
