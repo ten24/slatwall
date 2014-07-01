@@ -115,15 +115,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals([], taxIntegrationArr);
 	}
 	
-	public void function generateTaxIntegrationArray_test(){
-		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
-		var newOrder = request.slatwallScope.newEntity('Order');
-		var taxIntegrationArr = variables.service.generateTaxIntegrationArray(newOrder);
-		
-		//Asserts that the struct that returns is empty
-		assertEquals([], taxIntegrationArr);
-	}
-	
 	//Sets up dumby order
 	private any function dumby_order(){
 		//Creates new order
