@@ -56,6 +56,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrderFulfillments');
 		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrder');
 		makePublic(variables.service,'setupPromotionRewardUsageDetails');
+		makePublic(variables.service,'getDiscountAmount');
 	}
 	
 	public void function setupPromotionRewardUsageDetailsTest(){
@@ -193,6 +194,83 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assert that we have cleared the applied promo
 		assertFalse(arraylen(order.getAppliedPromotions()));
 	}
+	
+	public void function getDiscountAmount_amountOff_withRoundingRule_Test(){
+		//args promotionReward, price, quantity
+		//data setup begin
+		var promotionRewardData = {
+			amountType = 'amountOff',
+			amount = 5.55
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var roundingRuleData = {
+			roundingRuleDircetion = 'Closest',
+			roundingRuleExpression = '.99'
+			
+		};
+		var roundingRule = createPersistedTestEntity('roundingRule',roundingRuleData);
+		
+		promotionReward.setRoundingRule(roundingRule); 
+		
+		var price = 8;
+		var quantity = 7;
+		//data setup end
+		//amountOff discountAmount = precisionEvaluate(originalAmount - roundedFinalAmount);
+		var discountAmount = variables.service.getDiscountAmount(promotionReward,price,quantity);
+		assertEquals(discountAmount,39.01);
+	}	
+	
+	public void function getDiscountAmount_amountOff_Test(){
+		//args promotionReward, price, quantity
+		//data setup begin
+		var promotionRewardData = {
+			amountType = 'amountOff',
+			amount = 5.55
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var price = 8;
+		var quantity = 7;
+		//data setup end
+		//amountOff rewardAmount * quantity
+		var discountAmount = variables.service.getDiscountAmount(promotionReward,price,quantity);
+		assertEquals(discountAmount,38.85);
+	}	
+	
+	public void function getDiscountAmount_percentageOff_Test(){
+		//args promotionReward, price, quantity
+		//data setup begin
+		var promotionRewardData = {
+			amountType = 'percentageOff',
+			amount = 20
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var price = 8;
+		var quantity = 7;
+		//data setup end
+		//percentage off precisionEvaluate(originalAmount * (reward.getAmount()/100))
+		var discountAmount = variables.service.getDiscountAmount(promotionReward,price,quantity);
+		assertEquals(discountAmount,11.2);
+	}	
+	
+	public void function getDiscountAmount_amount_Test(){
+		//args promotionReward, price, quantity
+		//data setup begin
+		var promotionRewardData = {
+			amountType = 'amount',
+			amount = 2
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var price = 8;
+		var quantity = 7;
+		//data setup end
+		//amount precisionEvaluate((arguments.price - reward.getAmount()) * arguments.quantity)
+		var discountAmount = variables.service.getDiscountAmount(promotionReward,price,quantity);
+		assertEquals(discountAmount,42);
+	}	
 	
 }
 
