@@ -792,6 +792,56 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderItemQualifiedDiscounts[orderITem2.getOrderItemID()][1].promotionRewardID,'');
 	}
 	
+	public void function getPromotionPeriodQualificationDetailsTest(){
+		makePublic(variables.service,'getPromotionPeriodQualificationDetails');
+		//args promotionPeriod, order
+		var accountData = {};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var orderData = {};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var promotionData = {};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		var promotionAppliedData = {};
+		var promotionApplied = createPersistedTestEntity('promotionApplied',promotionAppliedData);
+		
+		var promotionPeriodData = {
+			maximumUseCount = 1,
+			maximumAccountUseCount = 1
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var orderFulfillmentData = {};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		var promotionQualifierData = {
+			QualifierType = 'fulfillment'
+		};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);
+		
+		promotion.addAppliedPromotion(promotionApplied);
+		promotion.addPromotionPeriod(promotionPeriod);
+		
+		promotionPeriod.addpromotionQualifier(promotionQualifier);
+		promotionQualifier.setPromotionPeriod(promotionPeriod);
+		
+		order.setAccount(account);
+		account.addOrder(order);
+		
+		order.addOrderFulfillment(orderFulfillment);
+		orderFulfillment.setOrder(order);
+		
+		var qualificationDetails = variables.service.getPromotionPeriodQualificationDetails(promotionPeriod,order);
+		//assert details make sense
+		assertEquals(qualificationDetails.qualifiedFulfillmentIDS[1],orderFulfillment.getOrderFulfillmentID());
+		assertTrue(qualificationDetails.qualificationsmeet);
+		assertEquals(qualificationDetails.qualifierDetails[1].qualificationCount,1);
+		assertEquals(qualificationDetails.qualifierDetails[1].qualifier.getPromotionQualifierID(),promotionQualifier.getPromotionQualifierID());
+		
+	}
+	
 }
 
 
