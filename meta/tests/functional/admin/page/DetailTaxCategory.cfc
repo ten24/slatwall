@@ -15,4 +15,20 @@ component extends="PageObject" {
 		
 		return new ListTaxCategories(selenium, pageLoadTime);
 	}
+	
+	public any function edit() {
+		selenium.click("link=Edit");
+		
+		var loadTime = waitForPageToLoad();
+		
+		return new DetailTaxCategory(selenium, loadTime);
+	}
+	
+	public any function submitEditForm( struct formData={} ) {
+		submitForm( 'adminentitysavetaxcategory', arguments.formData );
+		
+		var pageLoadTime = waitForPageToLoad();
+		
+		return new DetailTaxCategory(selenium, pageLoadTime);
+	}
 }
