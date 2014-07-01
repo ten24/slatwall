@@ -601,6 +601,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return qualificationDetails;
 	}
 	
+	private void function getQualifierQualificationDetailsForOrder(required any qualifier, required any order, required struct qualifierDetails){
+		// Set the qualification count to 1 because that is the max for an order qualifier
+		arguments.qualifierDetails.qualificationCount = 1;
+		
+		// Minimum Order Quantity
+		if(	( !isNull(arguments.qualifier.getMinimumOrderQuantity()) && arguments.qualifier.getMinimumOrderQuantity() > arguments.order.getTotalSaleQuantity() )
+			||
+			( !isNull(arguments.qualifier.getMaximumOrderQuantity()) && arguments.qualifier.getMaximumOrderQuantity() < arguments.order.getTotalSaleQuantity() )
+			||
+			( !isNull(arguments.qualifier.getMinimumOrderSubtotal()) && arguments.qualifier.getMinimumOrderSubtotal() > arguments.order.getSubtotal() )
+			||
+			( !isNull(arguments.qualifier.getMaximumOrderSubtotal()) && arguments.qualifier.getMaximumOrderSubtotal() < arguments.order.getSubtotal() )
+		) {
+			arguments.qualifierDetails.qualificationCount = 0;
+		}
+	}
+	
 	private struct function getQualifierQualificationDetails(required any qualifier, required any order) {
 		var qualifierDetails = {
 			qualifier = arguments.qualifier,
@@ -611,20 +628,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
 			
-			// Set the qualification count to 1 because that is the max for an order qualifier
-			qualifierDetails.qualificationCount = 1;
-			
-			// Minimum Order Quantity
-			if(	( !isNull(arguments.qualifier.getMinimumOrderQuantity()) && arguments.qualifier.getMinimumOrderQuantity() > arguments.order.getTotalSaleQuantity() )
-				||
-				( !isNull(arguments.qualifier.getMaximumOrderQuantity()) && arguments.qualifier.getMaximumOrderQuantity() < arguments.order.getTotalSaleQuantity() )
-				||
-				( !isNull(arguments.qualifier.getMinimumOrderSubtotal()) && arguments.qualifier.getMinimumOrderSubtotal() > arguments.order.getSubtotal() )
-				||
-				( !isNull(arguments.qualifier.getMaximumOrderSubtotal()) && arguments.qualifier.getMaximumOrderSubtotal() < arguments.order.getSubtotal() )
-			) {
-				qualifierDetails.qualificationCount = 0;
-			}
+			getPromotionPeriodQualificationDetailsForOrder(arguments.qualifier,arguments.order,qualifierDetails);
 			
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {

@@ -842,6 +842,43 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
+	public void function getQualifierQualificationDetailsForOrderTest(){
+		makePublic(variables.service,'getQualifierQualificationDetailsForOrder');
+		//args qualifier,order
+		//data setup begin
+		var orderData = {
+			
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var promotionQualifierData = {
+			QualifierType = 'order'
+		};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);
+		
+		var qualifierDetails = {
+			qualifier = promotionQualifier,
+			qualificationCount = 0,
+			qualifiedFulfillmentIDs = [],
+			qualifiedOrderItemDetails = []
+		};
+		
+		//data setup end
+		
+		variables.service.getQualifierQualificationDetailsForOrder(promotionQualifier,order,qualifierDetails);
+		assertEquals(qualifierDetails.qualificationCount,1);
+		
+		promotionQualifier.setMinimumOrderQuantity(2);
+		promotionQualifier.setMaximumOrderQuantity(-1);
+		promotionQualifier.setMinimumOrderSubtotal(2);
+		promotionQualifier.setMaximumOrderSubtotal(-1);
+		
+		variables.service.getQualifierQualificationDetailsForOrder(promotionQualifier,order,qualifierDetails);
+		
+		assertEquals(qualifierDetails.qualificationCount,0);
+		
+	}
+	
 }
 
 
