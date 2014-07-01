@@ -341,6 +341,77 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
+	public void function getShippingMethodOptionsDiscountAmountDetails_totalchargeLessThanReward_Test(){
+		//args shippingMethodOption
+		//data setup begin
+		var shippingMethodOptionData = {
+			TotalCharge = 1.55
+		};
+		var shippingMethodOption = createPersistedTestEntity('shippingMethodOption',shippingMethodOptionData);
+		
+		var promotionCodeData = {
+			promotionCode = 'TestPromotionCode'
+			
+		};
+		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
+		
+		var promotionRewardData = {
+			rewardType = 'fulfillment',
+			amountType = 'amountOff',
+			amount = 3
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var promotionData = {
+			activeFlag = true,
+			promotionPeriod = promotionPeriod,
+			promotionCode = promotionCode
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		var orderData = {
+			promotionCode = promotionCode
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderFulfillmentData = {
+			
+		};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		var fulfillmentMethodData = {
+			
+		};
+		var fulfillmentMethod = createPersistedTestEntity('fulfillmentMethod',fulfillmentMethodData);
+		
+		promotionPeriod.setPromotion(promotion);
+		promotionCode.setPromotion(promotion);
+		promotionReward.setPromotionPeriod(promotionPeriod);
+		promotionCode.addOrder(order);
+		order.addOrderfulfillment(orderFulfillment);
+		orderFulfillment.setOrder(order);
+		orderFulfillment.setFulfillmentMethod(fulfillmentMethod);
+		fulfillmentMethod.addOrderFulfillment(orderFulfillment);
+		shippingMethodOption.setOrderFulfillment(orderFulfillment);
+		ormflush();
+		
+		//data setup end
+		
+		var discountAmountStruct = variables.service.getShippingMethodOptionsDiscountAmountDetails(shippingMethodOption);
+		
+		//assert that we have a struct with the discountamount and the promotion related to it
+		assertEquals(discountAmountStruct.discountAmount,1.55);
+		assertEquals(discountAmountStruct.promotionID,promotion.getPromotionID());
+		
+	}
+	
+	
+	
 }
 
 
