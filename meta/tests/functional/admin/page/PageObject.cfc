@@ -20,13 +20,20 @@ component {
 		return variables.loadTime;
 	}
 	
-	function waitFor(time=10000) {
+	function waitForPageToLoad(time=10000) {
 		
 		var start = getTickCount();
 		
 		variables.selenium.waitForPageToLoad(time);
 		
 		return getTickCount() - start;
+	}
+	
+	function submitForm( required string formID, struct formData={} ) {
+		for(var key in arguments.formData) {
+			selenium.type( key, arguments.formData[key] );
+		}
+		selenium.submit(arguments.formID);
 	}
 	
 	function isLoaded(){
