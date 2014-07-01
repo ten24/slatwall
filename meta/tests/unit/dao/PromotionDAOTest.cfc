@@ -52,7 +52,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 		variables.dao = request.slatwallScope.getDAO("promotionDAO");
 	}
-	
+	 
 	public void function getSalePricePromotionRewardsQueryTest(){
 		var productData = {
 			productName = 'TestProductName'
@@ -215,6 +215,68 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(1,promotionPeriodCount);
 		
 	}
+
+	public void function getPromotionCodeUseCount(){
+		
+		//order setup
+		var orderData = {
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderStatusTypeData = {
+			systemCode = 'ostPlaced'
+		};
+		var orderStatusType = createPersistedTestEntity('Type',orderStatusTypeData);
+		
+		var promotionCodeData = {};
+		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
+		
+		
+		order.setOrderStatusType(orderStatusType);
+		promotionCode.addOrder(order);
+		order.addPromotionCode(promotionCode);
+		ormflush();
+		
+		request.debug(order.getOrderStatusType());
+		
+		PromotionCodeCount = variables.dao.getPromotionCodeUseCount(promotionCode);
+		//assert we were able to get our promotionCodeUseCount
+		assertEquals(1,PromotionCodeCount);
+	}
+	
+	public void function getPromotionCodeAccountUseCount(){
+		//order setup
+		var accountData = {
+			
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var orderData = {
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderStatusTypeData = {
+			systemCode = 'ostPlaced'
+		};
+		var orderStatusType = createPersistedTestEntity('Type',orderStatusTypeData);
+		
+		var promotionCodeData = {};
+		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
+		
+		account.addOrder(order);
+		order.setAccount(account);
+		order.setOrderStatusType(orderStatusType);
+		promotionCode.addOrder(order);
+		order.addPromotionCode(promotionCode);
+		ormflush();
+		
+		request.debug(order.getOrderStatusType());
+		
+		PromotionCodeAccountCount = variables.dao.getPromotionCodeAccountUseCount(promotionCode,account);
+		//assert we were able to get our promotionCodeUseCount
+		assertEquals(1,PromotionCodeAccountCount);
+	}
+
 }
 
 
