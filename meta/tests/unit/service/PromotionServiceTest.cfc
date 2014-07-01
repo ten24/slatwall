@@ -695,8 +695,103 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assert discount that was calculated 
 		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].discountAmount,2.22);
 		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].promotionRewardID,promotionReward.getPromotionRewardID());
-		request.debug(orderItemQualifiedDiscounts);
 	}
+	
+	public void function setupOrderItemQualifiedDiscountsTest(){
+		MakePublic(variables.service,'setupOrderItemQualifiedDiscounts');
+		//args order and orderItemQualifiedDiscounts
+		//data setup begin
+		
+		var promotionData = {
+			
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		var promotionRewardData = {
+			amount = 3,
+			amountType = 'amountOff'
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotion = promotion,
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var orderData = {};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderItemData = {
+			
+			quantity = 3
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+		
+		var productData = {
+			productName = 'TestProduct'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var skuData = {
+			price = 23
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		product.addSku(sku);
+		sku.setProduct(product);
+		
+		var orderItemData2 = {
+			quantity = 5
+			
+		};
+		var orderItem2 = createPersistedTestEntity('orderItem',orderItemData2);
+		
+		var productData2 = {
+			productName = 'TestProduct2'
+		};
+		var product2 = createPersistedTestEntity('product',productData2);
+		
+		var skuData2 = {
+			price = 12
+		};
+		var sku2 = createPersistedTestEntity('sku',skuData2);
+		
+		sku.addPromotionReward(promotionReward);
+		sku2.addPromotionReward(promotionReward);
+		promotionReward.addSku(sku);
+		promotionReward.addSku(sku2);
+		
+		promotionReward.setPromotionPeriod(promotionPeriod);
+		promotion.addPromotionPeriod(promotionPeriod);
+		
+		product2.addSku(sku2);
+		sku.setProduct(product2);
+		
+		orderItem.setSku(sku);
+		orderItem2.setSku(sku2);
+		
+		order.addOrderItem(orderItem);
+		orderItem.setOrder(order);
+		order.addOrderItem(orderItem2);
+		orderItem2.setOrder(order);
+		ormflush();
+		var orderItemQualifiedDiscounts = {
+			
+		};
+		
+		//data setup end
+		variables.service.setupOrderItemQualifiedDiscounts(order,orderItemQualifiedDiscounts);
+		//assert discounts
+		assertEquals(orderItemQualifiedDiscounts[orderItem.getOrderItemID()][1].promotion.getPromotionID(),promotion.getPromotionID());
+		assertEquals(orderItemQualifiedDiscounts[orderItem.getOrderItemID()][1].discountAmount,9);
+		assertEquals(orderItemQualifiedDiscounts[orderItem.getOrderItemID()][1].promotionRewardID,'');
+		
+		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].promotion.getPromotionID(),promotion.getPromotionID());
+		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].discountAmount,15);
+		assertEquals(orderItemQualifiedDiscounts[orderITem2.getOrderItemID()][1].promotionRewardID,'');
+	}
+	
 }
 
 
