@@ -410,7 +410,57 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	
+	public void function getSalePriceDetailsForProductSkusTest(){
+		//data setup begin
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var promotionData = {
+			
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		var skuData = {
+			price = 10,
+			product = product
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var promotionRewardData = {
+			amount = 3,
+			amountType = 'amountOff',
+			sku = sku
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotion = promotion,
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		product.addSku(sku);
+		sku.addPromotionReward(promotionReward);
+		promotionReward.setPromotionPeriod(promotionPeriod);
+		promotion.addPromotionPeriod(promotionPeriod);
+		ormflush();
+		//data setup end
+		
+		var priceDetails = variables.service.getSalePriceDetailsForProductSkus(product.getProductID());
+		
+		//assert values are correct
+		assertEquals(priceDetails[sku.getSkuID()].discountlevel,'sku');
+		assertEquals(priceDetails[sku.getSkuID()].originalPrice,10.00);
+		assertEquals(priceDetails[sku.getSkuID()].promotionid,promotion.getPromotionID());
+		assertEquals(priceDetails[sku.getSkuID()].roundingRuleid,'');
+		assertEquals(priceDetails[sku.getSkuID()].salePrice,7.00);
+		assertEquals(priceDetails[sku.getSkuID()].salepriceDiscountType,'amountOff');
+		assertEquals(priceDetails[sku.getSkuID()].salepriceexpirationdatetime,'');
+		request.debug(priceDetails);
+		
+	}
 	
 }
 
