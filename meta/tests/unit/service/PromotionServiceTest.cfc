@@ -611,6 +611,92 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(order.getAppliedPromotions()[1].getDiscountAmount(),42);
 	}
 	
+	public void function removeDiscountsExceedingMaxOrderUseCountsTest(){
+		
+		MakePublic(variables.service,'removeDiscountsExceedingMaxOrderUseCounts');
+		//args promotionRewardUsageDetails, orderItemQualifiedDiscounts
+		//data setup begin
+		var promotionData = {
+			
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		
+		var promotionRewardData = {
+			amount = 3,
+			amountType = 'amountOff'
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotion = promotion,
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var promotionRewardUsageDetails = {
+			
+		};
+		
+		var orderData = {};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderItemData = {};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+		
+		var orderItemData2 = {};
+		var orderItem2 = createPersistedTestEntity('orderItem',orderItemData2);
+		
+		order.addOrderItem(orderItem);
+		orderItem.setOrder(order);
+		order.addOrderItem(orderItem2);
+		orderItem2.setOrder(order);
+		
+		promotionRewardUsageDetails[promotionReward.getPromotionRewardID()] = {
+			usedInOrder = 5,
+			maximumUsePerOrder = 1,
+			orderItemsUsage = [
+				{
+					orderItemID = orderItem.getOrderItemID(),
+					discountQuantity = 1
+				},
+				{
+					orderItemID = orderItem2.getOrderItemID(),
+					discountQuantity = 5
+				}
+			]
+			
+		};
+		
+		var orderItemQualifiedDiscounts = {
+			
+		};
+		
+		orderItemQualifiedDiscounts[orderItem.getOrderItemID()] = [
+			{
+				promotionRewardID = promotionReward.getPromotionRewardID(),
+				discountAmount = 4.32
+			}
+		];
+		
+		orderItemQualifiedDiscounts[orderItem2.getOrderItemID()] = [
+			{
+				promotionRewardID = promotionReward.getPromotionRewardID(),
+				discountAmount = 5.55
+			}
+		];
+		
+		//data setup end
+		
+		variables.service.removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
+		
+		//assert that the discount was removed
+		assertEquals(orderItemQualifiedDiscounts[orderItem.getOrderItemID()],[]);
+		//assert discount that was calculated 
+		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].discountAmount,2.22);
+		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].promotionRewardID,promotionReward.getPromotionRewardID());
+		request.debug(orderItemQualifiedDiscounts);
+	}
 }
 
 
