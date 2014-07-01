@@ -57,6 +57,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		makePublic(variables.service,'clearPreviouslyAppliedPromotionsForOrder');
 		makePublic(variables.service,'setupPromotionRewardUsageDetails');
 		makePublic(variables.service,'getDiscountAmount');
+		makePublic(variables.service,'applyTop1Discounts');
+		makePublic(variables.service,'applyPromotionToOrderFulfillment');
+		makePublic(variables.service,'applyPromotionToOrder');
 	}
 	
 	public void function setupPromotionRewardUsageDetailsTest(){
@@ -460,6 +463,148 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(priceDetails[sku.getSkuID()].salepriceexpirationdatetime,'');
 		request.debug(priceDetails);
 		
+	}
+	
+	public void function applyTop1DiscountsTest(){
+		//data setup begin
+		
+		var orderData = {};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderItemData = {};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+		
+		var orderItemData2 = {};
+		var orderItem2 = createPersistedTestEntity('orderItem',orderItemData2);
+		
+		var promotionData = {
+			
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		
+		var promotionRewardData = {
+			amount = 3,
+			amountType = 'amountOff'
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotion = promotion,
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var orderItemQualifiedDiscounts = {
+			
+		};
+		
+		orderItemQualifiedDiscounts[orderItem.getOrderItemID()] = 
+			[
+				{
+					discountAmount = 3,
+					promotion = promotion
+				},
+				{
+					discountAmount = 7,
+					promotion = promotion
+				}
+			];
+		
+		order.addOrderItem(orderItem);
+		orderItem.setOrder(order);
+		order.addOrderItem(orderItem2);
+		orderItem2.setOrder(order);
+		//data setup end
+		
+		variables.service.applyTop1Discounts(order, orderItemQualifiedDiscounts);
+		
+		//assert order item has correct applied discount
+		assertTrue(arraylen(orderItem.getAppliedPromotions()));
+		assertEquals(orderItem.getAppliedPromotions()[1].getPromotion().getPromotionID(),promotion.getPromotionID());
+		assertEquals(orderItem.getAppliedPromotions()[1].getDiscountAmount(),3);
+		
+	}
+	
+	public void function applyPromotionToOrderFulfillmentTest(){
+		//data setup begin
+		
+		var orderData = {};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderFulfillmentData = {};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		var promotionData = {
+			
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		
+		var promotionRewardData = {
+			amount = 3,
+			amountType = 'amountOff'
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotion = promotion,
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var orderItemQualifiedDiscounts = {
+			
+		};
+		
+		var discountAmount = 4;
+		
+		order.addOrderFulfillment(orderFulfillment);
+		orderFulfillment.setOrder(order);
+		//data setup end
+		
+		variables.service.applyPromotionToOrderFulfillment(orderFulfillment, promotion, discountAmount);
+		
+		//assert order item has correct applied discount
+		assertTrue(arraylen(orderFulfillment.getAppliedPromotions()));
+		assertEquals(orderFulfillment.getAppliedPromotions()[1].getPromotion().getPromotionID(),promotion.getPromotionID());
+		assertEquals(orderFulfillment.getAppliedPromotions()[1].getDiscountAmount(),4);
+	}
+	
+	public void function applyPromotionToOrderTest(){
+		//data setup begin
+		
+		var orderData = {};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var promotionData = {
+			
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		
+		var promotionRewardData = {
+			amount = 3,
+			amountType = 'amountOff'
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var promotionPeriodData = {
+			promotion = promotion,
+			promotionReward = promotionReward
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var discountAmount = 42;
+		
+		//data setup end
+		
+		variables.service.applyPromotionToOrder(order, promotion, discountAmount);
+		
+		//assert order item has correct applied discount
+		assertTrue(arraylen(order.getAppliedPromotions()));
+		assertEquals(order.getAppliedPromotions()[1].getPromotion().getPromotionID(),promotion.getPromotionID());
+		assertEquals(order.getAppliedPromotions()[1].getDiscountAmount(),42);
 	}
 	
 }

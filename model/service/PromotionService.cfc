@@ -60,8 +60,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private void function clearPreviouslyAppliedPromotionsForOrderFulfillments(required array orderFulfillments){
 		// Clear all previously applied promotions for fulfillment
-		
-		
 		for(orderFulfillment in arguments.orderFulfillments){
 			orderFulfillment.getAppliedPromotions().clear();
 		}
@@ -431,7 +429,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 	
-	private void function applyPromotionToOrderFulfillment(required any orderFulfillment, required any promotion, required numeric discount){
+	private void function applyPromotionToOrderFulfillment(required any orderFulfillment, required any promotion, required numeric discountAmount){
 		var newAppliedPromotion = this.newPromotionApplied();
 		newAppliedPromotion.setAppliedType('orderFulfillment');
 		newAppliedPromotion.setPromotion( arguments.promotion );
