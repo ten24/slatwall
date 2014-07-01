@@ -7,16 +7,17 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
+	property name="auditsToCommitStruct" type="struct";
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
-	property name="sucessfulActions" type="array";
+	property name="successfulActions" type="array";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
 	
 	public any function init() {
 		setCalledActions( [] );
-		setSucessfulActions( [] );
+		setSuccessfulActions( [] );
 		setFailureActions( [] );
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
@@ -39,6 +40,17 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return returnHTML;
 	}
 	
+	public struct function getAuditsToCommitStruct() {
+		if(!structKeyExists(variables, "auditsToCommitStruct")) {
+			variables.auditsToCommitStruct = {};
+		}
+		return variables.auditsToCommitStruct;
+	}
+	
+	public void function clearAuditsToCommitStruct() {
+		variables.auditsToCommitStruct = {};
+	}
+	
 	public boolean function getLoggedInFlag() {
 		if(!getSession().getAccount().getNewFlag()) {
 			return true;
@@ -57,7 +69,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(!structKeyExists(variables, "url")) {
 			variables.url = getPageContext().getRequest().GetRequestUrl().toString();
 			if( len( CGI.QUERY_STRING ) ) {
-				variables.url &= "?#QUERY_STRING#";
+				variables.url &= "?#CGI.QUERY_STRING#";
 			}
 		}
 		return variables.url;
@@ -72,7 +84,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public boolean function hasSuccessfulAction( required string action ) {
-		return arrayFindNoCase(getSucessfulActions(), arguments.action) > 0;
+		return arrayFindNoCase(getSuccessfulActions(), arguments.action) > 0;
 	}
 	
 	public boolean function hasFailureAction( required string action ) {
@@ -83,7 +95,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(arguments.failure) {
 			arrayAppend(getFailureActions(), arguments.action);
 		} else {
-			arrayAppend(getSucessfulActions(), arguments.action);
+			arrayAppend(getSuccessfulActions(), arguments.action);
 		}
 	}
 	
@@ -209,5 +221,4 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function authenticateEntityProperty( required string crudType, required string entityName, required string propertyName ) {
 		return getService("hibachiAuthenticationService").authenticateEntityPropertyCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, account=getAccount() );
 	}
-	
 }

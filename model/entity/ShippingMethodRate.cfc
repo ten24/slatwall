@@ -57,6 +57,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.unlimited";
 	property name="defaultAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
 	property name="shippingIntegrationMethod" ormtype="string";
+	property name="activeFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
 	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
@@ -73,11 +74,11 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non Persistent
 	property name="shippingIntegrationMethodOptions" type="array" persistent="false";
@@ -209,14 +210,6 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		structDelete(variables, "shippingMethod");
 	}
 	
-	// Shipping Method Options (one-to-many)    
-	public void function addShippingMethodOption(required any shippingMethodOption) {    
-		arguments.shippingMethodOption.setShippingMethodRate( this );    
-	}    
-	public void function removeShippingMethodOption(required any shippingMethodOption) {    
-		arguments.shippingMethodOption.removeShippingMethodRate( this );    
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
@@ -228,10 +221,6 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	// ===============  END: Custom Formatting Methods =====================
 	
 	// ================== START: Overridden Methods ========================
-	
-	public string function getSimpleRepresentationPropertyName() {
-		return "shippingMethodRateName";
-	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

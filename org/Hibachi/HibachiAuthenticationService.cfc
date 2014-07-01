@@ -5,10 +5,27 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
 	
 	public boolean function authenticateActionByAccount(required string action, required any account) {
+		var authDetails = getActionAuthenticationDetailsByAccount(argumentcollection=arguments); 
+		return authDetails.authorizedFlag;
+	}
+	
+	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account) {
+		
+		var authDetails = {
+			authorizedFlag = false,
+			superUserAccessFlag = false,
+			anyLoginAccessFlag = false,
+			anyAdminAccessFlag = false,
+			publicAccessFlag = false,
+			entityPermissionAccessFlag = false,
+			actionPermissionAccessFlag = false
+		};
 		
 		// Check if the user is a super admin, if true no need to worry about security
 		if( arguments.account.getSuperUserFlag() ) {
-			return true;
+			authDetails.authorizedFlag = true;
+			authDetails.superUserAccessFlag = true;
+			return authDetails;
 		}
 		
 		var subsystemName = listFirst( arguments.action, ":" );
@@ -23,12 +40,16 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		// Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
 		if(!structKeyExists(actionPermissions, subsystemName) || !actionPermissions[ subsystemName ].hasSecureMethods || !structKeyExists(actionPermissions[ subsystemName ].sections, sectionName)) {
-			return true;
+			authDetails.authorizedFlag = true;
+			authDetails.publicAccessFlag = true;
+			return authDetails;
 		}
 
 		// Check if the action is public, if public no need to worry about security
 		if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].publicMethods, itemName)){
-			return true;
+			authDetails.authorizedFlag = true;
+			authDetails.publicAccessFlag = true;
+			return authDetails;
 		}
 		
 		// All these potentials require the account to be logged in, and that it matches the hibachiScope
@@ -36,12 +57,16 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Check if the action is anyLogin, if so and the user is logged in, then we can return true
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].anyLoginMethods, itemName) && getHibachiScope().getLoggedInFlag()) {
-				return true;
+				authDetails.authorizedFlag = true;
+				authDetails.anyLoginAccessFlag = true;
+				return authDetails;
 			}
 			
 			// Look for the anyAdmin methods next to see if this is an anyAdmin method, and this user is some type of admin
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].anyAdminMethods, itemName) && getHibachiScope().getLoggedInAsAdminFlag()) {
-				return true;
+				authDetails.authorizedFlag = true;
+				authDetails.anyAdminAccessFlag = true;
+				return authDetails;
 			}
 			
 			// Check to see if this is a defined secure method, and if so we can test it against the account
@@ -50,42 +75,47 @@ component output="false" accessors="true" extends="HibachiService" {
 				for(var p=1; p<=arrayLen(arguments.account.getPermissionGroups()); p++){
 					pgOK = authenticateSubsystemSectionItemActionByPermissionGroup(subsystem=subsystemName, section=sectionName, item=itemName, permissionGroup=arguments.account.getPermissionGroups()[p]); 
 				}
-				return pgOK;
+				if(pgOk) {
+					authDetails.authorizedFlag = true;
+					authDetails.actionPermissionAccessFlag = true;
+				}
+				return authDetails;
 			}
 			
 			// Check to see if the controller is an entity or rest controller, and then verify against the entity itself
 			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].entityController || getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController) {
 				if ( left(itemName, 6) == "create" ) {
-					return authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-6), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-6), account=arguments.account);
 				} else if ( left(itemName, 6) == "detail" ) {
-					return authenticateEntityCrudByAccount(crudType="read", entityName=right(itemName, len(itemName)-6), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read", entityName=right(itemName, len(itemName)-6), account=arguments.account);
 				} else if ( left(itemName, 6) == "delete" ) {
-					return authenticateEntityCrudByAccount(crudType="delete", entityName=right(itemName, len(itemName)-6), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="delete", entityName=right(itemName, len(itemName)-6), account=arguments.account);
 				} else if ( left(itemName, 4) == "edit" ) {
-					return authenticateEntityCrudByAccount(crudType="update", entityName=right(itemName, len(itemName)-4), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=right(itemName, len(itemName)-4), account=arguments.account);
 				} else if ( left(itemName, 4) == "list" ) {
-					return authenticateEntityCrudByAccount(crudType="read", entityName=right(itemName, len(itemName)-4), account=arguments.account);
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read", entityName=right(itemName, len(itemName)-4), account=arguments.account);
 				} else if ( left(itemName, 15) == "multiPreProcess" ) {
-					return true;
+					authDetails.authorizedFlag = true;
 				} else if ( left(itemName, 12) == "multiProcess" ) {
-					return true;
+					authDetails.authorizedFlag = true;
 				} else if ( left(itemName, 10) == "preProcess" ) {
-					return true;
+					authDetails.authorizedFlag = true;
 				} else if ( left(itemName, 7) == "process" ) {
-					return true;
+					authDetails.authorizedFlag = true;
 				} else if ( left(itemName, 4) == "save" ) {
-					var createOK = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-4), account=arguments.account);
-					if(createOK) {
-						return true;	
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-4), account=arguments.account);
+					if(!authDetails.authorizedFlag) {
+						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=right(itemName, len(itemName)-4), account=arguments.account); 	
 					}
-					var updateOK = authenticateEntityCrudByAccount(crudType="update", entityName=right(itemName, len(itemName)-4), account=arguments.account);
-					return updateOK;
 				}
 				
+				if(authDetails.authorizedFlag) {
+					authDetails.entityPermissionAccessFlag = true;
+				}
 			}
 		}
 		
-		return false;
+		return authDetails;
 	}
 	
 	public boolean function authenticateEntityCrudByAccount(required string crudType, required string entityName, required any account) {
@@ -283,9 +313,9 @@ component output="false" accessors="true" extends="HibachiService" {
 				
 			} // End Subsytem Loop
 			
-			variables.actionPermissions = allPermissions;
+			variables.actionPermissionDetails = allPermissions;
 		}
-		return variables.actionPermissions;
+		return variables.actionPermissionDetails;
 	}
 	
 	public void function clearEntityPermissionDetails(){
@@ -337,7 +367,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 		
 		if(structKeyExists(permissions.action.subsystems, arguments.subsystem) && structKeyExists(permissions.action.subsystems[arguments.subsystem].sections, arguments.section) && structKeyExists(permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items, arguments.item) ) {
-			if( !isNull(permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items.getAllowActionFlag()) && permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items.getAllowActionFlag()) {
+			if( !isNull(permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items[arguments.item].getAllowActionFlag()) && permissions.action.subsystems[arguments.subsystem].sections[arguments.section].items[arguments.item].getAllowActionFlag()) {
 				return true;
 			} else {
 				return false;

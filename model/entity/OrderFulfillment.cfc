@@ -69,7 +69,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
 	property name="fulfillmentShippingMethodOptions" singularname="fulfillmentShippingMethodOption" cfc="ShippingMethodOption" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
-	
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
+
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
@@ -77,11 +78,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	
@@ -108,6 +109,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="shippingCharge" persistent="false";
 	property name="saveAccountAddress" persistent="false";
 	
+	
 	// ==================== START: Logical Methods =========================
 	
 	public void function removeAccountAddress() {
@@ -122,27 +124,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return getService("shippingService").verifyOrderFulfillmentShippingMethodRate( this );
 	}
 	
-	// Helper method to return either the shippingAddress or accountAddress to be used
+	// Deprecated... now just delegates to getShippingAddress
     public any function getAddress(){
-    	
-    	// If the shipping address is not null, then we can return it
-    	if(!isNull(getShippingAddress())){
-    		
-    		return getShippingAddress();
-    		
-    	// This is a hook to fix deprecated methodology
-    	} else if(!isNull(getAccountAddress())) {
-    		
-    		// Get the account address, copy it, and save as the shipping address
-    		setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-    		
-    		// Now return the shipping address
-    		return getShippingAddress();
-    	} else {
-    		
-    		// If no address, then just return a new one.
-    		return getService("addressService").newAddress();
-    	}
+    	return getShippingAddress();
     }
     
     public void function checkNewAccountAddressSave() {
@@ -182,13 +166,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
 	public numeric function getChargeAfterDiscount() {
-		return precisionEvaluate('getFulfillmentCharge() - getDiscountAmount()');
+		return precisionEvaluate(getFulfillmentCharge() - getDiscountAmount());
 	}
 	
 	public numeric function getDiscountAmount() {
 		discountAmount = 0;
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = precisionEvaluate('discountAmount + getAppliedPromotions()[i].getDiscountAmount()');
+			discountAmount = precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 		return discountAmount;
 	}
@@ -198,14 +182,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
     public numeric function getFulfillmentTotal() {
-    	return precisionEvaluate('getSubtotalAfterDiscountsWithTax() + getChargeAfterDiscount()');
+    	return precisionEvaluate(getSubtotalAfterDiscountsWithTax() + getChargeAfterDiscount());
     }
         
    	public numeric function getItemDiscountAmountTotal() {
    		if(!structKeyExists(variables, "itemDiscountAmountTotal")) {
    			variables.itemDiscountAmountTotal = 0;
    			for(var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++) {
-				variables.itemDiscountAmountTotal = precisionEvaluate('variables.itemDiscountAmountTotal + getOrderFulfillmentItems()[i].getDiscountAmount()');
+				variables.itemDiscountAmountTotal = precisionEvaluate(variables.itemDiscountAmountTotal + getOrderFulfillmentItems()[i].getDiscountAmount());
 			}
    		}
 		return variables.itemDiscountAmountTotal;
@@ -237,21 +221,50 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
+    		
     		// If there aren't any shippingMethodOptions available, then try to populate this fulfillment
     		if( !arrayLen(getFulfillmentShippingMethodOptions()) ) {
     			getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
     		}
     		
     		// At this point they have either been populated just before, or there were already options
-    		var oArr = [];
-    		var fsmo = getFulfillmentShippingMethodOptions();
-    		for(var i=1; i<=arrayLen(fsmo); i++) {
-    			arrayAppend(oArr, {name=fsmo[i].getSimpleRepresentation(), value=fsmo[i].getShippingMethodRate().getShippingMethod().getShippingMethodID()});	
+    		var optionsArray = [];
+    		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
+    		
+    		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
+    			var thisOption = {
+    				name = shippingMethodOption.getSimpleRepresentation(),
+    				value = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID(),
+    				totalCharge = shippingMethodOption.getTotalCharge(),
+    				shippingMethodSortOrder = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder()
+    			};
+    			
+    			var inserted = false;
+    			
+    			for(var i=1; i<=arrayLen(optionsArray); i++) {
+    				var thisExistingOption = optionsArray[i];
+    				
+    				if( (sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
+    				  	||
+    					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder) ) {
+    						
+    					arrayInsertAt(optionsArray, i, thisOption);
+    					inserted = true;
+    					break;
+    				}
+    			}
+    			
+    			if(!inserted) {
+    				arrayAppend(optionsArray, thisOption);	
+    			}
+    			
     		}
-    		if(!arrayLen(oArr)) {
-    			arrayPrepend(oArr, {name=rbKey('define.none'), value=''});
+    		
+    		if(!arrayLen(optionsArray)) {
+    			arrayPrepend(optionsArray, {name=rbKey('define.none'), value=''});
     		}
-    		variables.shippingMethodOptions = oArr;
+			
+    		variables.shippingMethodOptions = optionsArray;
     	}
     	return variables.shippingMethodOptions; 
     }
@@ -291,25 +304,25 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
   		if( !structKeyExists(variables,"subtotal") ) {
 	    	variables.subtotal = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    		variables.subtotal = precisionEvaluate('variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice()');
+	    		variables.subtotal = precisionEvaluate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());
 	    	}
   		}
     	return variables.subtotal;
     }
     
     public numeric function getSubtotalAfterDiscounts() {
-    	return precisionEvaluate('getSubtotal() - getItemDiscountAmountTotal()');
+    	return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal());
     }
     
     public numeric function getSubtotalAfterDiscountsWithTax() {
-    	return precisionEvaluate('getSubtotal() - getItemDiscountAmountTotal() + getTaxAmount()');
+    	return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal() + getTaxAmount());
     }
     
     public numeric function getTaxAmount() {
     	if( !structkeyExists(variables, "taxAmount") ) {
     		variables.taxAmount = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
-	    		variables.taxAmount = precisionEvaluate('variables.taxAmount + getOrderFulfillmentItems()[i].getTaxAmount()');
+	    		variables.taxAmount = precisionEvaluate(variables.taxAmount + getOrderFulfillmentItems()[i].getTaxAmount());
 	    	}
     	}
     	return variables.taxAmount;
@@ -320,7 +333,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	
     	for( var orderItem in getOrderFulfillmentItems()) {
     		var convertedWeight = getService("measurementService").convertWeightToGlobalWeightUnit(orderItem.getSku().setting('skuShippingWeight'), orderItem.getSku().setting('skuShippingWeightUnitCode'));
-    		totalShippingWeight = precisionEvaluate('totalShippingWeight + (convertedWeight * orderItem.getQuantity())');
+    		totalShippingWeight = precisionEvaluate(totalShippingWeight + (convertedWeight * orderItem.getQuantity()));
     	}			
   		
     	return totalShippingWeight;
@@ -363,6 +376,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	public void function removeAppliedPromotion(required any appliedPromotion) {    
 		arguments.appliedPromotion.removeOrderFulfillment( this );    
 	}
+  
+ 	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setOrderFulfillment( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeOrderFulfillment( this );
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
@@ -388,6 +409,23 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			variables.manualFulfillmentChargeFlag = 0;
 		}
 		return variables.manualFulfillmentChargeFlag;
+	}
+	
+	public any function getShippingAddress() {
+		if(!structKeyExists(variables, "shippingAddress")) {
+			
+			if(!isNull(getAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+				setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+				return variables.shippingAddress;
+			} else if (!isNull(getOrder()) && !isNull(getOrder().getShippingAddress()) ) {
+				return getOrder().getShippingAddress();
+			}
+			
+			return getService("addressService").newAddress();
+		}
+		
+		return variables.shippingAddress;
 	}
 	
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
@@ -416,58 +454,40 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 	}
 	
-	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(getOrder().getOrderStatusType().getSystemCode() neq "ostNotPlaced") {
+		if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			rep &= "#getOrder().getOrderNumber()# - ";
 		}
-		rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
-		if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
-			rep &= " - #getAddress().getStreetAddress()#";
-		}
-		if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {
-			rep &= " - #getEmailAddress()#";
-		}
-		if(getFulfillmentMethodType() eq "email" && !isNull(getAccountEmailAddress())) {
-			rep &= " - #getAccountEmailAddress().getEmailAddress()#";
+		if(!isNull(getFulfillmentMethod())) {
+			rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
+			if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
+				rep &= " - #getAddress().getStreetAddress()#";
+			}
+			if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {
+				rep &= " - #getEmailAddress()#";
+			}
+			if(getFulfillmentMethodType() eq "email" && !isNull(getAccountEmailAddress())) {
+				rep &= " - #getAccountEmailAddress().getEmailAddress()#";
+			}	
 		}
 		return rep;
 	}
 	
-	public any function populate() {
-		super.populate( argumentcollection=arguments );
+	public any function setAccountAddress( required any accountAddress ) {
 		
-		// If after populating, there is an account address, and shipping address then we update the shipping address
-		if ( !isNull(getAccountAddress()) && !isNull(getShippingAddress()) ) {
-    		
-    		getShippingAddress().setName( getAccountAddress().getAddress().getName() );
-			getShippingAddress().setCompany( getAccountAddress().getAddress().getCompany() );
-			getShippingAddress().setStreetAddress( getAccountAddress().getAddress().getStreetAddress() );
-			getShippingAddress().setStreet2Address( getAccountAddress().getAddress().getStreet2Address() );
-			getShippingAddress().setLocality( getAccountAddress().getAddress().getLocality() );
-			getShippingAddress().setCity( getAccountAddress().getAddress().getCity() );
-			getShippingAddress().setStateCode( getAccountAddress().getAddress().getStateCode() );
-			getShippingAddress().setPostalCode( getAccountAddress().getAddress().getPostalCode() );
-			getShippingAddress().setCountryCode( getAccountAddress().getAddress().getCountryCode() );
+		// If the shippingAddress is a new shippingAddress
+		if(getShippingAddress().getNewFlag()) {
+			setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 		
-			getShippingAddress().setSalutation( getAccountAddress().getAddress().getSalutation() );
-			getShippingAddress().setFirstName( getAccountAddress().getAddress().getFirstName() );
-			getShippingAddress().setLastName( getAccountAddress().getAddress().getLastName() );
-			getShippingAddress().setMiddleName( getAccountAddress().getAddress().getMiddleName() );
-			getShippingAddress().setMiddleInitial( getAccountAddress().getAddress().getMiddleInitial() );
-		
-			getShippingAddress().setPhoneNumber( getAccountAddress().getAddress().getPhoneNumber() );
-			getShippingAddress().setEmailAddress( getAccountAddress().getAddress().getEmailAddress() );
-		
-		// If there is an accountAddress, and no shippingAddress, then create a shipping address
-		} else if ( !isNull(getAccountAddress()) && isNull(getShippingAddress()) ) {
+		// Else if there was no accountAddress before, or the accountAddress has changed
+		} else if (!structKeyExists(variables, "accountAddress") || (structKeyExists(variables, "accountAddress") && variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
 			
-			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-			
-    	}
+		}
 		
-		return this;
+		// Set the actual accountAddress
+		variables.accountAddress = arguments.accountAddress;
 	}
 	
 	// ==================  END:  Overridden Methods ========================
@@ -479,7 +499,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// ================== START: Deprecated Methods ========================
 	
 	public numeric function getDiscountTotal() {
-		return precisionEvaluate('getDiscountAmount() + getItemDiscountAmountTotal()');
+		return precisionEvaluate(getDiscountAmount() + getItemDiscountAmountTotal());
 	}
     
 	public numeric function getShippingCharge() {

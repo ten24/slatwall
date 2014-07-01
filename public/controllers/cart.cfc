@@ -52,6 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	property name="accountService" type="any";
 	property name="orderService" type="any";
+	property name="hibachiSessionService" type="any";
 
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -124,7 +125,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			cart.setAccount( rc.$.slatwall.getAccount() );
 		}
 		
-		getOrderService().processOrder( cart, arguments.rc, 'addOrderItem');
+		cart = getOrderService().processOrder( cart, arguments.rc, 'addOrderItem');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
 		
@@ -134,11 +135,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			// Also make sure that this cart gets set in the session as the order
 			rc.$.slatwall.getSession().setOrder( cart );
+			
+			// Make sure that the session is persisted
+			getHibachiSessionService().persistSession();
 		}
 	}
 	
 	// Guest Account
 	public void function guestAccount(required any rc) {
+		param name="arguments.rc.createAuthenticationFlag" default="0";
+		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
 		
 		if( !account.hasErrors() ) {
@@ -151,6 +157,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", false );
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", true );	
+		}
+		
+	}
+	
+	// Save Guest Account
+	public void function guestAccountCreatePassword( required struct rc ) {
+		param name="arguments.rc.orderID" default="";
+		param name="arguments.rc.accountID" default="";
+
+		var order = getOrderService().getOrder( arguments.rc.orderID );
+		
+		// verify that the orderID passed in was in fact the last confirmationOrderID from the session, that the order & account match up, and that the account is in fact a guest account right now
+		if(!isNull(order) && arguments.rc.orderID == arguments.rc.$.slatwall.getSessionValue('confirmationOrderID') && order.getAccount().getAccountID() == arguments.rc.accountID && order.getAccount().getGuestAccountFlag()) {
+			
+			var account = getAccountService().processAccount( order.getAccount(), arguments.rc, "createPassword" );
+			arguments.rc.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", account.hasErrors() );
+			
+		} else {
+			
+			arguments.rc.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", true );
 		}
 		
 	}
@@ -208,7 +234,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 		// Setup newOrderPayment requirements
 		if(structKeyExists(rc, "newOrderPayment")) {
-			rc.newOrderPayment.orderPaymentID = '';
+			param name="rc.newOrderPayment.orderPaymentID" default="";
+			param name="rc.accountAddressID" default="";
+			param name="rc.accountPaymentMethodID" default="";
+			
+			// Make sure that someone isn't trying to pass in another users orderPaymentID
+			if(len(rc.newOrderPayment.orderPaymentID)) {
+				var orderPayment = getOrderService().getOrderPayment(rc.newOrderPayment.orderPaymentID);
+				if(orderPayment.getOrder().getOrderID() != rc.$.slatwall.cart().getOrderID()) {
+					rc.newOrderPayment.orderPaymentID = "";
+				}
+			}
+			
 			rc.newOrderPayment.order.orderID = rc.$.slatwall.cart().getOrderID();
 			rc.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
 		}

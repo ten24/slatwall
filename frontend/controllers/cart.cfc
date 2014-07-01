@@ -55,6 +55,7 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 	property name="skuService" type="any";
 	property name="stockService" type="any";
 	property name="utilityFormService" type="any";
+	property name="hibachiSessionService" type="any";
 	
 	// This method is deprecated as of 7/19/2011, the new method is clearCart
 	public void function clearItems(required struct rc) {
@@ -86,7 +87,14 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 		param name="rc.preProcessDisplayedFlag" default="true";
 		param name="rc.saveShippingAccountAddressFlag" default="false";
 		
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addOrderItem');
+		var cart = rc.$.slatwall.cart();
+		
+		// Check to see if we can attach the current account to this order, required to apply price group details
+		if( isNull(cart.getAccount()) && rc.$.slatwall.getLoggedInFlag() ) {
+			cart.setAccount( rc.$.slatwall.getAccount() );
+		}
+		
+		cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addOrderItem');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
 		
@@ -95,6 +103,7 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 			
 			// Also make sure that this cart gets set in the session as the order
 			rc.$.slatwall.getSession().setOrder( cart );
+			getHibachiSessionService().persistSession();
 			
 			// Check to see if we can attach the current account to this order
 			if( isNull(cart.getAccount()) && rc.$.slatwall.getLoggedInFlag() ) {

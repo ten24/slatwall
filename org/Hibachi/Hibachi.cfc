@@ -64,6 +64,9 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
 	variables.framework.hibachi.useCachingEngineFlag = false;
+	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
+	variables.framework.hibachi.noaccessDefaultSection = 'main';
+	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -188,8 +191,10 @@ component extends="FW1.framework" {
 		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());
+		
 		// Verify Authentication before anything happens
-		if(!getHibachiScope().authenticateAction( action=request.context[ getAction() ] )) {
+		if(!authorizationDetails.authorizedFlag) {
 			
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
@@ -206,12 +211,20 @@ component extends="FW1.framework" {
 				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
 			}
 			
-			// If the current subsytem is a 'login' subsystem, then we can use the current subsystem
-			if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
-				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
+			//Route the user to the noaccess page if they are already logged in
+			if( getHibachiScope().getLoggedInFlag() ) {
+				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.noaccessDefaultSection#.#hibachiConfig.noaccessDefaultItem#", preserve="swprid,sRedirectURL");
 			} else {
-				redirect(action="#hibachiConfig.loginDefaultSubsystem#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
+					// If the current subsystem is a 'login' subsystem, then we can use the current subsystem
+				if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
+					redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
+				} else {
+					redirect(action="#hibachiConfig.loginDefaultSubsystem#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
+				}	
 			}
+			
+		} else if(authorizationDetails.authorizedFlag && authorizationDetails.publicAccessFlag) {
+			getHibachiScope().setPublicPopulateFlag( true );
 		}
 		
 		// Setup structured Data if a request context exists meaning that a full action was called
@@ -223,11 +236,14 @@ component extends="FW1.framework" {
 		request.context.$[ variables.framework.applicationKey ] = getHibachiScope();
 		request.context.pagetitle = request.context.$[ variables.framework.applicationKey ].rbKey( request.context[ getAction() ] );
 		request.context.edit = false;
-		request.context.ajaxRequest = false;
+		
+		param name="request.context.ajaxRequest" default="false";
+		param name="request.context.returnJSONObjects" default="";
+		param name="request.context.returnJSONKeyLCase" default="false";
+		param name="request.context.messages" default="#arrayNew(1)#";
+		
 		request.context.ajaxResponse = {};
-		if(!structKeyExists(request.context, "messages")) {
-			request.context.messages = [];	
-		}
+		
 		
 		var httpRequestData = getHTTPRequestData();
 		if(structKeyExists(httpRequestData.headers, "X-Hibachi-AJAX") && isBoolean(httpRequestData.headers["X-Hibachi-AJAX"]) && httpRequestData.headers["X-Hibachi-AJAX"]) {
@@ -287,6 +303,9 @@ component extends="FW1.framework" {
 					// Application Setup Started
 					application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application cache cleared, and init values set.");
+
+					//Add application name to ckfinder
+					fileWrite(expandPath('/#variables.framework.applicationKey#') & '/org/Hibachi/ckfinder/core/connector/cfm/configApplication.cfm', '<cfset this.name="#this.name#" />');
 					
 					// =================== Required Application Setup ===================
 					// The FW1 Application had not previously been loaded so we are going to call onApplicationStart()
@@ -363,11 +382,32 @@ component extends="FW1.framework" {
 							exclude=["entity"]
 						});
 						
-						customBF.setParent( coreBF );
+						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
+						var aggregateBF = new DI1.ioc("");
 						
-						setBeanFactory( customBF );
+						// Process factories, last takes precendence
+						var beanFactories = [coreBF, customBF];
+						
+						// Build the aggregate bean factory by manually declaring the beans
+						for (var bf in beanFactories) {
+							var beanInfo = bf.getBeanInfo().beanInfo;
+							for (var beanName in beanInfo) {
+								// Manually declare all beans from current bean factory except for the automatically generated beanFactory self reference
+								if (beanName != "beanFactory") {
+									if (structKeyExists(beanInfo[beanName], "cfc")) {
+										// Adding bean by class name
+										aggregateBF.declareBean(beanName, beanInfo[beanName].cfc, beanInfo[beanName].isSingleton);
+									} else if (structKeyExists(beanInfo[beanName], "value")) {
+										// Adding bean by instantiated value
+										aggregateBF.addBean(beanName, beanInfo[beanName].value);
+									}
+								}
+							}
+						}
+						
+						setBeanFactory(aggregateBF);
 					} else {
-						setBeanFactory( coreBF );
+						setBeanFactory(coreBF);
 					}
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 					
@@ -429,8 +469,25 @@ component extends="FW1.framework" {
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
-			request.context.ajaxResponse["messages"] = request.context.messages;
-			writeOutput( serializeJSON(request.context.ajaxResponse) );
+			if(isStruct(request.context.ajaxResponse)){
+				if(structKeyExists(request.context, "messages")) {
+					request.context.ajaxResponse["messages"] = request.context.messages;	
+				}
+  				request.context.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
+  				request.context.ajaxResponse["failureActions"] = getHibachiScope().getFailureActions();
+  				if(structKeyExists(request.context, "returnJSONObjects") && len(request.context.returnJSONObjects)) {
+  					for(var item in listToArray(request.context.returnJSONObjects)) {
+  						if(structKeyExists(getHibachiScope(), "get#item#Data")) {
+			  				request.context.ajaxResponse[item] = getHibachiScope().invokeMethod("get#item#Data");
+  						}
+  					}
+  				}
+  			}
+  			if(structKeyExists(request.context, "returnJSONKeyLCase") && isBoolean(request.context.returnJSONKeyLCase) && request.context.returnJSONKeyLCase) {
+				writeOutput( serializeJSON( getHibachiScope().getService("hibachiUtilityService").lcaseStructKeys(request.context.ajaxResponse) ) );	
+			} else {
+				writeOutput( serializeJSON(request.context.ajaxResponse) );
+			}
 			abort;
 		}
 	}
@@ -466,9 +523,15 @@ component extends="FW1.framework" {
 	
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
+		if(getHibachiScope().getPersistSessionFlag()) {
+			getHibachiScope().getService("hibachiSessionService").persistSession();
+		}
 		if(!getHibachiScope().getORMHasErrors()) {
 			getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 		}
+		
+		// Commit audit queue
+		getHibachiScope().getService("hibachiAuditService").commitAudits();
 	}
 	
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed

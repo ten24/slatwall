@@ -67,10 +67,24 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="expirationYear" edit="#rc.edit#" />
 				<cfelseif rc.orderPayment.getPaymentMethodType() eq "termPayment">
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="termPaymentAccount" edit="false" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="paymentTerm" edit="false" />
+				</cfif>
+				
+				<cfif listFindNoCase("creditCard,termPayment", rc.orderPayment.getPaymentMethodType()) or not isNull(rc.orderPayment.getBillingAddress())>
+					<hr />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="name" edit="#rc.edit#" title="Address nickname"/>
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="company" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="streetAddress" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="street2Address" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="city" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="stateCode" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="postalCode" edit="#rc.edit#" />
+					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="countryCode" edit="#rc.edit#" />
 				</cfif>
 			</cf_HibachiPropertyList>
 			<cf_HibachiPropertyList divClass="span6">
 				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="dynamicAmountFlag" edit="false" />
+				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="orderPaymentType" />
 				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit and not rc.orderPayment.getDynamicAmountFlag()#" />
 				<hr />
 				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amountAuthorized" />
@@ -80,6 +94,10 @@ Notes:
 		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiTabGroup object="#rc.orderPayment#">
+			<cfif rc.orderPayment.getPaymentMethodType() eq "termPayment">
+				<cf_HibachiTab view="admin:entity/orderpaymenttabs/appliedaccountpayments" />
+			</cfif>
+
 			<cf_HibachiTab view="admin:entity/orderpaymenttabs/paymenttransactions" />
 			
 			<!--- Custom Attributes --->

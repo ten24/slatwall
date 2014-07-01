@@ -53,7 +53,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="activeFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" unique="true";
 	property name="productName" ormtype="string" notNull="true";
-	property name="productCode" ormtype="string" unique="true";
+	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE";
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="publishedFlag" ormtype="boolean" default="false";
 	property name="sortOrder" ormtype="integer";
@@ -98,9 +98,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="allowBackorderFlag" type="boolean" persistent="false";
@@ -151,6 +151,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
 			var smartList = getService("contentService").getContentSmartList();
 			smartList.addOrder("title|ASC");
+			smartList.addFilter("activeFlag", 1);
 			variables.listingPagesOptionsSmartList = smartList;
 		}
 		return variables.listingPagesOptionsSmartList;
@@ -369,6 +370,97 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public any function getSkusBySelectedOptions(string selectedOptions="") {
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
+	}
+	
+	public any function getSkuOptionDetails(string selectedOptionIDList="") {
+		
+		// Setup return structure
+		var skuOptionDetials = {};
+		
+		// Get all the skus for this product with options fetched
+		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
+		
+		
+		// Get the selected options by optionGroup
+		var selectedOptionGroupsByOptionID = {};
+		
+		// Create an array of the selectOptions
+		if(listLen(arguments.selectedOptionIDList)) {
+			for(var sku in skus) {
+				for(var option in sku.getOptions()) {
+					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
+						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
+					}
+				}
+				if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
+					break;
+				}
+			}
+		}
+		
+		// Loop over the skus
+		for(var sku in skus) {
+			
+			var skuOptionIDArray = [];
+			for(var option in sku.getOptions()) {
+				arrayAppend(skuOptionIDArray, option.getOptionID());
+			}
+			
+			// Loop over the options for this sku
+			for(var option in sku.getOptions()) {
+				
+				var allSelectedInSku = true;
+				for(var selected in listToArray(arguments.selectedOptionIDList)) {
+					if(selectedOptionGroupsByOptionID[ selected ] != option.getOptionGroup().getOptionGroupID() && !arrayFindNoCase(skuOptionIDArray, selected)) {
+						allSelectedInSku = false;
+						break;
+					}
+				}
+				
+				// Created Shortended Variables
+				var ogCode = option.getOptionGroup().getOptionGroupCode();
+				
+				// Create a struct for this optionGroup if it doesn't exist
+				if(!structKeyExists(skuOptionDetials, ogCode)) {
+					skuOptionDetials[ ogCode ] = {};
+					skuOptionDetials[ ogCode ][ "options" ] = [];
+					skuOptionDetials[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
+					skuOptionDetials[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
+					skuOptionDetials[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
+					skuOptionDetials[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
+				}
+				
+				// Create a struct for this option if one doesn't exist
+				var existingOptionFound = false;
+				for(var existingOption in skuOptionDetials[ ogCode ][ "options" ]) {
+					if( existingOption.optionID == option.getOptionID() ) {
+						existingOption['totalQATS'] += sku.getQuantity("QATS");
+						if(allSelectedInSku) {
+							existingOption['selectedQATS'] += sku.getQuantity("QATS");	
+						}
+						existingOptionFound = true;
+						break;
+					}
+				}
+				if(!existingOptionFound) {
+					var newOption = {};
+					newOption['optionID'] = option.getOptionID();
+					newOption['optionCode'] = option.getOptionCode();
+					newOption['optionName'] = option.getOptionName();
+					newOption['name'] = option.getOptionName();
+					newOption['value'] = option.getOptionID();
+					newOption['totalQATS'] = sku.getQuantity("QATS");
+					newOption['selectedQATS'] = 0;
+					if(allSelectedInSku) {
+						newOption['selectedQATS'] = sku.getQuantity("QATS");	
+					}
+					arrayAppend(skuOptionDetials[ ogCode ].options, newOption);
+				}
+			}
+			
+		}
+		
+		return skuOptionDetials;
 	}
 	
 	public struct function getCrumbData(required string path, required string siteID, required array baseCrumbArray) {
@@ -840,6 +932,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
+			
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
 			
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";

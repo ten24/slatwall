@@ -53,7 +53,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="activeFlag" ormtype="boolean" default="1";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
-	property name="skuCode" ormtype="string" unique="true" length="50";
+	property name="skuCode" ormtype="string" unique="true" length="50" index="PI_SKUCODE";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
@@ -95,11 +95,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="adminIcon" persistent="false";
@@ -334,7 +334,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "assignedOrderItemAttributeSetSmartList")) {
 			
 			variables.assignedOrderItemAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
-			
+			variables.assignedOrderItemAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astOrderItem');
 			
@@ -852,7 +852,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
 			
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
-			
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astSku');
 			

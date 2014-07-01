@@ -74,7 +74,6 @@ component extends="SlatwallUnitTestBase" {
 		
 		var smartList = request.slatwallScope.getService("productService").getProductSmartList();
 		
-		// This test can only run if there are products in the database
 		if(smartList.getRecordsCount() >= 2) {
 			smartList.setPageRecordsShow(1);
 		
@@ -107,21 +106,7 @@ component extends="SlatwallUnitTestBase" {
 		assertFalse( product.isProcessable('addOptionGroup') );
 	}
 	
-	public void function issue_1335() {
 
-		var skuCurrency = entityNew("SlatwallSkuCurrency");
-
-		skuCurrency.setPrice( -20 );
-		skuCurrency.setListPrice( 'test' );
-		
-		skuCurrency.validate(context="save");
-		
-		assert( skuCurrency.hasError('price') );
-		assert( skuCurrency.hasError('listPrice') );
-		
-		assert( right( skuCurrency.getError('price')[1], 8) neq "_missing");
-		assert( right( skuCurrency.getError('listPrice')[1], 8) neq "_missing");
-	}
 	
 	public void function issue_1348() {
 		var product = entityNew("SlatwallProduct");
@@ -137,8 +122,8 @@ component extends="SlatwallUnitTestBase" {
 		assert( right( sku.getError('price')[1], 8) neq "_missing");
 	}
 	
-	public void function issue_1376() {
-		
+	public void function two_accounts_with_same_primary_email_cannot_be_saved() {
+		//GH issue 1376
 		var accountService = request.slatwallScope.getService("accountService");
 		
 		var accountData = {
@@ -153,13 +138,13 @@ component extends="SlatwallUnitTestBase" {
 		};
 		 
 		var account = entityNew("SlatwallAccount");
-		var account2 = entityNew("SlatwallAccount");
 		
 		account = accountService.processAccount(account, accountData, 'create'); 
 		var accountHasErrors = account.hasErrors();
 		
 		ormFlush();
 		
+		var account2 = entityNew("SlatwallAccount");
 		accountData.firstName="1376 - 2";
 		
 		account2 = accountService.processAccount(account2, accountData, 'create');
@@ -171,8 +156,8 @@ component extends="SlatwallUnitTestBase" {
 		account2.setPrimaryEmailAddress(javaCast("null",""));
 		account2.setPrimaryPhoneNumber(javaCast("null",""));
 		
-		entityDelete(account);
-		entityDelete(account2);
+		entityDelete( account );
+		entityDelete (account2 );
 		
 		ormFlush();
 		

@@ -64,6 +64,14 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return "";
 	}
 	
+	public string function getSupportedChargeTransactionTypes() {
+		return "receive";
+	}
+	
+	public string function getSupportedCreditTransactionTypes() {
+		return "credit";
+	}
+	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {

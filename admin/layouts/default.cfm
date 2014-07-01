@@ -61,6 +61,7 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.2.3.2.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
@@ -79,6 +80,10 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
 		
+		<!--- New Angular Includes --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/angular.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/slatwall.js"></script>
+		
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
 				var printWindow = window.open('#request.slatwallScope.getBaseURL()#?slatAction=admin:print.default', '_blank');
@@ -88,7 +93,7 @@ Notes:
 			.navbar .brand {margin-left:0px;}
 		</style>
 	</head>
-	<body>
+	<body ng-app="slatwallngapp">
 		<div class="navbar navbar-fixed-top navbar-inverse">
 			<div class="navbar-inner">
 				<div class="container-fluid">
@@ -154,7 +159,7 @@ Notes:
 						<cfif arrayLen(local.integrationSubsystems)>
 							<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.integrations_nav')#" icon="random icon-white" type="nav">
 								<cfloop array="#local.integrationSubsystems#" index="local.intsys">
-									<cf_HibachiActionCaller action="#local.intsys.subsystem#:main.default" text="#local.intsys.name#" type="list">
+									<cf_HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['name']#" type="list">
 								</cfloop>
 							</cf_HibachiActionCallerDropdown>
 						</cfif>
@@ -193,6 +198,7 @@ Notes:
 								<cf_HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
 								<cf_HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true" />
 								<cf_HibachiActionCaller action="admin:main.log" type="list">
+								<cf_HibachiActionCaller action="admin:entity.listaudit" type="list">
 								<cf_HibachiActionCaller action="admin:main.update" type="list">
 								<cfif $.slatwall.getAccount().getSuperUserFlag()>
 									<cf_HibachiActionCaller action="admin:main.default" querystring="reload=true" type="list" text="Reload Slatwall">
@@ -200,9 +206,9 @@ Notes:
 							</cf_HibachiDividerHider>
 						</cf_HibachiActionCallerDropdown>
 					</ul>
-					<cfif $.slatwall.getLoggedInAsAdminFlag()>
-						<div class="pull-right">
-							<ul class="nav">
+					<div class="pull-right">
+						<ul class="nav">
+							<cfif $.slatwall.getLoggedInAsAdminFlag()>
 								<cf_HibachiActionCallerDropdown title="" icon="user icon-white" dropdownclass="pull-right" type="nav">
 									<cf_HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
 									<cf_HibachiActionCaller action="admin:main.logout" type="list">
@@ -211,12 +217,20 @@ Notes:
 									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">Developer Docs</a></li>
 									<cf_HibachiActionCaller action="admin:main.about" type="list">
 								</cf_HibachiActionCallerDropdown>
-							</ul>
+							</cfif>
+							<cf_HibachiActionCallerDropdown icon=" flag-icon flag-icon-#lcase(listLast($.slatwall.getRBLocale(), '_' ))#" dropdownclass="pull-right" type="nav">
+								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" type="list">
+								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" type="list">
+								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" type="list">
+								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" type="list">
+							</cf_HibachiActionCallerDropdown>
+						</ul>
+						<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<form name="search" class="navbar-search" action="/" onSubmit="return false;">
 								<input id="global-search" type="text" name="serach" class="search-query span2" placeholder="Search">
 							</form>
-						</div>
-					</cfif>
+						</cfif>
+					</div>
 				</div>
 			</div>
 		</div>

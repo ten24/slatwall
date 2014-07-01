@@ -93,11 +93,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="remoteCustomerID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="remoteContactID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non Persistent
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
@@ -114,10 +114,12 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="passwordResetID" persistent="false";
 	property name="phoneNumber" persistent="false";
 	property name="saveablePaymentMethodsSmartList" persistent="false";
+	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
 	property name="slatwallAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
+	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);	
@@ -152,6 +154,21 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			}
 		}
 		return variables.saveablePaymentMethodsSmartList;
+	}
+	
+	public any function getEligibleAccountPaymentMethodsSmartList() {
+		// These are the payment methods that are allowed only when adding an account payment
+		if(!structKeyExists(variables, "eligibleAccountPaymentMethodsSmartList")) {
+			var sl = getService("paymentService").getPaymentMethodSmartList();
+			
+			// Prevent 'termPayment' from displaying as account payment method option
+			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			sl.addInFilter('paymentMethodID', setting('accountEligiblePaymentMethods'));
+			sl.addFilter('activeFlag', 1);
+				
+			variables.eligibleAccountPaymentMethodsSmartList = sl;
+		}
+		return variables.eligibleAccountPaymentMethodsSmartList;
 	}
 	
 	public any function getActiveSubscriptionUsageBenefitsSmartList() {
@@ -261,7 +278,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public numeric function getTermAccountAvailableCredit() {
 		var termAccountAvailableCredit = setting('accountTermCreditLimit');
 		
-		termAccountAvailableCredit = precisionEvaluate('termAccountAvailableCredit - getTermAccountBalance()');
+		termAccountAvailableCredit = precisionEvaluate(termAccountAvailableCredit - getTermAccountBalance());
 		
 		return termAccountAvailableCredit;
 	}
@@ -270,16 +287,27 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		var termAccountBalance = 0;
 		
 		// First look at all the unreceived open order payment
-		for(var i=1; i<=arrayLen(getTermAccountOrderPayments()); i++) {
-			termAccountBalance = precisionEvaluate('termAccountBalance + getTermAccountOrderPayments()[i].getAmountUnreceived()');
+		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
+			termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
 		}
 		
 		// Now look for the unasigned payment amount 
-		for(var i=1; i<=arrayLen(getAccountPayments()); i++) {
-			termAccountBalance = precisionEvaluate('termAccountBalance - getAccountPayments()[i].getAmountUnassigned()');
+		for(var accountPayment in getAccountPayments()) {
+			termAccountBalance = precisionEvaluate(termAccountBalance - accountPayment.getAmountUnassigned());
 		}
 		
 		return termAccountBalance;
+	}
+	
+	public any function getTermOrderPaymentsByDueDateSmartList() {
+		if(!structKeyExists(variables, "termOrderPaymentsByDueDateSmartList")) {
+			variables.termOrderPaymentsByDueDateSmartList = getService('orderService').getOrderPaymentSmartList();
+			variables.termOrderPaymentsByDueDateSmartList.addFilter('order.account.accountId', this.getAccountID());
+			variables.termOrderPaymentsByDueDateSmartList.addInFilter("order.orderStatusType.systemCode", "ostProcessing,ostNew,ostOnHold");
+			variables.termOrderPaymentsByDueDateSmartList.addFilter('paymentMethod.paymentMethodType', 'termPayment');
+			variables.termOrderPaymentsByDueDateSmartList.addOrder('paymentDueDate|ASC');
+		}
+		return variables.termOrderPaymentsByDueDateSmartList;
 	}
 	
 	public any function getUnenrolledAccountLoyaltyOptions() {
@@ -529,10 +557,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	// ================== START: Overridden Methods ========================
 	
-	public string function getSimpleRepresentationPropertyName() {
-		return "fullName";
-	}
-	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
@@ -588,7 +612,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.superUserFlag;
 	}
 	
-	
+	public string function getSimpleRepresentation() {
+		return getFullName();
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

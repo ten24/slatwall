@@ -6,8 +6,9 @@
 		<column name="paymentMethodType" />
 		<column name="activeFlag" update="false" datatype="bit" />
 		<column name="sortOrder" update="false" />
+		<column name="allowSaveFlag" update="false" datatype="bit" />
 	</Columns>
 	<Records>
-		<Record paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a" paymentMethodName="Credit Card" paymentMethodType="creditCard" activeFlag="1" sortOrder="1" />
+		<Record paymentMethodID="444df303dedc6dab69dd7ebcc9b8036a" paymentMethodName="Credit Card" paymentMethodType="creditCard" activeFlag="1" sortOrder="1" allowSaveFlag="0" />
 	</Records>
 </Table>

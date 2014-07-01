@@ -236,8 +236,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 						if(structCount(manyToOneStructData) gt 1) {
 
 							// Load the specifiv entity, if one doesn't exist, this will return a new entity
-							var thisEntity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=manyToOneStructData[primaryIDPropertyName],2=true});
-
+							var currentEntity = this.invokeMethod("get#currentProperty.name#");
+							if(!isNull(currentEntity) && currentEntity.getPrimaryIDValue() == manyToOneStructData[primaryIDPropertyName]) {
+								var thisEntity = currentEntity;	
+							} else if (len(manyToOneStructData[primaryIDPropertyName])) {
+								var thisEntity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=manyToOneStructData[primaryIDPropertyName],2=true});
+							} else {
+								var thisEntity = entityService.invokeMethod( "new#listLast(currentProperty.cfc,'.')#" );
+							}
+							
 							// Set the value of the property as the loaded entity
 							_setProperty(currentProperty.name, thisEntity );
 

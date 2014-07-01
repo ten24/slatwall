@@ -68,11 +68,13 @@ Notes:
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
-		<cf_HibachiListingDisplay smartList="#rc.orderDelivery.getOrderDeliveryItemsSmartList()#">
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.title" />
-			<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="quantity" />
-		</cf_HibachiListingDisplay>
-		
+		<cf_HibachiTabGroup object="#rc.orderDelivery#">
+			<cf_HibachiTab view="admin:entity/orderdeliverytabs/orderdeliveryitems">
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.orderDelivery.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</cf_HibachiTabGroup>
+
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

@@ -48,6 +48,65 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
+	//Entity Audit Properties Test
+	public void function all_entity_properties_have_audit_properties() {
+		
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		
+		var entitiesThatDontHaveAuditPropertiesArray = [];
+		
+		// Exception Entities with no properties
+		var entitiesWithNoAuditPropsRequired = "SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript";
+		
+		// Exception Entities that only require the createdByAccountID & createdDateTime
+		var entitiesWithCreatedOnlyProperties = "SlatwallComment,SlatwallEmail,SlatwallInventory,SlatwallPrint,SlatwallShippingMethodOption,SlatwallStockReceiverItem";
+		
+		// Exception Entities that only required createdDateTime & modifiedDateTime
+		var entitiesWithCreatedAndModifiedTimeOnlyProperties = "SlatwallSession";
+		
+		
+		for(var entityName in allEntities) {
+			
+			if(!listFindNoCase(entitiesWithNoAuditPropsRequired, entityName)) {
+				
+				var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+				var auditPropertiesFoundCount = 0;
+				
+				for(var property in properties) {
+					
+					// If logic finds an audit property, break from this entity's properties loop
+					if( (listFindNoCase(entitiesWithCreatedOnlyProperties, entityName) && listFindNoCase("createdDateTime,createdByAccountID", property.name))
+						||
+						(listFindNoCase(entitiesWithCreatedAndModifiedTimeOnlyProperties, entityName) && listFindNoCase("createdDateTime,modifiedDateTime", property.name))
+						||
+						(!listFindNoCase(entitiesWithCreatedOnlyProperties, entityName) && !listFindNoCase(entitiesWithCreatedAndModifiedTimeOnlyProperties, entityName) && listFindNoCase("createdDateTime,createdByAccountID,modifiedDateTime,modifiedByAccountID", property.name))
+						) {
+						var auditPropertiesFoundCount += 1;
+					}
+					
+				}
+
+				// If logic finds an audit property, break from this entity's properties loop
+				if( (listFindNoCase(entitiesWithCreatedOnlyProperties, entityName) && auditPropertiesFoundCount != 2)
+					||
+					(listFindNoCase(entitiesWithCreatedAndModifiedTimeOnlyProperties, entityName) && auditPropertiesFoundCount != 2)
+					||
+					(!listFindNoCase(entitiesWithCreatedOnlyProperties, entityName) && !listFindNoCase(entitiesWithCreatedAndModifiedTimeOnlyProperties, entityName) && auditPropertiesFoundCount != 4)
+					) {
+					
+					arrayAppend(entitiesThatDontHaveAuditPropertiesArray, entityName);
+					
+				}
+				
+			}
+			
+		}
+		
+		addToDebug(entitiesThatDontHaveAuditPropertiesArray);
+		
+		assert(!arrayLen(entitiesThatDontHaveAuditPropertiesArray));
+	}
+	
 	// Oracle Naming tests
 	public void function oracle_entity_table_name_max_len_30() {
 		var ormClassMetaData = ORMGetSessionFactory().getAllClassMetadata();
@@ -57,7 +116,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var entityName in ormEntityNames) {
 			var entity = entityNew( entityName );
 			if(len(getMetaData(entity).table) > 30) {
-				arrayAppend(variables.debugArray, "The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
+				addToDebug("The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
 				pass = false;
 			}
 		}
@@ -75,7 +134,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			for(var property in entity.getProperties()) {
 				if(structKeyExists(property, "fieldtype") && property.fieldtype == "many-to-many") {
 					if(len(property.linktable) > 30) {
-						arrayAppend(variables.debugArray, "In #entityName# entity the many-to-many property '#property.name#' has a link table that is longer than 30 characters in length which would break oracle support. Table Name: #property.linktable# Length:#len(property.linktable)#");
+						addToDebug( "In #entityName# entity the many-to-many property '#property.name#' has a link table that is longer than 30 characters in length which would break oracle support. Table Name: #property.linktable# Length:#len(property.linktable)#");
 						pass = false;
 					}
 				}
@@ -96,26 +155,26 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				if(!structKeyExists(property, "persistent") || property.persistent) {
 					if(structKeyExists(property, "column")) {
 						if(len(property.column) > 30) {
-							arrayAppend(variables.debugArray, "In #entityName# entity the property '#property.name#' has a column name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.column)#");	
+							addToDebug( "In #entityName# entity the property '#property.name#' has a column name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.column)#" );	
 							pass = false;
 						}
 					} else if(structKeyExists(property, "fieldtype") && listFindNoCase("many-to-one,one-to-many", property.fieldtype)) {
 						if(len(property.fkcolumn) > 30) {
-							arrayAppend(variables.debugArray, "In #entityName# entity the property '#property.name#' has a fkcolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.fkcolumn)#");
+							addToDebug( "In #entityName# entity the property '#property.name#' has a fkcolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.fkcolumn)#");
 							pass = false;
 						}
 					} else if(structKeyExists(property, "fieldtype") && listFindNoCase("many-to-many", property.fieldtype)) {
 						if(len(property.fkcolumn) > 30) {
-							arrayAppend(variables.debugArray, "In #entityName# entity the property '#property.name#' has a fkcolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.fkcolumn)#");
+							addToDebug( "In #entityName# entity the property '#property.name#' has a fkcolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.fkcolumn)#");
 							pass = false;
 						}
 						if(len(property.inversejoincolumn) > 30){
-							arrayAppend(variables.debugArray, "In #entityName# entity the property '#property.name#' has a inversejoincolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.inversejoincolumn)#");
+							addToDebug( "In #entityName# entity the property '#property.name#' has a inversejoincolumn name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.inversejoincolumn)#");
 							pass = false;
 						}
 					} else {
 						if(len(property.name) > 30){
-							arrayAppend(variables.debugArray, "In #entityName# entity the property '#property.name#' has a column name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.name)#");
+							addToDebug( "In #entityName# entity the property '#property.name#' has a column name definition that is longer than 30 characters in length which would break oracle support. Length:#len(property.name)#");
 							pass = false;
 							
 						}
@@ -171,12 +230,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					// Check for 'add' on this side
 					if(findNoCase("function add#property.singularname#", entityFile) && !listFindNoCase(validMethodsList, "#entityName#:add#property.singularName#")) {
 						pass = false;
-						arrayAppend(variables.debugArray, "OTM-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #entityName# 'add#property.singularName#'");
+						addToDebug( "OTM-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #entityName# 'add#property.singularName#'");
 					}
 					// Check for 'remove' on this side
 					if(findNoCase("function remove#property.singularname#", entityFile) && !listFindNoCase(validMethodsList, "#entityName#:remove#property.singularName#")) {
 						pass = false;
-						arrayAppend(variables.debugArray, "OTM-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #entityName# 'remove#property.singularName#'");
+						addToDebug( "OTM-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #entityName# 'remove#property.singularName#'");
 					}
 					
 					var thatEntityName = "Slatwall#property.cfc#";
@@ -188,12 +247,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 							// Check for 'set' on that side
 							if(findNoCase("function set#thatProperty.name#", thatEntityFile) && !listFindNoCase(validMethodsList, "#thatEntityName#:set#thatProperty.name#")) {
 								pass = false;
-								arrayAppend(variables.debugArray, "MTO-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #thatEntityName# 'set#thatProperty.name#'");
+								addToDebug( "MTO-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #thatEntityName# 'set#thatProperty.name#'");
 							}
 							// Check for 'remove' on that side
 							if(findNoCase("function remove#thatProperty.name#", thatEntityFile) && !listFindNoCase(validMethodsList, "#thatEntityName#:remove#thatProperty.name#")) {
 								pass = false;
-								arrayAppend(variables.debugArray, "MTO-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #thatEntityName# 'remove#thatProperty.name#'");
+								addToDebug( "MTO-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #thatEntityName# 'remove#thatProperty.name#'");
 							}
 						}
 					}
@@ -205,4 +264,60 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(pass);
 	}
 
+	public void function all_smart_list_search_dont_have_errors() {
+		// Get all entities
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		
+		// Entities that cause known errors
+		var exceptionErrorEntities = [];
+		
+		// Sets up the "Long Search Phrase" search keyword
+		var searchData = {};
+		searchData.keywords = "ThisIsALongSearchStringThatShouldReturnNoResults";
+		
+		// Loops over all of the entities and tests entity smartlists using the search keyword
+		for(var entityName in allEntities){
+			
+			try{
+				var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
+				var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
+				smartList.getPageRecords();
+			} catch (any e) {
+				arrayAppend(exceptionErrorEntities, entityName);
+			}
+
+		}
+		
+		addToDebug( exceptionErrorEntities );
+		
+		assert(!arrayLen(exceptionErrorEntities));
+	}
+	
+	public void function all_smart_list_search_return_no_results_with_invalid_keywords() {
+		// Get all entities
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		
+		// Entities that cause known errors
+		var nonFilteredEntities = [];
+		
+		// Sets up the "Long Search Phrase" search keyword
+		var searchData = {};
+		searchData.keywords = "ThisIsALongSearchStringThatShouldReturnNoResults";
+		
+		// Loops over all of the entities and tests entity smartlists using the search keyword
+		for(var entityName in allEntities){
+			
+			var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
+			var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
+			if(arrayLen(smartList.getPageRecords())) {
+				arrayAppend(nonFilteredEntities, entityName);	
+			}
+			
+		}
+		
+		addToDebug( nonFilteredEntities );
+		
+		assert(!arrayLen(nonFilteredEntities));
+	}
+	
 }

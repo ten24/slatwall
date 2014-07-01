@@ -57,6 +57,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	property name="vendorService" type="any";
 	property name="vendorOrderService" type="any";
 	property name="hibachiService" type="any";
+	property name="hibachiRBService" type="any";
 	property name="hibachiTagService" type="any";
 	
 	this.publicMethods='';
@@ -242,10 +243,6 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		getHibachiService().updateRecordSortOrder(argumentCollection=rc);
 	}
 	
-	/*
-		
-	*/
-	
 	public void function swCollectionDisplay(required struct rc) {
 		param name="rc.collectionID" type="string" default="";
 		param name="rc.propertyIdentifiers" type="string" default="";
@@ -289,4 +286,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		}
 		
 	}
+		
+	public void function rbData( required struct rc ) {
+		arguments.rc.ajaxResponse['rbData'] = getHibachiRBService().getAggregateResourceBundle(getHibachiScope().getRBLocale());
+	}
+	
 }

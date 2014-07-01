@@ -70,6 +70,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.publicMethods=listAppend(this.publicMethods, 'forgotPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'resetPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'setupInitialAdmin');
+	this.publicMethods=listAppend(this.publicMethods, 'changeLanguage');
 	
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'default');
@@ -89,22 +90,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public void function default(required struct rc) {
-		rc.productSmartList = getProductService().getProductSmartList();
-		rc.productSmartList.addOrder("modifiedDateTime|DESC");
-		rc.productSmartList.setPageRecordsShow(10);
-		
 		rc.orderSmartList = getOrderService().getOrderSmartList();
-		rc.orderSmartList.addFilter("orderStatusType.systemCode", "ostNew");
+		rc.orderSmartList.addInFilter("orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled");
 		rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
 		rc.orderSmartList.setPageRecordsShow(10);
 		
 		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
 		rc.productReviewSmartList.addFilter("activeFlag", 0);
 		rc.productReviewSmartList.setPageRecordsShow(10);
-		
-		rc.vendorOrderSmartList = getVendorService().getVendorOrderSmartList();
-		rc.vendorOrderSmartList.addOrder("modifiedDateTime|DESC");
-		rc.vendorOrderSmartList.setPageRecordsShow(10);
 	}
 
 	public void function saveImage(required struct rc){
@@ -242,6 +235,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		
 		login( rc );
+	}
+	
+	public void function changeLanguage( required struct rc ){
+		param name="arguments.rc.rbLocale" default="";
+		param name="arguments.rc.redirectURL" default="";
+		
+		arguments.rc.$.slatwall.getSession().setRBLocale(arguments.rc.rbLocale);
+		arguments.rc.$.slatwall.setPersistSessionFlag( true );
+		
+		getFW().redirectExact( rc.redirectURL );
+		
 	}
 }
 

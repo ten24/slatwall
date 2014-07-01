@@ -63,9 +63,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="giftCardNumberEncrypted" ormType="string";
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="providerToken" ormType="string";
+	property name="paymentDueDate" hb_populateEnabled="public" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
+	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
@@ -79,7 +81,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all-delete-orphan" inverse="true";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all" inverse="true" orderby="createdDateTime DESC" ;
 	property name="referencingOrderPayments" singularname="referencingOrderPayment" cfc="OrderPayment" fieldType="one-to-many" fkcolumn="referencedOrderPaymentID" cascade="all" inverse="true";
-
+	property name="appliedAccountPayments" singularname="appliedAccountPayment" cfc="AccountPaymentApplied" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all" inverse="true";
+	
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
@@ -87,11 +90,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="amountAuthorized" type="numeric" hb_formatType="currency" persistent="false";
@@ -164,6 +167,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Term Payment
 		if(listFindNoCase("termPayment", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setTermPaymentAccount( arguments.accountPaymentMethod.getAccount() );
+			setPaymentTerm( arguments.accountPaymentMethod.getPaymentTerm() );
 		}
 		
 		// Credit Card & Gift Card
@@ -205,6 +209,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
 		}
 		
+		// Term Payment
+		if(listFindNoCase("termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setPaymentTerm( arguments.orderPayment.getPaymentTerm() );
+		}
+		
 		// Credit Card & Gift Card
 		if(listFindNoCase("creditCard,giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setProviderToken( arguments.orderPayment.getProviderToken() );
@@ -231,7 +240,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountReceived())) {
-				amountReceived = precisionEvaluate('amountReceived + getPaymentTransactions()[i].getAmountReceived()');	
+				amountReceived = precisionEvaluate(amountReceived + getPaymentTransactions()[i].getAmountReceived());	
 			}
 		}
 				
@@ -243,7 +252,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(!isNull(getPaymentTransactions()[i].getAmountCredited())) {
-				amountCredited = precisionEvaluate('amountCredited + getPaymentTransactions()[i].getAmountCredited()');	
+				amountCredited = precisionEvaluate(amountCredited + getPaymentTransactions()[i].getAmountCredited());	
 			}
 		}
 			
@@ -256,7 +265,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 			if(isNull(getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) || !getPaymentTransactions()[i].getAuthorizationCodeInvalidFlag()) {
-				amountAuthorized = precisionEvaluate('amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized()');	
+				amountAuthorized = precisionEvaluate(amountAuthorized + getPaymentTransactions()[i].getAmountAuthorized());	
 			}
 		}
 			
@@ -267,7 +276,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unauthroized = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate('getAmount() - getAmountReceived() - getAmountAuthorized()');
+			unauthroized = precisionEvaluate(getAmount() - getAmountReceived() - getAmountAuthorized());
 		}
 		
 		return unauthroized;
@@ -277,7 +286,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncaptured = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			uncaptured = precisionEvaluate('getAmountAuthorized() - getAmountReceived()');
+			uncaptured = precisionEvaluate(getAmountAuthorized() - getAmountReceived());
 		}
 		
 		return uncaptured;
@@ -287,7 +296,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unreceived = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unreceived = precisionEvaluate('getAmount() - getAmountReceived()');
+			unreceived = precisionEvaluate(getAmount() - getAmountReceived());
 		}
 		
 		return unreceived;
@@ -297,7 +306,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncredited = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = precisionEvaluate('getAmount() + getAmountCredited()');
+			uncredited = precisionEvaluate(getAmount() + getAmountCredited());
 		}
 		
 		return uncredited;
@@ -343,7 +352,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getOriginalAuthorizationCode() {
-		if(!structKeyExists(variables,"originalAuthorizationCode")) {
+		if(!structKeyExists(variables,"originalAuthorizationCode") || !len(variables.originalAuthorizationCode)) {
 			if(!isNull(getReferencedOrderPayment())) {
 				variables.originalAuthorizationCode = getService( "paymentService" ).getOriginalAuthorizationCode( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
 			} else {
@@ -354,7 +363,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getOriginalAuthorizationProviderTransactionID() {
-		if(!structKeyExists(variables,"originalAuthorizationProviderTransactionID")) {
+		if(!structKeyExists(variables,"originalAuthorizationProviderTransactionID") || !len(variables.originalAuthorizationProviderTransactionID)) {
 			if(!isNull(getReferencedOrderPayment())) {
 				variables.originalAuthorizationProviderTransactionID = getService( "paymentService" ).getOriginalAuthorizationProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
 			} else {
@@ -365,7 +374,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getOriginalChargeProviderTransactionID() {
-		if(!structKeyExists(variables,"originalChargeProviderTransactionID")) {
+		if(!structKeyExists(variables,"originalChargeProviderTransactionID") || !len(variables.originalChargeProviderTransactionID)) {
 			if(!isNull(getReferencedOrderPayment())) {
 				variables.originalChargeProviderTransactionID = getService( "paymentService" ).getOriginalChargeProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );
 			} else {
@@ -376,7 +385,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getOriginalProviderTransactionID() {
-		if(!structKeyExists(variables,"originalProviderTransactionID")) {
+		if(!structKeyExists(variables,"originalProviderTransactionID") || !len(variables.originalProviderTransactionID)) {
 			if(!isNull(getReferencedOrderPayment())) {
 				variables.originalProviderTransactionID = getService( "paymentService" ).getOriginalProviderTransactionID( orderPaymentID=getOrderPaymentID(), referencedOrderPaymentID=getReferencedOrderPayment().getOrderPaymentID() );	
 			} else {
@@ -429,7 +438,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			var total = getOrder().getTotal();
 			var paymentTotal = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrder().getOrderID());
 			
-			variables.orderAmountNeeded = precisionEvaluate('total - paymentTotal');
+			variables.orderAmountNeeded = precisionEvaluate(total - paymentTotal);
 		}
 		
 		return variables.orderAmountNeeded;
@@ -552,6 +561,14 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		arguments.referencingOrderPayment.removeReferencedOrderPayment( this );    
 	}
 	
+	// Applied Account Payments (one-to-many)    
+	public void function addAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.setOrderPayment( this );    
+	}    
+	public void function removeAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.removeOrderPayment( this );    
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
@@ -581,12 +598,32 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		return variables.amount;
 	}
-
+	
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
+
+			if(!isNull(getBillingAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+    			return variables.billingAddress;
+			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
+				return getOrder().getBillingAddress();
+			}
+
 			return getService("addressService").newAddress();
 		}
 		return variables.billingAddress;
+	}
+	
+	public any function getCurrencyCode() {
+		if( !structKeyExists(variables, "currencyCode") ) {
+			if(!isNull(getOrder()) && !isNull(getOrder().getCurrencyCode())) {
+				variables.currencyCode = getOrder().getCurrencyCode();
+			} else {
+				variables.currencyCode = setting('skuCurrency');
+			}
+		}
+		return variables.currencyCode;
 	}
 	
 	public any function getOrderPaymentType() {
@@ -615,9 +652,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public void function setCreditCardNumber(required string creditCardNumber) {
 		if(len(arguments.creditCardNumber)) {
-			variables.creditCardNumber = arguments.creditCardNumber;
-			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
-			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
+			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');	
+			setCreditCardLastFour( right(variables.creditCardNumber, 4) );
+			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(variables.creditCardNumber) );
 		} else {
 			structDelete(variables, "creditCardNumber");
 			setCreditCardLastFour(javaCast("null", ""));
@@ -636,6 +673,22 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 		
 		return getPaymentMethod().getPaymentMethodName() & ' - ' & getFormattedValue('amount');
+	}
+	
+	public any function setBillingAccountAddress( required any accountAddress ) {
+		
+		// If the shippingAddress is a new shippingAddress
+		if( isNull(getBillingAddress()) ) {
+			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
+		
+		// Else if there was no accountAddress before, or the accountAddress has changed
+		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+			
+		}
+		
+		// Set the actual accountAddress
+		variables.billingAccountAddress = arguments.accountAddress;
 	}
 	
 	// ==================  END:  Overridden Methods ========================

@@ -11,6 +11,7 @@
 	<cfparam name="attributes.filter" type="any" default="" />
 	<cfparam name="attributes.range" type="any" default="" />
 	<cfparam name="attributes.editable" type="boolean" default="false" />
+	<cfparam name="attributes.buttonGroup" type="any" default="" />
 	
 	<cfassociate basetag="cf_HibachiListingDisplay" datacollection="columns">
 </cfif>

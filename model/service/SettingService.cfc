@@ -141,6 +141,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			
 			// Fulfillment Method
+			fulfillmentMethodShippingOptionSortType = {fieldType="select", defaultValue="sortOrder"},
 			fulfillmentMethodEmailFrom = {fieldType="text"},
 			fulfillmentMethodEmailCC = {fieldType="text"},
 			fulfillmentMethodEmailBCC = {fieldType="text"},
@@ -155,6 +156,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
+			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
+			globalAuditCommitMode = {fieldType="select", defaultValue="thread", valueOptions=[{name="separate thread",value="thread"}, {name="same request",value="sameRequest"}]},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
 			globalEncryptionEncoding = {fieldType="select",defaultValue="Base64"},
 			globalEncryptionKeyLocation = {fieldType="text"},
@@ -163,6 +166,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
 			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
+			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
@@ -299,6 +303,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getContentService().getDisplayTemplateOptions( "barrierPage" );
 			case "fulfillmentMethodAutoLocation" :
 				return getLocationService().getLocationOptions();
+			case "fulfillmentMethodShippingOptionSortType" :
+				return [{name=rbKey('define.sortOrder'), value='sortOrder'},{name=rbKey('define.price'), value='price'}];
 			case "globalDefaultSite":
 				var optionSL = getSiteService().getSiteSmartList();
 				optionSL.addSelect('siteName', 'name');
@@ -346,6 +352,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getCurrencyService().getCurrencyOptions();
 			case "skuTaxCategory":
 				var optionSL = getTaxService().getTaxCategorySmartList();
+				optionSL.addFilter('activeFlag', 1);
 				optionSL.addSelect('taxCategoryName', 'name');
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
@@ -369,14 +376,13 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 	
 	public array function getCustomIntegrationOptions() {
-		var options = [];
-		
-		var integrations = getIntegrationService().listIntegration({customReadyFlag=1});
-		
-		for(var i=1; i<=arrayLen(integrations); i++) {
-			arrayAppend(options, {name=integrations[i].getIntegrationName(), value=integrations[i].getIntegrationPackage()});
-		}
-		
+		var integrationSmartlist = this.getIntegrationSmartList();
+		integrationSmartlist.addFilter('activeFlag', '1');
+		integrationSmartlist.addFilter('installedFlag', '1');
+		integrationSmartlist.addLikeFilter('integrationTypeList', '%custom%');
+		integrationSmartlist.addSelect('integrationName', 'name');
+		integrationSmartlist.addSelect('integrationPackage', 'value');
+		var options = integrationSmartlist.getRecords();
 		return options;
 	}
 	

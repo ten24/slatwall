@@ -112,6 +112,9 @@ Notes:
 				
 				<!--- Order Type --->
 				<cf_HibachiPropertyDisplay object="#rc.order#" property="orderType" edit="#rc.edit#">
+
+				<!--- Default Stock Location --->
+				<cf_HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
 				
 				<!--- Referenced Order --->
 				<cfif !isNull(rc.order.getReferencedOrder())>

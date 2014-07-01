@@ -61,10 +61,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="referencedOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="referencedOrderID";	// Points at the "parent" (NOT return) order.
+	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
+	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID";
+	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderType";
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
 	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID";
+	property name="referencedOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="referencedOrderID";	// Points at the "parent" (NOT return) order.
+	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
+	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	
 	// Related Object Properties (one-To-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
@@ -86,11 +91,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non persistent properties
 	property name="addOrderItemSkuOptionsSmartList" persistent="false";
@@ -115,6 +120,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderPaymentRefundOptions" persistent="false";
 	property name="orderRequirementsList" persistent="false";
 	property name="orderTypeOptions" persistent="false";
+	property name="defaultStockLocationOptions" persistent="false";
 	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
@@ -166,7 +172,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public struct function getAddPaymentRequirementDetails() {
 		if(!structKeyExists(variables, "addPaymentRequirementDetails")) {
 			variables.addPaymentRequirementDetails = {};
-			var requiredAmount = precisionEvaluate('getTotal() - getPaymentAmountTotal()');
+			var requiredAmount = precisionEvaluate(getTotal() - getPaymentAmountTotal());
 			if(requiredAmount > 0) {
 				variables.addPaymentRequirementDetails.amount = requiredAmount;
 				variables.addPaymentRequirementDetails.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge"); 
@@ -186,8 +192,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getOrderNumber() {
 		if(isNull(variables.orderNumber)) {
-			variables.orderNumber = "";
 			confirmOrderNumberOpenDateCloseDatePaymentAmount();
+			if(isNull(variables.orderNumber)) {
+				return "";
+			}
 		}
 		return variables.orderNumber;
 	}
@@ -224,10 +232,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
 			
-			// Loop over the order fulfillments to remove and accountAddresses
-			for(var orderFulfillment in getOrderFulfillments()) {
-				orderFulfillment.setAccountAddress( javaCast("null", "") );
-			}
 		}
 		
 		// If the order is closed, and has no close dateTime
@@ -289,13 +293,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				
 				if(orderItem.getQuantityDelivered()) {
 					
-					variables.deliveredItemsAmountTotal = precisionEvaluate('variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getExtendedPriceAfterDiscount())');
+					variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getItemTotal()));
 					
 					if(!listFindNoCase(fulfillmentChargeAddedList, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
 						
 						listAppend(fulfillmentChargeAddedList, orderItem.getOrderFulfillment().getOrderFulfillmentID());
 						
-						variables.deliveredItemsAmountTotal = precisionEvaluate('variables.deliveredItemsAmountTotal + orderItem.getOrderFulfillment().getChargeAfterDiscount()');
+						variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + orderItem.getOrderFulfillment().getChargeAfterDiscount());
 					}
 				}
 			}
@@ -304,7 +308,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public numeric function getDiscountTotal() {
-		return precisionEvaluate('getItemDiscountAmountTotal() + getFulfillmentDiscountAmountTotal() + getOrderDiscountAmountTotal()');
+		return precisionEvaluate(getItemDiscountAmountTotal() + getFulfillmentDiscountAmountTotal() + getOrderDiscountAmountTotal());
 		
 	}
 	
@@ -319,9 +323,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var discountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
 			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
-				discountTotal = precisionEvaluate('discountTotal + getOrderItems()[i].getDiscountAmount()');
+				discountTotal = precisionEvaluate(discountTotal + getOrderItems()[i].getDiscountAmount());
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				discountTotal = precisionEvaluate('discountTotal - getOrderItems()[i].getDiscountAmount()');
+				discountTotal = precisionEvaluate(discountTotal - getOrderItems()[i].getDiscountAmount());
 			} else {
 				throw("there was an issue calculating the itemDiscountAmountTotal because of a orderItemType associated with one of the items");
 			}
@@ -332,7 +336,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getFulfillmentDiscountAmountTotal() {
 		var discountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			discountTotal = precisionEvaluate('discountTotal + getOrderFulfillments()[i].getDiscountAmount()');
+			discountTotal = precisionEvaluate(discountTotal + getOrderFulfillments()[i].getDiscountAmount());
 		}
 		return discountTotal;
 	}
@@ -340,7 +344,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getFulfillmentTotal() {
 		var fulfillmentTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			fulfillmentTotal = precisionEvaluate('fulfillmentTotal + getOrderFulfillments()[i].getFulfillmentCharge()');
+			fulfillmentTotal = precisionEvaluate(fulfillmentTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
 		return fulfillmentTotal;
 	}
@@ -348,7 +352,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getFulfillmentRefundTotal() {
 		var fulfillmentRefundTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderReturns()); i++) {
-			fulfillmentRefundTotal = precisionEvaluate('fulfillmentRefundTotal + getOrderReturns()[i].getFulfillmentRefundAmount()');
+			fulfillmentRefundTotal = precisionEvaluate(fulfillmentRefundTotal + getOrderReturns()[i].getFulfillmentRefundAmount());
 		}
 		
 		return fulfillmentRefundTotal;
@@ -357,7 +361,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getFulfillmentChargeAfterDiscountTotal() {
 		var fulfillmentChargeAfterDiscountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			fulfillmentChargeAfterDiscountTotal = precisionEvaluate('fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount()');
+			fulfillmentChargeAfterDiscountTotal = precisionEvaluate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount());
 		}
 		
 		return fulfillmentChargeAfterDiscountTotal;
@@ -367,7 +371,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var discountAmount = 0;
 
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = precisionEvaluate('discountAmount + getAppliedPromotions()[i].getDiscountAmount()');
+			discountAmount = precisionEvaluate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
 		}
 
 		return discountAmount;
@@ -380,7 +384,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getOrderPaymentAmountNeeded() {
 		
 		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
-		var orderPaymentAmountNeeded = precisionEvaluate('getTotal() - nonNullPayments');
+		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 		
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
 			return orderPaymentAmountNeeded;
@@ -438,7 +442,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getDynamicChargeOrderPaymentAmount() {
 		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
-		var orderPaymentAmountNeeded = precisionEvaluate('getTotal() - nonNullPayments');
+		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 		
 		if(orderPaymentAmountNeeded gt 0) {
 			return orderPaymentAmountNeeded;
@@ -449,7 +453,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getDynamicCreditOrderPaymentAmount() {
 		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
-		var orderPaymentAmountNeeded = precisionEvaluate('getTotal() - nonNullPayments');
+		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 		
 		if(orderPaymentAmountNeeded lt 0) {
 			return orderPaymentAmountNeeded * -1;
@@ -464,9 +468,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive" && !orderPayment.hasErrors()) {
 				if(orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
-					totalPayments = precisionEvaluate('totalPayments + orderPayment.getAmount()');	
+					totalPayments = precisionEvaluate(totalPayments + orderPayment.getAmount());	
 				} else {
-					totalPayments = precisionEvaluate('totalPayments - orderPayment.getAmount()');
+					totalPayments = precisionEvaluate(totalPayments - orderPayment.getAmount());
 				}
 			}
 		}
@@ -475,7 +479,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public numeric function getPaymentAmountDue(){
-		return precisionEvaluate('getTotal() - getPaymentAmountReceivedTotal() + getPaymentAmountCreditedTotal()');
+		return precisionEvaluate(getTotal() - getPaymentAmountReceivedTotal() + getPaymentAmountCreditedTotal());
 	}
 	
 	public numeric function getPaymentAmountAuthorizedTotal() {
@@ -483,7 +487,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive") {
-				totalPaymentsAuthorized = precisionEvaluate('totalPaymentsAuthorized + orderPayment.getAmountAuthorized()');	
+				totalPaymentsAuthorized = precisionEvaluate(totalPaymentsAuthorized + orderPayment.getAmountAuthorized());	
 			}
 		}
 		
@@ -495,7 +499,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive") {
-				totalPaymentsReceived = precisionEvaluate('totalPaymentsReceived + orderPayment.getAmountReceived()');
+				totalPaymentsReceived = precisionEvaluate(totalPaymentsReceived + orderPayment.getAmountReceived());
 			}
 		}
 		
@@ -507,7 +511,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive") {
-				totalPaymentsCredited = precisionEvaluate('totalPaymentsCredited + orderPayment.getAmountCredited()');
+				totalPaymentsCredited = precisionEvaluate(totalPaymentsCredited + orderPayment.getAmountCredited());
 			}
 		}
 		
@@ -520,7 +524,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		for(var orderPayment in getOrderPayments()) {
 			for(var referencingOrderPayment in orderPayment.getReferencingOrderPayments()) {
 				if(referencingOrderPayment.getStatusCode() eq "opstActive") {
-					totalReferencingPaymentsCredited = precisionEvaluate('totalReferencingPaymentsCredited + referencingOrderPayment.getAmountCredited()');	
+					totalReferencingPaymentsCredited = precisionEvaluate(totalReferencingPaymentsCredited + referencingOrderPayment.getAmountCredited());	
 				}
 			}
 		}
@@ -567,7 +571,16 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return variables.orderTypeOptions;
 	}
-	
+
+	public array function getDefaultStockLocationOptions() {
+		if(!structKeyExists(variables, "defaultStockLocationOptions")) {
+			var defaultStockLocationOptions=getService("locationService").getLocationOptions();
+			arrayPrepend(defaultStockLocationOptions, {"name"=rbKey('define.none'),"value"=""});
+			variables.defaultStockLocationOptions=defaultStockLocationOptions;
+		}
+		return variables.defaultStockLocationOptions;
+	}
+		
 	public string function getPromotionCodeList() {
 		var promotionCodeList = "";
 		
@@ -585,30 +598,30 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		for(var f=1; f<=arrayLen(getOrderFulfillments()); f++) {
 			// If this fulfillment is fully delivered, then just add the entire amount
 			if(getOrderFulfillments()[f].getQuantityUndelivered() == 0) {
-				amountDelivered = precisionEvaluate('amountDelivered + getOrderFulfillments()[f].getFulfillmentTotal()');
+				amountDelivered = precisionEvaluate(amountDelivered + getOrderFulfillments()[f].getFulfillmentTotal());
 				
 			// If this fulfillment has at least one item delivered
 			} else if(getOrderFulfillments()[f].getQuantityDelivered() > 0) {
 				
 				// Add the fulfillmentCharge
-				amountDelivered = precisionEvaluate('amountDelivered + getOrderFulfillments()[f].getChargeAfterDiscount()');
+				amountDelivered = precisionEvaluate(amountDelivered + getOrderFulfillments()[f].getChargeAfterDiscount());
 				
 				// Loop over the fulfillmentItems and add each of the amounts to the total amount delivered
 				for(var i=1; i<=arrayLen(getOrderFulfillments()[f].getOrderFulfillmentItems()); i++) {
 					var item = getOrderFulfillments()[f].getOrderFulfillmentItems()[i];
 					
 					if(item.getQuantityUndelivered() == 0) {
-						amountDelivered = precisionEvaluate('amountDelivered + item.getItemTotal()');
+						amountDelivered = precisionEvaluate(amountDelivered + item.getItemTotal());
 					} else if (item.getQuantityDelivered() > 0) {
 						var itemQDValue = (round(item.getItemTotal() * (item.getQuantityDelivered() / item.getQuantity()) * 100) / 100);
-						amountDelivered = precisionEvaluate('amountDelivered + itemQDValue');
+						amountDelivered = precisionEvaluate(amountDelivered + itemQDValue);
 					}
 					
 				}
 			}
 		}
 		
-		return precisionEvaluate('amountDelivered - getPaymentAmountReceivedTotal()');
+		return precisionEvaluate(amountDelivered - getPaymentAmountReceivedTotal());
 	}
 	
 	
@@ -688,9 +701,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
 			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
-				subtotal = precisionEvaluate('subtotal + getOrderItems()[i].getExtendedPrice()');	
+				subtotal = precisionEvaluate(subtotal + getOrderItems()[i].getExtendedPrice());	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				subtotal = precisionEvaluate('subtotal - getOrderItems()[i].getExtendedPrice()');
+				subtotal = precisionEvaluate(subtotal - getOrderItems()[i].getExtendedPrice());
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}
@@ -699,16 +712,16 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public numeric function getSubtotalAfterItemDiscounts() {
-		return precisionEvaluate('getSubtotal() - getItemDiscountAmountTotal()');
+		return precisionEvaluate(getSubtotal() - getItemDiscountAmountTotal());
 	}
 	
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
 			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
-				taxTotal = precisionEvaluate('taxTotal + getOrderItems()[i].getTaxAmount()');	
+				taxTotal = precisionEvaluate(taxTotal + getOrderItems()[i].getTaxAmount());	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				taxTotal = precisionEvaluate('taxTotal - getOrderItems()[i].getTaxAmount()');
+				taxTotal = precisionEvaluate(taxTotal - getOrderItems()[i].getTaxAmount());
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}
@@ -717,7 +730,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public numeric function getTotal() {
-		return precisionEvaluate('getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getFulfillmentRefundTotal() - getDiscountTotal()');
+		return precisionEvaluate(getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getFulfillmentRefundTotal() - getDiscountTotal());
 	}
 	
 	public numeric function getTotalItems() {
@@ -836,7 +849,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public void function removeAppliedPromotion(required any appliedPromotion) {
 		arguments.appliedPromotion.removeOrder( this );
 	}
-	
+
 	// Promotion Codes (many-to-many - owner)
 	public void function addPromotionCode(required any promotionCode) {
 		if(arguments.promotionCode.isNew() or !hasPromotionCode(arguments.promotionCode)) {
@@ -856,10 +869,28 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			arrayDeleteAt(arguments.promotionCode.getOrders(), thatIndex);
 		}
 	}
-	
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
+	
+	public any function getBillingAddress() {
+		if(structKeyExists(variables, "billingAddress")) {
+			return variables.billingAddress;
+		} else if (!isNull(getBillingAccountAddress())) {
+			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.billingAddress;
+		}
+	}
+
+	public any function getShippingAddress() {
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
+		} else if (!isNull(getShippingAccountAddress())) {
+			setShippingAddress( getShippingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+		}
+	}
 	
 	public any function getOrderStatusType() {
 		if(isNull(variables.orderStatusType)) {
@@ -905,6 +936,38 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return variables.referencingOrdersSmartList;
 	}
 	
+	public any function setShippingAccountAddress( required any accountAddress ) {
+		
+		// If the shippingAddress is a new shippingAddress
+		if( isNull(getShippingAddress()) ) {
+			setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
+		
+		// Else if there was no accountAddress before, or the accountAddress has changed
+		} else if (!structKeyExists(variables, "shippingAccountAddress") || (structKeyExists(variables, "shippingAccountAddress") && variables.shippingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+			
+		}
+		
+		// Set the actual accountAddress
+		variables.shippingAccountAddress = arguments.accountAddress;
+	}
+	
+	public any function setBillingAccountAddress( required any accountAddress ) {
+		
+		// If the shippingAddress is a new shippingAddress
+		if( isNull(getBillingAddress()) ) {
+			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
+		
+		// Else if there was no accountAddress before, or the accountAddress has changed
+		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+			
+		}
+		
+		// Set the actual accountAddress
+		variables.billingAccountAddress = arguments.accountAddress;
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================
@@ -920,7 +983,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public void function preUpdate(Struct oldData){
-		super.preUpdate();
+		super.preUpdate(argumentCollection=arguments);
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
 	}
 	

@@ -52,7 +52,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributeSetID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="attributeSetName" ormtype="string";
-	property name="attributeSetCode" ormtype="string";
+	property name="attributeSetCode" ormtype="string" index="PI_ATTRIBUTESETCODE";
 	property name="attributeSetDescription" ormtype="string" length="2000" ;
 	property name="globalFlag" ormtype="boolean" default="1";
 	property name="requiredFlag" ormtype="boolean";
@@ -74,11 +74,11 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 
 	// Related Object Properties (many-to-many - inverse)
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	public array function getAttributes(orderby, sortType="text", direction="asc") {
 		if(!structKeyExists(arguments, "orderby")) {

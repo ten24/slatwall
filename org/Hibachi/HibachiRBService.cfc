@@ -66,6 +66,14 @@ component output="false" accessors="true" extends="HibachiService" {
 		return arguments.checkedKeys;
 	}
 	
+	public struct function getAggregateResourceBundle(required string locale="en_us") {
+		var aggBundle = getResourceBundle(arguments.locale);
+		if(listLen(arguments.locale, "_") == 2) {
+			structAppend(aggBundle, getResourceBundle( listFirst(arguments.locale, "_") ));
+		}
+		return aggBundle;
+	}
+	
 	public struct function getResourceBundle(required string locale="en_us") {
 		if(!structKeyExists(variables.resourceBundles, arguments.locale)) {
 			var javaRB = new JavaRB.JavaRB();
@@ -88,7 +96,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			variables.resourceBundles[ arguments.locale ] = thisRB;
 		}
-		
 		return variables.resourceBundles[ arguments.locale ];
 	}
 	

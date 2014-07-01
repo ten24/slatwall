@@ -52,6 +52,7 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	property name="taxCategoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="taxCategoryName" ormtype="string";
+	property name="taxCategoryCode" ormtype="string" index="PI_TAXCATEGORYCODE";
 	
 	// Related Object Properties (one-to-many)
 	property name="taxCategoryRates" singularname="taxCategoryRate" cfc="TaxCategoryRate" type="array" fieldtype="one-to-many" fkcolumn="taxCategoryID" inverse="true" cascade="all-delete-orphan";
@@ -63,16 +64,17 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-persistent properties
 	property name="taxCategoryRatesDeletableFlag" type="boolean" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
+
 	
 	public boolean function getTaxCategoryRatesDeletableFlag() {
 		if(!structKeyExists(variables,"taxCategoryRatesDeletableFlag")) {
@@ -87,6 +89,14 @@ component entityname="SlatwallTaxCategory" table="SwTaxCategory" persistent="tru
 		return variables.taxCategoryRatesDeletableFlag;
 	}
 	
+	public array function getTaxCategoryRateIntegrationOptions() {
+		var optionsSL = getService("integrationService").getIntegrationSmartList();
+		optionsSL.addFilter('activeFlag', '1');
+		optionsSL.addLikeFilter('integrationTypeList', '%tax%');
+		optionsSL.addSelect('integrationName', 'name');
+		optionsSL.addSelect('integrationID', 'value');
+		return optionsSL.getRecords();
+	}	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

@@ -45,6 +45,9 @@
 
 Notes:
 
+	Paypal Express DOCS
+	https://developer.paypal.com/webapps/developer/docs/classic/express-checkout/ht_ec-singleItemPayment-curl-etc/
+
 */
 component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
 	
@@ -68,7 +71,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			paypalAccountUser = {fieldType="text"},
 			paypalAccountPassword = {fieldType="password", encryptValue=true},
 			paypalAccountSignature = {fieldType="text"},
-			paypalAccountSandboxFlag = {fieldType="yesno", defaultValue="0"}
+			paypalAccountSandboxFlag = {fieldType="yesno", defaultValue="0"},
+			paypalHeaderImage = {fieldType="text",defaultValue=""}
 		};
 		
 		return settings;

@@ -60,6 +60,7 @@ component accessors="true" output="false" {
 	this.anyAdminMethods='';
 	
 	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'main');
 	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -80,7 +81,11 @@ component accessors="true" output="false" {
 			var responseData = paymentCFC.getInitiatePaymentData( paymentMethod=paymentMethod, order=request.slatwallScope.getCart() );
 			
 			if(structKeyExists(responseData, "ack") && responseData.ack == "Success" && structKeyExists(responseData, "token")) {
-				location("https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=#responseData.token#", false);																										// Dynamic
+				if(paymentMethod.getIntegration().setting('paypalAccountSandboxFlag') eq true) {
+					location("https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=#responseData.token#", false);
+				} else {
+					location("https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=#responseData.token#", false);	
+				}
 			}
 		}
 	}
@@ -90,6 +95,8 @@ component accessors="true" output="false" {
 		param name="rc.token" default="";
 		
 		var paymentMethod = getPaymentService().getPaymentMethod( rc.paymentMethodID );
+
+		arguments.rc.$.slatwall.setPublicPopulateFlag( true );
 		
 		if(!isNull(paymentMethod) && paymentMethod.getIntegration().getIntegrationPackage() eq "paypalexpress") {
 			
@@ -107,8 +114,11 @@ component accessors="true" output="false" {
 				paymentData.newOrderPayment.amount = responseData.PAYMENTREQUEST_0_AMT;
 				paymentData.newOrderPayment.paymentMethod.paymentMethodID = paymentMethod.getPaymentMethodID();
 				paymentData.newOrderPayment.order.orderID = rc.$.slatwall.cart().getOrderID();
-				paymentData.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
-				paymentData.newOrderPayment.providerToken = responseData.token & '~' & responseData.payerID;
+				paymentData.newOrderPayment.orderPaymentType.typeID = '8aac86674079189801407a81b456000a';
+				
+				// Manually set the providerToken value because it can't be populated
+				var addOrderPaymentProcessObject = rc.$.slatwall.cart().getProcessObject('addOrderPayment');
+				addOrderPaymentProcessObject.getNewOrderPayment().setProviderToken(responseData.token & '~' & responseData.payerID);
 				
 				var order = getOrderService().processOrder( rc.$.slatwall.cart(), paymentData, 'addOrderPayment');
 				

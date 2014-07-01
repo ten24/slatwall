@@ -1,7 +1,13 @@
 {
+	"conditions":{
+		"skuIsNewFlag":{
+			"sku.newFlag":{"eq":true}
+		}
+	},
+
 	"properties":{
 	    "productTypeID":		[{"required":true}],
-		"price":				[{"required":true,"dataType":"numeric","minValue":0}],
+		"price":				[{"conditions":"skuIsNewFlag","required":true,"dataType":"numeric","minValue":0}],
 		"productCode":			[{"required":true}]
 	}
 }

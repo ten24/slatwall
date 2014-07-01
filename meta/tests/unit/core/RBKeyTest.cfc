@@ -50,59 +50,26 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function all_entity_properties_have_keys() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
-		var passes = true;
-		
-		var ignoreEntities = "AttributeValue,CommentRelationship,UpdateScript,ShippingMethodOption";
-		var ignoreProperties = "newFlag,printTemplate";
-		var ignoreEntityProperties = "";
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "PaymentTransaction.transactionStartTickCount");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "PaymentTransaction.transactionEndTickCount");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.bankRoutingNumberEncrypted");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.bankAccountNumberEncrypted");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.checkNumberEncrypted");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.creditCardNumberEncrypted");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "AccountPayment.giftCardNumberEncrypted");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "PromotionApplied.appliedType");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "Collection.collectionData");
-		var ignoreEntityProperties = listAppend(ignoreEntityProperties, "TaxApplied.appliedType");
+		var allFound = true;
 		
 		for(var entityName in allEntities) {
-			var shortEntityName = replace(entityName,"Slatwall","");
-			if(!listFindNoCase(ignoreEntities, shortEntityName)) {
-				
-				// Test Entity Name
-				var entityKeyValue = request.slatwallScope.rbKey('entity.#shortEntityName#');
-				if(right(entityKeyValue,8) == '_missing') {
-					passes = false;
-					arrayAppend(variables.debugArray, entityKeyValue);
-				}
-				
-				// Test Plural Entity Name
-				/*
-				var entityKeyValuePlural = request.slatwallScope.rbKey('entity.#shortEntityName#_plural');
-				if(right(entityKeyValuePlural,8) == '_missing') {
-					passes = false;
-					arrayAppend(variables.debugArray, entityKeyValuePlural);
-				}
-				*/
-				
-				var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
-				for(var property in properties) {
-					if(!listFindNoCase(ignoreEntityProperties, "#shortEntityName#.#property.name#") && !listFindNoCase(ignoreProperties, property.name) && (!structKeyExists(property, "fieldtype") || property.fieldType eq "column" || property.fieldType eq "id") && (!structKeyExists(property, "persistent") || property.persistent) ) {
-						
-						// Test Property
-						var propertyKeyValue = request.slatwallScope.rbKey('entity.#shortEntityName#.#property.name#');
-						if(right(propertyKeyValue,8) == '_missing') {
-							passes = false;
-							arrayAppend(variables.debugArray, propertyKeyValue);
-						}
-					}
+			
+			var thisEntityName = replace(entityName, "Slatwall","","all");
+			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			
+			for(var property in properties) {
+				if(!structKeyExists(property, "persistent") || property.persistent) {
+					var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#.#property.name#');
+					if(right(keyValue,8) == '_missing') {
+						addToDebug(keyValue);
+						allFound = false;
+					}	
 				}
 			}
 		}
-		assert(passes);
+		
+		assert(allFound);
 	}
 	
 }
-
 

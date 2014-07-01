@@ -57,25 +57,25 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	// buildURL()
 	public void function buildURL_1() {
 		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?p:current=2");
-		addToDebug(urlResponse);
+		
 		assert(urlResponse eq '?p:current=3');
 	}
 	
 	public void function buildURL_2() {
 		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?f:productName=hello&p:current=2");
-		addToDebug(urlResponse);
+		
 		assert(urlResponse eq '?f:productname=hello&p:current=3');
 	}
 	
 	public void function buildURL_3() {
 		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="?f:productName=hello");
-		addToDebug(urlResponse);	
-		assert(urlResponse eq '?c=1');
+			
+		assertEquals('?c=1', urlResponse);
 	}
 	
 	public void function buildURL_4() {	
 		var urlResponse = variables.smartList.buildURL(queryAddition="f:productName=hello", currentURL="/");
-		addToDebug(urlResponse);
+		
 		assert(urlResponse eq '?f:productName=hello');
 	}
 	

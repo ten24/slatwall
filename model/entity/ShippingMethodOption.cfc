@@ -71,7 +71,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="discountAmountDetails" persistent="false";
@@ -89,7 +89,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	}
 	
 	public numeric function getTotalChargeAfterDiscount() {
-		return precisionEvaluate('getTotalCharge() - getDiscountAmount()');
+		return precisionEvaluate(getTotalCharge() - getDiscountAmount());
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
@@ -116,24 +116,6 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 		structDelete(variables, "orderFulfillment");
 	}
 
-	// Shipping Method Rate (many-to-one)
-	public void function setShippingMethodRate(required any shippingMethodRate) {
-		variables.shippingMethodRate = arguments.shippingMethodRate;
-		if(isNew() or !arguments.shippingMethodRate.hasShippingMethodOption( this )) {
-			arrayAppend(arguments.shippingMethodRate.getShippingMethodOptions(), this);
-		}
-	}
-	public void function removeShippingMethodRate(any shippingMethodRate) {
-		if(!structKeyExists(arguments, "shippingMethodRate")) {
-			arguments.shippingMethodRate = variables.shippingMethodRate;
-		}
-		var index = arrayFind(arguments.shippingMethodRate.getShippingMethodOptions(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.shippingMethodRate.getShippingMethodOptions(), index);
-		}
-		structDelete(variables, "shippingMethodRate");
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// =============== START: Custom Validation Methods ====================

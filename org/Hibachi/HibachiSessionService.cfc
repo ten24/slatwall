@@ -2,6 +2,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 
 	property name="accountService" type="any";
 	property name="orderService" type="any";
+	property name="hibachiAuditService" type="any";
 	property name="hibachiTagService" type="any";
 	
 
@@ -13,30 +14,35 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
 		if(!hasSessionValue("sessionID")) {
 			setSessionValue('sessionID', '');
-			if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID")) {
-				setSessionValue('sessionID', cookie["#getApplicationValue('applicationKey')#SessionID"]);
-				sessionFoundWithCookie = true;
-			}
 		}
 		
 		// Load Session
-		var sessionEntity = this.getSession(getSessionValue('sessionID'), true);
+		if( len(getSessionValue('sessionID')) ) {
+			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
+		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID")) {
+			setSessionValue('sessionID', cookie["#getApplicationValue('applicationKey')#SessionID"]);
+			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
+			if(sessionEntity.getNewFlag()) {
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value='', expires="now");
+			} else {
+				sessionFoundWithCookie = true;
+			}
+		} else {
+			var sessionEntity = this.newSession();
+		}
+		
+		// Populate the hibachi scope with the session
 		getHibachiScope().setSession( sessionEntity );
+		
+		// update the sessionScope with the ID for the next request
+		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
 		// Update the last request datetime, and IP Address
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( CGI.REMOTE_ADDR );
 		
-		if(getHibachiScope().getPersistSessionFlag()) {
-			// Save the session
-			getHibachiDAO().save( getHibachiScope().getSession() );
-			
-			// Save session ID in the session Scope & cookie scope for next request
-			setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
-			
-			if(!structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID") || cookie[ "#getApplicationValue('applicationKey')#SessionID" ] != getHibachiScope().getSession().getSessionID()) {
-				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value=getHibachiScope().getSession().getSessionID(), expires="never");
-			}
+		if(!isNull(getHibachiScope().getSession().getRBLocale())) {
+			getHibachiScope().setRBLocale( getHibachiScope().getSession().getRBLocale() );
 		}
 		
 		// If the session has an account but no authentication, then remove the account
@@ -47,11 +53,28 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 	}
 	
+	public void function persistSession() {
+		// Save the session
+		getHibachiDAO().save( getHibachiScope().getSession() );
+		
+		// Save session ID in the session Scope & cookie scope for next request
+		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
+		
+		if(!structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID") || cookie[ "#getApplicationValue('applicationKey')#SessionID" ] != getHibachiScope().getSession().getSessionID()) {
+			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value=getHibachiScope().getSession().getSessionID(), expires="never");
+		}
+	}
+	
 	public string function loginAccount(required any account, required any accountAuthentication) {
 		var currentSession = getHibachiScope().getSession();
 		
 		currentSession.setAccount( arguments.account );
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
+		
+		getHibachiAuditService().logAccountActivity("login");
+		
+		// Make sure that we persist the session
+		persistSession();
 		
 		// Make sure that this login is persisted
 		getHibachiDAO().flushORMSession();
@@ -59,8 +82,15 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiEventService().announceEvent("onSessionAccountLogin");
 	}
 	
+	public void function loginAccountInvalid(struct data) {
+		arguments.auditType="loginInvalid";
+		getHibachiAuditService().logAccountActivity(argumentCollection=arguments);
+	}
+	
 	public void function logoutAccount() {
 		var currentSession = getHibachiScope().getSession();
+		
+		getHibachiAuditService().logAccountActivity("logout");
 		
 		currentSession.removeAccount();
 		currentSession.removeAccountAuthentication();

@@ -64,6 +64,23 @@ component  extends="HibachiService" accessors="true" {
 		return attributeCodeList;
 	}
 	
+	public any function getAttributeNameByAttributeCode(string attributeCode) {
+		var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#';
+		if(getHibachiCacheService().hasCachedValue(key)) {
+			return getHibachiCacheService().getCachedValue(key);
+		}
+		
+		var attribute = getHibachiCacheService().getOrCacheFunctionValue('attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#', this, 'getAttributeByAttributeCode', arguments);
+		var atributeName = "";
+		if (!isNull(attribute)) {
+			atributeName = attribute.getAttributeName();
+		}
+		
+		getHibachiCacheService().setCachedValue(key, atributeName);
+		
+		return atributeName;
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================

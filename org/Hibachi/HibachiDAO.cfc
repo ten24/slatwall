@@ -1,6 +1,7 @@
 <cfcomponent output="false" accessors="true" extends="HibachiObject">
 	
 	<cfproperty name="applicationKey" type="string" />
+	<cfproperty name="hibachiAuditService" type="any" />
 	
 	<cfscript>
 		public any function get( required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
@@ -16,7 +17,7 @@
 			}
 			
 			if ( !isNull( entity ) ) {
-				entity.updateCalculatedProperties();
+				//entity.updateCalculatedProperties();
 				return entity;
 			}
 	
@@ -72,6 +73,10 @@
 					delete(object);
 				}
 			} else {
+				// Log audit only if admin user
+				if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+					getHibachiAuditService().logEntityDelete(target);
+				}
 				entityDelete(target);	
 			}
 		}

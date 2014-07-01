@@ -69,7 +69,7 @@ Notes:
 				</cfif>
 			</cf_HibachiPropertyList>
 			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" edit="#rc.edit#" />
+				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" />
 				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amountReceived" />
 				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amountCredited" />
 			</cf_HibachiPropertyList>

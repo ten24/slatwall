@@ -48,9 +48,25 @@ Notes:
 */
 component extends="CFSelenium.CFSeleniumTestCase" {
 
+	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
-	    variables.browserURL = "http://cf9.slatwall/";
+		
+		// Setup Components
+		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
+		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.TestUtility").init( variables.slatwallFW1Application );
+		
+		// Read Config
+		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
+		
+		// Setup variables for Selenium
+	    variables.browserURL = variables.configuration.ui.browserUrl; 
+	    variables.browserCommand = variables.configuration.ui.browserCommand;
+	    
 	    super.beforeTests();
+	}
+	
+	private function assertPageIsLoaded( required any pageObject , string message=""){
+		assertEquals(arguments.pageObject.getTitle(), variables.selenium.getTitle(), arguments.message);
 	}
 	
 }

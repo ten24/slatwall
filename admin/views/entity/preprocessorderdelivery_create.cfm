@@ -76,7 +76,17 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
 				</cfif>
 				
-				<cfif rc.processObject.getCapturableAmount() gt 0>
+				<!---Loop through order payments to see if we paid with a credit card--->
+				<cfset orderPayments = #rc.processObject.getOrder().getOrderPayments()# />
+				<cfset foundCredit = false />
+				<cfloop array='#orderPayments#' index="payment">
+					<cfif payment.getPaymentMethodType() eq 'creditCard'>
+						<cfset foundCredit = true />
+						<cfbreak>
+					</cfif>
+				</cfloop>
+				
+				<cfif rc.processObject.getCapturableAmount() gt 0 AND foundCredit>
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
 					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
 				</cfif>
@@ -93,6 +103,7 @@ Notes:
 					</tr>
 					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.processObject.getOrderDeliveryItems()#" index="recordData">
+						<cfif IsNumeric(recordData.quantity) AND recordData.quantity gt 0 >
 						<tr>
 							
 							<cfset orderItemIndex++ />
@@ -114,6 +125,7 @@ Notes:
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].orderItem.orderItemID" value="#recordData.orderItem.orderItemID#" />
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].quantity" value="#thisQuantity#" />
 						</tr>
+						</cfif>
 					</cfloop>
 				</table>
 			</cf_HibachiPropertyList>

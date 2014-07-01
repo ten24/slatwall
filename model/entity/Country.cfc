@@ -82,6 +82,12 @@ component displayname="Country" entityname="SlatwallCountry" table="SwCountry" p
 	// Non-Persistent Properties
 	property name="states" persistent="false" type="array" hb_rbKey="entity.state_plural";
 	property name="stateCodeOptions" persistent="false" type="array";
+	
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 
 	// ============ START: Non-Persistent Property Methods =================

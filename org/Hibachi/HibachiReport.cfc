@@ -28,8 +28,47 @@
 	<cfproperty name="chartData" />
 	<cfproperty name="tableDataQuery" />
 	
+	<!--- Paging --->
+	<cfproperty name="currentPage"  />
+	<cfproperty name="pageShow" />
+	<cfproperty name="dataTableStartRow" />
+	<cfproperty name="dataTableEndRow" />
+	
 	<!--- Rendered Data Properties --->
 	<cfproperty name="reportDataTable" />
+	
+	<!--- Currency Code --->
+	<cfproperty name="currencyCode" />
+	
+	<cffunction name="getCurrentPage" access="public" output="false">
+		 <cfif not structKeyExists(variables, "currentPage")>
+		 	<cfset variables.currentPage = 1 />
+		 </cfif>
+		 
+		 <cfreturn variables.currentPage />
+	</cffunction>
+		
+	<cffunction name="getPageShow" access="public" output="false">
+		 <cfif not structKeyExists(variables, "pageShow")>
+		 	<cfset variables.pageShow = 25 />
+		 </cfif>
+		 
+		 <cfreturn variables.pageShow />
+	</cffunction>
+		
+	<cffunction name="getDataTableStartRow" access="public" output="false">
+		 <cfreturn ((getCurrentPage() * getPageShow()) - getPageShow()) + 1 />
+	</cffunction>	
+	
+	<cffunction name="getDataTableEndRow" access="public" output="false">
+		 <cfreturn getDataTableStartRow() + getPageShow() - 1 />
+	</cffunction>
+	
+	
+	<!--- Currency Code Method --->
+	<cffunction name="getCurrencyCode" access="public" output="false">
+		<cfreturn 'USD' />
+	</cffunction>
 	
 	<!--- Format Type Method --->
 	<cffunction name="getAliasFormatType" access="public" output="false">
@@ -72,7 +111,7 @@
 					#getReportDateTimeDefinition(getReportDateTime())['dataColumn']# as reportDateTime,
 					YEAR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeYear,
 					MONTH( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeMonth,
-					WEEK( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeWeek,
+					WEEK( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) + 1 as reportDateTimeWeek,
 					DAY( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeDay,
 					HOUR( #getReportDateTimeDefinition(getReportDateTime())['dataColumn']# ) as reportDateTimeHour
 				<cfelseif getApplicationValue('databaseType') eq "Oracle10g">
@@ -204,6 +243,8 @@
 				<cfreturn metricDefinition />
 			</cfif>
 		</cfloop>
+		
+		<cfreturn getMetricDefinitions()[1] />
 	</cffunction>
 	
 	<cffunction name="getDimensionDefinition" access="public" output="false">
@@ -216,6 +257,8 @@
 				<cfreturn dimensionDefinition />
 			</cfif>
 		</cfloop>
+		
+		<cfreturn getDimensionDefinitions()[1] />
 	</cffunction>
 	
 	<cffunction name="getReportDateTimeDefinition" access="public" output="false">
@@ -228,6 +271,8 @@
 				<cfreturn reportDateTimeDefinition />
 			</cfif>
 		</cfloop>
+		
+		<cfreturn getReportDateTimeDefinitions()[1] />
 	</cffunction>
 	
 	<!--- ==================  END: DEFINITION METHODS ======================== --->
@@ -310,6 +355,7 @@
 			
 			<cfset var m = 1 />
 			<cfset var data = getData() />
+			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, "#getReportEndDateTime()#") />
 			
 			<cfquery name="variables.chartDataQuery" dbtype="query">
 				SELECT
@@ -342,7 +388,7 @@
 				WHERE
 					reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportStartDateTime()#" />
 				  AND
-				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportEndDateTime()#" />
+				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportEndDateTimePlusOne#" /> 
 				GROUP BY
 					<cfif listFindNoCase('year,month,week,day,hour', getReportDateTimeGroupBy())>
 						data.reportDateTimeYear
@@ -386,6 +432,7 @@
 			
 			<cfset var m = 1 />
 			<cfset var data = getData() />
+			<cfset var reportCompareEndDateTimePlusOne = dateAdd("d", 1, "#getReportCompareEndDateTime()#") />
 			
 			<cfquery name="variables.chartCompareDataQuery" dbtype="query">
 				SELECT
@@ -418,7 +465,7 @@
 				WHERE
 					reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportCompareStartDateTime()#" />
 				  AND
-				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportCompareEndDateTime()#" />
+				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportCompareEndDateTimePlusOne#" />
 				GROUP BY
 					<cfif listFindNoCase('year,month,week,day,hour', getReportDateTimeGroupBy())>
 						data.reportDateTimeYear
@@ -475,6 +522,7 @@
 			
 			<cfset var chartDataStruct = structNew() />
 			<cfset var chartDataQuery = getChartDataQuery() />
+
 			<cfif getReportCompareFlag()>
 				<cfset var chartCompareDataQuery = getChartCompareDataQuery() />
 			</cfif>
@@ -482,10 +530,6 @@
 			<cfset var thisDate = "" />
 			<cfset var m = 1 />
 			<cfset var loopdatepart = "d" />
-			<cfset var weekAdjustment = 0 />
-			<cfif getApplicationValue('databaseType') eq "MySQL">
-				<cfset var weekAdjustment = 1 />
-			</cfif>
 			
 			<cfif getReportDateTimeGroupBy() eq 'year'>
 				<cfset loopdatepart = "yyyy" />
@@ -496,6 +540,16 @@
 			<cfelseif getReportDateTimeGroupBy() eq 'hour'>
 				<cfset loopdatepart = "h" />	
 			</cfif>
+			
+			<cfset var chartReportEndDateTime = getReportEndDateTime() />
+			<cfset var chartReportCompareEndDateTime = getReportCompareEndDateTime() />
+			
+			<!---
+			<cfif getReportDateTimeGroupBy() eq 'week'>
+				<cfset chartReportEndDateTime = dateAdd('d', 7 - dayOfWeek( getReportEndDateTime() ), getReportEndDateTime()) />
+				<cfset chartReportCompareEndDateTime = dateAdd('d', 7 - dayOfWeek( getReportCompareEndDateTime() ), getReportCompareEndDateTime()) />
+			</cfif>
+			--->
 			
 			<cfset variables.chartData = {} />
 			<cfset variables.chartData["chart"] = {} />
@@ -525,8 +579,8 @@
 			<cfset variables.chartData["series"] = [] />
 			
 			<cfset var dataSeriesID = 0 />
-			<cfset var chartRow = 0 />
-						
+			<cfset var chartRow = 0 />		
+			
 			<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
 				
 				<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
@@ -544,14 +598,10 @@
 					<cfset variables.chartData["series"][dataSeriesID]["type"] = "area" />
 				</cfif>
 				
-				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#getReportEndDateTime()#" datepart="#loopdatepart#">
+				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
 					<cfset var thisData = [] />
 					<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
-					<cfif year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow] and 
-							(!listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy()) or month(thisDate) eq chartDataQuery['reportDateTimeMonth'][chartRow]) and
-							(!listFindNoCase('week,day,hour', getReportDateTimeGroupBy()) or (week(thisDate) - weekAdjustment) eq chartDataQuery['reportDateTimeWeek'][chartRow]) and
-							(!listFindNoCase('day,hour', getReportDateTimeGroupBy()) or day(thisDate) eq chartDataQuery['reportDateTimeDay'][chartRow]) and
-							(!listFindNoCase('hour', getReportDateTimeGroupBy()) or hour(thisDate) eq chartDataQuery['reportDateTimeHour'][chartRow])>
+ 					<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
 						<cfset arrayAppend(thisData, chartDataQuery[ metricDefinition.alias ][ chartRow ]) />
 						<cfset chartRow ++ />
 					<cfelse>
@@ -572,14 +622,10 @@
 					<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 1 />
 					<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['compareColor'] />
 					
-					<cf_HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#getReportCompareEndDateTime()#" datepart="#loopdatepart#">
+					<cf_HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
 						<cfset var thisData = [] />
 						<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
-						<cfif year(thisDate) eq chartCompareDataQuery['reportDateTimeYear'][chartRow] and 
-								(!listFindNoCase('month,week,day,hour', getReportDateTimeGroupBy()) or month(thisDate) eq chartCompareDataQuery['reportDateTimeMonth'][chartRow]) and
-								(!listFindNoCase('week,day,hour', getReportDateTimeGroupBy()) or (week(thisDate) - 1) eq chartCompareDataQuery['reportDateTimeWeek'][chartRow]) and
-								(!listFindNoCase('day,hour', getReportDateTimeGroupBy()) or day(thisDate) eq chartCompareDataQuery['reportDateTimeDay'][chartRow]) and
-								(!listFindNoCase('hour', getReportDateTimeGroupBy()) or hour(thisDate) eq chartCompareDataQuery['reportDateTimeHour'][chartRow])>
+						<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
 							<cfset arrayAppend(thisData, chartCompareDataQuery[ metricDefinition.alias ][ chartRow ]) />
 							<cfset chartRow ++ />
 						<cfelse>
@@ -589,16 +635,56 @@
 					</cf_HibachiDateLoop>
 				</cfif>
 			</cfloop>
+			
+		</cfif>
 
+		<cfreturn variables.chartData />
+	</cffunction>
+	
+	<cffunction name="addChartSeriesDataCheck" access="private" output="false">
+		<cfargument name="thisDate" />
+		<cfargument name="reportDateTimeGroupBy" />
+		<cfargument name="chartDataQuery" />
+		<cfargument name="chartRow" />
+		
+		<cfif 	(
+					year(thisDate) eq chartDataQuery['reportDateTimeYear'][chartRow]
+				) 
+				AND 
+				( 
+					!listFindNoCase('month,week,day,hour', reportDateTimeGroupBy)
+				  OR
+					( listFindNoCase('month,week,day,hour', reportDateTimeGroupBy) AND month(thisDate) eq chartDataQuery['reportDateTimeMonth'][chartRow] ) 
+				)
+				AND
+				(
+					!listFindNoCase('week,day,hour', reportDateTimeGroupBy)
+				  OR 
+				  	( listFindNoCase('week,day,hour', reportDateTimeGroupBy) AND week(thisDate) eq chartDataQuery['reportDateTimeWeek'][chartRow])
+				)
+				AND
+				(
+					!listFindNoCase('day,hour', reportDateTimeGroupBy)
+				  OR
+				  	( listFindNoCase('day,hour', reportDateTimeGroupBy) AND day(thisDate) eq chartDataQuery['reportDateTimeDay'][chartRow])
+				)
+				AND
+				(
+					!listFindNoCase('hour', reportDateTimeGroupBy)
+				  OR
+				  	( listFindNoCase('hour', reportDateTimeGroupBy) AND hour(thisDate) eq chartDataQuery['reportDateTimeHour'][chartRow])
+			)>
+			
+			<cfreturn true />
 		</cfif>
 		
-		<cfreturn variables.chartData />
+		<cfreturn false />
 	</cffunction>
 	
 	<!--- ====================  END: CHART FUNCTIONS ========================= --->
 		
 	<!--- ==================== START: TABLE FUNCTIONS ======================== --->
-		
+	
 	<cffunction name="getTotalsQuery" access="public" output="false">
 		<cfif not structKeyExists(variables, "totalsQuery")>
 			
@@ -857,14 +943,24 @@
 	<!--- =============== START: EXPORT SPREADSHEET FUNCTIONS ================ --->
 	
 	<cffunction name="getSpreadsheetHeaderRow">
+		<cfargument name="includeQuotes" default="false" />
+		
 		<cfset var headers = "" />
 		<cfset var i = "" />
 		
 		<cfloop list="#getDimensions()#" index="i">
-			<cfset headers = listAppend(headers, getDimensionTitle(i)) />
+			<cfif arguments.includeQuotes>
+				<cfset headers = listAppend(headers, '"#getDimensionTitle(i)#"') />
+			<cfelse>
+				<cfset headers = listAppend(headers, getDimensionTitle(i)) />
+			</cfif>
 		</cfloop>
 		<cfloop list="#getMetrics()#" index="i">
-			<cfset headers = listAppend(headers, getMetricTitle(i)) />
+			<cfif arguments.includeQuotes>
+				<cfset headers = listAppend(headers, '"#getMetricTitle(i)#"') />
+			<cfelse>
+				<cfset headers = listAppend(headers, getMetricTitle(i)) />
+			</cfif>
 			<cfif getReportCompareFlag()>
 				<cfset headers = listAppend(headers, ' ') />
 			</cfif>
@@ -874,6 +970,8 @@
 	</cffunction>
 	
 	<cffunction name="getSpreadsheetHeaderCompareRow">
+		<cfargument name="includeQuotes" default="false" />
+		
 		<cfset var headerCompare = "" />
 		<cfset var i = "" />
 		
@@ -881,14 +979,21 @@
 			<cfset headerCompare = listAppend(headerCompare, ' ') />
 		</cfloop>
 		<cfloop list="#getMetrics()#" index="i">
-			<cfset headerCompare = listAppend(headerCompare, "#dateFormat(getReportStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportEndDateTime(), 'yyyy/mm/dd')#") />
-			<cfset headerCompare = listAppend(headerCompare, "#dateFormat(getReportCompareStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportCompareEndDateTime(), 'yyyy/mm/dd')#") />
+			<cfif arguments.includeQuotes>
+				<cfset headerCompare = listAppend(headerCompare, '"#dateFormat(getReportStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportEndDateTime(), 'yyyy/mm/dd')#"') />
+				<cfset headerCompare = listAppend(headerCompare, '"#dateFormat(getReportCompareStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportCompareEndDateTime(), 'yyyy/mm/dd')#"') />
+			<cfelse>
+				<cfset headerCompare = listAppend(headerCompare, '#dateFormat(getReportStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportEndDateTime(), 'yyyy/mm/dd')#') />
+				<cfset headerCompare = listAppend(headerCompare, '#dateFormat(getReportCompareStartDateTime(), 'yyyy/mm/dd')# - #dateFormat(getReportCompareEndDateTime(), 'yyyy/mm/dd')#') />
+			</cfif>
 		</cfloop>
 		
 		<cfreturn headerCompare />
 	</cffunction>
 
 	<cffunction name="getSpreadsheetTotals">
+		<cfargument name="includeQuotes" default="false" />
+		
 		<cfset var totals = "" />
 		<cfset var i = "" />
 		
@@ -901,9 +1006,17 @@
 			<cfset totals = listAppend(totals, ' ') />
 		</cfloop>
 		<cfloop list="#getMetrics()#" index="i">
-			<cfset totals = listAppend(totals, totalsQuery[ i ][1] ) />
+			<cfif arguments.includeQuotes>
+				<cfset totals = listAppend(totals, '"#totalsQuery[ i ][1]#"' ) />
+			<cfelse>
+				<cfset totals = listAppend(totals, totalsQuery[ i ][1] ) />
+			</cfif>
 			<cfif getReportCompareFlag()>
-				<cfset totals = listAppend(totals, totalsCompareQuery[ i ][1] ) />
+				<cfif arguments.includeQuotes>
+					<cfset totals = listAppend(totals, '"#totalsCompareQuery[ i ][1]#"' ) />
+				<cfelse>
+					<cfset totals = listAppend(totals, totalsCompareQuery[ i ][1] ) />
+				</cfif>
 			</cfif>
 		</cfloop>
 		
@@ -933,7 +1046,8 @@
 		<cfreturn data />
 	</cffunction>
 	
-	<cffunction name="exportSpreadsheet" access="public" output="false">
+	<cffunction name="getExportFilename">
+		<cfargument name="extension" default="xls" />
 		
 		<!--- Create the filename variables --->
 		<cfset var filename = "" />
@@ -948,11 +1062,17 @@
 		<cfset filename &= replace(getReportStartDateTime(), "-", "", "all") />
 		<cfset filename &= "-" />
 		<cfset filename &= replace(getReportEndDateTime(), "-", "", "all") />
-		<cfset filename &= ".xls" />
+		<cfset filename &= ".#arguments.extension#" />
 		<cfif structKeyExists(server, "railo")>
 			<cfset filename = right(filename, 31) />
 		</cfif>
+		<cfreturn filename />
+	</cffunction>
+	
+	<cffunction name="exportSpreadsheet" access="public" output="false">
 		
+		<!--- Create the filename variables --->
+		<cfset var filename = getExportFilename('xls') />
 		<cfset var filepath = "#getHibachiTempDirectory()#" />
 		<cfset var fullFilename = filepath & filename />
 		
@@ -1016,6 +1136,35 @@
 				<cfrethrow />
 			</cfcatch>
 		</cftry>
+	</cffunction>
+	
+	<cffunction name="exportCSV" access="public" output="false">
+		<!--- Create the filename variables --->
+		<cfset var filename = getExportFilename('csv') />
+		<cfset var filepath = "#getHibachiTempDirectory()#" />
+		<cfset var fullFilename = filepath & filename />
+		
+		<!--- Fields --->
+		<cfset var fields = "" />
+		<cfset var i = "" />
+		
+		<cfloop list="#getDimensions()#" index="i">
+			<cfset fields = listAppend(fields, i) />
+		</cfloop>
+		<cfloop list="#getMetrics()#" index="i">
+			<cfset fields = listAppend(fields, i) />
+			<cfif getReportCompareFlag()>
+				<cfset fields = listAppend(fields, '#i#Compare') />
+			</cfif>
+		</cfloop>
+		
+		<cffile action="write" file="#fullFilename#" output="#getSpreadsheetHeaderRow( includeQuotes=true )#" />
+		<cfif getReportCompareFlag()>
+			<cffile action="append" file="#fullFilename#" output="#getSpreadsheetHeaderCompareRow( includeQuotes=true )#" />
+		</cfif>
+		<cffile action="append" file="#fullFilename#" output="#getService("hibachiUtilityService").queryToCSV( getSpreadsheetData(), fields, false )##getSpreadsheetTotals( includeQuotes=true )#" />
+		
+		<cfset getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true ) /> 
 	</cffunction>
 	
 	<!--- ===============  END: EXPORT SPREADSHEET FUNCTIONS  ================ --->

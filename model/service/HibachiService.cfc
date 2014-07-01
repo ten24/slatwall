@@ -79,6 +79,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			// Remove all of the entity comments and comments related to this entity
 			getService("commentService").removeAllEntityRelatedComments( entity=arguments.entity );
 			
+			// Remove all of the entity files
+			getService("fileService").removeAllEntityRelatedFiles( entity=arguments.entity );
 		}
 
 		return deleteOK;

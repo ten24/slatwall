@@ -12,8 +12,7 @@
 
 <cfcomponent displayname="Application" output="false" hint="Pre-page processing for the application">
 
-	<cfinclude template="../../../../../../config/configApplication.cfm" />
-	<cftry><cfinclude template="../../../../../../custom/config/configApplication.cfm" /><cfcatch></cfcatch></cftry>
+	<cftry><cfinclude template="configApplication.cfm" /><cfcatch></cfcatch></cftry>
 	
 	<cfscript>
 		this.sessionManagement = true;

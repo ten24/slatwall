@@ -52,7 +52,7 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.orderFulfillment#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.orderFulfillment#" edit="#rc.edit#" backaction="admin:entity.detailorder" backquerystring="orderID=#rc.orderFulfillment.getOrder().getOrderID()#">
-			<cf_HibachiProcessCaller entity="#rc.orderFulfillment#" action="admin:entity.preprocessorderfulfillment" processContext="fulfillItems" type="list" modal="true" />
+			<cf_HibachiProcessCaller entity="#rc.orderFulfillment#" action="admin:entity.preprocessorderfulfillment" processContext="fulfillItems" type="list" />
 			<cf_HibachiProcessCaller entity="#rc.orderFulfillment#" action="admin:entity.preprocessorderfulfillment" processContext="manualFulfillmentCharge" type="list" modal="true" />
 		</cf_HibachiEntityActionBar>
 		
@@ -103,6 +103,10 @@ Notes:
 		
 		<cf_HibachiTabGroup object="#rc.orderFulfillment#">
 			<cf_HibachiTab view="admin:entity/orderfulfillmenttabs/orderfulfillmentitems">
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.orderFulfillment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderFulfillment#" attributeSet="#attributeSet#" />
+			</cfloop>
 		</cf_HibachiTabGroup>
 		
 	</cf_HibachiEntityDetailForm>

@@ -73,11 +73,11 @@ component entityname="SlatwallVendor" table="SwVendor" persistent="true" accesso
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="vendorSkusSmartList" persistent="false";
@@ -197,8 +197,8 @@ component entityname="SlatwallVendor" table="SwVendor" persistent="true" accesso
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
 		} else if (arrayLen(getVendorEmailAddresses())) {
-			setPrimaryEmailAddress(getVendorEmailAddresses()[i]);
-			return getVendorEmailAddresses()[i];
+			setPrimaryEmailAddress(getVendorEmailAddresses()[1]);
+			return getVendorEmailAddresses()[1];
 		} else {
 			return getService("vendorService").newVendorEmailAddress();
 		}
@@ -208,8 +208,8 @@ component entityname="SlatwallVendor" table="SwVendor" persistent="true" accesso
 		if(!isNull(variables.primaryPhoneNumber)) {
 			return variables.primaryPhoneNumber;
 		} else if (arrayLen(getVendorPhoneNumbers())) {
-			setPrimaryPhoneNumber(getVendorPhoneNumbers()[i]);
-			return getVendorPhoneNumbers()[i];
+			setPrimaryPhoneNumber(getVendorPhoneNumbers()[1]);
+			return getVendorPhoneNumbers()[1];
 		} else {
 			return getService("vendorService").newVendorPhoneNumber();
 		}
@@ -219,8 +219,8 @@ component entityname="SlatwallVendor" table="SwVendor" persistent="true" accesso
 		if(!isNull(variables.primaryAddress)) {
 			return variables.primaryAddress;
 		} else if (arrayLen(getVendorAddresses())) {
-			setPrimaryAddress(getVendorAddresses()[i]);
-			return getVendorAddresses()[i];
+			setPrimaryAddress(getVendorAddresses()[1]);
+			return getVendorAddresses()[1];
 		} else {
 			return getService("vendorService").newVendorAddress();
 		}

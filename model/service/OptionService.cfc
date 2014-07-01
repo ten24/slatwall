@@ -94,7 +94,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			getHibachiCacheService().resetCachedKey("skuDAO_getNextOptionGroupSortOrder");
 		}
 		
-		return arguments.productType;
+		return arguments.optionGroup;
 	}
 	
 	

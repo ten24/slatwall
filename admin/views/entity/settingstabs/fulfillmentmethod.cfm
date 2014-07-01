@@ -49,6 +49,11 @@ Notes:
 <cfoutput>
 	<cf_SlatwallSettingTable showInheritance="false">
 		<cf_SlatwallSetting settingName="fulfillmentMethodAutoLocation" />
+		<cf_SlatwallSetting settingName="fulfillmentMethodAutoMinReceivedPercentage" />
+		<cf_SlatwallSetting settingName="fulfillmentMethodEmailFrom" />
+		<cf_SlatwallSetting settingName="fulfillmentMethodEmailCC" />
+		<cf_SlatwallSetting settingName="fulfillmentMethodEmailSubjectString" />
+		<cf_SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" />
 	</cf_SlatwallSettingTable>
 </cfoutput>
 

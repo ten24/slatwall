@@ -55,7 +55,9 @@ Notes:
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
 			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
 				var currency = getService("currencyService").getCurrency( arguments.formatDetails.currencyCode );
-				return currency.getCurrencySymbol() & LSNumberFormat(arguments.value, ',.__');
+				if(!isNull(currency)){
+					return currency.getCurrencySymbol() & LSNumberFormat(arguments.value, ',.__');
+				}
 			}
 			
 			// Otherwsie use the global currencyLocal
@@ -98,7 +100,15 @@ Notes:
 		}
 		
 		private string function getEncryptionKeyLocation() {
-			return getSettingService().getSettingValue("globalEncryptionKeyLocation") NEQ "" ? getSettingService().getSettingValue("globalEncryptionKeyLocation") : expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+			var keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
+			if(len(keyLocation)) {
+				if(right(keyLocation, 1) eq '/' or right(keyLocation, 1) eq '\') {
+					return keyLocation;	
+				}
+				
+				return keyLocation & '/';
+			}
+			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
 		}
 		
 	</cfscript>

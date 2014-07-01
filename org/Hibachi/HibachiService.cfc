@@ -29,7 +29,15 @@
 			
 			if(structKeyExists(arguments.data, "keyword") || structKeyExists(arguments.data, "keywords")) {
 				var example = this.new(arguments.entityName);
-				smartList.addKeywordProperty(propertyIdentifier=example.getSimpleRepresentationPropertyName(), weight=1);
+				var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
+				var primaryIDPropertyName = example.getPrimaryIDPropertyName();
+				var pmd = example.getPropertyMetaData( primaryIDPropertyName );
+				if(!structKeyExists(pmd, "ormtype") || pmd.ormtype != 'integer') {
+					smartList.addKeywordProperty(propertyIdentifier=primaryIDPropertyName, weight=1);	
+				}
+				if(simpleRepresentationPropertyName != primaryIDPropertyName) {
+					smartList.addKeywordProperty(propertyIdentifier=simpleRepresentationPropertyName, weight=1);	
+				}
 			}
 			
 			return smartList;
@@ -48,6 +56,9 @@
 		}
 		
 		public boolean function delete(required any entity){
+			
+			// Add the entity by it's name to the arguments for calling events
+	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			
 			// Announce Before Event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
@@ -136,6 +147,9 @@
 	    	if(!isObject(arguments.entity) || !arguments.entity.isPersistent()) {
 	    		throw("The entity being passed to this service is not a persistent entity. READ THIS!!!! -> Make sure that you aren't calling the oMM method with named arguments. Also, make sure to check the spelling of your 'fieldname' attributes.");
 	    	}
+	    	
+	    	// Add the entity by it's name to the arguments for calling events
+	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 	    	
 	    	// Announce Before Event
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
@@ -624,7 +638,7 @@
 				return "";
 			}
 			
-			throw("The entity name that you have requested: #arguments.entityname# is not in the ORM Library of entity names that is setup in coldsrping.  Please add #arguments.entityname# to the list of entity mappings in coldspring.");
+			throw("The entity name that you have requested: '#arguments.entityname#' is not configured in ORM.");
 		}
 		
 		public string function getProperlyCasedFullEntityName( required string entityName ) {
@@ -642,13 +656,18 @@
 		public any function getEntitiesMetaData() {
 			if(!structCount(variables.entitiesMetaData)) {
 				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+				var allMD = {};
 				for(var entityName in entityNamesArr) {
-					var entityMetaData = entityNew(entityName).getThisMetaData();
-					var entityShortName = listLast(entityMetaData.fullname, '.');
-					if(structKeyExists(entityMetaData, "persistent") && entityMetaData.persistent) {
-						 variables.entitiesMetaData[ entityShortName ] = entityMetaData;
+					var entity = entityNew(entityName);
+					if(structKeyExists(entity, "getThisMetaData")) {
+						var entityMetaData = entityNew(entityName).getThisMetaData();
+						if(isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname")) {
+							var entityShortName = listLast(entityMetaData.fullname, '.');
+							allMD[ entityShortName ] = entityMetaData;
+						}
 					}
 				}
+				variables.entitiesMetaData = allMD;
 			}
 			
 			return variables.entitiesMetaData;

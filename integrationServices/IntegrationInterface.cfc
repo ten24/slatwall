@@ -67,6 +67,7 @@ Notes:
 			
 			shipping		|		When set this integration will be able to be used by shipping methods / rates
 			payment			|		When set this integration will be able to be used by payment methods
+			tax				|		When set this integration will be able to be used by tax methods
 			fw1				|		When set then this integration can have custom views, ect.
 			custom			|		This is defined when all you want to do is hook into events, but no views or anything else.
 		--->

@@ -1,11 +1,17 @@
 component output="false" accessors="true" persistent="false" extends="HibachiTransient" {
 
 	property name="newFlag" type="boolean" persistent="false";
+	property name="rollbackProcessedFlag" type="boolean" persistent="false";
 	property name="printTemplates" type="struct" persistent="false";
 	property name="emailTemplates" type="struct" persistent="false";
 	property name="simpleRepresentation" type="string" persistent="false";
 	property name="persistableErrors" type="array" persistent="false";
 	property name="processObjects" type="struct" persistent="false";
+	property name="auditSmartList" type="any" persistent="false";
+	
+	// Audit Properties
+	property name="createdByAccount" persistent="false";
+	property name="modifiedByAccount" persistent="false";
 	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
@@ -73,18 +79,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint returns the propety who's value is a simple representation of this entity.  This can be overridden when necessary
 	public string function getSimpleRepresentationPropertyName() {
 		
-		// Get the meta data for all of the porperties
-		var properties = getProperties();
-		
 		// Look for a property that's last 4 is "name"
-		for(var i=1; i<=arrayLen(properties); i++) {
-			if(properties[i].name == getClassName() & "name") {
-				return properties[i].name;
+		for(var thisProperty in getProperties()) {
+			if((!structKeyExists(thisProperty, "persistent") || thisProperty.persistent) && thisProperty.name == "#getClassName()#name") {
+				return thisProperty.name;
 			}
 		}
 		
 		// If no properties could be identified as a simpleRepresentaition 
-		throw("There is no Simple Representation Property Name for #getClassName()#.  You can either override getSimpleRepresentation() or override getSimpleRepresentationPropertyName() in the entity, but be sure to do it at the bottom iside of commented sectin for overrides.");
+		return getPrimaryIDPropertyName();
 	}
 	
 	// @hint checks a one-to-many property for the first entity with errors, if one isn't found then it returns a new one
@@ -238,6 +241,33 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		return true;
+	}
+	
+	public boolean function getAuditRollbackValidFlag() {
+		return !validateAuditRollback().hasErrors();
+	}
+	
+	public any function validateAuditRollback(boolean setErrors=false) {
+		return getService("hibachiValidationService").validate(object=this, context="auditRollback", setErrors=arguments.setErrors);
+	}
+	
+	// @hint public method to determine if this entity is audited
+	public any function getAuditableFlag() {
+		var metaData = getThisMetaData();
+		if(isPersistent() && (setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
+			return true;
+		}
+		return false;
+	}
+	
+	// @hint Returns a smart list of audits related to this entity
+	public any function getAuditSmartList() {
+		if(!structKeyExists(variables, "auditSmartList")) {
+			variables.auditSmartList = getService("hibachiAuditService").getAuditSmartListForEntity(entity=this);
+			variables.auditSmartList.addOrder("auditDateTime|DESC");
+		}
+		
+		return variables.auditSmartList;
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity
@@ -501,6 +531,43 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	public string function getAuditablePropertyExclusionList() {
+		return "createdByAccount,createdByAccountID,createdDateTime,modifiedByAccount,modifiedByAccountID,modifiedDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID";
+	}
+	
+	public array function getAuditableProperties() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
+			var properties = getProperties();
+			var auditableProperties = [];
+			for (var property in properties) {
+				var propertyExclusionList = getAuditablePropertyExclusionList();
+				
+				// The property must be persistent, auditable, not in property exclusion list, not a calculated property, must be a column or one-to-many, and field not inverse
+				if ((!structKeyExists(property, "persistent") || (structKeyExists(property, "persistent") && property.persistent)) && (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) && !listFindNoCase(propertyExclusionList, property.name) && (left(property.name, 10) != "calculated") && (!structKeyExists(property, "fieldType") || property.fieldType == "column" || property.fieldType == "many-to-one") && (!structKeyExists(property, "inverse") || (structKeyExists(property, "inverse") && !property.inverse))) {
+					arrayAppend(auditableProperties, property);
+				}
+			}
+
+			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
+		}
+
+		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+	}
+	
+	public struct function getAuditablePropertiesStruct() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#") ) {
+			var auditablePropertiesStruct = {};
+			var auditableProperties = getAuditableProperties();
+
+			for(var i=1; i<=arrayLen(auditableProperties); i++) {
+				auditablePropertiesStruct[ auditableProperties[i].name ] = auditableProperties[ i ];
+			}
+			setApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#", auditablePropertiesStruct);
+		}
+
+		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
+	}
+	
 	
 	
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
@@ -575,12 +642,37 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return false;
 	}
 	
+	public boolean function getRollbackProcessedFlag() {
+		if(isNull(variables.rollbackProcessedFlag) || !isBoolean(variables.rollbackProcessedFlag)) {
+			variables.rollbackProcessedFlag = false;
+		}
+		return variables.rollbackProcessedFlag;
+	}
+	
 	public array function getPrintTemplates() {
 		return [];
 	}
 	
 	public array function getEmailTemplates() {
 		return [];
+	}
+	
+	public any function getCreatedByAccount() {
+		if(structKeyExists(this, "getCreatedByAccountID")) {
+			var accountID = this.getCreatedByAccountID();
+			if(!isNull(accountID)) {
+				return getService('accountService').getAccount( accountID );	
+			}
+		}
+	}
+	
+	public any function getModifiedByAccount() {
+		if(structKeyExists(this, "getModifiedByAccountID")) {
+			var accountID = this.getModifiedByAccountID();
+			if(!isNull(accountID)) {
+				return getService('accountService').getAccount( accountID );	
+			}
+		}
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -625,13 +717,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			updateCalculatedProperties();
 			
 			// Set createdByAccount
-			if(structKeyExists(this,"setCreatedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setCreatedByAccount( getHibachiScope().getAccount() );	
+			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );	
 			}
 			
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount());
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount( getHibachiScope().getAccount().getAccountID() );
 			}
 			
 			// Setup the first sortOrder
@@ -645,6 +737,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				}
 				setSortOrder( topSortOrder + 1 );
 			}
+		}
+		
+		// Log audit only if admin user
+		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+			getService("hibachiAuditService").logEntityModify(entity=this);
 		}
 	}
 	
@@ -673,9 +770,18 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			updateCalculatedProperties();
 		
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount());
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
+		}
+		
+		// Log audit only if admin user
+		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+		
+			// Manually populate primary ID in old data because it doesn't exist by default
+			arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
+		
+			getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
 		}
 	}
 	

@@ -54,6 +54,8 @@ Notes:
 		<cf_SlatwallSetting settingName="globalDateFormat" />
 		<cf_SlatwallSetting settingName="globalLogMessages" />
 		<cf_SlatwallSetting settingName="globalTimeFormat" />
+		<cf_SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
+		<cf_SlatwallSetting settingName="globalAuditCommitMode" />
 		<cf_SlatwallSetting settingName="globalAssetsImageFolderPath" />
 		<cf_SlatwallSetting settingName="globalAssetsFileFolderPath" />
 		<cf_SlatwallSetting settingName="globalMissingImagePath" />

@@ -55,7 +55,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Persistent Properties
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="attributeValue" ormtype="string" length="4000";
+	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
 	property name="attributeValueEncrypted" ormtype="string";
 	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
 	
@@ -64,10 +64,13 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
+	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
@@ -81,11 +84,11 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
@@ -188,6 +191,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "brand");
 	}
 	
+	// File (many-to-one)    
+	public void function setFile(required any file) {    
+		variables.file = arguments.file;    
+		if(isNew() or !arguments.file.hasAttributeValue( this )) {    
+			arrayAppend(arguments.file.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeFile(any file) {    
+		if(!structKeyExists(arguments, "file")) {    
+			arguments.file = variables.file;    
+		}    
+		var index = arrayFind(arguments.file.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.file.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "file");    
+	}
+	
 	// Image (many-to-one)    
 	public void function setImage(required any image) {    
 		variables.image = arguments.image;    
@@ -259,6 +280,42 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "orderPayment");
 	}
+
+	// Order Fulfillment (many-to-one)
+	public void function setOrderFulfillment(required any orderFulfillment) {
+		variables.orderFulfillment = arguments.orderFulfillment;
+		if(isNew() or !arguments.orderFulfillment.hasAttributeValue( this )) {
+			arrayAppend(arguments.orderFulfillment.getAttributeValues(), this);
+		}
+	}
+	public void function removeOrderFulfillment(any orderFulfillment) {
+		if(!structKeyExists(arguments, "orderFulfillment")) {
+			arguments.orderFulfillment = variables.orderFulfillment;
+		}
+		var index = arrayFind(arguments.orderFulfillment.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderFulfillment.getAttributeValues(), index);
+		}
+		structDelete(variables, "orderFulfillment");
+	}
+
+	// Order Delivery (many-to-one)
+	public void function setOrderDelivery(required any orderDelivery) {
+		variables.orderDelivery = arguments.orderDelivery;
+		if(isNew() or !arguments.orderDelivery.hasAttributeValue( this )) {
+			arrayAppend(arguments.orderDelivery.getAttributeValues(), this);
+		}
+	}
+	public void function removeOrderDelivery(any orderDelivery) {
+		if(!structKeyExists(arguments, "orderDelivery")) {
+			arguments.orderDelivery = variables.orderDelivery;
+		}
+		var index = arrayFind(arguments.orderDelivery.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderDelivery.getAttributeValues(), index);
+		}
+		structDelete(variables, "orderDelivery");
+	}	
 	
 	// Product (many-to-one)
 	public void function setProduct(required any product) {
@@ -427,6 +484,17 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		
 		return validationClass;
+	}
+	
+	public string function getAttributeValueFormatted() {
+		if(getAttribute().getAttributeType().getSystemCode() eq 'atRelatedObjectSelect') {
+			var thisEntityService = getService('hibachiService').getServiceByEntityName( getAttribute().getRelatedObject() );
+			var thisRelatedEntity = thisEntityService.invokeMethod("get#getAttribute().getRelatedObject()#", {1=getAttributeValue()});
+			if(!isNull(thisRelatedEntity)) {
+				return thisRelatedEntity.getSimpleRepresentation();
+			}
+		}
+		return getAttributeValue();
 	}
 	
 	// ==================  END:  Overridden Methods ========================

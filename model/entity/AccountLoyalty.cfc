@@ -52,10 +52,10 @@ component displayname="Account Loyalty Program" entityname="SlatwallAccountLoyal
 	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
-	property name="createdDateTime" ormtype="timestamp";
-	property name="createdByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
-	property name="modifiedDateTime" ormtype="timestamp";
-	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="lifetimeBalance" persistent="false";
@@ -84,11 +84,11 @@ component displayname="Account Loyalty Program" entityname="SlatwallAccountLoyal
 				// check expiration date and exclude expired points
 				if (!isNull( loyaltyTransaction.getExpirationDateTime() )) {				
 				 	if ( loyaltyTransaction.getExpirationDateTime() gt now() )  {
-						variables.lifetimeBalance = precisionEvaluate('variables.lifetimeBalance + pointsIn - pointsOut');	
+						variables.lifetimeBalance = precisionEvaluate(variables.lifetimeBalance + pointsIn - pointsOut);	
 					}
 				}
 				else {
-					variables.lifetimeBalance = precisionEvaluate('variables.lifetimeBalance + pointsIn - pointsOut');
+					variables.lifetimeBalance = precisionEvaluate(variables.lifetimeBalance + pointsIn - pointsOut);
 				}
 			}
 		}

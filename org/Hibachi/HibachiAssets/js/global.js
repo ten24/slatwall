@@ -12,6 +12,13 @@ var textAutocompleteCache = {
 var globalSearchCache = {
 	onHold: false
 };
+var pendingCarriageReturn = false;
+
+//Utility delay function
+delay = function(func, wait) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    return setTimeout(function(){ return func.apply(null, args); }, wait);
+  };
 
 jQuery(document).ready(function() {
 	
@@ -115,15 +122,14 @@ function initUIElements( scopeSelector ) {
 		*/
 		
 		jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
-			
 			var selectedValue = jQuery(this).val() || '';
 			if(bindData.valueAttribute.length) {
 				var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute) || '';
 			}
 			
-			if( jQuery( '#' + bindData.id ).hasClass('hide') && (bindData.showValues.toString().indexOf( selectedValue ) > -1 || bindData.showValues === '*' && selectedValue.length) ) {
+			if( jQuery( '#' + bindData.id ).hasClass('hide') && (bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 || bindData.showValues === '*' && selectedValue.length) ) {
 				jQuery( '#' + bindData.id ).removeClass('hide');
-			} else if ( !jQuery( '#' + bindData.id ).hasClass('hide') && ((bindData.showValues !== '*' && bindData.showValues.toString().indexOf( selectedValue ) === -1) || (bindData.showValues === '*' && !selectedValue.length)) ) {
+			} else if ( !jQuery( '#' + bindData.id ).hasClass('hide') && ((bindData.showValues !== '*' && bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) === -1) || (bindData.showValues === '*' && !selectedValue.length)) ) {
 				jQuery( '#' + bindData.id ).addClass('hide');
 			}
 		});
@@ -327,22 +333,36 @@ function setupEventHandlers() {
 		jQuery('#adminModal').load( modalLink, function(){
 
 			initUIElements('#adminModal');			
+			angularCompileModal();
 			
-			// make width 90% of screen
+			// make width 90% of screen, 80% height
 			jQuery('#adminModal').css({	
 			    'width': function () { 
 			        return ( jQuery(document).width() * .9 ) + 'px';  
 			    },
 			    'margin-left': function () {
 		            return -(jQuery('#adminModal').width() / 2);
+			    },
+			    'height':function (){
+			    	return (jQuery(window).height()*.8)+'px';
 			    }
 			});
+			//Override modal body height
+			var bodyHeight=jQuery('#adminModal').height() - jQuery('#adminModal .modal-header').outerHeight(true)-jQuery('#adminModal .modal-footer').outerHeight(true)
+			jQuery('#adminModal .modal-body').css({
+				'height':function(){
+					return(bodyHeight+'px');
+				},
+				'max-height': function(){
+					return(bodyHeight+'px');
+				}
+				})
 		});	
 		
 	});
 	
 	//kill all ckeditor instances on modal window close
-	jQuery('#adminModal').on('hidden', function(){
+	jQuery('#adminModal ').on('hidden', function(){
 		
 		for(var i in CKEDITOR.instances) {
 			
@@ -351,6 +371,16 @@ function setupEventHandlers() {
 			}
 			
 		}
+		//return to default size
+		jQuery('#adminModal .modal-body').css({
+				'height':'auto'
+				},{
+				'max-height': '400px'
+				});
+		jQuery('#adminModal').css({
+				'height':'auto'
+				});
+
 	});
 	
 	// Listing Page - Searching
@@ -484,6 +514,48 @@ function setupEventHandlers() {
 		}
 		listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 	});
+	
+		//General Listing Search
+	jQuery('.general-listing-search').keyup(function(e){
+		
+		if(e.which >= 47 || e.which ==13 || e.which==8  ){  //only react to visible chrs
+			//Should stop bootstrap dropdowns from opening, *should*
+			e.stopPropagation();
+			//Delay for barcode readers, so we don't submit multiple requests
+			if(typeof generalListingSearchTimer !="undefined"){
+				clearTimeout(generalListingSearchTimer);
+			}
+			generalListingSearchTimer=delay(function(e){
+				var data = {};
+				var tableID = '';
+				var code = e.which;
+				if (code == 13) {
+					
+					pendingCarriageReturn = true;
+				}
+				else {
+					pendingCarriageReturn = false;
+				}
+				data['keywords'] = e.currentTarget.value;
+				if (typeof jQuery(e.currentTarget).attr('tableid') !== "undefined") {
+					tableID = jQuery(e.currentTarget).attr('tableid');
+				}
+				else {
+					tableID = jQuery(e.currentTarget).closest('.table').attr('id');
+				}
+				
+				listingDisplayUpdate(tableID, data);
+			}, 500,e);
+		}
+	}
+	);
+	
+	//Clear general listing search
+	jQuery('body').on('click','.general-listing-search-clear', function(e){
+		e.stopPropagation();
+		jQuery(this).siblings('input').val('').keyup();
+	});
+	
 	
 	// Listing Display - Sort Applying
 	jQuery('body').on('click', '.table-action-sort', function(e) {
@@ -734,6 +806,12 @@ function setupEventHandlers() {
 		jQuery('input[name="metrics"]').val( vArr.join(',').trim() );
 		updateReport();
 	});
+	jQuery('body').on('click', '.hibachi-report-data-table-load', function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		updateReport( jQuery(this).data('page') );
+	});
+	
 	
 }
 
@@ -864,7 +942,11 @@ function updateTextAutocompleteSuggestions( autocompleteField, data ) {
 						innerLI += '</a></li>';
 						jQuery( '#' + jQuery(autocompleteField).data('sugessionsid') ).append( innerLI );
 					});
-					jQuery( '#' + jQuery( autocompleteField ).data('sugessionsid') ).parent().show();
+					var suggestionList=jQuery( '#' + jQuery( autocompleteField ).data('sugessionsid')).parent();
+					suggestionList.css('position','fixed');
+					suggestionList.css('top',suggestionList.parent().offset().top+25);
+					suggestionList.css('left',suggestionList.parent().offset().left);
+					suggestionList.show();
 					
 					textAutocompleteRelease();
 					
@@ -1087,6 +1169,16 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 				
 				// Release the hold
 				listingUpdateRelease();
+				
+				//If there is a pending carriage return and only one record returned, perform it's first action
+				if(pendingCarriageReturn && r["pageRecords"].length==1){
+					var btn=jQuery(tableBodySelector +' tr td:last a.btn:first')[0];
+					jQuery('input[tableid='+tableID+'].general-listing-search').val('').keyup();
+					btn.click();
+					//Clear the search list
+					
+				}
+				pendingCarriageReturn=false;
 			}
 		});
 	
@@ -1365,7 +1457,7 @@ function updateGlobalSearchResults() {
 	}
 }
 
-function updateReport() {
+function updateReport( page ) {
 	
 	var data = {
 		slatAction: 'admin:report.default',
@@ -1382,6 +1474,10 @@ function updateReport() {
 		metrics: jQuery('input[name="metrics"]').val()
 	};
 	
+	if(page != undefined) {
+		data.currentPage = page;
+	}
+	
 	jQuery.ajax({
 		url: hibachiConfig.baseURL + '/',
 		method: 'post',
@@ -1393,9 +1489,14 @@ function updateReport() {
 			removeLoadingDiv( 'hibachi-report' );
 		},
 		success: function( r ) {
-			jQuery('#hibachi-report-chart').highcharts(r.report.chartData);
-			jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);
-			jQuery('#hibachi-report-table').html(r.report.dataTable);
+			if(r.report.chartData != undefined && r.report.configureBar != undefined && r.report.dataTable != undefined) {
+				jQuery('#hibachi-report-chart').highcharts(r.report.chartData);
+				jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);
+				jQuery('#hibachi-report-table').html(r.report.dataTable);
+			} else if (page != undefined && r.report.dataTable != undefined) {
+				jQuery('#hibachi-report-table').html(r.report.dataTable);
+			}
+			
 			initUIElements('#hibachi-report');
 			removeLoadingDiv( 'hibachi-report' );
 		}

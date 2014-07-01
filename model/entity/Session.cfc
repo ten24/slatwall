@@ -46,20 +46,21 @@
 Notes:
 
 */
-component displayname="Session" entityname="SlatwallSession" table="SwSession" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="hibachiSessionService" {
+component displayname="Session" entityname="SlatwallSession" table="SwSession" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="hibachiSessionService" hb_auditable="false" {
 	
 	// Persistent Properties
 	property name="sessionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="shippingAddressPostalCode" ormtype="string";
 	property name="lastRequestDateTime" ormtype="timestamp";
 	property name="lastRequestIPAddress" ormtype="string";
+	property name="rbLocale" ormtype="string";
 	
 	// Related Entities
 	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";
 	property name="accountAuthentication" cfc="AccountAuthentication" fieldtype="many-to-one" fkcolumn="accountAuthenticationID" fetch="join";
 	property name="order" type="any" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	

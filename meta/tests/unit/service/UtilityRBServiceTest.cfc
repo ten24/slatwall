@@ -76,11 +76,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function getRBKey_another_language_besides_english_works() {
-		assertEquals("todos", variables.service.getRBKey('define.all', 'es'));
+		assertEquals("Tout", variables.service.getRBKey('define.all', 'fr'));
 	}
 	
 	public void function getRBKey_another_language_besides_english_works_with_fully_qualified_locale() {
-		assertEquals("todos", variables.service.getRBKey('define.all', 'es_sp'));
+		assertEquals("Tout", variables.service.getRBKey('define.all', 'fr_fr'));
 	}
 	
 	// getResourceBundle()

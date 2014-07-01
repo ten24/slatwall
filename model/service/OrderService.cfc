@@ -110,32 +110,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return orderRequirementsList;
 	}
-	
-	public void function recalculateOrderAmounts(required any order) {
-		
-		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
-			
-			// Loop over the orderItems to see if the skuPrice Changed
-			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
-				for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-					if(arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode() == "oitSale" && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
-						arguments.order.getOrderItems()[i].setPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
-						arguments.order.getOrderItems()[i].setSkuPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
-					}
-				}
-			}
-			
-			// First Re-Calculate the 'amounts' base on price groups
-			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
-			
-			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
-			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
-			
-			// Re-Calculate tax now that the new promotions and price groups have been applied
-			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
-		}
-	}
-	
+
 	public any function forceItemQuantityUpdate(required any order, required any messageBean) {
 		// Loop over each order Item
 		for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--)	{
@@ -265,6 +240,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderDAO().getOrderPaymentNonNullAmountTotal(argumentcollection=arguments);
 	}
 	
+		
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
@@ -272,7 +248,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// Process: Order
 	public any function processOrder_addOrderItem(required any order, required any processObject) {
 		
-		// Setup a boolean to see if we were able to just att this order item to an existing one
+		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
 		
 		// Make sure that the currencyCode gets set for this order
@@ -389,26 +365,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
-				for(var i=1; i<=arrayLen(orderFulfillment.getOrderFulfillmentItems()); i++) {
+				for(orderItem in orderFulfillment.getOrderFulfillmentItems()){
+					// If the sku, price, attributes & stock all match then just increase the quantity
 					
-					var thisItem = orderFulfillment.getOrderFulfillmentItems()[i];
-					
-					// If the sku, price & stock all match then just increse the quantity
-					if( 	thisItem.getSku().getSkuID() == arguments.processObject.getSku().getSkuID()
-						  		&&
-							thisItem.getPrice() == arguments.processObject.getPrice()
-								&&
-							((isNull(thisItem.getStock()) && isNull(arguments.processObject.getStock())) || (!isNull(thisItem.getStock()) && !isNull(arguments.processObject.getStock()) && thisItem.getStock().getStockID() == arguments.processObject.getStock().getStockID() ))
-						) {
-							
+					if(arguments.processObject.matchesOrderItem( orderItem ) ){
 						foundItem = true;
-						orderFulfillment.getOrderFulfillmentItems()[i].setQuantity(orderFulfillment.getOrderFulfillmentItems()[i].getQuantity() + arguments.processObject.getQuantity());
-						orderFulfillment.getOrderFulfillmentItems()[i].validate(context='save');
-						if(orderFulfillment.getOrderFulfillmentItems()[i].hasErrors()) {
-							arguments.order.addError('addOrderItem', orderFulfillment.getOrderFulfillmentItems()[i].getErrors());
+						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						orderItem.validate(context='save');
+						if(orderItem.hasErrors()) {
+							arguments.order.addError('addOrderItem', orderItem.getErrors());
 						}
 						break;
-						
 					}
 				}
 			}
@@ -461,8 +428,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.setStock( arguments.processObject.getStock() );
 			}
 			
-			// Set any customizations
-			newOrderItem.populate( arguments.data );
+			// If attributeValues were passed in set them
+			if( !isNull(arguments.processObject.getAttributeValuesByCodeStruct()) ) {
+				for(var attributeCode in arguments.processObject.getAttributeValuesByCodeStruct() ) {
+					newOrderItem.setAttributeValue( attributeCode, arguments.processObject.getAttributeValuesByCodeStruct()[attributeCode] );
+				}	
+			}
 			
 			// Save the new order items
 			newOrderItem = this.saveOrderItem( newOrderItem );
@@ -519,6 +490,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
 			
+		} else if(newOrderPayment.hasErrors()) {
+			arguments.order.addError('addOrderPayment', newOrderPayment.getErrors());
+			
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
 		} else if (!newOrderPayment.hasErrors() && arguments.processObject.getSaveAccountPaymentMethodFlag() && isNull(newOrderPayment.getAccountPaymentMethod())) {
 				
@@ -541,6 +515,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
+
+		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
+			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
+		}
+		
 		return arguments.order;
 	}
 	
@@ -561,7 +540,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			if(!arguments.order.hasPromotionCode( pc )) {
 				arguments.order.addPromotionCode( pc );
-				recalculateOrderAmounts(order=arguments.order);
+				this.processOrder( arguments.order, {}, 'updateOrderAmounts' );
 			}
 		}		
 		
@@ -576,40 +555,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			comment = getCommentService().saveComment(comment, arguments.data);
 		}
 		
-		// Loop over all the orderItems and set them to 0
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-			arguments.order.getOrderItems()[i].setQuantity(0);
-			
-			// Remove any promotionsApplied
-			for(var p=arrayLen(arguments.order.getOrderItems()[i].getAppliedPromotions()); p>=1; p--) {
-				arguments.order.getOrderItems()[i].getAppliedPromotions()[p].removeOrderItem();
-			}
-			
-			// Remove any taxApplied
-			for(var t=arrayLen(arguments.order.getOrderItems()[i].getAppliedTaxes()); t>=1; t--) {
-				arguments.order.getOrderItems()[i].getAppliedTaxes()[t].removeOrderItem();
-			}
-		}
-		
-		// Loop over all the fulfillments and remove any fulfillmentCharges, and promotions applied
-		for(var i=1; i<=arrayLen(arguments.order.getOrderFulfillments()); i++) {
-			arguments.order.getOrderFulfillments()[i].setFulfillmentCharge(0);
-			// Remove over any promotionsApplied
-			for(var p=arrayLen(arguments.order.getOrderFulfillments()[i].getAppliedPromotions()); p>=1; p--) {
-				arguments.order.getOrderFulfillments()[i].getAppliedPromotions()[p].removeOrderFulfillment();
-			}
-		}
-		
-		// Loop over all of the order discounts and remove them
-		for(var p=arrayLen(arguments.order.getAppliedPromotions()); p>=1; p--) {
-			arguments.order.getAppliedPromotions()[p].removeOrder();
-		}
-		
-		// Loop over all the payments and credit for any charges, and set paymentAmount to 0
+		// Loop over all the payments and credit for any charges
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 			
 			if(orderPayment.getStatusCode() eq "opstActive") {
-				var totalReceived = precisionEvaluate('orderPayment.getAmountReceived() - orderPayment.getAmountCredited()');
+				var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
 				if(totalReceived gt 0) {
 					var transactionData = {
 						amount = totalReceived,
@@ -617,9 +567,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					};
 					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 				}
-				
-				// Set payment amount to 0
-				orderPayment.setAmount(0);
 			}
 		}
 		
@@ -706,21 +653,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			var account = getAccountService().getAccount(processObject.getAccountID());
 		}
-		arguments.order.setAccount(account);
 		
-		// Setup Order Type
-		arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+		if(account.hasErrors()) {
+			arguments.order.addError('create', account.getErrors());
+		} else {
+			arguments.order.setAccount(account);
 		
-		// Setup the Order Origin
-		if( len(arguments.processObject.getOrderOriginID()) ) {
-			arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
+			// Setup Order Type
+			arguments.order.setOrderType( getSettingService().getType( processObject.getOrderTypeID() ) );
+			
+			// Setup the Order Origin
+			if( len(arguments.processObject.getOrderOriginID()) ) {
+				arguments.order.setOrderOrigin( getSettingService().getOrderOrigin(arguments.processObject.getOrderOriginID()) );
+			}
+			
+			// Setup the Default Stock Location
+			if( len(arguments.processObject.getDefaultStockLocationID()) ) {
+				arguments.order.setDefaultStockLocation( getSettingService().getLocation(arguments.processObject.getDefaultStockLocationID()) );
+			}
+			
+			// Setup the Currency Code
+			arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
+			
+			// Save the order
+			arguments.order = this.saveOrder(arguments.order);
+
 		}
 		
-		// Setup the Currency Code
-		arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
-		
-		// Save the order
-		arguments.order = this.saveOrder(arguments.order);
 		
 		return arguments.order;
 	}
@@ -780,7 +739,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getHibachiDAO().save( returnOrder );
 		
 		// Recalculate the order amounts for tax and promotions
-		recalculateOrderAmounts( returnOrder );
+		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
 		
 		// Check to see if we are attaching an referenced orderPayment
 		if(len(arguments.processObject.getRefundOrderPaymentID())) {
@@ -889,7 +848,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// Call the placeOrderTransactionType for the order payment
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
 							
-								amountAuthorizeCreditReceive = precisionEvaluate('amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()');
+								amountAuthorizeCreditReceive = precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited());
 							}
 						}
 						
@@ -905,6 +864,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							if(!isNull(getHibachiScope().getSession().getOrder()) && arguments.order.getOrderID() == getHibachiScope().getSession().getOrder().getOrderID()) {
 								getHibachiScope().getSession().setOrder(javaCast("null", ""));
+							}
+						
+							// Loop over all orderPayments and if it's a term payment set the payment due date
+							for(var orderPayment in order.getOrderPayments()) {
+								if(orderPayment.getStatusCode() == 'opstActive' && orderPayment.getPaymentMethodType() == 'termPayment' && !isNull(orderPayment.getPaymentTerm())) {
+									orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate() );
+								}
 							}
 						
 							// Update the order status
@@ -1064,7 +1030,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 			
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
-			if(precisionEvaluate('arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()') == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
+			if(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
 				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostClosed") );
 				
 			// The default case is just to set it to processing
@@ -1098,6 +1064,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
+	public any function processOrder_updateOrderAmounts(required any order, struct data) {
+		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
+			
+			// Loop over the orderItems to see if the skuPrice Changed
+			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
+				for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+					if(arguments.order.getOrderItems()[i].getOrderItemType().getSystemCode() == "oitSale" && arguments.order.getOrderItems()[i].getSkuPrice() != arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() )) {
+						arguments.order.getOrderItems()[i].setPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
+						arguments.order.getOrderItems()[i].setSkuPrice( arguments.order.getOrderItems()[i].getSku().getPriceByCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() ) );
+					}
+				}
+			}
+			
+			// First Re-Calculate the 'amounts' base on price groups
+			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
+			
+			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
+			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
+			
+			// Re-Calculate tax now that the new promotions and price groups have been applied
+			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+		}
+		return arguments.order;
+	}
 	
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
@@ -1124,7 +1114,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 						
 						if(!orderPayment.hasErrors()) {
-							amountToBeCaptured = precisionEvaluate('amountToBeCaptured - transactionData.amount');
+							amountToBeCaptured = precisionEvaluate(amountToBeCaptured - transactionData.amount);
 						}
 					}
 				}
@@ -1421,7 +1411,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 				
-				var thisToCharge = precisionEvaluate('arguments.processObject.getAmount() - totalAmountCharged');
+				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
 				
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
@@ -1448,7 +1438,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					precisionEvaluate('totalAmountCharged + paymentTransaction.getAmountReceived()');
+					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
 				}
 				
 			}
@@ -1592,7 +1582,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Recalculate the order amounts for tax and promotions
-			recalculateOrderAmounts(arguments.order);
+			arguments.order = this.processOrder( order, {}, 'updateOrderAmounts');
 			
 			// Make sure the auto-state stuff gets called.
 			arguments.order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
@@ -1620,7 +1610,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Recalculate the order amounts for tax and promotions
-			recalculateOrderAmounts( arguments.orderFulfillment.getOrder() );
+			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
 			
 		}
 		
@@ -1641,7 +1631,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Recalculate the order amounts for tax and promotions
-			recalculateOrderAmounts( arguments.orderItem.getOrder() );
+			this.processOrder( arguments.orderItem.getOrder(), {}, 'updateOrderAmounts' );
 		}
 		
 		return arguments.orderItem;
@@ -1649,8 +1639,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function saveOrderPayment(required any orderPayment, struct data={}, string context="save") {
 		
+		var oldPaymentTermID = "";
+		var newPaymentTermID = "";
+		
+		if(!isNull(arguments.orderPayment.getPaymentTerm())) {
+			var oldPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();	
+		}
+		
 		// Call the generic save method to populate and validate
 		arguments.orderPayment = save(arguments.orderPayment, arguments.data, arguments.context);
+		
+		if(!isNull(arguments.orderPayment.getPaymentTerm())) {
+			var newPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();
+		}
+
+		// Only do this check if the order has already been placed, and this a term payment
+		if(orderPayment.getPaymentMethodType() == 'termPayment' && orderPayment.getOrder().getOrderStatusType().getSystemCode() != 'ostNotPlaced' && oldPaymentTermID != newPaymentTermID && !isNull(orderPayment.getPaymentTerm())) {
+			if(orderPayment.getCreatedDateTime() > orderPayment.getOrder().getOrderOpenDateTime()) {
+				orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate ( startDate=orderPayment.getCreatedDateTime() ) );
+			} else {
+				orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate ( startDate=orderPayment.getOrder().getOrderOpenDateTime() ) );
+			}
+		}
 		
 		// If the orderPayment doesn't have any errors, then we can update the status to active.  If later a transaction runs, then this payment may get flagged back in inactive in the same request
 		if(!arguments.orderPayment.hasErrors()) {
@@ -1709,15 +1719,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.entityName = "SlatwallOrderItem";
 	
 		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-		
 		smartList.joinRelatedProperty("SlatwallOrderItem", "order", "inner", true);
+		smartList.joinRelatedProperty("SlatwallOrderItem", "sku", "left", true);
+		smartList.joinRelatedProperty("SlatwallSku", "product", "left", true);
 		smartList.joinRelatedProperty("SlatwallOrderItem", "orderItemType", "inner", true);
 		smartList.joinRelatedProperty("SlatwallOrderItem", "orderItemStatusType", "inner", true);
 		smartList.joinRelatedProperty("SlatwallOrder", "orderOrigin", "left");
 		smartList.joinRelatedProperty("SlatwallOrder", "account", "left");
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left");
-		
 		smartList.addKeywordProperty(propertyIdentifier="order.orderNumber", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="order.account.firstName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="order.account.lastName", weight=1);
@@ -1725,10 +1735,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="order.account.primaryEmailAddress.emailAddress", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="order.account.primaryPhoneNumber.phoneNumber", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="order.orderOrigin.orderOriginName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.skuCode", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.product.calculatedTitle", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="orderItemStatusType.type", weight=1);
 		
 		return smartList;
 	}
-	
+
 	// ====================  END: Smart List Overrides ========================
 	
 	// ====================== START: Get Overrides ============================
@@ -1773,7 +1786,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Recalculate the order amounts
-			recalculateOrderAmounts( order );
+			this.processOrder( order, {}, 'updateOrderAmounts' );
 			
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderItem );

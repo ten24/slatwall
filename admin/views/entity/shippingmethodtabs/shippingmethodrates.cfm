@@ -62,6 +62,7 @@ Notes:
 		<cf_HibachiListingColumn propertyidentifier="shipmentWeightRange" />
 		<cf_HibachiListingColumn propertyidentifier="shipmentItemPriceRange" />
 		<cf_HibachiListingColumn propertyidentifier="defaultAmount" />
+		<cf_HibachiListingColumn propertyidentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 	
 	<cf_HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.shippingmethodrate')#" icon="plus" buttonClass="btn-inverse">

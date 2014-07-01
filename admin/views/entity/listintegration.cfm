@@ -50,13 +50,10 @@ Notes:
 <cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.integrationSmartList#" showCreate="false" />
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
+	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="fw1ActiveFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="paymentActiveFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="shippingActiveFlag" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 
 </cfoutput>

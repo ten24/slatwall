@@ -38,5 +38,8 @@ Notes:
 --->
 <cfcomponent accessors="true" persistent="false" output="false" extends="Slatwall.org.Hibachi.HibachiReport">
 	
+	<cffunction name="getCurrencyCode" access="public" output="false">
+		<cfreturn getService('settingService').getSettingValue('skuCurrency') />
+	</cffunction>
 
 </cfcomponent>

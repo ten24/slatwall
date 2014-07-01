@@ -58,7 +58,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="siteService" type="any";
 	property name="loyaltyService" type="any";
 	property name="validationService" type="any";
-	
+	property name="orderService" type="any";
 	
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -143,6 +143,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(arguments.processObject.getSaveAccountPaymentMethodFlag()) {
 				var newAccountPaymentMethod = this.newAccountPaymentMethod();
 				newAccountPaymentMethod.copyFromAccountPayment( newAccountPayment );
+				newAccountPaymentMethod.setAccountPaymentMethodName(arguments.processObject.getSaveAccountPaymentMethodName());
 				newAccountPaymentMethod.setAccount( arguments.account );
 				
 				newAccountPaymentMethod = this.saveAccountPaymentMethod(newAccountPaymentMethod);
@@ -150,6 +151,28 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		}
 		
+		// Loop over all account payments and link them to the AccountPaymentApplied object
+		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
+			
+			if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
+				var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+				
+				var newAccountPaymentApplied = this.newAccountPaymentApplied();
+				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
+				
+				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
+
+				// Link to the order payment if the payment is assigned to a term order. Also set the payment type
+				if(!isNull(orderPayment)) {
+					newAccountPaymentApplied.setOrderPayment( orderPayment );
+					newAccountPaymentApplied.setAccountPaymentType( getSettingService().getType( appliedOrderPayment.paymentTypeID  ) );
+				}
+				
+				// Save the account payment applied
+				newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied ); 
+			}
+		}
+
 		// Save the newAccountPayment
 		newAccountPayment = this.saveAccountPayment( newAccountPayment );
 		
@@ -159,7 +182,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 		// If no errors, then we can process a transaction
 		} else {
-			
 			var transactionData = {
 				amount = newAccountPayment.getAmount()
 			};
@@ -175,7 +197,23 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
-				
+			
+			//Loop over the newaccountpayment.getAppliedPayments
+			for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
+				if(!IsNull(appliedAccountPayment.getOrderPayment())) {
+					transactionData = {
+						amount = appliedAccountPayment.getAmount()
+					};
+					
+					if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
+						transactionData.transactionType = 'receive';
+					} else {
+						transactionData.transactionType = 'credit';
+					}
+					
+					getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
+				}
+			}
 		}
 		
 		return arguments.account;
@@ -258,6 +296,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Take the email address and get all of the user accounts by primary e-mail address
 		var accountAuthentications = getInternalAccountAuthenticationsByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
+		var invalidData = {emailAddress=arguments.processObject.getEmailAddress()};
 		
 		if(arrayLen(accountAuthentications)) {
 			for(var i=1; i<=arrayLen(accountAuthentications); i++) {
@@ -268,9 +307,13 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 			arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
+			invalidData.account = accountAuthentications[1].getAccount();
 		} else {
 			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
 		}
+		
+		// Login was invalid
+		getHibachiSessionService().loginAccountInvalid(data=invalidData);
 		
 		return arguments.account;
 	}
@@ -811,7 +854,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 				
-				var thisToCharge = precisionEvaluate('arguments.processObject.getAmount() - totalAmountCharged');
+				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
 				
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
@@ -838,7 +881,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					precisionEvaluate('totalAmountCharged + paymentTransaction.getAmountReceived()');
+					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
 				}
 				
 			}
@@ -975,7 +1018,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccount";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left");
@@ -994,7 +1037,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountEmailAddressSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountEmailAddress";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccountEmailAddress", "accountEmailType", "left");
 		
@@ -1004,7 +1047,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountPhoneNumberSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountPhoneNumber";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccountPhoneNumber", "accountPhoneType", "left");
 		
@@ -1060,7 +1103,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Check delete validation
 		if(arguments.accountPhoneNumber.isDeletable()) {
 			
-			// If the primary email address is this e-mail address then set the primary to null
+			// If the primary phone number is this phone number then set the primary to null
 			if(arguments.accountPhoneNumber.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID() eq arguments.accountPhoneNumber.getAccountPhoneNumberID()) {
 				arguments.accountPhoneNumber.getAccount().setPrimaryPhoneNumber(javaCast("null",""));
 			}
@@ -1076,15 +1119,33 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Check delete validation
 		if(arguments.accountAddress.isDeletable()) {
 
-			// If the primary email address is this e-mail address then set the primary to null
+			// If the primary address is this address then set the primary to null
 			if(arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
 				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
 			}
 			
-			// Remove from all orderFulfillments
+			// Remove from any order objects
 			getAccountDAO().removeAccountAddressFromOrderFulfillments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			
 			return delete(arguments.accountAddress);
+		}
+		
+		return false;
+	}
+	
+	public boolean function deleteAccountPaymentMethod(required any accountPaymentMethod) {
+		
+		// Check delete validation
+		if(arguments.accountPaymentMethod.isDeletable()) {
+
+			// If the primary payment method is this payment method then set the primary to null
+			if(arguments.accountPaymentMethod.getAccount().getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
+				arguments.accountPaymentMethod.getAccount().setPrimaryPaymentMethod(javaCast("null",""));
+			}
+			
+			return delete(arguments.accountPaymentMethod);
 		}
 		
 		return false;

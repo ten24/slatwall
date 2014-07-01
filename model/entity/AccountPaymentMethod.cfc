@@ -51,22 +51,24 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// Persistent Properties
 	property name="accountPaymentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormType="boolean";
-	property name="accountPaymentMethodName" ormType="string";
+	property name="accountPaymentMethodName" hb_populateEnabled="public" ormType="string";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
-	property name="expirationMonth" ormType="string" hb_formfieldType="select";
-	property name="expirationYear" ormType="string" hb_formfieldType="select";
+	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
+	property name="expirationYear" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
 	property name="giftCardNumberEncrypted" ormType="string";
-	property name="nameOnCreditCard" ormType="string";
+	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="providerToken" ormType="string";
 	
 	// Related Object Properties (many-to-one)
-	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" hb_optionsNullRBKey="define.select" hb_optionsAdditionalProperties="paymentMethodType" hb_optionsSmartListData="f:activeFlag=1&f:paymentMethodType=creditCard,termPayment,check,giftCard";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
-	property name="billingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_optionsNullRBKey="define.select";
+	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID" hb_optionsNullRBKey="define.select";
+	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" hb_optionsNullRBKey="define.select";
+	property name="paymentMethod" hb_populateEnabled="public" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID" hb_optionsNullRBKey="define.select" hb_optionsAdditionalProperties="paymentMethodType" hb_optionsSmartListData="f:activeFlag=1&f:paymentMethodType=creditCard,termPayment,check,giftCard";
+	property name="paymentTerm" hb_populateEnabled="public" cfc="PaymentTerm" fieldtype="many-to-one" fkcolumn="paymentTermID" fetch="join";
 	
 	// Related Object Properties (one-to-many)
 	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true" lazy="extra";
@@ -79,16 +81,16 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="creditCardNumber" persistent="false";
-	property name="giftCardNumber" persistent="false";
-	property name="bankRoutingNumber" persistent="false";
-	property name="bankAccountNumber" persistent="false";
-	property name="securityCode" persistent="false";
+	property name="creditCardNumber" hb_populateEnabled="public" persistent="false";
+	property name="giftCardNumber" hb_populateEnabled="public" persistent="false";
+	property name="bankRoutingNumber" hb_populateEnabled="public" persistent="false";
+	property name="bankAccountNumber" hb_populateEnabled="public" persistent="false";
+	property name="securityCode" hb_populateEnabled="public" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 	
@@ -133,6 +135,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
 				setCreditCardNumber( arguments.orderPayment.getCreditCardNumber() );	
 			}
+			if(!isNull(arguments.orderPayment.getSecurityCode())) {
+				setSecurityCode( arguments.orderPayment.getSecurityCode() );	
+			}
 			setNameOnCreditCard( arguments.orderPayment.getNameOnCreditCard() );
 			setExpirationMonth( arguments.orderPayment.getExpirationMonth() );
 			setExpirationYear( arguments.orderPayment.getExpirationYear() );
@@ -143,6 +148,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		// Gift Card
 		if(listFindNoCase("giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
+		}
+		
+		// Term Payment
+		if(listFindNoCase("termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
+			setPaymentTerm( arguments.orderPayment.getPaymentTerm() );
 		}
 		
 		// Credit Card & Gift Card
@@ -166,6 +176,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		if(listFindNoCase("creditCard", arguments.accountPayment.getPaymentMethod().getPaymentMethodType())) {
 			if(!isNull(arguments.accountPayment.getCreditCardNumber())) {
 				setCreditCardNumber( arguments.accountPayment.getCreditCardNumber() );	
+			}
+			if(!isNull(arguments.accountPayment.getSecurityCode())) {
+				setSecurityCode( arguments.accountPayment.getSecurityCode() );	
 			}
 			setNameOnCreditCard( arguments.accountPayment.getNameOnCreditCard() );
 			setExpirationMonth( arguments.accountPayment.getExpirationMonth() );
@@ -236,7 +249,25 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 		structDelete(variables, "account");
 	}
-
+	
+	// Payment Term (many-to-one)    
+	public void function setPaymentTerm(required any paymentTerm) {    
+		variables.paymentTerm = arguments.paymentTerm;    
+		if(isNew() or !arguments.paymentTerm.hasAccountPaymentMethod( this )) {    
+			arrayAppend(arguments.paymentTerm.getAccountPaymentMethods(), this);    
+		}    
+	}    
+	public void function removePaymentTerm(any paymentTerm) {    
+		if(!structKeyExists(arguments, "paymentTerm")) {    
+			arguments.paymentTerm = variables.paymentTerm;    
+		}    
+		var index = arrayFind(arguments.paymentTerm.getAccountPaymentMethods(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.paymentTerm.getAccountPaymentMethods(), index);    
+		}    
+		structDelete(variables, "paymentTerm");
+	}
+	
 	// Payment Transactions (one-to-many)    
 	public void function addPaymentTransaction(required any paymentTransaction) {    
 		arguments.paymentTransaction.setAccountPaymentMethod( this );    
@@ -251,6 +282,13 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
+
+			if(!isNull(getBillingAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+    			return variables.billingAddress;
+			}
+
 			return getService("addressService").newAddress();
 		}
 		return variables.billingAddress;
@@ -282,16 +320,34 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		if(!isNull(getAccountPaymentMethodName()) && len(getAccountPaymentMethodName())) {
 			var rep = getAccountPaymentMethodName() & " ";	
 		}
-		if(getPaymentMethodType() == "creditCard") {
-			rep = listAppend(rep, " #getCreditCardType()# - *#getCreditCardLastFour()#", "|");
-		}
-		if(getPaymentMethodType() == "termPayment" && !getBillingAddress().getNewFlag()) {
-			rep = listAppend(rep, " #getBillingAddress().getSimpleRepresentation()#", "|");
-		}
-		if(getPaymentMethodType() == "giftCard" && !isNull(getGiftCardNumber()) && len(getGiftCardNumber())) {
-			rep = listAppend(rep, " #getGiftCardNumber()#", "|");
+		if(!isNull(getPaymentMethod())) {
+			if(getPaymentMethodType() == "creditCard") {
+				rep = listAppend(rep, " #getCreditCardType()# - *#getCreditCardLastFour()#", "|");
+			}
+			if(getPaymentMethodType() == "termPayment" && !getBillingAddress().getNewFlag()) {
+				rep = listAppend(rep, " #getBillingAddress().getSimpleRepresentation()#", "|");
+			}
+			if(getPaymentMethodType() == "giftCard" && !isNull(getGiftCardNumber()) && len(getGiftCardNumber())) {
+				rep = listAppend(rep, " #getGiftCardNumber()#", "|");
+			}
 		}
 		return rep;
+	}
+	
+	public any function setBillingAccountAddress( required any accountAddress ) {
+		
+		// If the shippingAddress is a new shippingAddress
+		if( isNull(getBillingAddress()) ) {
+			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
+		
+		// Else if there was no accountAddress before, or the accountAddress has changed
+		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+			
+		}
+		
+		// Set the actual accountAddress
+		variables.billingAccountAddress = arguments.accountAddress;
 	}
 
 	// ==================  END:  Overridden Methods ========================
