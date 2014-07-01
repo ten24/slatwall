@@ -1,12 +1,5 @@
-component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
+component extends="AdminTestBase" {
 
-	function valid_credentials_login(){
-		var dashboard = Login.login(variables.configuration.common.login, variables.configuration.common.password);
-		assertEquals(Dashboard.getTitle(), selenium.getTitle());
-		assertPageIsLoaded(dashboard);
-	}
-	
-	
 	invalidLogins = [
 		{u:"", p:""},
 		{u:"foo", p:""},
@@ -17,21 +10,31 @@ component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 		{u:"foo", p:"<img src='' onerror='alert()'>"},
 		{u:"<img src='' onerror='alert()'>", p:"<script>alert('pwnd')</script>"}
 	];
+
+	/*
+	function valid_credentials_login(){
+		var dashboard = variables.Login.login('testrunner@ten24web.com', 'testrunner');
+		assertEquals(Dashboard.getTitle(), selenium.getTitle());
+	}
+	*/
 	
 	/**
 	* @mxunit:dataprovider invalidLogins
 	*/
 	function invalid_credentials_all_fail(credentials){
-		var dashboard = Login.login(credentials.u, credentials.p);
-		assertPageIsLoaded(Login);
+		var potentialDashboard = variables.loginPage.login(credentials.u, credentials.p);
+		
+		// Make sure that the loginPage is still loaded, because we should have been bounced back there
+		assertPageIsLoaded(variables.loginPage);
 	}
 	
 	//example of how to take a screenshot; only works on firefox
+	/*
 	private function screenshotTest(){
 		var path = expandPath("screenshot.png");
-		debug(path);
+		
 		selenium.captureEntirePageScreenshot(path, "");
 	}
-	
+	*/
 	
 }

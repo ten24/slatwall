@@ -69,9 +69,6 @@
 	<cfparam name="attributes.createQueryString" type="string" default="" />
 	<cfparam name="attributes.exportAction" type="string" default="" />
 	
-	<cfif not len(attributes.exportAction)>
-		<cfset attributes.exportAction = "admin:entity.export#attributes.smartList.getBaseEntityName()#" />
-	</cfif>
 <cfelse>
 	<cfsilent>
 		<cfif isSimpleValue(attributes.smartList)>
@@ -80,6 +77,11 @@
 		
 		<!--- Setup the example entity --->
 		<cfset thistag.exampleEntity = entityNew(attributes.smartList.getBaseEntityName()) />
+		
+		<!--- Setup export action --->
+		<cfif not len(attributes.exportAction)>
+			<cfset attributes.exportAction = "admin:entity.export#attributes.smartList.getBaseEntityName()#" />
+		</cfif>
 		
 		<!--- Setup the default table class --->
 		<cfset attributes.tableclass = listPrepend(attributes.tableclass, 'table table-striped table-bordered table-condensed', ' ') />

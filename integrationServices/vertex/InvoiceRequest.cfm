@@ -46,63 +46,55 @@
 	Notes:
 	
 --->
-<cfoutput>
-	<VertexEnvelope>
-		<Login>
-			<!--- Left the Username and Password
-			 because it was in the Documentation,
-			 but I believe TrustedID is all we'll need --->
-			<Username></Username>
-			<Password></Password>
-			<TrustedID></TrustedID>
-		</Login>
-		<InvoiceRequest documentDate="2013-12-19" documentNumber="ORDER_NUMBER" transactionId="UNIQUE_ID" transactionType="SALE">
-		  	<Currency isoCurrencyCodeAlpha="USD"/>
-		  	<Seller>
-		    	<Company>NAIPARENT</Company>
-		    	<Division>SLATWALL</Division>
-		    	<Department>NAI</Department>
-		    	<PhysicalLocation>
-		      		<City>New York</City>
-		      		<MainDivision>NY</MainDivision>
-		      		<PostalCode>10010</PostalCode>
-		      		<Country>UNITED STATES</Country>
-		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-		    	</PhysicalLocation>
-		    	<AdministrativeOrigin>
-		      		<City>New York</City>
-		      		<MainDivision>NY</MainDivision>
-		      		<PostalCode>10010</PostalCode>
-		     		<Country>UNITED STATES</Country>
-		     		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-		   		</AdministrativeOrigin>
-		  	</Seller>
-		  	<Customer>
-		    	<CustomerCode>CUST_NUMBER</CustomerCode>
-		    	<Destination>
-		      		<City>New York</City>
-		      		<MainDivision>NY</MainDivision>
-		      		<PostalCode>10010</PostalCode>
-		      		<Country>UNITED STATES</Country>
-		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-		    	</Destination>
-		    	<AdministrativeDestination>
-		      		<City>New York</City>
-		      		<MainDivision>NY</MainDivision>
-		      		<PostalCode>10010</PostalCode>
-		      		<Country>UNITED STATES</Country>
-		      		<CurrencyConversion isoCurrencyCodeAlpha="USD">1</CurrencyConversion>
-		    	</AdministrativeDestination>
-			 </Customer>
-			 <LineItem lineItemNumber="1">
-			  		<!--- Note to Jubs: Check Documentation for Below Section --->
-			    	<ExtendedPrice>100</ExtendedPrice>
-			   	 	<FlexibleFields>
-			      		<FlexibleCodeField fieldId="7">CUST_NANE</FlexibleCodeField>
-			      		<FlexibleCodeField fieldId="11">TAX_CODE</FlexibleCodeField>
-			      		<FlexibleCodeField fieldId="12">PRODUCT_NAME</FlexibleCodeField>
-			    	</FlexibleFields>
-			  </LineItem>
-		</InvoiceRequest>
-	</VertexEnvelope>
+ <cfoutput>
+	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:vertexinc:o-series:tps:6:0">
+	   	<soapenv:Header/>
+	   	<soapenv:Body>
+	      	<urn:VertexEnvelope>
+	         	<urn:Login>
+	            	<urn:UserName>#setting('username')#</urn:UserName>
+	            	<urn:Password>#setting('password')#</urn:Password>
+	         	</urn:Login>
+				<urn:InvoiceRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
+				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
+				  	<urn:Seller>
+				    	<urn:Company>#setting('company')#</urn:Company>
+				    	<urn:Division>#setting('division')#</urn:Division>
+				    	<urn:Department>#setting('department')#</urn:Department>
+				    	<urn:PhysicalOrigin>
+				      		<urn:City>#setting('city')#</urn:City>
+				      		<urn:MainDivision>#setting('mainDivision')#</urn:MainDivision>
+				      		<urn:PostalCode>#setting('postalCode')#</urn:PostalCode>
+				     		<urn:Country>#setting('country')#</urn:Country>
+				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				   		</urn:PhysicalOrigin>
+				  	</urn:Seller>
+ -		  			<urn:Customer>
+				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
+				    	<urn:Destination>
+				    		<urn:StreetAddress1>#addressTaxRequestItems[ 1 ].getTaxStreetAddress()#</urn:StreetAddress1>
+				      		<urn:StreetAddress2>#addressTaxRequestItems[ 1 ].getTaxStreet2Address()#</urn:StreetAddress2>
+							<urn:City>#addressTaxRequestItems[ 1 ].getTaxCity()#</urn:City>
+				      		<urn:MainDivision>#addressTaxRequestItems[ 1 ].getTaxStateCode()#</urn:MainDivision>
+				      		<urn:PostalCode>#addressTaxRequestItems[ 1 ].getTaxPostalCode()#</urn:PostalCode>
+				     		<urn:Country>#addressTaxRequestItems[ 1 ].getTaxCountryCode()#</urn:Country>
+				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				    	</urn:Destination>
+					 </urn:Customer>
+					 <cfset var count = 0 />
+					 <cfloop array="#addressTaxRequestItems#" index="taxRequestItem">
+					 	<cfset count++ />
+					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItemID()#">
+					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
+							<urn:FlexibleFields>
+					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="12">PRODUCT_NAME</urn:FlexibleCodeField>
+					    	</urn:FlexibleFields>
+					  	</urn:LineItem>
+					</cfloop>		 
+				</urn:InvoiceRequest>
+			</urn:VertexEnvelope>
+		</soapenv:Body>
+	</soapenv:Envelope>
 </cfoutput>

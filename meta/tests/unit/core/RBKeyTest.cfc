@@ -61,7 +61,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				if(!structKeyExists(property, "persistent") || property.persistent) {
 					var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#.#property.name#');
 					if(right(keyValue,8) == '_missing') {
-						debug(keyValue);
+						addToDebug(keyValue);
 						allFound = false;
 					}	
 				}

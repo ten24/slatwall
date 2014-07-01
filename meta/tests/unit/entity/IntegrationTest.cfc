@@ -46,32 +46,19 @@
 Notes:
 
 */
-component {
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	public any function getTestMerchandiseProduct() {
-		var product = entityNew("SlatwallProduct");
-		productData = {
-			productName = "Test Product",
-			price = 100,
-			productCode = "TESTPRODUCTXXX",
-			productType = {
-				productTypeID = "444df2f7ea9c87e60051f3cd87b435a1"
-			}
-		};
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
 		
-		request.slatwallScope.getService("productService").saveProduct(product, productData);
-		
-		ormFlush();
-		
-		return product;
+		variables.entity = request.slatwallScope.newEntity('integration');
 	}
 	
-	public void function destroyTestMerchandiseProduct( required any product ) {
-		arguments.product.setDefaultSku( javaCast("null", "") );
-		
-		entityDelete(arguments.product);
-		
-		ormFlush();
+	public void function active_flag_set_to_no_by_default() {
+		assertFalse(variables.entity.getActiveFlag(), "Active flag not set to 'No' by default on integrations");
 	}
 	
 }
+
+
