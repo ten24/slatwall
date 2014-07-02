@@ -21,14 +21,7 @@ component extends="PageObject" {
 		
 		var loadTime = waitForPageToLoad();
 		
-		return new DetailTaxCategory(selenium, loadTime);
+		return new EditTaxCategory(selenium, loadTime);
 	}
 	
-	public any function submitEditForm( struct formData={} ) {
-		submitForm( 'adminentitysavetaxcategory', arguments.formData );
-		
-		var pageLoadTime = waitForPageToLoad();
-		
-		return new DetailTaxCategory(selenium, pageLoadTime);
-	}
 }
