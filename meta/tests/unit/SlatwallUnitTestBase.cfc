@@ -79,11 +79,16 @@ component extends="mxunit.framework.TestCase" output="false" {
 	public void function tearDown() {
 		debug(variables.debugArray);
 		
+		var flushRequired = false;
+		
 		for(var persistentEntity in variables.persistentEntities) {
+			flushRequired = true;
 			entityDelete( persistentEntity );
 		}
 		
-		ormFlush();
+		if(flushRequired) {
+			ormFlush();	
+		}
 		
 		variables.debugArray = [];
 		variables.persistentEntities = [];

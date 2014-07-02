@@ -83,9 +83,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var newOrderPayment = request.slatwallScope.newEntity('OrderPayment');
 		newOrder.addOrderPayment(newOrderPayment);
 		
-		//Sets system code to dumby string for testing
-		newOrder.getOrderPayments()[1].getOrderPaymentStatusType().setSystemCode("notActiveTest");
-		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey(newOrder);
+		// Sets system code to dumby string for testing
+		newOrder.getOrderPayments()[1].setOrderPaymentStatusType( request.slatwallScope.getEntity('Type', {systemCode='opstInvalid'}) );
+		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey( newOrder );
 		
 		//Asserts that the struct key 'taxBillingAddress' was not created
 		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
@@ -122,5 +122,34 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
+	// Tests for removeTaxesFromAllOrderItems()
+	public void function removeTaxesFromAllOrderItems_removes_relationship_from_both_sides(){
+		var data = {
+			orderItems = [
+				{
+					orderItemID = '',
+					appliedTaxes = [
+						{taxAppliedID='', taxAmount=2}
+					]
+				}
+			]
+		};
+		
+		var newOrder = createTestEntity( entityName='Order', data=data, createRandomData=false, persist=false, saveWithService=false );
+		
+		var firstOrderItem = newOrder.getOrderItems()[1];
+		
+		assertEquals(1, arrayLen(firstOrderItem.getAppliedTaxes()));
+		
+		var firstAppTax = firstOrderItem.getAppliedTaxes()[1];
+		
+		assert(!isNull(firstAppTax.getOrderItem()));
+		assertEquals(firstOrderItem, firstAppTax.getOrderItem());
+		
+		variables.service.removeTaxesFromAllOrderItems( newOrder );
+		
+		assertEquals(0, arrayLen(firstOrderItem.getAppliedTaxes()));
+		assert(isNull(firstAppTax.getOrderItem()));
+	}
 }
 	
