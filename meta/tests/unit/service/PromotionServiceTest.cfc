@@ -792,56 +792,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderItemQualifiedDiscounts[orderITem2.getOrderItemID()][1].promotionRewardID,'');
 	}
 	
-	public void function getPromotionPeriodQualificationDetailsTest(){
-		makePublic(variables.service,'getPromotionPeriodQualificationDetails');
-		//args promotionPeriod, order
-		var accountData = {};
-		var account = createPersistedTestEntity('account',accountData);
-		
-		var orderData = {};
-		var order = createPersistedTestEntity('order',orderData);
-		
-		var promotionData = {};
-		var promotion = createPersistedTestEntity('promotion',promotionData);
-		
-		var promotionAppliedData = {};
-		var promotionApplied = createPersistedTestEntity('promotionApplied',promotionAppliedData);
-		
-		var promotionPeriodData = {
-			maximumUseCount = 1,
-			maximumAccountUseCount = 1
-		};
-		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
-		
-		var orderFulfillmentData = {};
-		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
-		
-		var promotionQualifierData = {
-			QualifierType = 'fulfillment'
-		};
-		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);
-		
-		promotion.addAppliedPromotion(promotionApplied);
-		promotion.addPromotionPeriod(promotionPeriod);
-		
-		promotionPeriod.addpromotionQualifier(promotionQualifier);
-		promotionQualifier.setPromotionPeriod(promotionPeriod);
-		
-		order.setAccount(account);
-		account.addOrder(order);
-		
-		order.addOrderFulfillment(orderFulfillment);
-		orderFulfillment.setOrder(order);
-		
-		var qualificationDetails = variables.service.getPromotionPeriodQualificationDetails(promotionPeriod,order);
-		//assert details make sense
-		assertEquals(qualificationDetails.qualifiedFulfillmentIDS[1],orderFulfillment.getOrderFulfillmentID());
-		assertTrue(qualificationDetails.qualificationsmeet);
-		assertEquals(qualificationDetails.qualifierDetails[1].qualificationCount,1);
-		assertEquals(qualificationDetails.qualifierDetails[1].qualifier.getPromotionQualifierID(),promotionQualifier.getPromotionQualifierID());
-		
-	}
-	
 	public void function getQualifierQualificationDetailsForOrderTest(){
 		makePublic(variables.service,'getQualifierQualificationDetailsForOrder');
 		//args qualifier,order
@@ -879,6 +829,884 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
+	public void function getQualifierQualificationDetailsForOrderFulfillmentsTest(){
+		makePublic(variables.service,'getQualifierQualificationDetailsForOrderFulfillments');
+		//args qualifier,order, qualifierDetails
+		//data setup begin
+		var orderData = {
+			
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderFulfillmentData = {
+		};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		var promotionQualifierData = {
+			QualifierType = 'orderFulfillment'
+		};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);
+		/* TODO: test addressZones
+		var addressZoneData = {};
+		var addressZone = createPersistedTestEntity('addressZone',addressZoneData);
+		*/
+		var qualifierDetails = {
+			qualifier = promotionQualifier,
+			qualificationCount = 0,
+			qualifiedFulfillmentIDs = [],
+			qualifiedOrderItemDetails = []
+		};
+		
+		order.addOrderFulfillment(orderFulfillment);
+		orderFulfillment.setOrder(order);
+		
+		//data setup end
+		
+		variables.service.getQualifierQualificationDetailsForOrderFulfillments(promotionQualifier,order,qualifierDetails);
+		
+		assertEquals(qualifierDetails.qualificationCount,1);
+		assertEquals(qualifierDetails.qualifiedFulfillmentids[1],orderFulfillment.getOrderFulfillmentID());
+			
+	}
+	
+	public void function getQualifierQualificationDetailsForOrderItemsTest(){
+		
+		makePublic(variables.service,'getQualifierQualificationDetailsForOrderItems');
+		//args qualifier,order, qualifierDetails
+		//data setup begin
+		var orderData = {
+			
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderFulfillmentData = {
+		};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		var orderItemData = {
+			
+			quantity = 5
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+		
+		var promotionQualifierData = {
+			QualifierType = 'contentAccess'
+		};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		var qualifierDetails = {
+			qualifier = promotionQualifier,
+			qualificationCount = 0,
+			qualifiedFulfillmentIDs = [],
+			qualifiedOrderItemDetails = []
+		};
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		orderItem.setOrder(order);
+		order.addOrderItem(orderItem);
+		
+		promotionQualifier.addsku(sku);
+		//data setup end
+		
+		variables.service.getQualifierQualificationDetailsForOrderItems(promotionQualifier,order,qualifierDetails);
+		
+		//assert values
+		assertEquals(qualifierDetails.qualificationCount,0);
+		assertEquals(qualifierDetails.qualifiedOrderItemDetails[1].orderItem.getOrderItemID(),orderItem.getOrderItemID());
+		assertEquals(qualifierDetails.qualifiedOrderItemDetails[1].qualificationCount,5);
+	}
+	
+	//getOrderItemInQualifierTests
+	//inclusions
+	public void function getOrderItemInQualifier_checkInclusions_hasProduct_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		promotionQualifier.addProduct(product);
+		
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertTrue(isOrderItemInQualifier);
+	}
+	
+	public void function getOrderItemInQualifier_checkInclusions_hasSku_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		promotionQualifier.addSku(sku);
+		
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertTrue(isOrderItemInQualifier);
+	}
+	
+	public void function getOrderItemInQualifier_checkInclusions_hasBrand_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		product.setBrand(brand);
+		brand.addProduct(product);
+		
+		promotionQualifier.addBrand(brand);
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertTrue(isOrderItemInQualifier);
+	}
+	
+	public void function getOrderItemInQualifier_checkInclusions_hasAnyOption_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var optionData = {};
+		var option = createPersistedTestEntity('option',optionData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		sku.addOption(option);
+		option.addSku(sku);
+		
+		promotionQualifier.addOption(option);
+		
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertTrue(isOrderItemInQualifier);
+	}
+	
+	//exclusions
+	
+	public void function getOrderItemInQualifier_hasExcludedProductType_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		promotionQualifier.addExcludedProductType(productType);
+		promotionQualifier.addSku(sku);
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertFalse(isOrderItemInQualifier);
+		
+	}
+
+	public void function getOrderItemInQualifier_hasExcludedMinimumItemPriceGreaterThanPrice_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		promotionQualifier.addSku(sku);
+		promotionQualifier.setMinimumItemPrice(2);
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertFalse(isOrderItemInQualifier);
+	}
+	
+	public void function getOrderItemInQualifier_hasExcludedMaximumItemPriceLessThanPrice_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		promotionQualifier.addSku(sku);
+		promotionQualifier.setMaximumItemPrice(0);
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertFalse(isOrderItemInQualifier);
+	}
+	
+	public void function getOrderItemInQualifier_hasExcludedProduct_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		product.addSku(sku);
+		sku.setProduct(product);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		promotionQualifier.addSku(sku);
+		promotionQualifier.addExcludedProduct(product);
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertFalse(isOrderItemInQualifier);
+	}
+	
+	public void function getOrderItemInQualifier_hasExcludedBrand_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		product.addSku(sku);
+		sku.setProduct(product);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		product.setBrand(brand);
+		brand.addProduct(product);
+		
+		promotionQualifier.addSku(sku);
+		promotionQualifier.addExcludedBrand(brand);
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertFalse(isOrderItemInQualifier);
+	}
+	
+	public void function getOrderItemInQualifier_hasExcludedOption_Test(){
+		//args qualifier, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionQualifierData = {};
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var optionData = {};
+		var option = createPersistedTestEntity('option',optionData);
+		
+		product.addSku(sku);
+		sku.setProduct(product);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		sku.addOption(option);
+		option.addSku(sku);
+		
+		promotionQualifier.addSku(sku);
+		promotionQualifier.addExcludedOption(option);
+		//data setup end
+		
+		var isOrderItemInQualifier = variables.service.getOrderItemInQualifier(promotionQualifier,orderItem);
+		assertFalse(isOrderItemInQualifier);
+	}
+	
+	//getOrderItemInReward Tests
+	
+	//inclusions
+	public void function getOrderItemInReward_checkInclusions_hasProduct_Test(){
+		//args Reward, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionRewardData = {};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		promotionReward.addProduct(product);
+		
+		//data setup end
+		
+		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
+		assertTrue(isOrderItemInReward);
+	}
+	
+	public void function getOrderItemInReward_checkInclusions_hasSku_Test(){
+		//args Reward, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionRewardData = {};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		promotionReward.addSku(sku);
+		
+		//data setup end
+		
+		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
+		assertTrue(isOrderItemInReward);
+	}
+	
+	public void function getOrderItemInReward_checkInclusions_hasBrand_Test(){
+		//args Reward, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionRewardData = {};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		product.setBrand(brand);
+		brand.addProduct(product);
+		
+		promotionReward.addBrand(brand);
+		//data setup end
+		
+		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
+		assertTrue(isOrderItemInReward);
+	}
+	
+	public void function getOrderItemInReward_checkInclusions_hasAnyOption_Test(){
+		//args Reward, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionRewardData = {};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var optionData = {};
+		var option = createPersistedTestEntity('option',optionData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		sku.addOption(option);
+		option.addSku(sku);
+		
+		promotionReward.addOption(option);
+		
+		//data setup end
+		
+		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
+		assertTrue(isOrderItemInReward);
+	}
+	
+	//exclusions
+	
+	public void function getOrderItemInReward_hasExcludedProductType_Test(){
+		//args Reward, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionRewardData = {};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		sku.setProduct(product);
+		product.addsku(sku);
+		
+		product.setProductType(productType);
+		productType.addProduct(product);
+		
+		promotionReward.addExcludedProductType(productType);
+		promotionReward.addSku(sku);
+		//data setup end
+		
+		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
+		assertFalse(isOrderItemInReward);
+		
+	}
+
+	public void function getOrderItemInReward_hasExcludedProduct_Test(){
+		//args Reward, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionRewardData = {};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		product.addSku(sku);
+		sku.setProduct(product);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		promotionReward.addSku(sku);
+		promotionReward.addExcludedProduct(product);
+		//data setup end
+		
+		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
+		assertFalse(isOrderItemInReward);
+	}
+	
+	public void function getOrderItemInReward_hasExcludedBrand_Test(){
+		//args Reward, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionRewardData = {};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);
+		
+		product.addSku(sku);
+		sku.setProduct(product);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		product.setBrand(brand);
+		brand.addProduct(product);
+		
+		promotionReward.addSku(sku);
+		promotionReward.addExcludedBrand(brand);
+		//data setup end
+		
+		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
+		assertFalse(isOrderItemInReward);
+	}
+	
+	public void function getOrderItemInReward_hasExcludedOption_Test(){
+		//args Reward, orderItem
+		//returns boolean
+		//data setup begin
+		var orderItemData = {
+			price = 1
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+
+		var promotionRewardData = {};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);	
+		
+		var productTypeData = {
+		};
+		var productType = createPersistedTestEntity('productType',productTypeData);
+		
+		var skuData = {};
+		var sku = createPersistedTestEntity('sku',skuData);
+		
+		var productData = {
+			productName = 'TestProductName'
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var optionData = {};
+		var option = createPersistedTestEntity('option',optionData);
+		
+		product.addSku(sku);
+		sku.setProduct(product);
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		sku.addOption(option);
+		option.addSku(sku);
+		
+		promotionReward.addSku(sku);
+		promotionReward.addExcludedOption(option);
+		//data setup end
+		
+		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
+		assertFalse(isOrderItemInReward);
+	}
 }
 
 

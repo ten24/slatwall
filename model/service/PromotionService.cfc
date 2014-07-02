@@ -617,6 +617,96 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.qualifierDetails.qualificationCount = 0;
 		}
 	}
+	 
+	private void function getQualifierQualificationDetailsForOrderFulfillments(required any qualifier, required any order, required struct qualifierDetails){
+		// Set the qualification count to the total fulfillments
+		arguments.qualifierDetails.qualificationCount = 0;
+		arguments.qualifierDetails.qualifiedFulfillmentIDs = [];
+		
+		// Loop over each of the fulfillments to see if it qualifies
+		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
+			
+			arguments.qualifierDetails.qualificationCount++;
+			arrayAppend(arguments.qualifierDetails.qualifiedFulfillmentIDs, orderFulfillment.getOrderFulfillmentID());
+			
+			// Temp variable to be used by the next loop
+			var addressZoneOK = true;
+			
+			// Because it requires a bit more logic, we check the shipping address zones first
+			if(arrayLen(arguments.qualifier.getShippingAddressZones())) {
+				
+				// By default if there were address zones then we need to set to false
+				addressZoneOk = false;
+				
+				// As long as this is a shipping fulfillment, and we have a real address, then we should be good to loop over each address zone
+				if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping" && !orderFulfillment.getAddress().getNewFlag()) {
+					
+					// Loop over each address zone, and check if this address is in one.
+					for(var shippingAddressZone in arguments.qualifier.getShippingAddressZones()) {
+						
+						// If found set to true and stop looping
+						if(getAddressService().isAddressInZone(orderFulfillment.getAddress(), shippingAddressZone) ) {
+							addressZoneOk = true;
+							break;
+						}
+					}
+				}
+			}
+			
+			// Now that we know about the address zone info, we can check everything else
+			if( !addressZoneOk
+				||
+				( !isNull(arguments.qualifier.getMinimumFulfillmentWeight()) && arguments.qualifier.getMinimumFulfillmentWeight() > orderFulfillment.getTotalShippingWeight() )
+				||
+				( !isNull(arguments.qualifier.getMaximumFulfillmentWeight()) && arguments.qualifier.getMaximumFulfillmentWeight() < orderFulfillment.getTotalShippingWeight() )
+				||
+				( arrayLen(arguments.qualifier.getFulfillmentMethods()) && !arguments.qualifier.hasFulfillmentMethod(orderFulfillment.getFulfillmentMethod()) )
+				||
+				( arrayLen(arguments.qualifier.getShippingMethods()) && (isNull(orderFulfillment.getShippingMethod()) || !arguments.qualifier.hasShippingMethod(orderFulfillment.getShippingMethod())) )
+				||
+				( arrayLen(arguments.qualifier.getShippingAddressZones()) && (orderFulfillment.getAddress().getNewFlag() || !arguments.qualifier.hasShippingMethod(orderFulfillment.getShippingMethod())) )
+				) {
+				
+				// Set the qualification count to the total fulfillments
+				arguments.qualifierDetails.qualificationCount--;
+				var di = arrayFind(arguments.qualifierDetails.qualifiedFulfillmentIDs, orderFulfillment.getOrderFulfillmentID());
+				arrayDeleteAt(arguments.qualifierDetails.qualifiedFulfillmentIDs, di);
+			}
+		}
+	}
+	
+	private void function getQualifierQualificationDetailsForOrderItems(required any qualifier, required any order, required struct qualifierDetails){
+		// Set the qualification count to the total fulfillments
+		arguments.qualifierDetails.qualificationCount = 0;
+		var qualifiedItemsQuantity = 0;
+		
+		for(var orderItem in arguments.order.getOrderItems()) {
+			
+			var qualifiedOrderItemDetails = {
+				orderItem = orderItem,
+				qualificationCount = 0
+			};
+			
+			if( getOrderItemInQualifier(qualifier=qualifier, orderItem=orderItem) ){
+					
+				qualifiedOrderItemDetails.qualificationCount = orderItem.getQuantity();
+				qualifiedItemsQuantity += orderItem.getQuantity();
+				
+				// Add this orderItem to the array
+				arrayAppend(arguments.qualifierDetails.qualifiedOrderItemDetails, qualifiedOrderItemDetails);
+				
+			}
+			
+		}
+		
+		// As long as the above leaves this as still > 0
+		if(qualifiedItemsQuantity gt 0) {
+			// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
+			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) ) {
+				arguments.qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
+			}
+		}
+	}
 	
 	private struct function getQualifierQualificationDetails(required any qualifier, required any order) {
 		var qualifierDetails = {
@@ -633,94 +723,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
 			
-			// Set the qualification count to the total fulfillments
-			qualifierDetails.qualificationCount = 0;
-			qualifierDetails.qualifiedFulfillmentIDs = [];
-			
-			// Loop over each of the fulfillments to see if it qualifies
-			for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
-				
-				qualifierDetails.qualificationCount++;
-				arrayAppend(qualifierDetails.qualifiedFulfillmentIDs, orderFulfillment.getOrderFulfillmentID());
-				
-				// Temp variable to be used by the next loop
-				var addressZoneOK = true;
-				
-				// Because it requires a bit more logic, we check the shipping address zones first
-				if(arrayLen(arguments.qualifier.getShippingAddressZones())) {
-					
-					// By default if there were address zones then we need to set to false
-					addressZoneOk = false;
-					
-					// As long as this is a shipping fulfillment, and we have a real address, then we should be good to loop over each address zone
-					if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping" && !orderFulfillment.getAddress().getNewFlag()) {
-						
-						// Loop over each address zone, and check if this address is in one.
-						for(var shippingAddressZone in arguments.qualifier.getShippingAddressZones()) {
-							
-							// If found set to true and stop looping
-							if(getAddressService().isAddressInZone(orderFulfillment.getAddress(), shippingAddressZone) ) {
-								addressZoneOk = true;
-								break;
-							}
-						}
-					}
-				}
-				
-				// Now that we know about the address zone info, we can check everything else
-				if( !addressZoneOk
-					||
-					( !isNull(arguments.qualifier.getMinimumFulfillmentWeight()) && arguments.qualifier.getMinimumFulfillmentWeight() > orderFulfillment.getTotalShippingWeight() )
-					||
-					( !isNull(arguments.qualifier.getMaximumFulfillmentWeight()) && arguments.qualifier.getMaximumFulfillmentWeight() < orderFulfillment.getTotalShippingWeight() )
-					||
-					( arrayLen(arguments.qualifier.getFulfillmentMethods()) && !arguments.qualifier.hasFulfillmentMethod(orderFulfillment.getFulfillmentMethod()) )
-					||
-					( arrayLen(arguments.qualifier.getShippingMethods()) && (isNull(orderFulfillment.getShippingMethod()) || !arguments.qualifier.hasShippingMethod(orderFulfillment.getShippingMethod())) )
-					||
-					( arrayLen(arguments.qualifier.getShippingAddressZones()) && (orderFulfillment.getAddress().getNewFlag() || !arguments.qualifier.hasShippingMethod(orderFulfillment.getShippingMethod())) )
-					) {
-					
-					// Set the qualification count to the total fulfillments
-					qualifierDetails.qualificationCount--;
-					var di = arrayFind(qualifierDetails.qualifiedFulfillmentIDs, orderFulfillment.getOrderFulfillmentID());
-					arrayDeleteAt(qualifierDetails.qualifiedFulfillmentIDs, di);
-				}
-			}
+			getPromotionPeriodQualificationDetailsForOrderFulfillment(arguments.qualifier, arguments.order, qualifier);
 		
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
 			
-			// Set the qualification count to the total fulfillments
-			qualifierDetails.qualificationCount = 0;
-			var qualifiedItemsQuantity = 0;
-			
-			for(var orderItem in arguments.order.getOrderItems()) {
-				
-				var qualifiedOrderItemDetails = {
-					orderItem = orderItem,
-					qualificationCount = 0
-				};
-				
-				if( getOrderItemInQualifier(qualifier=qualifier, orderItem=orderItem) ){
-						
-					qualifiedOrderItemDetails.qualificationCount = orderItem.getQuantity();
-					qualifiedItemsQuantity += orderItem.getQuantity();
-					
-					// Add this orderItem to the array
-					arrayAppend(qualifierDetails.qualifiedOrderItemDetails, qualifiedOrderItemDetails);
-					
-				}
-				
-			}
-			
-			// As long as the above leaves this as still > 0
-			if(qualifiedItemsQuantity gt 0) {
-				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-				if( !isNull(arguments.qualifier.getMinimumItemQuantity()) ) {
-					qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
-				}
-			}
+			getQualifierQualificationDetailsForOrderItems(arguments.qualifier,arguments.order,qualifierDetails);
 			
 		}
 		
@@ -846,7 +854,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}	
 			}
 		}
-		
 		// If anything is excluded then we return false
 		if(	hasExcludedProductType
 			||
