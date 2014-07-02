@@ -80,10 +80,9 @@ component extends="mxunit.framework.TestCase" output="false" {
 		debug(variables.debugArray);
 		
 		for(var persistentEntity in variables.persistentEntities) {
-			entityDelete( persistentEntity );
-			ormFlush();
+				entityDelete( persistentEntity );
 		}
-		
+		ormFlush();
 		variables.debugArray = [];
 		variables.persistentEntities = [];
 		
@@ -94,7 +93,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		arrayAppend(variables.debugArray, arguments.output);
 	}
 	
-	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true, boolean saveWithService=false ) {
+	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true ) {
 		return createTestEntity(argumentcollection=arguments);
 	}
 	
@@ -110,7 +109,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 			// Save with Service
 			if(arguments.saveWithService) {
 				
-				request.slatwallScope.saveEntity( arguments.entity, arguments.data );
+				request.slatwallScope.saveEntity( arguments.entityName, arguments.data );
 			
 			// Save manually
 			} else {
@@ -120,6 +119,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 				// Save the entity
 				entitySave(newEntity);
 			}
+			
 			
 			// Persist to the database
 			ormFlush();
