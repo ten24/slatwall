@@ -990,19 +990,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrder_removePromotionCode(required any order, required struct data) {
 		
-			if(structKeyExists(arguments.data, "promotionCodeID")) {
-				var promotionCode = getPromotionService().getPromotionCode( arguments.data.promotionCodeID );
-			} else if (structKeyExists(arguments.data, "promotionCode")) {
-				var promotionCode = getPromotionService().getPromotionCodeByPromotionCode( arguments.data.promotionCode );	
-			}
-			
-			if(!isNull(promotionCode)) {
-				arguments.order.removePromotionCode( promotionCode );
-			}
-			
-			// Call saveOrder to recalculate all the orderTotal stuff
-			arguments.order = this.saveOrder(arguments.order);
-			return arguments.order;
+		if(structKeyExists(arguments.data, "promotionCodeID")) {
+			var promotionCode = getPromotionService().getPromotionCode( arguments.data.promotionCodeID );
+		} else if (structKeyExists(arguments.data, "promotionCode")) {
+			var promotionCode = getPromotionService().getPromotionCodeByPromotionCode( arguments.data.promotionCode );	
+		}
+		
+		if(!isNull(promotionCode)) {
+			arguments.order.removePromotionCode( promotionCode );
+		}
+		
+		// Call saveOrder to recalculate all the orderTotal stuff
+		arguments.order = this.saveOrder(arguments.order);
+		return arguments.order;
 	}
 	
 	public any function processOrder_takeOffHold(required any order, struct data={}) {
