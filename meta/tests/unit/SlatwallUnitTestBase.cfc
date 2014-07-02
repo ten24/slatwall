@@ -56,7 +56,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.TestUtility").init( variables.slatwallFW1Application );
+		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
 		
 		// Read Config
 		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
@@ -79,10 +79,17 @@ component extends="mxunit.framework.TestCase" output="false" {
 	public void function tearDown() {
 		debug(variables.debugArray);
 		
+		var flushRequired = false;
+		
 		for(var persistentEntity in variables.persistentEntities) {
-				entityDelete( persistentEntity );
+			flushRequired = true;
+			entityDelete( persistentEntity );
 		}
-		ormFlush();
+		
+		if(flushRequired) {
+			ormFlush();	
+		}
+		
 		variables.debugArray = [];
 		variables.persistentEntities = [];
 		
@@ -93,7 +100,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		arrayAppend(variables.debugArray, arguments.output);
 	}
 	
-	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true ) {
+	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true, boolean saveWithService=false ) {
 		return createTestEntity(argumentcollection=arguments);
 	}
 	
@@ -109,7 +116,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 			// Save with Service
 			if(arguments.saveWithService) {
 				
-				request.slatwallScope.saveEntity( arguments.entityName, arguments.data );
+				request.slatwallScope.saveEntity( arguments.entity, arguments.data );
 			
 			// Save manually
 			} else {
@@ -119,7 +126,6 @@ component extends="mxunit.framework.TestCase" output="false" {
 				// Save the entity
 				entitySave(newEntity);
 			}
-			
 			
 			// Persist to the database
 			ormFlush();

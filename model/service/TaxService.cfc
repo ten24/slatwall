@@ -55,17 +55,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup the taxIntegrationArray
 		var taxIntegrationArr = [];
+		var ratesResponseBeans = {};
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
-		// First Loop over the orderItems to remove existing taxes
-		for(var orderItem in arguments.order.getOrderItems()) {
-			
-			// Remove all existing tax calculations
-			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
-				orderItem.getAppliedTaxes()[ta].removeOrderItem();
-			}
-		
-		}
+		//Remove existing taxes from OrderItems
+		removeTaxesFromAllOrderItems(arguments.order);
 		
 		// Next Loop over the orderItems and setup integrations to call
 		for(var orderItem in arguments.order.getOrderItems()) {
@@ -237,6 +231,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
+	public void function removeTaxesFromAllOrderItems(required any order){
+		// First Loop over the orderItems to remove existing taxes
+		for(var orderItem in arguments.order.getOrderItems()) {
+
+			// Remove all existing tax calculations
+			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
+				orderItem.getAppliedTaxes()[ta].removeOrderItem();
+			}
+			
+		}
+
+	}
+
 	public struct function addTaxAddressesStructBillingAddressKey(required any order) {
 		var taxAddresses = {};
 		

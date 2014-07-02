@@ -61,20 +61,15 @@ component extends="HibachiService" output="false" accessors="true"{
 		var tasks = getDueTasks();
 		// Loop over all secheduled Tasks
 		for(i=1; i <= tasks.recordcount; i++){
-			// Call Execute Task on Task Service
 			
-			getTaskService().executeTask(tasks.taskID[i],tasks.taskScheduleID[i]);
-			
+			// Call runTask process on task
+			var task = getTaskService().getTask(tasks.taskID[i]);
+			var taskData = {
+	        	taskScheduleID = tasks.taskScheduleID[i]
+	        };
+	        getTaskService().processTask(task, taskData, 'runTask');
 		}
 	}
-
-    public any function processtaskschedule(required any taskSchedule, struct data={}, string processContext="process"){
-        getTaskService().executeTask(arguments.taskSchedule.getTask().getTaskID(),arguments.taskSchedule.getTaskScheduleID());
-    } 
-
-     public any function processtask(required any task, struct data={}, string processContext="process"){
-        getTaskService().executeTask(arguments.task.getTaskID(),arguments.data.taskScheduleID);
-    }    
 	
 	// ===================== START: Logical Methods ===========================
 	

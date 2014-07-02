@@ -58,7 +58,7 @@
 		<cfset slatwallApplication.bootstrap() />
 		
 		<!--- Setup Test Utility --->
-		<cfset var testUtility = createObject("component", "Slatwall.meta.tests.TestUtility").init( slatwallApplication ) />
+		<cfset var testUtility = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( slatwallApplication ) />
 		
 		<!--- Make sure all the test data is up to date --->
 		<cfset testUtility.updateTestData() />
