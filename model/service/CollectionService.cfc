@@ -130,7 +130,13 @@ component extends="HibachiService" accessors="true" output="false" {
 					add['fieldType'] = 'column';
 				}
 				
-				arrayInsertAt(returnArray, arrayFindNoCase(sortArray, property), add);
+				var position = arrayFindNoCase(sortArray, property);
+				
+				if(arrayLen(returnArray) && position <= arrayLen(returnArray)) {
+					arrayInsertAt(returnArray, position, add);		
+				} else {
+					arrayAppend(returnArray, add);
+				}
 			}
 			
 		}

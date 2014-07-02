@@ -56,17 +56,27 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getCollectionObjectColumnProperties_returns_valid_array() {
 		var result = variables.service.getCollectionObjectColumnProperties( 'Account' );
-		debug( result );
-		assertTrue( isArray( result ) );
+		
+		assert( isArray( result ) );
 	}
 	
+	// getCollectionObjectProperties()
 	public void function getCollectionObjectProperties_returns_valid_array() {
 		var result = variables.service.getCollectionObjectProperties( 'Account' );
-		debug( result );
-		assertTrue( isArray( result ) );
+		
+		assert( isArray( result ) );
 	}
 	
-	
+	public void function getCollectionObjectProperties_returns_properties_in_correct_sorted_order() {
+		var result = variables.service.getCollectionObjectProperties( 'Account' );
+		
+		assertEquals( "accountAddresses", result[1].propertyIdentifier );
+		assertEquals( "accountAuthentications", result[2].propertyIdentifier );
+		assertEquals( "accountContentAccesses", result[3].propertyIdentifier );
+		assertEquals( "accountEmailAddresses", result[4].propertyIdentifier );
+		assertEquals( "accountID", result[5].propertyIdentifier );
+		assertEquals( "accountLoyalties", result[6].propertyIdentifier );
+	}
 	
 }
 
