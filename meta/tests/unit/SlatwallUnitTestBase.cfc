@@ -81,8 +81,9 @@ component extends="mxunit.framework.TestCase" output="false" {
 		
 		for(var persistentEntity in variables.persistentEntities) {
 			entityDelete( persistentEntity );
-			ormFlush();
 		}
+		
+		ormFlush();
 		
 		variables.debugArray = [];
 		variables.persistentEntities = [];
