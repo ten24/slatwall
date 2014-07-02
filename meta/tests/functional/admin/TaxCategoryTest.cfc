@@ -8,7 +8,7 @@ component extends="AdminTestBase" {
 		
 		// Load Create Page
 		var taxCategoryCreate = taxCategoryList.openCreateTaxCategoryLink();
-		
+
 		assertPageIsLoaded( taxCategoryCreate );
 		//Sets Up Form Data for Creation
 		formData = {};
@@ -18,18 +18,21 @@ component extends="AdminTestBase" {
 		taxCategoryDetail = taxCategoryCreate.submitCreateForm(formData);
 		
 		assertEquals( "Create Tax Category | Slatwall", taxCategoryDetail.getTitle() );
+		
 		//Tests Edit Button
 		var taxCategoryEdit = taxCategoryDetail.edit();
 		
-		assertPageIsLoaded( taxCategoryEdit );		
+		assertPageIsLoaded( taxCategoryEdit );	
+	
 		//Sets Up New Form Data
-		formData['taxCategoryName'] = "Edit Tax Category Test Name";
+		formData['taxCategoryName'] = "Edit Tax Category";
 		formData['taxCategoryCode'] = "TEST-#getTickCount()#";
+		
 		//Saves new form Data
-		taxCategoryDetail = taxCategoryEdit.submitEditForm(formData);
+		taxCategoryEdit = taxCategoryEdit.submitSaveForm(formData);
 		
 		//Asserts New Data is present
-		assertEquals( "Edit Tax Category Test Name | Slatwall", taxCategoryDetail.getTitle() );
+		assertEquals( "Edit Tax Category | Slatwall", taxCategoryEdit.getTitle() );
 		
 		//Deletes Test Category
 		taxCategoryList = taxCategoryDetail.delete();
