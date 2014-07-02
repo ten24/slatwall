@@ -48,7 +48,7 @@ Notes:
 */
 component output="false" accessors="true" persistent="false" extends="Slatwall.org.Hibachi.HibachiEntity" {
 
-	property name="assignedAttributeSetSmartList" type="struct" persistent="false";
+	property name="assignedAttributeSetSmartList" type="any" persistent="false";
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
 
@@ -59,18 +59,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		super.populate(argumentcollection=arguments);
 
 		// Loop over attribute sets
-		if(!isnull(getAssignedAttributeSetSmartList())){
-			for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
-				
-				// Loop over attributes
-				for(var attribute in attributeSet.getAttributes()) {
-					if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-						setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], "") );
-					}
+		for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
+			
+			// Loop over attributes
+			for(var attribute in attributeSet.getAttributes()) {
+				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
+					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], "") );
 				}
-				
 			}
+			
 		}
+		
 		// Return this object
 		return this;
 	}
