@@ -91,33 +91,33 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
 	}
 	
-	//Sets up dumby order
-	private any function dumby_order(){
-		//Creates new order
-		var newOrder = request.slatwallScope.newEntity('Order');
-		var i = 1;
-		//Iterates twice to create two orderItems with taxApplied
-		for(i=1;i<3;i++){
-			var newOrderItem = request.slatwallScope.newEntity('OrderItem');
-			var taxApplied = request.slatwallScope.newEntity('taxApplied');
-			taxApplied.setTaxAmount(2);
-			newOrderItem.addAppliedTax(taxApplied);
-			newOrder.addOrderItem(newOrderItem);
-		}
-		//Returns the dumby order
-		return newOrder;
-	}
-	
 	// Tests for removeTaxesFromAllOrderItems()
 	public void function removeTaxesFromAllOrderItems_iterates_over_orderItems_in_order_and_removes_taxes(){
-		//Uses dumby_order() as newOrder
-		var newOrder = dumby_order();
+		var data = {
+			orderItems = [
+				{
+					orderItemID = '',
+					appliedTaxes = [
+						{taxAppliedID='', taxAmount=2}
+					]
+				},
+				{
+					orderItemID = '',
+					appliedTaxes = [
+						{taxAppliedID='', taxAmount=2}
+					]
+				}
+			]
+		};
+		var newOrder = createTestEntity( entityName='Order', data=data, createRandomData=false, persist=false, saveWithService=false );
 		
 		//Asserts that the dumby order has taxes
 		assertEquals(4, newOrder.getTaxTotal());
 		
 		//Passes in the new order to remove taxes and asserts taxes were removed
-		variables.service.removeTaxesFromAllOrderItems(newOrder);
+		variables.service.removeTaxesFromAllOrderItems( newOrder );
+		
+		// Assert that the taxTotal is now 0
 		assertEquals(0, newOrder.getTaxTotal());
 		
 	}
