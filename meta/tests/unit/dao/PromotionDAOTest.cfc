@@ -55,49 +55,51 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	 
 	public void function getSalePricePromotionRewardsQueryTest(){
 		var productData = {
-			productName = 'TestProductName'
+			productID = '',
+			productName = 'Test Product Name',
+			productCode = #getTickCount()#,
+			skus = [
+				{
+					skuID = '',
+					price = 10
+				}
+			]
 		};
-		var product = createPersistedTestEntity('product',productData);
+		
+		var product = createPersistedTestEntity('Product', productData);
+		var sku = product.getSkus()[1];
 		
 		var promotionData = {
+			promotionPeriods = [
+				{
+					promotionPeriodID = '',
+					promotionRewards = [
+						{
+							promotionRewardID='',
+							amount = 3,
+							amountType = 'amountOff',
+							skus = sku.getSkuID()
+						}
+					]
+				}
+			]
+		};
+		
+		var promotion = createPersistedTestEntity( 'Promotion' , promotionData);
+		var promotionPeriod = promotion.getPromotionPeriods()[1];
+		var promotionReward = promotionPeriod.getPromotionRewards()[1];
 			
-		};
-		var promotion = createPersistedTestEntity('promotion',promotionData);
-		
-		var skuData = {
-			price = 10,
-			product = product
-		};
-		var sku = createPersistedTestEntity('sku',skuData);
-		
-		var promotionRewardData = {
-			amount = 3,
-			amountType = 'amountOff',
-			sku = sku
-		};
-		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
-		
-		var promotionPeriodData = {
-			promotion = promotion,
-			promotionReward = promotionReward
-		};
-		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
-		
-		product.addSku(sku);
-		sku.addPromotionReward(promotionReward);
-		promotionReward.setPromotionPeriod(promotionPeriod);
-		promotion.addPromotionPeriod(promotionPeriod);
-		ormflush();
-			
-		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID());
+		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID() );
 		
 		//assert amount off Price - Amount
-		assertEquals(salePricePromotionRewardsQuery.SalePrice,7.00);
+		assertEquals(salePricePromotionRewardsQuery.SalePrice, 7.00);
 		
 		//assert percentage off Price - Price * Amount/100
 		promotionReward.setAmountType('percentageOff');
 		promotionReward.setAmount(80);
+		
 		ormflush();
+		
 		var salePricePromotionRewardsQuery2 = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID());
 		
 		assertEquals(salePricePromotionRewardsQuery2.SalePrice,2.00);
@@ -105,11 +107,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assert amount Price = Amount
 		promotionReward.setAmountType('amount');
 		promotionReward.setAmount(5.55);
+		
 		ormflush();
 		
 		salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery(product.getProductID());
 		
 		assertEquals(salePricePromotionRewardsQuery.SalePrice,5.55);
+
 	}
 	
 	//This test is dependent on no pre-exisitng promotionReward data. All promotionReward data is generated for this test
