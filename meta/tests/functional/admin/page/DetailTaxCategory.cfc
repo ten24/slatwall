@@ -26,12 +26,16 @@ component extends="PageObject" {
 		return new EditTaxCategory(selenium, loadTime);
 	}
 	
-	public any function clickAddTaxCategoryRateLink(){
-		selenium.openWindow(getText_ManualRate());
+	public any function clickAddTaxCategoryRateDropdownLink( required string subMenuLink ){
+		selenium.click('//*[@id="tabrates"]/div/div/button');
 		
-		var loadTime = waitForPageToLoad();
+		selenium.waitForElementPresent("//a[@title='#subMenuLink#']");
 		
-		return new CreateTaxCategoryRate(selenium, loadTime);
+		selenium.click("//a[@title='#subMenuLink#']");
+		
+		selenium.waitForElementPresent("//*[@id='adminentitysavetaxcategoryrate']/div[1]/h3");
+		
+		return new CreateTaxCategoryRate( selenium );
 	}
 	
 	// =============== GET TEXT =======================
