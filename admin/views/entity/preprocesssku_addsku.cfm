@@ -51,13 +51,13 @@ Notes:
 <!---<cfparam name="rc.processObject" type="any">--->
 <cfparam name="rc.edit" type="boolean">
 
-<cfdump var="#url#">
-<cfabort>
-
+<cfoutput>
 <cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
 	
 	<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
 	</cf_HibachiEntityActionBar>
+	
+	<input type="hidden" name="product.productID" value="#rc.product.getProductID()#" />
 	
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList>
@@ -71,4 +71,4 @@ Notes:
 	</cf_HibachiPropertyRow>
 		
 </cf_HibachiEntityProcessForm>
-
+</cfoutput>

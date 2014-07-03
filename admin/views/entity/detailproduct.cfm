@@ -52,7 +52,7 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.product#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.product#" edit="#rc.edit#">
-			<cf_HibachiProcessCaller entity="sku" action="admin:entity.preprocesssku" processContext="addSku" type="list" modal="false" />
+			<cf_HibachiProcessCaller entity="sku" action="admin:entity.preprocesssku" processContext="addSku" querystring="productID=#rc.product.getProductID()#" type="list" modal="false" />
 			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="updateSkus" type="list" modal="true" />
 			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.processproduct" processContext="updateDefaultImageFileNames" type="list" confirm="true" confirmtext="#$.slatwall.rbKey('entity.Product.process.updateDefaultImageFileNames_confirm')#" />
 			<li class="divider"></li>

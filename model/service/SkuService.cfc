@@ -295,9 +295,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 	
 	public any function processSku_addSku(required any sku, any processObject, struct data={}) {
-		writeDump("Processing add sku");
-		abort;
-		return arguments.sku;
+		return this.saveSku(arguments.sku);
 	}
 	
 	// =====================  END: Process Methods ============================
