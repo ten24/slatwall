@@ -241,7 +241,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		order.addPromotionCode(promotionCode);
 		ormflush();
 		
-		request.debug(order.getOrderStatusType());
+		addToDebug(order.getOrderStatusType());
 		
 		PromotionCodeCount = variables.dao.getPromotionCodeUseCount(promotionCode);
 		//assert we were able to get our promotionCodeUseCount

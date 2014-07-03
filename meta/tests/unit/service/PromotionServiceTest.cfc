@@ -332,7 +332,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//data setup end
 		
 		var discountAmountStruct = variables.service.getShippingMethodOptionsDiscountAmountDetails(shippingMethodOption);
-		request.debug(discountAmountStruct);
+		
+		addToDebug(discountAmountStruct);
+		
 		//assert that we have a struct with the discountamount and the promotion related to it
 		assertEquals(discountAmountStruct.discountAmount,3.00);
 		
@@ -448,7 +450,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(priceDetails[sku.getSkuID()].salePrice,7.00);
 		assertEquals(priceDetails[sku.getSkuID()].salepriceDiscountType,'amountOff');
 		assertEquals(priceDetails[sku.getSkuID()].salepriceexpirationdatetime,'');
-		request.debug(priceDetails);
+		
+		addToDebug(priceDetails);
 		
 	}
 	
@@ -1604,7 +1607,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
 		
 		var productData = {
-			productName = 'TestProduct'
+			productName = 'TestProduct',
+			productCode = 'TestProductCode1'
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
@@ -1623,7 +1627,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItem2 = createPersistedTestEntity('orderItem',orderItemData2);
 		
 		var productData2 = {
-			productName = 'TestProduct2'
+			productName = 'TestProduct2',
+			productCode = 'TestProductCode2'
 		};
 		var product2 = createPersistedTestEntity('product',productData2);
 		
