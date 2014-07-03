@@ -250,31 +250,29 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getPromotionCodeAccountUseCount(){
 		//order setup
+		
+		var orderData = {
+			orderid = '',
+			orderStatusType = {
+				typeid = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'
+			}
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var promotionCodeData = {};
+		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
+		
 		var accountData = {
 			
 		};
 		var account = createPersistedTestEntity('account',accountData);
 		
-		var orderData = {
-		};
-		var order = createPersistedTestEntity('order',orderData);
-		
-		var orderStatusTypeData = {
-			systemCode = 'ostPlaced'
-		};
-		var orderStatusType = createPersistedTestEntity('Type',orderStatusTypeData);
-		
-		var promotionCodeData = {};
-		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
 		
 		account.addOrder(order);
 		order.setAccount(account);
-		order.setOrderStatusType(orderStatusType);
 		promotionCode.addOrder(order);
 		order.addPromotionCode(promotionCode);
 		ormflush();
-		
-		request.debug(order.getOrderStatusType());
 		
 		PromotionCodeAccountCount = variables.dao.getPromotionCodeAccountUseCount(promotionCode,account);
 		//assert we were able to get our promotionCodeUseCount
