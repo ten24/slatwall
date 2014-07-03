@@ -202,13 +202,18 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//data setup begin
 		var promotionRewardData = {
 			amountType = 'amountOff',
-			amount = 5.55,
-			roundingRule = {
-				roundingRuleDircetion = 'Closest',
-				roundingRuleExpression = '.99'
-			}
+			amount = 5.55
+			
 		};
 		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		
+		var roundingRuleData = {
+			roundingRuleDircetion = 'Closest',
+			roundingRuleExpression = '.99'
+		};
+		var roundingRule = createPersistedTestEntity('roundingRule',roundingRuleData);
+		
+		promotionReward.setRoundingRule(roundingRule);
 		
 		var price = 8;
 		var quantity = 7;
@@ -845,6 +850,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
+		var sku = product.getSkus()[1];
+		
 		orderItem.setSku(sku);
 		sku.addOrderItem(orderItem);
 		
@@ -879,6 +886,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var product = createPersistedTestEntity('product',productData);
+		var sku = product.getSkus()[1];
 		
 		orderItem.setSku(sku);
 		sku.addOrderItem(orderItem);
@@ -900,7 +908,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
 
 		var promotionQualifierData = {};
-		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
+		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);
+		
+		var brandData = {};
+		var brand = createPersistedTestEntity('brand',brandData);	
 		
 		var productData = {
 			productName = 'TestProductName',
@@ -911,12 +922,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			],
 			productType = {
 				productTypeid = ''
-			},
-			brand = {
-				brandid = ''
 			}
 		};
+			
 		var product = createPersistedTestEntity('product',productData);
+		
+		product.setBrand(brand);	
+		var sku = product.getSkus()[1];
 		var brand = product.getBrand();
 		
 		orderItem.setSku(sku);
@@ -952,7 +964,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var product = createPersistedTestEntity('product',productData);
-		
+		var sku = product.getSkus()[1];
 		var optionData = {};
 		var option = createPersistedTestEntity('option',optionData);
 		
