@@ -1,12 +1,14 @@
 component extends="PageObject" {
 	
+	variables.slatAction = "entity.detailtaxcategory";
+	
 	public any function init(selenium, pageLoadTime) {
 		variables.title = selenium.getTitle();
 		
 		return super.init(argumentCollection=arguments);
 	}
 	
-	public any function delete() {
+	public any function clickDeleteLink() {
 		selenium.click('link=Delete');
 		
 		selenium.click('id=confirmYesLink');
@@ -16,12 +18,28 @@ component extends="PageObject" {
 		return new ListTaxCategories(selenium, pageLoadTime);
 	}
 	
-	public any function edit() {
+	public any function clickEditLink() {
 		selenium.click("link=Edit");
 		
 		var loadTime = waitForPageToLoad();
 		
 		return new EditTaxCategory(selenium, loadTime);
 	}
+	
+	// =============== GET TEXT =======================
+	
+	public any function getText_ActiveFlag() {
+		return selenium.getText("xpath=//html/body/div[3]/div/div/div[3]/div/dl/dd[1]");
+	}
+	
+	public any function getText_TaxCategoryName() {
+		return selenium.getText("xpath=//html/body/div[3]/div/div/div[3]/div/dl/dd[2]");
+	}
+	
+	public any function getText_TaxCategoryCode() {
+		return selenium.getText("xpath=//html/body/div[3]/div/div/div[3]/div/dl/dd[3]");
+	}
+	
+	
 	
 }

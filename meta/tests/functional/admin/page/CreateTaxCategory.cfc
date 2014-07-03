@@ -1,5 +1,6 @@
 component extends="PageObject" {
 	
+	variables.slatAction = "entity.createtaxcategory";
 	variables.title = "Create Tax Category | Slatwall";
 	
 	public any function submitCreateForm( struct formData={} ) {

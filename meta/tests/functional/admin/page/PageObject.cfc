@@ -1,6 +1,7 @@
 component {
 	
 	variables.title = "UNDEFINED";
+	variables.slatAction = "UNDEFINED";
 	variables.pageLoadTime = 0;
 	
 	function init(selenium, pageLoadTime){
@@ -14,6 +15,10 @@ component {
 	
 	function getTitle(){
 		return variables.title;
+	}
+	
+	function getSlatAction(){
+		return variables.slatAction;
 	}
 	
 	function getPageLoadTime(){

@@ -1,6 +1,12 @@
 component extends="PageObject" {
 	
-	variables.title = "Create Tax Category | Slatwall";
+	variables.slatAction = "entity.edittaxcategory";
+	
+	public any function init(selenium, pageLoadTime) {
+		variables.title = selenium.getTitle();
+		
+		return super.init(argumentCollection=arguments);
+	}
 	
 	public any function submitSaveForm( struct formData={} ) {
 		submitForm( 'adminentitysavetaxcategory', arguments.formData );

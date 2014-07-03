@@ -2,47 +2,53 @@ component extends="AdminTestBase" {
 
 	function taxCategoryCreateEditAndDeleteWorks() {
 		// Load Listing Page
-		var taxCategoryList = variables.dashboardPage.openMenuLink("Config", "Tax Categories");
+		var taxCategoryList = variables.dashboardPage.clickMenuLink("Config", "Tax Categories");  	// Tax Categories | Slatwall
 		
-		assertPageIsLoaded( taxCategoryList );
+		assertPageIsLoaded( taxCategoryList );														// Tax Categories | Slatwall
 		
 		// Load Create Page
-		var taxCategoryCreate = taxCategoryList.openCreateTaxCategoryLink();
-
+		var taxCategoryCreate = taxCategoryList.clickCreateTaxCategoryLink();						// Create Tax Category | Slatwall
+		
 		assertPageIsLoaded( taxCategoryCreate );
+		
 		//Sets Up Form Data for Creation
 		formData = {};
-		formData['taxCategoryName'] = "Create Tax Category";
+		formData['taxCategoryName'] = "My First Tax Category Name";								
 		formData['taxCategoryCode'] = "TEST-#getTickCount()#";
 		
-		taxCategoryDetail = taxCategoryCreate.submitCreateForm(formData);
+		var taxCategoryDetail = taxCategoryCreate.submitCreateForm( formData );
 		
-		assertEquals( "Create Tax Category | Slatwall", taxCategoryDetail.getTitle() );
+		assertPageIsLoaded( taxCategoryDetail );
+		assertEquals( "My First Tax Category Name | Slatwall", taxCategoryDetail.getTitle() );
+		assertEquals( "Yes", taxCategoryDetail.getText_ActiveFlag() );
+		assertEquals( "My First Tax Category Name", taxCategoryDetail.getText_TaxCategoryName() );
+		assertEquals( formData['taxCategoryCode'], taxCategoryDetail.getText_TaxCategoryCode() );
 		
-		//Tests Edit Button
-		var taxCategoryEdit = taxCategoryDetail.edit();
+		// Tests Edit Button
+		var taxCategoryEdit = taxCategoryDetail.clickEditLink();
 		
-		assertPageIsLoaded( taxCategoryEdit );	
-	
+		assertPageIsLoaded( taxCategoryEdit );
+		assertEquals( "My First Tax Category Name | Slatwall", taxCategoryEdit.getTitle() );	
+		
 		//Sets Up New Form Data
-		formData['taxCategoryName'] = "Edit Tax Category";
-		formData['taxCategoryCode'] = "TEST-#getTickCount()#";
+		formData['taxCategoryName'] = "My Tax Categories Second Name";
 		
 		//Saves new form Data
-		taxCategoryEdit = taxCategoryEdit.submitSaveForm(formData);
+		taxCategoryDetail = taxCategoryEdit.submitSaveForm(formData);
 		
+		assertPageIsLoaded( taxCategoryDetail );
 		//Asserts New Data is present
-		assertEquals( "Edit Tax Category | Slatwall", taxCategoryEdit.getTitle() );
+		assertEquals( "My Tax Categories Second Name | Slatwall", taxCategoryDetail.getTitle() );
+		
 		
 		//Deletes Test Category
-		taxCategoryList = taxCategoryDetail.delete();
-		
+		taxCategoryList = taxCategoryDetail.clickDeleteLink();
 		assertPageIsLoaded( taxCategoryList );
 	}
 	
 	function taxCategorySave_requires_taxCategoryCode(){
-		var taxCategoryList = variables.dashboardPage.openMenuLink("Config", "Tax Categories");
-		var taxCategoryDetail = taxCategoryList.openCreateTaxCategoryLink();
+		var taxCategoryList = variables.dashboardPage.clickMenuLink("Config", "Tax Categories");
+		var taxCategoryDetail = taxCategoryList.clickCreateTaxCategoryLink();
 		
 		selenium.type("taxCategoryName", "My Tax Category Name");
 		
@@ -51,5 +57,4 @@ component extends="AdminTestBase" {
 		// Make sure that the taxCategoryDetail is loaded
 		assertPageIsLoaded( taxCategoryDetail );
 	}
-	
 }

@@ -1,5 +1,6 @@
 component extends="PageObject"{
 	
+	variables.slatAction = "";
 	variables.title = "Dashboard | Slatwall";
 	
 	variables.menuItems = {
@@ -33,7 +34,7 @@ component extends="PageObject"{
 		}
 	}
 	
-	function openMenuLink(menu, menuLinkTitle){
+	function clickMenuLink(menu, menuLinkTitle){
 		selenium.click("link=#menu#");
 		//We wait here to avoid any problems with selenium moving faster than the browser
 		selenium.waitForElementPresent("//a[@title='#menuLinkTitle#']");
