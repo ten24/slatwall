@@ -471,7 +471,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(arguments.orderItemQualifiedDiscounts[ orderItemID ][y].promotionRewardID == prID) {
 								
 								// Set the discountAmount as some fraction of the original discountAmount
-								arguments.orderItemQualifiedDiscounts[ orderItemID ][y].discountAmount = precisionEvaluate((arguments.orderItemQualifiedDiscounts[ orderItemID ][y].discountAmount / thisDiscountQuantity) * (thisDiscountQuantity - needToRemove));
+								arguments.orderItemQualifiedDiscounts[ orderItemID ][y].discountAmount = precisionEvaluate(precisionEvaluate(arguments.orderItemQualifiedDiscounts[ orderItemID ][y].discountAmount / thisDiscountQuantity) * precisionEvaluate(thisDiscountQuantity - needToRemove));
 								
 								// Update the needToRemove
 								needToRemove = 0;

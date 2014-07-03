@@ -621,7 +621,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		
 		var orderData = {};
-		var order = createPersistedTestEntity('order',orderData);
+		var order = createPersistedTestEntity('order');
 		
 		var orderItemData = {};
 		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
@@ -629,9 +629,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItemData2 = {};
 		var orderItem2 = createPersistedTestEntity('orderItem',orderItemData2);
 		
-		order.addOrderItem(orderItem);
+		// order.addOrderItem(orderItem);
 		orderItem.setOrder(order);
-		order.addOrderItem(orderItem2);
+		// order.addOrderItem(orderItem2);
 		orderItem2.setOrder(order);
 		
 		promotionRewardUsageDetails[promotionReward.getPromotionRewardID()] = {
