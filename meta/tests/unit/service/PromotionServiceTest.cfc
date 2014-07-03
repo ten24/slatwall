@@ -1666,6 +1666,119 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].discountAmount,15);
 		assertEquals(orderItemQualifiedDiscounts[orderITem2.getOrderItemID()][1].promotionRewardID,'');
 	}
+	
+	public void function getPromotionPeriodQualifiedFulfillmentIDListTest(){
+		makePublic(variables.service,'getPromotionPeriodQualifiedFulfillmentIDList');
+		//args promotionPeriod, order
+		//data setup begin
+		var promotionPeriodData = {
+			promotionPeriodid = '',
+			promotionRewards = [
+				{
+					promotionRewardid = ''
+					
+				}
+			],
+			promotionQualifiers = [
+				{
+					promotionQualifierid = '',
+					qualifierType = 'fulfillment'
+				}
+			]
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var orderData = {};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderFulfillmentData = {
+			totalShippingWeight = 4
+		};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		var orderFulfillmentData2 = {
+			totalShippingWeight = 44
+		};
+		var orderFulfillment2 = createPersistedTestEntity('orderFulfillment',orderFulfillmentData2);
+		
+		order.addOrderFulfillment(orderFulfillment);
+		orderFulfillment.setOrder(order);
+		order.addOrderFulfillment(orderFulfillment2);
+		orderFulfillment2.setOrder(order);
+		//data setup end
+		
+		var QualifiedFulfillmentIDList = variables.service.getPromotionPeriodQualifiedFulfillmentIDList(promotionPeriod,order);
+		
+		assertEquals(ListLen(QualifiedFulfillmentIDList),2);
+		
+		var promotionQualifier = promotionPeriod.getPromotionQualifiers()[1];
+		promotionQualifier.setMinimumFulfillmentWeight(7);
+		QualifiedFulfillmentIDList = variables.service.getPromotionPeriodQualifiedFulfillmentIDList(promotionPeriod,order);
+		assertEquals(listLen(QualifiedFulfillmentIDList),0);
+	}
+	
+	public void function getPromotionPeriodOrderItemQualificationCountTest(){
+		makePublic(variables.service,'getPromotionPeriodOrderItemQualificationCount');
+		//args pormotionPeriod, orderItem,order
+		//data setup begin
+		
+		var promotionPeriodData = {
+			promotionPeriodid = '',
+			promotionRewards = [
+				{
+					promotionRewardid = ''
+					
+				}
+			],
+			promotionQualifiers = [
+				{
+					promotionQualifierid = '',
+					qualifierType = 'merchandise'
+				}
+			]
+		};
+		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
+		
+		var orderData = {
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		var orderItemData = {
+			quantity = 7
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+		
+		var productData = {
+			productName = 'TestProductName',
+			skus = [
+				{
+					skuid = ''
+				}
+			],
+			productType = {
+				productTypeid = ''
+			}
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var sku = product.getSkus()[1];
+		
+		orderItem.setSku(sku);
+		sku.addOrderItem(orderItem);
+		
+		var promotionQualifier = promotionPeriod.getPromotionQualifiers()[1];
+		
+		var orderItemQualificationCount = variables.service.getPromotionPeriodOrderItemQualificationCount(promotionPeriod,orderItem,order);
+		assertEquals(orderItemQualificationCount,0);
+		
+		order.addOrderItem(orderItem);
+		orderItem.setOrder(order);
+		promotionQualifier.addProduct(product);
+		//data setup end
+		
+		orderItemQualificationCount = variables.service.getPromotionPeriodOrderItemQualificationCount(promotionPeriod,orderItem,order);
+		assertEquals(orderItemQualificationCount,7);
+	}
 }
 
 

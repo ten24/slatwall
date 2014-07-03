@@ -867,13 +867,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			||
 			( !isNull(qualifier.getMaximumItemPrice()) && qualifier.getMaximumItemPrice() < arguments.orderItem.getPrice() )
 			||
-			arguments.qualifier.hasExcludedProduct( arguments.orderItem.getSku().getProduct() )
-			||
-			arguments.qualifier.hasExcludedSku( arguments.orderItem.getSku() )
-			||
-			( arrayLen( arguments.qualifier.getExcludedBrands() ) && ( isNull( arguments.orderItem.getSku().getProduct().getBrand() ) || arguments.qualifier.hasExcludedBrand( arguments.orderItem.getSku().getProduct().getBrand() ) ) )
-			||
-			( arguments.qualifier.hasAnyExcludedOption( arguments.orderItem.getSku().getOptions() ) )
+			!isNull(arguments.orderItem.getSku()) && (
+				arguments.qualifier.hasExcludedSku( arguments.orderItem.getSku() )
+				||
+				!isnull(arguments.orderItem.getSku().getProduct()) && (
+					( arguments.qualifier.hasExcludedProduct( arguments.orderItem.getSku().getProduct() ))
+					||
+					( arrayLen( arguments.qualifier.getExcludedBrands() ) && ( isNull( arguments.orderItem.getSku().getProduct().getBrand() ) || arguments.qualifier.hasExcludedBrand( arguments.orderItem.getSku().getProduct().getBrand() ) ) )
+					
+				)
+				||
+				( arguments.qualifier.hasAnyExcludedOption( arguments.orderItem.getSku().getOptions() ))	
+			
+			 )
 			) {
 			return false;
 		}
@@ -893,18 +899,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}	
 			}
 		}
-		if(arguments.qualifier.hasProduct( arguments.orderItem.getSku().getProduct() )) {
-			return true;
+		if(!isNull(arguments.orderItem.getSku())){
+			if(arguments.qualifier.hasSku( arguments.orderItem.getSku() )) {
+				return true;
+			}
+			if(!isNull(arguments.orderItem.getSku().getProduct())){
+				if(arguments.qualifier.hasProduct( arguments.orderItem.getSku().getProduct() )) {
+					return true;
+				}
+				if(!isNull(arguments.orderItem.getSku().getProduct().getBrand()) && arguments.qualifier.hasBrand( arguments.orderItem.getSku().getProduct().getBrand() )) {
+					return true;
+				}
+			}
+			if(arguments.qualifier.hasAnyOption( arguments.orderItem.getSku().getOptions() )) {
+				return true;
+			}
 		}
-		if(arguments.qualifier.hasSku( arguments.orderItem.getSku() )) {
-			return true;
-		}
-		if(!isNull(arguments.orderItem.getSku().getProduct().getBrand()) && arguments.qualifier.hasBrand( arguments.orderItem.getSku().getProduct().getBrand() )) {
-			return true;
-		}
-		if(arguments.qualifier.hasAnyOption( arguments.orderItem.getSku().getOptions() )) {
-			return true;
-		}
+		
 		
 		return false;
 	}
