@@ -53,6 +53,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getService("taxService");
 	}
+	
+	// generateTaxRatesRequestBeanForIntegration()
+	public void function generateTaxRatesRequestBeanForIntegration_works_with_no_account_on_order() {
+		var order = request.slatwallScope.newEntity("order");
+		var integration = request.slatwallScope.newEntity("integration");
+		integration.setIntegrationPackage('mytest');
+		var requestBean = variables.service.generateTaxRatesRequestBeanForIntegration(order, integration);
+		assert( isObject(requestBean) );
+	}
 
 	// Tests for addTaxAddressesStructBillingAddressKey()
 	public void function addTaxAddressesStructBillingAddressKey_returns_empty_struct_if_no_billingInfo_on_order(){
@@ -81,6 +90,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Creates new order and orderPayment then adds the orderPayment to the order
 		var newOrder = request.slatwallScope.newEntity('Order');
 		var newOrderPayment = request.slatwallScope.newEntity('OrderPayment');
+		
 		newOrder.addOrderPayment(newOrderPayment);
 		
 		// Sets system code to dumby string for testing
