@@ -77,4 +77,22 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		}
 	}
 	
+	private function openPage( required any url, required any pageObjectName ) {
+		selenium.open( arguments.url );
+		
+		var loadTime = waitForPageToLoad();
+		
+		return createObject("Slatwall.meta.tests.functional.admin.page.#arguments.pageObjectName#").init(selenium, loadTime);
+	}
+	
+	private function waitForPageToLoad(time=10000) {
+		
+		var start = getTickCount();
+		
+		variables.selenium.waitForPageToLoad(time);
+		
+		return getTickCount() - start;
+	}
+	
+	
 }

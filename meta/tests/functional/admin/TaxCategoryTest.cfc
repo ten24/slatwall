@@ -46,6 +46,7 @@ component extends="AdminTestBase" {
 	}
 
 	function taxCategoryRateCreateWorks() {
+		/*
 		// Load Listing Page
 		var taxCategoryList = variables.dashboardPage.clickMenuLink("Config", "Tax Categories");  	// Tax Categories | Slatwall
 		
@@ -62,7 +63,8 @@ component extends="AdminTestBase" {
 		formData['taxCategoryCode'] = "TEST-#getTickCount()#";
 		
 		var DetailTaxCategory = taxCategoryCreate.submitCreateForm( formData );
-		
+		*/
+		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
 		
 		// Confirm that the Detail Page is Loaded
 		assertPageIsLoaded( DetailTaxCategory );
