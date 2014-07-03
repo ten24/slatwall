@@ -1,6 +1,6 @@
 component extends="AdminTestBase" {
 
-	function taxCategoryCreateAndDeleteWorks() {
+	function taxCategoryCreateEditAndDeleteWorks() {
 		// Load Listing Page
 		var taxCategoryList = variables.dashboardPage.openMenuLink("Config", "Tax Categories");
 		
@@ -8,17 +8,33 @@ component extends="AdminTestBase" {
 		
 		// Load Create Page
 		var taxCategoryCreate = taxCategoryList.openCreateTaxCategoryLink();
-		
+
 		assertPageIsLoaded( taxCategoryCreate );
-		
+		//Sets Up Form Data for Creation
 		formData = {};
-		formData['taxCategoryName'] = "My Tax Category Name";
+		formData['taxCategoryName'] = "Create Tax Category";
 		formData['taxCategoryCode'] = "TEST-#getTickCount()#";
 		
 		taxCategoryDetail = taxCategoryCreate.submitCreateForm(formData);
 		
-		assertEquals( "My Tax Category Name | Slatwall", taxCategoryDetail.getTitle() );
+		assertEquals( "Create Tax Category | Slatwall", taxCategoryDetail.getTitle() );
 		
+		//Tests Edit Button
+		var taxCategoryEdit = taxCategoryDetail.edit();
+		
+		assertPageIsLoaded( taxCategoryEdit );	
+	
+		//Sets Up New Form Data
+		formData['taxCategoryName'] = "Edit Tax Category";
+		formData['taxCategoryCode'] = "TEST-#getTickCount()#";
+		
+		//Saves new form Data
+		taxCategoryEdit = taxCategoryEdit.submitSaveForm(formData);
+		
+		//Asserts New Data is present
+		assertEquals( "Edit Tax Category | Slatwall", taxCategoryEdit.getTitle() );
+		
+		//Deletes Test Category
 		taxCategoryList = taxCategoryDetail.delete();
 		
 		assertPageIsLoaded( taxCategoryList );
@@ -35,6 +51,5 @@ component extends="AdminTestBase" {
 		// Make sure that the taxCategoryDetail is loaded
 		assertPageIsLoaded( taxCategoryDetail );
 	}
-
 	
 }

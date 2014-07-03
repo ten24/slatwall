@@ -15,4 +15,13 @@ component extends="PageObject" {
 		
 		return new ListTaxCategories(selenium, pageLoadTime);
 	}
+	
+	public any function edit() {
+		selenium.click("link=Edit");
+		
+		var loadTime = waitForPageToLoad();
+		
+		return new EditTaxCategory(selenium, loadTime);
+	}
+	
 }
