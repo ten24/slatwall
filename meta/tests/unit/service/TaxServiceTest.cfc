@@ -53,6 +53,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getService("taxService");
 	}
+	
+	// generateTaxRatesRequestBeanForIntegration()
+	public void function generateTaxRatesRequestBeanForIntegration_works_with_no_account_on_order() {
+		var order = request.slatwallScope.newEntity("order");
+		var integration = request.slatwallScope.newEntity("integration");
+		integration.setIntegrationPackage('mytest');
+		var requestBean = variables.service.generateTaxRatesRequestBeanForIntegration(order, integration);
+		assert( isObject(requestBean) );
+	}
 
 	// Tests for addTaxAddressesStructBillingAddressKey()
 	public void function addTaxAddressesStructBillingAddressKey_returns_empty_struct_if_no_billingInfo_on_order(){
@@ -81,46 +90,76 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Creates new order and orderPayment then adds the orderPayment to the order
 		var newOrder = request.slatwallScope.newEntity('Order');
 		var newOrderPayment = request.slatwallScope.newEntity('OrderPayment');
+		
 		newOrder.addOrderPayment(newOrderPayment);
 		
-		//Sets system code to dumby string for testing
-		newOrder.getOrderPayments()[1].getOrderPaymentStatusType().setSystemCode("notActiveTest");
-		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey(newOrder);
+		// Sets system code to dumby string for testing
+		newOrder.getOrderPayments()[1].setOrderPaymentStatusType( request.slatwallScope.getEntity('Type', {systemCode='opstInvalid'}) );
+		var taxAddressesStruct = variables.service.addTaxAddressesStructBillingAddressKey( newOrder );
 		
 		//Asserts that the struct key 'taxBillingAddress' was not created
 		assertFalse(structKeyExists(taxAddressesStruct, 'taxBillingAddress'));
 	}
 	
-	//Sets up dumby order
-	private any function dumby_order(){
-		//Creates new order
-		var newOrder = request.slatwallScope.newEntity('Order');
-		var i = 1;
-		//Iterates twice to create two orderItems with taxApplied
-		for(i=1;i<3;i++){
-			var newOrderItem = request.slatwallScope.newEntity('OrderItem');
-			var taxApplied = request.slatwallScope.newEntity('taxApplied');
-			taxApplied.setTaxAmount(2);
-			newOrderItem.addAppliedTax(taxApplied);
-			newOrder.addOrderItem(newOrderItem);
-		}
-		//Returns the dumby order
-		return newOrder;
-	}
-	
 	// Tests for removeTaxesFromAllOrderItems()
 	public void function removeTaxesFromAllOrderItems_iterates_over_orderItems_in_order_and_removes_taxes(){
-		//Uses dumby_order() as newOrder
-		var newOrder = dumby_order();
+		var data = {
+			orderItems = [
+				{
+					orderItemID = '',
+					appliedTaxes = [
+						{taxAppliedID='', taxAmount=2}
+					]
+				},
+				{
+					orderItemID = '',
+					appliedTaxes = [
+						{taxAppliedID='', taxAmount=2}
+					]
+				}
+			]
+		};
+		var newOrder = createTestEntity( entityName='Order', data=data, createRandomData=false, persist=false, saveWithService=false );
 		
 		//Asserts that the dumby order has taxes
 		assertEquals(4, newOrder.getTaxTotal());
 		
 		//Passes in the new order to remove taxes and asserts taxes were removed
-		variables.service.removeTaxesFromAllOrderItems(newOrder);
+		variables.service.removeTaxesFromAllOrderItems( newOrder );
+		
+		// Assert that the taxTotal is now 0
 		assertEquals(0, newOrder.getTaxTotal());
 		
 	}
 	
+	// Tests for removeTaxesFromAllOrderItems()
+	public void function removeTaxesFromAllOrderItems_removes_relationship_from_both_sides(){
+		var data = {
+			orderItems = [
+				{
+					orderItemID = '',
+					appliedTaxes = [
+						{taxAppliedID='', taxAmount=2}
+					]
+				}
+			]
+		};
+		
+		var newOrder = createTestEntity( entityName='Order', data=data, createRandomData=false, persist=false, saveWithService=false );
+		
+		var firstOrderItem = newOrder.getOrderItems()[1];
+		
+		assertEquals(1, arrayLen(firstOrderItem.getAppliedTaxes()));
+		
+		var firstAppTax = firstOrderItem.getAppliedTaxes()[1];
+		
+		assert(!isNull(firstAppTax.getOrderItem()));
+		assertEquals(firstOrderItem, firstAppTax.getOrderItem());
+		
+		variables.service.removeTaxesFromAllOrderItems( newOrder );
+		
+		assertEquals(0, arrayLen(firstOrderItem.getAppliedTaxes()));
+		assert(isNull(firstAppTax.getOrderItem()));
+	}
 }
 	

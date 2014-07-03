@@ -30,10 +30,6 @@ component {
 	}
 	
 	public function updateTestData(){
-		
-		writeLog(file="Slatwall", text="test");
-		writeLog(file="Slatwall", text="#expandPath('/Slatwall/meta/tests/config/testdbdata')#");
-		
 		variables.slatwallApplication.getBeanFactory().getBean("dataService").loadDataFromXMLDirectory(xmlDirectory = expandPath("/Slatwall/meta/tests/config/testdbdata"));
 	}
 	

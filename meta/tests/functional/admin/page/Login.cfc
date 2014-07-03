@@ -8,7 +8,7 @@ component extends="PageObject"{
 		selenium.type("password", password);
 		selenium.submit("adminLoginForm");
 		
-		var pageLoadTime = waitFor();
+		var pageLoadTime = waitForPageToLoad();
 		
 		return new Dashboard(selenium, pageLoadTime);
 	}
@@ -16,7 +16,7 @@ component extends="PageObject"{
 	function logout(){
 		if(selenium.getTitle() neq getTitle()){
 			selenium.open("?slatAction=main.logout");
-			waitFor();
+			waitForPageToLoad();
 		}
 	}
 }
