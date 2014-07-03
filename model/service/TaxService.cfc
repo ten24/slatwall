@@ -53,8 +53,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public void function updateOrderAmountsWithTaxes(required any order) {
 		
-		// Setup the taxIntegrationArray
-		var taxIntegrationArr = [];
 		var ratesResponseBeans = {};
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 		
