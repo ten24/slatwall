@@ -68,7 +68,7 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 	private function assertPageIsLoaded( required any pageObject , string message=""){
 		
 		if(!len(arguments.message)) {
-			arguments.message = "Expended to be on slatAction of #arguments.pageObject.getSlatAction()#, but this is the url that selenium has #variables.selenium.getLocation()#";
+			arguments.message = "Expected to be on slatAction of #arguments.pageObject.getSlatAction()#, but this is the url that selenium has #variables.selenium.getLocation()#";
 		}
 		if(len(arguments.pageObject.getSlatAction())) {
 			assert( findNoCase("slataction=#arguments.pageObject.getSlatAction()#", variables.selenium.getLocation()), arguments.message);	

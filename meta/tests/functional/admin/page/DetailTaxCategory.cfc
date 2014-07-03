@@ -26,6 +26,14 @@ component extends="PageObject" {
 		return new EditTaxCategory(selenium, loadTime);
 	}
 	
+	public any function clickAddTaxCategoryRateLink(){
+		selenium.openWindow(getText_ManualRate());
+		
+		var loadTime = waitForPageToLoad();
+		
+		return new CreateTaxCategoryRate(selenium, loadTime);
+	}
+	
 	// =============== GET TEXT =======================
 	
 	public any function getText_ActiveFlag() {
@@ -40,6 +48,9 @@ component extends="PageObject" {
 		return selenium.getText("xpath=//html/body/div[3]/div/div/div[3]/div/dl/dd[3]");
 	}
 	
+	public any function getText_ManualRate() {
+		return selenium.getText('xpath=//*[@id="tabrates"]/div/div/ul/li[2]/a');
+	}
 	
-	
+
 }
