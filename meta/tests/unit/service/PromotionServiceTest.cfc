@@ -1582,6 +1582,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var productData = {
 			productName = 'TestProduct',
 			productCode = 'TestProductCode-#getTickCount()#',
+			urlTitle = 'url#getTickCount()#',
 			productType = {
 				productTypeID = '444df2f7ea9c87e60051f3cd87b435a1'
 			},
@@ -1598,6 +1599,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var productData2 = {
 			productName = 'TestProduct2',
 			productCode = 'TestProductCode2-#getTickCount()#',
+			urlTitle = 'url2#getTickCount()#',
 			productType = {
 				productTypeID = '444df2f7ea9c87e60051f3cd87b435a1'
 			},
