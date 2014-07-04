@@ -46,27 +46,26 @@
 Notes:
 
 --->
-<cfparam name="rc.sku" type="any">
 <cfparam name="rc.product" type="any">
-<!---<cfparam name="rc.processObject" type="any">--->
+<cfparam name="rc.processObject" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
+<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+	<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
 	</cf_HibachiEntityActionBar>
-	
-	<input type="hidden" name="product.productID" value="#rc.product.getProductID()#" />
+	<!--- Add a hidden field for the productID --->
+	<input type="hidden" name="newSku.product.productID" value="#rc.product.getProductID()#" />
 	
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="activeFlag" fieldName="newSku.activeFlag" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="skuName" fieldName="newSku.skuName" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="skuCode" fieldName="newSku.skuCode" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="userDefinedPriceFlag" fieldName="newSku.userDefinedPriceFlag" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="price" fieldName="newSku.price" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="listPrice" fieldName="newSku.listPrice" edit="#rc.edit#">
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 		

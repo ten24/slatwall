@@ -171,6 +171,19 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
+	public any function processProduct_addSku(required any product, required any processObject, any data) {
+		if (!isNull(arguments.processObject.getNewSku().getProduct())) {
+			logHibachi("*** Adding Sku for productID: #arguments.processObject.getNewSku().getProduct().getProductID()#");
+			getSkuService().saveSku(arguments.processObject.getNewSku());
+		} else {
+			logHibachi("*** Product for new Sku was null, it wasn't populated");
+			writeDump(arguments.data);
+			writeDump(arguments.processObject.getNewSku());
+			abort;
+		}
+		return arguments.product;
+	}
+	
 	public any function processProduct_addSubscriptionSku(required any product, required any processObject) {
 		
 		var newSubscriptionTerm = getSubscriptionService().getSubscriptionTerm( arguments.processObject.getSubscriptionTermID() );
