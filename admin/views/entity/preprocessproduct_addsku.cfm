@@ -55,7 +55,8 @@ Notes:
 	
 	<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
 	</cf_HibachiEntityActionBar>
-	<!--- Add a hidden field for the productID --->
+	
+	<input type="hidden" name="newSku.skuID" value="" />
 	<input type="hidden" name="newSku.product.productID" value="#rc.product.getProductID()#" />
 	
 	<cf_HibachiPropertyRow>
@@ -68,6 +69,8 @@ Notes:
 			<cf_HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="listPrice" fieldName="newSku.listPrice" edit="#rc.edit#">
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
-		
+	
+	<cfdump var="#rc.product.getOptionGroupsStruct()#" top="2">
+	
 </cf_HibachiEntityProcessForm>
 </cfoutput>

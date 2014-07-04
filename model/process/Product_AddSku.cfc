@@ -60,4 +60,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.newSku;
 	}
+	/*
+	public any function populate() {
+		writeDump("Populate was called");
+		abort;
+		return super.populate(argumentCollection=arguments);
+	}
+	*/
 }

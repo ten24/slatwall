@@ -108,6 +108,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
+	property name="optionGroupCount" type="numeric" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
@@ -725,7 +726,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	
 	public array function getProductOptionsByGroup(){
-		return getProductService().getProductOptionsByGroup( this );
+		return getService('productService').getProductOptionsByGroup( this );
 	}
 	
 	public array function getUnusedProductOptions() {

@@ -172,15 +172,9 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public any function processProduct_addSku(required any product, required any processObject, any data) {
-		if (!isNull(arguments.processObject.getNewSku().getProduct())) {
-			logHibachi("*** Adding Sku for productID: #arguments.processObject.getNewSku().getProduct().getProductID()#");
-			getSkuService().saveSku(arguments.processObject.getNewSku());
-		} else {
-			logHibachi("*** Product for new Sku was null, it wasn't populated");
-			writeDump(arguments.data);
-			writeDump(arguments.processObject.getNewSku());
-			abort;
-		}
+		getSkuService().saveSku(arguments.processObject.getNewSku());
+		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		
 		return arguments.product;
 	}
 	

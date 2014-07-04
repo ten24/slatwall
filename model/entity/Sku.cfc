@@ -141,6 +141,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				optionString &= getProduct().setting('productImageOptionCodeDelimiter') & reReplaceNoCase(option.getOptionCode(), "[^a-z0-9\-\_]","","all");
 			}
 		}
+		
+		// TODO How do we want to handle image names for added skus that do not belong to an option group?
+		
 		return reReplaceNoCase(getProduct().getProductCode(), "[^a-z0-9\-\_]","","all") & optionString & ".#getProduct().setting('productImageDefaultExtension')#";
 	}
 	
