@@ -1614,25 +1614,29 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var product2 = createPersistedTestEntity('product', productData2);
 		
 		// Setup the order
-		var orderData = {
-			orderItems = [
-				{
-					orderItemID = '',
-					quantity = 3,
-					sku = {
-						skuID = product.getSkus()[1].getSkuID()
-					}
-				},
-				{
-					orderItemID = '',
-					quantity = 5,
-					sku = {
-						skuID = product2.getSkus()[1].getSkuID()
-					}
-				}
-			]
+		var order = createPersistedTestEntity('order');
+		
+		var orderItemData = {
+			order = {
+				orderID = order.getOrderID()
+			},
+			quantity = 3,
+			sku = {
+				skuID = product.getSkus()[1].getSkuID()
+			}
 		};
-		var order = createPersistedTestEntity('order',orderData);
+		var orderItem = createPersistedTestEntity('orderItem', orderItemData);
+		
+		var orderItem2Data = {
+			order = {
+				orderID = order.getOrderID()
+			},
+			quantity = 5,
+			sku = {
+				skuID = product2.getSkus()[1].getSkuID()
+			}
+		};
+		var orderItem2 = createPersistedTestEntity('orderItem', orderItem2Data);
 		
 		// Setup the promotion
 		var promotionData = {
@@ -1673,7 +1677,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].promotion.getPromotionID(), promotion.getPromotionID());
 		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].discountAmount,15);
 		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].promotionRewardID,'');
-		
 	}
 	
 	public void function getPromotionPeriodQualifiedFulfillmentIDListTest(){
