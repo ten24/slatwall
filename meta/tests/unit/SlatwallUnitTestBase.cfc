@@ -81,13 +81,13 @@ component extends="mxunit.framework.TestCase" output="false" {
 		
 		var flushRequired = false;
 		
-		for(var persistentEntity in variables.persistentEntities) {
+		for(var i=arrayLen(variables.persistentEntities); i>=1; i--) {
 			flushRequired = true;
-			entityDelete( persistentEntity );
+			entityDelete( variables.persistentEntities[i] );
 		}
 		
 		if(flushRequired) {
-			ormFlush();	
+			ormFlush();
 		}
 		
 		variables.debugArray = [];

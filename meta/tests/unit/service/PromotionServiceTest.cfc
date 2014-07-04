@@ -1577,99 +1577,101 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function setupOrderItemQualifiedDiscountsTest(){
 		MakePublic(variables.service,'setupOrderItemQualifiedDiscounts');
-		//args order and orderItemQualifiedDiscounts
-		//data setup begin
 		
-		var promotionData = {
-			
-		};
-		var promotion = createPersistedTestEntity('promotion',promotionData);
-		
-		var promotionRewardData = {
-			amount = 3,
-			amountType = 'amountOff'
-		};
-		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
-		
-		var promotionPeriodData = {
-			promotion = promotion,
-			promotionReward = promotionReward
-		};
-		var promotionPeriod = createPersistedTestEntity('promotionPeriod',promotionPeriodData);
-		
-		var orderData = {};
-		var order = createPersistedTestEntity('order',orderData);
-		
-		var orderItemData = {
-			
-			quantity = 3
-		};
-		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
-		
+		// Setup the products
 		var productData = {
 			productName = 'TestProduct',
-			productCode = 'TestProductCode1'
+			productCode = 'TestProductCode-#getTickCount()#',
+			productType = {
+				productTypeID = '444df2f7ea9c87e60051f3cd87b435a1'
+			},
+			skus = [
+				{
+					skuID = '',
+					skuCode = "1-#getTickCount()#",
+					price = 23 
+				}
+			]
 		};
-		var product = createPersistedTestEntity('product',productData);
-		
-		var skuData = {
-			price = 23
-		};
-		var sku = createPersistedTestEntity('sku',skuData);
-		
-		product.addSku(sku);
-		sku.setProduct(product);
-		
-		var orderItemData2 = {
-			quantity = 5
-			
-		};
-		var orderItem2 = createPersistedTestEntity('orderItem',orderItemData2);
+		var product = createPersistedTestEntity('product', productData);
 		
 		var productData2 = {
 			productName = 'TestProduct2',
-			productCode = 'TestProductCode2'
+			productCode = 'TestProductCode2-#getTickCount()#',
+			productType = {
+				productTypeID = '444df2f7ea9c87e60051f3cd87b435a1'
+			},
+			skus = [
+				{
+					skuID = '',
+					skuCode = "2-#getTickCount()#",
+					price = 12 
+				}
+			]
 		};
-		var product2 = createPersistedTestEntity('product',productData2);
+		var product2 = createPersistedTestEntity('product', productData2);
 		
-		var skuData2 = {
-			price = 12
+		// Setup the order
+		var orderData = {
+			orderItems = [
+				{
+					orderItemID = '',
+					quantity = 3,
+					sku = {
+						skuID = product.getSkus()[1].getSkuID()
+					}
+				},
+				{
+					orderItemID = '',
+					quantity = 5,
+					sku = {
+						skuID = product2.getSkus()[1].getSkuID()
+					}
+				}
+			]
 		};
-		var sku2 = createPersistedTestEntity('sku',skuData2);
+		var order = createPersistedTestEntity('order',orderData);
 		
-		sku.addPromotionReward(promotionReward);
-		sku2.addPromotionReward(promotionReward);
-		promotionReward.addSku(sku);
-		promotionReward.addSku(sku2);
-		
-		promotionReward.setPromotionPeriod(promotionPeriod);
-		promotion.addPromotionPeriod(promotionPeriod);
-		
-		product2.addSku(sku2);
-		sku.setProduct(product2);
-		
-		orderItem.setSku(sku);
-		orderItem2.setSku(sku2);
-		
-		order.addOrderItem(orderItem);
-		orderItem.setOrder(order);
-		order.addOrderItem(orderItem2);
-		orderItem2.setOrder(order);
-		ormflush();
-		var orderItemQualifiedDiscounts = {
+		// Setup the promotion
+		var promotionData = {
+			promotionName = 'Test Promotion #getTickCount()#',
+			promotionPeriods = [
+				{
+					promotionPeriodID = '',
+					promotionRewards = [
+						{
+							promotionRewardID = '',
+							amount = 3,
+							amountType = 'amountOff',
+							rewardType = 'merchandise', 
+							skus = "#product.getSkus()[1].getSkuID()#,#product2.getSkus()[1].getSkuID()#"
+						}
+					]
+				}
+			]
 			
 		};
+		var promotion = createPersistedTestEntity('promotion', promotionData);
 		
-		//data setup end
-		variables.service.setupOrderItemQualifiedDiscounts(order,orderItemQualifiedDiscounts);
-		//assert discounts
-		assertEquals(orderItemQualifiedDiscounts[orderItem.getOrderItemID()][1].promotion.getPromotionID(),promotion.getPromotionID());
-		assertEquals(orderItemQualifiedDiscounts[orderItem.getOrderItemID()][1].discountAmount,9);
-		assertEquals(orderItemQualifiedDiscounts[orderItem.getOrderItemID()][1].promotionRewardID,'');
 		
-		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].promotion.getPromotionID(),promotion.getPromotionID());
-		assertEquals(orderItemQualifiedDiscounts[orderItem2.getOrderItemID()][1].discountAmount,15);
-		assertEquals(orderItemQualifiedDiscounts[orderITem2.getOrderItemID()][1].promotionRewardID,'');
+		// Clear the sale price out of the products and skus so that it is reloaded from the DB
+		product.getSkus()[1].setSalePriceDetails( javaCast('null', '') );
+		product.setSalePriceDetailsForSkus( javaCast('null', '') );
+		product2.getSkus()[1].setSalePriceDetails( javaCast('null', '') );
+		product2.setSalePriceDetailsForSkus( javaCast('null', '') );
+		
+		var orderItemQualifiedDiscounts = {};
+		variables.service.setupOrderItemQualifiedDiscounts(order, orderItemQualifiedDiscounts);
+		
+		// assert discounts
+		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[1].getOrderItemID() ][1].promotion.getPromotionID(), promotion.getPromotionID());
+		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[1].getOrderItemID() ][1].discountAmount,9);
+		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[1].getOrderItemID() ][1].promotionRewardID,'');
+		
+		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].promotion.getPromotionID(), promotion.getPromotionID());
+		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].discountAmount,15);
+		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].promotionRewardID,'');
+		
 	}
 	
 	public void function getPromotionPeriodQualifiedFulfillmentIDListTest(){
