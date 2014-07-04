@@ -222,59 +222,54 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function getPromotionCodeUseCount(){
 		
-		//order setup
+		// Promotion Code Setup
+		var promotionCode = createPersistedTestEntity('promotionCode');
+		
+		// Order Setup
 		var orderData = {
+			orderStatusType = {
+				typeID = '444df2b5c8f9b37338229d4f7dd84ad1' // ostNew
+			},
+			promotionCodes = [
+				{
+					promotionCodeID = promotionCode.getPromotionCodeID()
+				}
+			]
 		};
-		var order = createPersistedTestEntity('order',orderData);
+		var order = createPersistedTestEntity('order', orderData);
 		
-		var orderStatusTypeData = {
-			systemCode = 'ostPlaced'
-		};
-		var orderStatusType = createPersistedTestEntity('Type',orderStatusTypeData);
+		var promotionCodeCount = variables.dao.getPromotionCodeUseCount( promotionCode );
 		
-		var promotionCodeData = {};
-		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
-		
-		
-		order.setOrderStatusType(orderStatusType);
-		promotionCode.addOrder(order);
-		order.addPromotionCode(promotionCode);
-		ormflush();
-		
-		addToDebug(order.getOrderStatusType());
-		
-		PromotionCodeCount = variables.dao.getPromotionCodeUseCount(promotionCode);
 		//assert we were able to get our promotionCodeUseCount
 		assertEquals(1,PromotionCodeCount);
 	}
 	
 	public void function getPromotionCodeAccountUseCount(){
-		//order setup
 		
+		// Account Setup
+		var account = createPersistedTestEntity('account');
+		
+		// Promotion Code Setup
+		var promotionCode = createPersistedTestEntity('promotionCode');
+		
+		// Order Setup
 		var orderData = {
-			orderid = '',
 			orderStatusType = {
-				typeid = '444df2b6b8b5d1ccfc14a4ab38aa0a4c'
-			}
+				typeid = '444df2b6b8b5d1ccfc14a4ab38aa0a4c' // ostProcessing
+			},
+			account = {
+				accountID = account.getAccountID()
+			},
+			promotionCodes = [
+				{
+					promotionCodeID = promotionCode.getPromotionCodeID()
+				}
+			]
 		};
-		var order = createPersistedTestEntity('order',orderData);
+		var order = createPersistedTestEntity('order', orderData);
 		
-		var promotionCodeData = {};
-		var promotionCode = createPersistedTestEntity('promotionCode',promotionCodeData);
+		var PromotionCodeAccountCount = variables.dao.getPromotionCodeAccountUseCount(promotionCode,account);
 		
-		var accountData = {
-			
-		};
-		var account = createPersistedTestEntity('account',accountData);
-		
-		
-		account.addOrder(order);
-		order.setAccount(account);
-		promotionCode.addOrder(order);
-		order.addPromotionCode(promotionCode);
-		ormflush();
-		
-		PromotionCodeAccountCount = variables.dao.getPromotionCodeAccountUseCount(promotionCode,account);
 		//assert we were able to get our promotionCodeUseCount
 		assertEquals(1,PromotionCodeAccountCount);
 	}
