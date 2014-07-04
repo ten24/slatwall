@@ -161,5 +161,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(0, arrayLen(firstOrderItem.getAppliedTaxes()));
 		assert(isNull(firstAppTax.getOrderItem()));
 	}
+	
+	//Tests for generateTaxIntegrationArray()
+	public void function generateTaxIntegrationArray_returns_empty_array_if_taxCategoryRate_has_NO_taxIntegration(){
+		//Creates new order then passes new order into addTaxAddressesStructBillingAddressKey() and saves the return data
+		var newOrder = request.slatwallScope.newEntity('Order');
+		var taxIntegrationArr = variables.service.generateTaxIntegrationArray(newOrder);
+
+		//Asserts that the struct that returns is empty
+		assert( isArray(taxIntegrationArr) );
+		assertEquals( 0, arrayLen(taxIntegrationArr) );
+	}
 }
 	
