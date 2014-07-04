@@ -923,14 +923,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public any function getOrderStatusType() {
-		if(isNull(variables.orderStatusType)) {
+		if(!structKeyExists(variables, "orderStatusType")) {
 			variables.orderStatusType = getService("settingService").getTypeBySystemCode('ostNotPlaced');
 		}
 		return variables.orderStatusType;
 	}
 	
 	public any function getOrderType() {
-		if(isNull(variables.orderType)) {
+		if(!structKeyExists(variables, "orderType")) {
 			variables.orderType = getService("settingService").getTypeBySystemCode('otSalesOrder');
 		}
 		return variables.orderType;
