@@ -70,7 +70,5 @@ Notes:
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 	
-	<cfdump var="#rc.product.getOptionGroupsStruct()#" top="2">
-	
 </cf_HibachiEntityProcessForm>
 </cfoutput>

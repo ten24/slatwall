@@ -173,6 +173,11 @@ component extends="HibachiService" accessors="true" {
 	
 	public any function processProduct_addSku(required any product, required any processObject, any data) {
 		getSkuService().saveSku(arguments.processObject.getNewSku());
+		
+		if (arguments.processObject.getNewSku().hasErrors()) {
+			arguments.product.addErrors(arguments.processObject.getNewSku().getErrors());
+		}
+		
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 		
 		return arguments.product;
