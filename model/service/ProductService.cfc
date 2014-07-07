@@ -171,6 +171,18 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
+	public any function processProduct_addSku(required any product, required any processObject, any data) {
+		getSkuService().saveSku(arguments.processObject.getNewSku());
+		
+		if (arguments.processObject.getNewSku().hasErrors()) {
+			arguments.product.addErrors(arguments.processObject.getNewSku().getErrors());
+		}
+		
+		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		
+		return arguments.product;
+	}
+	
 	public any function processProduct_addSubscriptionSku(required any product, required any processObject) {
 		
 		var newSubscriptionTerm = getSubscriptionService().getSubscriptionTerm( arguments.processObject.getSubscriptionTermID() );
