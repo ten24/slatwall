@@ -3,6 +3,7 @@
 	<Columns>
 		<column name="taxCategoryID" fieldtype="id" />
 		<column name="taxCategoryName" update="false" />
+		<column name="taxCategoryCode" update="false" />
 		<column name="activeFlag" update="false" datatype="bit" />
 	</Columns>
 	<Records>
