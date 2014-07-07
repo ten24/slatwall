@@ -46,24 +46,7 @@ component extends="AdminTestBase" {
 	}
 
 	function taxCategoryRateCreateWorks() {
-		/*
-		// Load Listing Page
-		var taxCategoryList = variables.dashboardPage.clickMenuLink("Config", "Tax Categories");  	// Tax Categories | Slatwall
 		
-		assertPageIsLoaded( taxCategoryList );														// Tax Categories | Slatwall
-		
-		// Load Create Page
-		var taxCategoryCreate = taxCategoryList.clickCreateTaxCategoryLink();						// Create Tax Category | Slatwall
-		
-		assertPageIsLoaded( taxCategoryCreate );
-		
-		//Sets Up Form Data for Creation
-		formData = {};
-		formData['taxCategoryName'] = "Test Tax Category Name";								
-		formData['taxCategoryCode'] = "TEST-#getTickCount()#";
-		
-		var DetailTaxCategory = taxCategoryCreate.submitCreateForm( formData );
-		*/
 		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
 		
 		// Confirm that the Detail Page is Loaded
@@ -72,19 +55,14 @@ component extends="AdminTestBase" {
 		//Create New Manual Rate
 		var CreateTaxCategoryRate = DetailTaxCategory.clickAddTaxCategoryRateDropdownLink( 'Manual Rate' );	
 		
-		selenium.type('taxRate', '2.5');
-		
-		/*
 		//Sets Up Form Data for Creation
 		formData = {};
-		formData['taxRate'] = 10;							
+		formData['taxRate'] = '10';							
 		formData['taxCategoryRateCode'] = "TEST-#getTickCount()#";
-		
-		var detailTaxCategoryRate = createTaxCategoryRate.submitCreateForm( formData );
-		
-		//Deletes Test Category
-		taxCategoryList = taxCategoryDetail.clickDeleteLink();
-		assertPageIsLoaded( taxCategoryList );*/
+		sleep(10000);
+		var DetailTaxCategoryRate = CreateTaxCategoryRate.submitCreateForm( formData );
+
+		assertPageIsLoaded( DetailTaxCategoryRate );
 	}
 	
 	
