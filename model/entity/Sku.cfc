@@ -863,11 +863,18 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";
-			wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";
-			wc &= " OR aslatwallproduct.productID = '#getProduct().getProductID()#'";
-			if(!isNull(getProduct().getBrand())) {
-				wc &= " OR aslatwallbrand.brandID = '#getProduct().getBrand().getBrandID()#'";	
+			
+			if(!isNull(getProduct())) {
+				wc &= " OR aslatwallproduct.productID = '#getProduct().getProductID()#'";
+				
+				if(!isNull(getProduct().getProductType())) {
+					wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";		
+				}
+				if(!isNull(getProduct().getBrand())) {
+					wc &= " OR aslatwallbrand.brandID = '#getProduct().getBrand().getBrandID()#'";	
+				}	
 			}
+			
 			wc &= " OR aslatwallsku.skuID = '#getSkuID()#'";
 			wc &= ")";
 			
