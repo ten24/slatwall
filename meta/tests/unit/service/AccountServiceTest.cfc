@@ -58,6 +58,18 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue( isObject(variables.service.getEmailService()) );
 	}
 	
+	public void function deleteAccountAddress_removes_account_address_from_all_order_relationships() {
+		var accountAddress = request.slatwallScope.newEntity('accountAddress');
+		var account = request.slatwallScope.newEntity('account');
+		
+		accountAddress.setAccount(account);
+		
+		entitySave(accountAddress);
+		
+		var deleteOK = variables.service.deleteAccountAddress(accountAddress);
+		
+		assert(deleteOK);
+	}
 }
 
 

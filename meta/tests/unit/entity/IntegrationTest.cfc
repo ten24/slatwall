@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,28 +45,20 @@
 
 Notes:
 
---->
-<cfcomponent extends="Slatwall.meta.tests.coverage.SlatwallCoverageTestBase" output="false">
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	<cffunction name="all_entities_have_test_cases" access="public" returntype="void">
-		<cfset var edQuery = "" />
-		<cfset var etdQuery = "" />
-		<cfset var missingEntityTests = [] />
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
 		
-		<cfdirectory action="list" directory="#variables.entityDirectory#" name="edQuery" filter="*.cfc">
-		<cfdirectory action="list" directory="#variables.entityTestDirectory#" name="etdQuery" filter="*.cfc">
-		
-		<cfloop query="edQuery">
-			<cfset arrayAppend(missingEntityTests, edQuery.name) />
-		</cfloop>
-		
-		<cfloop query="etdQuery">
-			<cfif arrayFind(missingEntityTests, etdQuery.name)>
-				<cfset arrayDeleteAt(missingEntityTests, arrayFind(missingEntityTests, etdQuery.name)) />
-			</cfif>
-		</cfloop>
-		
-		<cfset assertEquals("", arrayToList(missingEntityTests)) />
-	</cffunction>
+		variables.entity = request.slatwallScope.newEntity('integration');
+	}
 	
-</cfcomponent>
+	public void function active_flag_set_to_no_by_default() {
+		assertFalse(variables.entity.getActiveFlag(), "Active flag not set to 'No' by default on integrations");
+	}
+	
+}
+
+

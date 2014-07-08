@@ -124,27 +124,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return getService("shippingService").verifyOrderFulfillmentShippingMethodRate( this );
 	}
 	
-	// Helper method to return either the shippingAddress or accountAddress to be used
+	// Deprecated... now just delegates to getShippingAddress
     public any function getAddress(){
-    	
-    	// If the shipping address is not null, then we can return it
-    	if(!isNull(getShippingAddress())){
-    		
-    		return getShippingAddress();
-    		
-    	// This is a hook to fix deprecated methodology
-    	} else if(!isNull(getAccountAddress())) {
-    		
-    		// Get the account address, copy it, and save as the shipping address
-    		setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-    		
-    		// Now return the shipping address
-    		return getShippingAddress();
-    	} else {
-    		
-    		// If no address, then just return a new one.
-    		return getService("addressService").newAddress();
-    	}
+    	return getShippingAddress();
     }
     
     public void function checkNewAccountAddressSave() {
@@ -429,6 +411,23 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return variables.manualFulfillmentChargeFlag;
 	}
 	
+	public any function getShippingAddress() {
+		if(!structKeyExists(variables, "shippingAddress")) {
+			
+			if(!isNull(getAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+				setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+				return variables.shippingAddress;
+			} else if (!isNull(getOrder()) && !isNull(getOrder().getShippingAddress()) ) {
+				return getOrder().getShippingAddress();
+			}
+			
+			return getService("addressService").newAddress();
+		}
+		
+		return variables.shippingAddress;
+	}
+	
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
 	public void function setShippingMethod( any shippingMethod ) {
 		if(structKeyExists(arguments, "shippingMethod")) {
@@ -455,58 +454,40 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 	}
 	
-	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(getOrder().getOrderStatusType().getSystemCode() neq "ostNotPlaced") {
+		if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			rep &= "#getOrder().getOrderNumber()# - ";
 		}
-		rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
-		if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
-			rep &= " - #getAddress().getStreetAddress()#";
-		}
-		if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {
-			rep &= " - #getEmailAddress()#";
-		}
-		if(getFulfillmentMethodType() eq "email" && !isNull(getAccountEmailAddress())) {
-			rep &= " - #getAccountEmailAddress().getEmailAddress()#";
+		if(!isNull(getFulfillmentMethod())) {
+			rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
+			if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
+				rep &= " - #getAddress().getStreetAddress()#";
+			}
+			if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {
+				rep &= " - #getEmailAddress()#";
+			}
+			if(getFulfillmentMethodType() eq "email" && !isNull(getAccountEmailAddress())) {
+				rep &= " - #getAccountEmailAddress().getEmailAddress()#";
+			}	
 		}
 		return rep;
 	}
 	
-	public any function populate() {
-		super.populate( argumentcollection=arguments );
+	public any function setAccountAddress( required any accountAddress ) {
 		
-		// If after populating, there is an account address, and shipping address then we update the shipping address
-		if ( !isNull(getAccountAddress()) && !isNull(getShippingAddress()) ) {
-    		
-    		getShippingAddress().setName( getAccountAddress().getAddress().getName() );
-			getShippingAddress().setCompany( getAccountAddress().getAddress().getCompany() );
-			getShippingAddress().setStreetAddress( getAccountAddress().getAddress().getStreetAddress() );
-			getShippingAddress().setStreet2Address( getAccountAddress().getAddress().getStreet2Address() );
-			getShippingAddress().setLocality( getAccountAddress().getAddress().getLocality() );
-			getShippingAddress().setCity( getAccountAddress().getAddress().getCity() );
-			getShippingAddress().setStateCode( getAccountAddress().getAddress().getStateCode() );
-			getShippingAddress().setPostalCode( getAccountAddress().getAddress().getPostalCode() );
-			getShippingAddress().setCountryCode( getAccountAddress().getAddress().getCountryCode() );
+		// If the shippingAddress is a new shippingAddress
+		if(getShippingAddress().getNewFlag()) {
+			setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 		
-			getShippingAddress().setSalutation( getAccountAddress().getAddress().getSalutation() );
-			getShippingAddress().setFirstName( getAccountAddress().getAddress().getFirstName() );
-			getShippingAddress().setLastName( getAccountAddress().getAddress().getLastName() );
-			getShippingAddress().setMiddleName( getAccountAddress().getAddress().getMiddleName() );
-			getShippingAddress().setMiddleInitial( getAccountAddress().getAddress().getMiddleInitial() );
-		
-			getShippingAddress().setPhoneNumber( getAccountAddress().getAddress().getPhoneNumber() );
-			getShippingAddress().setEmailAddress( getAccountAddress().getAddress().getEmailAddress() );
-		
-		// If there is an accountAddress, and no shippingAddress, then create a shipping address
-		} else if ( !isNull(getAccountAddress()) && isNull(getShippingAddress()) ) {
+		// Else if there was no accountAddress before, or the accountAddress has changed
+		} else if (!structKeyExists(variables, "accountAddress") || (structKeyExists(variables, "accountAddress") && variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
 			
-			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-			
-    	}
+		}
 		
-		return this;
+		// Set the actual accountAddress
+		variables.accountAddress = arguments.accountAddress;
 	}
 	
 	// ==================  END:  Overridden Methods ========================

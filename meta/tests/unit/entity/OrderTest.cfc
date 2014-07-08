@@ -61,4 +61,230 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse( variables.entity.hasErrors() );
 	}
 	
+	public void function validate_billingAddress_as_full_fails_when_not_fully_populated() {
+		var populateData = {
+			billingAddress = {
+				addressID = '',
+				name="Example Name",
+				countryCode="US"
+			}
+		};
+		
+		variables.entity.populate( populateData );
+		
+		variables.entity.validate( context="save" );
+		
+		assert( !isNull(variables.entity.getBillingAddress()), "The orders address was never populated in the first place" );
+		assertEquals( "Example Name", variables.entity.getBillingAddress().getName(), "The orders address was never populated in the first place" );
+		assert( variables.entity.hasErrors(), "The order doesn't show that it has errors when it should because the billing address was not fully populated" );
+	}
+	
+	public void function validate_billingAddress_as_full_passes_when_fully_populated() {
+		var populateData = {
+			billingAddress = {
+				addressID = '',
+				name="Example Name",
+				streetAddress="123 Main Street",
+				city="Encinitas",
+				stateCode="CA",
+				postalCode="92024",
+				countryCode="US"
+			}
+		};
+		
+		variables.entity.populate( populateData );
+		
+		variables.entity.validate( context="save" );
+		
+		assert( !isNull(variables.entity.getBillingAddress()), "The orders address was never populated in the first place" );
+		assertEquals( "Example Name", variables.entity.getBillingAddress().getName(), "The orders address was never populated in the first place" );
+		assertFalse( variables.entity.hasErrors(), "The order shows that it has errors event when it was populated" );
+	}
+	
+	public void function validate_shippingAddress_as_full_fails_when_not_fully_populated() {
+		var populateData = {
+			shippingAddress = {
+				addressID = '',
+				name="Example Name",
+				countryCode="US"
+			}
+		};
+		
+		variables.entity.populate( populateData );
+		
+		variables.entity.validate( context="save" );
+		
+		assert( !isNull(variables.entity.getShippingAddress()), "The orders address was never populated in the first place" );
+		assertEquals( "Example Name", variables.entity.getShippingAddress().getName(), "The orders address was never populated in the first place" );
+		assert( variables.entity.hasErrors(), "The order doesn't show that it has errors when it should because the billing address was not fully populated" );
+	}
+	
+	public void function validate_shippingAddress_as_full_passes_when_fully_populated() {
+		var populateData = {
+			shippingAddress = {
+				addressID = '',
+				name="Example Name",
+				streetAddress="123 Main Street",
+				city="Encinitas",
+				stateCode="CA",
+				postalCode="92024",
+				countryCode="US"
+			}
+		};
+		
+		variables.entity.populate( populateData );
+		
+		variables.entity.validate( context="save" );
+		
+		assert( !isNull(variables.entity.getShippingAddress()), "The orders address was never populated in the first place" );
+		assertEquals( "Example Name", variables.entity.getShippingAddress().getName(), "The orders address was never populated in the first place" );
+		assertFalse( variables.entity.hasErrors(), "The order shows that it has errors event when it was populated" );
+	}
+	
+	public void function setBillingAccountAddress_updates_billingAddress() {
+		
+		var accountAddressDataOne = {
+			address = {
+				addressID = "",
+				streetAddress = "123 Main Street"
+			}
+		};
+		var accountAddressDataTwo = {
+			address = {
+				addressID = "",
+				streetAddress = "456 Main Street"
+			}
+		};
+		var accountAddressOne = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
+		var accountAddressTwo = createPersistedTestEntity( 'AccountAddress', accountAddressDataTwo );
+		
+		variables.entity.setBillingAccountAddress( accountAddressOne );
+		
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
+		
+		variables.entity.setBillingAccountAddress( accountAddressTwo );
+		
+		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
+
+	}
+	
+	public void function setBillingAccountAddress_updates_billingAddress_without_creating_a_new_one() {
+		addressDataOne = {
+			streetAddress = '123 Main Street'
+		};
+		var accountAddressDataOne = {
+			address = {
+				addressID = "",
+				streetAddress = "456 Main Street"
+			}
+		};
+		var billingAddress = createPersistedTestEntity( 'Address', addressDataOne );
+		var accountAddress = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
+		
+		variables.entity.setBillingAddress( billingAddress );
+		
+		assertEquals( addressDataOne.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
+		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
+		
+		variables.entity.setBillingAccountAddress( accountAddress );
+		
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
+		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
+	}
+	
+	public void function setBillingAccountAddress_doesnt_updates_billingAddress_when_same_aa_as_before() {
+		var accountAddressDataOne = {
+			address = {
+				addressID = "",
+				streetAddress = "456 Main Street"
+			}
+		};
+		
+		var accountAddress = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
+		
+		variables.entity.setBillingAccountAddress( accountAddress );
+		
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
+		
+		variables.entity.getBillingAddress().setStreetAddress('123 Main Street');
+		
+		variables.entity.setBillingAccountAddress( accountAddress );
+		
+		assertEquals( '123 Main Street', variables.entity.getBillingAddress().getStreetAddress() );
+		
+	}
+	
+	public void function setShippingAccountAddress_updates_shippingAddress() {
+		
+		var accountAddressDataOne = {
+			address = {
+				addressID = "",
+				streetAddress = "123 Main Street"
+			}
+		};
+		var accountAddressDataTwo = {
+			address = {
+				addressID = "",
+				streetAddress = "456 Main Street"
+			}
+		};
+		var accountAddressOne = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
+		var accountAddressTwo = createPersistedTestEntity( 'AccountAddress', accountAddressDataTwo );
+		
+		variables.entity.setShippingAccountAddress( accountAddressOne );
+		
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+		
+		variables.entity.setShippingAccountAddress( accountAddressTwo );
+		
+		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+
+	}
+	
+	public void function setShippingAccountAddress_updates_shippingAddress_without_creating_a_new_one() {
+		addressDataOne = {
+			streetAddress = '123 Main Street'
+		};
+		var accountAddressDataOne = {
+			address = {
+				addressID = "",
+				streetAddress = "456 Main Street"
+			}
+		};
+		var shippingAddress = createPersistedTestEntity( 'Address', addressDataOne );
+		var accountAddress = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
+		
+		variables.entity.setShippingAddress( shippingAddress );
+		
+		assertEquals( addressDataOne.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+		assertEquals( shippingAddress.getAddressID(), variables.entity.getShippingAddress().getAddressID() );
+		
+		variables.entity.setShippingAccountAddress( accountAddress );
+		
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+		assertEquals( shippingAddress.getAddressID(), variables.entity.getShippingAddress().getAddressID() );
+	}
+	
+	public void function setShippingAccountAddress_doesnt_updates_shippingAddress_when_same_aa_as_before() {
+		var accountAddressDataOne = {
+			address = {
+				addressID = "",
+				streetAddress = "456 Main Street"
+			}
+		};
+		
+		var accountAddress = createPersistedTestEntity( 'AccountAddress', accountAddressDataOne );
+		
+		variables.entity.setShippingAccountAddress( accountAddress );
+		
+		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getShippingAddress().getStreetAddress() );
+		
+		variables.entity.getShippingAddress().setStreetAddress('123 Main Street');
+		
+		variables.entity.setShippingAccountAddress( accountAddress );
+		
+		assertEquals( '123 Main Street', variables.entity.getShippingAddress().getStreetAddress() );
+		
+	}
+		
 }

@@ -48,7 +48,7 @@ Notes:
 */
 component output="false" accessors="true" persistent="false" extends="Slatwall.org.Hibachi.HibachiEntity" {
 
-	property name="assignedAttributeSetSmartList" type="struct" persistent="false";
+	property name="assignedAttributeSetSmartList" type="any" persistent="false";
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
 
@@ -69,7 +69,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			}
 			
 		}
-
+		
 		// Return this object
 		return this;
 	}

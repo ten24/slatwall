@@ -46,14 +46,41 @@
 Notes:
 
 */
-component extends="mxunit.framework.TestCase" output="false" {
-
-	// @hint put things in here that you want to run befor EACH test
-	public void function setUp() {
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+	
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "tax";
+	}
+	
+	public string function getDisplayName() {
+		return "Vertex";
+	}
+	
+	public struct function getSettings() {
+		var settings = {
+			password = {fieldType="password", encryptValue=true},
+			testingFlag = {fieldType="yesno", defaultValue="1"},
+			sendInvoiceFlag = {fieldType="yesno", defaultValue="1"},
+			company = {fieldType="text"},
+			division = {fieldType="text"},
+			department = {fieldType="text"},
+			city = {fieldType="text"},
+			mainDivision = {fieldType="text"},
+			postalCode = {fieldType="text"},
+			country = {fieldType="text"},
+			webServicesURL = {fieldType="text"},
+			username = {fieldType="text"}
+		};
 		
-		variables.entityDirectory = getDirectoryFromPath(expandPath("/Slatwall/com/entity/"));
-		variables.entityTestDirectory = getDirectoryFromPath(expandPath("/Slatwall/meta/tests/unit/entity/"));
-		
+		return settings;
+	}
+	
+	public array function getEventHandlers() {
+		return ["Slatwall.integrationServices.vertex.model.handler.VertexHandler"];
 	}
 	
 }

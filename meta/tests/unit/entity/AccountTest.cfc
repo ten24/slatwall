@@ -75,8 +75,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var deleteOK = accountService.deleteAccount(account); 
 		
-		debug(request.slatwallScope.getAuditsToCommitStruct());
-		
 		assert(deleteOk);
 		
 		ormFlush();

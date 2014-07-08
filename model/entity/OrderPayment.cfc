@@ -67,6 +67,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
+	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID" cascade="all";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderPaymentType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderPaymentTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderPaymentType" fetch="join";
@@ -597,9 +598,18 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		return variables.amount;
 	}
-
+	
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
+
+			if(!isNull(getBillingAccountAddress())) {
+				// Get the account address, copy it, and save as the shipping address
+    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+    			return variables.billingAddress;
+			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
+				return getOrder().getBillingAddress();
+			}
+
 			return getService("addressService").newAddress();
 		}
 		return variables.billingAddress;
@@ -663,6 +673,22 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 		
 		return getPaymentMethod().getPaymentMethodName() & ' - ' & getFormattedValue('amount');
+	}
+	
+	public any function setBillingAccountAddress( required any accountAddress ) {
+		
+		// If the shippingAddress is a new shippingAddress
+		if( isNull(getBillingAddress()) ) {
+			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
+		
+		// Else if there was no accountAddress before, or the accountAddress has changed
+		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+			
+		}
+		
+		// Set the actual accountAddress
+		variables.billingAccountAddress = arguments.accountAddress;
 	}
 	
 	// ==================  END:  Overridden Methods ========================

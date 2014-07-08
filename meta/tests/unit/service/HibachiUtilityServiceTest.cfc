@@ -46,32 +46,79 @@
 Notes:
 
 */
-component {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	public any function getTestMerchandiseProduct() {
-		var product = entityNew("SlatwallProduct");
-		productData = {
-			productName = "Test Product",
-			price = 100,
-			productCode = "TESTPRODUCTXXX",
-			productType = {
-				productTypeID = "444df2f7ea9c87e60051f3cd87b435a1"
-			}
-		};
+	public void function setUp() {
+		super.setup();
 		
-		request.slatwallScope.getService("productService").saveProduct(product, productData);
-		
-		ormFlush();
-		
-		return product;
+		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
 	
-	public void function destroyTestMerchandiseProduct( required any product ) {
-		arguments.product.setDefaultSku( javaCast("null", "") );
+	
+	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
+		var data = {};
+		data['KEY1'] = 1;
+		data['KEY2'] = 2;
+		data['KEY3'] = 3;
 		
-		entityDelete(arguments.product);
+		data = variables.service.lcaseStructKeys( data );
 		
-		ormFlush();
+		var ska = listToArray(structKeyList(data));
+		arraySort(ska, "textNoCase");
+		
+		assertEquals(0, compare(ska[1], 'key1'));
+		assertEquals(0, compare(ska[2], 'key2'));
+		assertEquals(0, compare(ska[3], 'key3'));
+	}
+	
+	public void function lcaseStructKeys_lcases_structure_keys_at_nested_array_level() {
+		var data = {};
+		data['ARRAY1'] = [];
+		
+		var subData = {};
+		subData['KEY1'] = 1;
+		subData['KEY2'] = 2;
+		subData['KEY3'] = 3;
+		
+		arrayAppend(data['ARRAY1'], subData);
+		arrayAppend(data['ARRAY1'], subData);
+		
+		data = variables.service.lcaseStructKeys( data );
+		
+		for(var subDataStruct in data.array1) {
+			var ska = listToArray(structKeyList(subDataStruct));
+			arraySort(ska, "textNoCase");
+			
+			assertEquals(0, compare(ska[1], 'key1'));
+			assertEquals(0, compare(ska[2], 'key2'));
+			assertEquals(0, compare(ska[3], 'key3'));
+		}
+		
+	}
+	
+	public void function lcaseStructKeys_works_on_complex_nested_data() {
+		
+		var data = request.slatwallScope.getAccountData();
+		
+		data = variables.service.lcaseStructKeys( data );
+		
+		var peaStructKeyArray = listToArray(structKeyList(data.primaryemailaddress));
+		arraySort(peaStructKeyArray, "textNoCase");
+		
+		assertEquals(0, compare(peaStructKeyArray[1], 'accountemailaddressid'));
+	}
+	
+	public void function lcaseStructKeys_lcases_structure_keys_with_null_values() {
+		
+		var data = {};
+		data['myNullKeyValue'] = javaCast('null', '');
+		data['myValidKeyValue'] = 1;
+		
+		variables.service.lcaseStructKeys( data );
+
+		assertEquals(2, structCount(data));
 	}
 	
 }
+
+

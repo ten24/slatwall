@@ -73,6 +73,46 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="removeAccountAddressFromOrderPayments">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwOrderPayment
+			SET
+				billingAccountAddressID = null
+			WHERE
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="removeAccountAddressFromOrders">
+		<cfargument name="accountAddressID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwOrder
+			SET
+				billingAccountAddressID = null
+			WHERE
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+
+		<cfquery name="rs">
+			UPDATE
+				SwOrder
+			SET
+				shippingAccountAddressID = null
+			WHERE
+				shippingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+
+	</cffunction>
+	
 	<cffunction name="getInternalAccountAuthenticationsByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		

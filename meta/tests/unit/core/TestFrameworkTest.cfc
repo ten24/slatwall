@@ -46,8 +46,20 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	
+	public void function createTestEntityData_sets_up_data_for_all_properties() {
+		var brand = request.slatwallScope.newEntity('Brand');
+		
+		var brandData = createTestEntityData( brand, {}, true);
+		
+		addToDebug(brandData);
+		
+		assert(structKeyExists(brandData, "brandName"));
+		assert(structKeyExists(brandData, "brandWebsite"));
+		assert(structKeyExists(brandData, "activeFlag"));
+	}
 	
 }
+
+

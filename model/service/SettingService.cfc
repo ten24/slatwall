@@ -352,6 +352,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getCurrencyService().getCurrencyOptions();
 			case "skuTaxCategory":
 				var optionSL = getTaxService().getTaxCategorySmartList();
+				optionSL.addFilter('activeFlag', 1);
 				optionSL.addSelect('taxCategoryName', 'name');
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
@@ -375,14 +376,13 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 	
 	public array function getCustomIntegrationOptions() {
-		var options = [];
-		
-		var integrations = getIntegrationService().listIntegration({customReadyFlag=1});
-		
-		for(var i=1; i<=arrayLen(integrations); i++) {
-			arrayAppend(options, {name=integrations[i].getIntegrationName(), value=integrations[i].getIntegrationPackage()});
-		}
-		
+		var integrationSmartlist = this.getIntegrationSmartList();
+		integrationSmartlist.addFilter('activeFlag', '1');
+		integrationSmartlist.addFilter('installedFlag', '1');
+		integrationSmartlist.addLikeFilter('integrationTypeList', '%custom%');
+		integrationSmartlist.addSelect('integrationName', 'name');
+		integrationSmartlist.addSelect('integrationPackage', 'value');
+		var options = integrationSmartlist.getRecords();
 		return options;
 	}
 	
