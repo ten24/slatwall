@@ -113,15 +113,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getCollectionObjectIntegrationTest(){
 		//first a list of collection options is presented to the user
-		var collectionOptions = variables.service.getCollectionObjectOptions();
-		//user selects what to base the collection on
-		var selectedCollectionOption = {
-			name:'Account',
-			value:'Account'
-		};
+		
 		
 		var collectionEntityData = {
 			collectionid = '',
+			collectionCode = 'BestAccounts',
 			collectionConfig = '{
 				"entityName":"SlatwallAccount",
 				"columns":[
@@ -146,13 +142,44 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				]
 			}'
 		};
-		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		
-		var HQL = collectionEntity.getHQL();
-		request.debug(collectionentity.deserializeCollectionConfig());
-		request.debug(HQL);
+		var parentCollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"where":[
+					{
+						"propertyIdentifier":"firstName",
+						"operator":"=",
+						"value":"Ryan"
+					}
+				]
+			}'
+		};
+		var parentCollectionEntity = createPersistedTestEntity('collection',parentCollectionEntityData);
+		parentCollectionEntity.setCollectionObject(collectionEntity);
+		//request.debug(parentCollectionEntity);
 		
-		//ORMExecuteQuery("#HQL#");
+		/*var collectionEntityHQL = collectionEntity.getHQL();
+		ORMExecuteQuery(collectionEntityHQL);
+		request.debug(collectionEntityHQL);*/
+		
+		
+		var parentCollectionEntityHQL = parentCollectionEntity.getHQL();
+		var parentQuery = ORMExecuteQuery(parentcollectionEntityHQL);
+		request.debug(parentCollectionEntityHQL);
+		request.debug(parentQuery);
 		
 		/*
 		ORMExecuteQuery("
@@ -164,8 +191,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		*/
 		
 	}
-	
-	
 }
 
 

@@ -105,7 +105,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return variables.collectionConfig;
 	}*/
 	
-	public any function getPageRecords() {
+	/*public any function getPageRecords() {
 		if(!structKeyExists(variables, "pageRecords")) {
 			variables.pageRecords = [];
 			
@@ -119,49 +119,129 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			}
 		}
 		return variables.pageRecords;
-	}
+	}*/
 	
 	public any function deserializeCollectionConfig(){
 		return deserializeJSON(this.getCollectionConfig());
 	}
 	
-	private any function getSelectStatement(required array columns){
-		var selectStatement = '';
+	public any function getHQL(){
+		var collectionConfig = deserializeCollectionConfig();
 		
-		for(column in arguments.columns){
-			selectStatement &= '#column#,';
-		}
-		return selectStatement;
-	}
-	
-	private any function getFromStatement(required any entityName){
-		var fromStatement = 'FROM #arguments.entityName#';
+		HQL = createHQLFromCollectionObject(this);
 		
-		return fromStatement;
-	}
-	
-	private any function getOrderByStatement(required any orderings){
-		var orderByStatement = '';
-		for(ordering in arguments.orderings){
-			
-		}
-		return orderByStatement;
-	}
-	
-	private any function getWhereStatement(required array filters){
-		var whereStatement = '';
-		for(filter in arguments.filters){
-			
-		}
-		return whereStatement;
+		return HQL;
 	}
 	
 	public any function createHQLFromCollectionObject(required any collectionObject){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
-		
+		var nestedHQL = "";
 		if(!isnull(arguments.collectionObject.getCollectionObject())){
-			var nestedHQL = this.createHQLFromCollcetionObject();
+			nestedHQL = createHQLFromCollectionObject(arguments.collectionObject.getCollectionObject());
+		}
+		
+		if(!isNull(collectionConfig.entityName)){
+			
+			//build select
+			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
+				HQL &= 'SELECT';
+				var columnCount = arraylen(collectionConfig.columns);
+				for(var i = 1; i <= columnCount; i++){
+					var column = collectionConfig.columns[i];
+					//check if we have an aggregate
+					if(isnull(column.aggregateFunction)){
+						HQL &= ' #column.propertyIdentifier#';
+					}else{
+						//if we have an aggregate then put wrap the identifier
+						var aggregateFunction = '';
+						switch(column.aggregateFunction){
+							case "count":
+								aggregateFunction = "COUNT";
+							break;
+							case "avg":
+								aggregateFunction = "AVG";
+							break;
+							case "sum":
+								aggregateFunction = "SUM";
+							break;
+						}
+						
+						HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
+					}
+					//check whether a comma is needed
+					if(i != columnCount){
+						HQL &= ',';
+					}
+					
+				}
+			}
+			//build FROM
+			HQL &= ' FROM #collectionConfig.entityName#';
+			
+			//build Order By
+			if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy) && nestedHQL eq ''){
+				HQL &= ' ORDER BY ';
+				
+				var orderByCount = arraylen(collectionConfig.orderBy);
+				for(var i = 1; i <= orderByCount; i++){
+					var ordering = collectionConfig.orderBy[i];
+					var direction = '';
+					if(!isnull(ordering.direction)){
+						direction = ordering.direction;
+					}
+					
+					HQL &= '#ordering.propertyIdentifier# #direction# ';
+					
+					//check whether a comma is needed
+					if(i != orderByCount){
+						HQL &= ',';
+					}
+				}
+			}
+			
+			//nested HQL should be part of the where clause itself
+			var filterCount = 0;
+			
+			if(!isnull(collectionConfig.where)){
+				filterCount = arrayLen(collectionConfig.where);
+			}
+			writeDump(collectionconfig);
+			if(nestedHQL neq '' || filterCount){
+				
+				HQL &= ' where ';
+				var whereStatementCount = 0;
+				if(nestedHQL neq ''){
+					
+					HQL &= '  exists(
+						#nestedHQL#
+					)';
+					whereStatementCount++;
+				}
+				if(filterCount){
+					for(var i = 1; i <= filterCount; i++){
+						
+						if(filterCount > 0){
+							HQL &= ' AND ';
+						}
+						HQL &= " #collectionConfig.where[i].propertyIdentifier# #collectionConfig.where[i].operator# '#collectionConfig.where[i].value#'";
+					}
+				}
+				
+			}
+		}
+		
+		return HQL;
+		
+	}
+	
+	
+	/*public any function createHQLFromCollectionObject(required any collectionObject){
+		var HQL = "";
+		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
+		var nestedHQL = "";
+		if(!isnull(arguments.collectionObject.getCollectionObject())){
+			nestedHQL = createHQLFromCollectionObject(arguments.collectionObject.getCollectionObject());
 		}
 		
 		if(!isNull(collectionConfig.entityName)){
@@ -200,7 +280,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			HQL &= ' FROM #collectionConfig.entityName#';
 		}
 		
-		if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
+		if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy) && nestedHQL eq ''){
 			HQL &= ' ORDER BY ';
 			
 			var orderByCount = arraylen(collectionConfig.orderBy);
@@ -219,12 +299,33 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				}
 			}
 		}
+		//nested HQL should be part of the where clause itself
+		var filterCount = 0;
+		if(!isnull(collectionConfig.where)){
+			filterCount = arrayLen(collectionConfig.where);
+		}
 		
-		
-		
+		if(nestedHQL neq '' || filterCount){
+			HQL &= ' where ';
+			var whereStatementCount = 0;
+			if(nestedHQL neq ''){
+				HQL &= '  exists(
+					#nestedHQL#
+				)';
+				whereStatementCount++;
+			}
+			if(filterCount){
+				for(var i = 0; i <= filterCount; i++){
+					
+				}
+			}
+			
+		}
 		
 		return HQL;
 	}
+	
+	
 	
 	public any function getHQL(){
 		var collectionConfig = deserializeCollectionConfig();
@@ -257,10 +358,10 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			)';
 			var parentFROM = 'FROM #parentCollectionConfig#';
 		}*/
-		
+		/*
 		return HQL;
 		
-	}
+	}*/
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
