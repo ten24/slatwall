@@ -38,6 +38,11 @@ component extends="PageObject" {
 		return new CreateTaxCategoryRate( selenium );
 	}
 	
+	public function deleteTaxCategoryRate(){
+		selenium.click("//*[contains(@class, 'adminentitydeletetaxcategoryrate btn btn-mini alert-confirm')]");
+		selenium.click('//*[@id="confirmYesLink"]');
+	}
+	
 	// =============== GET TEXT =======================
 	
 	public any function getText_ActiveFlag() {
@@ -51,10 +56,5 @@ component extends="PageObject" {
 	public any function getText_TaxCategoryCode() {
 		return selenium.getText("xpath=//html/body/div[3]/div/div/div[3]/div/dl/dd[3]");
 	}
-	
-	public any function getText_ManualRate() {
-		return selenium.getText('xpath=//*[@id="tabrates"]/div/div/ul/li[2]/a');
-	}
-	
 
 }

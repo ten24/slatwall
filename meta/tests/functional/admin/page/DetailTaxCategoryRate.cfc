@@ -9,13 +9,13 @@ component extends="PageObject" {
 	}
 	
 	public any function clickDeleteLink() {
-		selenium.click('link=Delete');
+		selenium.click('//*[@id="4028810a4644ca6d0147116c6d330fd9"]/td[4]/a[3]/i');
+		
+		selenium.waitForElementPresent('//*[@id="adminConfirm"]');
 		
 		selenium.click('id=confirmYesLink');
 		
-		var pageLoadTime = waitForPageToLoad();
-		
-		return new DetailTaxCategoryRate(selenium, pageLoadTime);
+		return new DetailTaxCategory(selenium, pageLoadTime);
 	}
 	
 	public any function clickEditLink() {
