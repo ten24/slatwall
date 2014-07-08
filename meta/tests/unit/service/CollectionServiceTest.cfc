@@ -142,7 +142,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				]
 			}'
 		};
-		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
 		
 		var parentCollectionEntityData = {
 			collectionid = '',
@@ -167,8 +167,37 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				]
 			}'
 		};
-		var parentCollectionEntity = createPersistedTestEntity('collection',parentCollectionEntityData);
+		var parentCollectionEntity = createTestEntity('collection',parentCollectionEntityData);
 		parentCollectionEntity.setCollectionObject(collectionEntity);
+		
+		var parentOfParentCollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansTen24Accounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"where":[
+					{
+						"propertyIdentifier":"superUserFlag",
+						"operator":"=",
+						"value":"true"
+					}
+				]
+			}'
+		};
+		
+		var parentOfParentCollectionEntity = createTestEntity('collection',parentOfParentCollectionEntityData);
+		parentOfParentCollectionEntity.setCollectionObject(parentCollectionEntity);
+		
+		
 		//request.debug(parentCollectionEntity);
 		
 		/*var collectionEntityHQL = collectionEntity.getHQL();
@@ -181,14 +210,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.debug(parentCollectionEntityHQL);
 		request.debug(parentQuery);
 		
-		/*
-		ORMExecuteQuery("
-			FROM SlatwallAccount 
-			where exists(
-				FROM SlatwallAccount where firstname = 'Ryan'
-			)
-		");
-		*/
+		var parentOfParentCollectionEntityHQL = parentOfParentCollectionEntity.getHQL();
+		var parentOfParentQuery = ORMExecuteQuery(parentOfParentCollectionEntityHQL);
+		request.debug(parentOfParentCollectionEntityHQL);
+		request.debug(parentofParentQuery);
+		
+		
 		
 	}
 }
