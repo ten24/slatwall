@@ -78,6 +78,94 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals( "accountLoyalties", result[6].propertyIdentifier );
 	}
 	
+	public void function getCollectionObjectOptionsTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionObject = 'Account'
+		};
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		var collectionEntityProperties = variables.service.getCollectionObjectProperties(collectionEntity.getCollectionObject());
+		
+		assert(isArray(collectionEntityProperties));
+	}
+	
+	public void function getCollectionOptionsByCollectionObjectTest(){
+		var baseCollectionEntityData = {
+			collectionid = '',
+			collectionObject = 'Account'
+		};
+		var baseCollectionEntity = createTestEntity('collection',baseCollectionEntityData);
+		
+		var collectionOptions = variables.service.getCollectionOptionsByCollectionObject(baseCollectionEntity.getCollectionObject);
+	}
+	
+	/*
+	
+	public void function getCollectionObjectColumnPropertiesTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionObject = 'Account'
+		};
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		var collectionEntityColumnProperties = variables.service.getCollectionObjectColumnProperties(collectionEntity.getCollectionObject());
+		request.debug(collectionEntityColumnProperties);
+	}*/
+	
+	public void function getCollectionObjectIntegrationTest(){
+		//first a list of collection options is presented to the user
+		var collectionOptions = variables.service.getCollectionObjectOptions();
+		//user selects what to base the collection on
+		var selectedCollectionOption = {
+			name:'Account',
+			value:'Account'
+		};
+		
+		var collectionEntityData = {
+			collectionid = '',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"orderBy":[
+					{
+						"propertyIdentifier":"firstName",
+						"direction":"DESC"
+					}
+				],
+				"groupBy":[
+					{
+						"propertyIdentifier":"accountID" 
+					}
+				]
+			}'
+		};
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		
+		var HQL = collectionEntity.getHQL();
+		request.debug(collectionentity.deserializeCollectionConfig());
+		request.debug(HQL);
+		
+		//ORMExecuteQuery("#HQL#");
+		
+		/*
+		ORMExecuteQuery("
+			FROM SlatwallAccount 
+			where exists(
+				FROM SlatwallAccount where firstname = 'Ryan'
+			)
+		");
+		*/
+		
+	}
+	
+	
 }
 
 

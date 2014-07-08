@@ -46,27 +46,35 @@
 Notes:
 
 */
-component extends="CFSelenium.CFSeleniumTestCase" {
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// BEFORE ALL TESTS IN THIS SUITE
-	public void function beforeTests(){
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
 		
-		// Setup Components
-		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
-		
-		// Read Config
-		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
-		
-		// Setup variables for Selenium
-	    variables.browserURL = variables.configuration.ui.browserUrl; 
-	    variables.browserCommand = variables.configuration.ui.browserCommand;
-	    
-	    super.beforeTests();
+		variables.entityService = "collectionService";
+		variables.entity = request.slatwallScope.getService( variables.entityService ).newCollection();
 	}
 	
-	private function assertPageIsLoaded( required any pageObject , string message=""){
-		assertEquals(arguments.pageObject.getTitle(), variables.selenium.getTitle(), arguments.message);
+	public void function getCollectionObjectOptionsTest(){
+		variables.entity.setCollectionObject('Account');
+		assert(isArray(variables.entity.getCollectionObjectOptions()));
 	}
 	
+	/*public void function getCollectionConfigTest(){
+		variables.entity.setCollectionObject('Account');
+		request.debug(variables.entity.getCollectionConfig());
+	}*/
+	
+/*	public void function getPageRecordsTest(){
+		variables.entity.setCollectionObject('Account');
+		request.debug(variables.entity.getPageRecords());
+	}*/
+	
+	public void function deserializeCollectionConfigTest(){
+		makePublic('deserializeCollectionConfig');
+		
+	}
 }
+
+

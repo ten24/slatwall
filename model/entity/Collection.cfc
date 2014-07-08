@@ -42,8 +42,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string";
-	property name="collectionObject" ormtype="string" hb_formFieldType="select";
-	property name="collectionConfig" ormtype="string" length="4000";
+	/*property name="collectionObject" ormtype="string" hb_formFieldType="select" hint="collectionObject we filter from";*/
+	property name="collectionObject" cfc="collection" ;
+	
+	/*
+		collection config
+		entityName = '' - the main table we are performing all queries on
+	*/
+	property name="collectionConfig" ormtype="string" length="4000" hint="json object";
 	
 	// Calculated Properties
 
@@ -66,24 +72,26 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	// Non-Persistent Properties
 	property name="pageRecords" persistent="false";
-	property name="collectionObjectOptions" persistent="false";
+	property name="collectionObjectOptions" persistent="false" hint="an array of name/value structs for the entities metaData";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	//returns an array of name/value structs for 
 	public array function getCollectionObjectOptions() {
 		if(!structKeyExists(variables, "collectionObjectOptions")) {
-			var emd = getService("hibachiService").getEntitiesMetaData();
-			var enArr = listToArray(structKeyList(emd));
-			arraySort(enArr,"text");
+			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
+			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
+			arraySort(entitiesMetaDataArray,"text");
 			variables.collectionObjectOptions = [];
-			for(var i=1; i<=arrayLen(enArr); i++) {
-				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
+			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
+				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
 			}
 		}
 		return variables.collectionObjectOptions;
 	}
 	
-	public any function getCollectionConfig() {
+	//TODO: how do we get this function to return the appropriate columns?	
+	/*public any function getCollectionConfig() {
 		if(!structKeyExists(variables, "collectionConfig")) {
 			
 			variables.collectionConfig = {};
@@ -95,22 +103,163 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		}
 		
 		return variables.collectionConfig;
-	}
+	}*/
 	
 	public any function getPageRecords() {
 		if(!structKeyExists(variables, "pageRecords")) {
 			variables.pageRecords = [];
 			
 			if(!isNull(getCollectionObject()) && len(getCollectionObject()) && arrayLen(getCollectionConfig().columns)) {
-				var sl = getHibachiScope().getSmartList(getCollectionObject());
+				var smartList = getHibachiScope().getSmartList(getCollectionObject());
 				
 				for(var column in getCollectionConfig().columns) {
-					sl.addSelect(column.propertyIdentifier, column.propertyIdentifier);
+					smartList.addSelect(column.propertyIdentifier, column.propertyIdentifier);
 				}
-				variables.pageRecords = sl.getPageRecords();
+				variables.pageRecords = smartList.getPageRecords();
 			}
 		}
 		return variables.pageRecords;
+	}
+	
+	public any function deserializeCollectionConfig(){
+		return deserializeJSON(this.getCollectionConfig());
+	}
+	
+	private any function getSelectStatement(required array columns){
+		var selectStatement = '';
+		
+		for(column in arguments.columns){
+			selectStatement &= '#column#,';
+		}
+		return selectStatement;
+	}
+	
+	private any function getFromStatement(required any entityName){
+		var fromStatement = 'FROM #arguments.entityName#';
+		
+		return fromStatement;
+	}
+	
+	private any function getOrderByStatement(required any orderings){
+		var orderByStatement = '';
+		for(ordering in arguments.orderings){
+			
+		}
+		return orderByStatement;
+	}
+	
+	private any function getWhereStatement(required array filters){
+		var whereStatement = '';
+		for(filter in arguments.filters){
+			
+		}
+		return whereStatement;
+	}
+	
+	public any function createHQLFromCollectionObject(required any collectionObject){
+		var HQL = "";
+		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
+		
+		if(!isnull(arguments.collectionObject.getCollectionObject())){
+			var nestedHQL = this.createHQLFromCollcetionObject();
+		}
+		
+		if(!isNull(collectionConfig.entityName)){
+			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
+				HQL &= 'SELECT';
+				var columnCount = arraylen(collectionConfig.columns);
+				for(var i = 1; i <= columnCount; i++){
+					var column = collectionConfig.columns[i];
+					//check if we have an aggregate
+					if(isnull(column.aggregateFunction)){
+						HQL &= ' #column.propertyIdentifier#';
+					}else{
+						//if we have an aggregate then put wrap the identifier
+						var aggregateFunction = '';
+						switch(column.aggregateFunction){
+							case "count":
+								aggregateFunction = "COUNT";
+							break;
+							case "avg":
+								aggregateFunction = "AVG";
+							break;
+							case "sum":
+								aggregateFunction = "SUM";
+							break;
+						}
+						
+						HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
+					}
+					//check whether a comma is needed
+					if(i != columnCount){
+						HQL &= ',';
+					}
+					
+				}
+			}
+			HQL &= ' FROM #collectionConfig.entityName#';
+		}
+		
+		if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
+			HQL &= ' ORDER BY ';
+			
+			var orderByCount = arraylen(collectionConfig.orderBy);
+			for(var i = 1; i <= orderByCount; i++){
+				var ordering = collectionConfig.orderBy[i];
+				var direction = '';
+				if(!isnull(ordering.direction)){
+					direction = ordering.direction;
+				}
+				
+				HQL &= '#ordering.propertyIdentifier# #direction# ';
+				
+				//check whether a comma is needed
+				if(i != orderByCount){
+					HQL &= ',';
+				}
+			}
+		}
+		
+		
+		
+		
+		return HQL;
+	}
+	
+	public any function getHQL(){
+		var collectionConfig = deserializeCollectionConfig();
+		
+		HQL = createHQLFromCollectionObject(this);
+		
+		/*
+		SELECT firstName, COUNT(accountID)
+		FROM SlatwallAccount 
+			where exists(
+				FROM SlatwallAccount where firstname = 'Ryan'
+				ORDER BY firstName DESC
+			)
+		*/
+		
+		//HQL consists of entityName, where, orderby, groupby
+		/*var selectStatement = getSelectStatement();*/
+		
+		/*var fromStatement = getFromStatement(collectionConfig.entityName);*/
+		
+		/*var whereStatement = getWhereStatement();*/
+		
+		/*var orderByStatement = getOrderByStatement(collectionConfig.orderBy);*/
+		
+		/*if(!isNull(this.getCollectionObject())){
+			//this.CollectionObject.deserializeCollectionConfig()
+			var parentCollectionConfig = this.CollectionObject.deserializeCollectionConfig();
+			var parentHQL = 'where exists(
+				
+			)';
+			var parentFROM = 'FROM #parentCollectionConfig#';
+		}*/
+		
+		return HQL;
+		
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -153,6 +302,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 
 
 /*
+	SELECT accountID
+	FROM SlatwallAccount
+	where exists(
+		FROM SlatwallAccount
+		where firstName = 'Ryan'
+		
+	)
+
 	{
 		entityName = '',
 		columns = [

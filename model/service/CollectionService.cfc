@@ -42,12 +42,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public array function getCollectionObjectOptions() {
-		var emd = getEntitiesMetaData();
-		var enArr = listToArray(structKeyList(emd));
-		arraySort(enArr,"text");
+		var entitiesMetaData = getEntitiesMetaData();
+		var entitiesArray = listToArray(structKeyList(entitiesMetaData));
+		arraySort(entitiesArray,"text");
 		
 		var options = [];
-		for(var value in enArr) {
+		for(var value in entitiesArray) {
 			var option = {};
 			option["name"] = rbKey('entity.#value#');
 			option["value"] = value; 
@@ -95,6 +95,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return returnArray;
 	}
 	
+	//returns an array of the collectionObjectsProperties in structs{ entityName,fieldType,propertyIdentifier,title }
 	public any function getCollectionObjectProperties( required string collectionObject ) {
 		var returnArray = [];
 		var sortArray = [];
@@ -143,6 +144,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return returnArray;
 	}
+	
+	
+	
 	
 	// =====================  END: Logical Methods ============================
 	
