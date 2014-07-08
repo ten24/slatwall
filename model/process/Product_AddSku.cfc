@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,50 +45,20 @@
 
 Notes:
 
---->
-<cfcomponent extends="HibachiDAO">
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="product";
+
+	// Data Properties
+	property name="newSku" cfc="Sku" fieldType="many-to-one" persistent="false" fkcolumn="skuID";
 	
-	<cffunction name="getContentByCMSContentIDAndCMSSiteID" access="public">
-		<cfargument name="cmsContentID" type="string" required="true">
-		<cfargument name="cmsSiteID" type="string" required="true">
-		
-		<cfset var contents = ormExecuteQuery(" FROM SlatwallContent c WHERE c.cmsContentID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsContentID, arguments.cmsSiteID ] ) />
-		
-		<cfif arrayLen(contents)>
-			<cfreturn contents[1] />
-		</cfif>
-		
-		<cfreturn entityNew("SlatwallContent") />
-	</cffunction>
+	public any function getNewSku() {
+		if(!structKeyExists(variables, "newSku")) {
+			variables.newSku = getService("skuService").newSku();
+		}
+		return variables.newSku;
+	}
 	
-	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
-		<cfargument name="CmsCategoryIDs" type="string" />
-			
-		<cfset var hql = " FROM SlatwallCategory sc
-							WHERE sc.cmsCategoryID IN (:CmsCategoryIDs) " />
-			
-		<cfreturn ormExecuteQuery(hql, {CmsCategoryIDs=listToArray(arguments.CmsCategoryIDs)}) />
-	</cffunction>
-	
-	<cffunction name="getDisplayTemplates" access="public">
-		<cfargument name="templateType" type="string" />
-		<cfargument name="siteID" type="string" />
-		
-		<cfif structKeyExists(arguments, "siteID")>
-			<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ? AND site.siteID = ?", ["ctt#arguments.templateType#", arguments.siteID], false, {ignoreCase=true}) />
-		</cfif>
-		
-		<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ?", ["ctt#arguments.templateType#"], false, {ignoreCase=true}) />
-	</cffunction>
-	
-	<cffunction name="removeCategoryFromContentAssociation" access="public">
-		<cfargument name="categoryID" type="string" required="true" >
-		
-		<cfset var rs = "" />
-		
-		<cfquery name="rs">
-			DELETE FROM SwContentCategory WHERE categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryID#" /> 
-		</cfquery>
-	</cffunction>
-	
-</cfcomponent>
+}

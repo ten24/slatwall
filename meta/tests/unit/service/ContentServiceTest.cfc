@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,50 +45,31 @@
 
 Notes:
 
---->
-<cfcomponent extends="HibachiDAO">
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getBean("dataService");
+	}
 	
-	<cffunction name="getContentByCMSContentIDAndCMSSiteID" access="public">
-		<cfargument name="cmsContentID" type="string" required="true">
-		<cfargument name="cmsSiteID" type="string" required="true">
+	public void function deleteCategory_removes_content_assignments() {
 		
-		<cfset var contents = ormExecuteQuery(" FROM SlatwallContent c WHERE c.cmsContentID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsContentID, arguments.cmsSiteID ] ) />
+		// Create a content & category
+		var content = createPersistedTestEntity( 'Content' );
+		var category = createPersistedTestEntity( 'Category' );
 		
-		<cfif arrayLen(contents)>
-			<cfreturn contents[1] />
-		</cfif>
+		// Add the Many-to-Many relationship
+		content.addCategory( category );
+		category.addContent( content );
 		
-		<cfreturn entityNew("SlatwallContent") />
-	</cffunction>
-	
-	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
-		<cfargument name="CmsCategoryIDs" type="string" />
-			
-		<cfset var hql = " FROM SlatwallCategory sc
-							WHERE sc.cmsCategoryID IN (:CmsCategoryIDs) " />
-			
-		<cfreturn ormExecuteQuery(hql, {CmsCategoryIDs=listToArray(arguments.CmsCategoryIDs)}) />
-	</cffunction>
-	
-	<cffunction name="getDisplayTemplates" access="public">
-		<cfargument name="templateType" type="string" />
-		<cfargument name="siteID" type="string" />
+		// Persist the relationship
+		ormFlush();
 		
-		<cfif structKeyExists(arguments, "siteID")>
-			<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ? AND site.siteID = ?", ["ctt#arguments.templateType#", arguments.siteID], false, {ignoreCase=true}) />
-		</cfif>
+		var deleteOK = variables.service.deleteCategory( category );
 		
-		<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ?", ["ctt#arguments.templateType#"], false, {ignoreCase=true}) />
-	</cffunction>
-	
-	<cffunction name="removeCategoryFromContentAssociation" access="public">
-		<cfargument name="categoryID" type="string" required="true" >
-		
-		<cfset var rs = "" />
-		
-		<cfquery name="rs">
-			DELETE FROM SwContentCategory WHERE categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryID#" /> 
-		</cfquery>
-	</cffunction>
-	
-</cfcomponent>
+		assert(deleteOK);
+	}
+
+}
