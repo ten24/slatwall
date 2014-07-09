@@ -129,6 +129,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
+	private boolean function shouldAddNewPromotion(numeric discountAmount, any orderFulfillment, any promotionReward){
+		
+		// First we make sure that the discountAmount is > 0 before we check if we should add more discount
+		if(arguments.discountAmount > 0) {
+			
+			// If there aren't any promotions applied to this order fulfillment yet, then we can add this one
+			if(!arrayLen(arguments.orderFulfillment.getAppliedPromotions())) {
+				return true;
+				
+			// If one has already been set then we just need to check if this new discount amount is greater
+			} else if ( arguments.orderFulfillment.getAppliedPromotions()[1].getDiscountAmount() < arguments.discountAmount ) {
+				
+				// If the promotion is the same, then we just update the amount
+				if(arguments.orderFulfillment.getAppliedPromotions()[1].getPromotion().getPromotionID() == arguments.promotionReward.getPromotionPeriod().getPromotion().getPromotionID()) {
+					arguments.orderFulfillment.getAppliedPromotions()[1].setDiscountAmount(discountAmount);
+					
+				// If the promotion is a different then remove the original and set addNew to true
+				} else {
+					arguments.orderFulfillment.getAppliedPromotions()[1].removeOrderFulfillment();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	private void function processOrderFulfillmentRewards(required any order, required any promotionPeriodQualifications, required any promotionReward){
 		// Loop over all the fulfillments
 		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
@@ -156,35 +182,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Address In Zone
 				if(addressIsInZone) {
 					
-					var discountAmount = getDiscountAmount(reward, orderFulfillment.getFulfillmentCharge(), 1);
-					
-					var addNew = false;
+					var discountAmount = getDiscountAmount(arguments.promotionReward, orderFulfillment.getFulfillmentCharge(), 1);
+		
+					var addNew = shouldAddNewPromotion(discountAmount,orderFulfillment,arguments.promotionReward);
 						
-					// First we make sure that the discountAmount is > 0 before we check if we should add more discount
-					if(discountAmount > 0) {
-						
-						// If there aren't any promotions applied to this order fulfillment yet, then we can add this one
-						if(!arrayLen(orderFulfillment.getAppliedPromotions())) {
-							addNew = true;
-							
-						// If one has already been set then we just need to check if this new discount amount is greater
-						} else if ( orderFulfillment.getAppliedPromotions()[1].getDiscountAmount() < discountAmount ) {
-							
-							// If the promotion is the same, then we just update the amount
-							if(orderFulfillment.getAppliedPromotions()[1].getPromotion().getPromotionID() == reward.getPromotionPeriod().getPromotion().getPromotionID()) {
-								orderFulfillment.getAppliedPromotions()[1].setDiscountAmount(discountAmount);
-								
-							// If the promotion is a different then remove the original and set addNew to true
-							} else {
-								orderFulfillment.getAppliedPromotions()[1].removeOrderFulfillment();
-								addNew = true;
-							}
-						}
-					}
-					
 					// Add the new appliedPromotion
 					if(addNew) {
-						applyPromotionToOrderFulfillment(orderFulfillment,reward.getPromotionPeriod().getPromotion(),discountAmount);
+						applyPromotionToOrderFulfillment(orderFulfillment,arguments.promotionReward.getPromotionPeriod().getPromotion(),discountAmount);
 					}
 					
 				} // END: Address In Zone
