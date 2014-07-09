@@ -41,7 +41,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public array function getCollectionObjectOptions() {
+	public array function getentityNameOptions() {
 		var entitiesMetaData = getEntitiesMetaData();
 		var entitiesArray = listToArray(structKeyList(entitiesMetaData));
 		arraySort(entitiesArray,"text");
@@ -63,7 +63,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return options;
 	}
 	
-	public array function getCollectionOptionsByCollectionObject( required string collectionObject ) {
+	public array function getCollectionOptionsByEntityName( required string EntityName ) {
 		var smartList = this.getCollectionSmartList();
 		
 		smartList.addSelect('collectionName', 'name');
@@ -81,8 +81,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		return options;
 	}
 	
-	public any function getCollectionObjectColumnProperties( required string collectionObject ) {
-		var returnArray = getCollectionObjectProperties( arguments.collectionObject );
+	public any function getEntityNameColumnProperties( required string EntityName ) {
+		var returnArray = getentityNameProperties( arguments.entityName );
 		for(var i=arrayLen(returnArray); i>=1; i--) {
 			if(listFindNoCase('one-to-many,many-to-many', returnArray[i].fieldType)) {
 				arrayDeleteAt(returnArray, i);	
@@ -95,12 +95,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		return returnArray;
 	}
 	
-	//returns an array of the collectionObjectsProperties in structs{ entityName,fieldType,propertyIdentifier,title }
-	public any function getCollectionObjectProperties( required string collectionObject ) {
+	//returns an array of the entityNamesProperties in structs{ entityName,fieldType,propertyIdentifier,title }
+	public any function getEntityNameProperties( required string EntityName ) {
 		var returnArray = [];
 		var sortArray = [];
-		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.collectionObject)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.collectionObject)#"});
-		var properties = getPropertiesStructByEntityName(arguments.collectionObject);
+		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.entityName)#"});
+		var properties = getPropertiesStructByEntityName(arguments.entityName);
 		
 		for(var attributeCode in listToArray(attributeCodesList)) {
 			arrayAppend(sortArray, attributeCode);
@@ -121,7 +121,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				var add = {};
 				add['propertyIdentifier'] = property;
-				add['title'] = rbKey("entity.#arguments.collectionObject#.#property#");
+				add['title'] = rbKey("entity.#arguments.entityName#.#property#");
 				if(structKeyExists(properties[property], "fieldtype")) {
 					add['fieldType'] = properties[property].fieldType;
 					if(structKeyExists(properties[property], "cfc")) {

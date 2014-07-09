@@ -44,7 +44,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionCode" ormtype="string";
 	/*property name="collectionObject" ormtype="string" hb_formFieldType="select" hint="collectionObject we filter from";*/
 	property name="entityName" ormtype="string" hb_formFieldType="select";
-	property name="collectionObject" cfc="collection" ;
+	property name="CollectionObject" cfc="collection" ;
 	
 	/*
 		collection config
@@ -73,22 +73,22 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	// Non-Persistent Properties
 	property name="pageRecords" persistent="false";
-	property name="collectionObjectOptions" persistent="false" hint="an array of name/value structs for the entities metaData";
+	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entities metaData";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	//returns an array of name/value structs for 
-	public array function getCollectionObjectOptions() {
-		if(!structKeyExists(variables, "collectionObjectOptions")) {
+	public array function getEntityNameOptions() {
+		if(!structKeyExists(variables, "EntityNameOptions")) {
 			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
 			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
 			arraySort(entitiesMetaDataArray,"text");
-			variables.collectionObjectOptions = [];
+			variables.EntityNameOptions = [];
 			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
-				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
+				arrayAppend(variables.EntityNameOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
 			}
 		}
-		return variables.collectionObjectOptions;
+		return variables.EntityNameOptions;
 	}
 	
 	//TODO: how do we get this function to return the appropriate columns?	

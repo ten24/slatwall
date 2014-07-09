@@ -54,21 +54,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("collectionService");
 	}
 	
-	public void function getCollectionObjectColumnProperties_returns_valid_array() {
-		var result = variables.service.getCollectionObjectColumnProperties( 'Account' );
+	public void function getEntityNameColumnProperties_returns_valid_array() {
+		var result = variables.service.getEntityNameColumnProperties( 'Account' );
 		
 		assert( isArray( result ) );
 	}
 	
-	// getCollectionObjectProperties()
-	public void function getCollectionObjectProperties_returns_valid_array() {
-		var result = variables.service.getCollectionObjectProperties( 'Account' );
+	// getEntityNameProperties()
+	public void function getEntityNameProperties_returns_valid_array() {
+		var result = variables.service.getEntityNameProperties( 'Account' );
 		
 		assert( isArray( result ) );
 	}
 	
-	public void function getCollectionObjectProperties_returns_properties_in_correct_sorted_order() {
-		var result = variables.service.getCollectionObjectProperties( 'Account' );
+	public void function getEntityNameProperties_returns_properties_in_correct_sorted_order() {
+		var result = variables.service.getEntityNameProperties( 'Account' );
 		
 		assertEquals( "accountAddresses", result[1].propertyIdentifier );
 		assertEquals( "accountAuthentications", result[2].propertyIdentifier );
@@ -78,25 +78,25 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals( "accountLoyalties", result[6].propertyIdentifier );
 	}
 	
-	public void function getCollectionObjectOptionsTest(){
+	public void function getEntityNameOptionsTest(){
 		var collectionEntityData = {
 			collectionid = '',
-			collectionObject = 'Account'
+			EntityName = 'Account'
 		};
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		var collectionEntityProperties = variables.service.getCollectionObjectProperties(collectionEntity.getCollectionObject());
+		var collectionEntityProperties = variables.service.getEntityNameProperties(collectionEntity.getEntityName());
 		
 		assert(isArray(collectionEntityProperties));
 	}
 	
-	public void function getCollectionOptionsByCollectionObjectTest(){
+	public void function getCollectionOptionsByEntityNameTest(){
 		var baseCollectionEntityData = {
 			collectionid = '',
-			collectionObject = 'Account'
+			EntityName = 'Account'
 		};
 		var baseCollectionEntity = createTestEntity('collection',baseCollectionEntityData);
 		
-		var collectionOptions = variables.service.getCollectionOptionsByCollectionObject(baseCollectionEntity.getCollectionObject);
+		var collectionOptions = variables.service.getCollectionOptionsByEntityName(baseCollectionEntity.getEntityName);
 	}
 	
 	/*
