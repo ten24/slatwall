@@ -39,7 +39,7 @@ component extends="PageObject" {
 	}
 	
 	public function deleteTaxCategoryRate(){
-		selenium.click("//*[contains(@class, 'adminentitydeletetaxcategoryrate btn btn-mini alert-confirm')]");
+		selenium.click('//*[@id="4028810a4644ca6d01471cd492101c31"]/td[4]/a[3]');
 		selenium.click('//*[@id="confirmYesLink"]');
 	}
 	

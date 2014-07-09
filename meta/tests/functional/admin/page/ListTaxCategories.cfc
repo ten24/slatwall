@@ -9,5 +9,5 @@ component extends="PageObject" {
 		var loadTime = waitForPageToLoad();
 		
 		return new CreateTaxCategory(selenium, loadTime);
-	};
+	}
 }
