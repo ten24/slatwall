@@ -113,8 +113,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getCollectionObjectIntegrationTest(){
 		//first a list of collection options is presented to the user
-		
-		
 		var collectionEntityData = {
 			collectionid = '',
 			collectionCode = 'BestAccounts',
@@ -138,6 +136,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				"groupBy":[
 					{
 						"propertyIdentifier":"accountID" 
+					}
+				],
+				"where":[
+					{
+						"propertyIdentifier":"lastName",
+						"operator":"=",
+						"value":"Marchand"
 					}
 				]
 			}'
