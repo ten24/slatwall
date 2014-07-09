@@ -47,7 +47,7 @@
 	
 --->
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+<cfimport prefix="sw" taglib="./" />
 
 <!---[DEVELOPER NOTES]															
 																				
