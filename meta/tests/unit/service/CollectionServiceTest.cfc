@@ -99,19 +99,86 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var collectionOptions = variables.service.getCollectionOptionsByEntityName(baseCollectionEntity.getEntityName);
 	}
 	
-	/*
-	
-	public void function getCollectionObjectColumnPropertiesTest(){
+	public void function getCollectionObjectTest(){
 		var collectionEntityData = {
 			collectionid = '',
-			collectionObject = 'Account'
+			collectionCode = 'BestAccounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"orderBy":[
+					{
+						"propertyIdentifier":"firstName",
+						"direction":"DESC"
+					}
+				],
+				"groupBy":[
+					{
+						"propertyIdentifier":"accountID" 
+					}
+				],
+				"where":[
+					{
+						"propertyIdentifier":"lastName",
+						"operator":"=",
+						"value":"Marchand"
+					}
+				]
+			}'
 		};
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		var collectionEntityColumnProperties = variables.service.getCollectionObjectColumnProperties(collectionEntity.getCollectionObject());
-		request.debug(collectionEntityColumnProperties);
-	}*/
+		
+		var collectionEntityData2 = {
+			collectionid = '',
+			collectionCode = 'BestAccounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"orderBy":[
+					{
+						"propertyIdentifier":"firstName",
+						"direction":"DESC"
+					}
+				],
+				"groupBy":[
+					{
+						"propertyIdentifier":"accountID" 
+					}
+				],
+				"where":[
+					{
+						"propertyIdentifier":"lastName",
+						"operator":"=",
+						"value":"Marchand"
+					}
+				]
+			}'
+		};
+		var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
+		
+		var collectionEntityHQL = collectionEntity.getHQL();
+		ORMExecuteQuery(collectionEntityHQL);
+		request.debug(collectionEntityHQL);
+		
+	}
 	
-	public void function getCollectionObjectIntegrationTest(){
+	public void function getCollectionObjectParentChildTest(){
 		//first a list of collection options is presented to the user
 		var collectionEntityData = {
 			collectionid = '',

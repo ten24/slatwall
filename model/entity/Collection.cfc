@@ -186,6 +186,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 							case "sum":
 								aggregateFunction = "SUM";
 							break;
+							case "min":
+								aggregateFunction = "MIN";
+							break;
+							case "max":
+								aggregateFunction = "MAX";
+							break;
 						}
 						
 						HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
