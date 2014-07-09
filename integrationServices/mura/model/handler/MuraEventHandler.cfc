@@ -780,8 +780,11 @@
 					
 					// Copy views over to the template directory
 					var slatwallTemplatePath = getDirectoryFromPath(expandPath("/Slatwall/public/views/templates")); 
-					var muraTemplatePath = getDirectoryFromPath(expandPath("/muraWRM/#cmsSiteID#/includes/themes/#cmsThemeName#/templates"));
-					$.slatwall.getService("hibachiUtilityService").duplicateDirectory(source=slatwallTemplatePath, destination=muraTemplatePath, overwrite=false, recurse=true, copyContentExclusionList=".svn,.git");
+					var muraTemplatesPath = getDirectoryFromPath(expandPath("/muraWRM/#cmsSiteID#/includes/themes/#cmsThemeName#/templates"));
+					$.slatwall.getService("hibachiUtilityService").duplicateDirectory(source=slatwallTemplatePath, destination=muraTemplatesPath, overwrite=false, recurse=true, copyContentExclusionList=".svn,.git");
+					
+					// Update templates to be mura specific
+					updateExampleTemlatesToBeMuraSpecific(muraTemplatesPath=muraTemplatesPath);
 					
 					// Create the necessary pages
 					var templatePortalCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Slatwall Templates", 		filename="slatwall-templates", 							template="", 							isNav="0", type="Folder", 	parentID="00000000000000000000000000000000001" );
@@ -838,6 +841,10 @@
 				}
 				
 			}
+		}
+		
+		public void function updateExampleTemlatesToBeMuraSpecific( required string muraTemplatesPath ) {
+			throw("IMPLIMENT ME!");
 		}
 		
 	</cfscript>

@@ -221,6 +221,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 	
+	// Account Payment Method - Add
+	public void function addAccountPaymentMethod() {
+		accountPaymentMethod = getAccountService().saveAccountPaymentMethod( arguments.rc.$.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethod' ), arguments.rc );
+		
+		arguments.rc.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
+	}
+	
 	// Subscription Usage - Update
 	public void function updateSubscriptionUsage() {
 		param name="rc.subscriptionUsageID" default="";
