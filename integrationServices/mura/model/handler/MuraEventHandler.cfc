@@ -844,6 +844,30 @@
 		}
 		
 		public void function updateExampleTemlatesToBeMuraSpecific( required string muraTemplatesPath ) {
+			// Loop over the files in the mura templates directory
+			var dirList = directoryList( muraTemplatesPath );
+			
+			var replaceStrings = [
+				[
+					'taglib="../../tags"',
+					'taglib="/Slatwall/public/tags"'
+				],[
+					'',
+					''
+				]
+			];
+			
+			for(var filePath in dirList) {
+				var fileName = listLast(filePath, "/\");
+				if(listFindNoCase("_slatwall,slatwall-", left(fileName, 9))) {
+					var content = fileRead(filePath);
+					for(var rArr in replaceStrings) {
+						content = replace(content, rArr[1], rArr[2], 'all');
+					}
+					fileWrite(filePath, content);
+				}
+			}
+			
 			throw("IMPLIMENT ME!");
 		}
 		
