@@ -728,12 +728,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
 			
-			getPromotionPeriodQualificationDetailsForOrder(arguments.qualifier,arguments.order,qualifierDetails);
+			getQualifierQualificationDetailsForOrder(arguments.qualifier,arguments.order,qualifierDetails);
 			
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
 			
-			getPromotionPeriodQualificationDetailsForOrderFulfillment(arguments.qualifier, arguments.order, qualifier);
+			getQualifierQualificationDetailsForOrderFulfillment(arguments.qualifier, arguments.order, qualifier);
 		
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
