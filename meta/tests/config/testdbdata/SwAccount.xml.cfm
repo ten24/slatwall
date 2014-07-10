@@ -13,12 +13,31 @@
 		<column name="remoteContactID" />
 		<column name="createdDateTime" />
 		<column name="createdByAccountID" />
+		<column name="modifiedDateTime" />
+		<column name="modifiedByAccountID" />
 		<column name="primaryEmailAddressID" />
 		<column name="primaryPhoneNumberID" />
 		<column name="primaryAddressID" />
 		<column name="primaryPaymentMethodID" />
 	</Columns>
 	<Records>
-		<Record accountID="testAccount12345" superUserFlag="1" firstName="Test" lastName="Testertron5000" company="ten24" cmsAccountID="" remoteID="" remoteEmployeeID="" remoteCustomerID="" remoteContactID="" createdDateTime="7/7/2014 8:10:00 AM" createdByAccountID="4028810a4644ca6d0147115fd9ff0fb5" primaryEmailAddressID="" primaryPhoneNumberID="" primaryAddressID="" primaryPaymentMethodID="" />
+		<Record accountID="4028810a471d4864014720bc661e0037" 
+				superUserFlag="1" 
+				firstName="TestName1" 
+				lastName="TestName2" 
+				company="TestCompany" 
+				cmsAccountID="NULL" 
+				remoteID="NULL" 
+				remoteEmployeeID="NULL" 
+				remoteCustomerID="NULL" 
+				remoteContactID="NULL" 
+				createdDateTime="NULL" 
+				createdByAccountID="4028810a471d4864014720bc661e0037"
+				modifiedDateTime="NULL"
+				modifiedByAccountID="NULL"
+				primaryEmailAddressID="NULL" 
+				primaryPhoneNumberID="NULL" 
+				primaryAddressID="NULL" 
+				primaryPaymentMethodID="NULL" />
 	</Records>
 </Table>

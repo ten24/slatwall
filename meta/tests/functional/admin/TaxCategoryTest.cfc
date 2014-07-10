@@ -66,10 +66,10 @@ component extends="AdminTestBase" {
 		assertEquals('The Tax Category Code is required.', selenium.getText('//*[@id="adminentitysavetaxcategory"]/div[3]/div/fieldset/div[3]/div/label'));
 		
 	}
-/*	
+	
 	//Creates a manual tax rate and tests that it works on an order
 	function taxCategoryManualRateCalculationWorks() {
-		debug(createUUID());
+		
 		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
 		
 		// Confirm that the Detail Page is Loaded
@@ -130,6 +130,6 @@ component extends="AdminTestBase" {
 
 		DetailTaxCategory.deleteTaxCategoryRate();
 
-	}*/
+	}
 	
 }

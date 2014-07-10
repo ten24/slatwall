@@ -9,7 +9,7 @@ component extends="PageObject" {
 	}
 	
 	public any function addItemToOrder( struct formData={} ) {
-		selenium.click(addItemToOrderAddButtonModal());
+		selenium.click(addItemToOrderAddButton());
 		
 		selenium.waitForElementPresent(addItemToOrderAddButtonModal());
 		
@@ -46,7 +46,7 @@ component extends="PageObject" {
 	}
 	
 	public any function addItemToOrderAddButton(){
-		return '//*[@id="adminentityprocessorder"]';
+		return '//*[@id="adminentityprocessorder_8a8080834721af1a0147220714810083"]';
 	}
 	public any function addItemToOrderAddButtonModal(){
 		return '//*[@id="adminentityprocessorder_addorderitem"]';

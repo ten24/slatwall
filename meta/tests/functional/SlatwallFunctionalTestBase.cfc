@@ -54,10 +54,10 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
 
-		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
+		variables.configureTestUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
 		
 		// Read Config
-		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
+		variables.configuration = variables.configureTestUtiltiy.readLocalConfiguration();
 		
 		// Setup variables for Selenium
 	    variables.browserURL = variables.configuration.ui.browserUrl; 
