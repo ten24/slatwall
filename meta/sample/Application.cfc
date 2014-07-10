@@ -72,6 +72,12 @@ component {
 		} else if (structKeyExists(url, "slatAction")) {
 			request.slatwallScope.doAction( url.slatAction );
 		}
+		
+		// This is only to setup the nav elements on the sample app
+		savecontent variable="request.sampleNavigation" {
+			include "inc/samplenavigation.cfm";
+		}
+		
 	}
 	
 	
