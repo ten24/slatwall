@@ -861,7 +861,7 @@
 					'action="?s=1"'
 				],[
 					'href="checkout.cfm"',
-					'href="##$.createHREF(filename="checkout")##"'
+					'href="##$.createHREF(filename=''checkout'')##"'
 				]
 			];
 			
