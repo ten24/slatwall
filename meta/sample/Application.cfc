@@ -53,4 +53,26 @@ component {
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
 	
+	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/sample/", "");
+	this.ormEnabled = true;
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.dbcreate = "update";
+	this.ormSettings.flushAtRequestEnd = false;
+	this.ormsettings.eventhandling = true;
+	this.ormSettings.automanageSession = false;
+	
+	function onRequestStart() {
+		if (!structKeyExists(application, "slatwallFW1Application")) {
+			application.slatwallFW1Application = createObject("component", "Slatwall.Application");
+		}
+		application.slatwallFW1Application.bootstrap();
+		
+		if(structKeyExists(form, "slatAction")) {
+			request.slatwallScope.doAction( form.slatAction );
+		} else if (structKeyExists(url, "slatAction")) {
+			request.slatwallScope.doAction( url.slatAction );
+		}
+	}
+	
+	
 }
