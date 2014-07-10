@@ -57,28 +57,150 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getCollectionObjectOptionsTest(){
-		variables.entity.setCollectionObject('Account');
-		assert(isArray(variables.entity.getCollectionObjectOptions()));
+		variables.entity.setEntityName('Account');
+		assert(isArray(variables.entity.getEntityNameOptions()));
 	}
 	
-	/*public void function getCollectionConfigTest(){
-		variables.entity.setCollectionObject('Account');
-		request.debug(variables.entity.getCollectionConfig());
-	}*/
-	
-/*	public void function getPageRecordsTest(){
-		variables.entity.setCollectionObject('Account');
-		request.debug(variables.entity.getPageRecords());
-	}*/
-	
 	public void function deserializeCollectionConfigTest(){
-		makePublic('deserializeCollectionConfig');
+		makePublic(variables.entity,'deserializeCollectionConfig');
 		
+	}
+	
+	public void function getHQLTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'BestAccounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					} 
+					
+				],
+				"orderBy":[
+					{
+						"propertyIdentifier":"firstName",
+						"direction":"DESC"
+					}
+				],
+				"groupBy":[
+					{
+						"propertyIdentifier":"accountID" 
+					}
+				],
+				"filterGroups":[
+					{
+						"filterGroup":[
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"true"
+							},
+							{
+								"logicalOperator":"AND",
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"false"
+							}
+						]
+						
+					},
+					{
+						"logicalOperator":"OR",
+						"filterGroup":[
+							{
+							"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"true"
+							},
+							{
+								"logicalOperator":"OR",
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"false"
+							}
+						]
+					}
+				]
+			}'
+		};
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		
+		var collectionEntityHQL = collectionEntity.getHQL();
+		
+		request.debug(collectionEntityHQL);
+		request.debug(collectionEntity);
+		var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
+		request.debug(query);
+		
+	}
+	
+	public void function getSelectionsHQLTest(){
+		MakePublic(variables.entity,'getSelectionsHQL');
+		var selectionsJSON = '	[
+									{
+										"propertyIdentifier":"firstName"
+									},
+									{
+										"propertyIdentifier":"accountID",
+										"aggregateFunction":"count"
+									}
+								]';
+		var selections = deserializeJSON(selectionsJSON);
+		
+		var selectionsHQL = variables.entity.getSelectionsHQL(selections);
+		request.debug(selectionsHQL);
+	}
+	
+	public void function getFilterHQLTest(){
+		MakePublic(variables.entity,'getFilterHQL');
+		var filterGroupsJSON = '	[
+										{
+											"filters":[
+												{
+													"propertyIdentifier":"superUserFlag",
+													"comparisonOperator":"=",
+													"value":"true"
+												},
+												{
+													"logicalOperator":"AND",
+													"propertyIdentifier":"superUserFlag",
+													"comparisonOperator":"=",
+													"value":"false"
+												}
+											]
+										},
+										{
+											"logicalOperator":"OR",
+											"filters":[
+												{
+													"propertyIdentifier":"superUserFlag",
+													"comparisonOperator":"=",
+													"value":"true"
+												},
+												{
+													"logicalOperator":"OR",
+													"propertyIdentifier":"superUserFlag",
+													"comparisonOperator":"=",
+													"value":"false"
+												}
+											]
+										}
+									]';
+		var filterGroups = deserializeJSON(filterGroupsJSON);
+		
+		var filterHQL = variables.entity.getFilterHQL(filterGroups);
+		request.debug(filterHQL);
 	}
 	
 	public void function getFilterGroupHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupHQL');
-		var filterJSON = '	[
+		var filterGroupJSON = '	[
 								{
 									"propertyIdentifier":"superUserFlag",
 									"comparisonOperator":"=",
@@ -92,11 +214,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 								}
 							]';
 							
-		var filter = deserializeJSON(filterJSON);
+		var filterGroup = deserializeJSON(filterGroupJSON);
 		
-		var filterGroupHQL = variables.entity.getFilterGroupHQL(filter);
+		var filterGroupHQL = variables.entity.getFilterGroupHQL(filterGroup);
 		request.debug(filterGroupHQL);
-		request.debug(variables.entity);
 	}
 	
 	public void function getFilterGroupsHQLTest(){

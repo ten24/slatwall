@@ -67,11 +67,16 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
+	property name="hqlParams" type="struct" persistent="false";
 	property name="pageRecords" persistent="false";
 	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entities metaData";
-	property name="hqlParams" type="struct" persistent="false";
+	
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function init(){
+		variables.hqlParams = {};
+	}
 	
 	//returns an array of name/value structs for 
 	public array function getEntityNameOptions() {
@@ -121,10 +126,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	public void function addHQLParam(required string paramName, required any paramValue) {
 		variables.hqlParams[ arguments.paramName ] = arguments.paramValue;
 	}
+	/*
 	
-	public struct function getHQLParams() {
-		return variables.hqlParams;
-	}
+	*/
+	/*public struct function getHQLParams() {
+		return duplicate(variables.hqlParams);
+	}*/
 	
 	public any function deserializeCollectionConfig(){
 		return deserializeJSON(this.getCollectionConfig());
@@ -141,8 +148,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	public array function getFilterGroupArrayFromAncestors(required any collectionObject){
 		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
 		var filterGroupArray = [];
-		if(!isnull(collectionConfig.where) && arraylen(collectionConfig.where)){
-			filterGroupArray = collectionConfig.where;
+		if(!isnull(collectionConfig.filterGroups) && arraylen(collectionConfig.filterGroups)){
+			filterGroupArray = collectionConfig.filterGroups;
 		}
 		
 		if(!isnull(arguments.collectionObject.getCollectionObject())){
@@ -199,6 +206,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	private string function getAggregateFunction(required string aggregateFunction){
 		switch(arguments.aggregateFunction){
+			
 			case "count":
 				return "COUNT";
 			break;
@@ -215,10 +223,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				return "MAX";
 			break;
 		}
-		return '';
 	}
 	
-	private string function getlogicalOperator(required string logicalOperator){
+	private string function getLogicalOperator(required string logicalOperator){
 		switch(arguments.logicalOperator){
 			case "or":
 				return "OR";
@@ -231,30 +238,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			break;
 		}
 		return 'AND';
-	}
-	
-	private any function getSelections(required array columns){
-		var HQL = 'SELECT';
-		var columnCount = arraylen(arguments.columns);
-		for(var i = 1; i <= columnCount; i++){
-			var column = arguments.columns[i];
-			//check if we have an aggregate
-			if(isnull(column.aggregateFunction)){
-				HQL &= ' #column.propertyIdentifier#';
-			}else{
-				//if we have an aggregate then put wrap the identifier
-				var aggregateFunction = '';
-				aggregateFuntion = getAggregateFunction(column.aggregateFunction);
-				
-				HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
-			}
-			//check whether a comma is needed
-			if(i != columnCount){
-				HQL &= ',';
-			}
-			
-		}
-		return HQL;
 	}
 	
 	private string function getFilterGroupHQL(required array filterGroup){
@@ -282,7 +265,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
 			}
 			//constuct HQL to be used in filterGroup
-			var filterGroupHQL = getFilterGroupHQL(filterGroup.filters);
+			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			
 			filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			
@@ -300,6 +283,30 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return filterHQL;
 	}
 	
+	private any function getSelectionsHQL(required array columns){
+		var HQL = 'SELECT';
+		var columnCount = arraylen(arguments.columns);
+		for(var i = 1; i <= columnCount; i++){
+			var column = arguments.columns[i];
+			//check if we have an aggregate
+			if(isNull(column.aggregateFunction)){
+				HQL &= ' #column.propertyIdentifier#';
+			}else{
+				//if we have an aggregate then put wrap the identifier
+				var aggregateFunction = '';
+				aggregateFunction = getAggregateFunction(column.aggregateFunction);
+				
+				HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
+			}
+			//check whether a comma is needed
+			if(i != columnCount){
+				HQL &= ',';
+			}
+			
+		}
+		return HQL;
+	}
+	
 	public any function createHQLFromCollectionObject(required any collectionObject){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
@@ -308,7 +315,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
-				HQL &= getSelections(collectionConfig.columns);
+				HQL &= getSelectionsHQL(collectionConfig.columns);
 				
 			}
 			//build FROM
@@ -318,7 +325,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
 			
 			if(arraylen(filterGroupArray)){
-				HQL &= getFilterGroupsHQL(filterGroupArray);
+				HQL &= getFilterHQL(filterGroupArray);
 			}
 			
 			//build Order By
