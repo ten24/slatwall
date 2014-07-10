@@ -95,8 +95,6 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		
 		if(!isNull(requestBean.getCreditCardNumber())) {
 			requestData["x_card_num"] = requestBean.getCreditCardNumber();	
-		} else {
-			requestData["x_card_num"] = requestBean.getOrder().getOrderPayments()[1].getcreditCardLastFour();
 		}
 		if(!isNull(requestBean.getSecurityCode())) {
 			requestData["x_card_code"] = requestBean.getSecurityCode();	
