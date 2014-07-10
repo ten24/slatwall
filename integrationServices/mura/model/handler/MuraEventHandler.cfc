@@ -851,9 +851,6 @@
 				[
 					'taglib="../../tags"',
 					'taglib="/Slatwall/public/tags"'
-				],[
-					'',
-					''
 				]
 			];
 			
@@ -867,8 +864,6 @@
 					fileWrite(filePath, content);
 				}
 			}
-			
-			throw("IMPLIMENT ME!");
 		}
 		
 	</cfscript>

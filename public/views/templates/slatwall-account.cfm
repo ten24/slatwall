@@ -1706,8 +1706,8 @@ Notes:
 						<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
 						<input type="hidden" name="slatAction" value="public:account.create,public:account.login" />
 						
-						<!--- This is also passed so that guestCheckout will work when the page is reloaded --->
-						<input type="hidden" name="guestCheckoutFlag" value="1" />
+						<!--- This is passed so that we force the creation of a password and this isn't just a guest checkout --->
+						<input type="hidden" name="createAuthenticationFlag" value="1" />
 						
 						<!--- Name --->
 						<div class="row">
@@ -1773,56 +1773,27 @@ Notes:
 	    					</div>
 	  					</div>
 						
-						<!--- Guest Checkout --->
+						<!--- Password --->
 						<div class="control-group">
-	    					<label class="control-label" for="rating">Save Account ( No for Guest Checkout )</label>
+	    					<label class="control-label" for="rating">Password</label>
 	    					<div class="controls">
 	    						
-								<sw:FormField type="yesno" valueObject="#createAccountObj#" valueObjectProperty="createAuthenticationFlag" />
-								<sw:ErrorDisplay object="#createAccountObj#" errorName="createAuthenticationFlag" />
+								<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="password" class="span6" />
+								<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
 								
 	    					</div>
 	  					</div>
 						
-						<!--- SCRIPT IMPORTANT: This jQuery is just here for example purposes to show/hide the password fields if guestCheckout it set to true / false --->
-						<script type="text/javascript">
-							(function($){
-								$(document).ready(function(){
-									$('body').on('change', 'input[name="createAuthenticationFlag"]', function(e){
-										if( $(this).val() == 0 ) {
-											$('##password-details').hide();
-										} else {
-											$('##password-details').show();	
-										}
-									});
-									$('input[name="createAuthenticationFlag"]:checked').change();
-								});
-							})( jQuery )
-						</script>
-						
-						<!--- Password --->
-						<div id="password-details" >
-							<div class="control-group">
-		    					<label class="control-label" for="rating">Password</label>
-		    					<div class="controls">
-		    						
-									<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="password" class="span6" />
-									<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
-									
-		    					</div>
-		  					</div>
-							
-							<!--- Password Confirm --->
-							<div class="control-group">
-		    					<label class="control-label" for="rating">Confirm Password</label>
-		    					<div class="controls">
-		    						
-									<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="passwordConfirm" class="span6" />
-									<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
-									
-		    					</div>
-		  					</div>
-						</div>
+						<!--- Password Confirm --->
+						<div class="control-group">
+	    					<label class="control-label" for="rating">Confirm Password</label>
+	    					<div class="controls">
+	    						
+								<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="passwordConfirm" class="span6" />
+								<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
+								
+	    					</div>
+	  					</div>
 						
 						<!--- Create Button --->
 						<div class="control-group pull-right">

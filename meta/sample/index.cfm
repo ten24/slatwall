@@ -1,0 +1,1 @@
+This is the homepage of the sample app
