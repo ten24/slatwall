@@ -851,6 +851,9 @@
 				[
 					'taglib="../../tags"',
 					'taglib="/Slatwall/public/tags"'
+				],[
+					'product.cfm?productID=##product.getProductID()##',
+					'##product.getListingProductURL()##'
 				]
 			];
 			

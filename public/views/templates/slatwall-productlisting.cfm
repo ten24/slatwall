@@ -237,7 +237,7 @@ Notes:
 								</cfif>
 								
 								<!--- This is the link to the product detail page.  By using the getListingProductURL() instead of getProductURL() it will append to the end of the URL string so that the breadcrumbs on the detail page can know what listing page you came from.  This is also good for SEO purposes as long as you remember to add a canonical url meta information to the detail page --->
-								<a href="#product.getListingProductURL()#">Details / Buy</a>
+								<a href="product.cfm?productID=#product.getProductID()#">Details / Buy</a>
 								
 							</div>
 							
