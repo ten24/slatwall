@@ -7,7 +7,11 @@ component extends="PageObject" {
 		submitForm( 'adminentitysavetaxcategory', arguments.formData );
 		
 		var pageLoadTime = waitForPageToLoad();
+		if(pageLoadTime > 0){
+			return new DetailTaxCategory(selenium, pageLoadTime);
+		} else {
+			return new CreateTaxCategory(selenium, pageLoadTime);
+		}
 		
-		return new DetailTaxCategory(selenium, pageLoadTime);
 	}
 }

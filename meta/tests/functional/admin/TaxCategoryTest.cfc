@@ -45,9 +45,9 @@ component extends="AdminTestBase" {
 		taxCategoryList = taxCategoryDetail.clickDeleteLink();
 		assertPageIsLoaded( taxCategoryList );
 	}
-	/*
+	
 	//Tests the validation of creating a tax category without a tax category code
-	public void function taxCategorySave_requires_taxCategoryCode() {
+	public void function taxCategorySaveRequiresTaxCategoryCode() {
 		
 		var ListTaxCategory = variables.dashboardPage.clickMenuLink("Config", "Tax Categories");
 		
@@ -60,23 +60,16 @@ component extends="AdminTestBase" {
 		formData['taxCategoryCode'] = "";								
 		
 		CreateTaxCategory.submitCreateForm( formData );
-		 
-		//**********
-		//This is not working because the page doesn't reload so the values remain at zero
-		//**********
+
+		assertEquals(1, selenium.getXpathCount('//*[@id="adminentitysavetaxcategory"]/div[3]/div/fieldset/div[3]/div/label'));
 		
-		debug(selenium.getXpathCount('//*[@id="adminentitysavetaxcategory"]/div[2]/div/fieldset/div[3]/label'));
-		debug(selenium.getXpathCount('//*[@id="adminentitysavetaxcategory"]'));
-		debug(selenium.getXpathCount('//*[@id="adminentitysavetaxcategory"]/div[2]/div/fieldset/div[3]/div/label'));
-		//assertEquals(1, selenium.getXpathCount('//*[@id="adminentitysavetaxcategory"]/div[2]/div/fieldset/div[3]/div/label'));
+		assertEquals('The Tax Category Code is required.', selenium.getText('//*[@id="adminentitysavetaxcategory"]/div[3]/div/fieldset/div[3]/div/label'));
 		
-		//assertEquals('This field is required.', selenium.getText('//*[@id="adminentitysavetaxcategory"]/div[2]/div/fieldset/div[3]/div/label'));
-		
-	}*/
-	
+	}
+/*	
 	//Creates a manual tax rate and tests that it works on an order
 	function taxCategoryManualRateCalculationWorks() {
-		
+		debug(createUUID());
 		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
 		
 		// Confirm that the Detail Page is Loaded
@@ -98,7 +91,7 @@ component extends="AdminTestBase" {
 		var ListCartsAndQuotes = variables.dashboardPage.clickMenuLink("Orders", "Carts & Quotes");
 		
 		assertPageIsLoaded( ListCartsAndQuotes );	
-
+		//Create an order
 		formData = {};
 		formData['firstName'] = 'TestName1';
 		formData['lastName'] = 'TestName2';	
@@ -111,6 +104,7 @@ component extends="AdminTestBase" {
 
 		assertPageIsLoaded( EditOrder );
 		
+		//Add a product to the order
 		formData = {};
 		formData['shippingAddress.name'] = 'Test Name';							
 		formData['shippingAddress.company'] = 'Test Company';	
@@ -122,18 +116,10 @@ component extends="AdminTestBase" {
 		
 		assertPageIsLoaded( EditOrderPageWithOneItem );
 		
-		//***********************************************************************
-		
-		// Convert string to numbers
-		
+		// Convert string to numbers and assert totalTax equals 10 dollars as expected
 		var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
-		var subTotalCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[4]/td[2]'));
-		var expectedTaxTotal = subTotalCell * .1;
-		assertEquals(expectedTaxTotal, totalTaxCell);
-		
-		//***********************************************************************
-		
-
+		assertEquals(10, totalTaxCell);
+	
 		//Delete the Test Order
 		EditOrderPageWithOneItem.deleteOrder();
 
@@ -144,6 +130,6 @@ component extends="AdminTestBase" {
 
 		DetailTaxCategory.deleteTaxCategoryRate();
 
-	}
+	}*/
 	
 }

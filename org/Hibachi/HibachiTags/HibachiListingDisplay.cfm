@@ -521,7 +521,7 @@
 								
 								<!--- Delete --->
 								<cfif len(attributes.recordDeleteAction)>
-									<cfset thisID = "#replace(replace(lcase(attributes.recordDeleteAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
+									<cfset thisID = "#replace(replace(lcase(attributes.recordDeleteAction), ':', ''), '.', '')#" />
 									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="delete", setErrors=false) />
 									<cfset local.disabled = local.deleteErrors.hasErrors() />
 									<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />

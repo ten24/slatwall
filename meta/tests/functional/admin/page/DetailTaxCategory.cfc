@@ -39,11 +39,14 @@ component extends="PageObject" {
 	}
 	
 	public function deleteTaxCategoryRate(){
-		selenium.click('//*[@id="4028810a4644ca6d01471cd492101c31"]/td[4]/a[3]');
+		selenium.click(getButton_DeleteTaxCategoryRate());
+		var pageLoadTime = selenium.waitForElementPresent('//*[@id="adminConfirm"]');
 		selenium.click('//*[@id="confirmYesLink"]');
+		
+		return new DetailTaxCategory( selenium, pageLoadTime );
 	}
 	
-	// =============== GET TEXT =======================
+	// =============== Page Specific Locators =======================
 	
 	public any function getText_ActiveFlag() {
 		return selenium.getText("xpath=//html/body/div[3]/div/div/div[3]/div/dl/dd[1]");
@@ -55,6 +58,9 @@ component extends="PageObject" {
 	
 	public any function getText_TaxCategoryCode() {
 		return selenium.getText("xpath=//html/body/div[3]/div/div/div[3]/div/dl/dd[3]");
+	}
+	public any function getButton_DeleteTaxCategoryRate() {
+		return '//*[@id="adminentitydeletetaxcategoryrate"]';
 	}
 
 }

@@ -9,9 +9,9 @@ component extends="PageObject" {
 	}
 	
 	public any function addItemToOrder( struct formData={} ) {
-		selenium.click('//*[@id="4028810a4644ca6d0147118080e41002"]/td[11]/a');
+		selenium.click(addItemToOrderAddButtonModal());
 		
-		selenium.waitForElementPresent('//*[@id="adminentityprocessorder_addorderitem"]');
+		selenium.waitForElementPresent(addItemToOrderAddButtonModal());
 		
 		selenium.select('shippingAddress.stateCode','value=CA');
 		submitForm('adminentityprocessorder_addorderitem', arguments.formData);
@@ -22,7 +22,33 @@ component extends="PageObject" {
 	}
 	
 	public function deleteOrder(){
-		selenium.click('//*[@id="adminentitysaveorder"]/div[1]/div/div[2]/div/div[4]/a[1]');
-		selenium.click('//*[@id="confirmYesLink"]');
+		
+		selenium.click(deleteOrderButtonLocator());
+		
+		selenium.waitForElementPresent('//*[@id="adminConfirm"]');
+		
+		selenium.click(deleteOrderConfirmYesLink());
+		
+		var pageLoadTime = waitForPageToLoad();
+		
+		return new ListCartsAndQuotes(selenium, pageLoadTime);
+		
+	}
+	
+	//============ Page Specific Locators ================
+	
+	public any function deleteOrderButtonLocator(){
+		return '//*[@id="adminentitysaveorder"]/div[1]/div/div[2]/div/div[4]/a[1]';
+	}
+	
+	public any function deleteOrderConfirmYesLink(){
+		return '//*[@id="confirmYesLink"]';
+	}
+	
+	public any function addItemToOrderAddButton(){
+		return '//*[@id="adminentityprocessorder"]';
+	}
+	public any function addItemToOrderAddButtonModal(){
+		return '//*[@id="adminentityprocessorder_addorderitem"]';
 	}
 }
