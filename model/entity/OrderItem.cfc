@@ -448,33 +448,42 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public any function getAssignedAttributeSetSmartList(){
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
-			
+
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
-			
+
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astOrderItem');
-			
+
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "skus", "left");
-			
-			
+
+
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";
+			
 			if(!isNull(getSku())) {
-				wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getSku().getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";
-				wc &= " OR aslatwallproduct.productID = '#getSku().getProduct().getProductID()#'";	
-				if(!isNull(getSku().getProduct().getBrand())) {
-					wc &= " OR aslatwallbrand.brandID = '#getSku().getProduct().getBrand().getBrandID()#'";	
-				}
+				
 				wc &= " OR aslatwallsku.skuID = '#getSku().getSkuID()#'";
+				
+				if(!isNull(getSku().getProduct())) {
+					
+					wc &= " OR aslatwallproduct.productID = '#getSku().getProduct().getProductID()#'";
+					
+					if(!isNull(getSku().getProduct().getProductType())) {
+						wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getSku().getProduct().getProductType().getProductTypeIDPath(),",","','","all")#')";		
+					}
+					if(!isNull(getSku().getProduct().getBrand())) {
+						wc &= " OR aslatwallbrand.brandID = '#getSku().getProduct().getBrand().getBrandID()#'";	
+					}	
+				}
 			}
 			wc &= ")";
-			
+
 			variables.assignedAttributeSetSmartList.addWhereCondition( wc );
 		}
-		
+
 		return variables.assignedAttributeSetSmartList;
 	}
 	

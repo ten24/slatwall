@@ -167,7 +167,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			}
 		}
 	}
-	
+	//name value pair string to struct. Separates url string by & ampersand
 	private struct function convertNVPStringToStruct( required string data ) {
 		var returnStruct = {};
 		var ampArray = listToArray(arguments.data, "&");

@@ -164,6 +164,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================== START: Get Overrides ============================
 	
 	// ======================  END: Get Overrides =============================
+	
+	// ===================== START: Delete Overrides ==========================
 
+	public boolean function deleteCategory(required any category) {
+		
+		// Check delete validation
+		if(arguments.category.isDeletable()) {
+
+			getContentDAO().removeCategoryFromContentAssociation( categoryID=arguments.category.getCategoryID() );
+			
+			return delete(arguments.category);
+		}
+		
+		return false;
+	}
+	
+	// =====================  END: Delete Overrides ===========================
 }
 

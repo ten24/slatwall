@@ -46,28 +46,14 @@
 Notes:
 
 */
-component extends="CFSelenium.CFSeleniumTestCase" {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// BEFORE ALL TESTS IN THIS SUITE
-	public void function beforeTests(){
+	public void function setUp() {
+		super.setup();
 		
-		// Setup Components
-		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
+		variables.dao = request.slatwallScope.getDAO("collectionDAO");
+	}
 
-		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
-		
-		// Read Config
-		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
-		
-		// Setup variables for Selenium
-	    variables.browserURL = variables.configuration.ui.browserUrl; 
-	    variables.browserCommand = variables.configuration.ui.browserCommand;
-	    
-	    super.beforeTests();
-	}
-	
-	private function assertPageIsLoaded( required any pageObject , string message=""){
-		assertEquals(arguments.pageObject.getTitle(), variables.selenium.getTitle(), arguments.message);
-	}
-	
 }
+
+

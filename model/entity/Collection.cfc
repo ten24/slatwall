@@ -42,8 +42,10 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string";
-	property name="collectionObject" ormtype="string" hb_formFieldType="select";
-	property name="collectionConfig" ormtype="string" length="4000";
+	property name="entityName" ormtype="string" hb_formFieldType="select";
+	property name="CollectionObject" cfc="collection" ;
+	
+	property name="collectionConfig" ormtype="string" length="4000" hint="json object";
 	
 	// Calculated Properties
 
@@ -66,24 +68,27 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	// Non-Persistent Properties
 	property name="pageRecords" persistent="false";
-	property name="collectionObjectOptions" persistent="false";
+	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entities metaData";
+	property name="hqlParams" type="struct" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public array function getCollectionObjectOptions() {
-		if(!structKeyExists(variables, "collectionObjectOptions")) {
-			var emd = getService("hibachiService").getEntitiesMetaData();
-			var enArr = listToArray(structKeyList(emd));
-			arraySort(enArr,"text");
-			variables.collectionObjectOptions = [];
-			for(var i=1; i<=arrayLen(enArr); i++) {
-				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
+	//returns an array of name/value structs for 
+	public array function getEntityNameOptions() {
+		if(!structKeyExists(variables, "EntityNameOptions")) {
+			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
+			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
+			arraySort(entitiesMetaDataArray,"text");
+			variables.EntityNameOptions = [];
+			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
+				arrayAppend(variables.EntityNameOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
 			}
 		}
-		return variables.collectionObjectOptions;
+		return variables.EntityNameOptions;
 	}
 	
-	public any function getCollectionConfig() {
+	//TODO: how do we get this function to return the appropriate columns?	
+	/*public any function getCollectionConfig() {
 		if(!structKeyExists(variables, "collectionConfig")) {
 			
 			variables.collectionConfig = {};
@@ -95,22 +100,249 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		}
 		
 		return variables.collectionConfig;
-	}
+	}*/
 	
-	public any function getPageRecords() {
+	/*public any function getPageRecords() {
 		if(!structKeyExists(variables, "pageRecords")) {
 			variables.pageRecords = [];
 			
 			if(!isNull(getCollectionObject()) && len(getCollectionObject()) && arrayLen(getCollectionConfig().columns)) {
-				var sl = getHibachiScope().getSmartList(getCollectionObject());
+				var smartList = getHibachiScope().getSmartList(getCollectionObject());
 				
 				for(var column in getCollectionConfig().columns) {
-					sl.addSelect(column.propertyIdentifier, column.propertyIdentifier);
+					smartList.addSelect(column.propertyIdentifier, column.propertyIdentifier);
 				}
-				variables.pageRecords = sl.getPageRecords();
+				variables.pageRecords = smartList.getPageRecords();
 			}
 		}
 		return variables.pageRecords;
+	}*/
+	
+	public void function addHQLParam(required string paramName, required any paramValue) {
+		variables.hqlParams[ arguments.paramName ] = arguments.paramValue;
+	}
+	
+	public struct function getHQLParams() {
+		return variables.hqlParams;
+	}
+	
+	public any function deserializeCollectionConfig(){
+		return deserializeJSON(this.getCollectionConfig());
+	}
+	
+	public any function getHQL(){
+		var collectionConfig = deserializeCollectionConfig();
+		
+		HQL = createHQLFromCollectionObject(this);
+		
+		return HQL;
+	}
+	
+	public array function getFilterGroupArrayFromAncestors(required any collectionObject){
+		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
+		var filterGroupArray = [];
+		if(!isnull(collectionConfig.where) && arraylen(collectionConfig.where)){
+			filterGroupArray = collectionConfig.where;
+		}
+		
+		if(!isnull(arguments.collectionObject.getCollectionObject())){
+			
+			var parentFilterGroupArray = getFilterGroupArrayFromAncestors(arguments.collectionObject.getCollectionObject());
+			
+			for(parentFilterGroup in parentFilterGroupArray){
+				if(!arrayFind(filterGroupArray,parentGroupFilter)){
+					if(!structKeyExists(parentGroupFilter,"logicalOperator")){
+						parentGroupFilter.logicalOperator = ' AND ';
+					}
+					ArrayAppend(filterGroupArray,parentGroupFilter);
+				}
+			}
+		}
+		
+		return filterGroupArray;
+	}
+	
+	//restrict allowed operators to prevent sql injection
+	private string function getComparisonOperator(required string comparisonOperator){
+		
+		switch(arguments.comparisonOperator){
+			case "=":
+				return "=";
+			break;
+			case "!=":
+				return "!=";
+			break;
+			case ">":
+				return ">";
+			break;
+			case "<":
+				return "<";
+			break;
+			case "<=":
+				return "<=";
+			break;
+			case ">=":
+				return ">=";
+			break;
+			case "like":
+				return "LIKE";
+			break;
+			case "in":
+				return "IN";
+			break;
+			case "not in":
+				return "NOT IN";
+			break;
+		}
+		return '';
+	}
+	
+	private string function getAggregateFunction(required string aggregateFunction){
+		switch(arguments.aggregateFunction){
+			case "count":
+				return "COUNT";
+			break;
+			case "avg":
+				return "AVG";
+			break;
+			case "sum":
+				return "SUM";
+			break;
+			case "min":
+				return "MIN";
+			break;
+			case "max":
+				return "MAX";
+			break;
+		}
+		return '';
+	}
+	
+	private string function getlogicalOperator(required string logicalOperator){
+		switch(arguments.logicalOperator){
+			case "or":
+				return "OR";
+			break;
+			case "not":
+				return "NOT";
+			break;
+			case "and":
+				return "AND";
+			break;
+		}
+		return 'AND';
+	}
+	
+	private any function getSelections(required array columns){
+		var HQL = 'SELECT';
+		var columnCount = arraylen(arguments.columns);
+		for(var i = 1; i <= columnCount; i++){
+			var column = arguments.columns[i];
+			//check if we have an aggregate
+			if(isnull(column.aggregateFunction)){
+				HQL &= ' #column.propertyIdentifier#';
+			}else{
+				//if we have an aggregate then put wrap the identifier
+				var aggregateFunction = '';
+				aggregateFuntion = getAggregateFunction(column.aggregateFunction);
+				
+				HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
+			}
+			//check whether a comma is needed
+			if(i != columnCount){
+				HQL &= ',';
+			}
+			
+		}
+		return HQL;
+	}
+	
+	private string function getFilterGroupHQL(required array filterGroup){
+		var filterGroupHQL = '';
+		for(filter in arguments.filterGroup){
+			//add property and value to HQLParams
+			addHQLParam(filter.propertyIdentifier,filter.value);
+			
+			var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
+			var logicalOperator = '';
+			if(structKeyExists(filter,"logicalOperator")){
+				logicalOperator = filter.logicalOperator;
+			}
+			filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#filter.propertyIdentifier#";
+		}
+		return filterGroupHQL;
+	}
+	
+	private string function getFilterGroupsHQL(required array filterGroups){
+		var filterGroupsHQL = '';
+		for(filterGroup in arguments.FilterGroups){
+			var logicalOperator = '';
+			
+			if(structKeyExists(filterGroup,'logicalOperator')){
+				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
+			}
+			//constuct HQL to be used in filterGroup
+			var filterGroupHQL = getFilterGroupHQL(filterGroup.filters);
+			
+			filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+			
+		}
+		return filterGroupsHQL;
+	}
+	
+	private string function getFilterHQL(required array filterGroups){
+		//make the item without a logical operator first
+		var filterHQL = ' where ';
+		
+		var filterGroupsHQL = getFilterGroupsHQL(arguments.filterGroups);
+		filterHQL &= filterGroupsHQL;
+		
+		return filterHQL;
+	}
+	
+	public any function createHQLFromCollectionObject(required any collectionObject){
+		var HQL = "";
+		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
+		
+		if(!isNull(collectionConfig.entityName)){
+			
+			//build select
+			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
+				HQL &= getSelections(collectionConfig.columns);
+				
+			}
+			//build FROM
+			HQL &= ' FROM #collectionConfig.entityName#';
+			
+			//where clauses are actually the collection of all parent/child where clauses
+			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
+			
+			if(arraylen(filterGroupArray)){
+				HQL &= getFilterGroupsHQL(filterGroupArray);
+			}
+			
+			//build Order By
+			if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
+				HQL &= ' ORDER BY ';
+				
+				var orderByCount = arraylen(collectionConfig.orderBy);
+				for(var i = 1; i <= orderByCount; i++){
+					var ordering = collectionConfig.orderBy[i];
+					var direction = '';
+					if(!isnull(ordering.direction)){
+						direction = ordering.direction;
+					}
+					
+					HQL &= '#ordering.propertyIdentifier# #direction# ';
+					
+					//check whether a comma is needed
+					if(i != orderByCount){
+						HQL &= ',';
+					}
+				}
+			}
+		}
+		return HQL;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -153,6 +385,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 
 
 /*
+	SELECT accountID
+	FROM SlatwallAccount
+	where exists(
+		FROM SlatwallAccount
+		where firstName = 'Ryan'
+		
+	)
+
 	{
 		entityName = '',
 		columns = [

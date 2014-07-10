@@ -46,28 +46,19 @@
 Notes:
 
 */
-component extends="CFSelenium.CFSeleniumTestCase" {
+component output="false" accessors="true" extends="HibachiProcess" {
 
-	// BEFORE ALL TESTS IN THIS SUITE
-	public void function beforeTests(){
-		
-		// Setup Components
-		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
+	// Injected Entity
+	property name="product";
 
-		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
-		
-		// Read Config
-		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
-		
-		// Setup variables for Selenium
-	    variables.browserURL = variables.configuration.ui.browserUrl; 
-	    variables.browserCommand = variables.configuration.ui.browserCommand;
-	    
-	    super.beforeTests();
-	}
+	// Data Properties
+	property name="newSku" cfc="Sku" fieldType="many-to-one" persistent="false" fkcolumn="skuID";
 	
-	private function assertPageIsLoaded( required any pageObject , string message=""){
-		assertEquals(arguments.pageObject.getTitle(), variables.selenium.getTitle(), arguments.message);
+	public any function getNewSku() {
+		if(!structKeyExists(variables, "newSku")) {
+			variables.newSku = getService("skuService").newSku();
+		}
+		return variables.newSku;
 	}
 	
 }

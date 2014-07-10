@@ -54,21 +54,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("collectionService");
 	}
 	
-	public void function getCollectionObjectColumnProperties_returns_valid_array() {
-		var result = variables.service.getCollectionObjectColumnProperties( 'Account' );
+	public void function getEntityNameColumnProperties_returns_valid_array() {
+		var result = variables.service.getEntityNameColumnProperties( 'Account' );
 		
 		assert( isArray( result ) );
 	}
 	
-	// getCollectionObjectProperties()
-	public void function getCollectionObjectProperties_returns_valid_array() {
-		var result = variables.service.getCollectionObjectProperties( 'Account' );
+	// getEntityNameProperties()
+	public void function getEntityNameProperties_returns_valid_array() {
+		var result = variables.service.getEntityNameProperties( 'Account' );
 		
 		assert( isArray( result ) );
 	}
 	
-	public void function getCollectionObjectProperties_returns_properties_in_correct_sorted_order() {
-		var result = variables.service.getCollectionObjectProperties( 'Account' );
+	public void function getEntityNameProperties_returns_properties_in_correct_sorted_order() {
+		var result = variables.service.getEntityNameProperties( 'Account' );
 		
 		assertEquals( "accountAddresses", result[1].propertyIdentifier );
 		assertEquals( "accountAuthentications", result[2].propertyIdentifier );
@@ -78,6 +78,237 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals( "accountLoyalties", result[6].propertyIdentifier );
 	}
 	
+	public void function getEntityNameOptionsTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			EntityName = 'Account'
+		};
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		var collectionEntityProperties = variables.service.getEntityNameProperties(collectionEntity.getEntityName());
+		
+		assert(isArray(collectionEntityProperties));
+	}
+	
+	public void function getCollectionOptionsByEntityNameTest(){
+		var baseCollectionEntityData = {
+			collectionid = '',
+			EntityName = 'Account'
+		};
+		var baseCollectionEntity = createTestEntity('collection',baseCollectionEntityData);
+		
+		var collectionOptions = variables.service.getCollectionOptionsByEntityName(baseCollectionEntity.getEntityName);
+	}
+	
+	public void function getCollectionObjectTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'BestAccounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"orderBy":[
+					{
+						"propertyIdentifier":"firstName",
+						"direction":"DESC"
+					}
+				],
+				"groupBy":[
+					{
+						"propertyIdentifier":"accountID" 
+					}
+				],
+				"where":[
+					"filterGroup":[
+						{
+							"propertyIdentifier":"superUserFlag",
+							"comparisonOperator":"=",
+							"value":"true"
+						},
+						{
+							"propertyIdentifier":"superUserFlag",
+							"comparisonOperator":"=",
+							"value":"false",
+						}
+					],
+					"filterGroup":[
+						"logicalOperator":"OR",
+						{
+							"propertyIdentifier":"superUserFlag",
+							"comparisonOperator":"=",
+							"value":"true"
+						},
+						{
+							"propertyIdentifier":"superUserFlag",
+							"comparisonOperator":"=",
+							"value":"false",
+						}
+					]
+				]
+			}'
+		};
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		
+		var collectionEntityHQL = collectionEntity.getHQL();
+		ORMExecuteQuery(collectionEntityHQL);
+		request.debug(collectionEntityHQL);
+		
+	}
+	
+	public void function getCollectionObjectParentChildTest(){
+		//first a list of collection options is presented to the user
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'BestAccounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"orderBy":[
+					{
+						"propertyIdentifier":"firstName",
+						"direction":"DESC"
+					}
+				],
+				"groupBy":[
+					{
+						"propertyIdentifier":"accountID" 
+					}
+				],
+				"where":[
+					{
+						"propertyIdentifier":"lastName",
+						"comparisonOperator":"=",
+						"value":"Marchand"
+					}
+				]
+			}'
+		};
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		
+		var parentCollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"where":[
+					{
+						"propertyIdentifier":"firstName",
+						"comparisonOperator":"=",
+						"value":"Ryan"
+					}
+				]
+			}'
+		};
+		var parentCollectionEntity = createTestEntity('collection',parentCollectionEntityData);
+		parentCollectionEntity.setCollectionObject(collectionEntity);
+		
+		var parentOfParentCollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansTen24Accounts',
+			collectionConfig = '{
+				"entityName":"SlatwallAccount",
+				"columns":[
+					{
+						"propertyIdentifier":"firstName"
+					},
+					{
+						"propertyIdentifier":"accountID",
+						"aggregateFunction":"count"
+					}
+				],
+				"where":[
+					"filterGroups":[
+						"filterGroup":[
+							"logicalOperator":
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"true"
+							},
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"false",
+							}
+						],
+						"filterGroup":[
+							"logicalOperator":"OR"
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"true"
+							},
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"false",
+							}
+						]
+					]
+					
+				]
+			}'
+		};
+		
+		var parentOfParentCollectionEntity = createTestEntity('collection',parentOfParentCollectionEntityData);
+		parentOfParentCollectionEntity.setCollectionObject(parentCollectionEntity);
+		
+		
+		//request.debug(parentCollectionEntity);
+		
+		/*var collectionEntityHQL = collectionEntity.getHQL();
+		ORMExecuteQuery(collectionEntityHQL);
+		request.debug(collectionEntityHQL);*/
+		
+		
+		var parentCollectionEntityHQL = parentCollectionEntity.getHQL();
+		var parentQuery = ORMExecuteQuery(parentcollectionEntityHQL);
+		request.debug(parentCollectionEntityHQL);
+		request.debug(parentQuery);
+		
+		var parentOfParentCollectionEntityHQL = parentOfParentCollectionEntity.getHQL();
+		var parentOfParentQuery = ORMExecuteQuery(parentOfParentCollectionEntityHQL);
+		request.debug(parentOfParentCollectionEntityHQL);
+		request.debug(parentofParentQuery);
+		
+		
+		
+	}
+	
+	/*public void function sqlResultSetMappingTest(){
+		var attributeCodes = ORMGetSession().createSQLQuery('select attributeCode from swAttribute').list();
+		for(attributeCode in attributeCodes){
+			
+		}
+		//request.debug(ORMGetSessionFactory().getAllClassMetaData());
+		request.debug(ORMGetSessionFactory());
+		request.debug(ORMGetSession());
+		request.debug(ORMGetSession().createSQLQuery('select attributeCode from swAttribute'));
+	}*/
 }
 
 
