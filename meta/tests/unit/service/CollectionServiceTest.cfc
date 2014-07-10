@@ -126,51 +126,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					}
 				],
 				"where":[
-					{
-						"propertyIdentifier":"lastName",
-						"operator":"=",
-						"value":"Marchand"
-					}
+					"filterGroup":[
+						{
+							"propertyIdentifier":"superUserFlag",
+							"comparisonOperator":"=",
+							"value":"true"
+						},
+						{
+							"propertyIdentifier":"superUserFlag",
+							"comparisonOperator":"=",
+							"value":"false",
+						}
+					],
+					"filterGroup":[
+						"logicalOperator":"OR",
+						{
+							"propertyIdentifier":"superUserFlag",
+							"comparisonOperator":"=",
+							"value":"true"
+						},
+						{
+							"propertyIdentifier":"superUserFlag",
+							"comparisonOperator":"=",
+							"value":"false",
+						}
+					]
 				]
 			}'
 		};
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		
-		var collectionEntityData2 = {
-			collectionid = '',
-			collectionCode = 'BestAccounts',
-			collectionConfig = '{
-				"entityName":"SlatwallAccount",
-				"columns":[
-					{
-						"propertyIdentifier":"firstName"
-					},
-					{
-						"propertyIdentifier":"accountID",
-						"aggregateFunction":"count"
-					}
-				],
-				"orderBy":[
-					{
-						"propertyIdentifier":"firstName",
-						"direction":"DESC"
-					}
-				],
-				"groupBy":[
-					{
-						"propertyIdentifier":"accountID" 
-					}
-				],
-				"where":[
-					{
-						"propertyIdentifier":"lastName",
-						"operator":"=",
-						"value":"Marchand"
-					}
-				]
-			}'
-		};
-		var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
 		
 		var collectionEntityHQL = collectionEntity.getHQL();
 		ORMExecuteQuery(collectionEntityHQL);
@@ -208,7 +192,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				"where":[
 					{
 						"propertyIdentifier":"lastName",
-						"operator":"=",
+						"comparisonOperator":"=",
 						"value":"Marchand"
 					}
 				]
@@ -233,7 +217,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				"where":[
 					{
 						"propertyIdentifier":"firstName",
-						"operator":"=",
+						"comparisonOperator":"=",
 						"value":"Ryan"
 					}
 				]
@@ -257,11 +241,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					}
 				],
 				"where":[
-					{
-						"propertyIdentifier":"superUserFlag",
-						"operator":"=",
-						"value":"true"
-					}
+					"filterGroups":[
+						"filterGroup":[
+							"logicalOperator":
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"true"
+							},
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"false",
+							}
+						],
+						"filterGroup":[
+							"logicalOperator":"OR"
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"true"
+							},
+							{
+								"propertyIdentifier":"superUserFlag",
+								"comparisonOperator":"=",
+								"value":"false",
+							}
+						]
+					]
+					
 				]
 			}'
 		};
@@ -290,6 +298,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		
 	}
+	
+	/*public void function sqlResultSetMappingTest(){
+		var attributeCodes = ORMGetSession().createSQLQuery('select attributeCode from swAttribute').list();
+		for(attributeCode in attributeCodes){
+			
+		}
+		//request.debug(ORMGetSessionFactory().getAllClassMetaData());
+		request.debug(ORMGetSessionFactory());
+		request.debug(ORMGetSession());
+		request.debug(ORMGetSession().createSQLQuery('select attributeCode from swAttribute'));
+	}*/
 }
 
 

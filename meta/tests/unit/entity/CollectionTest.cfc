@@ -75,6 +75,71 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		makePublic('deserializeCollectionConfig');
 		
 	}
+	
+	public void function getFilterGroupHQLTest(){
+		MakePublic(variables.entity,'getFilterGroupHQL');
+		var filterJSON = '	[
+								{
+									"propertyIdentifier":"superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]';
+							
+		var filter = deserializeJSON(filterJSON);
+		
+		var filterGroupHQL = variables.entity.getFilterGroupHQL(filter);
+		request.debug(filterGroupHQL);
+		request.debug(variables.entity);
+	}
+	
+	public void function getFilterGroupsHQLTest(){
+		MakePublic(variables.entity,'getFilterGroupsHQL');
+		var filterGroupsJSON = '	[
+									{
+										"filters":[
+											{
+												"propertyIdentifier":"superUserFlag",
+												"comparisonOperator":"=",
+												"value":"true"
+											},
+											{
+												"logicalOperator":"AND",
+												"propertyIdentifier":"superUserFlag",
+												"comparisonOperator":"=",
+												"value":"false"
+											}
+										]
+									},
+									{
+										"logicalOperator":"OR",
+										"filters":[
+											{
+												"propertyIdentifier":"superUserFlag",
+												"comparisonOperator":"=",
+												"value":"true"
+											},
+											{
+												"logicalOperator":"OR",
+												"propertyIdentifier":"superUserFlag",
+												"comparisonOperator":"=",
+												"value":"false"
+											}
+										]
+									}
+								]';
+		var filterGroups = deserializeJSON(filterGroupsJSON);
+		
+		var filterGroupsHQL = variables.entity.getFilterGroupsHQL(filterGroups);
+		
+		request.debug(filterGroupsHQL);
+	}
 }
 
 

@@ -42,14 +42,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string";
-	/*property name="collectionObject" ormtype="string" hb_formFieldType="select" hint="collectionObject we filter from";*/
 	property name="entityName" ormtype="string" hb_formFieldType="select";
 	property name="CollectionObject" cfc="collection" ;
 	
-	/*
-		collection config
-		entityName = '' - the main table we are performing all queries on
-	*/
 	property name="collectionConfig" ormtype="string" length="4000" hint="json object";
 	
 	// Calculated Properties
@@ -74,6 +69,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// Non-Persistent Properties
 	property name="pageRecords" persistent="false";
 	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entities metaData";
+	property name="hqlParams" type="struct" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -122,6 +118,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return variables.pageRecords;
 	}*/
 	
+	public void function addHQLParam(required string paramName, required any paramValue) {
+		variables.hqlParams[ arguments.paramName ] = arguments.paramValue;
+	}
+	
+	public struct function getHQLParams() {
+		return variables.hqlParams;
+	}
+	
 	public any function deserializeCollectionConfig(){
 		return deserializeJSON(this.getCollectionConfig());
 	}
@@ -134,28 +138,166 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return HQL;
 	}
 	
-	public array function getFilterArrayFromAncestors(required any collectionObject){
+	public array function getFilterGroupArrayFromAncestors(required any collectionObject){
 		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
-		var filterArray = [];
+		var filterGroupArray = [];
 		if(!isnull(collectionConfig.where) && arraylen(collectionConfig.where)){
-			
-			filterArray = collectionConfig.where;
-			writeDump(filterArray);
+			filterGroupArray = collectionConfig.where;
 		}
 		
 		if(!isnull(arguments.collectionObject.getCollectionObject())){
 			
-			var parentFilterArray = getFilterArrayFromAncestors(arguments.collectionObject.getCollectionObject());
+			var parentFilterGroupArray = getFilterGroupArrayFromAncestors(arguments.collectionObject.getCollectionObject());
 			
-			for(parentFilter in parentFilterArray){
-				writeDump(parentFilter);
-				if(!arrayFind(filterArray,parentFilter)){
-					ArrayAppend(filterArray,parentFilter);
+			for(parentFilterGroup in parentFilterGroupArray){
+				if(!arrayFind(filterGroupArray,parentGroupFilter)){
+					if(!structKeyExists(parentGroupFilter,"logicalOperator")){
+						parentGroupFilter.logicalOperator = ' AND ';
+					}
+					ArrayAppend(filterGroupArray,parentGroupFilter);
 				}
 			}
 		}
 		
-		return filterArray;
+		return filterGroupArray;
+	}
+	
+	//restrict allowed operators to prevent sql injection
+	private string function getComparisonOperator(required string comparisonOperator){
+		
+		switch(arguments.comparisonOperator){
+			case "=":
+				return "=";
+			break;
+			case "!=":
+				return "!=";
+			break;
+			case ">":
+				return ">";
+			break;
+			case "<":
+				return "<";
+			break;
+			case "<=":
+				return "<=";
+			break;
+			case ">=":
+				return ">=";
+			break;
+			case "like":
+				return "LIKE";
+			break;
+			case "in":
+				return "IN";
+			break;
+			case "not in":
+				return "NOT IN";
+			break;
+		}
+		return '';
+	}
+	
+	private string function getAggregateFunction(required string aggregateFunction){
+		switch(arguments.aggregateFunction){
+			case "count":
+				return "COUNT";
+			break;
+			case "avg":
+				return "AVG";
+			break;
+			case "sum":
+				return "SUM";
+			break;
+			case "min":
+				return "MIN";
+			break;
+			case "max":
+				return "MAX";
+			break;
+		}
+		return '';
+	}
+	
+	private string function getlogicalOperator(required string logicalOperator){
+		switch(arguments.logicalOperator){
+			case "or":
+				return "OR";
+			break;
+			case "not":
+				return "NOT";
+			break;
+			case "and":
+				return "AND";
+			break;
+		}
+		return 'AND';
+	}
+	
+	private any function getSelections(required array columns){
+		var HQL = 'SELECT';
+		var columnCount = arraylen(arguments.columns);
+		for(var i = 1; i <= columnCount; i++){
+			var column = arguments.columns[i];
+			//check if we have an aggregate
+			if(isnull(column.aggregateFunction)){
+				HQL &= ' #column.propertyIdentifier#';
+			}else{
+				//if we have an aggregate then put wrap the identifier
+				var aggregateFunction = '';
+				aggregateFuntion = getAggregateFunction(column.aggregateFunction);
+				
+				HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
+			}
+			//check whether a comma is needed
+			if(i != columnCount){
+				HQL &= ',';
+			}
+			
+		}
+		return HQL;
+	}
+	
+	private string function getFilterGroupHQL(required array filterGroup){
+		var filterGroupHQL = '';
+		for(filter in arguments.filterGroup){
+			//add property and value to HQLParams
+			addHQLParam(filter.propertyIdentifier,filter.value);
+			
+			var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
+			var logicalOperator = '';
+			if(structKeyExists(filter,"logicalOperator")){
+				logicalOperator = filter.logicalOperator;
+			}
+			filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#filter.propertyIdentifier#";
+		}
+		return filterGroupHQL;
+	}
+	
+	private string function getFilterGroupsHQL(required array filterGroups){
+		var filterGroupsHQL = '';
+		for(filterGroup in arguments.FilterGroups){
+			var logicalOperator = '';
+			
+			if(structKeyExists(filterGroup,'logicalOperator')){
+				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
+			}
+			//constuct HQL to be used in filterGroup
+			var filterGroupHQL = getFilterGroupHQL(filterGroup.filters);
+			
+			filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+			
+		}
+		return filterGroupsHQL;
+	}
+	
+	private string function getFilterHQL(required array filterGroups){
+		//make the item without a logical operator first
+		var filterHQL = ' where ';
+		
+		var filterGroupsHQL = getFilterGroupsHQL(arguments.filterGroups);
+		filterHQL &= filterGroupsHQL;
+		
+		return filterHQL;
 	}
 	
 	public any function createHQLFromCollectionObject(required any collectionObject){
@@ -166,63 +308,17 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
-				HQL &= 'SELECT';
-				var columnCount = arraylen(collectionConfig.columns);
-				for(var i = 1; i <= columnCount; i++){
-					var column = collectionConfig.columns[i];
-					//check if we have an aggregate
-					if(isnull(column.aggregateFunction)){
-						HQL &= ' #column.propertyIdentifier#';
-					}else{
-						//if we have an aggregate then put wrap the identifier
-						var aggregateFunction = '';
-						switch(column.aggregateFunction){
-							case "count":
-								aggregateFunction = "COUNT";
-							break;
-							case "avg":
-								aggregateFunction = "AVG";
-							break;
-							case "sum":
-								aggregateFunction = "SUM";
-							break;
-							case "min":
-								aggregateFunction = "MIN";
-							break;
-							case "max":
-								aggregateFunction = "MAX";
-							break;
-						}
-						
-						HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
-					}
-					//check whether a comma is needed
-					if(i != columnCount){
-						HQL &= ',';
-					}
-					
-				}
+				HQL &= getSelections(collectionConfig.columns);
+				
 			}
 			//build FROM
 			HQL &= ' FROM #collectionConfig.entityName#';
 			
-			//where clauses are actually the collection of all generationaly where clauses
-			var filterArray = getFilterArrayFromAncestors(this);
+			//where clauses are actually the collection of all parent/child where clauses
+			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
 			
-			var filterCount = 0;
-			
-			if(arraylen(filterArray)){
-				filterCount = arrayLen(filterArray);
-			}
-			if(filterCount){
-				HQL &= ' where ';
-				for(var i = 1; i <= filterCount; i++){
-					
-					if(i > 1){
-						HQL &= ' AND ';
-					}
-					HQL &= " #filterArray[i].propertyIdentifier# #filterArray[i].operator# '#filterArray[i].value#'";
-				}
+			if(arraylen(filterGroupArray)){
+				HQL &= getFilterGroupsHQL(filterGroupArray);
 			}
 			
 			//build Order By
