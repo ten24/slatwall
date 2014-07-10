@@ -191,7 +191,7 @@ Notes:
 								<a href="?slatAction=public:cart.clear" class="btn">Clear Cart</a>
 								
 								<!--- Checkout, is just a simple link to the checkout page --->
-								<a href="javascript:alert('Point this link to your checkout page');" class="btn">Checkout</a>
+								<a href="checkout.cfm" class="btn">Checkout</a>
 							</div>
 						</div>
 						

@@ -844,9 +844,11 @@
 		}
 		
 		public void function updateExampleTemlatesToBeMuraSpecific( required string muraTemplatesPath ) {
+			
 			// Loop over the files in the mura templates directory
 			var dirList = directoryList( muraTemplatesPath );
 			
+			// These are the changes to the sample app that allow for it to work properly on Mura
 			var replaceStrings = [
 				[
 					'taglib="../../tags"',
@@ -854,6 +856,12 @@
 				],[
 					'product.cfm?productID=##product.getProductID()##',
 					'##product.getListingProductURL()##'
+				],[
+					'action="?productID=##$.slatwall.product().getProductID()##&s=1"',
+					'action="?s=1"'
+				],[
+					'href="checkout.cfm"',
+					'href="##$.createHREF(filename="checkout")##"'
 				]
 			];
 			
