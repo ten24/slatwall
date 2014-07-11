@@ -70,64 +70,92 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntityData = {
 			collectionid = '',
 			collectionCode = 'BestAccounts',
-			collectionConfig = '{
-				"entityName":"SlatwallAccount",
-				"columns":[
-					{
-						"propertyIdentifier":"firstName"
-					},
-					{
-						"propertyIdentifier":"accountID",
-						"aggregateFunction":"count"
-					} 
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.firstName"
+						},
+						{
+							"propertyIdentifier":"Account.accountID",
+							"aggregateFunction":"count"
+						},
+						{
+							"propertyIdentifier":"Account_primaryEmailAddress.emailAddress"
+						},
+						{
+							"propertyIdentifier":"Account_accountAddresses.accountAddressName"
+						},
+						{
+							"propertyIdentifier":"Account_primaryEmailAddress_AccountEmailType.typeID"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"primaryEmailAddress",
+							"alias":"Account_primaryEmailAddress",
+							"joins":[
+								{
+									"associationName":"accountEmailType",
+									"alias":"Account_primaryEmailAddress_AccountEmailType"
+								}
+							]
+						},
+						{
+							"associationName":"accountAddresses",
+							"alias":"Account_accountAddresses"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"DESC"
+						}
+					],
+					"groupBy":[
+						{
+							"propertyIdentifier":"accountID" 
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+							
+						},
+						{
+							"logicalOperator":"OR",
+							"filterGroup":[
+								{
+								"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+						}
+					]
 					
-				],
-				"orderBy":[
-					{
-						"propertyIdentifier":"firstName",
-						"direction":"DESC"
-					}
-				],
-				"groupBy":[
-					{
-						"propertyIdentifier":"accountID" 
-					}
-				],
-				"filterGroups":[
-					{
-						"filterGroup":[
-							{
-								"propertyIdentifier":"superUserFlag",
-								"comparisonOperator":"=",
-								"value":"true"
-							},
-							{
-								"logicalOperator":"AND",
-								"propertyIdentifier":"superUserFlag",
-								"comparisonOperator":"=",
-								"value":"false"
-							}
-						]
-						
-					},
-					{
-						"logicalOperator":"OR",
-						"filterGroup":[
-							{
-							"propertyIdentifier":"superUserFlag",
-								"comparisonOperator":"=",
-								"value":"true"
-							},
-							{
-								"logicalOperator":"OR",
-								"propertyIdentifier":"superUserFlag",
-								"comparisonOperator":"=",
-								"value":"false"
-							}
-						]
-					}
-				]
-			}'
+				}
+			'
 		};
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
 		
@@ -135,6 +163,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		request.debug(collectionEntityHQL);
 		request.debug(collectionEntity);
+		request.debug(collectionEntity.gethqlParams());
+		//ORMExecuteQuery('FROM SlatwallAccount where accountID = :p1',{p1='2'});
 		var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
 		request.debug(query);
 		
@@ -160,38 +190,39 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getFilterHQLTest(){
 		MakePublic(variables.entity,'getFilterHQL');
 		var filterGroupsJSON = '	[
-										{
-											"filters":[
-												{
-													"propertyIdentifier":"superUserFlag",
-													"comparisonOperator":"=",
-													"value":"true"
-												},
-												{
-													"logicalOperator":"AND",
-													"propertyIdentifier":"superUserFlag",
-													"comparisonOperator":"=",
-													"value":"false"
-												}
-											]
-										},
-										{
-											"logicalOperator":"OR",
-											"filters":[
-												{
-													"propertyIdentifier":"superUserFlag",
-													"comparisonOperator":"=",
-													"value":"true"
-												},
-												{
-													"logicalOperator":"OR",
-													"propertyIdentifier":"superUserFlag",
-													"comparisonOperator":"=",
-													"value":"false"
-												}
-											]
-										}
-									]';
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+							
+						},
+						{
+							"logicalOperator":"OR",
+							"filterGroup":[
+								{
+								"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+						}
+					]';
 		var filterGroups = deserializeJSON(filterGroupsJSON);
 		
 		var filterHQL = variables.entity.getFilterHQL(filterGroups);
@@ -223,44 +254,115 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getFilterGroupsHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupsHQL');
 		var filterGroupsJSON = '	[
-									{
-										"filters":[
-											{
-												"propertyIdentifier":"superUserFlag",
-												"comparisonOperator":"=",
-												"value":"true"
-											},
-											{
-												"logicalOperator":"AND",
-												"propertyIdentifier":"superUserFlag",
-												"comparisonOperator":"=",
-												"value":"false"
-											}
-										]
-									},
-									{
-										"logicalOperator":"OR",
-										"filters":[
-											{
-												"propertyIdentifier":"superUserFlag",
-												"comparisonOperator":"=",
-												"value":"true"
-											},
-											{
-												"logicalOperator":"OR",
-												"propertyIdentifier":"superUserFlag",
-												"comparisonOperator":"=",
-												"value":"false"
-											}
-										]
-									}
-								]';
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+							
+						},
+						{
+							"logicalOperator":"OR",
+							"filterGroup":[
+								{
+								"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+						}
+					]';
 		var filterGroups = deserializeJSON(filterGroupsJSON);
 		
 		var filterGroupsHQL = variables.entity.getFilterGroupsHQL(filterGroups);
 		
 		request.debug(filterGroupsHQL);
 	}
+	
+	public void function addJoinHQLTest(){
+		makePublic(variables.entity,'addJoinHQL');
+		var joinJSON = '
+							{
+								"associationName":"primaryEmailAddress",
+								"alias":"Account_primaryEmailAddress",
+								"joins":[
+									{
+										"associationName":"accountEmailType",
+										"alias":"Account_primaryEmailAddress_AccountEmailType"
+									}
+								]
+							}
+						';
+		var join = deserializeJSON(joinJSON);
+		
+		var joinHQL = variables.entity.addJoinHQL('Account',join);
+		request.debug(joinHQL);
+		
+	}
+	
+	public void function checklistToArray(){
+		//joins appear to be requirements to access many to many relationships but not to access many-to-one
+		var query = ORMExecuteQuery('SELECT Account.firstName, Account.accountID, Account_primaryEmailAddress.emailAddress, Account_accountAddresses.accountAddressName, Account_primaryEmailAddress_AccountEmailType.typeID FROM SlatwallAccount as Account join Account.primaryEmailAddress as Account_primaryEmailAddress join Account_primaryEmailAddress.accountEmailType as Account_primaryEmailAddress_AccountEmailType join Account.accountAddresses as Account_accountAddresses');
+		request.debug(query);
+	}
 }
 
+/*
+SELECT o.orderid, oi.orderItemID from order o join o.orderItems oi where oi.orderItemid = ?
 
+ [
+ 	{
+ 		"entityName":"order",
+ 		"columns":[
+ 			"propertyIdentifer":""
+ 		],
+ 		"joinEntity":[
+ 			{
+	 			"entityName":"orderItems",
+	 			"columns":[
+	 				"propertyIdentifier":""
+	 			],
+	 			"joinEntity":[
+	 				{
+		 				"entityName":
+		 				"columns":[
+		 					"propertyIdentifier":""
+		 				]
+		 			}
+	 			]
+	 		},
+	 		{
+	 			"entityName":"account",
+	 			"columns":[
+	 				"propertyIdentifier":""
+	 			],
+	 			"joinEntity":[
+	 				{
+		 				"entityName":
+		 				"columns":[
+		 					"propertyIdentifier":""
+		 				]
+		 			}
+	 			]
+	 		}
+ 		]
+ 	}
+ ]
+
+
+*/

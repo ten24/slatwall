@@ -68,6 +68,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	// Non-Persistent Properties
 	property name="hqlParams" type="struct" persistent="false";
+	property name="hqlAliases" type="struct" persistent="false";
 	property name="pageRecords" persistent="false";
 	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entities metaData";
 	
@@ -76,6 +77,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public any function init(){
 		variables.hqlParams = {};
+		variables.hqlAliases = {};
 	}
 	
 	//returns an array of name/value structs for 
@@ -121,16 +123,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			}
 		}
 		return variables.pageRecords;
-	}*/
-	
-	public void function addHQLParam(required string paramName, required any paramValue) {
-		variables.hqlParams[ arguments.paramName ] = arguments.paramValue;
-	}
-	/*
-	
-	*/
-	/*public struct function getHQLParams() {
-		return duplicate(variables.hqlParams);
 	}*/
 	
 	public any function deserializeCollectionConfig(){
@@ -240,18 +232,28 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return 'AND';
 	}
 	
+	private string function getParamID(){
+		return 'paramID' & (structCount(this.getHQLParams()) + 1);
+	}
+	
+	/*private string function getAliasID(){
+		return 'aliasID' & (structCount())
+	}*/
+	
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
 		for(filter in arguments.filterGroup){
 			//add property and value to HQLParams
-			addHQLParam(filter.propertyIdentifier,filter.value);
+			//TODO: if using a like parameter we need to add % to the value
+			var paramID = getParamID();
+			addHQLParam(paramID,filter.value);
 			
 			var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 			var logicalOperator = '';
 			if(structKeyExists(filter,"logicalOperator")){
 				logicalOperator = filter.logicalOperator;
 			}
-			filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#filter.propertyIdentifier#";
+			filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#paramID#";
 		}
 		return filterGroupHQL;
 	}
@@ -283,21 +285,38 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return filterHQL;
 	}
 	
+	public void function addHQLParam(required string paramKey, required any paramValue) {
+		variables.hqlParams[ arguments.paramKey ] = arguments.paramValue;
+	}
+	
+	public void function addHQLAlias(required string aliasKey, required any aliasValue) {
+		variables.hqlAliases[arguments.aliasKey] = arguments.aliasValue;
+	}
+	
 	private any function getSelectionsHQL(required array columns){
+		//TODO: add distinct logic, aliases
+		
 		var HQL = 'SELECT';
 		var columnCount = arraylen(arguments.columns);
+		
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
+			
 			//check if we have an aggregate
-			if(isNull(column.aggregateFunction)){
-				HQL &= ' #column.propertyIdentifier#';
-			}else{
+			
+			
+			
+			if(!isnull(coulumn.aggregateFunction))
+			{
 				//if we have an aggregate then put wrap the identifier
 				var aggregateFunction = '';
 				aggregateFunction = getAggregateFunction(column.aggregateFunction);
 				
 				HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
+			}else{
+				HQL &= ' #column.propertyIdentifier#';
 			}
+			
 			//check whether a comma is needed
 			if(i != columnCount){
 				HQL &= ',';
@@ -307,19 +326,44 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return HQL;
 	}
 	
+	private string function addJoinHQL(required string parentAlias, required any join){
+		
+		var joinHQL = ' join #parentAlias#.#arguments.join.associationName# as #arguments.join.alias# ';
+		if(!isnull(arguments.join.joins)){
+			for(childJoin in arguments.join.joins){
+				joinHQL &= addJoinHQL(join.alias,childJoin);
+			}
+		}
+		
+		return joinHQL;
+	}
+	
+	private string function getFromHQL(required string baseEntityName, required string baseEntityAlias, required any joins){
+		var fromHQL = ' FROM #arguments.baseEntityName# as #arguments.baseEntityAlias#';
+		for(join in arguments.joins){
+			fromHQL &= addJoinHQL(arguments.baseEntityAlias,join);
+		}
+		
+		return fromHQL;
+	}
+	
 	public any function createHQLFromCollectionObject(required any collectionObject){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
 		
-		if(!isNull(collectionConfig.entityName)){
+		if(!isNull(collectionConfig.baseEntityName)){
 			
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
 				HQL &= getSelectionsHQL(collectionConfig.columns);
-				
 			}
 			//build FROM
-			HQL &= ' FROM #collectionConfig.entityName#';
+			var joins = [];
+			if(!isnull(collectionConfig.joins)){
+				joins = collectionConfig.joins;
+			}
+			
+			HQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias, joins);
 			
 			//where clauses are actually the collection of all parent/child where clauses
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
@@ -484,26 +528,26 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	where[2].propertyIdentifier = 'productName'
 	where[2].operator = '='
 	where[2].value = 'Y'
-	where[3].or[1].propertyIdentifier = 'activeFlag'
+	where[3].or[1].propertyIdentifier = "'activeFlag'"
 	where[3].or[1].operator = '='
 	where[3].or[1].value = 1
 	
-	where = [
+	"where" = [
 		{
-			propertyIdentifier = 'productCode',
-			operator = '=',
-			value = 'X'
+			"propertyIdentifier" = "'productCode'",
+			"operator" = '=',
+			"value" = 'X'
 		},
 		{
-			propertyIdentifier = 'productName',
-			operator = '=',
-			value = 'Y'
+			"propertyIdentifier" = "'productName'",
+			"operator" = '=',
+			"value" = 'Y'
 		},
 		{
-			or = [
-				propertyIdentifier = 'activeFlag',
-				operator = '=',
-				value = 1
+			"or" = [
+				"propertyIdentifier" = "activeFlag",
+				"operator" = '=',
+				"value" = 1
 			]
 		}
 	]
@@ -650,29 +694,80 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	where[2].exists.where[2].operator = '<'
 	where[2].exists.where[2].value = 30
 	
-	where = [
+	where : [
 		{
-			propertyIdentifier = 'activeFlag',
-			operator = '=',
-			value = 1
+			"propertyIdentifier" : "activeFlag",
+			"operator" : "=",
+			"value" : 1
 		},
 		{
-			exists = {
-				entityName = 'SlatwallSku',
-				where = [
+			"exists" : {
+				"entityName" : "SlatwallSku",
+				"where" : [
 					{
-						propertyIdentifier = 'product.productID',
-						operator = '=',
-						valuePropertyIdentifier = 'base.productID'
+						"propertyIdentifier" : "product.productID",
+						"operator" : ":",
+						"valuePropertyIdentifier" : "base.productID"
 					},
 					{
-						propertyIdentifier = 'price',
-						operator = '=',
-						value = 30
+						"propertyIdentifier" : "price",
+						"operator" : "=",
+						"value" : 30
 					}
 				]
-			},
+			}
 		}
 	]
+	//we can construct aliases on the front end?
+	{
+		"baseEntity":"Account",
+		"Join":[
+			{
+				"associationName":"admins",
+				"alias":"a",
+				"Join":{
+					"associationName":"",
+					"alias":""
+				}
+			}
+		],
+		"columns":[
+ 			"propertyIdentifer":""
+ 		],
+ 		"filterGroups":[
+			{
+				"filterGroup":[
+					{
+						"propertyIdentifier":"superUserFlag",
+						"comparisonOperator":"=",
+						"value":"true"
+					},
+					{
+						"logicalOperator":"AND",
+						"propertyIdentifier":"superUserFlag",
+						"comparisonOperator":"=",
+						"value":"false"
+					}
+				]
+				
+			},
+			{
+				"logicalOperator":"OR",
+				"filterGroup":[
+					{
+					"propertyIdentifier":"superUserFlag",
+						"comparisonOperator":"=",
+						"value":"true"
+					},
+					{
+						"logicalOperator":"OR",
+						"propertyIdentifier":"superUserFlag",
+						"comparisonOperator":"=",
+						"value":"false"
+					}
+				]
+			}
+		]
+	}
 	
 */
