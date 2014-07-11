@@ -12,6 +12,16 @@ component extends="PageObject" {
 		
 		selenium.waitForElementPresent('//*[@id="adminentityprocessorder_create"]');
 		
+		selenium.type('accountID-autocompletesearch', 'test');
+		selenium.typeKeys('accountID-autocompletesearch', 'test');
+		
+		selenium.waitForElementPresent('//*[@id="suggestionoption8a80808746d95bb30146f87fcedc0864"]');
+		
+		selenium.mouseDown('//*[@id="suggestionoption8a80808746d95bb30146f87fcedc0864"]');
+		
+		sleep(50000);
+		/*
+		
 		selenium.typeKeys('accountID-autocompletesearch', 'test');
 		
 		selenium.waitForElementPresent('//*[@id="accountID_"]');
@@ -23,6 +33,7 @@ component extends="PageObject" {
 		var loadTime = waitForPageToLoad();
 		
 		return new EditOrder(selenium, loadTime);
+		*/
 	}
 	
 }
