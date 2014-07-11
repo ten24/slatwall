@@ -56,7 +56,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.TestUtility").init( variables.slatwallFW1Application );
+		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
 		
 		// Read Config
 		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
@@ -79,8 +79,14 @@ component extends="mxunit.framework.TestCase" output="false" {
 	public void function tearDown() {
 		debug(variables.debugArray);
 		
-		for(var persistentEntity in variables.persistentEntities) {
-			entityDelete( persistentEntity );
+		var flushRequired = false;
+		
+		for(var i=arrayLen(variables.persistentEntities); i>=1; i--) {
+			flushRequired = true;
+			entityDelete( variables.persistentEntities[i] );
+		}
+		
+		if(flushRequired) {
 			ormFlush();
 		}
 		

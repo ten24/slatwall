@@ -53,7 +53,8 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.TestUtility").init( variables.slatwallFW1Application );
+
+		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
 		
 		// Read Config
 		variables.configuration = variables.testUtiltiy.readLocalConfiguration();

@@ -170,6 +170,32 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return true;
 	}
 	
+	public struct function getOrderItemQualifiedDiscounts(){
+		var orderItemQualifiedDiscounts = {};
+		
+		
+		for(var orderItem in this.getOrderItems()) {
+			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
+
+			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
+				
+				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
+				
+				orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+				
+				// Insert this value into the potential discounts array
+				arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
+					promotionRewardID = "",
+					promotion = this.getPromotion(salePriceDetails.promotionID),
+					discountAmount = discountAmount
+				});
+				
+			}
+		}
+		return orderItemQualifiedDiscounts;
+	}
+		
+	
 	public struct function getAddPaymentRequirementDetails() {
 		if(!structKeyExists(variables, "addPaymentRequirementDetails")) {
 			variables.addPaymentRequirementDetails = {};
@@ -505,6 +531,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		
 		return totalPaymentsReceived;
+	}
+	
+	public numeric function getTotalDiscountableAmount(){
+		return getSubtotalAfterItemDiscounts() + getFulfillmentChargeAfterDiscountTotal();
 	}
 	
 	public numeric function getPaymentAmountCreditedTotal() {
@@ -903,14 +933,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public any function getOrderStatusType() {
-		if(isNull(variables.orderStatusType)) {
+		if(!structKeyExists(variables, "orderStatusType")) {
 			variables.orderStatusType = getService("settingService").getTypeBySystemCode('ostNotPlaced');
 		}
 		return variables.orderStatusType;
 	}
 	
 	public any function getOrderType() {
-		if(isNull(variables.orderType)) {
+		if(!structKeyExists(variables, "orderType")) {
 			variables.orderType = getService("settingService").getTypeBySystemCode('otSalesOrder');
 		}
 		return variables.orderType;
