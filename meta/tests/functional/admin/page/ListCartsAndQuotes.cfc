@@ -3,37 +3,45 @@ component extends="PageObject" {
 	variables.slatAction = "entity.listcartandquote";
 	variables.title = "Carts & Quotes | Slatwall";
 	
-	public any function clickCreateOrderLink( struct formData={} ) {
+	public any function clickCreateOrderLink() {
 		selenium.click("link=Create Order");
 		
-		selenium.waitForElementPresent('//*[@id="adminentityprocessorder_create"]');
+		selenium.waitForElementPresent(createOrderModalLocator());
 		
-		selenium.click('//*[@id="adminentityprocessorder_create"]/div[2]/div/div/fieldset/div[1]/div/label[2]/input');
+		selenium.click(radioButtonValueNo());
 		
-		selenium.waitForElementPresent('//*[@id="adminentityprocessorder_create"]');
+		selenium.waitForElementPresent(createOrderModalLocator());
 		
-		selenium.type('accountID-autocompletesearch', 'test');
-		selenium.typeKeys('accountID-autocompletesearch', 'test');
+		selenium.type(accountIDAutoCompleteSearchField(), 'test');
+		selenium.typeKeys(accountIDAutoCompleteSearchField(), 'test');
 		
-		selenium.waitForElementPresent('//*[@id="suggestionoption8a80808746d95bb30146f87fcedc0864"]');
+		selenium.waitForElementPresent(testAccountAutoCompleteOption());
 		
-		selenium.mouseDown('//*[@id="suggestionoption8a80808746d95bb30146f87fcedc0864"]');
+		selenium.mouseDown(testAccountAutoCompleteOption());
 		
-		sleep(50000);
-		/*
-		
-		selenium.typeKeys('accountID-autocompletesearch', 'test');
-		
-		selenium.waitForElementPresent('//*[@id="accountID_"]');
-		
-		selenium.select('//*[@id="accountID_"]','//*[@id="accountID_"]/li[1]');
-		
-		//submitForm( 'adminentityprocessorder_create', arguments.formData );
+		selenium.click(createOrderSubmitButton());
 		
 		var loadTime = waitForPageToLoad();
 		
 		return new EditOrder(selenium, loadTime);
-		*/
+		
+	}
+	
+	//============ Page Specific Locators ================
+	public any function createOrderModalLocator(){
+		return '//*[@id="adminentityprocessorder_create"]';
+	}
+	public any function radioButtonValueNo(){
+		return '//*[@id="adminentityprocessorder_create"]/div[2]/div/div/fieldset/div[1]/div/label[2]/input';
+	}
+	public any function accountIDAutoCompleteSearchField(){
+		return 'accountID-autocompletesearch';
+	}
+	public any function testAccountAutoCompleteOption(){
+		return '//*[@id="suggestionoption4028810a471d4864014720bc661e0037"]';
+	}
+	public any function createOrderSubmitButton(){
+		return '//*[@id="adminentityprocessorder_create"]/div[3]/div/button';
 	}
 	
 }

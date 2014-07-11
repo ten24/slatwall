@@ -92,15 +92,7 @@ component extends="AdminTestBase" {
 		
 		assertPageIsLoaded( ListCartsAndQuotes );	
 		//Create an order
-		formData = {};
-		/*formData['firstName'] = 'TestName1';
-		formData['lastName'] = 'TestName2';	
-		formData['company'] = 'TestCompany';	
-		formData['phoneNumber'] = '1112223333';	
-		formData['emailAddress'] = 'test@testmail.com';	
-		formData['emailAddressConfirm'] = 'test@testmail.com';		*/
-
-		var EditOrder = ListCartsAndQuotes.clickCreateOrderLink( formData );
+		var EditOrder = ListCartsAndQuotes.clickCreateOrderLink();
 
 		assertPageIsLoaded( EditOrder );
 		
