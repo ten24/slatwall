@@ -47,7 +47,7 @@ Notes:
 
 --->
 <cfparam name="rc.productReviewSmartList" type="any" />
-
+<cfset rc.productReviewSmartList.addOrder("createdDateTime|DESC") />
 <cfoutput>
 	
 	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productReviewSmartList#"
