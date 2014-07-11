@@ -62,43 +62,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public void function default( required any rc ) {
-		getFW().setView("public:templates.slatwall-productlisting");
-	}
-	
-	public void function brand( required any rc ) {
-		param name="rc.urlTitle" default="";
-		
-		rc.$.slatwall.setBrand( getBrandService().getBrandByURLTitle(rc.urlTitle, true) );
-		
-		getFW().setView("public:templates.slatwall-brand");
-	}
-	
-	public void function product( required any rc ) {
-		param name="rc.urlTitle" default="";
-		
-		rc.$.slatwall.setProduct( getProductService().getProductByURLTitle(rc.urlTitle, true) );
-		
-		getFW().setView("public:templates.slatwall-product");
-	}
-	
-	public void function productType( required any rc ) {
-		param name="rc.urlTitle" default="";
-		
-		rc.$.slatwall.setProductType( getProductTypeService().getProductTypeByURLTitle(rc.urlTitle, true) );
-		
-		getFW().setView("public:templates.slatwall-producttype");
-	}
-	
-	public void function account( required any rc ) {
-		getFW().setView("public:templates.slatwall-account");
-	}
-	
-	public void function checkout( required any rc ) {
-		getFW().setView("public:templates.slatwall-checkout");
-	}
-	
-	public void function shoppingcart( required any rc ) {
-		getFW().setView("public:templates.slatwall-shoppingcart");
+		getFW().setView("public:main.blank");
 	}
 	
 }

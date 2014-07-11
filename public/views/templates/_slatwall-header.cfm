@@ -65,3 +65,7 @@ Notes:
 		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
 	</head>
 	<body>
+		<!--- This is only used by the sample app that is contained in /meta/sample --->
+		<cfif structKeyExists(request, "sampleNavigation")>
+			<cfoutput>#request.sampleNavigation#</cfoutput>
+		</cfif>

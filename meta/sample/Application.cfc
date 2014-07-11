@@ -1,5 +1,5 @@
-<!---
-	
+/*
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -42,9 +42,43 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
+
+Notes:
+
+*/
+component {
 	
-Notes: 
+	// Allow For Application Config
+	try{include "../../config/configApplication.cfm";}catch(any e){}
+	// Allow For Instance Config
+	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
 	
---->
-	</body>
-</html>
+	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/sample/", "");
+	this.ormEnabled = true;
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.dbcreate = "update";
+	this.ormSettings.flushAtRequestEnd = false;
+	this.ormsettings.eventhandling = true;
+	this.ormSettings.automanageSession = false;
+	
+	function onRequestStart() {
+		if (!structKeyExists(application, "slatwallFW1Application")) {
+			application.slatwallFW1Application = createObject("component", "Slatwall.Application");
+		}
+		application.slatwallFW1Application.bootstrap();
+		
+		if(structKeyExists(form, "slatAction")) {
+			request.slatwallScope.doAction( form.slatAction );
+		} else if (structKeyExists(url, "slatAction")) {
+			request.slatwallScope.doAction( url.slatAction );
+		}
+		
+		// This is only to setup the nav elements on the sample app
+		savecontent variable="request.sampleNavigation" {
+			include "inc/samplenavigation.cfm";
+		}
+		
+	}
+	
+	
+}
