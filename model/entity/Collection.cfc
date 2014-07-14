@@ -305,7 +305,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		
 		var HQL = 'SELECT';
 		var columnCount = arraylen(arguments.columns);
-		
+		HQL &= ' new Map(';
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
 			
@@ -316,15 +316,17 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 				
 			}else{
-				HQL &= ' #column.propertyIdentifier#';
+				HQL &= ' #column.propertyIdentifier# as #listLast(column.propertyIdentifier,'.')#';
 			}
 			
 			//check whether a comma is needed
 			if(i != columnCount){
 				HQL &= ',';
 			}
-			
 		}
+		
+		HQL &= ')';
+		
 		return HQL;
 	}
 	
