@@ -76,6 +76,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function init(){
+		super.init();
 		variables.hqlParams = {};
 		variables.hqlAliases = {};
 	}
@@ -162,6 +163,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	//restrict allowed operators to prevent sql injection
+	//TODO:need operator for contains, does not contain, starts with, ends with, 
 	private string function getComparisonOperator(required string comparisonOperator){
 		
 		switch(arguments.comparisonOperator){
@@ -196,25 +198,28 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return '';
 	}
 	
-	private string function getAggregateFunction(required string aggregateFunction){
-		switch(arguments.aggregateFunction){
+	private string function getAggregateHQL(required any aggregate, required string propertyIdentifier){
+		
+		var aggregateFunction = '';
+		switch(arguments.aggregate.aggregateFunction){
 			
 			case "count":
-				return "COUNT";
+				aggregateFunction = "COUNT";
 			break;
 			case "avg":
-				return "AVG";
+				aggregateFunction = "AVG";
 			break;
 			case "sum":
-				return "SUM";
+				aggregateFunction = "SUM";
 			break;
 			case "min":
-				return "MIN";
+				aggregateFunction = "MIN";
 			break;
 			case "max":
-				return "MAX";
+				aggregateFunction = "MAX";
 			break;
 		}
+		return " #aggregateFunction#(#arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
 	}
 	
 	private string function getLogicalOperator(required string logicalOperator){
@@ -253,7 +258,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			if(structKeyExists(filter,"logicalOperator")){
 				logicalOperator = filter.logicalOperator;
 			}
-			filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#paramID#";
+			filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#paramID# ";
 		}
 		return filterGroupHQL;
 	}
@@ -285,6 +290,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return filterHQL;
 	}
 	
+	
+	
 	public void function addHQLParam(required string paramKey, required any paramValue) {
 		variables.hqlParams[ arguments.paramKey ] = arguments.paramValue;
 	}
@@ -303,16 +310,11 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			var column = arguments.columns[i];
 			
 			//check if we have an aggregate
-			
-			
-			
-			if(!isnull(coulumn.aggregateFunction))
+			if(!isnull(column.aggregate))
 			{
 				//if we have an aggregate then put wrap the identifier
-				var aggregateFunction = '';
-				aggregateFunction = getAggregateFunction(column.aggregateFunction);
+				HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 				
-				HQL &= " #aggregateFunction#(#column.propertyIdentifier#)";
 			}else{
 				HQL &= ' #column.propertyIdentifier#';
 			}

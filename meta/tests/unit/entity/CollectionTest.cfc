@@ -66,6 +66,116 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getHQLFilteringWithOtherCollectionTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders',
+			collectionName = 'RyansAccountOrders',
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account_orders"
+						},
+						{
+							"propertyIdentifier":"Account.firstName"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"orders",
+							"alias":"Account_orders"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"DESC"
+						}
+					],
+					"groupBy":[
+						{
+							"propertyIdentifier":"accountID" 
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.firstName",
+									"comparisonOperator":"=",
+									"value":"Ryan"
+								}
+							]
+							
+						}
+					]
+					
+				}
+			',
+			entityName = "test"
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		var collectionEntityData2 = {
+			collectionid = '',
+			collectionCode = 'AccountOrders',
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.orders"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"orders",
+							"alias":"Account_orders"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"DESC"
+						}
+					],
+					"groupBy":[
+						{
+							"propertyIdentifier":"accountID" 
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.firstName",
+									"comparisonOperator":"=",
+									"value":"Ryan"
+								}
+							]
+							
+						}
+					]
+					
+				}
+			'
+		};
+		var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
+		
+		var collectionEntityHQL = collectionEntity.getHQL();
+		
+		request.debug(collectionEntityHQL);
+		request.debug(collectionEntity);
+		request.debug(collectionEntity.gethqlParams());
+		var testquery = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
+		request.debug(testquery);
+		
+	}
+	
 	public void function getHQLTest(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -77,35 +187,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"columns":[
 						{
 							"propertyIdentifier":"Account.firstName"
-						},
-						{
-							"propertyIdentifier":"Account.accountID",
-							"aggregateFunction":"count"
-						},
-						{
-							"propertyIdentifier":"Account_primaryEmailAddress.emailAddress"
-						},
-						{
-							"propertyIdentifier":"Account_accountAddresses.accountAddressName"
-						},
-						{
-							"propertyIdentifier":"Account_primaryEmailAddress_AccountEmailType.typeID"
 						}
 					],
 					"joins":[
 						{
 							"associationName":"primaryEmailAddress",
-							"alias":"Account_primaryEmailAddress",
-							"joins":[
-								{
-									"associationName":"accountEmailType",
-									"alias":"Account_primaryEmailAddress_AccountEmailType"
-								}
-							]
-						},
-						{
-							"associationName":"accountAddresses",
-							"alias":"Account_accountAddresses"
+							"alias":"Account_primaryEmailAddress"
 						}
 					],
 					"orderBy":[
@@ -140,7 +227,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							"logicalOperator":"OR",
 							"filterGroup":[
 								{
-								"propertyIdentifier":"Account.superUserFlag",
+									"propertyIdentifier":"Account.superUserFlag",
 									"comparisonOperator":"=",
 									"value":"true"
 								},
@@ -317,52 +404,106 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function checklistToArray(){
 		//joins appear to be requirements to access many to many relationships but not to access many-to-one
-		var query = ORMExecuteQuery('SELECT Account.firstName, Account.accountID, Account_primaryEmailAddress.emailAddress, Account_accountAddresses.accountAddressName, Account_primaryEmailAddress_AccountEmailType.typeID FROM SlatwallAccount as Account join Account.primaryEmailAddress as Account_primaryEmailAddress join Account_primaryEmailAddress.accountEmailType as Account_primaryEmailAddress_AccountEmailType join Account.accountAddresses as Account_accountAddresses');
+		var query = ORMExecuteQuery("Select o 
+									from SlatwallAccount as Account 
+									join Account.orders as o
+									where Account.firstName = 'Ryan' 
+									and not exists (select order from SlatwallOrderItem where orderItemID = '2c909f8e468c91ee01469064ae9a0034')");
 		request.debug(query);
 	}
 }
 
 /*
-SELECT o.orderid, oi.orderItemID from order o join o.orderItems oi where oi.orderItemid = ?
-
- [
- 	{
- 		"entityName":"order",
- 		"columns":[
- 			"propertyIdentifer":""
- 		],
- 		"joinEntity":[
- 			{
-	 			"entityName":"orderItems",
-	 			"columns":[
-	 				"propertyIdentifier":""
-	 			],
-	 			"joinEntity":[
-	 				{
-		 				"entityName":
-		 				"columns":[
-		 					"propertyIdentifier":""
-		 				]
-		 			}
-	 			]
-	 		},
-	 		{
-	 			"entityName":"account",
-	 			"columns":[
-	 				"propertyIdentifier":""
-	 			],
-	 			"joinEntity":[
-	 				{
-		 				"entityName":
-		 				"columns":[
-		 					"propertyIdentifier":""
-		 				]
-		 			}
-	 			]
-	 		}
- 		]
- 	}
- ]
+collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.firstName"
+						},
+						{
+							"propertyIdentifier":"Account.accountID",
+							"aggregate":{
+								"aggregateFunction":"count",
+								"aggregateAlias":"accountAmount"
+							}
+							
+						},
+						{
+							"propertyIdentifier":"Account_primaryEmailAddress.emailAddress"
+						},
+						{
+							"propertyIdentifier":"Account_accountAddresses.accountAddressName"
+						},
+						{
+							"propertyIdentifier":"Account_primaryEmailAddress_AccountEmailType.typeID"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"primaryEmailAddress",
+							"alias":"Account_primaryEmailAddress",
+							"joins":[
+								{
+									"associationName":"accountEmailType",
+									"alias":"Account_primaryEmailAddress_AccountEmailType"
+								}
+							]
+						},
+						{
+							"associationName":"accountAddresses",
+							"alias":"Account_accountAddresses"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"DESC"
+						}
+					],
+					"groupBy":[
+						{
+							"propertyIdentifier":"accountID" 
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+							
+						},
+						{
+							"logicalOperator":"OR",
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+						}
+					]
+					
+				}
+			'
 
 
 */
