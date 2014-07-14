@@ -87,8 +87,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				variables.capturableAmount = precisionEvaluate(variables.capturableAmount - (getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal()));
 			}
 			
-			if(variables.capturableAmount lt 0) {
+			if(variables.capturableAmount < 0) {
 				variables.capturableAmount = 0;
+			} else if (variables.capturableAmount > getOrder().getPaymentAmountDue()) {
+				variables.capturableAmount = getOrder().getPaymentAmountDue();
 			}
 			
 		}
