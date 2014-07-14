@@ -74,7 +74,7 @@ Notes:
 			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeOptionLabel" /> 
 		</cf_HibachiListingDisplay>
 		
-		<cf_HibachiActionCaller action="admin:entity.createattributeoption" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeID()#" modal=true />
+		<cf_HibachiActionCaller action="admin:entity.createattributeoption" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeID()#" modal=true />
 	</cfif>
 	
 </cfoutput>

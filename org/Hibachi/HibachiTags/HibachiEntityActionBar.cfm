@@ -36,8 +36,8 @@
 	<cfif not structKeyExists(request.context, "modal") or not request.context.modal>
 		<cfoutput>
 			<div class="actionnav well well-small">
-				<div class="row-fluid">
-					<div class="span4">
+				<div class="row">
+					<div class="col-md-4">
 						<!--- Page Title --->
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />

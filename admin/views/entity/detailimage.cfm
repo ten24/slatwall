@@ -73,7 +73,7 @@ Notes:
 
 		<cf_HibachiPropertyRow>
 			
-			<cf_HibachiPropertyList divclass="span12">
+			<cf_HibachiPropertyList divclass="col-md-12">
 				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
 			</cf_HibachiPropertyList>

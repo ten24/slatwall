@@ -54,7 +54,7 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.country#" edit="#rc.edit#" />
 		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="countryCode" edit="#rc.country.getNewFlag()#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="countryCode3Digit" edit="#rc.country.getNewFlag()#">
 				<cf_HibachiPropertyDisplay object="#rc.country#" property="countryISONumber" edit="#rc.country.getNewFlag()#">

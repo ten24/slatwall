@@ -54,7 +54,7 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.eventTrigger#" />
 		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventName" edit="#rc.edit#">
 				<cfif rc.eventTrigger.getEventTriggerType() eq "email">
@@ -64,7 +64,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.eventTrigger#" property="printTemplate" edit="#rc.edit#">
 				</cfif>
 			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerType" edit="false">
 				<cf_HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerObject" edit="false">
 			</cf_HibachiPropertyList>

@@ -301,11 +301,12 @@
 	<cfoutput>
 		<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 			<thead>
+				
 				<cfif attributes.showheader>
 					<tr>
 						<th class="listing-display-header" colspan='#thistag.columnCount#'>
-								
-							<div class="span8">
+							
+							<div class="col-md-8">
 								<cfif not thistag.expandable>
 									<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
 								</cfif>
@@ -316,7 +317,7 @@
 									<span style="font-size:14px;color:##666666;">#attributes.title#</span>
 								</cfif>
 							</div>
-							<div class="span4">
+							<div class="col-md-4">
 								<div class="groups">
 									<div class="btn-group">
 										<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
@@ -351,7 +352,8 @@
 										</div>
 									</cfif>		
 								</div>
-							</div>		
+							</div>
+							
 						</th>
 					</tr>
 				</cfif>
@@ -405,13 +407,13 @@
 									<ul class="dropdown-menu nav scrollable">
 										<cf_HibachiDividerHider>
 											<cfif column.sort and not thistag.expandable>
-												<li class="nav-header">#attributes.hibachiScope.rbKey('define.sort')#</li>
+												<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.sort')#</li>
 												<li><a href="##" class="listing-sort" data-sortdirection="ASC"><i class="icon-arrow-down"></i> Sort Ascending</a></li>
 												<li><a href="##" class="listing-sort" data-sortdirection="DESC"><i class="icon-arrow-up"></i> Sort Descending</a></li>
 												<li class="divider"></li>
 											</cfif>
 											<cfif column.search and not thistag.expandable>
-												<li class="nav-header">#attributes.hibachiScope.rbKey('define.search')#</li>
+												<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.search')#</li>
 												<li class="search-filter"><input type="text" class="listing-search" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
 												<li class="divider"></li>
 											</cfif>
@@ -423,13 +425,13 @@
 														<cfset local.rangeClass = "datetimepicker" />	
 													</cfif>
 												</cfsilent>
-												<li class="nav-header">#attributes.hibachiScope.rbKey('define.range')#</li>
+												<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.range')#</li>
 												<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# range-filter-lower" name="R:#column.propertyIdentifier#" value="" /></li>
 												<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# range-filter-upper" name="R:#column.propertyIdentifier#" value="" /></li>
 												<li class="divider"></li>
 											</cfif>
 											<cfif column.filter and not thistag.expandable>
-												<li class="nav-header">#attributes.hibachiScope.rbKey('define.filter')#</li>
+												<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.filter')#</li>
 												<cfset filterOptions = attributes.smartList.getFilterOptions(valuePropertyIdentifier=column.propertyIdentifier, namePropertyIdentifier=column.propertyIdentifier) />
 												<input type="hidden" name="F:#column.propertyIdentifier#" value="#attributes.smartList.getFilters(column.propertyIdentifier)#" />
 												<cfloop array="#filterOptions#" index="filter">
@@ -507,7 +509,7 @@
 								<!--- Detail --->
 								<cfif len(attributes.recordDetailAction)>
 									<cfset thisID = "#replace(replace(lcase(attributes.recordDetailAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-									<cf_HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
+									<cf_HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-mini" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
 								</cfif>
 								
 								<!--- Edit --->
@@ -516,7 +518,7 @@
 									<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
 									<cfset local.disabled = local.editErrors.hasErrors() />
 									<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
-									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
+									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-mini" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
 								</cfif>
 								
 								<!--- Delete --->
@@ -525,13 +527,13 @@
 									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="delete", setErrors=false) />
 									<cfset local.disabled = local.deleteErrors.hasErrors() />
 									<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />
-									<cf_HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
+									<cf_HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-mini" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
 								</cfif>
 								
 								<!--- Process --->
 								<cfif len(attributes.recordProcessAction)>
 									<cfset thisID = "#replace(replace(lcase(attributes.recordProcessAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-									<cf_HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn hibachi-ajax-submit" id="#thisID#" />
+									<cf_HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />
 								</cfif>
 							</td>
 						</cfif>

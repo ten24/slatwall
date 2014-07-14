@@ -96,7 +96,7 @@ Notes:
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divclass="span6">
+			<cf_HibachiPropertyList divclass="col-md-6">
 				
 				<!--- Account --->
 				<cfif rc.edit>
@@ -122,7 +122,7 @@ Notes:
 				</cfif>
 				
 			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divclass="span6">
+			<cf_HibachiPropertyList divclass="col-md-6">
 				
 				<!--- Totals --->
 				<cf_HibachiPropertyTable>

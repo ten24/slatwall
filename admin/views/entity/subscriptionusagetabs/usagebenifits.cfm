@@ -49,7 +49,7 @@ Notes:
 <cfparam name="rc.subscriptionUsage" type="any" />
 
 <cfoutput>
-	<div class="span6">
+	<div class="col-md-6">
 		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.benefits')#</h4>
 		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
 								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
@@ -60,7 +60,7 @@ Notes:
 		
 		
 	</div>
-	<div class="span6">
+	<div class="col-md-6">
 		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
 		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
 								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"

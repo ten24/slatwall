@@ -57,7 +57,7 @@ Notes:
 	</cf_HibachiEntityActionBar>
 	
 	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList divclass="span6">
+		<cf_HibachiPropertyList divclass="col-md-6">
 			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetType" edit="#rc.attributeSet.isNew()#">
 			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
@@ -70,7 +70,7 @@ Notes:
 		</cf_HibachiPropertyList>
 		
 		<cfif !rc.attributeSet.isNew()>
-			<cf_HibachiPropertyList divclass="span6">
+			<cf_HibachiPropertyList divclass="col-md-6">
 				<cfset local.canEditGlobal = listFind( "astProduct,astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode() ) && rc.edit />
 				<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#local.canEditGlobal#">
 				<cfif listFind( "astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode() )>

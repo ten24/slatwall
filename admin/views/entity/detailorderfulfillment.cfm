@@ -57,7 +57,7 @@ Notes:
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				
 				<!--- Email --->
 				<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
@@ -80,7 +80,7 @@ Notes:
 					<!--- TODO: Add Fulfill From Location --->
 				</cfif>
 			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				
 				<!--- Totals --->
 				<cf_HibachiPropertyTable>

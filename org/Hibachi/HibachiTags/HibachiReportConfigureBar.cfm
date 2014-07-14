@@ -12,7 +12,7 @@
 				<input type="hidden" name="reportID" value="" />
 			</cfif>
 
-			<div class="row-fluid">
+			<div class="row">
 				<div class="span7">
 					<dl class="dl-horizontal">
 						

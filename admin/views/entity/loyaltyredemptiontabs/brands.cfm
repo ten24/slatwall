@@ -40,11 +40,11 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<div class="span6">
+	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.loyaltyRedemption.brands')#</h5>
 		<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="brands" edit="#rc.edit#" displaytype="plain" />
 	</div>
-	<div class="span6">
+	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.loyaltyRedemption.excludedbrands')#</h5>
 		<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="excludedBrands" edit="#rc.edit#" displaytype="plain" />
 	</div>

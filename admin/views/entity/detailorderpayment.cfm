@@ -59,7 +59,7 @@ Notes:
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cfif rc.orderPayment.getPaymentMethodType() eq "creditCard">
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="creditCardType" />
@@ -82,7 +82,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="countryCode" edit="#rc.edit#" />
 				</cfif>
 			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="dynamicAmountFlag" edit="false" />
 				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="orderPaymentType" />
 				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit and not rc.orderPayment.getDynamicAmountFlag()#" />

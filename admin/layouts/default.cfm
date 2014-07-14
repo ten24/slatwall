@@ -58,9 +58,9 @@ Notes:
 		<link rel="shortcut icon" href="#request.slatwallScope.getBaseURL()#/assets/images/favicon.png" type="image/png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.2.3.2.min.css" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
-		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">
+		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">--->
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
@@ -69,7 +69,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-hashchange-1.3.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.2.3.2.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></script>
 		#request.slatwallScope.renderJSObject()#
 		<script type="text/javascript">
 			var hibachiConfig = $.slatwall.getConfig();
@@ -93,20 +93,26 @@ Notes:
 			.navbar .brand {margin-left:0px;}
 		</style>
 	</head>
-	<body ng-app="slatwallngapp">
-		<div class="navbar navbar-fixed-top navbar-inverse">
-			<div class="navbar-inner">
-				<div class="container-fluid">
+	<body ng-app="slatwallngapp" style="padding-top:70px;">
+		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
+			<div class="container-fluid">
+				
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="##slatwall-primary-nav">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
 					<cfset homeLink = request.slatwallScope.getBaseURL() />
 					<cfif not len(homeLink)>
 						<cfset homeLink = "/" />
 					</cfif>
-					<a href="#homeLink#" class="brand" style="margin-left:-20px;"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;heigh:16px;" title="Slatwall" /></a>
-					<cfloop array="#$.slatwall.getService('integrationService').getAdminNavbarHTMLArray()#" index="navbarHTML">
-						#navbarHTML#
-					</cfloop>
-					<ul class="nav">
-						<li class="divider-vertical"></li>
+					<a href="#homeLink#" class="navbar-brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;heigh:16px;" title="Slatwall" /></a>
+				</div><!-- .navbar-header -->
+				
+				<div class="collapse navbar-collapse" id="slatwall-primary-nav">
+					<ul class="nav navbar-nav">
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="nav">
 							<cf_HibachiDividerHider>
 								<cf_HibachiActionCaller action="admin:entity.listproduct" type="list">
@@ -205,38 +211,44 @@ Notes:
 							</cf_HibachiDividerHider>
 						</cf_HibachiActionCallerDropdown>
 					</ul>
-					<div class="pull-right">
-						<ul class="nav">
-							<cfif $.slatwall.getLoggedInAsAdminFlag()>
-								<cf_HibachiActionCallerDropdown title="" icon="user icon-white" dropdownclass="pull-right" type="nav">
-									<cf_HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
-									<cf_HibachiActionCaller action="admin:main.logout" type="list">
-									<li class="divider"></li>
-									<li><a title="User Docs" href="http://docs.getslatwall.com/##users" target="_blank">User Docs</a></li>
-									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">Developer Docs</a></li>
-									<cf_HibachiActionCaller action="admin:main.about" type="list">
-								</cf_HibachiActionCallerDropdown>
-							</cfif>
-							<cf_HibachiActionCallerDropdown icon=" flag-icon flag-icon-#lcase(listLast($.slatwall.getRBLocale(), '_' ))#" dropdownclass="pull-right" type="nav">
-								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" type="list">
-								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" type="list">
-								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" type="list">
-								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" type="list">
-							</cf_HibachiActionCallerDropdown>
-						</ul>
+					<ul class="nav navbar-nav navbar-right">
 						<cfif $.slatwall.getLoggedInAsAdminFlag()>
-							<form name="search" class="navbar-search" action="/" onSubmit="return false;">
-								<input id="global-search" type="text" name="serach" class="search-query span2" placeholder="Search">
-							</form>
+							<cf_HibachiActionCallerDropdown title="" icon="user icon-white" dropdownclass="pull-right" type="nav">
+								<cf_HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
+								<cf_HibachiActionCaller action="admin:main.logout" type="list">
+								<li class="divider"></li>
+								<li><a title="User Docs" href="http://docs.getslatwall.com/##users" target="_blank">User Docs</a></li>
+								<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">Developer Docs</a></li>
+								<cf_HibachiActionCaller action="admin:main.about" type="list">
+							</cf_HibachiActionCallerDropdown>
 						</cfif>
-					</div>
-				</div>
-			</div>
-		</div>
+						<cf_HibachiActionCallerDropdown icon=" flag-icon flag-icon-#lcase(listLast($.slatwall.getRBLocale(), '_' ))#" dropdownclass="pull-right" type="nav">
+							<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" type="list">
+							<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" type="list">
+							<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" type="list">
+							<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" type="list">
+						</cf_HibachiActionCallerDropdown>
+					</ul>
+					<cfif $.slatwall.getLoggedInAsAdminFlag()>
+						<form name="search" class="navbar-form navbar-right" action="/" onSubmit="return false;">
+							<div class="form-group">
+								<input id="global-search" type="text" name="serach" class="form-control search-query span2" placeholder="Search">
+							</div>
+						</form>
+					</cfif>
+				</div><!-- /##slatwall-primary-nav /.navbar-collapse -->
 
+				
+				
+				
+				
+			</div><!-- /.container-fluid -->
+		</nav><!-- /.navbar -->
+		
+		<!---
 		<div id="search-results" class="search-results">
 			<div class="container-fluid">
-				<div class="row-fluid">
+				<div class="row">
 
 					<div class="span3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.product_plural')#</h5>
@@ -275,7 +287,7 @@ Notes:
 					</div>
 
 				</div>
-				<div class="row-fluid">
+				<div class="row">
 
 					<div class="span3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.order_plural')#</h5>
@@ -314,38 +326,42 @@ Notes:
 					</div>
 
 				</div>
-				<div class="row-fluid">
-					<div class="span12">
+				<div class="row">
+					<div class="col-md-12">
 						<a class="close search-close"><span class="text">Close</span> &times;</a>
 					</div>
 				</div>
 			</div>
 		</div>
-
+		--->
+		
 		<div class="container-fluid">
-			<div class="row-fluid">
-				<div class="span12">
+			<div class="row">
+				<div class="col-md-12">
 					#body#
 				</div>
 			</div>
 		</div>
+		
+		<!---
 		<div id="adminModal" class="modal fade"></div>
 		<div id="adminDisabled" class="modal">
 			<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.disabled')#</h3></div>
 			<div class="modal-body"></div>
 			<div class="modal-footer">
-				<a href="##" class="btn btn-inverse" data-dismiss="modal" id="disabledOkLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.ok')#</a>
+				<a href="##" class="btn btn-default btn-inverse" data-dismiss="modal" id="disabledOkLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.ok')#</a>
 			</div>
 		</div>
 		<div id="adminConfirm" class="modal">
 			<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.confirm')#</h3></div>
 			<div class="modal-body"></div>
 			<div class="modal-footer">
-				<a href="##" class="btn btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
-				<a href="##" class="btn btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
+				<a href="##" class="btn btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
+				<a href="##" class="btn btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
 			</div>
 		</div>
 
+		--->
 		
 		<!---
 		<cfif $.slatwall.setting('globalUsageStats') and getSubsystem(request.context.slatAction) eq "admin">

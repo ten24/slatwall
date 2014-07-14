@@ -65,14 +65,14 @@ Notes:
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="urlTitle" edit="#rc.edit#" valueLink="#rc.product.getProductURL()#">
 			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.product#" property="productType" edit="#rc.edit#">
 				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qats.full')#" value="#rc.product.getQuantity('QATS')#">

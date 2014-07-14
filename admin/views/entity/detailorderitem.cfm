@@ -70,7 +70,7 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			
-			<cf_HibachiPropertyList divclass="span6">
+			<cf_HibachiPropertyList divclass="col-md-6">
 				<div class="well">
 					#rc.sku.getImage(width=100, height=100)#
 				</div>
@@ -79,7 +79,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="quantity" edit="#rc.edit#" />
 			</cf_HibachiPropertyList>
 			
-			<cf_HibachiPropertyList divclass="span6">
+			<cf_HibachiPropertyList divclass="col-md-6">
 				
 				<!--- Totals --->
 				<cf_HibachiPropertyTable>

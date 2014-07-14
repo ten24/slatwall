@@ -60,7 +60,7 @@ Notes:
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cfif rc.accountPayment.getPaymentMethodType() eq "creditCard">
 					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
 					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardType" />
@@ -68,7 +68,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationYear" edit="#rc.edit#" />
 				</cfif>
 			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" />
 				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amountReceived" />
 				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amountCredited" />

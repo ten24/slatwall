@@ -55,7 +55,7 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.schedule#" property="scheduleName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.schedule#" property="recuringType" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.schedule#" property="frequencyStartTime" edit="#rc.edit#">
@@ -66,7 +66,7 @@ Notes:
 				</cf_HibachiDisplayToggle>
 			</cf_HibachiPropertyList>
 			
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				
 				<cf_HibachiDisplayToggle selector="select[name='recuringType']" showValues="weekly" loadVisable="#rc.schedule.getValueByPropertyIdentifier('recuringType') eq 'weekly'#">
 					<cf_HibachiPropertyDisplay object="#rc.schedule#" property="daysOfWeekToRun" edit="#rc.edit#">

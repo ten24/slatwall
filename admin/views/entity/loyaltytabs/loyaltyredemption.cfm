@@ -55,6 +55,6 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createloyaltyredemption" class="btn" icon="plus" queryString="loyaltyID=#rc.loyalty.getLoyaltyID()#&sRedirectAction=admin:entity.editloyaltyRedemption" modal="true"  />
+	<cf_HibachiActionCaller action="admin:entity.createloyaltyredemption" class="btn btn-default" icon="plus" queryString="loyaltyID=#rc.loyalty.getLoyaltyID()#&sRedirectAction=admin:entity.editloyaltyRedemption" modal="true"  />
 
 </cfoutput>

@@ -65,7 +65,7 @@
 					<cfloop array="#thistag.tabs#" index="tab">
 						<cfoutput>
 							<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
-								<div class="row-fluid">
+								<div class="row">
 									#tab.tabcontent#
 								</div>
 							</div>
@@ -73,7 +73,7 @@
 					</cfloop>
 					<cfif isObject(attributes.object)>
 						<div <cfif arrayLen(thistag.tabs)>class="tab-pane"<cfelse>class="tab-pane active"</cfif> id="tabSystem">
-							<div class="row-fluid">
+							<div class="row">
 								<cf_HibachiPropertyList> 
 									<cf_HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
 									<cfif attributes.object.hasProperty('remoteID')>

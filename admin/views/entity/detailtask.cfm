@@ -62,14 +62,14 @@ Notes:
 		<cf_HibachiPropertyRow>
 			
 			<!--- Left Side Top --->
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				<cf_HibachiPropertyDisplay object="#rc.task#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.task#" property="runningFlag" edit="false">
 				<cf_HibachiPropertyDisplay object="#rc.task#" property="taskName" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 			
 			<!--- Right Side Top --->
-			<cf_HibachiPropertyList divClass="span6">
+			<cf_HibachiPropertyList divClass="col-md-6">
 				
 				<cf_HibachiPropertyDisplay object="#rc.task#" property="taskMethod" edit="false">
 				

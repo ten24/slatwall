@@ -60,7 +60,7 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyList divClass="span6">
+				<cf_HibachiPropertyList divClass="col-md-6">
 				<!--- Add a hidden field for the accountID --->
 				<input type="hidden" name="newAccountPayment.account.accountID" value="#rc.account.getAccountID()#" />
 				
@@ -69,7 +69,7 @@ Notes:
 				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#" fieldAttributes="ng-model='paymentType' ng-change='updatePaymentType()' ng-init='paymentType = ""444df32dd2b0583d59a19f1b77869025""'">
 				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethodID" edit="#rc.edit#">
 				</cf_HibachiPropertyList>
-				<cf_HibachiPropertyList divClass="span6">
+				<cf_HibachiPropertyList divClass="col-md-6">
 				<!--- New Payment Method --->
 				<cf_HibachiDisplayToggle selector="select[name='accountPaymentMethodID']" showValues="" loadVisable="#!len(rc.processObject.getAccountPaymentMethodID())#">
 					

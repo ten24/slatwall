@@ -145,7 +145,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					var attributes = {
 						action=admin.detailAction,
 						queryString="#listPrepend(admin.detailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-mini",
 						icon="eye-open",
 						iconOnly="true",
 						modal=admin.detailModal
@@ -156,7 +156,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					var attributes = {
 						action=admin.editAction,
 						queryString="#listPrepend(admin.editQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-mini",
 						icon="pencil",
 						iconOnly="true",
 						modal=admin.editModal,
@@ -169,7 +169,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					var attributes = {
 						action=admin.deleteAction,
 						queryString="#listPrepend(admin.deleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-mini",
 						icon="trash",
 						iconOnly="true",
 						disabled=deleteErrors.hasErrors(),
@@ -184,7 +184,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						entity=processEntity,
 						processContext=admin.processContext,
 						queryString="#listPrepend(admin.processQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn hibachi-ajax-submit"
+						class="btn btn-default hibachi-ajax-submit"
 					};
 					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiProcessCaller", attributeCollection=attributes);
 				}
