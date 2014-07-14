@@ -65,12 +65,12 @@
 		</cfcase>
 		<cfcase value="date">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datepicker" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="form-control #attributes.value#" class="#attributes.fieldClass# datepicker" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="dateTime">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datetimepicker" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="form-control #attributes.value#" class="#attributes.fieldClass# datetimepicker" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="file">
@@ -112,7 +112,7 @@
 		</cfcase>
 		<cfcase value="password">
 			<cfoutput>
-				<input type="password" name="#attributes.fieldName#" class="#attributes.fieldClass#" autocomplete="off" #attributes.fieldAttributes# />
+				<input type="password" name="#attributes.fieldName#" class="form-control #attributes.fieldClass#" autocomplete="off" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="radiogroup">
@@ -138,7 +138,7 @@
 		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
-				<select name="#attributes.fieldName#" class="#attributes.fieldClass#" #attributes.fieldAttributes#>
+				<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes#>
 					<cfloop array="#attributes.valueOptions#" index="option">
 						<cfset thisOptionName = "" />
 						<cfset thisOptionValue = "" />
@@ -164,7 +164,7 @@
 		</cfcase>
 		<cfcase value="text">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" class="#attributes.fieldClass#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textautocomplete">
