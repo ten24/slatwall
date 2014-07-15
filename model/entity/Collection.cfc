@@ -168,7 +168,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	//restrict allowed operators to prevent sql injection
-	//TODO:need operator for contains, does not contain, starts with, ends with, 
 	private string function getComparisonOperator(required string comparisonOperator){
 		
 		switch(arguments.comparisonOperator){
@@ -201,6 +200,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			break;
 			case "not in":
 				return "NOT IN";
+			break;
+			case "between":
+				return "BETWEEN";
 			break;
 		}
 		return '';
@@ -315,8 +317,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			if(!isnull(filter.collectionCode)){
 				filterGroupHQL &= getHQLForCollectionFilter(filter);
 			}else{
-				var paramID = getParamID();
-				addHQLParam(paramID,filter.value);
 				
 				var logicalOperator = '';
 				if(structKeyExists(filter,"logicalOperator")){
@@ -325,7 +325,24 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				
 				var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 				
-				filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#paramID# ";
+				var predicate = '';
+				if(filter.comparisonOperator eq 'between'){
+					var fromValue = listFirst(filter.value,'-');
+					var toValue = listLast(filter.value,'-');
+					
+					var fromParamID = getParamID();
+					addHQLParam(fromParamID,fromValue);
+					var toParamID = getParamID();
+					addHQLParam(toParamID,toValue);
+					
+					predicate = ":#fromParamID# AND #toParamID#";				
+				}else{
+					var paramID = getParamID();
+					addHQLParam(paramID,filter.value);
+					predicate = ":#paramID#";
+				}
+				
+				filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
 			}
 			
 			
