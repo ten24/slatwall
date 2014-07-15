@@ -442,6 +442,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}*/
 	public void function checklistToArray(){
 		
+		/*var query = ORMExecuteQuery("select Account.firstName
+									from SlatwallAccount as Account 
+									where Account.firstName not like 'Ryan%' 
+									");
+		request.debug(query);*/
+		
 		//joins appear to be requirements to access many to many relationships but not to access many-to-one
 		//discovered that using reserved words in hql complex queries can cause issues
 		//All

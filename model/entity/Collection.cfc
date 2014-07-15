@@ -193,6 +193,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			case "like":
 				return "LIKE";
 			break;
+			case "not like":
+				return "NOT LIKE";
+			break;
 			case "in":
 				return "IN";
 			break;
@@ -455,7 +458,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				if(!isNull(collectionConfig.isDistinct)){
 					isDistinct = collectionConfig.isDistinct;
 				}
-				
 				HQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
 			}
 			//build FROM
