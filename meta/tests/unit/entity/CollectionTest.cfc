@@ -212,6 +212,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			baseEntityName = 'Account',
 			collectionConfig = '
 				{
+					"isDistinct":"true",
 					"baseEntityName":"SlatwallAccount",
 					"baseEntityAlias":"Account",
 					"columns":[
@@ -245,30 +246,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"true"
 								},
 								{
-									"logicalOperator":"AND",
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"false"
-								}
-							]
-							
-						},
-						{
-							"logicalOperator":"OR",
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								},
-								{
 									"logicalOperator":"OR",
 									"propertyIdentifier":"Account.superUserFlag",
 									"comparisonOperator":"=",
 									"value":"false"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"Account.firstName",
+									"comparisonOperator":"like",
+									"value":"an%"
 								}
 							]
+							
 						},
+						
 						{
 							"logicalOperator":"AND",
 							"filterGroup":[
@@ -455,7 +447,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(query);
 	}*/
 	public void function checklistToArray(){
-		
 		
 		//joins appear to be requirements to access many to many relationships but not to access many-to-one
 		//discovered that using reserved words in hql complex queries can cause issues

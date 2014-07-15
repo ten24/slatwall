@@ -308,18 +308,20 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		var filterGroupHQL = '';
 		for(filter in arguments.filterGroup){
 			//add property and value to HQLParams
-			//TODO: if using a like parameter we need to add % to the value
+			//TODO: if using a like parameter we need to add % to the value using angular
 			if(!isnull(filter.collectionCode)){
 				filterGroupHQL &= getHQLForCollectionFilter(filter);
 			}else{
 				var paramID = getParamID();
 				addHQLParam(paramID,filter.value);
 				
-				var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 				var logicalOperator = '';
 				if(structKeyExists(filter,"logicalOperator")){
 					logicalOperator = filter.logicalOperator;
 				}
+				
+				var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
+				
 				filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#paramID# ";
 			}
 			
@@ -365,10 +367,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.hqlAliases[arguments.aliasKey] = arguments.aliasValue;
 	}
 	
-	private any function getSelectionsHQL(required array columns){
+	private any function getSelectionsHQL(required array columns,boolean isDistinct=false){
 		//TODO: add distinct logic, aliases
+		var isDistinctValue = '';
+		if(arguments.isDistinct){
+			isDistinctValue = "DISTINCT";
+		}
 		
-		var HQL = 'SELECT';
+		var HQL = 'SELECT #isDistinctValue#';
 		var columnCount = arraylen(arguments.columns);
 		HQL &= ' new Map(';
 		for(var i = 1; i <= columnCount; i++){
@@ -424,7 +430,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelect eq false){
-				HQL &= getSelectionsHQL(collectionConfig.columns);
+				var isDistinct = false;
+				if(!isNull(collectionConfig.isDistinct)){
+					isDistinct = collectionConfig.isDistinct;
+				}
+				
+				HQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
 			}
 			//build FROM
 			var joins = [];
