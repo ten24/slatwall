@@ -1,5 +1,6 @@
 component extends="PageObject"{
 	
+	variables.slatAction = "main.login";
 	variables.title = "Login | Slatwall";
 	
 	function login(username, password) {

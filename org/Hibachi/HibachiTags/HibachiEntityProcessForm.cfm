@@ -28,7 +28,7 @@
 	</cfif>
 	
 	<cfoutput>
-		<form method="post" action="#formAction#" class="form-horizontal" enctype="#attributes.enctype#">
+		<form method="post" action="#formAction#" class="form-horizontal" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.processAction),':','','all'),'.','','all')#_#lcase(attributes.processContext)#">
 			<input type="hidden" name="#request.context.fw.getAction()#" value="#attributes.processAction#" />
 			<input type="hidden" name="processContext" value="#attributes.processContext#" />
 			<input type="hidden" name="#attributes.entity.getPrimaryIDPropertyName()#" value="#attributes.entity.getPrimaryIDValue()#" />

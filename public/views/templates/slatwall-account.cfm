@@ -61,7 +61,7 @@ Notes:
 <cfinclude template="_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+<cfimport prefix="sw" taglib="../../tags" />
 
 <!---[DEVELOPER NOTES]															
 																				
@@ -829,19 +829,19 @@ Notes:
 																		<form action="?s=1" method="post">
 																			
 																			<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
-																			<input type="hidden" name="slatAction" value="public:account.update" />
+																			<input type="hidden" name="slatAction" value="public:account.addaccountpaymentmethod" />
 																			
 																			<!--- Set the accountAddressID to blank so tha it creates a new one --->
-																			<input type="hidden" name="accountPaymentMethods[1].accountPaymentMethodID" value="" />
+																			<input type="hidden" name="accountPaymentMethodID" value="" />
 																			
-																			<input type="hidden" name="accountPaymentMethods[1].paymentMethod.paymentMethodID" value="#paymentMethod.getPaymentMethodID()#" />
+																			<input type="hidden" name="paymentMethod.paymentMethodID" value="#paymentMethod.getPaymentMethodID()#" />
 																			
 																			<!--- Nickname --->
 																			<div class="control-group">
 														    					<label class="control-label" for="firstName">Nickname</label>
 														    					<div class="controls">
 														    						
-																					<sw:FormField type="text" name="accountPaymentMethods[1].accountPaymentMethodName" valueObject="#newAccountPaymentMethod#" valueObjectProperty="accountPaymentMethodName" class="span3" />
+																					<sw:FormField type="text" name="accountPaymentMethodName" valueObject="#newAccountPaymentMethod#" valueObjectProperty="accountPaymentMethodName" class="span3" />
 																					<sw:ErrorDisplay object="#newAccountPaymentMethod#" errorName="accountPaymentMethodName" />
 																					
 														    					</div>
@@ -855,7 +855,7 @@ Notes:
 															    					<label class="control-label" for="firstName">Credit Card Number</label>
 															    					<div class="controls">
 															    						
-																						<sw:FormField type="text" name="accountPaymentMethods[1].creditCardNumber" valueObject="#newAccountPaymentMethod#" valueObjectProperty="creditCardNumber" class="span3" />
+																						<sw:FormField type="text" name="creditCardNumber" valueObject="#newAccountPaymentMethod#" valueObjectProperty="creditCardNumber" class="span3" />
 																						<sw:ErrorDisplay object="#newAccountPaymentMethod#" errorName="creditCardNumber" />
 																						
 															    					</div>
@@ -866,7 +866,7 @@ Notes:
 															    					<label class="control-label" for="firstName">Name on Credit Card</label>
 															    					<div class="controls">
 															    						
-																						<sw:FormField type="text" name="accountPaymentMethods[1].nameOnCreditCard" valueObject="#newAccountPaymentMethod#" valueObjectProperty="nameOnCreditCard" class="span3" />
+																						<sw:FormField type="text" name="nameOnCreditCard" valueObject="#newAccountPaymentMethod#" valueObjectProperty="nameOnCreditCard" class="span3" />
 																						<sw:ErrorDisplay object="#newAccountPaymentMethod#" errorName="nameOnCreditCard" />
 																						
 															    					</div>
@@ -883,7 +883,7 @@ Notes:
 																	    					<label class="control-label" for="rating">CVV</label>
 																	    					<div class="controls">
 																	    						
-																								<sw:FormField type="text" name="accountPaymentMethods[1].securityCode" valueObject="#newAccountPaymentMethod#" valueObjectProperty="securityCode" class="span1" />
+																								<sw:FormField type="text" name="securityCode" valueObject="#newAccountPaymentMethod#" valueObjectProperty="securityCode" class="span1" />
 																								<sw:ErrorDisplay object="#newAccountPaymentMethod#" errorName="securityCode" />
 																								
 																	    					</div>
@@ -899,8 +899,8 @@ Notes:
 																	    					<label class="control-label pull-right" for="rating">Exp. (MM/YYYY)</label>
 																	    					<div class="controls pull-right">
 																	    						
-																								<sw:FormField type="select" name="accountPaymentMethods[1].expirationMonth" valueObject="#newAccountPaymentMethod#" valueObjectProperty="expirationMonth" valueOptions="#newAccountPaymentMethod.getExpirationMonthOptions()#" class="span1" />
-																								<sw:FormField type="select" name="accountPaymentMethods[1].expirationYear" valueObject="#newAccountPaymentMethod#" valueObjectProperty="expirationYear" valueOptions="#newAccountPaymentMethod.getExpirationYearOptions()#" class="span1" />
+																								<sw:FormField type="select" name="expirationMonth" valueObject="#newAccountPaymentMethod#" valueObjectProperty="expirationMonth" valueOptions="#newAccountPaymentMethod.getExpirationMonthOptions()#" class="span1" />
+																								<sw:FormField type="select" name="expirationYear" valueObject="#newAccountPaymentMethod#" valueObjectProperty="expirationYear" valueOptions="#newAccountPaymentMethod.getExpirationYearOptions()#" class="span1" />
 																								<sw:ErrorDisplay object="#newAccountPaymentMethod#" errorName="expirationMonth" />
 																								<sw:ErrorDisplay object="#newAccountPaymentMethod#" errorName="expirationYear" />
 																								
@@ -914,7 +914,7 @@ Notes:
 																				<h5>Address on Card</h5>
 																				
 																				<!--- Billing Address --->
-																				<sw:AddressForm id="newBillingAddress" address="#newAccountPaymentMethod.getBillingAddress()#" fieldNamePrefix="accountPaymentMethods[1].billingAddress." fieldClass="span3" />
+																				<sw:AddressForm id="newBillingAddress" address="#newAccountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingAddress." fieldClass="span3" />
 																			<cfelseif paymentMethod.getPaymentMethodType() eq "external">
 																				
 				 															<cfelseif paymentMethod.getPaymentMethodType() eq "giftCard">
@@ -924,7 +924,7 @@ Notes:
 															    					<label class="control-label" for="firstName">Gift Card Number</label>
 															    					<div class="controls">
 															    						
-																						<sw:FormField type="text" name="accountPaymentMethods[1].giftCardNumber" valueObject="#newAccountPaymentMethod#" valueObjectProperty="giftCardNumber" class="span3" />
+																						<sw:FormField type="text" name="giftCardNumber" valueObject="#newAccountPaymentMethod#" valueObjectProperty="giftCardNumber" class="span3" />
 																						<sw:ErrorDisplay object="#newAccountPaymentMethod#" errorName="giftCardNumber" />
 																						
 															    					</div>
@@ -935,7 +935,7 @@ Notes:
 																				<h5>Billing Address</h5>
 																				
 																				<!--- Billing Address --->
-																				<sw:AddressForm id="newBillingAddress" address="#newAccountPaymentMethod.getBillingAddress()#" fieldNamePrefix="accountPaymentMethods[1].billingAddress." fieldClass="span3" />
+																				<sw:AddressForm id="newBillingAddress" address="#newAccountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingAddress." fieldClass="span3" />
 																			</cfif>
 																			
 																			
@@ -1706,8 +1706,8 @@ Notes:
 						<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
 						<input type="hidden" name="slatAction" value="public:account.create,public:account.login" />
 						
-						<!--- This is also passed so that guestCheckout will work when the page is reloaded --->
-						<input type="hidden" name="guestCheckoutFlag" value="1" />
+						<!--- This is passed so that we force the creation of a password and this isn't just a guest checkout --->
+						<input type="hidden" name="createAuthenticationFlag" value="1" />
 						
 						<!--- Name --->
 						<div class="row">
@@ -1773,56 +1773,27 @@ Notes:
 	    					</div>
 	  					</div>
 						
-						<!--- Guest Checkout --->
+						<!--- Password --->
 						<div class="control-group">
-	    					<label class="control-label" for="rating">Save Account ( No for Guest Checkout )</label>
+	    					<label class="control-label" for="rating">Password</label>
 	    					<div class="controls">
 	    						
-								<sw:FormField type="yesno" valueObject="#createAccountObj#" valueObjectProperty="createAuthenticationFlag" />
-								<sw:ErrorDisplay object="#createAccountObj#" errorName="createAuthenticationFlag" />
+								<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="password" class="span6" />
+								<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
 								
 	    					</div>
 	  					</div>
 						
-						<!--- SCRIPT IMPORTANT: This jQuery is just here for example purposes to show/hide the password fields if guestCheckout it set to true / false --->
-						<script type="text/javascript">
-							(function($){
-								$(document).ready(function(){
-									$('body').on('change', 'input[name="createAuthenticationFlag"]', function(e){
-										if( $(this).val() == 0 ) {
-											$('##password-details').hide();
-										} else {
-											$('##password-details').show();	
-										}
-									});
-									$('input[name="createAuthenticationFlag"]:checked').change();
-								});
-							})( jQuery )
-						</script>
-						
-						<!--- Password --->
-						<div id="password-details" >
-							<div class="control-group">
-		    					<label class="control-label" for="rating">Password</label>
-		    					<div class="controls">
-		    						
-									<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="password" class="span6" />
-									<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
-									
-		    					</div>
-		  					</div>
-							
-							<!--- Password Confirm --->
-							<div class="control-group">
-		    					<label class="control-label" for="rating">Confirm Password</label>
-		    					<div class="controls">
-		    						
-									<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="passwordConfirm" class="span6" />
-									<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
-									
-		    					</div>
-		  					</div>
-						</div>
+						<!--- Password Confirm --->
+						<div class="control-group">
+	    					<label class="control-label" for="rating">Confirm Password</label>
+	    					<div class="controls">
+	    						
+								<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="passwordConfirm" class="span6" />
+								<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
+								
+	    					</div>
+	  					</div>
 						
 						<!--- Create Button --->
 						<div class="control-group pull-right">

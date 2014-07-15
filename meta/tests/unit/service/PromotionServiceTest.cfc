@@ -53,6 +53,89 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("promotionService");
 	}
 	
+	public void function shouldAddNewPromotionTest(){
+		makePublic(variables.service,'shouldAddNewPromotion');
+		
+		var discountAmount = 5.55;
+		var orderFulfillmentData = {
+			orderFulfillmentid = ''
+			
+		};
+		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
+		
+		
+		var promotionRewardData = {
+			promotionRewardid = ''
+		};
+		var promotionReward = createPersistedTestEntity('promotionReward',promotionRewardData);
+		var shouldAddNewPromotion = variables.service.shouldAddNewPromotion(discountAmount,orderFulfillment,promotionReward);
+		//if the applied Promotion array is empty then the value is true
+		assertTrue(shouldAddNewPromotion);
+		
+		var promotionAppliedData = {
+			promotionAppliedid = '',
+			discountAmount = 2
+			
+		};
+		var promotionApplied = createPersistedTestEntity('promotionApplied',promotionAppliedData);
+		
+		var promotionData = {
+			promotionid = '',
+			promotionPeriods = [
+				{
+					promotionPeriodid = '',
+					promotionRewards = [
+						{
+							promotionRewardid = ''
+						}
+					]
+				
+				}
+			],
+			promotionCodes = [
+				{
+					promotionCodeid = '',
+					promotionCode = 'TestPromotionCode'
+				}
+			]
+		};
+		var promotion = createPersistedTestEntity('promotion',promotionData);
+		
+		promotionApplied.setPromotion(promotion);
+		
+		orderFulfillment.addAppliedPromotion(promotionApplied);
+		
+		var shouldAddNewPromotion2 = variables.service.shouldAddNewPromotion(discountAmount,orderFulfillment,promotion.getPromotionPeriods()[1].getPromotionRewards()[1]);
+		//if orderFulfillment promotion is the same as the promotion on the promotionReward return false and setDiscount amount
+		assertFalse(shouldAddNewPromotion2);
+		assertEquals(5.55,orderFulfillment.getAppliedPromotions()[1].getDiscountAmount());
+		
+		var promotionData2 = {
+			promotionid = '',
+			promotionPeriods = [
+				{
+					promotionPeriodid = ''
+				}
+			],
+			promotionCodes = [
+				{
+					promotionCodeid = '',
+					promotionCode = 'TestPromotionCode2'
+				}
+			]
+		};
+		var promotion2 = createPersistedTestEntity('promotion',promotionData2);
+		
+		promotion2.getPromotionPeriods()[1].addPromotionReward(promotionReward);
+		//reset discount amount
+		orderFulfillment.getAppliedPromotions()[1].setDiscountAmount(2);
+		var shouldAddNewPromotion3 = variables.service.shouldAddNewPromotion(discountAmount,orderFulfillment,promotionReward);
+		//if the orderfulfillment discount amount of 2 is less than the discountAmount of 5.55 and the promotion of orderfulfillment is]
+		// different then the one on the promotion reward, remove the appliedPromo and return true
+		assertTrue(shouldAddNewPromotion3);
+		assertEquals(0,arraylen(orderFulfillment.getAppliedPromotions()));
+	}
+	
 	public void function setupPromotionRewardUsageDetailsTest(){
 		makePublic(variables.service,'setupPromotionRewardUsageDetails');
 		

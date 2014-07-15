@@ -169,7 +169,7 @@
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
-				<cfset suggestionsID = createUUID() />
+				<cfset suggestionsID = reReplace(lcase(attributes.fieldName), '[^a-z]', '', 'all') & "suggestions" />
 				<div class="autoselect-container">
 					<input type="hidden" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" />
 					<input type="text" name="#attributes.fieldName#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass#" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
