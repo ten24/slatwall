@@ -237,8 +237,16 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return 'AND';
 	}
 	
+	private string function removeCharacters(required string javaUUIDString){
+		
+		
+		return replace(javaUUIDString,'-','','all');
+	}
+	
 	private string function getParamID(){
-		return 'paramID' & (structCount(this.getHQLParams()) + 1);
+		var uuidComponent = createobject("java", "java.util.UUID");
+		var uuid = removeCharacters(uuidComponent.randomUUID().toString());
+		return 'P' & uuid;
 	}
 	
 	/*private string function getAliasID(){
@@ -268,8 +276,15 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				var filterCriteria = getfilterCriteria(filter.criteria);
 				filterGroupHQL &= ' #filterCriteria# (';
 				
-				var collectionEntity = request.slatwallScope.getService('collectionService').getCollectionByCollectionCode('BestAccountEmalAddresses');
-				filterGroupHQL &= ' #collectionEntity.getHQL()# ';
+				var collectionEntity = getService('collectionService').getCollectionByCollectionCode(filter.collectionCode);
+				var mainCollectionAlias = listFirst(filter.propertyIdentifier,'.');
+				var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName('AccountEmailAddress','account').name;
+				filterGroupHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getEntityName()#.#collectionProperty# ';
+				
+				//add all params from subqueries to parent HQL
+				for(key in collectionEntity.getHQLParams()){
+					addHQLParam(key,collectionEntity.getHQLParams()[key]);
+				}
 				
 				filterGroupHQL &= ')';
 			}else{

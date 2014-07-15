@@ -179,7 +179,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getHQLTest(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmalAddresses',
+			collectionCode = 'BestAccountEmailAddresses',
+			entityName="AccountEmailAddress",
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccountEmailAddress",
@@ -202,14 +203,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
-		var collectionBestAcountEmailAddressesHQL = collectionBestAcountEmailAddresses.getHQL();
 		
-		var querytest = ORMExecuteQuery(collectionBestAcountEmailAddressesHQL,collectionBestAcountEmailAddresses.gethqlParams());
-		request.debug(querytest);
 		
 		var collectionEntityData = {
 			collectionid = '',
 			collectionCode = 'BestAccounts',
+			entityName = 'Accounts',
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
@@ -275,7 +274,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 								{
 									"propertyIdentifier":"Account.accountEmailAddresses",
 									"collectionCode":"BestAccountEmailAddresses",
-									"criteria":"All"
+									"criteria":"One"
 								}
 							]
 						}
@@ -465,19 +464,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(query);
 	}*/
 	public void function checklistToArray(){
+		
+		
 		//joins appear to be requirements to access many to many relationships but not to access many-to-one
 		//discovered that using reserved words in hql complex queries can cause issues
 		//All
 		/*var queryItems = ORMExecuteQuery("	FROM SlatwallOrder as _Order
-											WHERE (SELECT count(OrderItem) FROM SlatwallOrderItem as OrderItem WHERE OrderItem.order = _Order) 
-											= (SELECT count(OrderItem) FROM SlatwallOrderItem as OrderItem WHERE OrderItem.price < 100
+											WHERE (SELECT count(OrderItem) FROM _Order.orderItems as OrderItem WHERE OrderItem.order = _Order) 
+											= (SELECT count(OrderItem) FROM _Order.orderItems as OrderItem WHERE OrderItem.price < 100
 											AND OrderItem.order = _Order)
 									");
 		request.debug(queryItems);*/
 		
-		/*
+		
 		//Some
-		var queryItems = ORMExecuteQuery("
+		/*var queryItems = ORMExecuteQuery("
 									from SlatwallOrder as Order 
 									where exists (FROM SlatwallOrderItem as OrderItem where OrderItem.price < 100 and Order = OrderItem.order)");
 		request.debug(queryItems);
@@ -486,8 +487,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var queryItems = ORMExecuteQuery("
 									from SlatwallOrder as Order 
 									where NOT EXISTS (FROM SlatwallOrderItem as OrderItem where OrderItem.price < 100 and Order = OrderItem.order)");
-		request.debug(queryItems);*/
-		
+		request.debug(queryItems);
+		*/
 	}
 }
 
