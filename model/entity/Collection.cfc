@@ -42,7 +42,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string";
-	property name="entityName" ormtype="string" hb_formFieldType="select";
+	property name="baseEntityName" ormtype="string" hb_formFieldType="select";
 	property name="CollectionObject" cfc="collection" ;
 	
 	property name="collectionConfig" ormtype="string" length="4000" hint="json object";
@@ -130,10 +130,10 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return deserializeJSON(this.getCollectionConfig());
 	}
 	
-	public any function getHQL(){
+	public any function getHQL(boolean excludeSelect = false){
 		var collectionConfig = deserializeCollectionConfig();
 		
-		HQL = createHQLFromCollectionObject(this);
+		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
 		
 		return HQL;
 	}
@@ -278,8 +278,17 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				
 				var collectionEntity = getService('collectionService').getCollectionByCollectionCode(filter.collectionCode);
 				var mainCollectionAlias = listFirst(filter.propertyIdentifier,'.');
-				var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName('AccountEmailAddress','account').name;
-				filterGroupHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getEntityName()#.#collectionProperty# ';
+				var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getBaseEntityName(),maincollectionAlias).name;
+				
+				//None,One,All
+				if(filter.criteria eq 'None' || filter.criteria eq 'One'){
+					filterGroupHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getBaseEntityName()#.#collectionProperty# ';
+				}else{
+					var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getBaseEntityName());
+					
+					filterGroupHQL &= ' (SELECT count(#collectionEntity.getBaseEntityName()#) FROM #fullEntityName# as #collectionEntity.getBaseEntityName()# WHERE #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) 
+					= (SELECT count(#collectionEntity.getBaseEntityName()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) ';
+				}
 				
 				//add all params from subqueries to parent HQL
 				for(key in collectionEntity.getHQLParams()){
@@ -392,14 +401,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return fromHQL;
 	}
 	
-	public any function createHQLFromCollectionObject(required any collectionObject){
+	public any function createHQLFromCollectionObject(required any collectionObject, boolean excludeSelect=false){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
 		
 		if(!isNull(collectionConfig.baseEntityName)){
 			
 			//build select
-			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns)){
+			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelect eq false){
 				HQL &= getSelectionsHQL(collectionConfig.columns);
 			}
 			//build FROM

@@ -57,7 +57,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getCollectionObjectOptionsTest(){
-		variables.entity.setEntityName('Account');
+		variables.entity.setBaseEntityName('Account');
 		assert(isArray(variables.entity.getEntityNameOptions()));
 	}
 	
@@ -115,13 +115,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					
 				}
 			',
-			entityName = "test"
+			baseEntityName = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		
 		var collectionEntityData2 = {
 			collectionid = '',
 			collectionCode = 'AccountOrders',
+			baseEntityName = 'SlatwallAccount',
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
@@ -180,7 +181,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
 			collectionCode = 'BestAccountEmailAddresses',
-			entityName="AccountEmailAddress",
+			baseEntityName="AccountEmailAddress",
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccountEmailAddress",
@@ -208,7 +209,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntityData = {
 			collectionid = '',
 			collectionCode = 'BestAccounts',
-			entityName = 'Accounts',
+			baseEntityName = 'Account',
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
@@ -274,7 +275,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 								{
 									"propertyIdentifier":"Account.accountEmailAddresses",
 									"collectionCode":"BestAccountEmailAddresses",
-									"criteria":"One"
+									"criteria":"All"
 								}
 							]
 						}
@@ -283,19 +284,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			'
 		};
-		/*
-		,
-		{
-			"logicalOperator":"AND",
-			"filterGroup":[
-				{
-					"propertyIdentifier":"Account.accountEmailAddresses",
-					"collectionCode":"BestAccountEmailAddresses",
-					"criteria":"All"
-				}
-			]
-		}
-		*/
+
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
 		
 		var collectionEntityHQL = collectionEntity.getHQL();
@@ -469,9 +458,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//joins appear to be requirements to access many to many relationships but not to access many-to-one
 		//discovered that using reserved words in hql complex queries can cause issues
 		//All
-		/*var queryItems = ORMExecuteQuery("	FROM SlatwallOrder as _Order
-											WHERE (SELECT count(OrderItem) FROM _Order.orderItems as OrderItem WHERE OrderItem.order = _Order) 
-											= (SELECT count(OrderItem) FROM _Order.orderItems as OrderItem WHERE OrderItem.price < 100
+		/*var queryItems = ORMExecuteQuery("	FROM SlatwallA as _Order
+											WHERE (SELECT count(OrderItem) FROM SlatwallOrderItem as OrderItem WHERE OrderItem.order = _Order) 
+											= (SELECT count(OrderItem) FROM SlatwallOrderItem as OrderItem WHERE OrderItem.price < 100
 											AND OrderItem.order = _Order)
 									");
 		request.debug(queryItems);*/
