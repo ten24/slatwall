@@ -287,13 +287,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
 		
-		var collectionEntityHQL = collectionEntity.getHQL();
+		/*var collectionEntityHQL = collectionEntity.getHQL();
 		
 		request.debug(collectionEntityHQL);
 		request.debug(collectionEntity);
-		request.debug(collectionEntity.gethqlParams());
+		request.debug(collectionEntity.gethqlParams());*/
 		//ORMExecuteQuery('FROM SlatwallAccount where accountID = :p1',{p1='2'});
-		var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
+		
+		var query = collectionEntity.executeHQL();
+		//var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
 		request.debug(query);
 		
 	}

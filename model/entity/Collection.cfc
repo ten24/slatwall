@@ -130,6 +130,11 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return deserializeJSON(this.getCollectionConfig());
 	}
 	
+	public any function executeHQL(boolean cacheable=false, string cacheName=''){
+		//is list so never return as unique
+		return ORMExecuteQuery(getHQL(),getHQLParams(),false,{cacheable=arguments.cacheable,cacheName=arguments.cacheName});
+	}
+	
 	public any function getHQL(boolean excludeSelect = false){
 		var collectionConfig = deserializeCollectionConfig();
 		
@@ -267,35 +272,45 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		}
 	}
 	
+	private void function addHQLParamsFromNestedCollection(required collectionHQLParams){
+		for(key in arguments.collectionHQLParams){
+			addHQLParam(key,arguments.collectionHQLParams[key]);
+		}
+	}
+	
+	private string function getHQLForCollectionFilter(required struct filter){
+		var collectionFilterHQL = '';
+		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
+		collectionFilterHQL &= ' #filterCriteria# (';
+		
+		var collectionEntity = getService('collectionService').getCollectionByCollectionCode(arguments.filter.collectionCode);
+		var mainCollectionAlias = listFirst(arguments.filter.propertyIdentifier,'.');
+		var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getBaseEntityName(),maincollectionAlias).name;
+		
+		//None,One,All
+		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
+			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getBaseEntityName()#.#collectionProperty# ';
+		}else{
+			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getBaseEntityName());
+			
+			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getBaseEntityName()#) FROM #fullEntityName# as #collectionEntity.getBaseEntityName()# WHERE #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) 
+			= (SELECT count(#collectionEntity.getBaseEntityName()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) ';
+		}
+		
+		//add all params from subqueries to parent HQL
+		addHQLParamsFromNestedCollection(collectionEntity.getHQLParams());
+		
+		collectionFilterHQL &= ')';
+		return collectionFilterHQL;
+	}
+	
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
 		for(filter in arguments.filterGroup){
 			//add property and value to HQLParams
 			//TODO: if using a like parameter we need to add % to the value
 			if(!isnull(filter.collectionCode)){
-				var filterCriteria = getfilterCriteria(filter.criteria);
-				filterGroupHQL &= ' #filterCriteria# (';
-				
-				var collectionEntity = getService('collectionService').getCollectionByCollectionCode(filter.collectionCode);
-				var mainCollectionAlias = listFirst(filter.propertyIdentifier,'.');
-				var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getBaseEntityName(),maincollectionAlias).name;
-				
-				//None,One,All
-				if(filter.criteria eq 'None' || filter.criteria eq 'One'){
-					filterGroupHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getBaseEntityName()#.#collectionProperty# ';
-				}else{
-					var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getBaseEntityName());
-					
-					filterGroupHQL &= ' (SELECT count(#collectionEntity.getBaseEntityName()#) FROM #fullEntityName# as #collectionEntity.getBaseEntityName()# WHERE #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) 
-					= (SELECT count(#collectionEntity.getBaseEntityName()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) ';
-				}
-				
-				//add all params from subqueries to parent HQL
-				for(key in collectionEntity.getHQLParams()){
-					addHQLParam(key,collectionEntity.getHQLParams()[key]);
-				}
-				
-				filterGroupHQL &= ')';
+				filterGroupHQL &= getHQLForCollectionFilter(filter);
 			}else{
 				var paramID = getParamID();
 				addHQLParam(paramID,filter.value);
