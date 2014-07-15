@@ -179,6 +179,7 @@ component extends="AdminTestBase" {
 			// Convert string to numbers and assert totalTax equals the correct dollar= amount
 			var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
 			assertEquals(expectedTax[i], totalTaxCell);			
+		
 		}
 		
 		//Delete the Order Item
