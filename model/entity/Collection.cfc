@@ -245,20 +245,46 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return 'aliasID' & (structCount())
 	}*/
 	
+	private string function getFilterCriteria(required string filterCriteria){
+		switch(arguments.filterCriteria){
+			case "All":
+				return "";
+			break;
+			case "One":
+				return "EXISTS";
+			break;
+			case "None":
+				return "NOT EXISTS";
+			break;
+		}
+	}
+	
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
 		for(filter in arguments.filterGroup){
 			//add property and value to HQLParams
 			//TODO: if using a like parameter we need to add % to the value
-			var paramID = getParamID();
-			addHQLParam(paramID,filter.value);
-			
-			var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
-			var logicalOperator = '';
-			if(structKeyExists(filter,"logicalOperator")){
-				logicalOperator = filter.logicalOperator;
+			if(!isnull(filter.collectionCode)){
+				var filterCriteria = getfilterCriteria(filter.criteria);
+				filterGroupHQL &= ' #filterCriteria# (';
+				
+				var collectionEntity = request.slatwallScope.getService('collectionService').getCollectionByCollectionCode('BestAccountEmalAddresses');
+				filterGroupHQL &= ' #collectionEntity.getHQL()# ';
+				
+				filterGroupHQL &= ')';
+			}else{
+				var paramID = getParamID();
+				addHQLParam(paramID,filter.value);
+				
+				var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
+				var logicalOperator = '';
+				if(structKeyExists(filter,"logicalOperator")){
+					logicalOperator = filter.logicalOperator;
+				}
+				filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#paramID# ";
 			}
-			filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# :#paramID# ";
+			
+			
 		}
 		return filterGroupHQL;
 	}

@@ -177,6 +177,36 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getHQLTest(){
+		var collectionBestAcountEmailAddressesData = {
+			collectionid = '',
+			collectionCode = 'BestAccountEmalAddresses',
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccountEmailAddress",
+					"baseEntityAlias":"AccountEmailAddress",
+					
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"AccountEmailAddress.verifiedFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+							
+						}
+					]
+					
+				}
+			'
+		};
+		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
+		var collectionBestAcountEmailAddressesHQL = collectionBestAcountEmailAddresses.getHQL();
+		
+		var querytest = ORMExecuteQuery(collectionBestAcountEmailAddressesHQL,collectionBestAcountEmailAddresses.gethqlParams());
+		request.debug(querytest);
+		
 		var collectionEntityData = {
 			collectionid = '',
 			collectionCode = 'BestAccounts',
@@ -238,12 +268,35 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"false"
 								}
 							]
+						},
+						{
+							"logicalOperator":"AND",
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.accountEmailAddresses",
+									"collectionCode":"BestAccountEmailAddresses",
+									"criteria":"All"
+								}
+							]
 						}
 					]
 					
 				}
 			'
 		};
+		/*
+		,
+		{
+			"logicalOperator":"AND",
+			"filterGroup":[
+				{
+					"propertyIdentifier":"Account.accountEmailAddresses",
+					"collectionCode":"BestAccountEmailAddresses",
+					"criteria":"All"
+				}
+			]
+		}
+		*/
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
 		
 		var collectionEntityHQL = collectionEntity.getHQL();
