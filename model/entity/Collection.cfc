@@ -367,7 +367,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.hqlAliases[arguments.aliasKey] = arguments.aliasValue;
 	}
 	
-	private any function getSelectionsHQL(required array columns,boolean isDistinct=false){
+	private any function getSelectionsHQL(required array columns, boolean isDistinct=false){
 		//TODO: add distinct logic, aliases
 		var isDistinctValue = '';
 		if(arguments.isDistinct){
@@ -422,6 +422,27 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return fromHQL;
 	}
 	
+	private string function getOrderByHQL(required array orderBy){
+		var orderByHQL = ' ORDER BY ';
+				
+		var orderByCount = arraylen(arguments.orderBy);
+		for(var i = 1; i <= orderByCount; i++){
+			var ordering = arguments.orderBy[i];
+			var direction = '';
+			if(!isnull(ordering.direction)){
+				direction = ordering.direction;
+			}
+			
+			orderByHQL &= '#ordering.propertyIdentifier# #direction# ';
+			
+			//check whether a comma is needed
+			if(i != orderByCount){
+				orderByHQL &= ',';
+			}
+		}
+		return orderByHQL;
+	}
+	
 	public any function createHQLFromCollectionObject(required any collectionObject, boolean excludeSelect=false){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
@@ -454,23 +475,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			
 			//build Order By
 			if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
-				HQL &= ' ORDER BY ';
-				
-				var orderByCount = arraylen(collectionConfig.orderBy);
-				for(var i = 1; i <= orderByCount; i++){
-					var ordering = collectionConfig.orderBy[i];
-					var direction = '';
-					if(!isnull(ordering.direction)){
-						direction = ordering.direction;
-					}
-					
-					HQL &= '#ordering.propertyIdentifier# #direction# ';
-					
-					//check whether a comma is needed
-					if(i != orderByCount){
-						HQL &= ',';
-					}
-				}
+				HQL &= getOrderByHQL(collectionConfig.orderBy);
 			}
 		}
 		return HQL;
