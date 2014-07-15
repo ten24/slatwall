@@ -70,7 +70,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
 	property name="pageRecords" persistent="false";
-	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entities metaData";
+	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	
 	
 	// ============ START: Non-Persistent Property Methods =================

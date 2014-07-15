@@ -402,7 +402,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	public void function checklistToArray(){
+	/*public void function checklistToArray(){
 		//joins appear to be requirements to access many to many relationships but not to access many-to-one
 		var query = ORMExecuteQuery("Select o 
 									from SlatwallAccount as Account 
@@ -410,6 +410,31 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									where Account.firstName = 'Ryan' 
 									and not exists (select order from SlatwallOrderItem where orderItemID = '2c909f8e468c91ee01469064ae9a0034')");
 		request.debug(query);
+	}*/
+	public void function checklistToArray(){
+		//joins appear to be requirements to access many to many relationships but not to access many-to-one
+		//discovered that using reserved words in hql complex queries can cause issues
+		//All
+		/*var queryItems = ORMExecuteQuery("	FROM SlatwallOrder as _Order
+											WHERE (SELECT count(OrderItem) FROM SlatwallOrderItem as OrderItem WHERE OrderItem.order = _Order) 
+											= (SELECT count(OrderItem) FROM SlatwallOrderItem as OrderItem WHERE OrderItem.price < 100
+											AND OrderItem.order = _Order)
+									");
+		request.debug(queryItems);*/
+		
+		/*
+		//Some
+		var queryItems = ORMExecuteQuery("
+									from SlatwallOrder as Order 
+									where exists (FROM SlatwallOrderItem as OrderItem where OrderItem.price < 100 and Order = OrderItem.order)");
+		request.debug(queryItems);
+		
+		//None
+		var queryItems = ORMExecuteQuery("
+									from SlatwallOrder as Order 
+									where NOT EXISTS (FROM SlatwallOrderItem as OrderItem where OrderItem.price < 100 and Order = OrderItem.order)");
+		request.debug(queryItems);*/
+		
 	}
 }
 
