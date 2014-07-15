@@ -49,7 +49,7 @@ Notes:
 <cfinclude template="_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+<cfimport prefix="sw" taglib="../../tags" />
 
 <!---[DEVELOPER NOTES]															
 																				
@@ -191,7 +191,7 @@ Notes:
 								<a href="?slatAction=public:cart.clear" class="btn">Clear Cart</a>
 								
 								<!--- Checkout, is just a simple link to the checkout page --->
-								<a href="javascript:alert('Point this link to your checkout page');" class="btn">Checkout</a>
+								<a href="checkout.cfm" class="btn">Checkout</a>
 							</div>
 						</div>
 						

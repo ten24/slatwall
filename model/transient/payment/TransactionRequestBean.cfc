@@ -223,7 +223,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		
 		// Populate Credit Card Info
 		if(!isNull(arguments.orderPayment.getCreditCardLastFour())) {
-			setCreditCardNumber(arguments.orderPayment.getCreditCardLastFour());
+			setCreditCardLastFour(arguments.orderPayment.getCreditCardLastFour());
 		}
 		if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
 			setCreditCardNumber(arguments.orderPayment.getCreditCardNumber());
@@ -317,7 +317,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		
 		// Populate Credit Card Info
 		if(!isNull(arguments.accountPaymentMethod.getCreditCardLastFour())) {
-			setCreditCardNumber(arguments.accountPaymentMethod.getCreditCardLastFour());
+			setCreditCardLastFour(arguments.accountPaymentMethod.getCreditCardLastFour());
 		}
 		if(!isNull(arguments.accountPaymentMethod.getCreditCardNumber())) {
 			setCreditCardNumber(arguments.accountPaymentMethod.getCreditCardNumber());

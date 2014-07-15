@@ -51,7 +51,7 @@ Notes:
 <cfinclude template="_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+<cfimport prefix="sw" taglib="../../tags" />
 
 <!---[DEVELOPER NOTES]															
 																				
@@ -170,7 +170,7 @@ Notes:
 			<!--- If this item was just added show the success message --->
 			<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
 				<div class="alert alert-success">
-					The item was successfully added to your cart.  You might want to change the action="" of the add to cart form so that it points directly to shopping cart page that way the user ends up there.
+					The item was successfully added to your cart.  You might want to change the action="" of the add to cart form so that it points directly to shopping cart page that way the user ends up there.  Or you can add a 'sRedirectURL' hidden field value to specify where you would like the user to be redirected after a succesful addToCart
 				</div>
 			<!--- If this item was just tried to be added, but failed then show the failure message ---> 
 			<cfelseif $.slatwall.hasFailureAction( "public:cart.addOrderItem" )>
@@ -188,7 +188,7 @@ Notes:
 				<h5>Add To Cart Form 1 (Simple Sku Dropdown, No Inventory)</h5>
 				
 				<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. ---> 
-				<form action="?s=1" method="post">
+				<form action="?productID=#$.slatwall.product().getProductID()#&s=1" method="post">
 					<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
 					
 					<!---[ DEVELOPER NOTES ]																				
@@ -254,7 +254,7 @@ Notes:
 				<h5>Add To Cart Form 2 (Split Option Groups, Default Sku Selected, No Inventory Check)</h5>
 				
 				<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. ---> 
-				<form action="?s=1" method="post">
+				<form action="?productID=#$.slatwall.product().getProductID()#&s=1" method="post">
 					<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
 					<input type="hidden" name="productID" value="#$.slatwall.product().getProductID()#" />
 					
@@ -311,7 +311,7 @@ Notes:
 				<h5>Add To Cart Form Example 3 (Split Option Groups, Ajax Inventory Update)</h5>
 				
 				<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. ---> 
-				<form action="?s=1" method="post">
+				<form action="?productID=#$.slatwall.product().getProductID()#&s=1" method="post">
 					<input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
 					<input type="hidden" name="productID" value="#$.slatwall.product().getProductID()#" />
 					
@@ -541,7 +541,7 @@ Notes:
 							<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" />
 							
 							<!--- Add Product Review Form --->
-							<form action="?s=1" method="post">
+							<form action="?productID=#$.slatwall.product().getProductID()#&s=1" method="post">
 								
 								<!--- This hidden input is what tells slatwall to add the contents submitted --->
 								<input type="hidden" name="slatAction" value="public:product.addProductReview" />

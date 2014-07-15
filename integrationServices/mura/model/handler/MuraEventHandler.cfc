@@ -780,8 +780,11 @@
 					
 					// Copy views over to the template directory
 					var slatwallTemplatePath = getDirectoryFromPath(expandPath("/Slatwall/public/views/templates")); 
-					var muraTemplatePath = getDirectoryFromPath(expandPath("/muraWRM/#cmsSiteID#/includes/themes/#cmsThemeName#/templates"));
-					$.slatwall.getService("hibachiUtilityService").duplicateDirectory(source=slatwallTemplatePath, destination=muraTemplatePath, overwrite=false, recurse=true, copyContentExclusionList=".svn,.git");
+					var muraTemplatesPath = getDirectoryFromPath(expandPath("/muraWRM/#cmsSiteID#/includes/themes/#cmsThemeName#/templates"));
+					$.slatwall.getService("hibachiUtilityService").duplicateDirectory(source=slatwallTemplatePath, destination=muraTemplatesPath, overwrite=false, recurse=true, copyContentExclusionList=".svn,.git");
+					
+					// Update templates to be mura specific
+					updateExampleTemlatesToBeMuraSpecific(muraTemplatesPath=muraTemplatesPath);
 					
 					// Create the necessary pages
 					var templatePortalCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Slatwall Templates", 		filename="slatwall-templates", 							template="", 							isNav="0", type="Folder", 	parentID="00000000000000000000000000000000001" );
@@ -837,6 +840,40 @@
 					getMuraPluginConfig().setCustomSetting("populatedSiteIDs", listAppend(populatedSiteIDs, cmsSiteID));
 				}
 				
+			}
+		}
+		
+		public void function updateExampleTemlatesToBeMuraSpecific( required string muraTemplatesPath ) {
+			
+			// Loop over the files in the mura templates directory
+			var dirList = directoryList( muraTemplatesPath );
+			
+			// These are the changes to the sample app that allow for it to work properly on Mura
+			var replaceStrings = [
+				[
+					'taglib="../../tags"',
+					'taglib="/Slatwall/public/tags"'
+				],[
+					'product.cfm?productID=##product.getProductID()##',
+					'##product.getListingProductURL()##'
+				],[
+					'action="?productID=##$.slatwall.product().getProductID()##&s=1"',
+					'action="?s=1"'
+				],[
+					'href="checkout.cfm"',
+					'href="##$.createHREF(filename=''checkout'')##"'
+				]
+			];
+			
+			for(var filePath in dirList) {
+				var fileName = listLast(filePath, "/\");
+				if(listFindNoCase("_slatwall,slatwall-", left(fileName, 9))) {
+					var content = fileRead(filePath);
+					for(var rArr in replaceStrings) {
+						content = replace(content, rArr[1], rArr[2], 'all');
+					}
+					fileWrite(filePath, content);
+				}
 			}
 		}
 		

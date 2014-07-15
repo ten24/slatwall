@@ -58,10 +58,10 @@
 		<cfset slatwallApplication.bootstrap() />
 		
 		<!--- Setup Test Utility --->
-		<cfset var testUtility = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( slatwallApplication ) />
+		<cfset var configureTestUtility = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( slatwallApplication ) />
 		
 		<!--- Make sure all the test data is up to date --->
-		<cfset testUtility.updateTestData() />
+		<cfset configureTestUtility.updateTestData() />
 		
 		<cfreturn super.startTestRun(argumentCollection=arguments)>
 	</cffunction>

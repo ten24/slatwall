@@ -70,7 +70,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return returnTitle;
 	}
 	
-	public boolean function loadDataFromXMLDirectory(required string xmlDirectory) {
+	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
 		
 		// Because some records might depend on other records already being in the DB (fk constraints) we catch errors and re-loop over records
@@ -87,7 +87,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					var xmlRaw = FileRead(dirList[i]);
 					
 					try{
-						loadDataFromXMLRaw(xmlRaw);
+						loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted);
 					} catch (any e) {
 						// If we haven't retried 3 times, then incriment the retry counter and re-run the population
 						if(retryCount <= 3) {
@@ -105,7 +105,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return true;
 	}
 	
-	public void function loadDataFromXMLRaw(required string xmlRaw) {
+	public void function loadDataFromXMLRaw(required string xmlRaw, boolean ignorePreviouslyInserted=true) {
 		var xmlRawEscaped = replace(xmlRaw,"&","&amp;","all");
 		var xmlData = xmlParse(xmlRawEscaped);
 		var columns = {};
@@ -156,7 +156,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			var insertedData = getDataDAO().getInsertedDataFile();
 			
-			if(!listFindNoCase(insertedData, idKey)) {
+			if(!ignorePreviouslyInserted || !listFindNoCase(insertedData, idKey)) {
 				getDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData);
 				getDataDAO().updateInsertedDataFile( idKey );
 			}
