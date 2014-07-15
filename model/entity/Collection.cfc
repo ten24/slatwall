@@ -327,15 +327,29 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				
 				var predicate = '';
 				if(filter.comparisonOperator eq 'between'){
-					var fromValue = listFirst(filter.value,'-');
-					var toValue = listLast(filter.value,'-');
-					
-					var fromParamID = getParamID();
-					addHQLParam(fromParamID,fromValue);
-					var toParamID = getParamID();
-					addHQLParam(toParamID,toValue);
-					
-					predicate = ":#fromParamID# AND #toParamID#";				
+					if(listLen(filter.value,'-') > 1){
+						var fromValue = listFirst(filter.value,'-');
+						var toValue = listLast(filter.value,'-');
+						
+						var fromParamID = getParamID();
+						addHQLParam(fromParamID,fromValue);
+						var toParamID = getParamID();
+						addHQLParam(toParamID,toValue);
+						
+						predicate = ":#fromParamID# AND #toParamID#";	
+					}else{
+						//if list length is 1 then we treat it as a date range From now
+						var fromValue = DateAdd("d",-filter.value,Now());
+						var toValue = Now();
+						
+						var fromParamID = getParamID();
+						addHQLParam(fromParamID,fromValue);
+						var toParamID = getParamID();
+						addHQLParam(toParamID,toValue);
+						
+						predicate = ":#fromParamID# AND #toParamID#";	
+					}
+								
 				}else{
 					var paramID = getParamID();
 					addHQLParam(paramID,filter.value);
