@@ -205,7 +205,7 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( DetailTaxCategory );
 	}
 	
-	//Default
+	//Turn on Default
 	public function turnONDefaultTaxCategory(){
 		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
 		assertPageIsLoaded( EditTaxCategory );
@@ -214,7 +214,7 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( DetailTaxCategory );
 	}
 	
-	//Address Testing Tax Category
+	//Turn on Address Testing Tax Category
 	public function turnONAddressTestingTaxCategory(){
 		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'EditTaxCategory');
 		assertPageIsLoaded( EditTaxCategory );
