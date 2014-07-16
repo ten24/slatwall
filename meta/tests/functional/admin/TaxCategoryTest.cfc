@@ -1,5 +1,5 @@
 component extends="AdminTestBase" {
-	
+	/*
 	//Tests the ability to create, edit, and delete a tax category
 	function taxCategoryCreateEditAndDeleteWorks() {
 		// Load Listing Page
@@ -125,110 +125,88 @@ component extends="AdminTestBase" {
 		DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
 		assertPageIsLoaded( DetailTaxCategory );
 	}
-	
+	*/
 	//Tests Tax Address Lookup order
 	function taxCategoryRateAddressLookupWorks(){
-		//First Turn off Default Tax Category
-		turnOFFAllTaxCategories();
-		turnONAddressTestingTaxCategory();
-		// Ensure that the sku setting uses the correct tax category
-		selectThisTaxCategoryAsSkuSetting();
-	
-		//Open Edit Order Page
-		var EditOrder = openPage( '?slatAction=entity.editorder&orderID=8a8080834721af1a01473607810d020e', 'EditOrder');
-		assertPageIsLoaded( EditOrder );
+		/*'TestRunner_TaxAddressLookup_ShipToBill','TestRunner_TaxAddressLookup_BillToShip',*/
+		//Set up array of sku settings tax category select options
+		var skuSettingsTaxCategoryOptionsArray = ['TestRunner_TaxAddressLookup_ShipToBill','TestRunner_TaxAddressLookup_BillToShip','TestRunner_TaxAddressLookup_Ship','TestRunner_TaxAddressLookup_Bill'];
 		
-		//Add a product to the order
-		formData = {};
-		formData['shippingAddress.name'] = 'Test Name';							
-		formData['shippingAddress.company'] = 'Test Company';
+		//Set up array of the two orders used to test each tax category and add an item to each
+		var taxCategoryAddressLookupTestOrderIDArray = ['8a8080834721af1a01473607810d020e','8a8080834721af1a01473b0466e106d9'];
 		
-		EditOrder = EditOrder.addItemToOrder( formData );
-		assertPageIsLoaded( EditOrder );
-
-		//Set up form data for Shipping to Billing Address Lookup test
-		var formDataShipToBill = {};
-		formDataShipToBill['taxRate'] = '25';
-		formDataShipToBill['taxCategoryRateCode'] = 'ShipToBillTest';
-		
-		//Set up form data for Billing to Shipping Address Lookup test
-		var formDataBillToShip = {};
-		formDataBillToShip['taxRate'] = '50';
-		formDataBillToShip['taxCategoryRateCode'] = 'BillToShipTest';
-		
-		var formDataArray = [formDataShipToBill, formDataBillToShip];
-		var expectedTax = [25.00, 50];
-		
-		//Test Both Using a loop
-		for(var i=1;i<=arrayLen(formDataArray);i++){
-			
-			//Open Detail Tax Category Page for testing
-			var DetailTaxCategory = openPage( '?slatAction=entity.detailtaxcategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'DetailTaxCategory');
-			assertPageIsLoaded( DetailTaxCategory );
-
-			DetailTaxCategory = DetailTaxCategory.editTaxCategoryRateTaxAddressLookup( formDataArray[i] );
-			assertPageIsLoaded( DetailTaxCategory );	
-			
-			//Open Order Page and save it then check the tax
-			EditOrder = openPage( '?slatAction=entity.editorder&orderID=8a8080834721af1a01473607810d020e', 'EditOrder');
+		for(var orderID in taxCategoryAddressLookupTestOrderIDArray){
+			//Open Edit Order Page
+			var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#orderID#', 'EditOrder');
 			assertPageIsLoaded( EditOrder );
 			
-			var DetailOrder = EditOrder.saveOrder();
-			assertPageIsLoaded( DetailOrder );
+			//Add a product to the order
+			formData = {};
+			EditOrder = EditOrder.addItemToOrder( formData );
+			assertPageIsLoaded( EditOrder );
+		}
+
+		//Set up an array of the the two expected tax totals
+		var expectedTax = [25,0];
+		
+		//Loop over taxAddressLookupTestTaxCategoriesArray
+		for(var taxOption in skuSettingsTaxCategoryOptionsArray){
+
+			//Set the sku setting to the current tax category
+			selectSkuSettingTaxCategory( taxOption );
 			
-			// Convert string to numbers and assert totalTax equals the correct dollar= amount
-			var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
-			assertEquals(expectedTax[i], totalTaxCell);			
+			//Loop over both orders to check success and to check failure
+			for(var order in taxCategoryAddressLookupTestOrderIDArray){
+				
+				//Go to orders to check the totalTax cell of the view's table
+				var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#order#', 'EditOrder');
+				assertPageIsLoaded( EditOrder );
+				
+				//Save the Order
+				var DetailOrder = EditOrder.saveOrder();
+				assertPageIsLoaded( DetailOrder );
+				
+				var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
+				
+				if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_ShipToBill'){
+					assertEquals(expectedTax[1], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_ShipToBill'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_BillToShip'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_BillToShip'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_Ship'){
+					assertEquals(expectedTax[1], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_Ship'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_Bill'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_Bill'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				}
+				
+			}	
 		
 		}
 		
-		//Delete the Order Item
-		EditOrder = openPage( '?slatAction=entity.editorder&orderID=8a8080834721af1a01473607810d020e', 'EditOrder');
-		assertPageIsLoaded( EditOrder );
-		EditOrder.deleteOrder();
+		//Delete the orders	
+		for(var orderID in taxCategoryAddressLookupTestOrderIDArray){
+			var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#orderID#', 'EditOrder');
+			assertPageIsLoaded( EditOrder );
+			EditOrder.deleteOrder();
+		}
+
 	}
 	
 	//============= Helpers ======================
-	private void function turnOFFAllTaxCategories(){
-		//Address Testing Tax Category
-		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'EditTaxCategory');
-		assertPageIsLoaded( EditTaxCategory );
-		
-		var DetailTaxCategory = EditTaxCategory.turnOFFActiveFlag();
-		assertPageIsLoaded( DetailTaxCategory );
-		
-		//Default
-		EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
-		assertPageIsLoaded( EditTaxCategory );
-		
-		DetailTaxCategory = EditTaxCategory.turnOFFActiveFlag();
-		assertPageIsLoaded( DetailTaxCategory );
-	}
-	
-	//Turn on Default
-	private function turnONDefaultTaxCategory(){
-		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
-		assertPageIsLoaded( EditTaxCategory );
-		
-		var DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
-		assertPageIsLoaded( DetailTaxCategory );
-	}
-	
-	//Turn on Address Testing Tax Category
-	private function turnONAddressTestingTaxCategory(){
-		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'EditTaxCategory');
-		assertPageIsLoaded( EditTaxCategory );
-		
-		var DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
-		assertPageIsLoaded( DetailTaxCategory );
-	}
-	
+
 	// Ensure that the sku setting uses the correct tax category
-	private function selectThisTaxCategoryAsSkuSetting(){
+	private function selectSkuSettingTaxCategory( required string ){
 		var Settings = openPage( '?slatAction=entity.settings', 'Settings');
 		assertPageIsLoaded( Settings );
 		
-		Settings.setupSkuSettingTaxCategory();
+		Settings.setupSkuSettingTaxCategory( arguments.string );
 	}
 	
 }

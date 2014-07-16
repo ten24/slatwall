@@ -70,6 +70,7 @@ component extends="PageObject" {
 		
 		return new DetailTaxCategory(selenium, pageLoadTime);
 	}
+	
 
 	// =============== Page Specific Locators =======================
 	
