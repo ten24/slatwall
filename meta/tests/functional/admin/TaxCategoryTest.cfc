@@ -1,5 +1,5 @@
 component extends="AdminTestBase" {
-	/*
+
 	//Tests the ability to create, edit, and delete a tax category
 	function taxCategoryCreateEditAndDeleteWorks() {
 		// Load Listing Page
@@ -69,12 +69,9 @@ component extends="AdminTestBase" {
 	
 	//Creates a manual tax rate and tests that it works on an order
 	function taxCategoryManualRateCalculationWorks() {
-		//Ensure Default is turned on and that no other tax category is turned on
-		turnOFFAllTaxCategories();		
-		turnONDefaultTaxCategory();
 
 		// Ensure that the sku setting uses the correct tax category
-		selectThisTaxCategoryAsSkuSetting();
+		selectSkuSettingTaxCategory( 'Default' );
 
 		// Confirm that the Detail Page is Loaded
 		DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
@@ -93,7 +90,7 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( DetailTaxCategoryRate );
 		
 		//Open Edit Order Page
-		var EditOrder = openPage( '?slatAction=entity.editorder&orderID=8a8080834721af1a01473b0466e106d9', 'EditOrder');
+		var EditOrder = openPage( '?slatAction=entity.editorder&orderID=be195c2df21744049028368cbd36e6d2', 'EditOrder');
 		assertPageIsLoaded( EditOrder );
 		
 		//Add a product to the order
@@ -125,10 +122,10 @@ component extends="AdminTestBase" {
 		DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
 		assertPageIsLoaded( DetailTaxCategory );
 	}
-	*/
+
 	//Tests Tax Address Lookup order
 	function taxCategoryRateAddressLookupWorks(){
-		/*'TestRunner_TaxAddressLookup_ShipToBill','TestRunner_TaxAddressLookup_BillToShip',*/
+
 		//Set up array of sku settings tax category select options
 		var skuSettingsTaxCategoryOptionsArray = ['TestRunner_TaxAddressLookup_ShipToBill','TestRunner_TaxAddressLookup_BillToShip','TestRunner_TaxAddressLookup_Ship','TestRunner_TaxAddressLookup_Bill'];
 		
