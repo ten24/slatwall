@@ -46,6 +46,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="CollectionObject" cfc="collection" ;
 	
 	property name="collectionConfig" ormtype="string" length="4000" hint="json object";
+	property name="cacheable" type="boolean";
+	property name="cacheName" type="string";
+	property name="savedStateID" type="string";
 	
 	// Calculated Properties
 
@@ -69,6 +72,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// Non-Persistent Properties
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
+	property name="records" type="array";
 	property name="pageRecords" persistent="false";
 	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	
@@ -79,6 +83,15 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		super.init();
 		variables.hqlParams = {};
 		variables.hqlAliases = {};
+		variables.Cacheable = false;
+		variables.CacheName = "";
+	}
+	
+	public array function getRecords(boolean refresh=false) {
+		if( !structKeyExists(variables, "records") || arguments.refresh == true) {
+			variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="collection-#getCacheName()#"});
+		}
+		return variables.records;
 	}
 	
 	//returns an array of name/value structs for 
@@ -128,11 +141,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public any function deserializeCollectionConfig(){
 		return deserializeJSON(this.getCollectionConfig());
-	}
-	
-	public array function executeHQL(boolean cacheable=false, string cacheName=''){
-		//Because this is a list, we will always return an array
-		return ORMExecuteQuery(getHQL(),getHQLParams(),false,{cacheable=arguments.cacheable,cacheName=arguments.cacheName});
 	}
 	
 	public string function getHQL(boolean excludeSelect = false){
@@ -309,7 +317,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		var filterGroupHQL = '';
 		for(filter in arguments.filterGroup){
 			//add property and value to HQLParams
-			//TODO: if using a like parameter we need to add % to the value using angular
+			//if using a like parameter we need to add % to the value using angular
 			if(!isnull(filter.collectionCode)){
 				filterGroupHQL &= getHQLForCollectionFilter(filter);
 			}else{
@@ -343,7 +351,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				
 				predicate = ":#fromParamID# AND #toParamID#";	
 			}else{
-				//if list length is 1 then we treat it as a date range From now
+				//if list length is 1 then we treat it as a date range From Now() - Days to Now()
 				var fromValue = DateAdd("d",-arguments.filter.value,Now());
 				var toValue = Now();
 				
@@ -401,7 +409,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false){
-		//TODO: add distinct logic, aliases
 		var isDistinctValue = '';
 		if(arguments.isDistinct){
 			isDistinctValue = "DISTINCT";
