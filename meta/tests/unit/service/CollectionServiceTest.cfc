@@ -286,17 +286,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var result = ORMExecuteQuery(collectionEntity.getHQL(),collectionEntity.getHQLParams());
 		request.debug(result);
 	}
-	
-	/*public void function sqlResultSetMappingTest(){
-		var attributeCodes = ORMGetSession().createSQLQuery('select attributeCode from swAttribute').list();
-		for(attributeCode in attributeCodes){
-			
-		}
-		//request.debug(ORMGetSessionFactory().getAllClassMetaData());
-		request.debug(ORMGetSessionFactory());
-		request.debug(ORMGetSession());
-		request.debug(ORMGetSession().createSQLQuery('select attributeCode from swAttribute'));
-	}*/
 }
 
 
