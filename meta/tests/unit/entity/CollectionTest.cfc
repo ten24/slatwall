@@ -181,6 +181,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getPageRecordsTest(){
+		var collectionBestAcountEmailAddressesData = {
+			collectionid = '',
+			collectionCode = 'BestOrders',
+			baseEntityName="Order",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallOrder",
+					"baseEntityAlias":"_Order",
+					"columns":[
+						{
+							"propertyIdentifier":"_Order.orderID"
+							
+						}
+						
+					]
+				}
+				
+			'
+		};
+		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
+		
+		var pageRecords = collectionBestAcountEmailAddresses.getPageRecords();
+		request.debug(pageRecords);
+	}
+	
 	public void function getHQLTest(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',

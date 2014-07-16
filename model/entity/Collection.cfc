@@ -45,7 +45,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="baseEntityName" ormtype="string" hb_formFieldType="select";
 	property name="CollectionObject" cfc="collection" ;
 	
-	property name="collectionConfig" ormtype="string" length="4000" hint="json object";
+	property name="collectionConfig" ormtype="string" length="4000" hint="json object used to construct the base collection HQL query";
 	
 	// Calculated Properties
 
@@ -69,11 +69,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// Non-Persistent Properties
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
+	
 	property name="records" type="array" persistent="false";
+	property name="pageRecords" type="array" persistent="false";
 	
 	property name="pageRecordsStart" persistent="false" type="numeric" hint="This represents the first record to display and it is used in paging.";
 	property name="pageRecordsShow" persistent="false" type="numeric" hint="This is the total number of entities to display";
-	property name="pageRecords" persistent="false";
+	property name="currentURL" persistent="false" type="string";
+	property name="currentPageDeclaration" persistent="false" type="string";
 	
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
@@ -89,6 +92,10 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.hqlAliases = {};
 		variables.Cacheable = false;
 		variables.CacheName = "";
+		variables.currentPageDeclaration = 1;
+		variables.pageRecordsStart = 1;
+		variables.pageRecordsShow = 10;
+		
 	}
 	
 	//ADD FUNCTIONS
@@ -386,6 +393,55 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 		}
 		return variables.pageRecords;
+	}
+	
+	public void function clearRecordsCount() {
+		structDelete(variables, "recordsCount");
+	}
+	
+	public numeric function getRecordsCount() {
+		if(!structKeyExists(variables, "recordsCount")) {
+			if(getCacheable() && structKeyExists(application.entitySmartList, getCacheName()) && structKeyExists(application.entitySmartList[getCacheName()], "recordsCount")) {
+				variables.recordsCount = application.entitySmartList[ getCacheName() ].recordsCount;
+			} else {
+				if(!structKeyExists(variables,"records")) {
+					var HQL = "#getHQLSelect(countOnly=true)##getHQLFrom(allowFetch=false)##getHQLWhere()#";
+					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
+					variables.recordsCount = recordCount;
+					if(getCacheable()) {
+						application.entitySmartList[ getCacheName() ] = {};
+						application.entitySmartList[ getCacheName() ].recordsCount = variables.recordsCount;
+					}
+				} else {
+					variables.recordsCount = arrayLen(getRecords());	
+				}
+			}
+		}
+		return variables.recordsCount;
+	}
+	
+	public numeric function getPageRecordsStart() {
+		if(variables.currentPageDeclaration > 1) {
+			variables.pageRecordsStart = ((variables.currentPageDeclaration-1)*getPageRecordsShow()) + 1;
+		}
+
+		return variables.pageRecordsStart;
+	}
+	
+	public numeric function getPageRecordsEnd() {
+		var pageRecordEnd = getPageRecordsStart() + getPageRecordsShow() - 1;
+		if(pageRecordEnd > getRecordsCount()) {
+			pageRecordEnd = getRecordsCount();
+		}
+		return pageRecordEnd;
+	}
+	
+	public numeric function getCurrentPage() {
+		return ceiling(getPageRecordsStart() / getPageRecordsShow());
+	}
+	
+	public any function getTotalPages() {
+		return ceiling(getRecordsCount() / getPageRecordsShow());
 	}
 	
 	private string function getParamID(){

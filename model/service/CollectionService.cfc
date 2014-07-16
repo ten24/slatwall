@@ -41,7 +41,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public array function getentityNameOptions() {
+	public array function getEntityNameOptions() {
 		var entitiesMetaData = getEntitiesMetaData();
 		var entitiesArray = listToArray(structKeyList(entitiesMetaData));
 		arraySort(entitiesArray,"text");
@@ -59,7 +59,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		option["value"] = ""; 
 		
 		arrayPrepend(options, option);
-		
 		return options;
 	}
 	
