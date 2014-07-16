@@ -630,7 +630,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public struct function getStateStruct() {
 		var stateStruct = {};
-		//TODO:change what the state variables are
+		//TODO:change what the state variables are, evaluate the value of them
 		/*stateStruct.baseEntityName = duplicate(variables.baseEntityName);
 		stateStruct.entities = duplicate(variables.entities);
 		stateStruct.whereGroups = duplicate(variables.whereGroups);
@@ -646,7 +646,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return stateStruct;
 	}
 	
-	//Utility Functions may even belong in another service altogether
+	//Utility Functions may even belong in another service altogether based on how universally appliable they are
 	
 	private string function removeCharacters(required string javaUUIDString){
 		return replace(javaUUIDString,'-','','all');

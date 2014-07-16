@@ -61,9 +61,117 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(isArray(variables.entity.getEntityNameOptions()));
 	}
 	
+	public void function addHQLParamTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders',
+			collectionName = 'RyansAccountOrders',
+			collectionConfig = '{}
+			',
+			baseEntityName = "SlatwallAccount"
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		collectionEntity.addHQLParam('testKey','testValue');
+		var HQLParams = collectionEntity.getHQLParams();
+		
+		assertTrue(structKeyExists(HQLParams,'testKey'));
+		assertEquals(HQLParams['testKey'],'testValue');
+	}
+	
+	public void function addHQLParamsFromNestedCollectionTest(){
+		
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders',
+			collectionName = 'RyansAccountOrders',
+			collectionConfig = '{}
+			',
+			baseEntityName = "SlatwallAccount"
+			
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		collectionEntity.getHQLParams()['testKey'] = 'testValue';
+		collectionEntity.getHQLParams()['testKey2'] = 'testValue2';
+		
+		var collectionEntityData2 = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders2',
+			collectionName = 'RyansAccountOrders2',
+			collectionConfig = '{}
+			',
+			baseEntityName = "SlatwallAccount"
+			
+		};
+		var collectionEntity2 = createPersistedTestEntity('collection',collectionEntityData2);
+		collectionEntity2.getHQLParams()['testKey3'] = 'testValue3';
+		collectionEntity2.getHQLParams()['testKey4'] = 'testValue4';
+		
+		
+		assertEquals(2,structCount(collectionEntity2.getHQLParams()));
+		makePublic(collectionEntity2,'addHQLParamsFromNestedCollection');
+		collectionEntity2.addHQLParamsFromNestedCollection(collectionEntity.getHQLParams());
+		
+		assertEquals(2,structCount(collectionEntity.getHQLParams()));
+		assertEquals(4,structCount(collectionEntity2.getHQLParams()));
+	}
+	
 	public void function deserializeCollectionConfigTest(){
 		makePublic(variables.entity,'deserializeCollectionConfig');
-		
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders',
+			collectionName = 'RyansAccountOrders',
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account_orders"
+						},
+						{
+							"propertyIdentifier":"Account.firstName"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"orders",
+							"alias":"Account_orders"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"DESC"
+						}
+					],
+					"groupBy":[
+						{
+							"propertyIdentifier":"accountID" 
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.firstName",
+									"comparisonOperator":"=",
+									"value":"Ryan"
+								}
+							]
+							
+						}
+					]
+					
+				}
+			',
+			baseEntityName = "SlatwallAccount"
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		var deserializedCollectionConfig = collectionEntity.deserializeCollectionConfig();
+		assertFalse(isJSON(deserializedCollectionConfig));
+		assertTrue(isStruct(deserializedCollectionConfig));
 	}
 	
 	public void function getHQLFilteringWithOtherCollectionTest(){
@@ -198,12 +306,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						
 					]
 				}
-				
 			'
 		};
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
-		
+		collectionBestAcountEmailAddresses.setPageRecordsShow(15);
 		var pageRecords = collectionBestAcountEmailAddresses.getPageRecords();
+		assertEquals(15,arrayLen(pageRecords));
 		request.debug(pageRecords);
 	}
 	
