@@ -130,12 +130,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return deserializeJSON(this.getCollectionConfig());
 	}
 	
-	public any function executeHQL(boolean cacheable=false, string cacheName=''){
-		//is list so never return as unique
+	public array function executeHQL(boolean cacheable=false, string cacheName=''){
+		//Because this is a list, we will always return an array
 		return ORMExecuteQuery(getHQL(),getHQLParams(),false,{cacheable=arguments.cacheable,cacheName=arguments.cacheName});
 	}
 	
-	public any function getHQL(boolean excludeSelect = false){
+	public string function getHQL(boolean excludeSelect = false){
 		var collectionConfig = deserializeCollectionConfig();
 		
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
@@ -259,10 +259,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return 'P' & uuid;
 	}
 	
-	/*private string function getAliasID(){
-		return 'aliasID' & (structCount())
-	}*/
-	
 	private string function getFilterCriteria(required string filterCriteria){
 		switch(arguments.filterCriteria){
 			case "All":
@@ -325,43 +321,46 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				
 				var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 				
-				var predicate = '';
-				if(filter.comparisonOperator eq 'between'){
-					if(listLen(filter.value,'-') > 1){
-						var fromValue = listFirst(filter.value,'-');
-						var toValue = listLast(filter.value,'-');
-						
-						var fromParamID = getParamID();
-						addHQLParam(fromParamID,fromValue);
-						var toParamID = getParamID();
-						addHQLParam(toParamID,toValue);
-						
-						predicate = ":#fromParamID# AND #toParamID#";	
-					}else{
-						//if list length is 1 then we treat it as a date range From now
-						var fromValue = DateAdd("d",-filter.value,Now());
-						var toValue = Now();
-						
-						var fromParamID = getParamID();
-						addHQLParam(fromParamID,fromValue);
-						var toParamID = getParamID();
-						addHQLParam(toParamID,toValue);
-						
-						predicate = ":#fromParamID# AND #toParamID#";	
-					}
-								
-				}else{
-					var paramID = getParamID();
-					addHQLParam(paramID,filter.value);
-					predicate = ":#paramID#";
-				}
+				var predicate = getPredicate(filter);
 				
 				filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
 			}
-			
-			
 		}
 		return filterGroupHQL;
+	}
+	
+	private string function getPredicate(required any filter){
+		var predicate = '';
+		if(arguments.filter.comparisonOperator eq 'between'){
+			if(listLen(arguments.filter.value,'-') > 1){
+				var fromValue = listFirst(arguments.filter.value,'-');
+				var toValue = listLast(arguments.filter.value,'-');
+				
+				var fromParamID = getParamID();
+				addHQLParam(fromParamID,fromValue);
+				var toParamID = getParamID();
+				addHQLParam(toParamID,toValue);
+				
+				predicate = ":#fromParamID# AND #toParamID#";	
+			}else{
+				//if list length is 1 then we treat it as a date range From now
+				var fromValue = DateAdd("d",-arguments.filter.value,Now());
+				var toValue = Now();
+				
+				var fromParamID = getParamID();
+				addHQLParam(fromParamID,fromValue);
+				var toParamID = getParamID();
+				addHQLParam(toParamID,toValue);
+				
+				predicate = ":#fromParamID# AND #toParamID#";	
+			}
+						
+		}else{
+			var paramID = getParamID();
+			addHQLParam(paramID,arguments.filter.value);
+			predicate = ":#paramID#";
+		}
+		return predicate;
 	}
 	
 	private string function getFilterGroupsHQL(required array filterGroups){
