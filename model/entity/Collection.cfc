@@ -203,6 +203,13 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			case "not between":
 				return "NOT BETWEEN";
 			break;
+			//reserved for is null/is not null where value is null in json
+			case "is":
+				return "IS";
+			break;
+			case "is not":
+				return "IS NOT";
+			break;
 		}
 		return '';
 	}
@@ -452,7 +459,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	private string function getPredicate(required any filter){
 		var predicate = '';
-		if(arguments.filter.comparisonOperator eq 'between'){
+		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
 			if(listLen(arguments.filter.value,'-') > 1){
 				var fromValue = listFirst(arguments.filter.value,'-');
 				var toValue = listLast(arguments.filter.value,'-');
