@@ -46,6 +46,32 @@ component extends="PageObject" {
 		return new DetailTaxCategory( selenium, pageLoadTime );
 	}
 	
+	public any function editTaxCategoryRateTaxAddressLookup( struct formData={} ) {
+		selenium.click(getButton_EditTaxCategoryRate());
+		selenium.waitForElementPresent('//*[@id="adminentitysavetaxcategoryrate"]');
+		
+		
+		//Dynamically choose the select options based on the current iteration
+		if(arguments.formData['taxCategoryRateCode'] == 'ShipToBillTest'){
+			var taxAddressLookupSelectOption = 'Shipping -> Billing';
+			var taxAddressZoneSelectOption = 'San Diego Test';
+		} else if(arguments.formData['taxCategoryRateCode'] == 'BillToShipTest') {
+			var taxAddressLookupSelectOption = 'Billing -> Shipping';
+			var taxAddressZoneSelectOption = 'New York Test';
+		}
+		
+		//Set the selct boxes
+		selenium.select(getSelectBox_TaxAddressLookup(), taxAddressLookupSelectOption);
+		selenium.select(getSelectBox_TaxAddressZone(), taxAddressZoneSelectOption);
+		
+		submitForm( 'adminentitysavetaxcategoryrate', arguments.formData );
+		
+		var pageLoadTime = waitForPageToLoad();
+		
+		return new DetailTaxCategory(selenium, pageLoadTime);
+	}
+	
+
 	// =============== Page Specific Locators =======================
 	
 	public any function getText_ActiveFlag() {
@@ -62,5 +88,15 @@ component extends="PageObject" {
 	public any function getButton_DeleteTaxCategoryRate() {
 		return '//*[@id="adminentitydeletetaxcategoryrate"]';
 	}
-
+	public any function getButton_EditTaxCategoryRate() {
+		return '//*[@id="adminentityedittaxcategoryrate_8a8080834721af1a01473639e11a0217"]';
+	}
+	
+	public any function getSelectBox_TaxAddressLookup() {
+		return '//*[@id="adminentitysavetaxcategoryrate"]/div[2]/div/div/fieldset/div[1]/div/select';
+	}
+	public any function getSelectBox_TaxAddressZone() {
+		return '//*[@id="adminentitysavetaxcategoryrate"]/div[2]/div/div/fieldset/div[3]/div/select';
+	}
+	
 }

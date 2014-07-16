@@ -39,5 +39,23 @@
 				primaryPhoneNumberID="NULL" 
 				primaryAddressID="NULL" 
 				primaryPaymentMethodID="NULL" />
+		<Record accountID="c2ba501df62e4115821cc45ef3ec9502" 
+				superUserFlag="true" 
+				firstName="TestRunner Account" 
+				lastName="TaxAddressLookup" 
+				company="TestRunner" 
+				cmsAccountID="NULL" 
+				remoteID="NULL" 
+				remoteEmployeeID="NULL" 
+				remoteCustomerID="NULL" 
+				remoteContactID="NULL" 
+				createdDateTime="NULL" 
+				createdByAccountID="4028810a471d4864014720bc661e0037"
+				modifiedDateTime="NULL"
+				modifiedByAccountID="NULL"
+				primaryEmailAddressID="NULL" 
+				primaryPhoneNumberID="NULL" 
+				primaryAddressID="NULL" 
+				primaryPaymentMethodID="NULL" />
 	</Records>
 </Table>

@@ -31,10 +31,19 @@ component extends="PageObject" {
 		
 		var pageLoadTime = waitForPageToLoad();
 		
-		return new ListCartsAndQuotes(selenium, pageLoadTime);
-		
+		return new ListCartsAndQuotes(selenium, pageLoadTime);	
 	}
 	
+	public function saveOrder(){
+		
+		submitForm("adminentitysaveorder", {});
+
+		var pageLoadTime = waitForPageToLoad();
+		
+		return new DetailOrder(selenium, pageLoadTime);
+		
+	}
+
 	//============ Page Specific Locators ================
 	
 	public any function deleteOrderButtonLocator(){

@@ -17,7 +17,8 @@ component extends="PageObject"{
 			"Carts & Quotes" = "ListCartsAndQuotes"
 		},
 		"Config" = {
-			"Tax Categories" = "ListTaxCategories"
+			"Tax Categories" = "ListTaxCategories",
+			"Settings" = "Settings"
 		}
 	};
 	

@@ -1,5 +1,5 @@
 component extends="AdminTestBase" {
-	
+
 	//Tests the ability to create, edit, and delete a tax category
 	function taxCategoryCreateEditAndDeleteWorks() {
 		// Load Listing Page
@@ -69,10 +69,12 @@ component extends="AdminTestBase" {
 	
 	//Creates a manual tax rate and tests that it works on an order
 	function taxCategoryManualRateCalculationWorks() {
-		
-		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
-		
+
+		// Ensure that the sku setting uses the correct tax category
+		selectSkuSettingTaxCategory( 'Default' );
+
 		// Confirm that the Detail Page is Loaded
+		DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
 		assertPageIsLoaded( DetailTaxCategory );
 		
 		//Create New Manual Rate
@@ -83,26 +85,18 @@ component extends="AdminTestBase" {
 		formData['taxRate'] = '10';							
 		formData['taxCategoryRateCode'] = "TEST-#getTickCount()#";
 
-		var DetailTaxCategoryRate = CreateTaxCategoryRate.submitCreateForm( formData );
+		DetailTaxCategoryRate = CreateTaxCategoryRate.submitCreateForm( formData );
 
 		assertPageIsLoaded( DetailTaxCategoryRate );
 		
-		// Load Listing Page
-		var ListCartsAndQuotes = variables.dashboardPage.clickMenuLink("Orders", "Carts & Quotes");
-		
-		assertPageIsLoaded( ListCartsAndQuotes );	
-		//Create an order
-		var EditOrder = ListCartsAndQuotes.clickCreateOrderLink();
-
+		//Open Edit Order Page
+		var EditOrder = openPage( '?slatAction=entity.editorder&orderID=be195c2df21744049028368cbd36e6d2', 'EditOrder');
 		assertPageIsLoaded( EditOrder );
 		
 		//Add a product to the order
 		formData = {};
 		formData['shippingAddress.name'] = 'Test Name';							
 		formData['shippingAddress.company'] = 'Test Company';	
-		formData['shippingAddress.streetAddress'] = '123 Main St';	
-		formData['shippingAddress.city'] = 'San Diego';
-		formData['shippingAddress.postalCode'] = '92128';	
 		
 		var EditOrderPageWithOneItem = EditOrder.addItemToOrder( formData );
 		
@@ -121,7 +115,95 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( DetailTaxCategory );
 
 		DetailTaxCategory.deleteTaxCategoryRate();
+		
+		EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
+		assertPageIsLoaded( EditTaxCategory );
+		
+		DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
+		assertPageIsLoaded( DetailTaxCategory );
+	}
 
+	//Tests Tax Address Lookup order
+	function taxCategoryRateAddressLookupWorks(){
+
+		//Set up array of sku settings tax category select options
+		var skuSettingsTaxCategoryOptionsArray = ['TestRunner_TaxAddressLookup_ShipToBill','TestRunner_TaxAddressLookup_BillToShip','TestRunner_TaxAddressLookup_Ship','TestRunner_TaxAddressLookup_Bill'];
+		
+		//Set up array of the two orders used to test each tax category and add an item to each
+		var taxCategoryAddressLookupTestOrderIDArray = ['8a8080834721af1a01473607810d020e','8a8080834721af1a01473b0466e106d9'];
+		
+		for(var orderID in taxCategoryAddressLookupTestOrderIDArray){
+			//Open Edit Order Page
+			var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#orderID#', 'EditOrder');
+			assertPageIsLoaded( EditOrder );
+			
+			//Add a product to the order
+			formData = {};
+			EditOrder = EditOrder.addItemToOrder( formData );
+			assertPageIsLoaded( EditOrder );
+		}
+
+		//Set up an array of the the two expected tax totals
+		var expectedTax = [25,0];
+		
+		//Loop over taxAddressLookupTestTaxCategoriesArray
+		for(var taxOption in skuSettingsTaxCategoryOptionsArray){
+
+			//Set the sku setting to the current tax category
+			selectSkuSettingTaxCategory( taxOption );
+			
+			//Loop over both orders to check success and to check failure
+			for(var order in taxCategoryAddressLookupTestOrderIDArray){
+				
+				//Go to orders to check the totalTax cell of the view's table
+				var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#order#', 'EditOrder');
+				assertPageIsLoaded( EditOrder );
+				
+				//Save the Order
+				var DetailOrder = EditOrder.saveOrder();
+				assertPageIsLoaded( DetailOrder );
+				
+				var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
+				
+				if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_ShipToBill'){
+					assertEquals(expectedTax[1], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_ShipToBill'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_BillToShip'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_BillToShip'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_Ship'){
+					assertEquals(expectedTax[1], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_Ship'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_Bill'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_Bill'){
+					assertEquals(expectedTax[2], totalTaxCell);
+				}
+				
+			}	
+		
+		}
+		
+		//Delete the orders	
+		for(var orderID in taxCategoryAddressLookupTestOrderIDArray){
+			var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#orderID#', 'EditOrder');
+			assertPageIsLoaded( EditOrder );
+			EditOrder.deleteOrder();
+		}
+
+	}
+	
+	//============= Helpers ======================
+
+	// Ensure that the sku setting uses the correct tax category
+	private function selectSkuSettingTaxCategory( required string ){
+		var Settings = openPage( '?slatAction=entity.settings', 'Settings');
+		assertPageIsLoaded( Settings );
+		
+		Settings.setupSkuSettingTaxCategory( arguments.string );
 	}
 	
 }
