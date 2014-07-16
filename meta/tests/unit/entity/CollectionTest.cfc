@@ -222,15 +222,29 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"columns":[
 						{
 							"propertyIdentifier":"Account.firstName"
+							
 						},
 						{
 							"propertyIdentifier":"Account.lastName"
+						},
+						{
+							"propertyIdentifier":"Account_accountEmailAddresses.emailAddress"
+						},
+						{
+							"propertyIdentifier":"Account_accountEmailAddresses_accountEmailType.type"
 						}
+						
 					],
 					"joins":[
 						{
-							"associationName":"primaryEmailAddress",
-							"alias":"Account_primaryEmailAddress"
+							"associationName":"accountEmailAddresses",
+							"alias":"Account_accountEmailAddresses",
+							"joins":[
+								{
+									"associationName":"accountEmailType",
+									"alias":"Account_accountEmailAddresses_accountEmailType"
+								}
+							]
 						}
 					],
 					"orderBy":[
@@ -241,11 +255,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						{
 							"propertyIdentifier":"Account.lastName",
 							"direction":"ASC"
-						}
-					],
-					"groupBy":[
-						{
-							"propertyIdentifier":"accountID" 
 						}
 					],
 					"filterGroups":[
