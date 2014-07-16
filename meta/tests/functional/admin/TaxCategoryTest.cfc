@@ -189,7 +189,7 @@ component extends="AdminTestBase" {
 	}
 	
 	//============= Helpers ======================
-	public void function turnOFFAllTaxCategories(){
+	private void function turnOFFAllTaxCategories(){
 		//Address Testing Tax Category
 		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'EditTaxCategory');
 		assertPageIsLoaded( EditTaxCategory );
@@ -206,7 +206,7 @@ component extends="AdminTestBase" {
 	}
 	
 	//Turn on Default
-	public function turnONDefaultTaxCategory(){
+	private function turnONDefaultTaxCategory(){
 		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
 		assertPageIsLoaded( EditTaxCategory );
 		
@@ -215,7 +215,7 @@ component extends="AdminTestBase" {
 	}
 	
 	//Turn on Address Testing Tax Category
-	public function turnONAddressTestingTaxCategory(){
+	private function turnONAddressTestingTaxCategory(){
 		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'EditTaxCategory');
 		assertPageIsLoaded( EditTaxCategory );
 		
@@ -224,7 +224,7 @@ component extends="AdminTestBase" {
 	}
 	
 	// Ensure that the sku setting uses the correct tax category
-	public function selectThisTaxCategoryAsSkuSetting(){
+	private function selectThisTaxCategoryAsSkuSetting(){
 		var Settings = openPage( '?slatAction=entity.settings', 'Settings');
 		assertPageIsLoaded( Settings );
 		
