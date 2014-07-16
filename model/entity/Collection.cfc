@@ -163,11 +163,11 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			var parentFilterGroupArray = getFilterGroupArrayFromAncestors(arguments.collectionObject.getCollectionObject());
 			
 			for(parentFilterGroup in parentFilterGroupArray){
-				if(!arrayFind(filterGroupArray,parentGroupFilter)){
-					if(!structKeyExists(parentGroupFilter,"logicalOperator")){
-						parentGroupFilter.logicalOperator = ' AND ';
+				if(!arrayFind(filterGroupArray,parentFilterGroup)){
+					if(!structKeyExists(parentFilterGroup,"logicalOperator")){
+						parentFilterGroup.logicalOperator = ' AND ';
 					}
-					ArrayAppend(filterGroupArray,parentGroupFilter);
+					ArrayAppend(filterGroupArray,parentFilterGroup);
 				}
 			}
 		}

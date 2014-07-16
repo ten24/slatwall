@@ -140,6 +140,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					],
 					"orderBy":[
 						{
+							"propertyIdentifier":"Account.lastName",
+							"direction":"DESC"
+						},
+						{
 							"propertyIdentifier":"Account.firstName",
 							"direction":"DESC"
 						}
@@ -218,6 +222,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"columns":[
 						{
 							"propertyIdentifier":"Account.firstName"
+						},
+						{
+							"propertyIdentifier":"Account.lastName"
 						}
 					],
 					"joins":[
@@ -229,7 +236,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"orderBy":[
 						{
 							"propertyIdentifier":"Account.firstName",
-							"direction":"DESC"
+							"direction":"ASC"
+						},
+						{
+							"propertyIdentifier":"Account.lastName",
+							"direction":"ASC"
 						}
 					],
 					"groupBy":[
