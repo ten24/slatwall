@@ -69,10 +69,15 @@ component extends="AdminTestBase" {
 	
 	//Creates a manual tax rate and tests that it works on an order
 	function taxCategoryManualRateCalculationWorks() {
-		
-		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
-		
+		//Ensure Default is turned on and that no other tax category is turned on
+		turnOFFAllTaxCategories();		
+		turnONDefaultTaxCategory();
+
+		// Ensure that the sku setting uses the correct tax category
+		selectThisTaxCategoryAsSkuSetting();
+
 		// Confirm that the Detail Page is Loaded
+		DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
 		assertPageIsLoaded( DetailTaxCategory );
 		
 		//Create New Manual Rate
@@ -83,26 +88,18 @@ component extends="AdminTestBase" {
 		formData['taxRate'] = '10';							
 		formData['taxCategoryRateCode'] = "TEST-#getTickCount()#";
 
-		var DetailTaxCategoryRate = CreateTaxCategoryRate.submitCreateForm( formData );
+		DetailTaxCategoryRate = CreateTaxCategoryRate.submitCreateForm( formData );
 
 		assertPageIsLoaded( DetailTaxCategoryRate );
 		
-		// Load Listing Page
-		var ListCartsAndQuotes = variables.dashboardPage.clickMenuLink("Orders", "Carts & Quotes");
-		
-		assertPageIsLoaded( ListCartsAndQuotes );	
-		//Create an order
-		var EditOrder = ListCartsAndQuotes.clickCreateOrderLink();
-
+		//Open Edit Order Page
+		var EditOrder = openPage( '?slatAction=entity.editorder&orderID=8a8080834721af1a01473b0466e106d9', 'EditOrder');
 		assertPageIsLoaded( EditOrder );
 		
 		//Add a product to the order
 		formData = {};
 		formData['shippingAddress.name'] = 'Test Name';							
 		formData['shippingAddress.company'] = 'Test Company';	
-		formData['shippingAddress.streetAddress'] = '123 Main St';	
-		formData['shippingAddress.city'] = 'San Diego';
-		formData['shippingAddress.postalCode'] = '92128';	
 		
 		var EditOrderPageWithOneItem = EditOrder.addItemToOrder( formData );
 		
@@ -121,7 +118,117 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( DetailTaxCategory );
 
 		DetailTaxCategory.deleteTaxCategoryRate();
+		
+		EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
+		assertPageIsLoaded( EditTaxCategory );
+		
+		DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
+		assertPageIsLoaded( DetailTaxCategory );
+	}
+	
+	//Tests Tax Address Lookup order
+	function taxCategoryRateAddressLookupWorks(){
+		//First Turn off Default Tax Category
+		turnOFFAllTaxCategories();
+		turnONAddressTestingTaxCategory();
+		// Ensure that the sku setting uses the correct tax category
+		selectThisTaxCategoryAsSkuSetting();
+	
+		//Open Edit Order Page
+		var EditOrder = openPage( '?slatAction=entity.editorder&orderID=8a8080834721af1a01473607810d020e', 'EditOrder');
+		assertPageIsLoaded( EditOrder );
+		
+		//Add a product to the order
+		formData = {};
+		formData['shippingAddress.name'] = 'Test Name';							
+		formData['shippingAddress.company'] = 'Test Company';
+		
+		EditOrder = EditOrder.addItemToOrder( formData );
+		assertPageIsLoaded( EditOrder );
 
+		//Set up form data for Shipping to Billing Address Lookup test
+		var formDataShipToBill = {};
+		formDataShipToBill['taxRate'] = '25';
+		formDataShipToBill['taxCategoryRateCode'] = 'ShipToBillTest';
+		
+		//Set up form data for Billing to Shipping Address Lookup test
+		var formDataBillToShip = {};
+		formDataBillToShip['taxRate'] = '50';
+		formDataBillToShip['taxCategoryRateCode'] = 'BillToShipTest';
+		
+		var formDataArray = [formDataShipToBill, formDataBillToShip];
+		var expectedTax = [25.00, 50];
+		
+		//Test Both Using a loop
+		for(var i=1;i<=arrayLen(formDataArray);i++){
+			
+			//Open Detail Tax Category Page for testing
+			var DetailTaxCategory = openPage( '?slatAction=entity.detailtaxcategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'DetailTaxCategory');
+			assertPageIsLoaded( DetailTaxCategory );
+
+			DetailTaxCategory = DetailTaxCategory.editTaxCategoryRateTaxAddressLookup( formDataArray[i] );
+			assertPageIsLoaded( DetailTaxCategory );	
+			
+			//Open Order Page and save it then check the tax
+			EditOrder = openPage( '?slatAction=entity.editorder&orderID=8a8080834721af1a01473607810d020e', 'EditOrder');
+			assertPageIsLoaded( EditOrder );
+			
+			var DetailOrder = EditOrder.saveOrder();
+			assertPageIsLoaded( DetailOrder );
+			
+			// Convert string to numbers and assert totalTax equals the correct dollar= amount
+			var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
+			assertEquals(expectedTax[i], totalTaxCell);			
+		
+		}
+		
+		//Delete the Order Item
+		EditOrder = openPage( '?slatAction=entity.editorder&orderID=8a8080834721af1a01473607810d020e', 'EditOrder');
+		assertPageIsLoaded( EditOrder );
+		EditOrder.deleteOrder();
+	}
+	
+	//============= Helpers ======================
+	private void function turnOFFAllTaxCategories(){
+		//Address Testing Tax Category
+		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'EditTaxCategory');
+		assertPageIsLoaded( EditTaxCategory );
+		
+		var DetailTaxCategory = EditTaxCategory.turnOFFActiveFlag();
+		assertPageIsLoaded( DetailTaxCategory );
+		
+		//Default
+		EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
+		assertPageIsLoaded( EditTaxCategory );
+		
+		DetailTaxCategory = EditTaxCategory.turnOFFActiveFlag();
+		assertPageIsLoaded( DetailTaxCategory );
+	}
+	
+	//Turn on Default
+	private function turnONDefaultTaxCategory(){
+		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
+		assertPageIsLoaded( EditTaxCategory );
+		
+		var DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
+		assertPageIsLoaded( DetailTaxCategory );
+	}
+	
+	//Turn on Address Testing Tax Category
+	private function turnONAddressTestingTaxCategory(){
+		var EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=8a8080834721af1a014735ac8b4201f2', 'EditTaxCategory');
+		assertPageIsLoaded( EditTaxCategory );
+		
+		var DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
+		assertPageIsLoaded( DetailTaxCategory );
+	}
+	
+	// Ensure that the sku setting uses the correct tax category
+	private function selectThisTaxCategoryAsSkuSetting(){
+		var Settings = openPage( '?slatAction=entity.settings', 'Settings');
+		assertPageIsLoaded( Settings );
+		
+		Settings.setupSkuSettingTaxCategory();
 	}
 	
 }
