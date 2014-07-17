@@ -61,7 +61,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(isArray(variables.entity.getEntityNameOptions()));
 	}
 	
-	
+	public void function getAggregateHQLTest(){
+		makePublic(variables.entity,"getAggregateHQL");
+		var propertyIdentifier = "Account.firstName";
+		var aggregate = {
+			aggregateFunction = "count",
+			aggregateAlias = "Account_firstName"
+		};
+		
+		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		request.debug(aggregateHQL);
+		assertFalse(Compare("COUNT(Account.firstName) as Account_firstName",trim(aggregateHQL)));
+	}
 	
 	public void function addHQLParamTest(){
 		var collectionEntityData = {
@@ -482,8 +493,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var selections = deserializeJSON(selectionsJSON);
 		
 		var selectionsHQL = variables.entity.getSelectionsHQL(selections);
-		assertTrue(Compare("SELECT new Map( firstName as firstName, accountID as accountID)",selectionsHQL));
 		request.debug(selectionsHQL);
+		assertFalse(Compare("SELECT  new Map( firstName as firstName, accountID as accountID)",trim(selectionsHQL)));
+		
 	}
 	
 	public void function getFilterHQLTest(){
@@ -611,7 +623,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var join = deserializeJSON(joinJSON);
 		
 		var joinHQL = variables.entity.addJoinHQL('Account',join);
-		assertTrue(Compare("left join Account.primaryEmailAddress as Account_primaryEmailAddress left join Account_primaryEmailAddress.accountEmailType as Account_primaryEmailAddress_AccountEmailType",joinHQL));
+		assertFalse(Compare(" left join Account.primaryEmailAddress as Account_primaryEmailAddress  left join Account_primaryEmailAddress.accountEmailType as Account_primaryEmailAddress_AccountEmailType ",joinHQL));
 	}
 	
 	public void function getCollectionObjectParentChildTest(){
