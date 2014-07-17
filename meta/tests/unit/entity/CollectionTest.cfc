@@ -429,6 +429,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
 		
 		//creating a post filter group struct
+		var postOrderBy = {
+				"propertyIdentifier":"Account_accountEmailAddresses.emailAddress",
+				"direction":"DESC"
+			};
+		
+		
 		var postFilterGroup = {
 			logicalOperator = "AND",
 			filterGroup = [
@@ -439,6 +445,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			]
 		};
+		
+		collectionEntity.addPostOrderBy(postOrderBy);
+		request.debug(collectionEntity.getPostOrderBys());
 		
 		collectionEntity.addPostFilterGroup(postFilterGroup);
 		

@@ -130,8 +130,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return joinHQL;
 	}
 	
-	public void function addPostFilterGroup(required struct postFilterGroup){
+	public void function addPostFilterGroup(required any postFilterGroup){
 		arrayAppend(variables.postFilterGroups, arguments.postFilterGroup);
+	}
+	
+	public void function addPostOrderBy(required any postOrderBy){
+		arrayAppend(variables.postOrderBys, arguments.postOrderBy);
 	}
 	
 	//GETTER FUNCTIONS
@@ -569,14 +573,22 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			}
 			
 			//check if the user has applied any filters from the ui list view
-			if(arraylen(postFilterGroups)){
+			if(arraylen(getPostFilterGroups())){
 				HQL &= getFilterGroupsHQL(postFilterGroups);
 			}
 			
-			//build Order By
-			if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
-				HQL &= getOrderByHQL(collectionConfig.orderBy);
+			//override defaultconfig if we have postOrderBys
+			if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
+				HQL &= getOrderByHQL(getPostOrderBys());
+			}else{
+				//build Order By
+				if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
+					HQL &= getOrderByHQL(collectionConfig.orderBy);
+				}
+				
 			}
+			
+			
 		}
 		return HQL;
 	}
