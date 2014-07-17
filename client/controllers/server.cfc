@@ -11,11 +11,12 @@ component accessors="true" output="false" {
 		rc.ajaxResponse[ 'collectionObject' ] = arguments.rc.collectionObject;
 		
 		if(listFindNoCase('init', arguments.rc.updateType)) {
-			rc.ajaxResponse[ 'collectionObjectOptions' ] = getCollectionService().getCollectionObjectOptions();
+			rc.ajaxResponse[ 'collectionObjectOptions' ] = getCollectionService().getEntityNameOptions();
 		}
+		
 		if(listFindNoCase('init,collectionObjectChange', arguments.rc.updateType) && len(arguments.rc.collectionObject)) {
-			rc.ajaxResponse[ 'collectionIDOptions' ] = getCollectionService().getCollectionOptionsByCollectionObject( collectionObject=arguments.rc.collectionObject );
-			rc.ajaxResponse[ 'collectionObjectColumnProperties' ] = getCollectionService().getCollectionObjectColumnProperties( collectionObject=arguments.rc.collectionObject );
+			rc.ajaxResponse[ 'collectionIDOptions' ] = getCollectionService().getCollectionOptionsByEntityName( collectionObject=arguments.rc.collectionObject );
+			rc.ajaxResponse[ 'collectionObjectColumnProperties' ] = getCollectionService().getEntityNameColumnProperties( collectionObject=arguments.rc.collectionObject );
 		}
 		
 		var collection = getCollectionService().getCollection( arguments.rc.collectionID, true );
@@ -32,7 +33,7 @@ component accessors="true" output="false" {
 		}
 		
 		rc.ajaxResponse[ 'collectionConfig' ] = collection.getCollectionConfig();
-		rc.ajaxResponse[ 'pageRecords' ] = collection.getPageRecords();
+		//rc.ajaxResponse[ 'pageRecords' ] = collection.getPageRecords();
 	}
 	
 }

@@ -23,6 +23,7 @@ slatwall.directive('swCollectionDisplay', function($http){
 			});
 			
 			scope.updateConfigDisplay = function() {
+				console.log(scope);
 				if(scope.showConfig && scope.collectionObject != '') {
 					if(!scope.collectionConfig.columns.length || scope.collectionConfig.columns[ scope.collectionConfig.columns.length-1 ].propertyIdentifier != '') {
 						scope.collectionConfig.columns.push( {propertyIdentifier:''} );
@@ -74,7 +75,7 @@ slatwall.directive('swCollectionDisplay', function($http){
 					'collectionConfig': angular.toJson(scope.collectionConfig)
 				};
 				
-				$http.post('/?slatAction=client:server.updateswcollectiondisplay', $.param(updateData)).success(function( result ){
+				$http.post('/Slatwall/?slatAction=client:server.updateswcollectiondisplay', $.param(updateData)).success(function( result ){
 					angular.extend(scope, result);
 					scope.updateConfigDisplay();
 				});
