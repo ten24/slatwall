@@ -4,19 +4,19 @@ component accessors="true" output="false" {
 	
 	public void function updateswcollectiondisplay(required struct rc) {
 		param name="arguments.rc.updateType" default="init";
-		param name="arguments.rc.collectionObject" default="";
+		param name="arguments.rc.baseEntityName" default="";
 		param name="arguments.rc.collectionID" default="";
 		param name="arguments.rc.collectionConfig" default="";
 		
-		rc.ajaxResponse[ 'collectionObject' ] = arguments.rc.collectionObject;
+		rc.ajaxResponse[ 'baseEntityName' ] = arguments.rc.baseEntityName;
 		
 		if(listFindNoCase('init', arguments.rc.updateType)) {
-			rc.ajaxResponse[ 'collectionObjectOptions' ] = getCollectionService().getEntityNameOptions();
+			rc.ajaxResponse[ 'baseEntityNameOptions' ] = getCollectionService().getEntityNameOptions();
 		}
 		
-		if(listFindNoCase('init,collectionObjectChange', arguments.rc.updateType) && len(arguments.rc.collectionObject)) {
-			rc.ajaxResponse[ 'collectionIDOptions' ] = getCollectionService().getCollectionOptionsByEntityName( collectionObject=arguments.rc.collectionObject );
-			rc.ajaxResponse[ 'collectionObjectColumnProperties' ] = getCollectionService().getEntityNameColumnProperties( collectionObject=arguments.rc.collectionObject );
+		if(listFindNoCase('init,baseEntityNameChange', arguments.rc.updateType) && len(arguments.rc.baseEntityName)) {
+			rc.ajaxResponse[ 'collectionIDOptions' ] = getCollectionService().getCollectionOptionsByEntityName( baseEntityName=arguments.rc.baseEntityName );
+			rc.ajaxResponse[ 'baseEntityNameColumnProperties' ] = getCollectionService().getEntityNameColumnProperties( baseEntityName=arguments.rc.baseEntityName );
 		}
 		
 		var collection = getCollectionService().getCollection( arguments.rc.collectionID, true );
@@ -28,8 +28,8 @@ component accessors="true" output="false" {
 			}
 		}
 		
-		if(len(arguments.rc.collectionObject)) {
-			collection.setCollectionObject( arguments.rc.collectionObject );	
+		if(len(arguments.rc.baseEntityName)) {
+			collection.setbaseEntityName( arguments.rc.baseEntityName );	
 		}
 		
 		rc.ajaxResponse[ 'collectionConfig' ] = collection.getCollectionConfig();
