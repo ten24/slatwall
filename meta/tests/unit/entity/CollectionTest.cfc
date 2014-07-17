@@ -61,6 +61,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(isArray(variables.entity.getEntityNameOptions()));
 	}
 	
+	
+	
 	public void function addHQLParamTest(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -480,6 +482,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var selections = deserializeJSON(selectionsJSON);
 		
 		var selectionsHQL = variables.entity.getSelectionsHQL(selections);
+		assertTrue(Compare("SELECT new Map( firstName as firstName, accountID as accountID)",selectionsHQL));
 		request.debug(selectionsHQL);
 	}
 	
@@ -544,6 +547,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterGroup = deserializeJSON(filterGroupJSON);
 		
 		var filterGroupHQL = variables.entity.getFilterGroupHQL(filterGroup);
+		
 		request.debug(filterGroupHQL);
 	}
 	
@@ -607,9 +611,196 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var join = deserializeJSON(joinJSON);
 		
 		var joinHQL = variables.entity.addJoinHQL('Account',join);
-		request.debug(joinHQL);
-		
+		assertTrue(Compare("left join Account.primaryEmailAddress as Account_primaryEmailAddress left join Account_primaryEmailAddress.accountEmailType as Account_primaryEmailAddress_AccountEmailType",joinHQL));
 	}
+	
+	public void function getCollectionObjectParentChildTest(){
+		//first a list of collection options is presented to the user
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'BestAccounts',
+			collectionConfig = '{
+					"isDistinct":"true",
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.firstName"
+						},
+						{
+							"propertyIdentifier":"Account.lastName"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"primaryEmailAddress",
+							"alias":"Account_primaryEmailAddress"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"ASC"
+						},
+						{
+							"propertyIdentifier":"Account.lastName",
+							"direction":"ASC"
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+							
+						}
+					]
+					
+				}'
+		};
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		
+		var parentCollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccounts',
+			collectionConfig = '{
+					"isDistinct":"true",
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.firstName"
+						},
+						{
+							"propertyIdentifier":"Account.lastName"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"primaryEmailAddress",
+							"alias":"Account_primaryEmailAddress"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"ASC"
+						},
+						{
+							"propertyIdentifier":"Account.lastName",
+							"direction":"ASC"
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+							
+						}
+					]
+					
+				}'
+		};
+		var parentCollectionEntity = createTestEntity('collection',parentCollectionEntityData);
+		parentCollectionEntity.setCollectionObject(collectionEntity);
+		
+		var parentOfParentCollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansTen24Accounts',
+			collectionConfig = '{
+					"isDistinct":"true",
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.firstName"
+						},
+						{
+							"propertyIdentifier":"Account.lastName"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"primaryEmailAddress",
+							"alias":"Account_primaryEmailAddress"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"ASC"
+						},
+						{
+							"propertyIdentifier":"Account.lastName",
+							"direction":"ASC"
+						}
+					],
+					"groupBy":[
+						{
+							"propertyIdentifier":"accountID" 
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								}
+							]
+							
+						},
+						
+						{
+							"logicalOperator":"AND",
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.accountEmailAddresses",
+									"collectionCode":"BestAccountEmailAddresses",
+									"criteria":"All"
+								}
+							]
+						}
+					]
+					
+				}'
+		};
+		
+		var parentOfParentCollectionEntity = createTestEntity('collection',parentOfParentCollectionEntityData);
+		parentOfParentCollectionEntity.setCollectionObject(parentCollectionEntity);
+		
+		var result = ORMExecuteQuery(collectionEntity.getHQL(),collectionEntity.getHQLParams());
+		request.debug(result);
+	}
+	
 }
 
 /*

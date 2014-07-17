@@ -593,6 +593,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return HQL;
 	}
 	
+	//TODO:write an export/import service so we can share json files of the collectionConfig
+	
 	// =============== Saved State Logic ===========================
 	
 	public void function loadSavedState(required string savedStateID) {

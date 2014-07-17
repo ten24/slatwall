@@ -56,14 +56,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getEntityNameColumnProperties_returns_valid_array() {
 		var result = variables.service.getEntityNameColumnProperties( 'Account' );
-		
+		request.debug(result);
 		assert( isArray( result ) );
 	}
 	
 	// getEntityNameProperties()
 	public void function getEntityNameProperties_returns_valid_array() {
 		var result = variables.service.getEntityNameProperties( 'Account' );
-		
+		request.debug(result);
 		assert( isArray( result ) );
 	}
 	
@@ -76,216 +76,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals( "accountEmailAddresses", result[4].propertyIdentifier );
 		assertEquals( "accountID", result[5].propertyIdentifier );
 		assertEquals( "accountLoyalties", result[6].propertyIdentifier );
+		request.debug(result);
 	}
 	
 	public void function getEntityNameOptionsTest(){
 		var collectionEntityData = {
 			collectionid = '',
-			EntityName = 'Account'
+			baseEntityName = 'Account'
 		};
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		var collectionEntityProperties = variables.service.getEntityNameProperties(collectionEntity.getEntityName());
-		
+		var collectionEntityProperties = variables.service.getEntityNameProperties(collectionEntity.getBaseEntityName());
+		request.debug(collectionEntityProperties);
 		assert(isArray(collectionEntityProperties));
 	}
 	
-	public void function getCollectionOptionsByEntityNameTest(){
-		var baseCollectionEntityData = {
-			collectionid = '',
-			EntityName = 'Account'
-		};
-		var baseCollectionEntity = createTestEntity('collection',baseCollectionEntityData);
-		
-		var collectionOptions = variables.service.getCollectionOptionsByEntityName(baseCollectionEntity.getEntityName);
-	}
-	
-	
-	public void function getCollectionObjectParentChildTest(){
-		//first a list of collection options is presented to the user
-		var collectionEntityData = {
-			collectionid = '',
-			collectionCode = 'BestAccounts',
-			collectionConfig = '{
-					"isDistinct":"true",
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
-					"columns":[
-						{
-							"propertyIdentifier":"Account.firstName"
-						},
-						{
-							"propertyIdentifier":"Account.lastName"
-						}
-					],
-					"joins":[
-						{
-							"associationName":"primaryEmailAddress",
-							"alias":"Account_primaryEmailAddress"
-						}
-					],
-					"orderBy":[
-						{
-							"propertyIdentifier":"Account.firstName",
-							"direction":"ASC"
-						},
-						{
-							"propertyIdentifier":"Account.lastName",
-							"direction":"ASC"
-						}
-					],
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								},
-								{
-									"logicalOperator":"OR",
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"false"
-								}
-							]
-							
-						}
-					]
-					
-				}'
-		};
-		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		
-		var parentCollectionEntityData = {
-			collectionid = '',
-			collectionCode = 'RyansAccounts',
-			collectionConfig = '{
-					"isDistinct":"true",
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
-					"columns":[
-						{
-							"propertyIdentifier":"Account.firstName"
-						},
-						{
-							"propertyIdentifier":"Account.lastName"
-						}
-					],
-					"joins":[
-						{
-							"associationName":"primaryEmailAddress",
-							"alias":"Account_primaryEmailAddress"
-						}
-					],
-					"orderBy":[
-						{
-							"propertyIdentifier":"Account.firstName",
-							"direction":"ASC"
-						},
-						{
-							"propertyIdentifier":"Account.lastName",
-							"direction":"ASC"
-						}
-					],
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								},
-								{
-									"logicalOperator":"OR",
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"false"
-								}
-							]
-							
-						}
-					]
-					
-				}'
-		};
-		var parentCollectionEntity = createTestEntity('collection',parentCollectionEntityData);
-		parentCollectionEntity.setCollectionObject(collectionEntity);
-		
-		var parentOfParentCollectionEntityData = {
-			collectionid = '',
-			collectionCode = 'RyansTen24Accounts',
-			collectionConfig = '{
-					"isDistinct":"true",
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
-					"columns":[
-						{
-							"propertyIdentifier":"Account.firstName"
-						},
-						{
-							"propertyIdentifier":"Account.lastName"
-						}
-					],
-					"joins":[
-						{
-							"associationName":"primaryEmailAddress",
-							"alias":"Account_primaryEmailAddress"
-						}
-					],
-					"orderBy":[
-						{
-							"propertyIdentifier":"Account.firstName",
-							"direction":"ASC"
-						},
-						{
-							"propertyIdentifier":"Account.lastName",
-							"direction":"ASC"
-						}
-					],
-					"groupBy":[
-						{
-							"propertyIdentifier":"accountID" 
-						}
-					],
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								},
-								{
-									"logicalOperator":"OR",
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"false"
-								}
-							]
-							
-						},
-						
-						{
-							"logicalOperator":"AND",
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.accountEmailAddresses",
-									"collectionCode":"BestAccountEmailAddresses",
-									"criteria":"All"
-								}
-							]
-						}
-					]
-					
-				}'
-		};
-		
-		var parentOfParentCollectionEntity = createTestEntity('collection',parentOfParentCollectionEntityData);
-		parentOfParentCollectionEntity.setCollectionObject(parentCollectionEntity);
-		
-		var result = ORMExecuteQuery(collectionEntity.getHQL(),collectionEntity.getHQLParams());
-		request.debug(result);
-	}
 }
 
 

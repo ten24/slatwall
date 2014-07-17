@@ -40,7 +40,7 @@ Notes:
 component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
-	
+	//returns meta data about the objects properties
 	public array function getEntityNameOptions() {
 		var entitiesMetaData = getEntitiesMetaData();
 		var entitiesArray = listToArray(structKeyList(entitiesMetaData));
