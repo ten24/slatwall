@@ -73,6 +73,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
 	
+	property name="postFilterGroups" type="array" singularname="postFilterGroup"  persistent="false" hint="where conditions that are added by the user through the UI, applied in addition to the collectionConfig.";
+	property name="postOrderBys" type="array" persistent="false" hint="order bys added by the use in the UI, applied/overried the default collectionConfig order bys";
+	
 	property name="pageRecordsStart" persistent="false" type="numeric" hint="This represents the first record to display and it is used in paging.";
 	property name="pageRecordsShow" persistent="false" type="numeric" hint="This is the total number of entities to display";
 	property name="currentURL" persistent="false" type="string";
@@ -95,7 +98,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.currentPageDeclaration = 1;
 		variables.pageRecordsStart = 1;
 		variables.pageRecordsShow = 10;
-		
+		variables.postFilterGroups = [];
+		variables.postOrderBys = [];
 	}
 	
 	//ADD FUNCTIONS
@@ -124,6 +128,10 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		}
 		
 		return joinHQL;
+	}
+	
+	public void function addPostFilterGroup(required struct postFilterGroup){
+		arrayAppend(variables.postFilterGroups, arguments.postFilterGroup);
 	}
 	
 	//GETTER FUNCTIONS
@@ -558,6 +566,11 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			
 			if(arraylen(filterGroupArray)){
 				HQL &= getFilterHQL(filterGroupArray);
+			}
+			
+			//check if the user has applied any filters from the ui list view
+			if(arraylen(postFilterGroups)){
+				HQL &= getFilterGroupsHQL(postFilterGroups);
 			}
 			
 			//build Order By

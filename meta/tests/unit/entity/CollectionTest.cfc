@@ -428,6 +428,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
 		
+		//creating a post filter group struct
+		var postFilterGroup = {
+			logicalOperator = "AND",
+			filterGroup = [
+				{
+					propertyIdentifier = "Account.lastName",
+					comparisonOperator = "=",
+					value="Marchand"
+				}
+			]
+		};
+		
+		collectionEntity.addPostFilterGroup(postFilterGroup);
+		
+		request.debug(collectionEntity.getPostFilterGroups());
+		
 		var collectionEntityHQL = collectionEntity.getHQL();
 		
 		request.debug(collectionEntityHQL);
