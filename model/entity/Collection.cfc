@@ -599,6 +599,15 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	//TODO:write an export/import service so we can share json files of the collectionConfig
+	public void function exportCollectionConfigAsJSON(required string filePath,fileName){
+		fileWrite("#arguments.filePath##arguments.fileName#.json", this.getCollectionConfig());
+	}
+	
+	public void function importCollectionConfigAsJSON(required string filePath, fileName){
+		this.setCollectionConfig(fileRead( "#filePath##filename#.json" ));
+	}
+	
+	
 	
 	// =============== Saved State Logic ===========================
 	
