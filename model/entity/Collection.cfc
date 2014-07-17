@@ -37,7 +37,7 @@ Notes:
 
 */
 component entityname="SlatwallCollection" table="SwCollection" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
-	
+	//TODO:add permission base property. public/protected/private?
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
@@ -112,12 +112,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.hqlAliases[arguments.aliasKey] = arguments.aliasValue;
 	}
 	
+	//this is used when we get params from another collection that we need to apply to this collection
 	private void function addHQLParamsFromNestedCollection(required collectionHQLParams){
 		for(key in arguments.collectionHQLParams){
 			addHQLParam(key,arguments.collectionHQLParams[key]);
 		}
 	}
 	
+	//join introspects on itself for nested joins to ensure that all joins are added in the correct order
 	private string function addJoinHQL(required string parentAlias, required any join){
 		
 		var joinHQL = ' left join #parentAlias#.#arguments.join.associationName# as #arguments.join.alias# ';
@@ -130,6 +132,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return joinHQL;
 	}
 	
+	//the post functions are most likely to be called after a user posts to the server in order to update the base query with user chosen filters from the UI list view
 	public void function addPostFilterGroup(required any postFilterGroup){
 		arrayAppend(variables.postFilterGroups, arguments.postFilterGroup);
 	}
@@ -139,7 +142,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	//GETTER FUNCTIONS
-	
+	//limiting return values to prevent ORM injection
 	private string function getAggregateHQL(required any aggregate, required string propertyIdentifier){
 		
 		var aggregateFunction = '';
@@ -495,6 +498,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				predicate = ":#fromParamID# AND #toParamID#";	
 			}
 						
+		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
+			predicate = filter.value;
 		}else{
 			var paramID = getParamID();
 			addHQLParam(paramID,arguments.filter.value);

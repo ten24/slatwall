@@ -418,6 +418,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"propertyIdentifier":"Account.superUserFlag",
 									"comparisonOperator":"=",
 									"value":"false"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"superUserFlag",
+									"comparisonOperator":"is not",
+									"value":"null"
 								}
 							]
 							
