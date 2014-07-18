@@ -305,55 +305,55 @@
 				<cfif attributes.showheader>
 					<tr>
 						<th class="listing-display-header" colspan='#thistag.columnCount#'>
-							
-							<div class="col-md-8">
-								<cfif not thistag.expandable>
-									<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
-								</cfif>
-								<cfif not thistag.expandable and len(attributes.title)>
-									<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
-								</cfif>
-								<cfif len(attributes.title)>
-									<span style="font-size:14px;color:##666666;">#attributes.title#</span>
-								</cfif>
-							</div>
-							<div class="col-md-4">
-								<div class="groups">
-									<div class="btn-group">
-										<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
-										<ul class="dropdown-menu pull-right">
-											<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-										</ul>
-									</div>
-										
-									<!--- Listing: Button Groups --->
-									<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
-										<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
-											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-												<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
-														#buttonGroup.generatedContent#
-												<cfelse>
-													<div class="btn-group">
-														#buttonGroup.generatedContent#
-													</div>
-												</cfif>
-											</cfif>
-										</cfloop>
+							<div class="row">
+								<div class="col-md-8">
+									<cfif not thistag.expandable>
+										<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
 									</cfif>
-									
-									<!--- Listing: Create --->
-									<cfif len(attributes.createAction)>
+									<cfif not thistag.expandable and len(attributes.title)>
+										<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
+									</cfif>
+									<cfif len(attributes.title)>
+										<span style="font-size:14px;color:##666666;">#attributes.title#</span>
+									</cfif>
+								</div>
+								<div class="col-md-4">
+									<div class="groups">
 										<div class="btn-group">
-											<cfif attributes.createModal>
-												<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
-											<cfelse>
-												<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
-											</cfif>
+											<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+											<ul class="dropdown-menu pull-right">
+												<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+											</ul>
 										</div>
-									</cfif>		
+											
+										<!--- Listing: Button Groups --->
+										<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
+											<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
+												<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+													<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
+															#buttonGroup.generatedContent#
+													<cfelse>
+														<div class="btn-group">
+															#buttonGroup.generatedContent#
+														</div>
+													</cfif>
+												</cfif>
+											</cfloop>
+										</cfif>
+										
+										<!--- Listing: Create --->
+										<cfif len(attributes.createAction)>
+											<div class="btn-group">
+												<cfif attributes.createModal>
+													<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+												<cfelse>
+													<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+												</cfif>
+											</div>
+										</cfif>		
+									</div>
 								</div>
 							</div>
-							
 						</th>
 					</tr>
 				</cfif>
@@ -509,7 +509,7 @@
 								<!--- Detail --->
 								<cfif len(attributes.recordDetailAction)>
 									<cfset thisID = "#replace(replace(lcase(attributes.recordDetailAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-									<cf_HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-mini" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
+									<cf_HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
 								</cfif>
 								
 								<!--- Edit --->
@@ -518,7 +518,7 @@
 									<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
 									<cfset local.disabled = local.editErrors.hasErrors() />
 									<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
-									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-mini" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
+									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
 								</cfif>
 								
 								<!--- Delete --->
@@ -527,7 +527,7 @@
 									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="delete", setErrors=false) />
 									<cfset local.disabled = local.deleteErrors.hasErrors() />
 									<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />
-									<cf_HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-mini" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
+									<cf_HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
 								</cfif>
 								
 								<!--- Process --->

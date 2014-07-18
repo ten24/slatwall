@@ -52,22 +52,32 @@
 		</cfif>
 		
 		<cfoutput>
-			<div class="tabbable tabs-#attributes.tabLocation# row-fluid">
-				<ul class="nav nav-tabs">
-					<cfloop array="#thistag.tabs#" index="tab">
-						<li <cfif activeTab eq tab.tabid>class="active"</cfif>><a href="###tab.tabid#" data-toggle="tab">#tab.text#<cfif len(tab.count) and tab.count gt 0> <span class="badge pull-right" style="padding-left:10px;">#tab.count#</span></cfif></a></li>
-					</cfloop>
-					<cfif isObject(attributes.object)>
-						<li><a href="##tabSystem" data-toggle="tab">#attributes.hibachiScope.rbKey('define.system')#</a></li>
-					</cfif>
-				</ul>
-				<div class="tab-content">
+			<div class="row">
+				<div class="col-sm-2">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="##main-tab-nav">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="collapse navbar-collapse" id="main-tab-nav">
+						<ul class="nav nav-pill nav-stacked">
+							<cfloop array="#thistag.tabs#" index="tab">
+								<li <cfif activeTab eq tab.tabid>class="active"</cfif>><a href="###tab.tabid#" data-toggle="tab">#tab.text#<cfif len(tab.count) and tab.count gt 0> <span class="badge pull-right" style="padding-left:10px;">#tab.count#</span></cfif></a></li>
+							</cfloop>
+							<cfif isObject(attributes.object)>
+								<li><a href="##tabSystem" data-toggle="tab">#attributes.hibachiScope.rbKey('define.system')#</a></li>
+							</cfif>
+						</ul>
+					</div>
+				</div>
+				<div class="tab-content col-sm-10">
 					<cfloop array="#thistag.tabs#" index="tab">
 						<cfoutput>
 							<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
-								<div class="row">
-									#tab.tabcontent#
-								</div>
+								#tab.tabcontent#
 							</div>
 						</cfoutput>
 					</cfloop>

@@ -68,7 +68,7 @@ Notes:
 			<cfloop array="#rc.order.getPromotionCodes()#" index="appliedPromotionCode">
 				<tr>
 					<td class="primary">#appliedPromotionCode.getPromotionCode()#</td>
-					<td><cf_HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-default btn-mini" iconOnly="true" icon="trash"></td>
+					<td><cf_HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash"></td>
 				</tr>
 			</cfloop>
 		</table>

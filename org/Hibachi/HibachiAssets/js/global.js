@@ -291,13 +291,13 @@ function setupEventHandlers() {
 	// Alerts
 	jQuery('body').on('click', '.alert-confirm', function(e){
 		e.preventDefault();
-		jQuery('#adminConfirm > .modal-body').html( jQuery(this).data('confirm') );
+		jQuery('#adminConfirm .modal-body').html( jQuery(this).data('confirm') );
 		jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
 		jQuery('#adminConfirm').modal();
 	});
 	jQuery('body').on('click', '.alert-disabled', function(e){
 		e.preventDefault();
-		jQuery('#adminDisabled > .modal-body').html( jQuery(this).data('disabled') );
+		jQuery('#adminDisabled .modal-body').html( jQuery(this).data('disabled') );
 		jQuery('#adminDisabled').modal();
 	});
 	

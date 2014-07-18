@@ -60,7 +60,7 @@ Notes:
 
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
-		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">--->
+		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
@@ -93,7 +93,7 @@ Notes:
 			.navbar .brand {margin-left:0px;}
 		</style>
 	</head>
-	<body ng-app="slatwallngapp" style="padding-top:70px;">
+	<body ng-app="slatwallngapp">
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
 				
@@ -211,6 +211,15 @@ Notes:
 							</cf_HibachiDividerHider>
 						</cf_HibachiActionCallerDropdown>
 					</ul>
+					
+					<cfif $.slatwall.getLoggedInAsAdminFlag()>
+						<form name="search" class="navbar-form navbar-right" action="/" onSubmit="return false;">
+							<div class="form-group">
+								<input id="global-search" type="text" name="serach" class="form-control search-query span2" placeholder="Search">
+							</div>
+						</form>
+					</cfif>
+					
 					<ul class="nav navbar-nav navbar-right">
 						<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<cf_HibachiActionCallerDropdown title="" icon="user icon-white" dropdownclass="pull-right" type="nav">
@@ -229,28 +238,17 @@ Notes:
 							<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" type="list">
 						</cf_HibachiActionCallerDropdown>
 					</ul>
-					<cfif $.slatwall.getLoggedInAsAdminFlag()>
-						<form name="search" class="navbar-form navbar-right" action="/" onSubmit="return false;">
-							<div class="form-group">
-								<input id="global-search" type="text" name="serach" class="form-control search-query span2" placeholder="Search">
-							</div>
-						</form>
-					</cfif>
+					
 				</div><!-- /##slatwall-primary-nav /.navbar-collapse -->
-
-				
-				
-				
 				
 			</div><!-- /.container-fluid -->
 		</nav><!-- /.navbar -->
 		
-		<!---
 		<div id="search-results" class="search-results">
 			<div class="container-fluid">
 				<div class="row">
 
-					<div class="span3 result-bucket">
+					<div class="col-md-3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.product_plural')#</h5>
 						<ul class="nav" id="golbalsr-product">
 							<cfif not $.slatwall.authenticateEntity("Read", "Product")>
@@ -259,7 +257,7 @@ Notes:
 						</ul>
 					</div>
 
-					<div class="span3 result-bucket">
+					<div class="col-md-3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.productType_plural')#</h5>
 						<ul class="nav" id="golbalsr-productType">
 							<cfif not $.slatwall.authenticateEntity("Read", "ProductType")>
@@ -268,7 +266,7 @@ Notes:
 						</ul>
 					</div>
 
-					<div class="span3  result-bucket">
+					<div class="col-md-3  result-bucket">
 						<h5>#$.slatwall.rbKey('entity.brand_plural')#</h5>
 						<ul class="nav" id="golbalsr-brand">
 							<cfif not $.slatwall.authenticateEntity("Read", "Brand")>
@@ -277,7 +275,7 @@ Notes:
 						</ul>
 					</div>
 
-					<div class="span3 result-bucket">
+					<div class="col-md-3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.promotion_plural')#</h5>
 						<ul class="nav" id="golbalsr-promotion">
 							<cfif not $.slatwall.authenticateEntity("Read", "Promotion")>
@@ -289,7 +287,7 @@ Notes:
 				</div>
 				<div class="row">
 
-					<div class="span3 result-bucket">
+					<div class="col-md-3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.order_plural')#</h5>
 						<ul class="nav" id="golbalsr-order">
 							<cfif not $.slatwall.authenticateEntity("Read", "Order")>
@@ -298,16 +296,16 @@ Notes:
 						</ul>
 					</div>
 
-					<div class="span3 result-bucket">
+					<div class="col-md-3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.account_plural')#</h5>
-						<ul class="nav" id="golbalsr-account">
+						<ul class="nav nav-navbar" id="golbalsr-account">
 							<cfif not $.slatwall.authenticateEntity("Read", "Account")>
 								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
 							</cfif>
 						</ul>
 					</div>
 
-					<div class="span3 result-bucket">
+					<div class="col-md-3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.vendorOrder_plural')#</h5>
 						<ul class="nav" id="golbalsr-vendorOrder">
 							<cfif not $.slatwall.authenticateEntity("Read", "VendorOrder")>
@@ -316,7 +314,7 @@ Notes:
 						</ul>
 					</div>
 
-					<div class="span3 result-bucket">
+					<div class="col-md-3 result-bucket">
 						<h5>#$.slatwall.rbKey('entity.vendor_plural')#</h5>
 						<ul class="nav" id="golbalsr-vendor">
 							<cfif not $.slatwall.authenticateEntity("Read", "Vendor")>
@@ -333,7 +331,6 @@ Notes:
 				</div>
 			</div>
 		</div>
-		--->
 		
 		<div class="container-fluid">
 			<div class="row">
@@ -343,25 +340,33 @@ Notes:
 			</div>
 		</div>
 		
-		<!---
-		<div id="adminModal" class="modal fade"></div>
+		<div id="adminModal" class="modal fade">
+		
+		</div>
 		<div id="adminDisabled" class="modal">
-			<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.disabled')#</h3></div>
-			<div class="modal-body"></div>
-			<div class="modal-footer">
-				<a href="##" class="btn btn-default btn-inverse" data-dismiss="modal" id="disabledOkLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.ok')#</a>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.disabled')#</h3></div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<a href="##" class="btn btn-default btn-inverse" data-dismiss="modal" id="disabledOkLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.ok')#</a>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id="adminConfirm" class="modal">
-			<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.confirm')#</h3></div>
-			<div class="modal-body"></div>
-			<div class="modal-footer">
-				<a href="##" class="btn btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
-				<a href="##" class="btn btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.confirm')#</h3></div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<a href="##" class="btn btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
+						<a href="##" class="btn btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
+					</div>
+				</div>
 			</div>
 		</div>
 
-		--->
 		
 		<!---
 		<cfif $.slatwall.setting('globalUsageStats') and getSubsystem(request.context.slatAction) eq "admin">
