@@ -17,7 +17,8 @@
 		<column name="createdByAccountID" />
 	</Columns>
 	<Records>
-		<Record orderItemID="8a8080834721af1a014741048174087f" price="100" skuPrice="100" currencyCode="USD" quantity="1" orderItemTypeID="444df2e9a6622ad1614ea75cd5b982ce" createdByAccountID="c2ba501df62e4115821cc45ef3ec9502" orderStatusTypeID="444df34998ed6b96c0240c34e3b63914" skuID="8a8080834721af1a0147220714810083" orderID="8a8080834721af1a01473607810d020e" />
-		<Record orderItemID="8a8080834721af1a014741048ad8088f" price="100" skuPrice="100" currencyCode="USD" quantity="1" orderItemTypeID="444df2e9a6622ad1614ea75cd5b982ce" createdByAccountID="c2ba501df62e4115821cc45ef3ec9502" orderStatusTypeID="444df34998ed6b96c0240c34e3b63914" skuID="8a8080834721af1a0147220714810083" orderID="8a8080834721af1a01473b0466e106d9" />
+		<Record orderItemID="cb49ae12798d4935a280bb0490907b41" price="100" skuPrice="100" currencyCode="USD" quantity="1" orderItemTypeID="444df2e9a6622ad1614ea75cd5b982ce" createdByAccountID="c2ba501df62e4115821cc45ef3ec9502" orderItemStatusTypeID="444df34998ed6b96c0240c34e3b63914" skuID="8a8080834721af1a0147220714810083" orderID="8a8080834721af1a01473607810d020e" />
+		<Record orderItemID="5cb0a45aed2c463bac647d6c7ebed3f5" price="100" skuPrice="100" currencyCode="USD" quantity="1" orderItemTypeID="444df2e9a6622ad1614ea75cd5b982ce" createdByAccountID="c2ba501df62e4115821cc45ef3ec9502" orderItemStatusTypeID="444df34998ed6b96c0240c34e3b63914" skuID="8a8080834721af1a0147220714810083" orderID="8a8080834721af1a01473b0466e106d9" />
+		<Record orderItemID="523182fac5e440a3a1d16168af0fea43" price="100" skuPrice="100" currencyCode="USD" quantity="1" orderItemTypeID="444df2e9a6622ad1614ea75cd5b982ce" createdByAccountID="c2ba501df62e4115821cc45ef3ec9502" orderItemStatusTypeID="444df34998ed6b96c0240c34e3b63914" skuID="8a8080834721af1a0147220714810083" orderID="be195c2df21744049028368cbd36e6d2" />
 	</Records>
 </Table>

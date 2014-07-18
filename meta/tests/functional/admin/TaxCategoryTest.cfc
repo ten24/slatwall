@@ -92,22 +92,13 @@ component extends="AdminTestBase" {
 		//Open Edit Order Page
 		var EditOrder = openPage( '?slatAction=entity.editorder&orderID=be195c2df21744049028368cbd36e6d2', 'EditOrder');
 		assertPageIsLoaded( EditOrder );
-		
-		//Add a product to the order
-		formData = {};
-		formData['shippingAddress.name'] = 'Test Name';							
-		formData['shippingAddress.company'] = 'Test Company';	
-		
-		var EditOrderPageWithOneItem = EditOrder.addItemToOrder( formData );
-		
-		assertPageIsLoaded( EditOrderPageWithOneItem );
+
+		var DetailOrder = EditOrder.saveOrder();
+		assertPageIsLoaded( DetailOrder );
 		
 		// Convert string to numbers and assert totalTax equals 10 dollars as expected
 		var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
 		assertEquals(10, totalTaxCell);
-	
-		//Delete the Test Order
-		EditOrderPageWithOneItem.deleteOrder();
 
 		// Go back to Tax Category Listing Page
 		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
@@ -115,95 +106,60 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( DetailTaxCategory );
 
 		DetailTaxCategory.deleteTaxCategoryRate();
-		
-		EditTaxCategory = openPage( '?slatAction=entity.editTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'EditTaxCategory');
-		assertPageIsLoaded( EditTaxCategory );
-		
-		DetailTaxCategory = EditTaxCategory.turnONActiveFlag();
-		assertPageIsLoaded( DetailTaxCategory );
+
 	}
 
 	//Tests Tax Address Lookup order
 	function taxCategoryRateAddressLookupWorks(){
 
-		//Set up array of sku settings tax category select options
-		var skuSettingsTaxCategoryOptionsArray = ['TestRunner_TaxAddressLookup_ShipToBill','TestRunner_TaxAddressLookup_BillToShip','TestRunner_TaxAddressLookup_Ship','TestRunner_TaxAddressLookup_Bill'];
+		//Set up product settings formData struct
+		selectSkuSettingTaxCategory( 'TestRunner_TaxAddressLookupTest' );	
+
+		//Set up form data for Shipping to Billing Address Lookup test
+		var formDataShipToBill = {};
+		formDataShipToBill['taxRate'] = '25';
+		formDataShipToBill['taxCategoryRateCode'] = 'ShipToBillTest';
 		
-		//Set up array of the two orders used to test each tax category and add an item to each
-		var taxCategoryAddressLookupTestOrderIDArray = ['8a8080834721af1a01473607810d020e','8a8080834721af1a01473b0466e106d9'];
+		//Set up form data for Billing to Shipping Address Lookup test
+		var formDataBillToShip = {};
+		formDataBillToShip['taxRate'] = '50';
+		formDataBillToShip['taxCategoryRateCode'] = 'BillToShipTest';
 		
-		for(var orderID in taxCategoryAddressLookupTestOrderIDArray){
-			//Open Edit Order Page
-			var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#orderID#', 'EditOrder');
+		var formDataArray = [formDataBillToShip, formDataShipToBill];
+		var expectedTax = [50, 25];
+		
+		//Test Both Using a loop
+		for(var i=1;i<=arrayLen(formDataArray);i++){
+			
+			//Open Detail Tax Category Page for testing
+			var DetailTaxCategory = openPage( '?slatAction=entity.detailtaxcategory&taxCategoryID=e744f32c9ad9451fb12dc37bcc8c22f3', 'DetailTaxCategory');
+			assertPageIsLoaded( DetailTaxCategory );
+
+			DetailTaxCategory = DetailTaxCategory.editTaxCategoryRateTaxAddressLookup( formDataArray[i] );
+			assertPageIsLoaded( DetailTaxCategory );	
+			
+			//Open Order Page and save it then check the tax
+			EditOrder = openPage( '?slatAction=entity.editorder&orderID=be195c2df21744049028368cbd36e6d2', 'EditOrder');
 			assertPageIsLoaded( EditOrder );
 			
-			//Add a product to the order
-			formData = {};
-			EditOrder = EditOrder.addItemToOrder( formData );
-			assertPageIsLoaded( EditOrder );
-		}
-
-		//Set up an array of the the two expected tax totals
-		var expectedTax = [25,0];
-		
-		//Loop over taxAddressLookupTestTaxCategoriesArray
-		for(var taxOption in skuSettingsTaxCategoryOptionsArray){
-
-			//Set the sku setting to the current tax category
-			selectSkuSettingTaxCategory( taxOption );
+			var DetailOrder = EditOrder.saveOrder();
+			assertPageIsLoaded( DetailOrder );
 			
-			//Loop over both orders to check success and to check failure
-			for(var order in taxCategoryAddressLookupTestOrderIDArray){
-				
-				//Go to orders to check the totalTax cell of the view's table
-				var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#order#', 'EditOrder');
-				assertPageIsLoaded( EditOrder );
-				
-				//Save the Order
-				var DetailOrder = EditOrder.saveOrder();
-				assertPageIsLoaded( DetailOrder );
-				
-				var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
-				
-				if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_ShipToBill'){
-					assertEquals(expectedTax[1], totalTaxCell);
-				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_ShipToBill'){
-					assertEquals(expectedTax[2], totalTaxCell);
-				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_BillToShip'){
-					assertEquals(expectedTax[2], totalTaxCell);
-				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_BillToShip'){
-					assertEquals(expectedTax[2], totalTaxCell);
-				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_Ship'){
-					assertEquals(expectedTax[1], totalTaxCell);
-				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_Ship'){
-					assertEquals(expectedTax[2], totalTaxCell);
-				} else if(order == taxCategoryAddressLookupTestOrderIDArray[1] && taxOption == 'TestRunner_TaxAddressLookup_Bill'){
-					assertEquals(expectedTax[2], totalTaxCell);
-				} else if(order == taxCategoryAddressLookupTestOrderIDArray[2] && taxOption == 'TestRunner_TaxAddressLookup_Bill'){
-					assertEquals(expectedTax[2], totalTaxCell);
-				}
-				
-			}	
+			// Convert string to numbers and assert totalTax equals the correct dollar= amount
+			var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
+			assertEquals(expectedTax[i], totalTaxCell);			
 		
-		}
-		
-		//Delete the orders	
-		for(var orderID in taxCategoryAddressLookupTestOrderIDArray){
-			var EditOrder = openPage( '?slatAction=entity.editorder&orderID=#orderID#', 'EditOrder');
-			assertPageIsLoaded( EditOrder );
-			EditOrder.deleteOrder();
 		}
 
-	}
-	
+	}	
 	//============= Helpers ======================
 
 	// Ensure that the sku setting uses the correct tax category
 	private function selectSkuSettingTaxCategory( required string ){
-		var Settings = openPage( '?slatAction=entity.settings', 'Settings');
-		assertPageIsLoaded( Settings );
+		var DetailProduct = openPage( '?slatAction=entity.detailproduct&productID=8a808083472135b6014721625eee0033', 'DetailProduct');
+		assertPageIsLoaded( DetailProduct );
 		
-		Settings.setupSkuSettingTaxCategory( arguments.string );
+		DetailProduct.setupSkuSettingTaxCategory( arguments.string );
 	}
 	
 }

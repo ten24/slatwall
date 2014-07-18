@@ -21,41 +21,6 @@
 		<column name="primaryPaymentMethodID" />
 	</Columns>
 	<Records>
-		<Record accountID="4028810a471d4864014720bc661e0037" 
-				superUserFlag="1" 
-				firstName="TestName1" 
-				lastName="TestName2" 
-				company="TestCompany" 
-				cmsAccountID="NULL" 
-				remoteID="NULL" 
-				remoteEmployeeID="NULL" 
-				remoteCustomerID="NULL" 
-				remoteContactID="NULL" 
-				createdDateTime="NULL" 
-				createdByAccountID="4028810a471d4864014720bc661e0037"
-				modifiedDateTime="NULL"
-				modifiedByAccountID="NULL"
-				primaryEmailAddressID="NULL" 
-				primaryPhoneNumberID="NULL" 
-				primaryAddressID="NULL" 
-				primaryPaymentMethodID="NULL" />
-		<Record accountID="c2ba501df62e4115821cc45ef3ec9502" 
-				superUserFlag="true" 
-				firstName="TestRunner Account" 
-				lastName="TaxAddressLookup" 
-				company="TestRunner" 
-				cmsAccountID="NULL" 
-				remoteID="NULL" 
-				remoteEmployeeID="NULL" 
-				remoteCustomerID="NULL" 
-				remoteContactID="NULL" 
-				createdDateTime="NULL" 
-				createdByAccountID="4028810a471d4864014720bc661e0037"
-				modifiedDateTime="NULL"
-				modifiedByAccountID="NULL"
-				primaryEmailAddressID="NULL" 
-				primaryPhoneNumberID="NULL" 
-				primaryAddressID="NULL" 
-				primaryPaymentMethodID="NULL" />
+		<Record accountID="c2ba501df62e4115821cc45ef3ec9502" superUserFlag="true" firstName="TestRunnerAccount" lastName="SuperUser" company="TestRunner" primaryAddressID="73e80f7e799b4c29a1af5d0dab4fb110" />
 	</Records>
 </Table>

@@ -63,7 +63,6 @@ component extends="PageObject" {
 		//Set the selct boxes
 		selenium.select(getSelectBox_TaxAddressLookup(), taxAddressLookupSelectOption);
 		selenium.select(getSelectBox_TaxAddressZone(), taxAddressZoneSelectOption);
-		
 		submitForm( 'adminentitysavetaxcategoryrate', arguments.formData );
 		
 		var pageLoadTime = waitForPageToLoad();
@@ -89,7 +88,7 @@ component extends="PageObject" {
 		return '//*[@id="adminentitydeletetaxcategoryrate"]';
 	}
 	public any function getButton_EditTaxCategoryRate() {
-		return '//*[@id="adminentityedittaxcategoryrate_8a8080834721af1a01473639e11a0217"]';
+		return '//*[@id="adminentityedittaxcategoryrate_1cbafa6037ca457ca23aaf76242c5e50"]';
 	}
 	
 	public any function getSelectBox_TaxAddressLookup() {

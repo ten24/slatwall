@@ -36,7 +36,7 @@ component extends="PageObject" {
 	
 	public function saveOrder(){
 		
-		submitForm("adminentitysaveorder", {});
+		selenium.click('//*[@id="adminentitysaveorder"]/div[1]/div/div[2]/div/div[4]/button');
 
 		var pageLoadTime = waitForPageToLoad();
 		
