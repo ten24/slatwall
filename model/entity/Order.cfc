@@ -107,6 +107,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentChargeTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
 	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
@@ -342,11 +343,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getFulfillmentTotal() {
-		var fulfillmentTotal = 0;
+		return precisionEvaluate(getFulfillmentChargeTotal() - getFulfillmentRefundTotal());
+	}
+	
+	public numeric function getFulfillmentChargeTotal() {
+		var fulfillmentChargeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			fulfillmentTotal = precisionEvaluate(fulfillmentTotal + getOrderFulfillments()[i].getFulfillmentCharge());
+			fulfillmentChargeTotal = precisionEvaluate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
-		return fulfillmentTotal;
+		return fulfillmentChargeTotal;
 	}
 	
 	public numeric function getFulfillmentRefundTotal() {
