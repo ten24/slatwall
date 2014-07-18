@@ -737,6 +737,30 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================
+	
+	
+	public any function getConfigStructure() {
+		if(!structKeyExists(variables, "configStructure")) {
+			if(!isNull(getCollectionConfig())) {
+				variables.configStructure = deserializeJSON(this.getCollectionConfig());	
+			} else {
+				variables.configStructure = {};
+				variables.configStructure['baseEntitytName'] = getBaseEntityName();
+			}
+		}
+		return variables.configStructure;
+	}
+	
+	public any function updateCollectionConfig() {
+		setCollectionConfig( serializeJSON(getConfigStructure()) );
+	}
+	
+	
+	
+	
+	
+	
+	
 }
 
 
