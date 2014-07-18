@@ -76,24 +76,19 @@ Notes:
 		</script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></script>
+		
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
-		
-		<!--- New Angular Includes --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/angular.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/slatwall.js"></script>
-		
+
+		<!--- Trigger Print Window --->
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
 				var printWindow = window.open('#request.slatwallScope.getBaseURL()#?slatAction=admin:print.default', '_blank');
 			</script>
 		</cfif>
-		<style type="text/css">
-			.navbar .brand {margin-left:0px;}
-		</style>
 	</head>
-	<body ng-app="slatwallngapp">
+	<body>
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
 				
@@ -368,6 +363,16 @@ Notes:
 			</div>
 		</div>
 		
+		
+		<!--- Async JS Loader --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/asyncloader.js"></script>
+		
+	</body>
+	
+	
+</html>
+</cfoutput>
+		
 		<!---
 		<cfif $.slatwall.setting('globalUsageStats') and getSubsystem(request.context.slatAction) eq "admin">
 			<script type="text/javascript">
@@ -385,7 +390,4 @@ Notes:
 			</script>
 		</cfif>
 		--->
-	</body>
-</html>
-</cfoutput>
 
