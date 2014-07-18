@@ -134,7 +134,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		if ( arguments.subsystem eq '' ) {
 			return '';
 		}
-		if ( !listFindNoCase('admin,frontend,public', arguments.subsystem) ) {
+		if ( !listFindNoCase('admin,client,frontend,public', arguments.subsystem) ) {
 			return 'integrationServices/' & arguments.subsystem & '/';
 		}
 		return arguments.subsystem & '/';
@@ -145,7 +145,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		
 		arguments.fullPath = super.customizeViewOrLayoutPath(argumentcollection=arguments);
 		
-		if(listFindNoCase("admin,public", arguments.pathInfo.subsystem)){
+		if(listFindNoCase("admin,public,", arguments.pathInfo.subsystem)){
 			var customFullPath = replace(replace(replace(arguments.fullPath, "/admin/", "/custom/admin/"), "/frontend/", "/custom/frontend/"), "/public/", "/custom/public/");
 			if(fileExists(expandPath(customFullPath))) {
 				arguments.fullPath = customFullPath;

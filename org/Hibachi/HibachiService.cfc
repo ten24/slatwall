@@ -1,4 +1,4 @@
-<cfcomponent accessors="true" extends="HibachiObject">
+<cfcomponent accessors="true" output="false" extends="HibachiObject">
 	
 	<!--- Import all of the Hibachi services and DAO's --->
 	<cfproperty name="hibachiDAO" type="any">

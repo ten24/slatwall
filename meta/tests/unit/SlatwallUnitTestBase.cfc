@@ -81,6 +81,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		
 		var flushRequired = false;
 		
+
 		for(var i=arrayLen(variables.persistentEntities); i>=1; i--) {
 			flushRequired = true;
 			entityDelete( variables.persistentEntities[i] );
@@ -88,6 +89,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		
 		if(flushRequired) {
 			ormFlush();
+
 		}
 		
 		variables.debugArray = [];
