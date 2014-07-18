@@ -733,7 +733,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
 			
-			getQualifierQualificationDetailsForOrderFulfillment(arguments.qualifier, arguments.order, qualifier);
+			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifier);
 		
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
