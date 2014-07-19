@@ -53,6 +53,7 @@ Notes:
 	<cf_HibachiListingDisplay smartList="#rc.order.getOrderReturnsSmartList()#"
 							  recordDetailAction="admin:entity.detailorderreturn">
 		<cf_HibachiListingColumn tdClass="primary" propertyIdentifier="returnLocation.locationName" />
+		<cf_HibachiListingColumn propertyIdentifier="fulfillmentRefundAmount" />
 		<!---
 		<cf_HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
 		<cf_HibachiListingColumn propertyIdentifier="discountAmount" />
