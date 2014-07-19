@@ -71,10 +71,10 @@ component extends="AdminTestBase" {
 	function taxCategoryManualRateCalculationWorks() {
 
 		// Ensure that the sku setting uses the correct tax category
-		selectSkuSettingTaxCategory( 'Default' );
+		selectSkuSettingTaxCategory( 'TestRunner Manual Rate' );
 
 		// Confirm that the Detail Page is Loaded
-		DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
+		DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=bf046da61f434a58a2be28d099017214', 'DetailTaxCategory');
 		assertPageIsLoaded( DetailTaxCategory );
 		
 		//Create New Manual Rate
@@ -100,12 +100,12 @@ component extends="AdminTestBase" {
 		var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
 		assertEquals(10, totalTaxCell);
 
-		// Go back to Tax Category Listing Page
-		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=444df2c8cce9f1417627bd164a65f133', 'DetailTaxCategory');
+		// Go back to Tax Category Page
+		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=bf046da61f434a58a2be28d099017214', 'DetailTaxCategory');
 		
 		assertPageIsLoaded( DetailTaxCategory );
 
-		DetailTaxCategory.deleteTaxCategoryRate();
+		DetailTaxCategory.deleteTaxCategory();
 
 	}
 

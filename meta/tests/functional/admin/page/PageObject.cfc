@@ -61,17 +61,15 @@ component {
 	}
 	
 	function clickLocator( required string locatorName ) {
-		selenium.click( getLocator(arguments.locatorName) );
+		return selenium.click( getLocator(arguments.locatorName) );
 	}
 	
-	function waitForLocator( required string locatorName ) {
-		var start = getTickCount();
-		selenium.waitForElementPresent( getLocator(arguments.locatorName) );
-		return getTickCount() - start;
+	public any function waitForLocator( required string locatorName ) {
+		return selenium.waitForElementPresent( getLocator(arguments.locatorName) );
 	}
 	
-	function clickLocatorWaitLocator( required string locatorName, required string elementLocatorName ) {
+	public any function clickLocatorWaitLocator( required string locatorName, required string elementLocatorName ) {
 		clickLocator( arguments.locatorName );
-		waitForLocator( arguments.elementLocatorName );
+		return waitForLocator( arguments.elementLocatorName );
 	}
 }

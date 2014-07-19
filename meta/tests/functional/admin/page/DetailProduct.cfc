@@ -2,11 +2,17 @@ component extends="PageObject" {
 	
 	variables.slatAction = "entity.detailproduct";
 	variables.locators = {
-		addSkuButton = 				'//*[@id="tabskus"]/div/a[1]',
-		addSkuModal = 	'//*[@id="adminentityprocessproduct_addsku"]'
+		addSkuButton = 			'//*[@id="tabskus"]/div/a[1]',
+		addSkuModal = 			'//*[@id="adminentityprocessproduct_addsku"]',
+		deleteProductButton = 	'link=Delete',
+		deleteConfirmYes = 		'//*[@id="confirmYesLink"]',
+		addOptionGroupButton = 	'//*[@id="tabskus"]/div/a[2]',
+		addOptionGroupModal = 	'//*[@id="adminentityprocessproduct_addoptiongroup"]',
+		addOptionGroupSelect = 	'//*[@id="adminentityprocessproduct_addoptiongroup"]/div[2]/div/div/fieldset/div/div/select',
+		addOptionGroupOption = 	'//*[@id="adminentityprocessproduct_addoptiongroup"]/div[3]/div/button'
 		
 	};
-	
+
 	public any function init(selenium, pageLoadTime) {
 		variables.title = selenium.getTitle();
 		
@@ -14,12 +20,12 @@ component extends="PageObject" {
 	}
 	
 	public any function addOptionGroup(){
-		selenium.click(addOptionGroupButton());
+		selenium.click(variables.locators['addOptionGroupButton']);
 		
-		selenium.waitForElementPresent(addOptionGroupButton_ModalXPath());
-		selenium.select(addOptionGroupButton_SelectBoxXpath(), 'Test Runner Option Group');
+		selenium.waitForElementPresent(variables.locators['addOptionGroupModal']);
+		selenium.select(variables.locators['addOptionGroupSelect'], 'Test Runner Option Group');
 		
-		selenium.click(addOptionGroupButton_ModalAddOptionGroupButton());
+		selenium.click(variables.locators['addOptionGroupOption']);
 		
 		var loadTime = waitForPageToLoad();
 		
@@ -27,16 +33,24 @@ component extends="PageObject" {
 		
 	}
 	
+	public any function deleteProduct(){
+
+		selenium.click(variables.locators['deleteProductButton']);
+		
+		selenium.waitForElementPresent('//*[@id="adminConfirm"]');
+
+		selenium.click(variables.locators['deleteConfirmYes']);
+		
+		var pageLoadTime = waitForPageToLoad();
+		
+		return new ListProducts(selenium, pageLoadTime);	
+	}
+	
+	
 	public any function addSku( struct formData={} ){
-		//selenium.click(addSkuButton());
-		//selenium.waitForElementPresent(addSkuButton_ModalXPath());
 		
-		//clickLocator('addSkuButton');
-		//waitForLocator('addSkuButton_ModalXPath');
-		
-		
-		
-		clickLocatorWaitLocator('addSkuButton', 'addSkuModal');
+		selenium.click(variables.locators['addSkuButton']);
+		selenium.waitForElementPresent(variables.locators['addSkuModal']);
 		
 		submitForm( 'adminentityprocessproduct_addsku', arguments.formData );
 		
@@ -46,14 +60,14 @@ component extends="PageObject" {
 		
 	}
 	
-	public any function detailPageOfAddedSku(){
-		
-		selenium.click(detailSkuButton());
-		
-		var loadTime = waitForPageToLoad();
-
-		return new DetailSku(selenium, loadTime);
-		
+	public boolean function isAddSkuButtonPresent(){
+		var assertBoolean = selenium.isElementPresent( variables.locators['addSkuButton'] );
+		return assertBoolean;
+	}
+	
+	public boolean function isAddOptionGroupButtonPresent(){
+		var assertBoolean = selenium.isElementPresent( variables.locators['addOptionGroupButton'] );
+		return assertBoolean;
 	}
 	
 	public any function setupSkuSettingTaxCategory( required string){
@@ -67,36 +81,5 @@ component extends="PageObject" {
 		selenium.click('//*[@id="adminentitysavesetting"]/div[3]/div/button');
 		
 	}
-	
-	//=============== Page Specific Locators ==========
-	
-	//Adding Option Group Locators
-	private any function addOptionGroupButton(){
-		return '//*[@id="tabskus"]/div/a[2]';
-	}
-	private any function addOptionGroupButton_ModalXPath(){
-		return '//*[@id="adminentityprocessproduct_addoptiongroup"]';
-	}
-	private any function addOptionGroupButton_SelectBoxXpath(){
-		return '//*[@id="adminentityprocessproduct_addoptiongroup"]/div[2]/div/div/fieldset/div/div/select';
-	}
-	private any function addOptionGroupButton_ModalAddOptionGroupButton(){
-		return '//*[@id="adminentityprocessproduct_addoptiongroup"]/div[3]/div/button';
-	}
-	
-	//Adding Sku Locators
-	private any function addSkuButton(){
-		return '//*[@id="tabskus"]/div/a[1]';
-	}
-	private any function addSkuButton_ModalXPath(){
-		return '//*[@id="adminentityprocessproduct_addsku"]';
-	}
-	
-	//Removing Sku Locators
-	private any function detailSkuButton(){
-		return '//*[@id="adminentitydetailsku"]/div/a[1]';
-	}
-	
-	
 	
 }
