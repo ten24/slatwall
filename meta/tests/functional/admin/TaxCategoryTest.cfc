@@ -98,15 +98,21 @@ component extends="AdminTestBase" {
 		
 		// Convert string to numbers and assert totalTax equals 10 dollars as expected
 		var totalTaxCell = LSParseCurrency(selenium.getText('//*[@id="hibachiPropertyTable1"]/tbody/tr[5]/td[2]'));
-		assertEquals(10, totalTaxCell);
-
+		
+		if( totalTaxCell == 10 ){
+			var assertionBoolean = true;
+		} else {
+			var assertionBoolean = false;
+		}
+		
 		// Go back to Tax Category Page
 		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=bf046da61f434a58a2be28d099017214', 'DetailTaxCategory');
 		
 		assertPageIsLoaded( DetailTaxCategory );
 
 		DetailTaxCategory.deleteTaxCategory();
-
+		
+		assert( assertionBoolean );
 	}
 
 	//Tests Tax Address Lookup order
