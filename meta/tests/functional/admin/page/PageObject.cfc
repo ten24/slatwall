@@ -48,4 +48,28 @@ component {
 			return false;
 		}
 	}
+	
+	function getLocator( required string locatorName ) {
+		if(!structKeyExists(variables.locators, arguments.locatorName)) {
+			throw("There is no locator defined in your page object called: #arguments.locatorName#")
+		}
+		return variables.locators[ arguments.locator ];
+	}
+	
+	function getLocatorText( required string locatorName ) {
+		return selenium.getText( getLocator(arguments.locatorName) );
+	}
+	
+	function clickLocator( required string locatorName ) {
+		return selenium.click( getLocator(arguments.locatorName) );
+	}
+	
+	public any function waitForLocator( required string locatorName ) {
+		return selenium.waitForElementPresent( getLocator(arguments.locatorName) );
+	}
+	
+	public any function clickLocatorWaitLocator( required string locatorName, required string elementLocatorName ) {
+		clickLocator( arguments.locatorName );
+		return waitForLocator( arguments.elementLocatorName );
+	}
 }
