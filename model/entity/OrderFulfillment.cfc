@@ -476,14 +476,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	
 	public any function setAccountAddress( required any accountAddress ) {
 		
-		// If the shippingAddress is a new shippingAddress
-		if(getShippingAddress().getNewFlag()) {
-			setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
-		
-		// Else if there was no accountAddress before, or the accountAddress has changed
-		} else if (!structKeyExists(variables, "accountAddress") || (structKeyExists(variables, "accountAddress") && variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
-			getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+		if(!isNull(arguments.accountAddress)) {
+			// If the shippingAddress is a new shippingAddress
+			if(getShippingAddress().getNewFlag()) {
+				setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 			
+			// Else if there was no accountAddress before, or the accountAddress has changed
+			} else if (!structKeyExists(variables, "accountAddress") || (structKeyExists(variables, "accountAddress") && variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+				getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+				
+			}	
 		}
 		
 		// Set the actual accountAddress
