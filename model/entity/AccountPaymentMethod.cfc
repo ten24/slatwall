@@ -54,6 +54,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="accountPaymentMethodName" hb_populateEnabled="public" ormType="string";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
+	property name="companyPaymentMethodFlag" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
@@ -130,6 +131,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.orderPayment.getPaymentMethod() );
 		
+		// Company PaymentMethod Flag
+		if(!isNull(arguments.orderPayment.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.orderPayment.getCompanyPaymentMethodFlag() );
+		}
+		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
@@ -180,6 +186,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.accountPayment.getPaymentMethod() );
+		
+		// Company PaymentMethod Flag
+		if(!isNull(arguments.accountPayment.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.accountPayment.getCompanyPaymentMethodFlag() );
+		}
 		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.accountPayment.getPaymentMethod().getPaymentMethodType())) {
