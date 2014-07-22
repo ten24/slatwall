@@ -55,7 +55,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="checkNumberEncrypted" ormType="string";
-	property name="companyPaymentMethodFlag" ormType="boolean";
+	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
@@ -189,7 +189,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			
 			// Try also copying a billingAccountAddress first from the accountPaymentMethod
 			if(!isNull(arguments.accountPaymentMethod.getBillingAccountAddress())) {
-				setBillingAccountAddress( arguments.orderPayment.getBillingAccountAddress() );
+				setBillingAccountAddress( arguments.accountPaymentMethod.getBillingAccountAddress() );
 			}
 		}
 		
