@@ -189,7 +189,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			
 			// Try also copying a billingAccountAddress first from the accountPaymentMethod
 			if(!isNull(arguments.accountPaymentMethod.getBillingAccountAddress())) {
-				setBillingAccountAddress( arguments.orderPayment.getBillingAccountAddress() );
+				setBillingAccountAddress( arguments.accountPaymentMethod.getBillingAccountAddress() );
 			}
 		}
 		
