@@ -315,7 +315,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	}
 	
 	public void function setCreditCardNumber(required string creditCardNumber) {
-		variables.creditCardNumber = arguments.creditCardNumber;
+		variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
 		setCreditCardLastFour(Right(arguments.creditCardNumber, 4));
 		setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber));
 		if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) && getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) {
