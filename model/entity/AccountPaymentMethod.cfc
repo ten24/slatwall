@@ -163,6 +163,15 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		// Credit Card & Term Payment
 		if(listFindNoCase("creditCard,termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setBillingAddress( arguments.orderPayment.getBillingAddress().copyAddress( true ) );
+			
+			// Try also copying a billingAccountAddress first from the orderPayment
+			if(!isNull(arguments.orderPayment.getBillingAccountAddress())) {
+				setBillingAccountAddress( arguments.orderPayment.getBillingAccountAddress() );
+				
+			// If it isn't found then check the order
+			} else if (!isNull(arguments.orderPayment.getOrder()) && !isNull(arguments.orderPayment.getOrder().getBillingAccountAddress())) {
+				setBillingAccountAddress( arguments.orderPayment.getOrder().getBillingAccountAddress() );
+			}
 		}
 		
 	}
