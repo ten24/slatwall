@@ -2,9 +2,6 @@
 	"conditions":{
 	    "existingSkus":{
 	    	"skus":{"minCollection":2}
-	    },
-		"existingOptionGroups":{
-	    	"optionGroupsStruct":{"minCollection":1}
 	    }
 	},
 	"properties":{
@@ -13,7 +10,6 @@
 		    	{"contexts":"addSubscriptionSku","inList":"subscription"}
 		 ],
 		"optionGroupCount":					[
-				{"contexts":"addSku","conditions":"existingOptionGroups","eq":0},
 				{"contexts":"addSku","conditions":"existingSkus","eq":0},
 				{"contexts":"addOptionGroup,addOption","conditions":"existingSkus","gt":0}
 		],
