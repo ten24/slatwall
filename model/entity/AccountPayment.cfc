@@ -54,6 +54,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="checkNumberEncrypted" ormType="string";
+	property name="companyPaymentMethodFlag" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
@@ -186,6 +187,11 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.accountPaymentMethod.getPaymentMethod() );
+		
+		// Company PaymentMethod Flag
+		if(!isNull(arguments.accountPaymentMethod.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.accountPaymentMethod.getCompanyPaymentMethodFlag() );
+		}
 		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
@@ -454,7 +460,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	public void function setCreditCardNumber(required string creditCardNumber) {
 		if(len(arguments.creditCardNumber)) {
-			variables.creditCardNumber = arguments.creditCardNumber;
+			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
 			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
 			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
 		} else {
