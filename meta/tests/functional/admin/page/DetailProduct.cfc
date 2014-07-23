@@ -2,7 +2,7 @@ component extends="PageObject" {
 	
 	variables.slatAction = "entity.detailproduct";
 	variables.locators = {
-		addSkuButton = 			'//*[@id="tabskus"]/div/a[1]',
+		addSkuButton = 			'//*[@id="tabskus"]/div/a[@title="Add Sku"]',
 		addSkuModal = 			'//*[@id="adminentityprocessproduct_addsku"]',
 		deleteProductButton = 	'link=Delete',
 		deleteConfirmYes = 		'//*[@id="confirmYesLink"]',
