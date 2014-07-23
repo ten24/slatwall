@@ -14,7 +14,8 @@ component extends="PageObject"{
 		},
 		"Orders" = {
 			"Orders" = "ListOrders", 
-			"Carts & Quotes" = "ListCartsAndQuotes"
+			"Carts & Quotes" = "ListCartsAndQuotes",
+			"Vendor Orders" = "ListVendorOrders"
 		},
 		"Config" = {
 			"Tax Categories" = "ListTaxCategories",
