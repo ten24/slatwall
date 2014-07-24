@@ -59,31 +59,69 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 
 			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
 
-			// Build Request XML
-			var xmlRequestPacket = "";
-			savecontent variable="xmlRequestPacket" {
-				include "QuotationRequest.cfm";
+			var requestDataStruct = {
+				CustomerCode = arguments.requestBean.getAccountID(),
+				DocDate = dateFormat(now(),'yyyy-mm-dd'),
+				DocCode = arguments.requestBean.getOrderID(),
+				DocType = 'salesInvoice',
+				Addresses = [
+					{
+						AddressCode = 1,
+						Line1 = addressTaxRequestItems[1].getTaxStreetAddress(),
+						Line2 = addressTaxRequestItems[1].getTaxStreet2Address(),
+						City = addressTaxRequestItems[1].getTaxCity(),
+						Region = addressTaxRequestItems[1].getTaxStateCode(),
+						Country = addressTaxRequestItems[1].getTaxCountryCode(),
+						PostalCode = addressTaxRequestItems[1].getTaxPostalCode()
+					},
+					{
+						AddressCode = 2,
+						Line1 = setting('sourceStreetAddress'),
+						Line2 = setting('sourceStreetAddress2'),
+						City = setting('sourceCity'),
+						Region = setting('sourceRegion'),
+						Country = setting('sourceCountry'),
+						PostalCode = setting('sourcePostalCode')
+					}
+				],
+				Lines = []
+			};
+			
+			var count = 0;
+			for(var item in addressTaxRequestItems) {
+				count++;
+				
+				var itemData = {};
+				itemData.LineNo = count;
+				itemData.DestinationCode = 1;
+				itemData.OriginCode = 2;
+				itemData.ItemCode = item.getOrderItemID();
+				itemData.TaxCode = 'NT';
+				itemData.Description = 'Item Description';
+				itemData.Qty = item.getQuantity();
+				itemData.Amount = item.getExtendedPriceAfterDiscount();
+				
+				arrayAppend(requestDataStruct.Lines, itemData);
 			}
-
+			
 			var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
-
+			
 			// Setup Request to push to Avatax
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
-			httpRequest.setUrl("https://development.avalara.net/1.0/tax/get.xml");
-			//httpRequest.addParam(type="header", name="Content-type", value="application/xml");
-			//httpRequest.addParam(type="header", name="Content-length", value="#len(xmlRequestPacket)#");
+			httpRequest.setUrl("https://development.avalara.net/1.0/tax/get");
+			httpRequest.addParam(type="header", name="Content-type", value="application/json");
+			httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
 			httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
-			//httpRequest.addParam(type="xml", value=xmlRequestPacket);
+			httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 			
+			writeDump(requestDataStruct);
+			writeDump(setting('accountNo'));
+			writeDump(setting('accessKey'));
+			writeDump(base64Auth);
 			writeDump(httpRequest.send().getPrefix().fileContent);
 			abort;
 			
-			// Parse response and set to struct
-			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-
-			writeDump(xmlResponse);
-			abort;
 
 		}
 
