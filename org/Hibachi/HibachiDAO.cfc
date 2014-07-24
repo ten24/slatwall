@@ -123,7 +123,13 @@
 			return exportQry;
 		}
 		
-		
+		public any function getAccountByAuthToken(required string authToken) {
+			var account = ormExecuteQuery("SELECT acc FROM SlatwallAccountAuthentication accauth INNER JOIN accauth.account acc WHERE (accauth.expirationDateTime is null or accauth.expirationDateTime > :now) and accauth.authToken is not null and accauth.authToken = :authToken", {now=now(), authToken=arguments.authToken}, true);
+			if(isNull(account)) {
+				return entityNew("SlatwallAccount");
+			}
+			return account;
+		}
 		
 		// ===================== START: Private Helper Methods ===========================
 		

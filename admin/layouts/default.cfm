@@ -60,7 +60,7 @@ Notes:
 
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
-		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
@@ -240,6 +240,7 @@ Notes:
 			</div><!-- /.container-fluid -->
 		</nav><!-- /.navbar -->
 		
+		<!---
 		<div id="search-results" class="search-results">
 			<div class="container-fluid">
 				<div class="row">
@@ -327,6 +328,7 @@ Notes:
 				</div>
 			</div>
 		</div>
+		--->
 		
 		<div class="container-fluid">
 			<div class="row">
