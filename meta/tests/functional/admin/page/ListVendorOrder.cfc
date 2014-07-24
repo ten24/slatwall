@@ -12,6 +12,7 @@ component extends="PageObject" {
 		selenium.click(variables.locators['addVendorOrderButton']);
 		selenium.waitForElementPresent(variables.locators['addVendorOrderModal']);
 		populateForm(arguments.formData);
+		//Checks to see if autocomplete element is present
 		return selenium.isElementPresent(variables.locators['addVendorNameAutoComplete']);
 	}
 	
