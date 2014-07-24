@@ -181,6 +181,14 @@ component extends="FW1.framework" {
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setPropperSession();
 			
+			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
+			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
+				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
+				if(!isNull(authTokenAccount)) {
+					getHibachiScope().getSession().setAccount( authTokenAccount );
+				}
+			}
+			
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
@@ -191,7 +199,7 @@ component extends="FW1.framework" {
 		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		
-		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
 		
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {
@@ -462,12 +470,20 @@ component extends="FW1.framework" {
 	public void function setupResponse() {
 		param name="request.context.ajaxRequest" default="false";
 		param name="request.context.ajaxResponse" default="#structNew()#";
+		param name="request.context.apiRequest" default="false";
+		param name="request.context.apiResponse" default="#structNew()#";
 		
 		endHibachiLifecycle();
 		
 		// Announce the applicatoinRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
+		// Check for an API Response
+		if(request.context.apiRequest) {
+			writeOutput( serializeJSON(request.context.apiResponse) );
+		}
+		
+		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			if(isStruct(request.context.ajaxResponse)){
 				if(structKeyExists(request.context, "messages")) {
