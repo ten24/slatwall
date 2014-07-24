@@ -34,6 +34,12 @@ component {
 		return getTickCount() - start;
 	}
 	
+	function populateForm( struct formData={} ) {
+		for(var key in arguments.formData) {
+			selenium.type( key, arguments.formData[key] );
+		}	
+	}
+	
 	function submitForm( required string formID, struct formData={} ) {
 		for(var key in arguments.formData) {
 			selenium.type( key, arguments.formData[key] );

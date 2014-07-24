@@ -11,9 +11,7 @@ component extends="PageObject" {
 	public boolean function autoCompleteVendorOrderTest( struct formData={} ){
 		selenium.click(variables.locators['addVendorOrderButton']);
 		selenium.waitForElementPresent(variables.locators['addVendorOrderModal']);
-		for(var key in arguments.formData) {
-			selenium.type( key, arguments.formData[key] );
-		}
+		populateForm(arguments.formData);
 		return selenium.isElementPresent(variables.locators['addVendorNameAutoComplete']);
 	}
 	
