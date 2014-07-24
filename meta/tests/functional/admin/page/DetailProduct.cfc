@@ -2,11 +2,11 @@ component extends="PageObject" {
 	
 	variables.slatAction = "entity.detailproduct";
 	variables.locators = {
-		addSkuButton = 			'//*[@id="tabskus"]/div/a[1]',
+		addSkuButton = 			'//*[@id="tabskus"]/div/a[@title="Add Sku"]',
 		addSkuModal = 			'//*[@id="adminentityprocessproduct_addsku"]',
 		deleteProductButton = 	'link=Delete',
 		deleteConfirmYes = 		'//*[@id="confirmYesLink"]',
-		addOptionGroupButton = 	'//*[@id="tabskus"]/div/a[2]',
+		addOptionGroupButton = 	'//*[@id="tabskus"]/div/a[@title="Add Option Group"]',
 		addOptionGroupModal = 	'//*[@id="adminentityprocessproduct_addoptiongroup"]',
 		addOptionGroupSelect = 	'//*[@id="adminentityprocessproduct_addoptiongroup"]/div[2]/div/div/fieldset/div/div/select',
 		addOptionGroupOption = 	'//*[@id="adminentityprocessproduct_addoptiongroup"]/div[3]/div/button'
