@@ -73,7 +73,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				logHibachi('#integration.getIntegrationName()# Tax Integration Rates Request - Started');
 				
 				// Inside of a try/catch call the 'getTaxRates' method of the integraion
-				try {
+				//try {
 					
 					// Get the API we are going to call
 					var integrationTaxAPI = integration.getIntegrationCFC("tax");
@@ -81,11 +81,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Call the API and store the responseBean by integrationID
 					ratesResponseBeans[ integration.getIntegrationID() ] = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
 					
-				} catch(any e) {
+				//} catch(any e) {
 					
-					logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call getTaxRates()', true);
-					logHibachiException(e);
-				}
+					//logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call getTaxRates()', true);
+					//logHibachiException(e);
+				//}
 				
 				logHibachi('#integration.getIntegrationName()# Tax Integration Rates Request - Finished');	
 			}
