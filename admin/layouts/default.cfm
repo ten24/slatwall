@@ -49,7 +49,7 @@ Notes:
 
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-App="slatwall">
 	<head>
 		<meta charset="utf-8">
 		<title>#rc.pageTitle# &##124; Slatwall</title>
@@ -62,6 +62,7 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/global.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
+		<link id="baseURL" href="#request.slatwallScope.getBaseURL()#"/>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
@@ -365,8 +366,15 @@ Notes:
 		
 		
 		<!--- Async JS Loader --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/asyncloader.js"></script>
-		
+		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/asyncloader.js"></script>--->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/js/slatwall.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/slatwalladmin.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/services/slatwallservice.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/controllers/ngtest.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/collection.js"></script>
 	</body>
 	
 	

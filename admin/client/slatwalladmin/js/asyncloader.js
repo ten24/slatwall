@@ -13,8 +13,9 @@ $script([
   '/client/lib/angular/angular.min.js',
   '/client/js/slatwall.js',
   '/admin/client/js/slatwalladmin.js',
-  '/admin/client/js/controllers/ngtest.js'
+  '/admin/client/js/controllers/ngtest.js',
+  '/admin/client/js/directives/collection.js'
 ], function() {
   // when all is done, execute bootstrap angular application
-  angular.bootstrap(document, ['slatwalladmin']);
+  angular.bootstrap(document, ['slatwall']);
 });
