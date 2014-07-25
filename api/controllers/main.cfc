@@ -15,6 +15,11 @@ component output="false" accessors="true" {
 	}
 	
 	public any function get( required struct rc ) {
+		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
+			create a base default properties function that can be overridden at the entity level via function
+			handle accessing collecitons by id
+		*/
+		
 		
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
@@ -56,14 +61,6 @@ component output="false" accessors="true" {
 				rc.response = collectionService.getFormattedPageRecords(paginatedCollectionOfEntities,propertyIdentifiers);
 				
 			} else {
-				/*if(!isCollection){
-					var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
-					for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
-						rc.response[ propertyIdentifiers[p] ] = entity.getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p], formatValue=true );
-					}
-				}else{
-					
-				}*/
 				//if we have an entityId then add the entity id filter and expect that we return one object
 				
 				var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
