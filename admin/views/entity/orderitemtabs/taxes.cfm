@@ -52,6 +52,9 @@ Notes:
 	<cf_HibachiListingDisplay smartList="#rc.orderItem.getAppliedTaxesSmartList()#">
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryRate.taxCategory.taxCategoryName" />
 		<cf_HibachiListingColumn propertyIdentifier="taxCategoryRate.addressZone.addressZoneName" />
+		<cf_HibachiListingColumn propertyIdentifier="taxCategoryRate.taxIntegration.integrationName" />
+		<cf_HibachiListingColumn propertyIdentifier="taxImpositionName" />
+		<cf_HibachiListingColumn propertyIdentifier="taxJurisdictionName" />
 		<cf_HibachiListingColumn propertyIdentifier="taxRate" />
 		<cf_HibachiListingColumn propertyIdentifier="taxAmount" />
 	</cf_HibachiListingDisplay>
