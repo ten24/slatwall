@@ -46,32 +46,35 @@
 Notes:
 
 */
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+	
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "tax";
+	}
+	
+	public string function getDisplayName() {
+		return "Avatax";
+	}
+	
+	public struct function getSettings() {
+		var settings = {
+			accessKey = {fieldType="password", encryptValue=true},
+			accountNo = {fieldType="text"},
+			sourceStreetAddress = {fieldType="text"},
+			sourceStreetAddress2 = {fieldType="text"},
+			sourceCity = {fieldType="text"},
+			sourceRegion = {fieldType="text"},
+			sourceCountry = {fieldType="text"},
+			sourcePostalCode = {fieldType="text"},
+			testingFlag = {fieldType="yesno", defaultValue="1"}
+			
+		};
 
-component output="false" accessors="true" extends="Slatwall.model.transient.RequestBean" {
-
-	// Tax Address Properties
-	property name="taxAddressID" type="string"; 
-	property name="taxStreetAddress" type="string";  
-	property name="taxStreet2Address" type="string";
-	property name="taxLocality" type="string";
-	property name="taxCity" type="string";   
-	property name="taxStateCode" type="string";   
-	property name="taxPostalCode" type="string";   
-	property name="taxCountryCode" type="string";  
+		return settings;
+	}
 	
-	// Order Item Price and Quantity Properies
-	property name="orderItemID" type="string" default="";
-	property name="price" type="string" default="";
-	property name="quantity" type="string" default="";
-	property name="extendedPrice" type="string" default="";
-	property name="discountAmount" type="string" default="";
-	property name="extendedPriceAfterDiscount" type="string" default="";
-	
-	// Tax Codes
-	property name="taxCategoryCode" type="string" default="";
-	property name="taxCategoryRateCode" type="string" default="";
-	
-	// Reference Objects
-	property name="orderItem" type="any" default="";
-	property name="taxAddress" type="any" default="";
 }
