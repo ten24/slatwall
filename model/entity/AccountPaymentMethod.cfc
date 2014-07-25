@@ -366,6 +366,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			
 		}
 		
+		// If the accountAddress didn't have an account set to it for some reason, then we can copy this account over to it.  Specifically this is for the addAccountPaymentMethod public function public:account.addAccountPaymentMethod
+		if( isNull(arguments.accountAddress.getAccount()) && !isNull(getAccount()) ) {
+			arguments.accountAddress.setAccount( getAccount() );
+		}
+		
 		// Set the actual accountAddress
 		variables.billingAccountAddress = arguments.accountAddress;
 	}

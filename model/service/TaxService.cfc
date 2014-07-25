@@ -316,8 +316,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		taxRatesRequestBean.setOrderID( arguments.order.getOrderID() );
-		if(!isNull(arguments.order.getAccount()))
-		taxRatesRequestBean.setAccountID( arguments.order.getAccount().getAccountID() );
+		taxRatesRequestBean.setOrder( arguments.order );
+		if(!isNull(arguments.order.getAccount())) {
+			taxRatesRequestBean.setAccountID( arguments.order.getAccount().getAccountID() );
+			taxRatesRequestBean.setAccount( arguments.order.getAccount() );
+		}
 		
 		// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
 		for(var orderItem in arguments.order.getOrderItems()) {
