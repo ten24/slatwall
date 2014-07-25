@@ -3,7 +3,7 @@
 	<Columns>
 		<column name="vendorEmailAddressID" fieldtype="id" />
 		<column name="emailAddress" />
-		<column name="vendorID" fieldtype="id" circular="true" />
+		<column name="vendorID" fieldtype="id" />
 	</Columns>
 	<Records>
 		<Record vendorEmailAddressID="4028810a475a5990014768d1207e0433" emailAddress="testrunnervendor@testrunner.com" vendorID="4028810a475a5990014768d1206b0432" />

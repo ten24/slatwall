@@ -5,15 +5,8 @@ component extends="PageObject" {
 	variables.locators = {
 		addVendorOrderButton = '//*[@title="Add Vendor Order"]',
 		addVendorOrderModal = '//*[@id="adminModal"]/form',
-		addVendorNameAutoComplete = '//*[@class="vendorid"]'
+		addVendorOrderVendorSuggestionTestRunnerVendor = '//*[@id="suggestionoption4028810a475a5990014768d1206b0432"]',
+		addVendorOrderHiddenVendorIDField = 'vendor.vendorID'
 	};
-
-	public boolean function autoCompleteVendorOrderTest( struct formData={} ){
-		selenium.click(variables.locators['addVendorOrderButton']);
-		selenium.waitForElementPresent(variables.locators['addVendorOrderModal']);
-		populateForm(arguments.formData);
-		//Checks to see if autocomplete element is present
-		return selenium.isElementPresent(variables.locators['addVendorNameAutoComplete']);
-	}
 	
 }
