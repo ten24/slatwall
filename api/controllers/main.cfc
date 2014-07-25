@@ -2,6 +2,7 @@ component output="false" accessors="true" {
 	
 	property name="fw" type="any";
 	property name="hibachiService" type="any";
+	property name="collectionService" type="any";
 	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -13,71 +14,77 @@ component output="false" accessors="true" {
 		getFW().setView("public:main.blank");
 	}
 	
-	private string function capitalCase(required string phrase){
-        return reReplace(arguments.phrase, "\b(\w)(\w*)?\b", "\U\1\L\2", "ALL"); 
-	}
-	
 	public any function get( required struct rc ) {
+		
+		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
 			arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
 			arguments.rc.apiResponse['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
 				
 		} else {
 			
-			var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
+			//check if a collection exists by using entityName as collectionCode
+			var collectionEntity = collectionService.getCollectionByCollectionCode(entityName);
+			var baseEntityName = '';
+			var isCollection = false;
+			if(!isNull(collectionEntity)){
+				//get the base entity that we can get propertyIdentifiers from
+				baseEntityName = collectionEntity.getBaseEntityName();
+				isCollection = true;
+			}else{
+				//if we didn't find an existing collection then is this one of our basic entities
+				var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
+				baseEntityName = arguments.rc.entityName;
+				collectionEntity = collectionService.getTransientCollectionByEntityName(arguments.rc.entityName);
+			}
 			
-			// Lets figure out the properties that need to be returned
-			if(!structKeyExists(rc, "propertyIdentifiers")) {
-				rc.propertyIdentifiers = "";
-				var entityProperties = getHibachiService().getPropertiesByEntityName( rc.entityName );
-				
-				for(var i=1; i<=arrayLen(entityProperties); i++) {
-					if( (!structKeyExists(entityProperties[i], "fieldtype") || entityProperties[i].fieldtype == "ID") && (!structKeyExists(entityProperties[i], "persistent") || entityProperties[i].persistent)) {
-						rc.propertyIdentifiers = listAppend(rc.propertyIdentifiers, entityProperties[i].name);
-					} else if(structKeyExists(entityProperties[i], "fieldtype") && entityProperties[i].fieldType == "many-to-one") {
-						rc.propertyIdentifiers = listAppend(rc.propertyIdentifiers, "#entityProperties[i].name#.#getHibachiService().getPrimaryIDPropertyNameByEntityName(entityProperties[i].cfc)#" );
-					}
-				}
+			//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
+			if(!structKeyExists(rc, "propertyIdentifiersList")) {
+				var entityProperties = getHibachiService().getPropertiesByEntityName( baseEntityName );
+				rc.propertyIdentifiersList = collectionService.getPropertyIdentifiersList(entityProperties);
 			}
 			
 			// Turn the property identifiers into an array
-			var piArray = listToArray( rc.propertyIdentifiers );
+			var propertyIdentifiers = listToArray( rc.propertyIdentifiersList );
 			rc.response = {};
 			
+			//check if we have an have an id. If so filter on the id otherwise give us paginated records
 			if(!structKeyExists(arguments.rc, "entityID")) {
-				// parse rc looking for property keys that belong to this entity... and call entityLoad
-				variables.collectionService = "collectionService";
-				var collectionEntity = request.slatwallScope.getService( variables.collectionService ).newCollection();
-				var capitalCaseEntityName = capitalCase(entityName);
-				collectionEntity.setBaseEntityName('Slatwall#capitalCaseEntityName#');
-				var collectionConfigStruct = {
-					baseEntityName="Slatwall#capitalCaseEntityName#",
-					baseEntityAlias="#capitalCaseEntityName#"
-				};
-				collectionEntity.setCollectionConfigStruct(collectionConfigStruct);
-				var collectionListPageRecords = collectionEntity.getPageRecords();
-				
-				
-				rc.response[ "pageRecords" ] = [];
-				for(var i=1; i<=arrayLen(collectionListPageRecords); i++) {
-					var thisRecord = {};
-					for(var p=1; p<=arrayLen(piArray); p++) {
-						var value = collectionListPageRecords[i].getValueByPropertyIdentifier( propertyIdentifier=piArray[p], formatValue=true );
-						if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-							thisRecord[ piArray[p] ] = value & " ";
-						} else {
-							thisRecord[ piArray[p] ] = value;
-						}
-					}
-					arrayAppend(rc.response[ "pageRecords" ], thisRecord);
-				}
-				
+				//get the paginated records
+				var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+				//format the records prior to serialization based on the property Idenifiers that should be returned
+				rc.response = collectionService.getFormattedPageRecords(paginatedCollectionOfEntities,propertyIdentifiers);
 				
 			} else {
-				var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
-				for(var p=1; p<=arrayLen(piArray); p++) {
-					rc.response[ piArray[p] ] = entity.getValueByPropertyIdentifier( propertyIdentifier=piArray[p], formatValue=true );
+				/*if(!isCollection){
+					var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
+					for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
+						rc.response[ propertyIdentifiers[p] ] = entity.getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p], formatValue=true );
+					}
+				}else{
+					
+				}*/
+				//if we have an entityId then add the entity id filter and expect that we return one object
+				
+				var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+				if(!structKeyExists(collectionConfigStruct,'filterGroups')){
+					collectionConfigStruct.filterGroups = [];
 				}
+				var capitalCaseEntityName = collectionService.capitalCase(arguments.rc.entityName);
+				var propertyIdentifier = capitalCaseEntityName & '.#arguments.rc.entityName#ID';
+				var filterStruct = collectionService.createFilterStruct(propertyIdentifier,'=',rc.entityID);
+				
+				var filterGroupStruct.filterGroup = [];
+				arrayappend(filterGroupStruct.filterGroup,filterStruct);
+				
+				arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
+				
+				var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+				
+				for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
+					rc.response[ propertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p], formatValue=true );
+				}
+				
 				// return that entity based on the ID
 			}
 			arguments.rc.apiResponse = serializeJSON(rc.response);

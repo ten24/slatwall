@@ -144,6 +144,70 @@ component extends="HibachiService" accessors="true" output="false" {
 		return returnArray;
 	}
 	
+	public string function capitalCase(required string phrase){
+        return reReplace(arguments.phrase, "\b(\w)(\w*)?\b", "\U\1\L\2", "ALL"); 
+	}
+	
+	public any function getTransientCollectionByEntityName(required string entityName){
+		var collectionEntity = this.newCollection();
+		var capitalCaseEntityName = capitalCase(arguments.entityName);
+		collectionEntity.setBaseEntityName('Slatwall#capitalCaseEntityName#');
+		var collectionConfigStruct = {
+			baseEntityName="Slatwall#capitalCaseEntityName#",
+			baseEntityAlias="#capitalCaseEntityName#"
+		};
+		collectionEntity.setCollectionConfigStruct(collectionConfigStruct);
+		return collectionEntity;
+	}
+	
+	public any function getFormattedPageRecords(required any paginatedCollectionOfEntities, required array propertyIdentifiers){
+		var formattedPageRecords[ "pageRecords" ] = [];
+		for(var i=1; i<=arrayLen(arguments.paginatedCollectionOfEntities); i++) {
+			var thisRecord = {};
+			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
+				var value = arguments.paginatedCollectionOfEntities[i].getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifiers[p], formatValue=true );
+				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+					thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
+				} else {
+					thisRecord[ arguments.propertyIdentifiers[p] ] = value;
+				}
+			}
+			arrayAppend(formattedPageRecords[ "pageRecords" ], thisRecord);
+		}
+		return formattedPageRecords;
+	}
+	
+	public string function getPropertyIdentifiersList(required any entityProperties){
+		// Lets figure out the properties that need to be returned
+		var propertyIdentifiers = "";
+			
+		for(var i=1; i<=arrayLen(arguments.entityProperties); i++) {
+			if( (!structKeyExists(arguments.entityProperties[i], "fieldtype") || arguments.entityProperties[i].fieldtype == "ID") && (!structKeyExists(arguments.entityProperties[i], "persistent") || arguments.entityProperties[i].persistent)) {
+				propertyIdentifiers = listAppend(propertyIdentifiers, arguments.entityProperties[i].name);
+			} else if(structKeyExists(arguments.entityProperties[i], "fieldtype") && arguments.entityProperties[i].fieldType == "many-to-one") {
+				propertyIdentifiers = listAppend(propertyIdentifiers, "#arguments.entityProperties[i].name#.#this.getPrimaryIDPropertyNameByEntityName(arguments.entityProperties[i].cfc)#" );
+			}
+		}
+		return propertyIdentifiers;
+	}
+	
+	public struct function createFilterStruct(required string propertyIdentifier, required string comparisonOperator, required string value){
+		var filterStruct = {
+			propertyIdentifier=arguments.propertyIdentifier,
+			comparisonOperator = arguments.comparisonOperator,
+			value = arguments.value
+		};
+		return filterStruct;
+	}
+	
+	/*public void function createFilterGroupStruct(array filterGroups){
+		var filterGroupStruct = [];
+		for(filterGroup in filterGroups){
+			arrayApend(filterGroupStruct,filterGroup);
+		}
+		return filterGroupStruct;
+	}*/
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
