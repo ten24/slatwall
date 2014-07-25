@@ -23,6 +23,9 @@ component extends="AdminTestBase" {
 		// Make sure that the option is there now, (this is a bit redundent because the line above will throw an error if the locator never shows up )
 		assert(ListVendorOrder.isLocatorPresent('addVendorOrderVendorSuggestionTestRunnerVendor'));
 		
+		// Make sure the hidden input is blank
+		assertEquals('', ListVendorOrder.getLocatorValue('addVendorOrderHiddenVendorIDField') );
+		
 		// Click the option
 		ListVendorOrder.mousedownLocator( 'addVendorOrderVendorSuggestionTestRunnerVendor' );
 		
