@@ -58,13 +58,17 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="billToPostalCode" type="string";   
 	property name="billToCountryCode" type="string";  
 	
-	//TaxRateItemRequestBeans 
+	// TaxRateItemRequestBeans
 	property name="taxRateItemRequestBeans" type="array";
 	property name="taxRateItemRequestBeansByAddressID" type="struct";
 	
-	//Header Element Properties 
+	// Pertinent Reference Information
+	property name="accountID" type="string"; 
 	property name="orderID" type="string";
-	property name="accountID" type="string";
+	
+	// Reference Objects
+	property name="account" type="any";
+	property name="order" type="any";
 	
 	public any function init() {
 		// Set defaults
