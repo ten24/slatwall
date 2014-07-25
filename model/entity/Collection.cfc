@@ -351,31 +351,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return HQL;
 	}
 	
-	
-	
-	/*public void function addFilterGroupStruct(){
-		if(!structKeyExists(this.getCollectionConfigStruct,'filterGroups')){
-			variables.collectionConfigStruct['filterGroups'] = [];
-		}
-		var filterGroup = []
-		
-		variables.collectionConfigStruct['filterGroups'];
-		
-		
-		"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.firstName",
-									"comparisonOperator":"=",
-									"value":"Ryan"
-								}
-							]
-							
-						}
-					]
-	} */
-	
 	private string function getHQLForCollectionFilter(required struct filter){
 		var collectionFilterHQL = '';
 		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
@@ -753,6 +728,10 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// ===============  END: Custom Formatting Methods =====================
 	
 	// ============== START: Overridden Implicit Getters ===================
+	
+	public any function getDefaultProperties(){
+		return super.getDefaultProperties('pageRecords,pageRecordsStart,currentPageDeclaration');
+	}
 	
 	// ==============  END: Overridden Implicit Getters ====================
 	

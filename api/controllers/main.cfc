@@ -17,9 +17,8 @@ component output="false" accessors="true" {
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
 			create a base default properties function that can be overridden at the entity level via function
-			handle accessing collecitons by id
+			handle accessing collections by id
 		*/
-		
 		
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
@@ -45,20 +44,25 @@ component output="false" accessors="true" {
 			
 			//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
 			if(!structKeyExists(rc, "propertyIdentifiersList")) {
-				var entityProperties = getHibachiService().getPropertiesByEntityName( baseEntityName );
+				var entityProperties = getHibachiService().getDefaultPropertiesByEntityName( baseEntityName );
 				rc.propertyIdentifiersList = collectionService.getPropertyIdentifiersList(entityProperties);
 			}
+			//check the select parameters (?propertyIdentifiers=listitem1,listitem2) and add them to the list of items we are filtering on
+			/* TODO: selects*/
 			
 			// Turn the property identifiers into an array
 			var propertyIdentifiers = listToArray( rc.propertyIdentifiersList );
+			
 			rc.response = {};
 			
 			//check if we have an have an id. If so filter on the id otherwise give us paginated records
 			if(!structKeyExists(arguments.rc, "entityID")) {
 				//get the paginated records
-				var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+				//var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
 				//format the records prior to serialization based on the property Idenifiers that should be returned
-				rc.response = collectionService.getFormattedPageRecords(paginatedCollectionOfEntities,propertyIdentifiers);
+				rc.response = collectionService.getFormattedPageRecords(collectionEntity,propertyIdentifiers);
+				
+				//handle filter parameters and select list as well as expect unique
 				
 			} else {
 				//if we have an entityId then add the entity id filter and expect that we return one object
@@ -77,9 +81,8 @@ component output="false" accessors="true" {
 				arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
 				
 				var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
-				
 				for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
-					rc.response[ propertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p], formatValue=true );
+					rc.response[ propertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p],format=true );
 				}
 				
 				// return that entity based on the ID

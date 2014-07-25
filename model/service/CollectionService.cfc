@@ -160,16 +160,22 @@ component extends="HibachiService" accessors="true" output="false" {
 		return collectionEntity;
 	}
 	
-	public any function getFormattedPageRecords(required any paginatedCollectionOfEntities, required array propertyIdentifiers){
+	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
+		
+		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		
 		var formattedPageRecords[ "pageRecords" ] = [];
-		for(var i=1; i<=arrayLen(arguments.paginatedCollectionOfEntities); i++) {
+		for(var i=1; i<=arrayLen(paginatedCollectionOfEntities); i++) {
 			var thisRecord = {};
 			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
-				var value = arguments.paginatedCollectionOfEntities[i].getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifiers[p], formatValue=true );
-				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-					thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
-				} else {
-					thisRecord[ arguments.propertyIdentifiers[p] ] = value;
+				if(arguments.propertyIdentifiers[p] eq 'pageRecords'){
+				}else{
+					var value = paginatedCollectionOfEntities[i].getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifiers[p], formatValue=true );
+					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+						thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
+					} else {
+						thisRecord[ arguments.propertyIdentifiers[p] ] = value;
+					}
 				}
 			}
 			arrayAppend(formattedPageRecords[ "pageRecords" ], thisRecord);
@@ -182,11 +188,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var propertyIdentifiers = "";
 			
 		for(var i=1; i<=arrayLen(arguments.entityProperties); i++) {
-			if( (!structKeyExists(arguments.entityProperties[i], "fieldtype") || arguments.entityProperties[i].fieldtype == "ID") && (!structKeyExists(arguments.entityProperties[i], "persistent") || arguments.entityProperties[i].persistent)) {
-				propertyIdentifiers = listAppend(propertyIdentifiers, arguments.entityProperties[i].name);
-			} else if(structKeyExists(arguments.entityProperties[i], "fieldtype") && arguments.entityProperties[i].fieldType == "many-to-one") {
-				propertyIdentifiers = listAppend(propertyIdentifiers, "#arguments.entityProperties[i].name#.#this.getPrimaryIDPropertyNameByEntityName(arguments.entityProperties[i].cfc)#" );
-			}
+			propertyIdentifiers = listAppend(propertyIdentifiers, arguments.entityProperties[i].name);
 		}
 		return propertyIdentifiers;
 	}
@@ -199,14 +201,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		};
 		return filterStruct;
 	}
-	
-	/*public void function createFilterGroupStruct(array filterGroups){
-		var filterGroupStruct = [];
-		for(filterGroup in filterGroups){
-			arrayApend(filterGroupStruct,filterGroup);
-		}
-		return filterGroupStruct;
-	}*/
 	
 	// =====================  END: Logical Methods ============================
 	
