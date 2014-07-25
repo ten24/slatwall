@@ -67,6 +67,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
+	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
 	
@@ -100,6 +101,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.pageRecordsShow = 10;
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
+		variables.collectionConfig = '{}';
 	}
 	
 	//ADD FUNCTIONS
@@ -258,7 +260,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	public array function getFilterGroupArrayFromAncestors(required any collectionObject){
-		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
+		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 		var filterGroupArray = [];
 		if(!isnull(collectionConfig.filterGroups) && arraylen(collectionConfig.filterGroups)){
 			filterGroupArray = collectionConfig.filterGroups;
@@ -342,7 +344,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	public string function getHQL(boolean excludeSelect = false){
-		var collectionConfig = deserializeCollectionConfig();
+		var collectionConfig = getCollectionConfigStruct();
 		
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
 		
@@ -550,7 +552,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public any function createHQLFromCollectionObject(required any collectionObject, boolean excludeSelect=false){
 		var HQL = "";
-		var collectionConfig = arguments.collectionObject.deserializeCollectionConfig();
+		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 		
 		if(!isNull(collectionConfig.baseEntityName)){
 			
@@ -698,6 +700,13 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	private string function removeCharacters(required string javaUUIDString){
 		return replace(javaUUIDString,'-','','all');
+	}
+	
+	public any function getCollectionConfigStruct(){
+		if(isNull(variables.collectionConfigStruct)){
+			variables.collectionConfigStruct = deserializeCollectionConfig();
+		}
+		return variables.collectionConfigStruct;
 	}
 	
 	public any function deserializeCollectionConfig(){
