@@ -55,9 +55,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		
 		// Setup the request data structure
 		var requestDataStruct = {
-			CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true ),
-			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
+			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocType = 'SalesInvoice',
 			Addresses = [
 				{
@@ -72,6 +71,10 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			],
 			Lines = []
 		};
+		
+		if(!isNull(arguments.requestBean.getAccount())) {
+			requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
+		}
 		
 		// Loop over each unique tax address
 		var addressIndex = 1;
