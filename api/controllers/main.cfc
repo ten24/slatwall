@@ -4,6 +4,8 @@ component output="false" accessors="true" {
 	property name="hibachiService" type="any";
 	property name="collectionService" type="any";
 	
+	
+	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
 	}
@@ -12,36 +14,46 @@ component output="false" accessors="true" {
 	public any function before( required struct rc ) {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
+		param name="arguments.rc.apiResponse.statusCode" default="200";
+		param name="arguments.rc.apiResponse.statusText" default="OK";
+		param name="rc.contentType" default="application/json"; 
+		//could possibly check whether we want a different contentType other than json in the future
+		arguments.rc.apiResponse.contentType = rc.contentType;
 	}
 	
-	
+	/*public any function onMissingMethod(required string name, required struct rc){
+		arguments.rc.apiResponse.statusCode = "400";
+	}*/
 	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
 			create a base default properties function that can be overridden at the entity level via function
 			handle accessing collections by id
 		*/
-		//first check if we have an entityName value
-		if(!structKeyExists(arguments.rc, "entityName")) {
-			arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-			arguments.rc.apiResponse['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
+		
+			//first check if we have an entityName value
+			if(!structKeyExists(arguments.rc, "entityName")) {
+				arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
+				arguments.rc.apiResponse['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
+					
+			} else {
+				//get entity service by entity name
 				
-		} else {
-			//get entity service by entity name
-			
-			if(!structKeyExists(arguments.rc,'entityID')){
-				
-				arguments.rc.apiResponse = collectionService.getAPIResponseByEntityName(arguments.rc.entityName);
-			}else{
-				//figure out if we have a collection or a basic entity
-				var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
-				if(isNull(collectionEntity)){
-					arguments.rc.apiResponse = collectionService.getAPIResponseForBasicEntityByNameAndID(arguments.rc.entityName,arguments.rc.entityID);
+				if(!structKeyExists(arguments.rc,'entityID')){
+					structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseByEntityName(arguments.rc.entityName));
 				}else{
-					arguments.rc.apiResponse = collectionService.getAPIResponseForCollectionEntityByID(collectionEntity);
+					//figure out if we have a collection or a basic entity
+					var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
+					if(isNull(collectionEntity)){
+						structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseForBasicEntityByNameAndID(arguments.rc.entityName,arguments.rc.entityID));
+					}else{
+						structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseForCollectionEntityByID(collectionEntity));
+					}
 				}
 			}
-		}
+			
+		
+		
 	}
 	
 	public any function post( required struct rc ) {
