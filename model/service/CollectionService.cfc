@@ -62,7 +62,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return options;
 	}
 	
-	public array function getCollectionOptionsByEntityName( required string EntityName ) {
+	/*public array function getCollectionOptionsByEntityName( required string EntityName ) {
 		var smartList = this.getCollectionSmartList();
 		
 		smartList.addSelect('collectionName', 'name');
@@ -78,7 +78,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arrayPrepend(options, option);
 		
 		return options;
-	}
+	}*/
 	
 	public any function getEntityNameColumnProperties( required string EntityName ) {
 		var returnArray = getentityNameProperties( arguments.entityName );
@@ -161,7 +161,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
-		
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
 		
 		var formattedPageRecords[ "pageRecords" ] = [];
@@ -180,6 +179,15 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			arrayAppend(formattedPageRecords[ "pageRecords" ], thisRecord);
 		}
+		/* TODO:add the commented properties*/
+		formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
+		formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords());
+		formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
+		formattedPageRecords[ "pageRecordsStart" ] = arguments.collectionEntity.getPageRecordsStart();
+		formattedPageRecords[ "pageRecordsEnd" ] = arguments.collectionEntity.getPageRecordsEnd();
+		formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
+		formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
+		
 		return formattedPageRecords;
 	}
 	

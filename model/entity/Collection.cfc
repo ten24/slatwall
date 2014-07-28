@@ -92,6 +92,10 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public any function init(){
 		super.init();
+		
+		param name="session.entityCollection" type="struct" default="#structNew()#";
+		param name="session.entityCollection.savedStates" type="array" default="#arrayNew(1)#";
+		
 		variables.hqlParams = {};
 		variables.hqlAliases = {};
 		variables.Cacheable = false;
@@ -423,24 +427,30 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		structDelete(variables, "recordsCount");
 	}
 	
-	public numeric function getRecordsCount() {
+	public array function getRecords(boolean refresh=false) {
+		if( !structKeyExists(variables, "records") || arguments.refresh == true) {
+			variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+		}
+		return variables.records;
+	}
+	
+	public any function getRecordsCount() {
 		if(!structKeyExists(variables, "recordsCount")) {
-			if(getCacheable() && structKeyExists(application.entitySmartList, getCacheName()) && structKeyExists(application.entitySmartList[getCacheName()], "recordsCount")) {
-				variables.recordsCount = application.entitySmartList[ getCacheName() ].recordsCount;
+			if(getCacheable() && structKeyExists(application.entityCollection, getCacheName()) && structKeyExists(application.entityCollection[getCacheName()], "recordsCount")) {
+				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;
 			} else {
 				if(!structKeyExists(variables,"records")) {
-					var HQL = "#getHQLSelect(countOnly=true)##getHQLFrom(allowFetch=false)##getHQLWhere()#";
-					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
-					variables.recordsCount = recordCount;
+					variables.recordsCount = arrayLen(getRecords());
 					if(getCacheable()) {
-						application.entitySmartList[ getCacheName() ] = {};
-						application.entitySmartList[ getCacheName() ].recordsCount = variables.recordsCount;
+						application.entityCollection[ getCacheName() ] = {};
+						application.entityCollection[ getCacheName() ].recordsCount = variables.recordsCount;
 					}
 				} else {
 					variables.recordsCount = arrayLen(getRecords());	
 				}
 			}
 		}
+		
 		return variables.recordsCount;
 	}
 	
@@ -508,13 +518,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			predicate = ":#paramID#";
 		}
 		return predicate;
-	}
-	
-	public array function getRecords(boolean refresh=false) {
-		if( !structKeyExists(variables, "records") || arguments.refresh == true) {
-			variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-		}
-		return variables.records;
 	}
 	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false){
@@ -608,8 +611,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	public void function importCollectionConfigAsJSON(required string filePath, fileName){
 		this.setCollectionConfig(fileRead( "#filePath##filename#.json" ));
 	}
-	
-	
 	
 	// =============== Saved State Logic ===========================
 	
@@ -713,6 +714,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return deserializeJSON(this.getCollectionConfig());
 	}
 	
+	
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
@@ -730,7 +733,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// ============== START: Overridden Implicit Getters ===================
 	
 	public any function getDefaultProperties(){
-		return super.getDefaultProperties('pageRecords,pageRecordsStart,currentPageDeclaration');
+		return super.getDefaultProperties();
+		//return super.getDefaultProperties('pageRecords,pageRecordsStart,pageRecordsShow,currentPageDeclaration');
 	}
 	
 	// ==============  END: Overridden Implicit Getters ====================
@@ -767,12 +771,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	public any function updateCollectionConfig() {
 		setCollectionConfig( serializeJSON(getConfigStructure()) );
 	}
-	
-	
-	
-	
-	
-	
 	
 }
 

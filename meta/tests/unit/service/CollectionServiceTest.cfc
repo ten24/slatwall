@@ -85,15 +85,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var product2 = createPersistedTestEntity('product',productData2);
 		
-		
 		var entityName = 'product';
 		var collectionEntity = variables.service.getTransientCollectionByEntityName(entityName);
-		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
 		
-		var entityProperties = variables.service.getPropertiesByEntityName( entityName );
+		//var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		
+		var entityProperties = variables.service.getDefaultPropertiesByEntityName( entityName );
 		var propertyIdentifiersList = variables.service.getPropertyIdentifiersList(entityProperties);
 		var propertyIdentifiers = ListToArray(propertyIdentifiersList);
-		var formattedPageRecords = variables.service.getFormattedPageRecords(paginatedCollectionOfEntities,propertyIdentifiers);
+		var formattedPageRecords = variables.service.getFormattedPageRecords(collectionEntity,propertyIdentifiers);
 		assertTrue(arraylen(formattedPageRecords['pageRecords']));
 	}
 	

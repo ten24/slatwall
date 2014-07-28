@@ -130,6 +130,51 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	
+	/* TODO:write complete test data to verify getRecords and getRecordsCount methods*/
+	/*
+	public void function getRecordsCountTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders',
+			collectionName = 'RyansAccountOrders',
+			collectionConfig = '{
+				"baseEntityName":"SlatwallAccount",
+				"baseEntityAlias":"Account"
+			}
+			',
+			baseEntityName = "SlatwallAccount"
+			
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		var recordsCount = collectionEntity.getRecordsCount();
+		
+		request.debug(recordsCount);
+		request.debug(collectionEntity.getHQL());
+		
+	}
+	
+	public void function getRecords(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders',
+			collectionName = 'RyansAccountOrders',
+			collectionConfig = '{
+				"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account"
+			}
+			',
+			baseEntityName = "SlatwallAccount"
+			
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		var records = collectionEntity.getRecords();
+		
+		request.debug(records);
+	}
+	*/
+	
 	public void function deserializeCollectionConfigTest(){
 		makePublic(variables.entity,'deserializeCollectionConfig');
 		var collectionEntityData = {
