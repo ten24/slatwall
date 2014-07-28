@@ -191,6 +191,71 @@ component extends="HibachiService" accessors="true" output="false" {
 		return formattedPageRecords;
 	}
 	
+	public any function getAPIResponseByEntityName(required string entityName){
+		collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		
+		//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
+		var entityProperties = getDefaultPropertiesByEntityName( entityName );
+		var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
+		// Turn the property identifiers into an array
+		var propertyIdentifiers = listToArray( propertyIdentifiersList );
+		return getFormattedPageRecords(collectionEntity,propertyIdentifiers);
+	}
+	
+	public any function getAPIResponseForBasicEntityByNameAndID(required string entityName, required string entityID){
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		var collectionConfigStruct = getCollectionConfigStruct();
+
+		var entityProperties = getDefaultPropertiesByEntityName( arguments.entityName );
+		var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
+		// Turn the property identifiers into an array
+		var propertyIdentifiers = listToArray( propertyIdentifiersList );
+
+		//set up search by id				
+		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
+			collectionConfigStruct.filterGroups = [];
+		}
+		var capitalCaseEntityName = capitalCase(arguments.entityName);
+		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
+		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
+		
+		var filterGroupStruct.filterGroup = [];
+		arrayappend(filterGroupStruct.filterGroup,filterStruct);
+		
+		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
+		
+		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		var respone = {};
+		for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
+			response[ propertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p],format=true );
+		}
+		return response;
+	}
+	
+	public any function getAPIResponseForCollectionEntityByID(required any collectionEntity){
+		
+		var entityProperties = getDefaultPropertiesByEntityName( 'collection' );
+		var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
+		// Turn the property identifiers into an array
+		var propertyIdentifiers = listToArray( propertyIdentifiersList );
+		var response = {};
+		for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
+			response[ propertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p],format=true );
+		}
+		
+		//get default property identifiers for the records that the collection refers to
+		var collectionEntityProperties = getDefaultPropertiesByEntityName( collectionEntity.getBaseEntityName() );
+		var collectionPropertyIdentifiersList = getPropertyIdentifiersList(collectionEntityProperties);
+		// Turn the property identifiers into an array
+		var collectionPropertyIdentifiers = listToArray( collectionPropertyIdentifiersList );
+		
+		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
+		var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+		
+		structAppend(response,collectionPaginationStruct);
+		return response;
+	}
+	
 	public string function getPropertyIdentifiersList(required any entityProperties){
 		// Lets figure out the properties that need to be returned
 		var propertyIdentifiers = "";
