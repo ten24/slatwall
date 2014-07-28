@@ -147,7 +147,7 @@ Notes:
 	</cffunction>
 	
 	<cffunction name='removeMeta'>
-		<cfreturn directoryDelete( expandPath('/Slatwall/custom/config/metaDismiss.txt.cfm'), true ) />
+		<cfreturn directoryDelete( expandPath('/Slatwall/meta'), true ) />
 	</cffunction>
 	
 	<cffunction name='dismissMeta'>
