@@ -800,6 +800,5 @@
 			arguments.tableName = entityMetaData.table;
 			getHibachiDAO().updateRecordSortOrder(argumentcollection=arguments);
 		}
-		
 	</cfscript>
 </cfcomponent>

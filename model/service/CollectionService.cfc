@@ -62,7 +62,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return options;
 	}
 	
-	public array function getCollectionOptionsByEntityName( required string EntityName ) {
+	/*public array function getCollectionOptionsByEntityName( required string EntityName ) {
 		var smartList = this.getCollectionSmartList();
 		
 		smartList.addSelect('collectionName', 'name');
@@ -78,7 +78,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arrayPrepend(options, option);
 		
 		return options;
-	}
+	}*/
 	
 	public any function getEntityNameColumnProperties( required string EntityName ) {
 		var returnArray = getentityNameProperties( arguments.entityName );
@@ -142,6 +142,72 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		return returnArray;
+	}
+	
+	public string function capitalCase(required string phrase){
+        return reReplace(arguments.phrase, "\b(\w)(\w*)?\b", "\U\1\L\2", "ALL"); 
+	}
+	
+	public any function getTransientCollectionByEntityName(required string entityName){
+		var collectionEntity = this.newCollection();
+		var capitalCaseEntityName = capitalCase(arguments.entityName);
+		collectionEntity.setBaseEntityName('Slatwall#capitalCaseEntityName#');
+		var collectionConfigStruct = {
+			baseEntityName="Slatwall#capitalCaseEntityName#",
+			baseEntityAlias="#capitalCaseEntityName#"
+		};
+		collectionEntity.setCollectionConfigStruct(collectionConfigStruct);
+		return collectionEntity;
+	}
+	
+	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
+		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		
+		var formattedPageRecords[ "pageRecords" ] = [];
+		for(var i=1; i<=arrayLen(paginatedCollectionOfEntities); i++) {
+			var thisRecord = {};
+			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
+				if(arguments.propertyIdentifiers[p] eq 'pageRecords'){
+				}else{
+					var value = paginatedCollectionOfEntities[i].getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifiers[p], formatValue=true );
+					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+						thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
+					} else {
+						thisRecord[ arguments.propertyIdentifiers[p] ] = value;
+					}
+				}
+			}
+			arrayAppend(formattedPageRecords[ "pageRecords" ], thisRecord);
+		}
+		/* TODO:add the commented properties*/
+		formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
+		formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords());
+		formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
+		formattedPageRecords[ "pageRecordsStart" ] = arguments.collectionEntity.getPageRecordsStart();
+		formattedPageRecords[ "pageRecordsEnd" ] = arguments.collectionEntity.getPageRecordsEnd();
+		formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
+		formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
+		
+		return formattedPageRecords;
+	}
+	
+	public string function getPropertyIdentifiersList(required any entityProperties){
+		// Lets figure out the properties that need to be returned
+		var propertyIdentifiers = "";
+			
+		for(var i=1; i<=arrayLen(arguments.entityProperties); i++) {
+			propertyIdentifiers = listAppend(propertyIdentifiers, arguments.entityProperties[i].name);
+		}
+		return propertyIdentifiers;
+	}
+	
+	public struct function createFilterStruct(required string propertyIdentifier, required string comparisonOperator, required string value){
+		var filterStruct = {
+			propertyIdentifier=arguments.propertyIdentifier,
+			comparisonOperator = arguments.comparisonOperator,
+			value = arguments.value
+		};
+		return filterStruct;
 	}
 	
 	// =====================  END: Logical Methods ============================

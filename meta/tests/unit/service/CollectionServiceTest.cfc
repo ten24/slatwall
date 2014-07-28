@@ -54,6 +54,56 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("collectionService");
 	}
 	
+	public void function getCapitalCaseTest(){
+		MakePublic(variables.service,'capitalCase');
+		var word = 'testingword';
+		word = variables.service.capitalCase(word);
+		assertEquals('Testingword',word);
+	}
+	
+	public void function getTransientCollectionByEntityNameTest(){
+		var entityName = 'product';
+		var collectionEntity = variables.service.getTransientCollectionByEntityName(entityName);
+		assertEquals('SlatwallProduct',collectionEntity.getBaseEntityName());
+		assertEquals('SlatwallProduct',collectionEntity.getCollectionConfigStruct().baseentityname);
+		assertEquals('Product',collectionEntity.getCollectionConfigStruct().baseentityalias);
+	}
+	
+	
+	public void function getFormattedPageRecordsTest(){
+		//need product to be able to get in a paginated list
+		var productData = {
+			productid = '',
+			productName = 'testproduct1'
+			
+		};
+		var product = createPersistedTestEntity('product',productData);
+		var productData2 = {
+			productid = '',
+			productName = 'testproduct2'
+			
+		};
+		var product2 = createPersistedTestEntity('product',productData2);
+		
+		var entityName = 'product';
+		var collectionEntity = variables.service.getTransientCollectionByEntityName(entityName);
+		
+		//var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		
+		var entityProperties = variables.service.getDefaultPropertiesByEntityName( entityName );
+		var propertyIdentifiersList = variables.service.getPropertyIdentifiersList(entityProperties);
+		var propertyIdentifiers = ListToArray(propertyIdentifiersList);
+		var formattedPageRecords = variables.service.getFormattedPageRecords(collectionEntity,propertyIdentifiers);
+		assertTrue(arraylen(formattedPageRecords['pageRecords']));
+	}
+	
+	public void function getPropertyIdentifiersListTest(){
+		var entityName = 'product';
+		var entityProperties = variables.service.getPropertiesByEntityName( entityName );
+		var propertyIdentifiersList = variables.service.getPropertyIdentifiersList(entityProperties);
+		assertTrue(listLen(propertyIdentifiersList));
+	}
+	
 	public void function getEntityNameColumnProperties_returns_valid_array() {
 		var result = variables.service.getEntityNameColumnProperties( 'Account' );
 		request.debug(result);
