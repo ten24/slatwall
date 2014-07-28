@@ -16,8 +16,8 @@
           </div>
         </form>
 
+        <button type="button" class="btn btn-blue btn-sm content-nav-button" data-toggle="collapse" data-target="#option-select"><i class="fa fa-cogs"></i></button>
         <button type="button" class="btn btn-ten24 btn-sm content-nav-button"><i class="fa fa-plus"></i></button>
-        <button type="button" class="btn btn-ten24 btn-sm content-nav-button" data-toggle="collapse" data-target="#option-select"><i class="fa fa-cogs"></i></button>
 
         <div id="option-select" class="collapse align-left">
 
@@ -45,7 +45,7 @@
 
                   <div class="row setting-options-header">
                     <div class="col-xs-3">
-                      <button type="button" class="btn btn-ten24 btn-sm"><i class="fa fa-pencil-square-o"></i> Edit Filters</button>
+                      <button type="button" class="btn btn-blue btn-sm"><i class="fa fa-pencil-square-o"></i> Edit Filters</button>
                     </div>
                     <div class="col-xs-9 option-row">
 
@@ -61,7 +61,7 @@
                       </div>
 
                       <div class="option-buttons">
-                        <button type="button" class="btn btn-ten24 btn-sm"><i class="fa fa-files-o"></i> Copy</button>
+                        <button type="button" class="btn btn-blue btn-sm"><i class="fa fa-files-o"></i> Copy</button>
                         <button type="button" class="btn btn-ten24 btn-sm"><i class="fa fa-floppy-o"></i> Save</button>
                       </div>
 
@@ -71,79 +71,92 @@
                   <div class="row setting-options-body">
                     <div class="col-xs-12">
                       <div class="row">
-                        <div class="col-xs-2 filter-item">
+                        <div class="filter-item">
                           <div class="panel panel-default">
-                            <div class="panel-heading">Order Total</div>
+                            <div class="dropdown">
+                              <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
+                              <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
+                              </ul>
+                            </div>
                             <div class="panel-body">
                               $20.99 - $200.00
                             </div>
                           </div>
-                          <span class="plus-sign"></span>
+                          <span class="or-icon"></span>
                         </div>
 
-                        <div class="col-xs-2 filter-item">
+                        <div class="filter-item">
                           <div class="panel panel-default">
-                            <div class="panel-heading">Order Total</div>
+                            <div class="dropdown">
+                              <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
+                              <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
+                              </ul>
+                            </div>
                             <div class="panel-body">
                               $20.99 - $200.00
                             </div>
                           </div>
-                          <span class="plus-sign"></span>
+                          <span class="or-icon"></span>
                         </div>
 
-                        <div class="col-xs-2 filter-item">
-                          <div class="panel panel-default">
-                            <div class="panel-heading">Order Total</div>
-                            <div class="panel-body">
-                              $20.99 - $200.00
+                        <div class="filter-group">
+                          <div class="filter-item">
+                            <div class="panel panel-default">
+                              <div class="dropdown">
+                                <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
+                                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
+                                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
+                                </ul>
+                              </div>
+                              <div class="panel-body">
+                                $20.99 - $200.00
+                              </div>
                             </div>
+                            <span class="or-icon"></span>
                           </div>
-                          <span class="plus-sign"></span>
+
+                          <div class="filter-item">
+                            <div class="panel panel-default">
+                              <div class="dropdown">
+                                <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
+                                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
+                                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
+                                </ul>
+                              </div>
+                              <div class="panel-body">
+                                $20.99 - $200.00
+                              </div>
+                            </div>
+                            <span class="and-icon"></span>
+                          </div>
                         </div>
 
-                        <div class="col-xs-2 filter-item">
+                        <div class="filter-item">
                           <div class="panel panel-default">
-                            <div class="panel-heading">Order Total</div>
+                            <div class="dropdown">
+                              <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
+                              <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
+                              </ul>
+                            </div>
                             <div class="panel-body">
                               $20.99 - $200.00
                             </div>
                           </div>
-                          <span class="plus-sign"></span>
                         </div>
+
+
+
+
 
                       </div>
-
-
-
-                      <div class="row">
-                        <div class="col-xs-12">
-                          <span class='setting-and-or'>-Or-</span>
-                        </div>
-                      </div>
-
-
-                      <div class="row">
-                        <div class="col-xs-2 filter-item">
-                          <div class="panel panel-default">
-                            <div class="panel-heading">Order Total</div>
-                            <div class="panel-body">
-                              $20.99 - $200.00
-                            </div>
-                          </div>
-                          <span class="plus-sign"></span>
-                        </div>
-
-                        <div class="col-xs-2 filter-item">
-                          <div class="panel panel-default">
-                            <div class="panel-heading">Order Total</div>
-                            <div class="panel-body">
-                              $20.99 - $200.00
-                            </div>
-                          </div>
-                        </div>
-                        <span class="plus-sign"></span>
-                      </div>
-
                       <div class="row">
                         <div class="col-xs-12">
                           <div class="btn-group btn-group-xs setting-and-or">
@@ -152,9 +165,6 @@
                           </div>
                         </div>
                       </div>
-
-
-
                     </div>
                   </div>
 
@@ -417,6 +427,11 @@
   .btn-ten24:hover,.btn-ten24:focus,.btn-ten24:active,.btn-ten24.active {background-color: #f1790b;border-color: #f1790b;color:#ffffff;}
   .btn-ten24.disabled:hover,.btn-ten24.disabled:focus,.btn-ten24.disabled:active,.btn-ten24.disabled.active,.btn-ten24[disabled]:hover,.btn-ten24[disabled]:focus,.btn-ten24[disabled]:active,.btn-ten24[disabled].active,fieldset[disabled] .btn-ten24:hover,fieldset[disabled] .btn-ten24:focus,fieldset[disabled] .btn-ten24:active,fieldset[disabled] .btn-ten24.active {background-color: #f58620;}
 
+  .btn-blue {background-color: #336688;border-color: #336688;color:#ffffff;}
+  .btn-blue:hover,.btn-blue:focus,.btn-blue:active,.btn-blue.active {background-color: #2c5875;border-color: #254a63;color:#ffffff;}
+  .btn-blue.disabled:hover,.btn-blue.disabled:focus,.btn-blue.disabled:active,.btn-blue.disabled.active,.btn-blue[disabled]:hover,.btn-blue[disabled]:focus,.btn-blue[disabled]:active,.btn-blue[disabled].active,fieldset[disabled] .btn-blue:hover,fieldset[disabled] .btn-blue:focus,fieldset[disabled] .btn-blue:active,fieldset[disabled] .btn-blue.active {background-color: #336688;border-color: #336688;}
+
+
 
 
   table tr th.sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
@@ -431,13 +446,19 @@
   .pagination {margin:0px;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
 
-  .setting-options-body .filter-item {margin-bottom:10px;}
-  .setting-options-body .filter-item span.plus-sign:after {font-family: 'FontAwesome';content: "\f067";float:right;color: #eee;position: absolute;top: 42%;margin-left: 19px;}
-  .setting-options-body .filter-item:last-child span.plus-sign:after {display:none;}
+  .setting-options-body .filter-item {margin-bottom: 10px;display: inline-block;width: 200px;margin-left: 15px;margin-right: 15px;margin-top:2px;}
+  .setting-options-body .filter-item span.or-icon {position: relative;top: -10px;left: 22px;}
+  .setting-options-body .filter-item span.or-icon:after {content: "or";color: #ccc;}
+  .setting-options-body .filter-item span.and-icon {position: relative;top: -10px;left: 18px;}
+  .setting-options-body .filter-item span.and-icon:after {content: "and";color: #ccc;}
+  .setting-options-body .filter-group {display: inline-block;background-color:#fcfcfc;padding-left: 15px;padding-top: 8px;margin-left: 15px;padding-right: 35px;margin-bottom: 10px;-moz-box-shadow: inset 0 0 1px #ccc;-webkit-box-shadow: inset 0 0 1px #ccc;box-shadow:inset 0 0 1px #ccc;}
+  .setting-options-body .filter-group .filter-item {}
+  .setting-options-body .filter-group .filter-item:first-child {margin-left:0px;}
+  .setting-options-body .filter-group .filter-item:last-child {margin-right:0px;}
 
-  .setting-options-body .panel {display:inline-block;width:90%}
-  .setting-options-body .panel-heading {padding: 5px 15px;}
-  .setting-options-body .panel-heading:after {font-family: 'FontAwesome';content: "\f068";float:right;color: #767676;}
+  .setting-options-body .panel {display:inline-block;width:84%;}
+  .setting-options-body .panel-heading {padding: 5px 15px;background-color:#eee;cursor:pointer;}
+  .setting-options-body .panel-heading:after {font-family: 'FontAwesome';content: "\f0c9";float:right;color: #aaaaaa;}
   .setting-options-body .panel-body {padding: 10px 15px;}
 
   .setting-options-body .setting-and-or {width: 100%;padding: 10px 0px 16px 0px;display: block;font-weight: 700;}
