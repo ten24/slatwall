@@ -19,7 +19,8 @@ component extends="PageObject"{
 		},
 		"Config" = {
 			"Tax Categories" = "ListTaxCategories",
-			"View A List of Settings" = "Settings"
+			"View A List of Settings" = "Settings",
+			"Integrations" = "ListIntegration"
 		}
 	};
 	
