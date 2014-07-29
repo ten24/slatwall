@@ -2,6 +2,11 @@ component extends="PageObject"{
 	
 	variables.slatAction = "";
 	variables.title = "Dashboard | Slatwall";
+	variables.locators = {
+		logoutMenuIcon = '//html/body/div[1]/div/div/div/ul/li[1]/a',
+		logoutDropdownMenu = '//html/body/div[1]/div/div/div/ul/li[1]/ul',
+		logoutOption = '//html/body/div[1]/div/div/div/ul/li[1]/ul/li[2]/a'
+	};
 	
 	variables.menuItems = {
 		"Products" = {
