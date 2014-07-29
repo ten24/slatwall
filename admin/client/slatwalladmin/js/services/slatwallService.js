@@ -24,11 +24,16 @@ function($http,$q,baseURL){
 		return deferred.promise;
 		
 	}
-	factory.saveEntity = function(entityName,id,data){
+	factory.saveEntity = function(entityName,id,params){
 		var deferred = $q.defer();
 		var urlString = baseURL+'index.cfm/?slatAction=api:main.post&entityName='+entityName+'&entityId='+id;	
 			
-		$http.post(urlString,data)
+		$http({
+			method:'POST',
+			url:urlString,
+			params: params,
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		})
 		.success(function(data){
 			deferred.resolve(data);
 		}).error(function(reason){

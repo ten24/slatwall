@@ -13,7 +13,7 @@ angular.module('slatwalladmin').controller('ngtest', [ '$scope','slatwallService
 		context:"save"
 	}
 	
-	var postPromise = slatwallService.saveEntity('collection','abcd',postData)
+	var postPromise = slatwallService.saveEntity('collection','abcd',postData);
 		
 	
 }]);

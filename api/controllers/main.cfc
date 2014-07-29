@@ -69,7 +69,6 @@ component output="false" accessors="true" {
 	public any function post( required struct rc ) {
 		param name="arguments.rc.context" default="save";
 		param name="arguments.rc.entityID" default="";
-		rc.contentType = 'application/x-www-form-urlencoded';
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
 		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
 		
