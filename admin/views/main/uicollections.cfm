@@ -650,21 +650,9 @@
   .btn-ten24:hover,.btn-ten24:focus,.btn-ten24:active,.btn-ten24.active {background-color: #f1790b;border-color: #f1790b;color:#ffffff;}
   .btn-ten24.disabled:hover,.btn-ten24.disabled:focus,.btn-ten24.disabled:active,.btn-ten24.disabled.active,.btn-ten24[disabled]:hover,.btn-ten24[disabled]:focus,.btn-ten24[disabled]:active,.btn-ten24[disabled].active,fieldset[disabled] .btn-ten24:hover,fieldset[disabled] .btn-ten24:focus,fieldset[disabled] .btn-ten24:active,fieldset[disabled] .btn-ten24.active {background-color: #f58620;}
 
-  /*.btn-blue {background-color: #336688;border-color: #336688;color:#ffffff;}
-  .btn-blue:hover,.btn-blue:focus,.btn-blue:active,.btn-blue.active {background-color: #2c5875;border-color: #254a63;color:#ffffff;}
-  .btn-blue.disabled:hover,.btn-blue.disabled:focus,.btn-blue.disabled:active,.btn-blue.disabled.active,.btn-blue[disabled]:hover,.btn-blue[disabled]:focus,.btn-blue[disabled]:active,.btn-blue[disabled].active,fieldset[disabled] .btn-blue:hover,fieldset[disabled] .btn-blue:focus,fieldset[disabled] .btn-blue:active,fieldset[disabled] .btn-blue.active {background-color: #336688;border-color: #336688;}*/
-
-  /*.btn-grey {background-color: #999;border-color: #aaa;color:#ffffff;}
-  .btn-grey:hover,.btn-grey:focus,.btn-grey:active,.btn-grey.active {background-color: #aeaeae;border-color: #a2a2a2;color:#ffffff}
-  .btn-grey.disabled:hover,.btn-grey.disabled:focus,.btn-grey.disabled:active,.btn-grey.disabled.active,.btn-grey[disabled]:hover,.btn-grey[disabled]:focus,.btn-grey[disabled]:active,.btn-grey[disabled].active,fieldset[disabled] .btn-grey:hover,fieldset[disabled] .btn-grey:focus,fieldset[disabled] .btn-grey:active,fieldset[disabled] .btn-grey.active {background-color: #aaa;border-color: #aaa;}*/
-
-
   .btn-grey {background-color: #eaeaea;border-color: #eaeaea;color:#5E5E5E;}
   .btn-grey:hover,.btn-grey:focus,.btn-grey:active,.btn-grey.active {background-color: #dddddd;border-color: #d1d1d1;color:#5E5E5E;}
   .btn-grey.disabled:hover,.btn-grey.disabled:focus,.btn-grey.disabled:active,.btn-grey.disabled.active,.btn-grey[disabled]:hover,.btn-grey[disabled]:focus,.btn-grey[disabled]:active,.btn-grey[disabled].active,fieldset[disabled] .btn-grey:hover,fieldset[disabled] .btn-grey:focus,fieldset[disabled] .btn-grey:active,fieldset[disabled] .btn-grey.active {background-color: #eaeaea;border-color: #eaeaea;color:#5E5E5E;}
-
-
-
 
   .btn-green {background-color: #0aa699;border-color: #0aa699;color:#ffffff;}
   .btn-green:hover,.btn-green:focus,.btn-green:active,.btn-green.active {background-color: #098e83;border-color: #07766d;color:#ffffff;}
@@ -685,11 +673,6 @@
   .btn-dgrey {background-color: #606060;border-color: #606060;color:#ffffff;}
   .btn-dgrey:hover,.btn-dgrey:focus,.btn-dgrey:active,.btn-dgrey.active {background-color: #535353;border-color: #474747;color:#ffffff;}
   .btn-dgrey.disabled:hover,.btn-dgrey.disabled:focus,.btn-dgrey.disabled:active,.btn-dgrey.disabled.active,.btn-dgrey[disabled]:hover,.btn-dgrey[disabled]:focus,.btn-dgrey[disabled]:active,.btn-dgrey[disabled].active,fieldset[disabled] .btn-dgrey:hover,fieldset[disabled] .btn-dgrey:focus,fieldset[disabled] .btn-dgrey:active,fieldset[disabled] .btn-dgrey.active {background-color: #606060;border-color: #606060;color:#ffffff;}
-
-
-
-
-
 
   table tr th.sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
