@@ -51,7 +51,7 @@ component output="false" accessors="true" {
 				var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
 				if(isNull(collectionEntity)){
 					//should only be able to add selects (&propertyIdentifier=)
-					var result = collectionService.getAPIResponseForBasicEntity(arguments.rc.entityName,
+					var result = collectionService.getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
 																				arguments.rc.entityID,
 																				arguments.rc.propertyIdentifiers);
 					structAppend(arguments.rc.apiResponse,result);

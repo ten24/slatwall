@@ -140,6 +140,59 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(isArray(collectionEntityProperties));
 	}
 	
+	public void function getAPIResponseForEntityNameTest(){
+		var accountData = {
+			accountid = "",
+			firstName = "john",
+			lastName = "rambo"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		var propertyIdentifiers = "Account.lastName,Account.firstName";
+		//var propertyIdentifiers = "";
+		var apiResponse = variables.service.getAPIResponseForEntityName('account',propertyIdentifiers);
+		
+		request.debug(apiResponse);
+	}
+	
+	public void function getAPIResponseForBasicEntityWIthIDTest(){
+		var accountData = {
+			accountid = "",
+			firstName = "john",
+			lastName = "rambo"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var apiResponse = variables.service.getAPIResponseForBasicEntityWithID('account',account.getAccountID());
+		request.debug(apiResponse);
+	}
+	
+	public void function getAPIResponseForCollectionTest(){
+		var accountData = {
+			accountid = "",
+			firstName = "john",
+			lastName = "rambo"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders',
+			collectionName = 'RyansAccountOrders',
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account"
+					
+				}
+			',
+			baseEntityName = "SlatwallAccount"
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity);
+		request.debug(apiResponse);
+	}
+	
 }
 
 
