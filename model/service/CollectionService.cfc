@@ -138,7 +138,6 @@ component extends="HibachiService" accessors="true" output="false" {
 					arrayAppend(returnArray, add);
 				}
 			}
-			
 		}
 		
 		return returnArray;
@@ -158,6 +157,29 @@ component extends="HibachiService" accessors="true" output="false" {
 		};
 		collectionEntity.setCollectionConfigStruct(collectionConfigStruct);
 		return collectionEntity;
+	}
+	
+	public any function createTransientCollection(required string entityName, string collectionConfig = "" string propertyIdentifiersList = "", string filterList = "", string orderByList =""){
+		
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		
+		if(arguments.collectionConfig neq ""){
+			collectionEntity.setCollectionConfig(arguments.collectionConfig);
+		}
+		
+		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+		
+		//now that we have the basic structure of the collectionconfigStruct, lets add the other things
+		if(len(arguments.propertyIdentifiersList)){
+			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
+		}
+		if(len(arguments.orderBysList)){
+			addOrderBysToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.orderBysList);
+		}
+		
+		
+		return collectionEntity;
+		
 	}
 	
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
@@ -215,14 +237,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	//even though void return type it still makes changes to the collectionConfigStuct
 	private void function addColumnsToCollectionConfigStructByPropertyIdentifierList(required any collectionEntity, required string propertyIdentifierList){
-		var collectionConfig = arguments.collectionEntity.getCollectionConfigStruct();
-		if(structKeyExists(collectionConfig,'columns')){
-			var columnsArray = collectionConfig.columns;
+		var collectionConfigStruct = arguments.collectionEntity.getCollectionConfigStruct();
+		if(structKeyExists(collectionConfigStruct,'columns')){
+			var columnsArray = collectionConfigStruct.columns;
 		}else{
 			var columnsArray = [];
 		}
 		
-		var columnsArray = [];
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
 		for(propertyIdentifierItem in propertyIdentifiersArray){
 			columnStruct = {
@@ -230,8 +251,41 @@ component extends="HibachiService" accessors="true" output="false" {
 			};
 			ArrayAppend(columnsArray,columnStruct);
 		}
-		collectionConfig.columns = columnsArray;
+		collectionConfigStruct.columns = columnsArray;
+	}
+	
+	//orderbys list format &orderbys=propertyIdentifier_direction,propertyIdentifier2_direction 
+	private void function addOrderBysToCollectionConfigStructByOrderBysList(required any collectionEntity, required string orderBysList){
+		var collectionConfigStruct = arguments.collectionEntity.getCollectionConfigStruct();
+		if(structKeyExists(collectionConfigStruct,'orderBy')){
+			var orderByArray = collectionConfigStruct.orderBy;
+		}else{
+			var orderByArray = [];
+		}
 		
+		var orderBysListArray = ListToArray(arguments.orderBysList);
+		for(orderBy in OrderBysListArray){
+			orderByStruct = {
+				propertyIdentifier = "#listFirst(orderBy,'_')#",
+				direction = "#listLast(orderBy,'_')#"
+			};
+		}
+		collectionConfigStruct.orderBys = orderBysArray;
+	}
+	
+	//filter
+	private void function addFiltersToCollectionConfigStructByParameters(required any collectionEntity, required string filterParameters){
+		/*if(!structKeyExists(collectionConfigStruct,'filterGroups')){
+			collectionConfigStruct.filterGroups = [];
+		}
+		var capitalCaseEntityName = capitalCase(arguments.entityName);
+		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
+		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
+		
+		var filterGroupStruct.filterGroup = [];
+		arrayappend(filterGroupStruct.filterGroup,filterStruct);
+		
+		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);*/
 	}
 	
 	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = ""){

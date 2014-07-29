@@ -149,7 +149,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = createPersistedTestEntity('account',accountData);
 		var propertyIdentifiers = "";
 		var apiResponse = variables.service.getAPIResponseForEntityName('account',propertyIdentifiers);
-		
+		request.debug(apiResponse);
 		assert(isStruct(apiResponse));
 	}
 	
@@ -246,6 +246,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity,propertyIdentifiersList);
 		request.debug(apiResponse);
+	}
+	
+	public void function createTransientCollectionTest(){
+		var transientCollection = variables.service.createTransientCollection('account');
+		request.debug(transientCollection);
 	}
 	
 }

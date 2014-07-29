@@ -70,7 +70,7 @@ component output="false" accessors="true" {
 		param name="arguments.rc.entityID" default="";
 		
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
-		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
+		//var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
 		
 		// SAVE
 		if(arguments.rc.context eq 'save') {
@@ -83,7 +83,6 @@ component output="false" accessors="true" {
 		// PROCESS
 		} else {
 			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.context});
-			
 		}
 		
 		arguments.rc.apiResponse = {};

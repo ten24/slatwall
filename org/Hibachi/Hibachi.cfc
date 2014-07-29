@@ -49,9 +49,10 @@ component extends="FW1.framework" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
-		{ "$GET/api/:entityName/:entityID" = "/admin:api/get/entityName/:entityName/entityID/:entityID"},
-		{ "$GET/api/:entityName/" = "/admin:api/get/entityName/:entityName/"}
+		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"},
+		{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
 	];
 	
 	// Hibachi Setup
