@@ -188,7 +188,6 @@ component extends="HibachiService" accessors="true" output="false" {
 						}
 					}
 				}
-					
 			}
 			arrayAppend(formattedPageRecords[ "pageRecords" ], thisRecord);
 		}

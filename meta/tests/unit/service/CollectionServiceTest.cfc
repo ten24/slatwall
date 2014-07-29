@@ -189,7 +189,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var propertyIdentifiersList = "Account.firstName,Account.lastName";
 		
 		var apiResponse = variables.service.getAPIResponseForBasicEntityWithID('account',account.getAccountID(), propertyIdentifiersList);
-		request.debug(apiResponse);
+		assertTrue(isStruct(apiResponse));
 	}
 	
 	public void function getAPIResponseForCollectionTest(){
