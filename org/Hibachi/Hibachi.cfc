@@ -473,6 +473,9 @@ component extends="FW1.framework" {
 		param name="request.context.ajaxResponse" default="#structNew()#";
 		param name="request.context.apiRequest" default="false";
 		param name="request.context.apiResponse" default="#structNew()#";
+		param name="request.context.apiResponse.statusCode" default="200";
+		param name="request.context.apiResponse.statusText" default="OK";
+		param name="request.context.apiResponse.contentType" default="application/json"; 
 		
 		endHibachiLifecycle();
 		

@@ -14,11 +14,12 @@ component output="false" accessors="true" {
 	public any function before( required struct rc ) {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
+		//could possibly check whether we want a different contentType other than json in the future
 		param name="arguments.rc.apiResponse.statusCode" default="200";
 		param name="arguments.rc.apiResponse.statusText" default="OK";
 		param name="rc.contentType" default="application/json"; 
-		//could possibly check whether we want a different contentType other than json in the future
 		arguments.rc.apiResponse.contentType = rc.contentType;
+		
 	}
 	
 	/*public any function onMissingMethod(required string name, required struct rc){
@@ -68,14 +69,13 @@ component output="false" accessors="true" {
 	public any function post( required struct rc ) {
 		param name="arguments.rc.context" default="save";
 		param name="arguments.rc.entityID" default="";
-		
+		rc.contentType = 'application/x-www-form-urlencoded';
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
-		//var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
+		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
 		
 		// SAVE
 		if(arguments.rc.context eq 'save') {
 			entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=arguments.rc});
-			
 		// DELETE
 		} else if (arguments.rc.context eq 'delete') {
 			var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
@@ -84,6 +84,7 @@ component output="false" accessors="true" {
 		} else {
 			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.context});
 		}
+		//structAppend(arguments.rc.apiResponse);
 		
 		arguments.rc.apiResponse = {};
 	}
