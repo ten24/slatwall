@@ -78,6 +78,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'deleteImage');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'detailImage');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'editImage');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'removemeta');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'dismissmeta');
 	
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods, 'ckfinder');
@@ -98,6 +100,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
 		rc.productReviewSmartList.addFilter("activeFlag", 0);
 		rc.productReviewSmartList.setPageRecordsShow(10);
+		
+		if(getUpdateService().checkForMetaFolderWithoutDismissal()) {
+			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );
+		}
 	}
 
 	public void function saveImage(required struct rc){
@@ -214,7 +220,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(!account.hasErrors()) {
 			account.clearProcessObject('forgotPassword');
-			rc.$.slatwall.showMessageKey('entity.account.process.forgotPassword_success');	
+			rc.$.slatwall.showMessageKey('entity.account.process.forgotPassword_success');
 		}
 		
 		login( rc );
@@ -246,6 +252,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		getFW().redirectExact( rc.redirectURL );
 		
+	}
+	
+	public void function removeMeta() {
+		getUpdateService().removeMeta();
+		
+		rc.$.slatwall.showMessageKey( 'admin.metaremoved_info' );
+		
+		getFW().redirect(action="admin:main.default", preserve="messages");
+	}
+	
+	public void function dismissMeta() {
+		getUpdateService().dismissMeta();
+		
+		rc.$.slatwall.showMessageKey( 'admin.metadismissed_info' );
+		
+		getFW().redirect(action="admin:main.default", preserve="messages");
 	}
 }
 
