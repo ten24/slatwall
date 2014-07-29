@@ -480,7 +480,20 @@ component extends="FW1.framework" {
 		
 		// Check for an API Response
 		if(request.context.apiRequest) {
-			writeOutput( serializeJSON(request.context.apiResponse) );
+    		//need response header for api
+    		var context = getPageContext();
+    		context.getOut().clearBuffer();
+    		var response = context.getResponse();
+    		response.setContentType(request.context.apiResponse.contentType);
+    		response.setStatus(request.context.apiResponse.statusCode,request.context.apiResponse.statusText);
+    		var responseString = '';
+    		//leaving a note here in case we ever wish to support XML for api responses
+    		if(request.context.apiResponse.contentType eq 'application/json'){
+    			responseString = serializeJSON(request.context.apiResponse);
+    			
+    		}
+    		
+			writeOutput( responseString );
 		}
 		
 		// Check for an Ajax Response
