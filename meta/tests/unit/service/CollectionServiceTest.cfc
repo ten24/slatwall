@@ -147,11 +147,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			lastName = "rambo"
 		};
 		var account = createPersistedTestEntity('account',accountData);
-		var propertyIdentifiers = "Account.lastName,Account.firstName";
-		//var propertyIdentifiers = "";
+		var propertyIdentifiers = "";
 		var apiResponse = variables.service.getAPIResponseForEntityName('account',propertyIdentifiers);
 		
-		request.debug(apiResponse);
+		assert(isStruct(apiResponse));
+	}
+	
+	public void function getAPIResponseForEntityNameTest_with_propertyIdentifier_parameters(){
+		var accountData = {
+			accountid = "",
+			firstName = "john",
+			lastName = "rambo"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		var propertyIdentifiers = "Account.lastName,Account.firstName";
+		var apiResponse = variables.service.getAPIResponseForEntityName('account',propertyIdentifiers);
+		
+		assertTrue(isStruct(apiResponse));
 	}
 	
 	public void function getAPIResponseForBasicEntityWIthIDTest(){
@@ -163,6 +175,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = createPersistedTestEntity('account',accountData);
 		
 		var apiResponse = variables.service.getAPIResponseForBasicEntityWithID('account',account.getAccountID());
+		request.debug(apiResponse);
+	}
+	
+	public void function getAPIResponseForBasicEntityWIthIDTest_with_propertyIdentifier_parameters(){
+		var accountData = {
+			accountid = "",
+			firstName = "john",
+			lastName = "rambo"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var propertyIdentifiersList = "Account.firstName,Account.lastName";
+		
+		var apiResponse = variables.service.getAPIResponseForBasicEntityWithID('account',account.getAccountID(), propertyIdentifiersList);
 		request.debug(apiResponse);
 	}
 	
@@ -190,6 +216,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		
 		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity);
+		request.debug(apiResponse);
+	}
+	
+	public void function getAPIResponseForCollectionTest_with_propertyIdentifier_parameters(){
+		var accountData = {
+			accountid = "",
+			firstName = "john",
+			lastName = "rambo"
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansAccountOrders',
+			collectionName = 'RyansAccountOrders',
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account"
+					
+				}
+			',
+			baseEntityName = "SlatwallAccount"
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		var propertyIdentifiersList = "Account.firstName,Account.lastName";
+		
+		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity,propertyIdentifiersList);
 		request.debug(apiResponse);
 	}
 	
