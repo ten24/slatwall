@@ -31,29 +31,38 @@ component output="false" accessors="true" {
 			handle accessing collections by id
 		*/
 		
-			//first check if we have an entityName value
-			if(!structKeyExists(arguments.rc, "entityName")) {
-				arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-				arguments.rc.apiResponse['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
-					
-			} else {
-				//get entity service by entity name
+		param name="arguments.rc.propertyIdentifiers" default="";
+		
+		//first check if we have an entityName value
+		if(!structKeyExists(arguments.rc, "entityName")) {
+			arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
+			arguments.rc.apiResponse['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
 				
-				if(!structKeyExists(arguments.rc,'entityID')){
-					structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseByEntityName(arguments.rc.entityName));
+		} else {
+			//get entity service by entity name
+			
+			if(!structKeyExists(arguments.rc,'entityID')){
+				//should be able to add select and where filters here
+				var result = collectionService.getAPIResponseForEntityName(	arguments.rc.entityName,
+																			arguments.rc.propertyIdentifiers);
+				structAppend(arguments.rc.apiResponse,result);
+			}else{
+				//figure out if we have a collection or a basic entity
+				var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
+				if(isNull(collectionEntity)){
+					//should only be able to add selects (&propertyIdentifier=)
+					var result = collectionService.getAPIResponseForBasicEntity(arguments.rc.entityName,
+																				arguments.rc.entityID,
+																				arguments.rc.propertyIdentifiers);
+					structAppend(arguments.rc.apiResponse,result);
 				}else{
-					//figure out if we have a collection or a basic entity
-					var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
-					if(isNull(collectionEntity)){
-						structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseForBasicEntityByNameAndID(arguments.rc.entityName,arguments.rc.entityID));
-					}else{
-						structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseForCollectionEntityByID(collectionEntity));
-					}
+					//should be able to add select and where filters here
+					var result = collectionService.getAPIResponseForCollection(	collectionEntity,
+																				arguments.rc.propertyIdentifiers);
+					structAppend(arguments.rc.apiResponse,result);
 				}
 			}
-			
-		
-		
+		}
 	}
 	
 	public any function post( required struct rc ) {

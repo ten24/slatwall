@@ -191,17 +191,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		return formattedPageRecords;
 	}
 	
-	public any function getAPIResponseByEntityName(required string entityName){
+	public any function getAPIResponseForEntityName(required string entityName, required string propertyIdentifiers){
 		try{
 			collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 			
 			//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
-			var entityProperties = getDefaultPropertiesByEntityName( entityName );
-			var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
+			var defaultEntityProperties = getDefaultPropertiesByEntityName( entityName );
+			var defaultPropertyIdentifiersList = getPropertyIdentifiersList(defaultEntityProperties);
 			// Turn the property identifiers into an array
-			var propertyIdentifiers = listToArray( propertyIdentifiersList );
+			var defaultPropertyIdentifiers = listToArray( defaultPropertyIdentifiersList );
 			
-			return getFormattedPageRecords(collectionEntity,propertyIdentifiers);
+			return getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);
 		
 		}catch(any e){
 			var apiResponse.statusCode = "500";
@@ -212,16 +212,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
-	public any function getAPIResponseForBasicEntityByNameAndID(required string entityName, required string entityID){
+	public any function getAPIResponseForBasic(required string entityName, required string entityID, required string propertyIdentifiers){
 		//check entityname otherwise inform the user of the error
 		try{
 			var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 			var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 	
-			var entityProperties = getDefaultPropertiesByEntityName( arguments.entityName );
-			var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
+			var defaultEntityProperties = getDefaultPropertiesByEntityName( arguments.entityName );
+			var defaultPropertyIdentifiersList = getPropertyIdentifiersList(defaultEntityProperties);
 			// Turn the property identifiers into an array
-			var propertyIdentifiers = listToArray( propertyIdentifiersList );
+			var defaultPropertyIdentifiers = listToArray( defaultPropertyIdentifiersList );
 	
 			//set up search by id				
 			if(!structKeyExists(collectionConfigStruct,'filterGroups')){
@@ -235,7 +235,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			arrayappend(filterGroupStruct.filterGroup,filterStruct);
 			
 			arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
-		
 			
 			var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
 		}catch(any e){
@@ -246,8 +245,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		//check that id exists otherwise inform the user
 		try{
 			var response = {};
-			for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
-				response[ propertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p],format=true );
+			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
+				response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 			}
 			return response;
 		}catch(any e){
@@ -258,15 +257,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
-	public any function getAPIResponseForCollectionEntityByID(required any collectionEntity){
+	public any function getAPIResponseForCollection(required any collectionEntity, required string propertyIdentifiers){
 		try{
-			var entityProperties = getDefaultPropertiesByEntityName( 'collection' );
-			var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
+			var defaultEntityProperties = getDefaultPropertiesByEntityName( 'collection' );
+			var defaultPropertyIdentifiersList = getPropertyIdentifiersList(defaultEntityProperties);
 			// Turn the property identifiers into an array
-			var propertyIdentifiers = listToArray( propertyIdentifiersList );
+			var defaultPropertyIdentifiers = listToArray( defaultPropertyIdentifiersList );
 			var response = {};
-			for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
-				response[ propertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p],format=true );
+			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
+				response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 			}
 			
 			//get default property identifiers for the records that the collection refers to
@@ -305,6 +304,13 @@ component extends="HibachiService" accessors="true" output="false" {
 			value = arguments.value
 		};
 		return filterStruct;
+	}
+	
+	public struct function createColumnStruct(required string propertyIdentifier){
+		var columnStruct = {
+			propertyIdentifier=arguments.propertyIdentifier
+		};
+		return columnStruct;
 	}
 	
 	// =====================  END: Logical Methods ============================

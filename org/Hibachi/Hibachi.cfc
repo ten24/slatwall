@@ -472,9 +472,6 @@ component extends="FW1.framework" {
 		param name="request.context.ajaxResponse" default="#structNew()#";
 		param name="request.context.apiRequest" default="false";
 		param name="request.context.apiResponse" default="#structNew()#";
-		/*param name="request.context.apiResponse.contentType" default="application/json";
-		param name="request.context.apiResponse.statusCode" default="200";
-		param name="request.context.apiResponse.statusText" default="OK";*/
 		
 		endHibachiLifecycle();
 		
@@ -484,15 +481,19 @@ component extends="FW1.framework" {
 		// Check for an API Response
 		if(request.context.apiRequest) {
     		//need response header for api
-    		var response = getPageContext().getResponse();
+    		var context = getPageContext();
+    		context.getOut().clearBuffer();
+    		var response = context.getResponse();
     		response.setContentType(request.context.apiResponse.contentType);
     		response.setStatus(request.context.apiResponse.statusCode,request.context.apiResponse.statusText);
-    		
+    		var responseString = '';
     		//leaving a note here in case we ever wish to support XML for api responses
     		if(request.context.apiResponse.contentType eq 'application/json'){
-    			writeOutput( serializeJSON(request.context.apiResponse) );
+    			responseString = serializeJSON(request.context.apiResponse);
+    			
     		}
-			
+    		
+			writeOutput( responseString );
 		}
 		
 		// Check for an Ajax Response
