@@ -16,7 +16,7 @@
           </div>
         </form>
 
-        <button type="button" class="btn btn-blue btn-sm content-nav-button" data-toggle="collapse" data-target="#option-select"><i class="fa fa-cogs"></i></button>
+        <button type="button" class="btn btn-grey btn-sm content-nav-button" data-toggle="collapse" data-target="#option-select"><i class="fa fa-cogs"></i></button>
         <button type="button" class="btn btn-ten24 btn-sm content-nav-button"><i class="fa fa-plus"></i></button>
 
         <div id="option-select" class="collapse align-left">
@@ -61,7 +61,7 @@
                       </div>
 
                       <div class="option-buttons">
-                        <button type="button" class="btn btn-blue btn-sm"><i class="fa fa-files-o"></i> Copy</button>
+                        <button type="button" class="btn btn-grey btn-sm"><i class="fa fa-files-o"></i> Copy</button>
                         <button type="button" class="btn btn-ten24 btn-sm"><i class="fa fa-floppy-o"></i> Save</button>
                       </div>
 
@@ -185,7 +185,7 @@
                                   <h4>Criteria</h4>
 
                                   <form id="form_id" action="index.html" method="post">
-                                    <button class="btn btn-xs remove"><i class="fa fa-times"></i> remove</button>
+                                    <button class="btn btn-red btn-xs remove"><i class="fa fa-times"></i> remove</button>
                                     <div class="form-group form-group-sm">
                                       <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
                                       <div class="col-sm-12 no-padding">
@@ -216,7 +216,7 @@
                                   </form>
 
                                   <form id="form_id" action="index.html" method="post">
-                                    <button class="btn btn-xs remove"><i class="fa fa-times"></i> remove</button>
+                                    <button class="btn btn-xs btn-red remove"><i class="fa fa-times"></i> remove</button>
                                     <div class="form-group form-group-sm">
                                       <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
                                       <div class="col-sm-12 no-padding">
@@ -250,9 +250,9 @@
 
                                 <div class="col-xs-4">
                                   <div class="button-select-group">
-                                    <button type="button" class="btn btn-default">Save & Add Another Button</button>
+                                    <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
                                     <div class="or-box">OR</div>
-                                    <button type="button" class="btn btn-default">Save & Finish</button>
+                                    <button type="button" class="btn btn-ten24">Save & Finish</button>
                                   </div>
                                   <div class="form-group">
                                     <div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"> Add To New Group</label></div>
@@ -275,7 +275,7 @@
                       <!--- Add another filter to filter set --->
                       <div class="row add-filter-box">
                         <div class="col-xs-12">
-                          <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#add-filter-set"><i class="fa fa-plus"></i> Add Filter To New Group</button>
+                          <button type="button" class="btn btn-ten24" data-toggle="collapse" data-target="#add-filter-set"><i class="fa fa-plus"></i> Add Filter To New Group</button>
                         </div>
                         <div class="col-xs-12 collapse add-filter" id="add-filter-set">
                           <div class="row">
@@ -303,7 +303,7 @@
                                   <h4>Criteria</h4>
 
                                   <form id="form_id" action="index.html" method="post">
-                                    <button class="btn btn-xs remove"><i class="fa fa-times"></i> remove</button>
+                                    <button class="btn btn-xs btn-red remove"><i class="fa fa-times"></i> remove</button>
                                     <div class="form-group form-group-sm">
                                       <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
                                       <div class="col-sm-12 no-padding">
@@ -334,7 +334,7 @@
                                   </form>
 
                                   <form id="form_id" action="index.html" method="post">
-                                    <button class="btn btn-xs remove"><i class="fa fa-times"></i> remove</button>
+                                    <button class="btn btn-xs btn-red remove"><i class="fa fa-times"></i> remove</button>
                                     <div class="form-group form-group-sm">
                                       <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
                                       <div class="col-sm-12 no-padding">
@@ -368,9 +368,9 @@
 
                                 <div class="col-xs-4">
                                   <div class="button-select-group">
-                                    <button type="button" class="btn btn-default">Save & Add Another Button</button>
+                                    <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
                                     <div class="or-box">OR</div>
-                                    <button type="button" class="btn btn-default">Save & Finish</button>
+                                    <button type="button" class="btn btn-ten24">Save & Finish</button>
                                   </div>
                                   <div class="form-group">
                                     <div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"> Add To New Group</label></div>
@@ -627,11 +627,14 @@
   /*CHECK BOX STYLES END*/
 
   /*Bootstrap overwrite*/
+  .navbar-inverse .navbar-nav>li>a {color:#b0b0b0;}
+  .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}
+
   .btn:focus {outline: none;}
   .panel, .panel-group .panel {border-radius:0px;}
-  .panel-default>.panel-heading {background-color:#999;color:#ffffff;}
+  .panel-default>.panel-heading {background-color:#606060;color:#ffffff;}
   #accordion .panel-default>.panel-heading {cursor: pointer;}
-  #accordion .panel-default>.panel-heading:before {font-family: 'FontAwesome';content: "\f067";float: left;margin-right: 6px;margin-top: -1px;}
+  /*#accordion .panel-default>.panel-heading:before {font-family: 'FontAwesome';content: "\f067";float: left;margin-right: 6px;margin-top: -1px;}*/
   .panel-group .panel-heading+.panel-collapse>.panel-body {border-top: none;}
   .panel-heading {border-top-left-radius: 0px;border-top-right-radius: 0px}
   .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
@@ -641,19 +644,48 @@
   .content-nav .dropdown-menu {background-color:#F9F9F9;}
   .dropdown-menu li.active > a:hover, .dropdown-menu li > a:hover {background-color: #FC770D;background-image: -moz-linear-gradient(top, #f58620, #f58620);background-image: -ms-linear-gradient(top, #f58620, #f58620);background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f58620), to(#f58620));background-image: -webkit-linear-gradient(top, #f58620, #f58620);background-image: -o-linear-gradient(top, #f58620, #f58620);background-image: linear-gradient(top, #f58620, #f58620);color: #FFF !important;}
   .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {background-color:#f58620;color:#ffffff;border-color:#f58620;}
-  .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#f58620;color:#ffffff;border-color: #f58620;}
+  .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#F58620;color:#ffffff;border-color: #F58620;}
 
   .btn-ten24 {background-color: #f58620;border-color: #f1790b;color: #ffffff;}
   .btn-ten24:hover,.btn-ten24:focus,.btn-ten24:active,.btn-ten24.active {background-color: #f1790b;border-color: #f1790b;color:#ffffff;}
   .btn-ten24.disabled:hover,.btn-ten24.disabled:focus,.btn-ten24.disabled:active,.btn-ten24.disabled.active,.btn-ten24[disabled]:hover,.btn-ten24[disabled]:focus,.btn-ten24[disabled]:active,.btn-ten24[disabled].active,fieldset[disabled] .btn-ten24:hover,fieldset[disabled] .btn-ten24:focus,fieldset[disabled] .btn-ten24:active,fieldset[disabled] .btn-ten24.active {background-color: #f58620;}
 
-  .btn-blue {background-color: #336688;border-color: #336688;color:#ffffff;}
+  /*.btn-blue {background-color: #336688;border-color: #336688;color:#ffffff;}
   .btn-blue:hover,.btn-blue:focus,.btn-blue:active,.btn-blue.active {background-color: #2c5875;border-color: #254a63;color:#ffffff;}
-  .btn-blue.disabled:hover,.btn-blue.disabled:focus,.btn-blue.disabled:active,.btn-blue.disabled.active,.btn-blue[disabled]:hover,.btn-blue[disabled]:focus,.btn-blue[disabled]:active,.btn-blue[disabled].active,fieldset[disabled] .btn-blue:hover,fieldset[disabled] .btn-blue:focus,fieldset[disabled] .btn-blue:active,fieldset[disabled] .btn-blue.active {background-color: #336688;border-color: #336688;}
+  .btn-blue.disabled:hover,.btn-blue.disabled:focus,.btn-blue.disabled:active,.btn-blue.disabled.active,.btn-blue[disabled]:hover,.btn-blue[disabled]:focus,.btn-blue[disabled]:active,.btn-blue[disabled].active,fieldset[disabled] .btn-blue:hover,fieldset[disabled] .btn-blue:focus,fieldset[disabled] .btn-blue:active,fieldset[disabled] .btn-blue.active {background-color: #336688;border-color: #336688;}*/
 
-  .btn-grey {background-color: #999;border-color: #aaa;color:#ffffff;}
+  /*.btn-grey {background-color: #999;border-color: #aaa;color:#ffffff;}
   .btn-grey:hover,.btn-grey:focus,.btn-grey:active,.btn-grey.active {background-color: #aeaeae;border-color: #a2a2a2;color:#ffffff}
-  .btn-grey.disabled:hover,.btn-grey.disabled:focus,.btn-grey.disabled:active,.btn-grey.disabled.active,.btn-grey[disabled]:hover,.btn-grey[disabled]:focus,.btn-grey[disabled]:active,.btn-grey[disabled].active,fieldset[disabled] .btn-grey:hover,fieldset[disabled] .btn-grey:focus,fieldset[disabled] .btn-grey:active,fieldset[disabled] .btn-grey.active {background-color: #aaa;border-color: #aaa;}
+  .btn-grey.disabled:hover,.btn-grey.disabled:focus,.btn-grey.disabled:active,.btn-grey.disabled.active,.btn-grey[disabled]:hover,.btn-grey[disabled]:focus,.btn-grey[disabled]:active,.btn-grey[disabled].active,fieldset[disabled] .btn-grey:hover,fieldset[disabled] .btn-grey:focus,fieldset[disabled] .btn-grey:active,fieldset[disabled] .btn-grey.active {background-color: #aaa;border-color: #aaa;}*/
+
+
+  .btn-grey {background-color: #eaeaea;border-color: #eaeaea;color:#5E5E5E;}
+  .btn-grey:hover,.btn-grey:focus,.btn-grey:active,.btn-grey.active {background-color: #dddddd;border-color: #d1d1d1;color:#5E5E5E;}
+  .btn-grey.disabled:hover,.btn-grey.disabled:focus,.btn-grey.disabled:active,.btn-grey.disabled.active,.btn-grey[disabled]:hover,.btn-grey[disabled]:focus,.btn-grey[disabled]:active,.btn-grey[disabled].active,fieldset[disabled] .btn-grey:hover,fieldset[disabled] .btn-grey:focus,fieldset[disabled] .btn-grey:active,fieldset[disabled] .btn-grey.active {background-color: #eaeaea;border-color: #eaeaea;color:#5E5E5E;}
+
+
+
+
+  .btn-green {background-color: #0aa699;border-color: #0aa699;color:#ffffff;}
+  .btn-green:hover,.btn-green:focus,.btn-green:active,.btn-green.active {background-color: #098e83;border-color: #07766d;color:#ffffff;}
+  .btn-green.disabled:hover,.btn-green.disabled:focus,.btn-green.disabled:active,.btn-green.disabled.active,.btn-green[disabled]:hover,.btn-green[disabled]:focus,.btn-green[disabled]:active,.btn-green[disabled].active,fieldset[disabled] .btn-green:hover,fieldset[disabled] .btn-green:focus,fieldset[disabled] .btn-green:active,fieldset[disabled] .btn-green.active {background-color: #0aa699;border-color: #0aa699;color:#ffffff;}
+
+  .btn-blue {background-color: #0090d9;border-color: #0090d9;color:#ffffff;}
+  .btn-blue:hover,.btn-blue:focus,.btn-blue:active,.btn-blue.active {background-color: #007fc0;border-color: #006ea6;color:#ffffff;}
+  .btn-blue.disabled:hover,.btn-blue.disabled:focus,.btn-blue.disabled:active,.btn-blue.disabled.active,.btn-blue[disabled]:hover,.btn-blue[disabled]:focus,.btn-blue[disabled]:active,.btn-blue[disabled].active,fieldset[disabled] .btn-blue:hover,fieldset[disabled] .btn-blue:focus,fieldset[disabled] .btn-blue:active,fieldset[disabled] .btn-blue.active {background-color: #0090d9;border-color: #0090d9;color:#ffffff;}
+
+  .btn-dblue {background-color: #1B314A;border-color: #1B314A;color:#ffffff;}
+  .btn-dblue:hover,.btn-dblue:focus,.btn-dblue:active,.btn-dblue.active {background-color: #142537;border-color: #0d1825;color:#ffffff;}
+  .btn-dblue.disabled:hover,.btn-dblue.disabled:focus,.btn-dblue.disabled:active,.btn-dblue.disabled.active,.btn-dblue[disabled]:hover,.btn-dblue[disabled]:focus,.btn-dblue[disabled]:active,.btn-dblue[disabled].active,fieldset[disabled] .btn-dblue:hover,fieldset[disabled] .btn-dblue:focus,fieldset[disabled] .btn-dblue:active,fieldset[disabled] .btn-dblue.active {background-color: #1B314A;border-color: #1B314A;color:#ffffff;}
+
+  .btn-red {background-color: #F14D4D;border-color: #F14D4D;color:#ffffff;}
+  .btn-red:hover,.btn-red:focus,.btn-red:active,.btn-red.active {background-color: #ef3535;border-color: #ed1e1e;color:#ffffff;}
+  .btn-red.disabled:hover,.btn-red.disabled:focus,.btn-red.disabled:active,.btn-red.disabled.active,.btn-red[disabled]:hover,.btn-red[disabled]:focus,.btn-red[disabled]:active,.btn-red[disabled].active,fieldset[disabled] .btn-red:hover,fieldset[disabled] .btn-red:focus,fieldset[disabled] .btn-red:active,fieldset[disabled] .btn-red.active {background-color: #F14D4D;border-color: #F14D4D;color:#ffffff;}
+
+  .btn-dgrey {background-color: #606060;border-color: #606060;color:#ffffff;}
+  .btn-dgrey:hover,.btn-dgrey:focus,.btn-dgrey:active,.btn-dgrey.active {background-color: #535353;border-color: #474747;color:#ffffff;}
+  .btn-dgrey.disabled:hover,.btn-dgrey.disabled:focus,.btn-dgrey.disabled:active,.btn-dgrey.disabled.active,.btn-dgrey[disabled]:hover,.btn-dgrey[disabled]:focus,.btn-dgrey[disabled]:active,.btn-dgrey[disabled].active,fieldset[disabled] .btn-dgrey:hover,fieldset[disabled] .btn-dgrey:focus,fieldset[disabled] .btn-dgrey:active,fieldset[disabled] .btn-dgrey.active {background-color: #606060;border-color: #606060;color:#ffffff;}
+
 
 
 
@@ -684,7 +716,7 @@
   .setting-options-body .add-filter-button-box {border-bottom:1px solid}
 
   .setting-options-body .panel {display:inline-block;width:84%;}
-  .setting-options-body .panel-heading {padding: 5px 15px;background-color:#eee;cursor:pointer;}
+  .setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;cursor:pointer;}
   .setting-options-body .panel-heading:after {font-family: 'FontAwesome';content: "\f0c9";float:right;color: #aaaaaa;}
   .setting-options-body .panel-body {padding: 10px 15px;}
 
@@ -692,14 +724,14 @@
   .setting-options-body .setting-and-or .btn {min-width:52px;text-align:center;}
   .setting-options-body .filters-selected .add-filter-box {border-bottom: 1px solid #EEE;padding-bottom: 15px;margin-bottom: 8px;}
 
-  .setting-options-body .add-filter {background:#EEEEEE;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
+  .setting-options-body .add-filter {background:#eaeaea;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
   .setting-options-body .add-filter .row:first-child {padding-top: 15px; padding-bottom:30px; }
   .setting-options-body .add-filter h4 i {float:right;cursor:pointer;}
   .setting-options-body .add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;}
   .setting-options-body .add-filter label {font-weight:normal;}
   .setting-options-body .add-filter .and-or-box {text-align:center;height:40px;}
   .setting-options-body .add-filter .and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
-  .setting-options-body .add-filter .and-or-box .btn-group {z-index: 10;background: #EEEEEE;padding: 0px 10px;}
+  .setting-options-body .add-filter .and-or-box .btn-group {z-index: 10;background: #e5e9ec;padding: 0px 10px;}
   .setting-options-body .add-filter button.remove {float:right;}
   .setting-options-body .add-filter .button-select-group {text-align:center;border-bottom:3px dotted #DDDDDD;margin-bottom:15px;}
   .setting-options-body .add-filter .button-select-group .btn {margin-bottom:15px;margin-top:15px;}
