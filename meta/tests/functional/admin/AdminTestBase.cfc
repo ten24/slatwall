@@ -56,4 +56,8 @@ component extends="Slatwall.meta.tests.functional.SlatwallFunctionalTestBase" {
 		variables.dashboardPage = variables.loginPage.login(variables.configuration.common.login, variables.configuration.common.password);
 	}
 	
+	public function refresh(){
+		return selenium.refresh();
+	}
+	
 }

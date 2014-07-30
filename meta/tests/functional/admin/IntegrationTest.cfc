@@ -10,7 +10,7 @@ component extends="AdminTestBase" {
 		EditIntegration.clickLocator( 'saveButton' );
 		waitForPageToLoad();
 		
-		var DetailIntegration = selenium.refresh();
+		var DetailIntegration = refresh();
 		
 		//Go to Dashboard to logOut
 		var Dashboard = openPage( '', 'Dashboard' );
@@ -24,13 +24,10 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded(Login);
 		
 		//Var the result of whether or not the unwanted elements are present
-		var integrationDropdownMenuPresentBooleanWithMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/ul/li[2]/a');
-		var muraPicturePresentBooleanWithMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/a[2]/img');
+		var integrationDropdownMenuPresentBooleanWithMuraActive = Login.isLocatorPresent( 'integrationsDropdown' );
+		var muraPicturePresentBooleanWithMuraActive = Login.isLocatorPresent( 'muraImage' );
 		
-		//*************************
-		//Need to work on how to   
-		//get accountauthentication
-		//*************************
+		//Log back in to undo 
 		var Dashboard = Login.login('testRunner@testRunner.com', 'testrunner');
 		assertPageIsLoaded(Dashboard);
 		
@@ -40,7 +37,7 @@ component extends="AdminTestBase" {
 		EditIntegration.clickLocator( 'saveButton' );
 		waitForPageToLoad();
 		
-		var DetailIntegration = selenium.refresh();
+		var DetailIntegration = refresh();
 		
 		//Go to Dashboard to logOut
 		var Dashboard = openPage( '', 'Dashboard' );
@@ -53,9 +50,9 @@ component extends="AdminTestBase" {
 		var Login = openPage( '?slatAction=main.logout', 'Login' );
 		assertPageIsLoaded(Login);
 		
-		//Var the result of whether or not the unwanted elements are present
-		var integrationDropdownMenuPresentBooleanWithoutMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/ul/li[2]/a');
-		var muraPicturePresentBooleanWithoutMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/a[2]/img');
+		//Var the result of the same elements to test if they are present without the integration activated
+		var integrationDropdownMenuPresentBooleanWithoutMuraActive = Login.isLocatorPresent( 'integrationsDropdown' );
+		var muraPicturePresentBooleanWithoutMuraActive = Login.isLocatorPresent( 'muraImage' );
 		
 		//Assertions without Mura being Active
 		assertFalse(integrationDropdownMenuPresentBooleanWithoutMuraActive);
