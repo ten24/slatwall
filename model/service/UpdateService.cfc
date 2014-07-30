@@ -147,11 +147,11 @@ Notes:
 	</cffunction>
 	
 	<cffunction name='removeMeta'>
-		<cfreturn directoryDelete( expandPath('/Slatwall/meta'), true ) />
+		<cfset directoryDelete( expandPath('/Slatwall/meta'), true ) />
 	</cffunction>
 	
 	<cffunction name='dismissMeta'>
-		<cfreturn fileWrite( expandPath('/Slatwall/custom/config') & '/metaDismiss.txt.cfm', now() ) />
+		<cfset fileWrite( expandPath('/Slatwall/custom/config') & '/metaDismiss.txt.cfm', now() ) />
 	</cffunction>
 	
 </cfcomponent>
