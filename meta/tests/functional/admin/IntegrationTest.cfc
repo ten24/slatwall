@@ -19,15 +19,19 @@ component extends="AdminTestBase" {
 		Dashboard.clickLocatorWaitLocator('logoutMenuIcon', 'logoutDropdownMenu');
 		Dashboard.clickLocator('logoutOption');
 		
-		//Var the result of whether or not the unwanted elements are present
-		var integrationDropdownMenuPresentBooleanWithMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/ul/li[2]/a');
-		var muraPicturePresentBooleanWithMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/a[2]/img');
-		
 		//Log back in and turn off Mura
 		var Login = openPage( '?slatAction=main.logout', 'Login' );
 		assertPageIsLoaded(Login);
 		
-		var Dashboard = Login.login('email@ten24web.com', 'testpassword');
+		//Var the result of whether or not the unwanted elements are present
+		var integrationDropdownMenuPresentBooleanWithMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/ul/li[2]/a');
+		var muraPicturePresentBooleanWithMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/a[2]/img');
+		
+		//*************************
+		//Need to work on how to   
+		//get accountauthentication
+		//*************************
+		var Dashboard = Login.login('testRunner@testRunner.com', 'testrunner');
 		assertPageIsLoaded(Dashboard);
 		
 		var EditIntegration = openPage('?slatAction=entity.editintegration&integrationID=8a8080834721af1a01474cb5c94e109a', 'EditIntegration');
@@ -45,6 +49,10 @@ component extends="AdminTestBase" {
 		Dashboard.clickLocatorWaitLocator('logoutMenuIcon', 'logoutDropdownMenu');
 		Dashboard.clickLocator('logoutOption');
 		
+		//Log back in and turn off Mura
+		var Login = openPage( '?slatAction=main.logout', 'Login' );
+		assertPageIsLoaded(Login);
+		
 		//Var the result of whether or not the unwanted elements are present
 		var integrationDropdownMenuPresentBooleanWithoutMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/ul/li[2]/a');
 		var muraPicturePresentBooleanWithoutMuraActive = selenium.isElementPresent('//html/body/div[1]/div/div/a[2]/img');
@@ -54,8 +62,8 @@ component extends="AdminTestBase" {
 		assertFalse(muraPicturePresentBooleanWithoutMuraActive);
 		
 		//Assertions with Mura being Active
-		//assertFalse(integrationDropdownMenuPresentBooleanWithMuraActive);
-		//assertFalse(muraPicturePresentBooleanWithMuraActive);
+		assertFalse(integrationDropdownMenuPresentBooleanWithMuraActive);
+		assertFalse(muraPicturePresentBooleanWithMuraActive);
 		
 	}
 
