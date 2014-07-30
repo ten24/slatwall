@@ -355,7 +355,7 @@
 			
 			<cfset var m = 1 />
 			<cfset var data = getData() />
-			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, "#getReportEndDateTime()#") />
+			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, getReportEndDateTime()) />
 			
 			<cfquery name="variables.chartDataQuery" dbtype="query">
 				SELECT
@@ -432,7 +432,7 @@
 			
 			<cfset var m = 1 />
 			<cfset var data = getData() />
-			<cfset var reportCompareEndDateTimePlusOne = dateAdd("d", 1, "#getReportCompareEndDateTime()#") />
+			<cfset var reportCompareEndDateTimePlusOne = dateAdd("d", 1, getReportCompareEndDateTime()) />
 			
 			<cfquery name="variables.chartCompareDataQuery" dbtype="query">
 				SELECT
@@ -690,6 +690,7 @@
 			
 			<cfset var m = 1 />
 			<cfset var data = getData() />
+			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, getReportEndDateTime()) />
 			
 			<cfquery name="variables.totalsQuery" dbtype="query">
 				SELECT
@@ -707,7 +708,7 @@
 				WHERE
 					reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportStartDateTime()#" />
 				  AND
-				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportEndDateTime()#" />
+				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportEndDateTimePlusOne#" />
 			</cfquery>
 		</cfif>
 		
@@ -719,6 +720,7 @@
 			
 			<cfset var m = 1 />
 			<cfset var data = getData() />
+			<cfset var reportCompareEndDateTimePlusOne = dateAdd("d", 1, getReportCompareEndDateTime()) />
 			
 			<cfquery name="variables.compareTotalsQuery" dbtype="query">
 				SELECT
@@ -736,7 +738,7 @@
 				WHERE
 					reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportCompareStartDateTime()#" />
 				  AND
-				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportCompareEndDateTime()#" />
+				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportCompareEndDateTimePlusOne#" />
 			</cfquery>
 		</cfif>
 		
@@ -755,6 +757,7 @@
 			<cfset var allUnsortedData = "" />
 			<cfset var m = 1 />
 			<cfset var d = 1 />
+			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, getReportEndDateTime()) />
 			
 			<cfquery name="unsortedData" dbtype="query">
 				SELECT
@@ -779,7 +782,7 @@
 				WHERE
 					reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportStartDateTime()#" />
 				  AND
-				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportEndDateTime()#" />
+				  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportEndDateTimePlusOne#" />
 				GROUP BY
 					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
 						<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
@@ -792,6 +795,8 @@
 			</cfquery>
 			
 			<cfif getReportCompareFlag()>
+				<cfset var reportCompareEndDateTimePlusOne = dateAdd("d", 1, getReportCompareEndDateTime()) />
+				
 				<cfquery name="unsortedCompareData" dbtype="query">
 					SELECT
 						<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
@@ -815,7 +820,7 @@
 					WHERE
 						reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportCompareStartDateTime()#" />
 					  AND
-					  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportCompareEndDateTime()#" />
+					  	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportCompareEndDateTimePlusOne#" />
 					GROUP BY
 						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
 							<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />

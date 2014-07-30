@@ -48,12 +48,12 @@ Notes:
 */
 component extends="HibachiService" output="false" accessors="true"{
 			
-	property name="taskDAO" type="any";
+	property name="scheduleDAO" type="any";
 	
 	property name="taskService" type="any";
 	
 	public query function getDueTasks(numeric maxCount = 5){
-		return getTaskDAO().getDueTasks(maxCount);
+		return getScheduleDAO().getDueTasks(maxCount);
 	}
 	
 	public void function executeScheduledTasks() {

@@ -60,7 +60,7 @@ Notes:
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadFileName = "slatwall#createUUID()#.zip" />
 			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/config/custom" />
-			<cfset var copyContentExclusionList = "" />
+			<cfset var copyContentExclusionList = "/meta" />
 			
 			<!--- before we do anything, make a backup --->
 			<cfzip action="zip" file="#getTempDirectory()#slatwall_bak.zip" source="#slatwallRootPath#" recurse="yes" overwrite="yes" />
@@ -141,5 +141,18 @@ Notes:
 		
 		<cfreturn versions />
 	</cffunction>
+	
+	<cffunction name='checkForMetaFolderWithoutDismissal'>
+		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) && !fileExists( expandPath('/Slatwall/custom/config/metaDismiss.txt.cfm') ) />
+	</cffunction>
+	
+	<cffunction name='removeMeta'>
+		<cfreturn directoryDelete( expandPath('/Slatwall/meta'), true ) />
+	</cffunction>
+	
+	<cffunction name='dismissMeta'>
+		<cfreturn fileWrite( expandPath('/Slatwall/custom/config') & '/metaDismiss.txt.cfm', now() ) />
+	</cffunction>
+	
 </cfcomponent>
 
