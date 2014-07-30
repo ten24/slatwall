@@ -15,10 +15,13 @@ component output="false" accessors="true" {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
 		//could possibly check whether we want a different contentType other than json in the future
-		param name="arguments.rc.apiResponse.statusCode" default="200";
-		param name="arguments.rc.apiResponse.statusText" default="OK";
+		param name="arguments.rc.statusCode" default="200";
+		param name="arguments.rc.statusText" default="OK";
 		param name="rc.contentType" default="application/json"; 
-		arguments.rc.apiResponse.contentType = rc.contentType;
+		arguments.rc.contentType = rc.contentType;
+		if(isnull(arguments.rc.apiResponse)){
+			arguments.rc.apiResponse = {};
+		}
 		
 	}
 	

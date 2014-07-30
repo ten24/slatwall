@@ -27,7 +27,7 @@ jQuery(document).ready(function() {
 	initUIElements( 'body' );
 
 	// Looks for a tab to show
-	$(window).hashchange();
+	//$(window).hashchange();
 	
 	// Focus on the first tab index
 	if(jQuery('.firstfocus').length) {
@@ -260,9 +260,9 @@ function setupEventHandlers() {
 	});
 	
 	// Bind Hash Change Event
-	jQuery(window).hashchange( function(e){
+	/*jQuery(window).hashchange( function(e){
 		jQuery('a[href=' + location.hash + ']').tab('show');
-	});
+	});*/
 	
 	// Hints
 	jQuery('body').on('click', '.hint', function(e){

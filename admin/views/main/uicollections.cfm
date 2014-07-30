@@ -1,12 +1,13 @@
 <div class="panel panel-default" ng-app="collections">
   <div class="panel-heading">
+  	<!---populate with listing name --->
     <h3 class="panel-title">Order Listing</h3>
   </div>
   <div class="panel-body">
 
     <div class="row content-nav">
       <div class="col-md-12 align-right">
-
+		<!---most likely using angular filter searching here --->
         <form class="navbar-form search-bar no-padding" role="search">
           <div class="input-group">
             <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="srch-term">
@@ -52,11 +53,12 @@
                       <div class="option-dropdown">
                         <select class="form-control input-sm">
                           <option disabled="disabled" selected="selected">Copy From Existing Collection</option>
-                          <option value="one">One</option>
+                          <!---populate with existing collections --->
+                          <!---<option value="one">One</option>
                           <option value="two">Two</option>
                           <option value="three">Three</option>
                           <option value="four">Four</option>
-                          <option value="five">Five</option>
+                          <option value="five">Five</option>--->
                         </select>
                       </div>
 
@@ -424,7 +426,8 @@
 
     <table class="table table-bordered table-striped">
         <thead>
-            <tr>
+        	<!---column headers go here --->
+            <!---<tr>
                 <th>Row</span></th>
                 <th class="sortable">ID</th>
                 <th class="sortable">Company</th>
@@ -437,12 +440,13 @@
                 <th class="sortable">Date Placed</th>
                 <th class="sortable">Total</th>
                 <th>View</th>
-            </tr>
+            </tr>--->
         </thead>
         <tbody>
 
           <!---TR 1--->
-          <tr class="even-tr">
+           <!---row data goes here --->
+          <!---<tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"></label></div></td>
             <td>2691402</td>
             <td>Ten24</td>
@@ -567,7 +571,7 @@
             <td>Jun 06, 2014 05:43 PM</td>
             <td>$183.90</td>
             <td class="view-element"></td>
-          </tr>
+          </tr>--->
 
         </tbody>
     </table>

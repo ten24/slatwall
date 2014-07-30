@@ -289,106 +289,77 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = ""){
-		/*try{*/
-			collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
-			
-			//if propertyIdentifiers were specified add selects so we can refine what columns to return
-			if(len(arguments.propertyIdentifiersList)){
-				addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
-			}
-			
-			var defaultPropertyIdentifiers = getPropertyIdentifierList(arguments.entityName);
-			
-			return getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);
+		collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 		
-		/*}catch(any e){
-			var apiResponse.statusCode = "500";
-			//e.message is probably too much info for the api response
-			apiResponse.statusText = "entity name #arguments.entityName# does not exist";
-			return apiResponse;
-		}*/
+		//if propertyIdentifiers were specified add selects so we can refine what columns to return
+		if(len(arguments.propertyIdentifiersList)){
+			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
+		}
 		
+		var defaultPropertyIdentifiers = getPropertyIdentifierList(arguments.entityName);
+		
+		return getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);
+	
 	}
 	
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, string propertyIdentifiersList = ""){
-		//check entityname otherwise inform the user of the error
-		/*try{*/
-			var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
-			var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
-			
-			if(len(arguments.propertyIdentifiersList)){
-				addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
-			}
-			
-			var defaultPropertyIdentifiers = getPropertyIdentifierList(arguments.entityName);
-	
-			//set up search by id				
-			if(!structKeyExists(collectionConfigStruct,'filterGroups')){
-				collectionConfigStruct.filterGroups = [];
-			}
-			var capitalCaseEntityName = capitalCase(arguments.entityName);
-			var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
-			var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
-			
-			var filterGroupStruct.filterGroup = [];
-			arrayappend(filterGroupStruct.filterGroup,filterStruct);
-			
-			arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
-			
-			var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
-		/*}catch(any e){
-			var response.statusCode = "500";
-			response.statusText = "entity name #arguments.entityName# does not exist";
-			return response;
-		}*/
-		//check that id exists otherwise inform the user
-		/*try{*/
-			//var response = getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);;
-			//writeDump(var=response,top=2);abort;
-			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
-				if(isObject(paginatedCollectionOfEntities[1])) {
-					response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
-				}else{
-					if(structKeyExists(paginatedCollectionOfEntities[1],defaultPropertyIdentifiers[p])){
-						response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1][defaultPropertyIdentifiers[p]];
-					}
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+		
+		if(len(arguments.propertyIdentifiersList)){
+			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
+		}
+		
+		var defaultPropertyIdentifiers = getPropertyIdentifierList(arguments.entityName);
+
+		//set up search by id				
+		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
+			collectionConfigStruct.filterGroups = [];
+		}
+		var capitalCaseEntityName = capitalCase(arguments.entityName);
+		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
+		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
+		
+		var filterGroupStruct.filterGroup = [];
+		arrayappend(filterGroupStruct.filterGroup,filterStruct);
+		
+		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
+		
+		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		//var response = getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);;
+		//writeDump(var=response,top=2);abort;
+		for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
+			if(isObject(paginatedCollectionOfEntities[1])) {
+				response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
+			}else{
+				if(structKeyExists(paginatedCollectionOfEntities[1],defaultPropertyIdentifiers[p])){
+					response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1][defaultPropertyIdentifiers[p]];
 				}
 			}
-			return response;
-		/*}catch(any e){
-			var response.statusCode = "500";
-			response.statusText = "entity ID #arguments.entityID# for #arguments.entityName# does not exist";
-			return response;
-		}*/
+		}
+		return response;
 		
 	}
 	
 	public any function getAPIResponseForCollection(required any collectionEntity, string propertyIdentifiersList = ""){
-		/*try{*/
-			if(len(arguments.propertyIdentifiersList)){
-				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.propertyIdentifiersList);
-			}
-			
-			var defaultPropertyIdentifiers = getPropertyIdentifierList('collection');
-			var response = {};
-			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
-				response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
-			}
-			
-			//get default property identifiers for the records that the collection refers to
-			var collectionPropertyIdentifiers = getPropertyIdentifierList(collectionEntity.getBaseEntityName());;
-			
-			var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
-			var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
-			
-			structAppend(response,collectionPaginationStruct);
-			return response;
-		/*}catch(any e){
-			//request would have failed earlier getting to this point. If it still fails still notify user 
-			var response.statusCode = "500";
-			response.statusText = "request could not be processed";
-			return response;
-		}*/
+		if(len(arguments.propertyIdentifiersList)){
+			addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.propertyIdentifiersList);
+		}
+		
+		var defaultPropertyIdentifiers = getPropertyIdentifierList('collection');
+		var response = {};
+		for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
+			response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
+		}
+		
+		//get default property identifiers for the records that the collection refers to
+		var collectionPropertyIdentifiers = getPropertyIdentifierList(collectionEntity.getBaseEntityName());;
+		
+		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
+		var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+		
+		structAppend(response,collectionPaginationStruct);
+		return response;
 	}
 	
 	public string function getPropertyIdentifiersList(required any entityProperties){
