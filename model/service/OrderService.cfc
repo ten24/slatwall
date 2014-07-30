@@ -165,6 +165,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					break;
 				}
 			}
+			
+			// Duplicate Order Fulfillment
 			if(!orderFulfillmentFound) {
 				var newOrderFulfillment = this.newOrderFulfillment();
 				newOrderFulfillment.setFulfillmentMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
@@ -174,7 +176,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newOrderFulfillment.setShippingMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod() );	
 				}
 				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
-					newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress() );
+					newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress().copyAddress() );
 				}
 				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
 					newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
@@ -189,8 +191,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		}
 		
+		// Duplicate Account
 		if(!isNull(arguments.order.getAccount())) {
 			newOrder.setAccount( arguments.order.getAccount() );
+		}
+		
+		// Dupliace Shipping & Billing Addresses
+		if(!isNull(arguments.order.getShippingAddress())) {
+			newOrder.setShippingAddress( arguments.order.getShippingAddress().copyAddress() );
+		}
+		if(!isNull(arguments.order.getShippingAccountAddress())) {
+			newOrder.setShippingAccountAddress( arguments.order.getShippingAccountAddress() );
+		}
+		if(!isNull(arguments.order.getBillingAddress())) {
+			newOrder.setBillingAddress( arguments.order.getBillingAddress().copyAddress() );
+		}
+		if(!isNull(arguments.order.getBillingAccountAddress())) {
+			newOrder.setBillingAccountAddress( arguments.order.getBillingAccountAddress() );
 		}
 		
 		if(arguments.saveNewFlag) {
@@ -210,7 +227,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			fulfillment.setEmailAddress( javaCast("null", "" ) );
 		}
 		
+		// Remove account
 		newOrder.setAccount( arguments.newAccount );
+
+		// Remove Addresses		
+		newOrder.setShippingAddress( javaCast("null", "" ) );
+		newOrder.setShippingAccountAddress( javaCast("null", "" ) );
+		newOrder.setBillingAddress( javaCast("null", "" ) );
+		newOrder.setBillingAccountAddress( javaCast("null", "" ) );
 		
 		// Update any errors from the previous account to the new account
 		newOrder.getAccount().setHibachiErrors( originalOrder.getAccount().getHibachiErrors() );
