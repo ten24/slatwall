@@ -3,20 +3,8 @@ component extends="AdminTestBase" {
 	//Tests FW1 Integrations/Mura Icon Do Not Appear On Navbar once logged out
 	public function fw1IntegrationsUponLogoutTest(){
 		
-		//Activate Mura
-		var EditIntegration = openPage('?slatAction=entity.editintegration&integrationID=8a8080834721af1a01474cb5c94e109a', 'EditIntegration');
-		assertPageIsLoaded(EditIntegration);
-		EditIntegration.clickLocator( 'activeFlagYes' );
-		EditIntegration.clickLocator( 'saveButton' );
-		waitForPageToLoad();
-		
-		//Go to Dashboard to logOut
-		var Dashboard = openPage( '', 'Dashboard' );
-		assertPageIsLoaded(Dashboard);
-		
-		Dashboard.clickLocatorWaitLocator('logoutMenuIcon', 'logoutDropdownMenu');
-		Dashboard.clickLocator('logoutOption');
-		
+		turnMuraOffAndOn( 'activeFlagYes' );
+
 		//Log back in and turn off Mura
 		var Login = openPage( '?slatAction=main.logout', 'Login' );
 		assertPageIsLoaded(Login);
@@ -29,19 +17,8 @@ component extends="AdminTestBase" {
 		var Dashboard = Login.login('testRunner@testRunner.com', 'testrunner');
 		assertPageIsLoaded(Dashboard);
 		
-		var EditIntegration = openPage('?slatAction=entity.editintegration&integrationID=8a8080834721af1a01474cb5c94e109a', 'EditIntegration');
-		assertPageIsLoaded(EditIntegration);
-		EditIntegration.clickLocator( 'activeFlagNo' );
-		EditIntegration.clickLocator( 'saveButton' );
-		waitForPageToLoad();
-		
-		//Go to Dashboard to logOut
-		var Dashboard = openPage( '', 'Dashboard' );
-		assertPageIsLoaded(Dashboard);
-		
-		Dashboard.clickLocatorWaitLocator('logoutMenuIcon', 'logoutDropdownMenu');
-		Dashboard.clickLocator('logoutOption');
-		
+		turnMuraOffAndOn( 'activeFlagNo' );
+
 		//Log back in and turn off Mura
 		var Login = openPage( '?slatAction=main.logout', 'Login' );
 		assertPageIsLoaded(Login);
@@ -59,5 +36,14 @@ component extends="AdminTestBase" {
 		assertFalse(muraPicturePresentBooleanWithMuraActive);
 		
 	}
+	
+	private function turnMuraOffAndOn( required locator ){
+		var EditIntegration = openPage('?slatAction=entity.editintegration&integrationID=8a8080834721af1a01474cb5c94e109a', 'EditIntegration');
+		assertPageIsLoaded(EditIntegration);
+		EditIntegration.clickLocator( arguments.locator );
+		EditIntegration.clickLocator( 'saveButton' );
+		waitForPageToLoad();
+	}
+
 
 }
