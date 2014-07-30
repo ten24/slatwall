@@ -14,11 +14,12 @@ component output="false" accessors="true" {
 	public any function before( required struct rc ) {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
+		//could possibly check whether we want a different contentType other than json in the future
 		param name="arguments.rc.apiResponse.statusCode" default="200";
 		param name="arguments.rc.apiResponse.statusText" default="OK";
 		param name="rc.contentType" default="application/json"; 
-		//could possibly check whether we want a different contentType other than json in the future
 		arguments.rc.apiResponse.contentType = rc.contentType;
+		
 	}
 	
 	/*public any function onMissingMethod(required string name, required struct rc){
@@ -31,42 +32,49 @@ component output="false" accessors="true" {
 			handle accessing collections by id
 		*/
 		
-			//first check if we have an entityName value
-			if(!structKeyExists(arguments.rc, "entityName")) {
-				arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-				arguments.rc.apiResponse['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
-					
-			} else {
-				//get entity service by entity name
+		param name="arguments.rc.propertyIdentifiers" default="";
+		
+		//first check if we have an entityName value
+		if(!structKeyExists(arguments.rc, "entityName")) {
+			arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
+			arguments.rc.apiResponse['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
 				
-				if(!structKeyExists(arguments.rc,'entityID')){
-					structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseByEntityName(arguments.rc.entityName));
+		} else {
+			//get entity service by entity name
+			
+			if(!structKeyExists(arguments.rc,'entityID')){
+				//should be able to add select and where filters here
+				var result = collectionService.getAPIResponseForEntityName(	arguments.rc.entityName,
+																			arguments.rc.propertyIdentifiers);
+				structAppend(arguments.rc.apiResponse,result);
+			}else{
+				//figure out if we have a collection or a basic entity
+				var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
+				if(isNull(collectionEntity)){
+					//should only be able to add selects (&propertyIdentifier=)
+					var result = collectionService.getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
+																				arguments.rc.entityID,
+																				arguments.rc.propertyIdentifiers);
+					structAppend(arguments.rc.apiResponse,result);
 				}else{
-					//figure out if we have a collection or a basic entity
-					var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
-					if(isNull(collectionEntity)){
-						structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseForBasicEntityByNameAndID(arguments.rc.entityName,arguments.rc.entityID));
-					}else{
-						structAppend(arguments.rc.apiResponse,collectionService.getAPIResponseForCollectionEntityByID(collectionEntity));
-					}
+					//should be able to add select and where filters here
+					var result = collectionService.getAPIResponseForCollection(	collectionEntity,
+																				arguments.rc.propertyIdentifiers);
+					structAppend(arguments.rc.apiResponse,result);
 				}
 			}
-			
-		
-		
+		}
 	}
 	
 	public any function post( required struct rc ) {
 		param name="arguments.rc.context" default="save";
 		param name="arguments.rc.entityID" default="";
-		
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
 		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
 		
 		// SAVE
 		if(arguments.rc.context eq 'save') {
 			entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=arguments.rc});
-			
 		// DELETE
 		} else if (arguments.rc.context eq 'delete') {
 			var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
@@ -74,8 +82,8 @@ component output="false" accessors="true" {
 		// PROCESS
 		} else {
 			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.context});
-			
 		}
+		//structAppend(arguments.rc.apiResponse);
 		
 		arguments.rc.apiResponse = {};
 	}

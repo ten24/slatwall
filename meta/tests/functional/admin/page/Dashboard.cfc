@@ -14,10 +14,12 @@ component extends="PageObject"{
 		},
 		"Orders" = {
 			"Orders" = "ListOrders", 
-			"Carts & Quotes" = "ListCartsAndQuotes"
+			"Carts & Quotes" = "ListCartsAndQuotes",
+			"Vendor Orders" = "ListVendorOrder"
 		},
 		"Config" = {
-			"Tax Categories" = "ListTaxCategories"
+			"Tax Categories" = "ListTaxCategories",
+			"View A List of Settings" = "Settings"
 		}
 	};
 	

@@ -59,7 +59,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="taxPostalCode" type="string";   
 	property name="taxCountryCode" type="string";  
 	
-	// Price and Quantity Properies
+	// Order Item Price and Quantity Properies
 	property name="orderItemID" type="string" default="";
 	property name="price" type="string" default="";
 	property name="quantity" type="string" default="";
@@ -67,4 +67,11 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="discountAmount" type="string" default="";
 	property name="extendedPriceAfterDiscount" type="string" default="";
 	
+	// Tax Codes
+	property name="taxCategoryCode" type="string" default="";
+	property name="taxCategoryRateCode" type="string" default="";
+	
+	// Reference Objects
+	property name="orderItem" type="any" default="";
+	property name="taxAddress" type="any" default="";
 }

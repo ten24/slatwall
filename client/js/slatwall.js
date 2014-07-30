@@ -1,5 +1,5 @@
 'use strict';
-angular.module('slatwall', [])
+angular.module('slatwall', []);
 /*.config(function($httpProvider){
 	//Build our interceptor here 
 	var interceptor = function($q,$rootScoope, Auth){

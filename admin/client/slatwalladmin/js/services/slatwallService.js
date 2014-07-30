@@ -1,3 +1,5 @@
+//services return promises which can be handled uniquely based on success or failure by the controller
+
 angular.module('slatwalladmin.services',['ngResource','ngCookies']).config(["$provide", function ($provide) {
     $provide.constant("baseURL", 'http://cf10.localhost/');
 }])
@@ -6,19 +8,38 @@ function($http,$q,baseURL){
 	var factory = {};
 	//basic entity getter where id is optional, returns a promise
 	factory.getEntity = function(entityName,id){
-		if(typeof id === "undefined") {
-			id = '';	
-		}
 		
-		var deferred = $q.defer();		
-		$http.get(baseURL+'index.cfm/api/'+entityName+'/'+id)
+		var deferred = $q.defer();
+		var urlString = baseURL+'index.cfm/?slatAction=api:main.get&entityName='+entityName;
+		if(typeof id !== "undefined") {
+			urlString += '&entityId='+id;	
+		}
+			
+		$http.get(urlString)
 		.success(function(data){
 			deferred.resolve(data);
-		}).error(function(){
-			deferred.resolve(data);
+		}).error(function(reason){
+			deferred.resolve(reason);
 		});
 		return deferred.promise;
 		
+	}
+	factory.saveEntity = function(entityName,id,params){
+		var deferred = $q.defer();
+		var urlString = baseURL+'index.cfm/?slatAction=api:main.post&entityName='+entityName+'&entityId='+id;	
+			
+		$http({
+			method:'POST',
+			url:urlString,
+			params: params,
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		})
+		.success(function(data){
+			deferred.resolve(data);
+		}).error(function(reason){
+			deferred.resolve(reason);
+		});
+		return deferred.promise;
 	}
 	return factory;
 }]);

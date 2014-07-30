@@ -49,9 +49,10 @@ component extends="FW1.framework" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
-		{ "$GET/api/:entityName/:entityID" = "/admin:api/get/entityName/:entityName/entityID/:entityID"},
-		{ "$GET/api/:entityName/" = "/admin:api/get/entityName/:entityName/"}
+		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"},
+		{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
 	];
 	
 	// Hibachi Setup
@@ -472,9 +473,9 @@ component extends="FW1.framework" {
 		param name="request.context.ajaxResponse" default="#structNew()#";
 		param name="request.context.apiRequest" default="false";
 		param name="request.context.apiResponse" default="#structNew()#";
-		/*param name="request.context.apiResponse.contentType" default="application/json";
 		param name="request.context.apiResponse.statusCode" default="200";
-		param name="request.context.apiResponse.statusText" default="OK";*/
+		param name="request.context.apiResponse.statusText" default="OK";
+		param name="request.context.apiResponse.contentType" default="application/json"; 
 		
 		endHibachiLifecycle();
 		
@@ -484,15 +485,19 @@ component extends="FW1.framework" {
 		// Check for an API Response
 		if(request.context.apiRequest) {
     		//need response header for api
-    		var response = getPageContext().getResponse();
+    		var context = getPageContext();
+    		context.getOut().clearBuffer();
+    		var response = context.getResponse();
     		response.setContentType(request.context.apiResponse.contentType);
     		response.setStatus(request.context.apiResponse.statusCode,request.context.apiResponse.statusText);
-    		
+    		var responseString = '';
     		//leaving a note here in case we ever wish to support XML for api responses
     		if(request.context.apiResponse.contentType eq 'application/json'){
-    			writeOutput( serializeJSON(request.context.apiResponse) );
+    			responseString = serializeJSON(request.context.apiResponse);
+    			
     		}
-			
+    		
+			writeOutput( responseString );
 		}
 		
 		// Check for an Ajax Response

@@ -54,6 +54,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="accountPaymentMethodName" hb_populateEnabled="public" ormType="string";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
+	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
@@ -130,6 +131,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.orderPayment.getPaymentMethod() );
 		
+		// Company PaymentMethod Flag
+		if(!isNull(arguments.orderPayment.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.orderPayment.getCompanyPaymentMethodFlag() );
+		}
+		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
@@ -163,6 +169,15 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		// Credit Card & Term Payment
 		if(listFindNoCase("creditCard,termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setBillingAddress( arguments.orderPayment.getBillingAddress().copyAddress( true ) );
+			
+			// Try also copying a billingAccountAddress first from the orderPayment
+			if(!isNull(arguments.orderPayment.getBillingAccountAddress())) {
+				setBillingAccountAddress( arguments.orderPayment.getBillingAccountAddress() );
+				
+			// If it isn't found then check the order
+			} else if (!isNull(arguments.orderPayment.getOrder()) && !isNull(arguments.orderPayment.getOrder().getBillingAccountAddress())) {
+				setBillingAccountAddress( arguments.orderPayment.getOrder().getBillingAccountAddress() );
+			}
 		}
 		
 	}
@@ -171,6 +186,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.accountPayment.getPaymentMethod() );
+		
+		// Company PaymentMethod Flag
+		if(!isNull(arguments.accountPayment.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.accountPayment.getCompanyPaymentMethodFlag() );
+		}
 		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.accountPayment.getPaymentMethod().getPaymentMethodType())) {
@@ -295,7 +315,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	}
 	
 	public void function setCreditCardNumber(required string creditCardNumber) {
-		variables.creditCardNumber = arguments.creditCardNumber;
+		variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
 		setCreditCardLastFour(Right(arguments.creditCardNumber, 4));
 		setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber));
 		if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) && getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) {
@@ -344,6 +364,11 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
 			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
 			
+		}
+		
+		// If the accountAddress didn't have an account set to it for some reason, then we can copy this account over to it.  Specifically this is for the addAccountPaymentMethod public function public:account.addAccountPaymentMethod
+		if( isNull(arguments.accountAddress.getAccount()) && !isNull(getAccount()) ) {
+			arguments.accountAddress.setAccount( getAccount() );
 		}
 		
 		// Set the actual accountAddress

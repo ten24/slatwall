@@ -55,8 +55,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var entityName in allEntities) {
 			
 			var thisEntityName = replace(entityName, "Slatwall","","all");
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
 			
+			// Check for the entity key
+			var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#');
+			if(right(keyValue,8) == '_missing') {
+				addToDebug(keyValue);
+				allFound = false;
+			}
+			
+			// Check for the entity key plural
+			var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#_plural');
+			if(right(keyValue,8) == '_missing') {
+				addToDebug(keyValue);
+				allFound = false;
+			}
+			
+			// Check for the entity property keys
+			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if(!structKeyExists(property, "persistent") || property.persistent) {
 					var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#.#property.name#');

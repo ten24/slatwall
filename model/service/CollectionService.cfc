@@ -138,7 +138,6 @@ component extends="HibachiService" accessors="true" output="false" {
 					arrayAppend(returnArray, add);
 				}
 			}
-			
 		}
 		
 		return returnArray;
@@ -160,6 +159,29 @@ component extends="HibachiService" accessors="true" output="false" {
 		return collectionEntity;
 	}
 	
+	public any function createTransientCollection(required string entityName, string collectionConfig = "" string propertyIdentifiersList = "", string filterList = "", string orderByList =""){
+		
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		
+		if(arguments.collectionConfig neq ""){
+			collectionEntity.setCollectionConfig(arguments.collectionConfig);
+		}
+		
+		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+		
+		//now that we have the basic structure of the collectionconfigStruct, lets add the other things
+		if(len(arguments.propertyIdentifiersList)){
+			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
+		}
+		if(len(arguments.orderBysList)){
+			addOrderBysToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.orderBysList);
+		}
+		
+		
+		return collectionEntity;
+		
+	}
+	
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
 		
@@ -167,19 +189,30 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var i=1; i<=arrayLen(paginatedCollectionOfEntities); i++) {
 			var thisRecord = {};
 			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
-				if(arguments.propertyIdentifiers[p] eq 'pageRecords'){
-				}else{
-					var value = paginatedCollectionOfEntities[i].getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifiers[p], formatValue=true );
-					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-						thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
-					} else {
-						thisRecord[ arguments.propertyIdentifiers[p] ] = value;
+				if(arguments.propertyIdentifiers[p] neq 'pageRecords'){
+					//check if page records returns an array of orm objects or hashmap structs and handle them appropriatley
+					if(isObject(paginatedCollectionOfEntities[i])) {
+						var value = paginatedCollectionOfEntities[i].getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifiers[p], formatValue=true );
+						if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+							thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
+						} else {
+							thisRecord[ arguments.propertyIdentifiers[p] ] = value;
+						}
+					
+					}else{
+						if(structKeyExists(paginatedCollectionOfEntities[i],arguments.propertyIdentifiers[p])){
+							var value = paginatedCollectionOfEntities[i][arguments.propertyIdentifiers[p]];
+							if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+								thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
+							} else {
+								thisRecord[ arguments.propertyIdentifiers[p] ] = value;
+							}
+						}
 					}
 				}
 			}
 			arrayAppend(formattedPageRecords[ "pageRecords" ], thisRecord);
 		}
-		/* TODO:add the commented properties*/
 		formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
 		formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords());
 		formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
@@ -191,37 +224,103 @@ component extends="HibachiService" accessors="true" output="false" {
 		return formattedPageRecords;
 	}
 	
-	public any function getAPIResponseByEntityName(required string entityName){
-		try{
+	private array function getPropertyIdentifierList(required string entityName){
+		//if we were supplied with a list of property identifiers then we should only return whats on that list
+		/* TODO: validate that the user is allowed to return the column*/
+		
+		//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
+		var defaultEntityProperties = getDefaultPropertiesByEntityName( entityName );
+		var propertyIdentifiersList = getPropertyIdentifiersList(defaultEntityProperties);
+		// Turn the property identifiers into an array
+		return listToArray( propertyIdentifiersList );
+	}
+	
+	//even though void return type it still makes changes to the collectionConfigStuct
+	private void function addColumnsToCollectionConfigStructByPropertyIdentifierList(required any collectionEntity, required string propertyIdentifierList){
+		var collectionConfigStruct = arguments.collectionEntity.getCollectionConfigStruct();
+		if(structKeyExists(collectionConfigStruct,'columns')){
+			var columnsArray = collectionConfigStruct.columns;
+		}else{
+			var columnsArray = [];
+		}
+		
+		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
+		for(propertyIdentifierItem in propertyIdentifiersArray){
+			columnStruct = {
+				propertyIdentifier = "#propertyIdentifierItem#"
+			};
+			ArrayAppend(columnsArray,columnStruct);
+		}
+		collectionConfigStruct.columns = columnsArray;
+	}
+	
+	//orderbys list format &orderbys=propertyIdentifier_direction,propertyIdentifier2_direction 
+	private void function addOrderBysToCollectionConfigStructByOrderBysList(required any collectionEntity, required string orderBysList){
+		var collectionConfigStruct = arguments.collectionEntity.getCollectionConfigStruct();
+		if(structKeyExists(collectionConfigStruct,'orderBy')){
+			var orderByArray = collectionConfigStruct.orderBy;
+		}else{
+			var orderByArray = [];
+		}
+		
+		var orderBysListArray = ListToArray(arguments.orderBysList);
+		for(orderBy in OrderBysListArray){
+			orderByStruct = {
+				propertyIdentifier = "#listFirst(orderBy,'_')#",
+				direction = "#listLast(orderBy,'_')#"
+			};
+		}
+		collectionConfigStruct.orderBys = orderBysArray;
+	}
+	
+	//filter
+	private void function addFiltersToCollectionConfigStructByParameters(required any collectionEntity, required string filterParameters){
+		/*if(!structKeyExists(collectionConfigStruct,'filterGroups')){
+			collectionConfigStruct.filterGroups = [];
+		}
+		var capitalCaseEntityName = capitalCase(arguments.entityName);
+		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
+		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
+		
+		var filterGroupStruct.filterGroup = [];
+		arrayappend(filterGroupStruct.filterGroup,filterStruct);
+		
+		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);*/
+	}
+	
+	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = ""){
+		/*try{*/
 			collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 			
-			//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
-			var entityProperties = getDefaultPropertiesByEntityName( entityName );
-			var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
-			// Turn the property identifiers into an array
-			var propertyIdentifiers = listToArray( propertyIdentifiersList );
+			//if propertyIdentifiers were specified add selects so we can refine what columns to return
+			if(len(arguments.propertyIdentifiersList)){
+				addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
+			}
 			
-			return getFormattedPageRecords(collectionEntity,propertyIdentifiers);
+			var defaultPropertyIdentifiers = getPropertyIdentifierList(arguments.entityName);
+			
+			return getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);
 		
-		}catch(any e){
+		/*}catch(any e){
 			var apiResponse.statusCode = "500";
 			//e.message is probably too much info for the api response
 			apiResponse.statusText = "entity name #arguments.entityName# does not exist";
 			return apiResponse;
-		}
+		}*/
 		
 	}
 	
-	public any function getAPIResponseForBasicEntityByNameAndID(required string entityName, required string entityID){
+	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, string propertyIdentifiersList = ""){
 		//check entityname otherwise inform the user of the error
-		try{
+		/*try{*/
 			var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 			var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
-	
-			var entityProperties = getDefaultPropertiesByEntityName( arguments.entityName );
-			var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
-			// Turn the property identifiers into an array
-			var propertyIdentifiers = listToArray( propertyIdentifiersList );
+			
+			if(len(arguments.propertyIdentifiersList)){
+				addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
+			}
+			
+			var defaultPropertyIdentifiers = getPropertyIdentifierList(arguments.entityName);
 	
 			//set up search by id				
 			if(!structKeyExists(collectionConfigStruct,'filterGroups')){
@@ -235,57 +334,61 @@ component extends="HibachiService" accessors="true" output="false" {
 			arrayappend(filterGroupStruct.filterGroup,filterStruct);
 			
 			arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
-		
 			
 			var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
-		}catch(any e){
+		/*}catch(any e){
 			var response.statusCode = "500";
 			response.statusText = "entity name #arguments.entityName# does not exist";
 			return response;
-		}
+		}*/
 		//check that id exists otherwise inform the user
-		try{
-			var response = {};
-			for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
-				response[ propertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p],format=true );
+		/*try{*/
+			//var response = getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);;
+			//writeDump(var=response,top=2);abort;
+			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
+				if(isObject(paginatedCollectionOfEntities[1])) {
+					response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
+				}else{
+					if(structKeyExists(paginatedCollectionOfEntities[1],defaultPropertyIdentifiers[p])){
+						response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1][defaultPropertyIdentifiers[p]];
+					}
+				}
 			}
 			return response;
-		}catch(any e){
+		/*}catch(any e){
 			var response.statusCode = "500";
 			response.statusText = "entity ID #arguments.entityID# for #arguments.entityName# does not exist";
 			return response;
-		}
+		}*/
 		
 	}
 	
-	public any function getAPIResponseForCollectionEntityByID(required any collectionEntity){
-		try{
-			var entityProperties = getDefaultPropertiesByEntityName( 'collection' );
-			var propertyIdentifiersList = getPropertyIdentifiersList(entityProperties);
-			// Turn the property identifiers into an array
-			var propertyIdentifiers = listToArray( propertyIdentifiersList );
+	public any function getAPIResponseForCollection(required any collectionEntity, string propertyIdentifiersList = ""){
+		/*try{*/
+			if(len(arguments.propertyIdentifiersList)){
+				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.propertyIdentifiersList);
+			}
+			
+			var defaultPropertyIdentifiers = getPropertyIdentifierList('collection');
 			var response = {};
-			for(var p=1; p<=arrayLen(propertyIdentifiers); p++) {
-				response[ propertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=propertyIdentifiers[p],format=true );
+			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
+				response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 			}
 			
 			//get default property identifiers for the records that the collection refers to
-			var collectionEntityProperties = getDefaultPropertiesByEntityName( collectionEntity.getBaseEntityName() );
-			var collectionPropertyIdentifiersList = getPropertyIdentifiersList(collectionEntityProperties);
-			// Turn the property identifiers into an array
-			var collectionPropertyIdentifiers = listToArray( collectionPropertyIdentifiersList );
+			var collectionPropertyIdentifiers = getPropertyIdentifierList(collectionEntity.getBaseEntityName());;
 			
 			var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
 			var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
 			
 			structAppend(response,collectionPaginationStruct);
 			return response;
-		}catch(any e){
+		/*}catch(any e){
 			//request would have failed earlier getting to this point. If it still fails still notify user 
 			var response.statusCode = "500";
 			response.statusText = "request could not be processed";
 			return response;
-		}
+		}*/
 	}
 	
 	public string function getPropertyIdentifiersList(required any entityProperties){
@@ -305,6 +408,13 @@ component extends="HibachiService" accessors="true" output="false" {
 			value = arguments.value
 		};
 		return filterStruct;
+	}
+	
+	public struct function createColumnStruct(required string propertyIdentifier){
+		var columnStruct = {
+			propertyIdentifier=arguments.propertyIdentifier
+		};
+		return columnStruct;
 	}
 	
 	// =====================  END: Logical Methods ============================
