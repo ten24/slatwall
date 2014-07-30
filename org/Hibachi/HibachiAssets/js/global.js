@@ -26,9 +26,6 @@ jQuery(document).ready(function() {
 	
 	initUIElements( 'body' );
 
-	// Looks for a tab to show
-	$(window).hashchange();
-	
 	// Focus on the first tab index
 	if(jQuery('.firstfocus').length) {
 		jQuery('.firstfocus').focus();	
@@ -259,19 +256,9 @@ function setupEventHandlers() {
 		jQuery('#global-search').keyup();
 	});
 	
-	// Bind Hash Change Event
-	jQuery(window).hashchange( function(e){
-		jQuery('a[href=' + location.hash + ']').tab('show');
-	});
-	
 	// Hints
 	jQuery('body').on('click', '.hint', function(e){
 		e.preventDefault();
-	});
-	
-	// Tab Selecting
-	jQuery('body').on('shown', 'a[data-toggle="tab"]', function(e){
-		window.location.hash = jQuery(this).attr('href');
 	});
 	
 	// Empty Value
