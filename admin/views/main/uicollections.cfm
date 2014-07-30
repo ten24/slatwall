@@ -1,3 +1,8 @@
+<br />
+<br />
+
+<br />
+<br />
 <div class="panel panel-default" ng-app="collections">
   <div class="panel-heading">
     <h3 class="panel-title">Order Listing</h3>
@@ -185,26 +190,28 @@
                                   <h4>Criteria</h4>
 
                                   <form id="form_id" action="index.html" method="post">
-                                    <button class="btn btn-red btn-xs remove"><i class="fa fa-times"></i> remove</button>
-                                    <div class="form-group form-group-sm">
-                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
-                                      <div class="col-sm-12 no-padding">
-                                        <select class="form-control input-sm">
-                                          <option>1 week</option>
-                                          <option>2 week</option>
-                                          <option>3 week</option>
-                                          <option>4 week</option>
-                                          <option>5 week</option>
-                                        </select>
+                                    <div class="filter-group-item">
+                                      <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                        <div class="col-sm-12 no-padding">
+                                          <select class="form-control input-sm">
+                                            <option>1 week</option>
+                                            <option>2 week</option>
+                                            <option>3 week</option>
+                                            <option>4 week</option>
+                                            <option>5 week</option>
+                                          </select>
+                                        </div>
+                                        <div class="clearfix"></div>
                                       </div>
-                                      <div class="clearfix"></div>
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                      <div class="col-sm-12 no-padding">
-                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                        <div class="col-sm-12 no-padding">
+                                          <input type="text" class="form-control" id="input" placeholder="12">
+                                        </div>
+                                        <div class="clearfix"></div>
                                       </div>
-                                      <div class="clearfix"></div>
                                     </div>
                                     <div class="and-or-box">
                                       <div class="btn-group">
@@ -216,26 +223,28 @@
                                   </form>
 
                                   <form id="form_id" action="index.html" method="post">
-                                    <button class="btn btn-xs btn-red remove"><i class="fa fa-times"></i> remove</button>
-                                    <div class="form-group form-group-sm">
-                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
-                                      <div class="col-sm-12 no-padding">
-                                        <select class="form-control input-sm">
-                                          <option>1 week</option>
-                                          <option>2 week</option>
-                                          <option>3 week</option>
-                                          <option>4 week</option>
-                                          <option>5 week</option>
-                                        </select>
+                                    <div class="filter-group-item">
+                                      <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                        <div class="col-sm-12 no-padding">
+                                          <select class="form-control input-sm">
+                                            <option>1 week</option>
+                                            <option>2 week</option>
+                                            <option>3 week</option>
+                                            <option>4 week</option>
+                                            <option>5 week</option>
+                                          </select>
+                                        </div>
+                                        <div class="clearfix"></div>
                                       </div>
-                                      <div class="clearfix"></div>
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                      <div class="col-sm-12 no-padding">
-                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                        <div class="col-sm-12 no-padding">
+                                          <input type="text" class="form-control" id="input" placeholder="12">
+                                        </div>
+                                        <div class="clearfix"></div>
                                       </div>
-                                      <div class="clearfix"></div>
                                     </div>
                                     <div class="and-or-box">
                                       <div class="btn-group">
@@ -303,26 +312,28 @@
                                   <h4>Criteria</h4>
 
                                   <form id="form_id" action="index.html" method="post">
-                                    <button class="btn btn-xs btn-red remove"><i class="fa fa-times"></i> remove</button>
-                                    <div class="form-group form-group-sm">
-                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
-                                      <div class="col-sm-12 no-padding">
-                                        <select class="form-control input-sm">
-                                          <option>1 week</option>
-                                          <option>2 week</option>
-                                          <option>3 week</option>
-                                          <option>4 week</option>
-                                          <option>5 week</option>
-                                        </select>
+                                    <div class="filter-group-item">
+                                      <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                        <div class="col-sm-12 no-padding">
+                                          <select class="form-control input-sm">
+                                            <option>1 week</option>
+                                            <option>2 week</option>
+                                            <option>3 week</option>
+                                            <option>4 week</option>
+                                            <option>5 week</option>
+                                          </select>
+                                        </div>
+                                        <div class="clearfix"></div>
                                       </div>
-                                      <div class="clearfix"></div>
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                      <div class="col-sm-12 no-padding">
-                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                        <div class="col-sm-12 no-padding">
+                                          <input type="text" class="form-control" id="input" placeholder="12">
+                                        </div>
+                                        <div class="clearfix"></div>
                                       </div>
-                                      <div class="clearfix"></div>
                                     </div>
                                     <div class="and-or-box">
                                       <div class="btn-group">
@@ -333,27 +344,30 @@
                                     </div>
                                   </form>
 
+
                                   <form id="form_id" action="index.html" method="post">
-                                    <button class="btn btn-xs btn-red remove"><i class="fa fa-times"></i> remove</button>
-                                    <div class="form-group form-group-sm">
-                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
-                                      <div class="col-sm-12 no-padding">
-                                        <select class="form-control input-sm">
-                                          <option>1 week</option>
-                                          <option>2 week</option>
-                                          <option>3 week</option>
-                                          <option>4 week</option>
-                                          <option>5 week</option>
-                                        </select>
+                                    <div class="filter-group-item">
+                                      <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                        <div class="col-sm-12 no-padding">
+                                          <select class="form-control input-sm">
+                                            <option>1 week</option>
+                                            <option>2 week</option>
+                                            <option>3 week</option>
+                                            <option>4 week</option>
+                                            <option>5 week</option>
+                                          </select>
+                                        </div>
+                                        <div class="clearfix"></div>
                                       </div>
-                                      <div class="clearfix"></div>
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                      <div class="col-sm-12 no-padding">
-                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                        <div class="col-sm-12 no-padding">
+                                          <input type="text" class="form-control" id="input" placeholder="12">
+                                        </div>
+                                        <div class="clearfix"></div>
                                       </div>
-                                      <div class="clearfix"></div>
                                     </div>
                                     <div class="and-or-box">
                                       <div class="btn-group">
@@ -365,7 +379,6 @@
                                   </form>
 
                                 </div>
-
                                 <div class="col-xs-4">
                                   <div class="button-select-group">
                                     <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
@@ -674,6 +687,11 @@
   .btn-dgrey:hover,.btn-dgrey:focus,.btn-dgrey:active,.btn-dgrey.active {background-color: #535353;border-color: #474747;color:#ffffff;}
   .btn-dgrey.disabled:hover,.btn-dgrey.disabled:focus,.btn-dgrey.disabled:active,.btn-dgrey.disabled.active,.btn-dgrey[disabled]:hover,.btn-dgrey[disabled]:focus,.btn-dgrey[disabled]:active,.btn-dgrey[disabled].active,fieldset[disabled] .btn-dgrey:hover,fieldset[disabled] .btn-dgrey:focus,fieldset[disabled] .btn-dgrey:active,fieldset[disabled] .btn-dgrey.active {background-color: #606060;border-color: #606060;color:#ffffff;}
 
+  .btn-lgrey {background-color: #cccccc;border-color: #cccccc;color:#888888;}
+  .btn-lgrey:hover,.btn-lgrey:focus,.btn-lgrey:active,.btn-lgrey.active {background-color: #bfbfbf;border-color: #b3b3b3;color:#888888;}
+  .btn-lgrey.disabled:hover,.btn-lgrey.disabled:focus,.btn-lgrey.disabled:active,.btn-lgrey.disabled.active,.btn-lgrey[disabled]:hover,.btn-lgrey[disabled]:focus,.btn-lgrey[disabled]:active,.btn-lgrey[disabled].active,fieldset[disabled] .btn-lgrey:hover,fieldset[disabled] .btn-lgrey:focus,fieldset[disabled] .btn-lgrey:active,fieldset[disabled] .btn-lgrey.active {background-color: #cccccc;border-color: #cccccc;color:#888888;}
+
+
   table tr th.sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
 
@@ -718,6 +736,7 @@
   .setting-options-body .add-filter button.remove {float:right;}
   .setting-options-body .add-filter .button-select-group {text-align:center;border-bottom:3px dotted #DDDDDD;margin-bottom:15px;}
   .setting-options-body .add-filter .button-select-group .btn {margin-bottom:15px;margin-top:15px;}
+  .setting-options-body .add-filter .filter-group-item {background: #F2F2F2;border-radius: 4px;padding: 15px;margin-bottom:10px;}
 
 
 
