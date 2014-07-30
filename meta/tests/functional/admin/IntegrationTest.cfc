@@ -1,6 +1,6 @@
 component extends="AdminTestBase" {
 	
-	//Tests FW1 Integrations Do Not Appear On Navbar once logged out
+	//Tests FW1 Integrations/Mura Icon Do Not Appear On Navbar once logged out
 	public function fw1IntegrationsUponLogoutTest(){
 		
 		//Activate Mura
@@ -9,8 +9,6 @@ component extends="AdminTestBase" {
 		EditIntegration.clickLocator( 'activeFlagYes' );
 		EditIntegration.clickLocator( 'saveButton' );
 		waitForPageToLoad();
-		
-		var DetailIntegration = refresh();
 		
 		//Go to Dashboard to logOut
 		var Dashboard = openPage( '', 'Dashboard' );
@@ -36,8 +34,6 @@ component extends="AdminTestBase" {
 		EditIntegration.clickLocator( 'activeFlagNo' );
 		EditIntegration.clickLocator( 'saveButton' );
 		waitForPageToLoad();
-		
-		var DetailIntegration = refresh();
 		
 		//Go to Dashboard to logOut
 		var Dashboard = openPage( '', 'Dashboard' );
