@@ -13,8 +13,8 @@
   .content-nav button.content-nav-button {margin-top:8px;margin-bottom:8px;}
   .search-bar {display:inline-block;}
   .hiddenRow {padding: 0 !important;}
-
-
+  
+	
   /*CHECK BOX STYLES START*/
   .checkbox {text-align:center;}
   .checkbox {margin:0px;}
@@ -37,5 +37,3 @@
 
   table tr th.sortable:after {font-family:'Glyphicons Halflings';content: "\e119";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
-
-
