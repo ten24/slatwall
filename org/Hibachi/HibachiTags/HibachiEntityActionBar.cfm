@@ -44,7 +44,7 @@
 						</cfif>
 						<h4>#attributes.pageTitle#</h4>
 					</div>
-					<div class="span8">
+					<div class="col-md-8">
 						<div class="btn-toolbar">
 						
 							<!--- ================ Listing =================== --->
