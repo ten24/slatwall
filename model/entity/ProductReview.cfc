@@ -59,6 +59,10 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	// Related Object Properties (many-to-one)
 	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="sku" cfc="sku" fieldtype="many-to-one" fkcolumn="skuID";
+	
+	// Related Object Properties (one-to-many)
+ 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productReviewID" inverse="true" cascade="all-delete-orphan";
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -145,6 +149,32 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 		}
 		structDelete(variables, "account");
 	}
+	
+	// Sku (many-to-one)
+	public void function setSku(required any sku) {
+		variables.sku = arguments.sku;
+		if(isNew() or !arguments.sku.hasProductReview( this )) {
+			arrayAppend(arguments.sku.getProductReviews(), this);
+		}
+	}
+	public void function removeSku(any sku) {
+		if(!structKeyExists(arguments, "sku")) {
+			arguments.sku = variables.sku;
+		}
+		var index = arrayFind(arguments.sku.getProductReviews(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.sku.getProductReviews(), index);
+		}
+		structDelete(variables, "sku");
+	}
+	
+	// Attribute Values (one-to-many)
+ 	public void function addAttributeValue(required any attributeValue) {
+ 		arguments.attributeValue.setProductReview( this );
+ 	}
+ 	public void function removeAttributeValue(required any attributeValue) {
+ 		arguments.attributeValue.removeProductReview( this );
+ 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
