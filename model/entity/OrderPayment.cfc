@@ -65,7 +65,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="paymentDueDate" hb_populateEnabled="public" ormtype="timestamp";
 	property name="providerToken" ormType="string";
-	property name="purchaseOrderNumber" ormType="string";
+	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
 	
 	
 	// Related Object Properties (many-to-one)
