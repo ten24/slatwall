@@ -46,21 +46,26 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiController" output="false" accessors="true"  {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	property name="hibachiUtilityService" type="any";
-
-	//this.secureMethods="default,updateviews";
-	this.secureMethods='';
-	this.secureMethods=listAppend(this.secureMethods, 'default');
-	this.secureMethods=listAppend(this.secureMethods, 'updateviews');
-	
-	public void function updateViews() {
-		var baseSlatwallPath = getDirectoryFromPath(expandPath("/muraWRM/plugins/Slatwall/frontend/views/")); 
-		var baseSitePath = getDirectoryFromPath(expandPath("/muraWRM/#rc.siteid#/includes/display_objects/custom/slatwall/"));
-
-		gethibachiUtilityService().duplicateDirectory(baseSlatwallPath,baseSitePath,true,true,".svn");
-		getFW().redirect(action="admin:main");
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getService("hibachiAuthenticationService");
 	}
 	
+	// getAuthenticationSubsystemNamesArray()
+	public void function getAuthenticationSubsystemNamesArray_returns_more_than_three_because_of_integrations() {
+		var subsytemNamesArray = variables.service.getAuthenticationSubsystemNamesArray();
+		assert(arrayLen(subsytemNamesArray) > 3);
+	}
+	
+	// authenticateActionByAccount()
+	public void function authenticateActionByAccount_returns_false_for_mura_integration() {
+		assertFalse( variables.service.authenticateActionByAccount('mura:main.default', request.slatwallScope.newEntity('Account')) );
+	}
+	
+	
 }
+
+
