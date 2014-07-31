@@ -36,7 +36,6 @@ component output="false" accessors="true" {
 		*/
 		
 		param name="arguments.rc.propertyIdentifiers" default="";
-		
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
 			arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
@@ -44,11 +43,22 @@ component output="false" accessors="true" {
 				
 		} else {
 			//get entity service by entity name
+			var currentPage = 1;
+			if(structKeyExists(rc,'P:Current')){
+				var currentPage = rc['P:Current'];
+			}
+			var pageShow = 10;
+			if(structKeyExists(rc,'P:Show')){
+				var pageShow = rc['P:Show'];
+			}
+			
 			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = collectionService.getAPIResponseForEntityName(	arguments.rc.entityName,
-																			arguments.rc.propertyIdentifiers);
+																			arguments.rc.propertyIdentifiers,
+																			currentPage,
+																			pageShow);
 				structAppend(arguments.rc.apiResponse,result);
 			}else{
 				//figure out if we have a collection or a basic entity
@@ -57,12 +67,16 @@ component output="false" accessors="true" {
 					//should only be able to add selects (&propertyIdentifier=)
 					var result = collectionService.getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
 																				arguments.rc.entityID,
-																				arguments.rc.propertyIdentifiers);
+																				arguments.rc.propertyIdentifiers,
+																				currentPage,
+																				pageShow);
 					structAppend(arguments.rc.apiResponse,result);
 				}else{
 					//should be able to add select and where filters here
 					var result = collectionService.getAPIResponseForCollection(	collectionEntity,
-																				arguments.rc.propertyIdentifiers);
+																				arguments.rc.propertyIdentifiers,
+																				currentPage,
+																				pageShow);
 					structAppend(arguments.rc.apiResponse,result);
 				}
 			}

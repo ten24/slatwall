@@ -9,7 +9,7 @@ angular.module('slatwalladmin')
 		$scope.collection = value;
 		$scope.collectionNameDisplay = $scope.collection.collectionName + ' Listing';
 		
-		$scope.collection.totalPagesArray = new Array(parseInt($scope.collection.totalPages));
+		//$scope.collection.totalPagesArray = new Array(parseInt($scope.collection.totalPages));
 		
 	},function(reason){
 		//display error message

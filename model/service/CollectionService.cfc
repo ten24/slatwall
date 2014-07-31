@@ -288,9 +288,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);*/
 	}
 	
-	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = ""){
-		collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
-		
+	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10){
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
+		collectionEntity.setPageRecordsShow(arguments.pageShow);
 		//if propertyIdentifiers were specified add selects so we can refine what columns to return
 		if(len(arguments.propertyIdentifiersList)){
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
@@ -302,8 +303,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	}
 	
-	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, string propertyIdentifiersList = ""){
+	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
+		collectionEntity.setPageRecordsShow(arguments.pageShow);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		
 		if(len(arguments.propertyIdentifiersList)){
@@ -341,7 +344,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
-	public any function getAPIResponseForCollection(required any collectionEntity, string propertyIdentifiersList = ""){
+	public any function getAPIResponseForCollection(required any collectionEntity, string propertyIdentifiersList = "", numeric currentPage=1, numeric pageShow = 10){
+		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
+		collectionEntity.setPageRecordsShow(arguments.pageShow);
+		
 		if(len(arguments.propertyIdentifiersList)){
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.propertyIdentifiersList);
 		}
