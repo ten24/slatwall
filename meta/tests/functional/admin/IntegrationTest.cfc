@@ -1,5 +1,5 @@
 component extends="AdminTestBase" {
-	
+	/*
 	//Tests FW1 Integrations/Mura Icon Do Not Appear On Navbar once logged out
 	public function fw1IntegrationsUponLogoutTest(){
 		
@@ -44,6 +44,6 @@ component extends="AdminTestBase" {
 		EditIntegration.clickLocator( 'saveButton' );
 		waitForPageToLoad();
 	}
-
+	*/
 
 }
