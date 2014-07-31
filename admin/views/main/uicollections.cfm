@@ -3,15 +3,17 @@
 
 <br />
 <br />
-<div class="panel panel-default" ng-app="collections">
+
+<div class="panel panel-default"<!--- ng-app="collections"---> ng-controller="collections">
   <div class="panel-heading">
-    <h3 class="panel-title">Order Listing</h3>
+  	<!---populate with listing name --->
+    <h3 class="panel-title" ng-bind="collectionNameDisplay"><!---CollectionName Listing---></h3>
   </div>
   <div class="panel-body">
 
     <div class="row content-nav">
       <div class="col-md-12 align-right">
-
+		<!---most likely using angular filter searching here --->
         <form class="navbar-form search-bar no-padding" role="search">
           <div class="input-group">
             <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="srch-term">
@@ -57,11 +59,12 @@
                       <div class="option-dropdown">
                         <select class="form-control input-sm">
                           <option disabled="disabled" selected="selected">Copy From Existing Collection</option>
-                          <option value="one">One</option>
+                          <!---populate with existing collections --->
+                          <!---<option value="one">One</option>
                           <option value="two">Two</option>
                           <option value="three">Three</option>
                           <option value="four">Four</option>
-                          <option value="five">Five</option>
+                          <option value="five">Five</option>--->
                         </select>
                       </div>
 
@@ -437,25 +440,22 @@
 
     <table class="table table-bordered table-striped">
         <thead>
-            <tr>
-                <th>Row</span></th>
-                <th class="sortable">ID</th>
-                <th class="sortable">Company</th>
-                <th class="sortable">First Name</th>
-                <th class="sortable">Last Name</th>
-                <th class="sortable">Type</th>
-                <th class="sortable">Status</th>
-                <th class="sortable">Origin</th>
-                <th class="sortable">Created</th>
-                <th class="sortable">Date Placed</th>
-                <th class="sortable">Total</th>
-                <th>View</th>
-            </tr>
+        	<!---column headers go here --->
+        	<tr>
+        		<th>Row</span></th>
+        		<th ng-repeat="(key,value) in collection.pageRecords[0]" class="sortable" ng-bind="key"></th>
+        		<th>View</th>
+        	</tr>
         </thead>
         <tbody>
-
+			<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
+	            <td><div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"></label></div></td>
+	            <td ng-repeat="(key,value) in pageRecord" ng-bind="value"></td>
+	            <td class="view-element"></td>
+          </tr>
           <!---TR 1--->
-          <tr class="even-tr">
+           <!---row data goes here --->
+          <!---<tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"></label></div></td>
             <td>2691402</td>
             <td>Ten24</td>
@@ -468,134 +468,26 @@
             <td>Jun 06, 2014 05:43 PM</td>
             <td>$183.90</td>
             <td class="view-element"></td>
-          </tr>
-
-          <!---TR 2--->
-          <tr class="even-tr">
-            <td><div class="checkbox"><input type="checkbox" id="checkbox2"><label for="checkbox2"></label></div></td>
-            <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
-          </tr>
-
-          <!---TR 3--->
-          <tr class="even-tr">
-            <td><div class="checkbox"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></div></td>
-            <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
-          </tr>
-
-          <!---TR 4--->
-          <tr class="even-tr">
-            <td><div class="checkbox"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></div></td>
-            <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
-          </tr>
-
-          <!---TR 11--->
-          <tr class="even-tr">
-            <td><div class="checkbox"><input type="checkbox" id="checkbox11"><label for="checkbox11"></label></div></td>
-            <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
-          </tr>
-
-          <!---TR 12--->
-          <tr class="even-tr">
-            <td><div class="checkbox"><input type="checkbox" id="checkbox12"><label for="checkbox12"></label></div></td>
-            <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
-          </tr>
-
-          <!---TR 13--->
-          <tr class="even-tr">
-            <td><div class="checkbox"><input type="checkbox" id="checkbox13"><label for="checkbox13"></label></div></td>
-            <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
-          </tr>
-
-          <!---TR 14--->
-          <tr class="even-tr">
-            <td><div class="checkbox"><input type="checkbox" id="checkbox14"><label for="checkbox14"></label></div></td>
-            <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
-          </tr>
+          </tr>--->
 
         </tbody>
     </table>
 
     <div class="row">
       <div class="col-md-12 align-right">
-        <ul class="pagination pagination-sm">
+      	<ul class="pagination pagination-sm" sw-pagination-bar collection="collection">
+         
+        </ul>
+        <!---<ul class="pagination pagination-sm">
           <li><a href="#">&laquo;</a></li>
-          <li><a href="#">1</a></li>
+          <li ng-repeat="pageNo in totalPages"><a href="#" ng-bind="$index+1"></a></li>
+          <!---<li><a href="#">1</a></li>
           <li><a href="#">2</a></li>
           <li><a href="#">3</a></li>
           <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
+          <li><a href="#">5</a></li>--->
           <li><a href="#">&raquo;</a></li>
-        </ul>
+        </ul>--->
       </div>
     </div>
 
