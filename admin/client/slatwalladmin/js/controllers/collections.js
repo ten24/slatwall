@@ -10,7 +10,8 @@ angular.module('slatwalladmin')
 	collectionListingPromise.then(function(value){
 		$scope.collection = value;
 		$scope.collectionNameDisplay = $scope.collection.collectionName + ' Listing';
-		
+		//$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
+		//console.log($scope.collectionConfig);
 		//$scope.collection.totalPagesArray = new Array(parseInt($scope.collection.totalPages));
 		
 	},function(reason){

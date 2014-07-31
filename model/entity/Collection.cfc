@@ -349,7 +349,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public string function getHQL(boolean excludeSelect = false){
 		var collectionConfig = getCollectionConfigStruct();
-		
+		variables.HQLParams = {};
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
 		
 		return HQL;
@@ -422,6 +422,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		}
 		return variables.pageRecords;
 	}
+	
+	
 	
 	public void function clearRecordsCount() {
 		structDelete(variables, "recordsCount");
