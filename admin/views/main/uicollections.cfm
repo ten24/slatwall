@@ -59,6 +59,7 @@
                       <div class="option-dropdown">
                         <select class="form-control input-sm">
                           <option disabled="disabled" selected="selected">Copy From Existing Collection</option>
+                          <option ng-repeat="existingCollection in existingCollections" ng-value="existingCollection.collectionID" ng-bind="existingCollection.collectionName"></option>
                           <!---populate with existing collections --->
                           <!---<option value="one">One</option>
                           <option value="two">Two</option>

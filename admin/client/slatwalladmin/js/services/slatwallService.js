@@ -23,7 +23,20 @@ function($http,$q,baseURL){
 		});
 		return deferred.promise;
 		
-	}
+	},
+	factory.getExistingCollections = function(){
+		var deferred = $q.defer();
+		var urlString = baseURL+'index.cfm/?slatAction=api:main.getExistingCollections';
+		
+		$http.get(urlString)
+		.success(function(data){
+			deferred.resolve(data);
+		}).error(function(reason){
+			deferred.resolve(reason);
+		});
+		return deferred.promise;
+		
+	},
 	factory.saveEntity = function(entityName,id,params){
 		var deferred = $q.defer();
 		var urlString = baseURL+'index.cfm/?slatAction=api:main.post&entityName='+entityName+'&entityId='+id;	
@@ -41,6 +54,7 @@ function($http,$q,baseURL){
 		});
 		return deferred.promise;
 	}
+	
 	return factory;
 }]);
 

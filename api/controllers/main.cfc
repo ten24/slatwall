@@ -29,6 +29,31 @@ component output="false" accessors="true" {
 		arguments.rc.apiResponse.statusCode = "400";
 	}*/
 	
+	public any function getExistingCollections(){
+		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');
+		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+		collectionConfigStruct.columns = [
+			{
+				propertyIdentifier="Collection.collectionName"	
+			},
+			{
+				propertyIdentifier="Collection.collectionID"	
+			}
+		];
+			
+		collectionConfigStruct.orderBy = [
+			{
+				propertyIdentifier="Collection.collectionName",
+				direction="ASC"
+			}
+		];
+		//writeDump( collectionEntity.getPageRecords());abort;
+		//var ApiResponseStruct = collectionService.getFormattedPageRecords(collectionEntity,collectionEntity.getDefaultPropertyIdentifierList());
+		var data = {data=collectionEntity.getRecords()};
+		
+		structAppend(arguments.rc.apiResponse,data);
+	}
+	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
 			create a base default properties function that can be overridden at the entity level via function
