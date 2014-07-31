@@ -42,11 +42,11 @@
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h1>#attributes.pageTitle#</h1>
+						<h4>#attributes.pageTitle#</h4>
 					</div>
 					<div class="span8">
 						<div class="btn-toolbar">
-							
+						
 							<!--- ================ Listing =================== --->
 							<cfif attributes.type eq "listing" >
 								<cfparam name="request.context.keywords" default="" />
@@ -169,7 +169,7 @@
 										<!--- Delete --->
 										<cfif not attributes.object.isNew() and attributes.showdelete>
 											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
-											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-inverse" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-primary" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
 										</cfif>
 										
 										<!--- Cancel --->
@@ -177,7 +177,7 @@
 											<!--- Setup default cancel query string --->
 											<cfset attributes.cancelQueryString = "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" />			
 										</cfif>
-										<cf_HibachiActionCaller action="#attributes.cancelAction#" querystring="#attributes.cancelQueryString#" text="#attributes.hibachiScope.rbKey('define.cancel')#" class="btn btn-inverse" icon="remove icon-white">
+										<cf_HibachiActionCaller action="#attributes.cancelAction#" querystring="#attributes.cancelQueryString#" text="#attributes.hibachiScope.rbKey('define.cancel')#" class="btn btn-primary" icon="remove icon-white">
 										
 										<!--- Save --->
 										<cf_HibachiActionCaller action="#request.context.entityActionDetails.saveAction#" text="#attributes.hibachiScope.rbKey('define.save')#" class="btn btn-success" type="button" submit="true" icon="ok icon-white">
@@ -185,7 +185,7 @@
 										<!--- Delete --->
 										<cfif attributes.showdelete>
 											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
-											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-inverse" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-primary" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
 										</cfif>
 										
 										<!--- Edit --->
@@ -193,6 +193,7 @@
 											<cf_HibachiActionCaller action="#request.context.entityActionDetails.editAction#" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" text="#attributes.hibachiScope.rbKey('define.edit')#" class="btn btn-primary" icon="pencil icon-white" submit="true" disabled="#attributes.object.isNotEditable()#">
 										</cfif>
 									</cfif>
+								
 								</div>
 								
 							<!--- ================= Process =================== --->
