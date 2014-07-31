@@ -2,6 +2,7 @@ angular.module('slatwalladmin')
 //using $location to get url params, this will probably change to using routes eventually
 .controller('collections', [ '$scope','$location','slatwallService', function($scope,$location,slatwallService){
 	
+	
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionid;
 	var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
@@ -20,12 +21,18 @@ angular.module('slatwalladmin')
 	var existingCollectionsPromise = slatwallService.getExistingCollections();
 	existingCollectionsPromise.then(function(value){
 		$scope.existingCollections = value.DATA;
-		console.log($scope.existingCollections);
 	},function(reason){
 		
 	});
 	
+	$scope.copyExistingCollection = function(){
+		console.log($scope.selectedExistingCollection);
+		$scope.collection.collectionConfig = $scope.selectedExistingCollection;
+	}
 	
+	$scope.setSelection = function(selectedExistingCollection){
+		$scope.selectedExistingCollection = selectedExistingCollection;
+	}
 	
 	
 }]);

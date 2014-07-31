@@ -37,7 +37,7 @@ component output="false" accessors="true" {
 				propertyIdentifier="Collection.collectionName"	
 			},
 			{
-				propertyIdentifier="Collection.collectionID"	
+				propertyIdentifier="Collection.collectionConfig"	
 			}
 		];
 			

@@ -57,21 +57,16 @@
                     <div class="col-xs-9 option-row">
 
                       <div class="option-dropdown">
-                        <select class="form-control input-sm">
-                          <option disabled="disabled" selected="selected">Copy From Existing Collection</option>
-                          <option ng-repeat="existingCollection in existingCollections" ng-value="existingCollection.collectionID" ng-bind="existingCollection.collectionName"></option>
-                          <!---populate with existing collections --->
-                          <!---<option value="one">One</option>
-                          <option value="two">Two</option>
-                          <option value="three">Three</option>
-                          <option value="four">Four</option>
-                          <option value="five">Five</option>--->
+                        <select class="form-control input-sm" ng-change="setSelection(selectedExistingCollection)" ng-model="selectedExistingCollection" ng-options="existingCollection.collectionName for existingCollection in existingCollections">
+						<!---populate with existing collections --->
+                          <option value="">Copy From Existing Collection</option>
+                         <!--- <option ng-repeat="existingCollection in existingCollections"  ng-value="existingCollection.collectionConfig"  ng-bind="existingCollection.collectionName"></option>--->
                         </select>
                       </div>
 
                       <div class="option-buttons">
-                        <button type="button" class="btn btn-grey btn-sm"><i class="fa fa-files-o"></i> Copy</button>
-                        <button type="button" class="btn btn-ten24 btn-sm"><i class="fa fa-floppy-o"></i> Save</button>
+                        <button ng-click="copyExistingCollection()" type="button" class="btn btn-grey btn-sm"><i class="fa fa-files-o"></i> Copy</button>
+                        <button ng-click="saveExistingCollection()" type="button" class="btn btn-ten24 btn-sm"><i class="fa fa-floppy-o"></i> Save</button>
                       </div>
 
                     </div>
