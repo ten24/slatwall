@@ -803,7 +803,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public numeric function getRecordsCount() {
 		if(!structKeyExists(variables, "recordsCount")) {
-			/*if(getCacheable() && structKeyExists(application.entitySmartList, getCacheName()) && structKeyExists(application.entitySmartList[getCacheName()], "recordsCount")) {
+			if(getCacheable() && structKeyExists(application.entitySmartList, getCacheName()) && structKeyExists(application.entitySmartList[getCacheName()], "recordsCount")) {
 				variables.recordsCount = application.entitySmartList[ getCacheName() ].recordsCount;
 			} else {
 				if(!structKeyExists(variables,"records")) {
@@ -817,9 +817,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				} else {
 					variables.recordsCount = arrayLen(getRecords());	
 				}
-			}*/
-			
-			variables.recordsCount = arrayLen(getRecords());
+			}
 		}
 		return variables.recordsCount;
 	}
