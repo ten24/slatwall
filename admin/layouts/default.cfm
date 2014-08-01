@@ -90,7 +90,6 @@ Notes:
 	<body>
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
-				
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="##slatwall-primary-nav">
 						<span class="sr-only">Toggle navigation</span>
@@ -329,6 +328,15 @@ Notes:
 		</div>
 		--->
 		
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/js/slatwall.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/slatwalladmin.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/services/slatwallservice.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/controllers/collections.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/pagination.js"></script>
+		
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
@@ -367,14 +375,9 @@ Notes:
 		
 		<!--- Async JS Loader --->
 		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/asyncloader.js"></script>--->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/js/slatwall.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/slatwalladmin.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/services/slatwallservice.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/controllers/ngtest.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/collection.js"></script>
+		
+	 	<!---<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/controllers/ngtest.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/collection.js"></script>--->
 	</body>
 	
 	
