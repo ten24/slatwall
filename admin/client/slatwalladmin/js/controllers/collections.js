@@ -9,10 +9,18 @@ angular.module('slatwalladmin')
 	
 	collectionListingPromise.then(function(value){
 		$scope.collection = value;
-		$scope.collectionNameDisplay = $scope.collection.collectionName + ' Listing';
-		//$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
-		//console.log($scope.collectionConfig);
+		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
+		console.log($scope.collectionConfig);
 		//$scope.collection.totalPagesArray = new Array(parseInt($scope.collection.totalPages));
+		
+		var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+		
+		filterPropertiesPromise.then(function(value){
+			$scope.filterProperties = value;
+			console.log($scope.filterProperties);
+		}, function(reason){
+			
+		});
 		
 	},function(reason){
 		//display error message
@@ -26,12 +34,14 @@ angular.module('slatwalladmin')
 		
 	});
 	
+	
+	
 	$scope.copyExistingCollection = function(){
 		console.log($scope.selectedExistingCollection);
 		$scope.collection.collectionConfig = $scope.selectedExistingCollection;
 	}
 	
-	$scope.setSelection = function(selectedExistingCollection){
+	$scope.setSelectedExistingCollection = function(selectedExistingCollection){
 		$scope.selectedExistingCollection = selectedExistingCollection;
 	}
 	

@@ -7,7 +7,7 @@
 <div class="panel panel-default"<!--- ng-app="collections"---> ng-controller="collections">
   <div class="panel-heading">
   	<!---populate with listing name --->
-    <h3 class="panel-title" ng-bind="collectionNameDisplay"><!---CollectionName Listing---></h3>
+    <h3 class="panel-title" ng-bind-template="{{collection.collectionName}} Listing"><!---CollectionName Listing---></h3>
   </div>
   <div class="panel-body">
 
@@ -57,10 +57,9 @@
                     <div class="col-xs-9 option-row">
 
                       <div class="option-dropdown">
-                        <select class="form-control input-sm" ng-change="setSelection(selectedExistingCollection)" ng-model="selectedExistingCollection" ng-options="existingCollection.collectionName for existingCollection in existingCollections">
-						<!---populate with existing collections --->
-                          <option value="">Copy From Existing Collection</option>
-                         <!--- <option ng-repeat="existingCollection in existingCollections"  ng-value="existingCollection.collectionConfig"  ng-bind="existingCollection.collectionName"></option>--->
+                        <select class="form-control input-sm" ng-change="setSelectedExistingCollection(selectedExistingCollection)" ng-model="selectedExistingCollection" ng-options="existingCollection.collectionName for existingCollection in existingCollections">
+							<!---populate with existing collections --->
+                          	<option value="">Copy From Existing Collection</option>
                         </select>
                       </div>
 
@@ -167,19 +166,18 @@
                           <div class="row">
                             <div class="col-xs-12">
 
-                              <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#add-filter"></i></h4>
+                              <h4> Define Filter: <span ng-bind="collectionConfig.baseEntityAlias"></span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#add-filter"></i></h4>
 
                               <div class="row">
                                 <div class="col-xs-4">
-                                  Select From Orders:
+                                  Select From <span  ng-bind="collectionConfig.baseEntityAlias">Orders</span>:
                                   <div class="option-dropdown">
-                                    <select class="form-control input-sm">
-                                      <option disabled="disabled" selected="selected">Select From Orders:</option>
-                                      <option value="one">One</option>
-                                      <option value="two">Two</option>
-                                      <option value="three">Three</option>
-                                      <option value="four">Four</option>
-                                      <option value="five">Five</option>
+                                    <select class="form-control input-sm" 
+                                    		ng-change="setSelectedFilterProperty(selectedFilterProperty)" 
+                                    		ng-model="selectedFilterProperty" 
+                                    		ng-options="filterProperty.NAME for filterProperty in filterProperties.DATA" 
+                                    		>
+                                    		<option value="" ng-bind-template="Select From {{filterProperties.ENTITYNAME}}:" selected="selected"></option>
                                     </select>
                                   </div>
 

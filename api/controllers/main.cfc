@@ -54,6 +54,14 @@ component output="false" accessors="true" {
 		structAppend(arguments.rc.apiResponse,data);
 	}
 	
+	public any function getFilterPropertiesByBaseEntityName( required struct rc){
+		var filterProperties = {
+									data = hibachiService.getFilterPropertiesByEntityName(rc.entityName),
+									entityName=rc.entityName
+								};
+		structAppend(arguments.rc.apiResponse, filterProperties);
+	}
+	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
 			create a base default properties function that can be overridden at the entity level via function
