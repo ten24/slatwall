@@ -123,5 +123,5 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
 		return getEntityObject( arguments.entityName ).getFilterProperties();
 	}
-	
+
 }
