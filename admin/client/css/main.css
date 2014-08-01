@@ -35,11 +35,14 @@
   .panel-title {font-weight:700;}
   .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
  
-  .nav-pill .active {border:1px solid #cccccc;border-radius:3px;border-right:0px;}
+  .nav-pill .active {border:1px solid #cccccc;border-radius:3px;border-right:0px;position:relative;align:left;}
+  .nav-pill {position:relative;left:-15px;}
   
   table tr th.sortable:after {font-family:'Glyphicons Halflings';content: "\e119";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
   
+  .btn-group {float:right;}
+  .btn-toolbar .btn-group {float:right;}
   
-  .dl-horizontal dt, .dl-horizontal dd {margin-bottom:5px;}
+  .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;align:center;position:relative;text-align:left;}
   

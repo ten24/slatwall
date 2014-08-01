@@ -42,7 +42,7 @@
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h4>#attributes.pageTitle#</h4>
+						<h5>#attributes.pageTitle#</h5>
 					</div>
 					<div class="col-md-8">
 						<div class="btn-toolbar">
@@ -69,7 +69,7 @@
 								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
 									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
 										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-											<div class="btn-group">
+											<div class="btn">
 												#buttonGroup.generatedContent#
 											</div>
 										</cfif>
@@ -78,7 +78,7 @@
 								
 								<!--- Listing: Create --->
 								<cfif attributes.showCreate>
-									<div class="btn-group">
+									<div class="btn">
 										<cfif attributes.createModal>
 											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
 										<cfelse>
@@ -89,11 +89,6 @@
 								
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
-								
-								<!--- Detail: Back Button --->
-								<div class="btn-group">
-									<cf_HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn" icon="arrow-left">
-								</div>
 								
 								<!--- Detail: Actions --->
 								<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
@@ -194,6 +189,11 @@
 										</cfif>
 									</cfif>
 								
+								</div>
+								
+								<!--- Detail: Back Button --->
+								<div class="btn-group">
+									<cf_HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn" icon="arrow-left">
 								</div>
 								
 							<!--- ================= Process =================== --->
