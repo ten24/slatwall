@@ -37,9 +37,6 @@ angular.module('slatwalladmin')
 		//display error message
 	});
 	
-	
-	
-	
 	//public functions
 	$scope.copyExistingCollection = function(){
 		console.log($scope.selectedExistingCollection);
@@ -85,6 +82,4 @@ angular.module('slatwalladmin')
 			}
 		}
 	}
-	
-	
 }]);

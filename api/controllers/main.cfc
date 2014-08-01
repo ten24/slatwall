@@ -29,11 +29,7 @@ component output="false" accessors="true" {
 		arguments.rc.apiResponse.statusCode = "400";
 	}*/
 	
-<<<<<<< HEAD
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
-=======
-	public any function getExistingCollectionsByBaseEntity(required string baseEntity){
->>>>>>> branch 'feature-bs3-collections' of https://github.com/ten24/Slatwall
 		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
