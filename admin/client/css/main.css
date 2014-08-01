@@ -1,6 +1,20 @@
 /* New Styles Here */
-
+  	
   body {font-family: 'Open Sans', sans-serif;margin-top:60px;content:"\e105";font-color:#ccc;}
+  
+  .btn-group {float:right;}
+  .btn-toolbar .btn-group {float:right;}
+  
+  .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;align:center;position:relative;text-align:left;left:15px;}
+  
+  /* Tabs */
+  .nav-pill .active {border:1px solid #cccccc;border-right:0px;position:relative;align:left;}
+  .nav-pill {position:relative;left:-15px;}
+
+  
+  /********************/	
+  /*   Reyjay's CSS   */
+  /********************/
   th {font-weight:600;}
   
   .view-element {text-align:center;cursor:pointer;}
@@ -13,8 +27,17 @@
   .content-nav button.content-nav-button {margin-top:8px;margin-bottom:8px;}
   .search-bar {display:inline-block;}
   .hiddenRow {padding: 0 !important;}
+
+  .panel {border-radius:0px;}
+  .panel-heading {border-top-left-radius: 0px;border-top-right-radius: 0px}
+  .panel-title {font-weight:700;}
+  .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
   
-	
+  table tr th.sortable:after {font-family:'Glyphicons Halflings';content: "\e119";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
+  table tr th .glyphicon {vertical-align:text-top;}
+
+  /* Custom CSS */
+  
   /*CHECK BOX STYLES START*/
   .checkbox {text-align:center;}
   .checkbox {margin:0px;}
@@ -28,21 +51,5 @@
   .checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
   .checkbox input[type=checkbox]:disabled + label:before{background-color:#eeeeee;cursor:not-allowed;}
   /*CHECK BOX STYLES END*/
+  
 
-  /*Bootstrap overwrite*/
-  .panel {border-radius:0px;}
-  .panel-heading {border-top-left-radius: 0px;border-top-right-radius: 0px}
-  .panel-title {font-weight:700;}
-  .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
- 
-  .nav-pill .active {border:1px solid #cccccc;border-radius:3px;border-right:0px;position:relative;align:left;}
-  .nav-pill {position:relative;left:-15px;}
-  
-  table tr th.sortable:after {font-family:'Glyphicons Halflings';content: "\e119";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
-  table tr th .glyphicon {vertical-align:text-top;}
-  
-  .btn-group {float:right;}
-  .btn-toolbar .btn-group {float:right;}
-  
-  .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;align:center;position:relative;text-align:left;}
-  
