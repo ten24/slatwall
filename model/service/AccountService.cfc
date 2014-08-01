@@ -51,6 +51,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="accountDAO" type="any";
 	
 	property name="emailService" type="any";
+	property name="hibachiAuditService" type="any";
 	property name="paymentService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
@@ -296,7 +297,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Take the email address and get all of the user accounts by primary e-mail address
 		var accountAuthentications = getInternalAccountAuthenticationsByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
-		var invalidData = {emailAddress=arguments.processObject.getEmailAddress()};
+		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
 		
 		if(arrayLen(accountAuthentications)) {
 			for(var i=1; i<=arrayLen(accountAuthentications); i++) {
@@ -307,13 +308,13 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 			arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
-			invalidData.account = accountAuthentications[1].getAccount();
+			invalidLoginData.account = accountAuthentications[1].getAccount();
 		} else {
 			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
 		}
 		
 		// Login was invalid
-		getHibachiSessionService().loginAccountInvalid(data=invalidData);
+		getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
 		
 		return arguments.account;
 	}
