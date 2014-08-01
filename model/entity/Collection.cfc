@@ -349,7 +349,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public string function getHQL(boolean excludeSelect = false){
 		var collectionConfig = getCollectionConfigStruct();
-		
+		variables.HQLParams = {};
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
 		
 		return HQL;
@@ -422,6 +422,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		}
 		return variables.pageRecords;
 	}
+	
+	
 	
 	public void function clearRecordsCount() {
 		structDelete(variables, "recordsCount");
@@ -737,6 +739,26 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		//return super.getDefaultProperties('pageRecords,pageRecordsStart,pageRecordsShow,currentPageDeclaration');
 	}
 	
+	public any function getDefaultPropertiesIdentifierList(){
+		var defaultEntityPropertiesList = getDefaultProperties();
+	}
+	
+	public array function getDefaultPropertyIdentifierList(){
+		
+		var defaultPropertyIdentifiersList = getDefaultPropertyIdentifiersList();
+		// Turn the property identifiers into an array
+		return listToArray( defaultPropertyIdentifiersList );
+	}
+	
+	public string function getDefaultPropertyIdentifiersList(){
+		// Lets figure out the properties that need to be returned
+		var defaultProperties = getDefaultProperties();
+		var defaultPropertyIdentifiersList = "";
+		for(var i=1; i<=arrayLen(defaultProperties); i++) {
+			listAppend(defaultPropertyIdentifiersList, defaultProperties[i].NAME);
+		}
+		return defaultPropertyIdentifiersList;
+	}
 	// ==============  END: Overridden Implicit Getters ====================
 	
 	// ============= START: Overridden Smart List Getters ==================

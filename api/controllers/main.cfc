@@ -15,16 +15,52 @@ component output="false" accessors="true" {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
 		//could possibly check whether we want a different contentType other than json in the future
-		param name="arguments.rc.apiResponse.statusCode" default="200";
-		param name="arguments.rc.apiResponse.statusText" default="OK";
+		param name="arguments.rc.statusCode" default="200";
+		param name="arguments.rc.statusText" default="OK";
 		param name="rc.contentType" default="application/json"; 
-		arguments.rc.apiResponse.contentType = rc.contentType;
+		arguments.rc.contentType = rc.contentType;
+		if(isnull(arguments.rc.apiResponse)){
+			arguments.rc.apiResponse = {};
+		}
 		
 	}
 	
 	/*public any function onMissingMethod(required string name, required struct rc){
 		arguments.rc.apiResponse.statusCode = "400";
 	}*/
+	
+	public any function getExistingCollections(){
+		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');
+		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+		collectionConfigStruct.columns = [
+			{
+				propertyIdentifier="Collection.collectionName"	
+			},
+			{
+				propertyIdentifier="Collection.collectionConfig"	
+			}
+		];
+			
+		collectionConfigStruct.orderBy = [
+			{
+				propertyIdentifier="Collection.collectionName",
+				direction="ASC"
+			}
+		];
+		//writeDump( collectionEntity.getPageRecords());abort;
+		//var ApiResponseStruct = collectionService.getFormattedPageRecords(collectionEntity,collectionEntity.getDefaultPropertyIdentifierList());
+		var data = {data=collectionEntity.getRecords()};
+		
+		structAppend(arguments.rc.apiResponse,data);
+	}
+	
+	public any function getFilterPropertiesByBaseEntityName( required struct rc){
+		var filterProperties = {
+									data = hibachiService.getFilterPropertiesByEntityName(rc.entityName),
+									entityName=rc.entityName
+								};
+		structAppend(arguments.rc.apiResponse, filterProperties);
+	}
 	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
@@ -33,7 +69,6 @@ component output="false" accessors="true" {
 		*/
 		
 		param name="arguments.rc.propertyIdentifiers" default="";
-		
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
 			arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
@@ -41,11 +76,22 @@ component output="false" accessors="true" {
 				
 		} else {
 			//get entity service by entity name
+			var currentPage = 1;
+			if(structKeyExists(rc,'P:Current')){
+				var currentPage = rc['P:Current'];
+			}
+			var pageShow = 10;
+			if(structKeyExists(rc,'P:Show')){
+				var pageShow = rc['P:Show'];
+			}
+			
 			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = collectionService.getAPIResponseForEntityName(	arguments.rc.entityName,
-																			arguments.rc.propertyIdentifiers);
+																			arguments.rc.propertyIdentifiers,
+																			currentPage,
+																			pageShow);
 				structAppend(arguments.rc.apiResponse,result);
 			}else{
 				//figure out if we have a collection or a basic entity
@@ -54,12 +100,16 @@ component output="false" accessors="true" {
 					//should only be able to add selects (&propertyIdentifier=)
 					var result = collectionService.getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
 																				arguments.rc.entityID,
-																				arguments.rc.propertyIdentifiers);
+																				arguments.rc.propertyIdentifiers,
+																				currentPage,
+																				pageShow);
 					structAppend(arguments.rc.apiResponse,result);
 				}else{
 					//should be able to add select and where filters here
 					var result = collectionService.getAPIResponseForCollection(	collectionEntity,
-																				arguments.rc.propertyIdentifiers);
+																				arguments.rc.propertyIdentifiers,
+																				currentPage,
+																				pageShow);
 					structAppend(arguments.rc.apiResponse,result);
 				}
 			}
