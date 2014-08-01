@@ -1,11 +1,12 @@
 /* New Styles Here */
-  	
   body {font-family: 'Open Sans', sans-serif;margin-top:60px;content:"\e105";font-color:#ccc;}
   
   .btn-group {float:right;}
   .btn-toolbar .btn-group {float:right;}
   
+  /* Object Attributes */
   .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;align:center;position:relative;text-align:left;left:15px;}
+  label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;text-align:left;left:15px;}
   
   /* Tabs */
   .nav-pill .active {border:1px solid #cccccc;border-right:0px;position:relative;align:left;}
@@ -35,8 +36,6 @@
   
   table tr th.sortable:after {font-family:'Glyphicons Halflings';content: "\e119";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
-
-  /* Custom CSS */
   
   /*CHECK BOX STYLES START*/
   .checkbox {text-align:center;}

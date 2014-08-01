@@ -90,18 +90,6 @@
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
 								
-								<!--- Detail: Actions --->
-								<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
-									<div class="btn-group">
-										<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
-										<ul class="dropdown-menu pull-right">
-											<cf_HibachiDividerHider>
-												#thistag.generatedcontent#
-											</cf_HibachiDividerHider>
-										</ul>
-									</div>
-								</cfif>
-								
 								<!--- Detail: Button Groups --->
 								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
 									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
@@ -190,6 +178,17 @@
 									</cfif>
 								
 								</div>
+								<!--- Detail: Actions --->
+								<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
+									<div class="btn-group">
+										<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+										<ul class="dropdown-menu pull-right">
+											<cf_HibachiDividerHider>
+												#thistag.generatedcontent#
+											</cf_HibachiDividerHider>
+										</ul>
+									</div>
+								</cfif>
 								
 								<!--- Detail: Back Button --->
 								<div class="btn-group">
