@@ -1,13 +1,653 @@
 <br />
 <br />
+<br />
+<div class="row" ng-app="collections">
 
-<br />
-<br />
-<div class="panel panel-default" ng-app="collections">
-  <div class="panel-heading">
-    <h3 class="panel-title">Order Listing</h3>
-  </div>
-  <div class="panel-body">
+  <div class="col-xs-12">
+
+    <!--- Header nav with title start --->
+    <div class="row">
+      <div class="col-md-7"><h1 style="font-size:16px;margin-bottom:0px;margin-top:9px;font-weight:600;">Best Selling Mens & Womens Boots From July 2014</h1></div>
+      <div class="col-md-5" style="text-align:right;">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" style="display:inline-block; border-bottom:0px;vertical-align: bottom;" role="tablist">
+          <li class="active"><a href="##properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
+          <li><a href="##filters" role="tab" data-toggle="tab">FILTERS <span style="font-size: 10px;top: -1px;position: relative;">(6)</span></a></li>
+          <li><a href="##display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
+        </ul>
+      </div>
+    </div>
+    <!--- Header nav with title end --->
+
+    <!--- Tab panes for menu options start--->
+    <div class="row">
+      <div class="tab-content" style="margin-bottom:15px;">
+
+        <div class="tab-pane active" style="padding:20px;" id="properties">
+          <dl class="dl-horizontal" style="text-align:left;">
+            <dt class="title">Title: <span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="The title of the collection"> <i class="fa fa-question-circle" style="color:#ccc;"></i></span></dt>
+            <dd class="value" style="margin-bottom:15px;">Best Selling Mens & Womens Boots From July 2014</dd>
+
+            <dt class="title">Description: <span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="A description of the collection"> <i class="fa fa-question-circle" style="color:#ccc;"></i></span></dt>
+            <dd class="value" style="margin-bottom:15px;">A selection for the best selling mens and womens boots from the month of july 2014. These will be used to display on the product listing pages for b15 marketing strategy plan.</dd>
+
+            <dt class="title">Code: <span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle" style="color:#ccc;"></i></span></dt>
+            <dd class="value">876567</dd>
+          </dl>
+        </div>
+
+        <div class="tab-pane" id="filters">
+
+          <div class="setting-options">
+            <div class="row setting-options-body">
+
+              <!--- Start Filter Group --->
+              <div class="col-xs-12 filters-selected">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="filter-item">
+                      <div class="panel panel-default">
+                        <div class="dropdown">
+                          <div class="panel-heading">Date <a href="##"><i class="fa fa-times" style="float:right;color: #AAA;margin-top: 3px;"></i></a></div>
+                        </div>
+                        <div class="panel-body tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit" style="cursor:pointer;">
+                          07/31/14 - 07/31/14 <a href="##" style="float:right;"><i class="fa fa-pencil-square-o" style="color:#ccc;"></i></a>
+                        </div>
+                      </div>
+
+                      <div class="btn-group-vertical" style="float:right;margin-top:20px;">
+                        <button type="button" class="btn btn-xs btn-default" style="font-size:10px;">AND</button>
+                        <button type="button" class="btn btn-xs btn-default active" style="font-size:10px;">OR</button>
+                      </div>
+
+                    </div><!--- Filter Item End --->
+
+                    <div class="filter-item">
+                      <div class="panel panel-default">
+                        <div class="dropdown">
+                          <div class="panel-heading">Gender <a href="##"><i class="fa fa-times" style="float:right;color: #AAA;margin-top: 3px;"></i></a></div>
+
+                        </div>
+                        <div class="panel-body tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit" style="cursor:pointer;">
+                          Male  <a href="##" style="float:right;"><i class="fa fa-pencil-square-o" style="color:#ccc;"></i></a>
+                        </div>
+                      </div>
+                      <div class="btn-group-vertical" style="float:right;margin-top:20px;">
+                        <button type="button" class="btn btn-xs btn-default active" style="font-size:10px;">AND</button>
+                        <button type="button" class="btn btn-xs btn-default" style="font-size:10px;">OR</button>
+                      </div>
+                    </div><!--- Filter Item End --->
+
+                    <div class="filter-item">
+                      <div class="panel panel-default">
+                        <div class="dropdown">
+                          <div class="panel-heading">Product Type <a href="##"><i class="fa fa-times" style="float:right;color: #AAA;margin-top: 3px;"></i></a></div>
+
+                        </div>
+                        <div class="panel-body tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit" style="cursor:pointer;">
+                          Boots  <a href="##" style="float:right;"><i class="fa fa-pencil-square-o" style="color:#ccc;"></i></a>
+                        </div>
+                      </div>
+                    </div><!--- Filter Item End --->
+
+                  </div>
+
+
+                </div>
+
+                <!--- Add another filter to filter set --->
+                <div class="row add-filter-box">
+                  <div class="col-xs-12">
+                    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#add-filter">Add Filter</button>
+                    <!--- <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#add-filter-group">Add New Filter Group</button> --->
+
+                    <!--- Add another filter to filter set --->
+                    <div class="row add-filter-box">
+                      <div class="col-xs-12 collapse add-filter" id="add-filter-group">
+                        <div class="row">
+                          <div class="col-xs-12">
+
+                            <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#add-filter-group"></i></h4>
+
+                            <div class="row">
+                              <div class="col-xs-4">
+                                Select From Orders:
+                                <div class="option-dropdown">
+                                  <select class="form-control input-sm">
+                                    <option disabled="disabled" selected="selected">Select From Orders:</option>
+                                    <option value="one">One</option>
+                                    <option value="two">Two</option>
+                                    <option value="three">Three</option>
+                                    <option value="four">Four</option>
+                                    <option value="five">Five</option>
+                                  </select>
+                                </div>
+
+                              </div>
+
+                              <div class="col-xs-4">
+                                <h4>Criteria</h4>
+
+                                <form id="form_id" action="index.html" method="post">
+                                  <div class="filter-group-item">
+                                    <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div class="and-or-box">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default btn-sm">AND</button>
+                                      <button type="button" class="btn btn-default btn-sm active">OR</button>
+                                    </div>
+                                    <hr/>
+                                  </div>
+                                </form>
+
+                                <form id="form_id" action="index.html" method="post">
+                                  <div class="filter-group-item">
+                                    <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div class="and-or-box">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Criteria</button>
+                                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Group</button>
+                                    </div>
+                                    <hr/>
+                                  </div>
+                                </form>
+
+                              </div>
+
+                              <div class="col-xs-4">
+                                <div class="button-select-group">
+                                  <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
+                                  <div class="or-box">OR</div>
+                                  <button type="button" class="btn btn-ten24">Save & Finish</button>
+                                </div>
+                                <div class="form-group">
+                                  <div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"> Add To New Group</label></div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div><!--- Row --->
+
+                    <!--- Add another filter to filter set --->
+                    <div class="row add-filter-box">
+                      <div class="col-xs-12 collapse add-filter" id="add-filter">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#add-filter"></i></h4>
+                            <div class="row">
+                              <div class="col-xs-4">
+                                Select From Orders:
+                                <div class="option-dropdown">
+                                  <select class="form-control input-sm">
+                                    <option disabled="disabled" selected="selected">Select From Orders:</option>
+                                    <option value="one">One</option>
+                                    <option value="two">Two</option>
+                                    <option value="three">Three</option>
+                                    <option value="four">Four</option>
+                                    <option value="five">Five</option>
+                                  </select>
+                                </div>
+
+                              </div>
+
+                              <div class="col-xs-4">
+                                <h4>Criteria</h4>
+
+                                <form id="form_id" action="index.html" method="post">
+                                  <div class="filter-group-item">
+                                    <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div class="and-or-box">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default btn-sm active">AND</button>
+                                      <button type="button" class="btn btn-default btn-sm">OR</button>
+                                    </div>
+                                    <hr/>
+                                  </div>
+                                </form>
+
+                                <form id="form_id" action="index.html" method="post">
+                                  <div class="filter-group-item">
+                                    <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div class="and-or-box">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Criteria</button>
+                                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Group</button>
+                                    </div>
+                                    <hr/>
+                                  </div>
+                                </form>
+
+                              </div>
+
+                              <div class="col-xs-4">
+                                <div class="button-select-group">
+                                  <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
+                                  <div class="or-box">OR</div>
+                                  <button type="button" class="btn btn-ten24">Save & Finish</button>
+                                </div>
+                                <div class="form-group">
+                                  <div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"> Add To New Group</label></div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div><!--- Row --->
+                  </div>
+                </div>
+                <div class="and-or-box" style="margin-top: 20px;margin-bottom: 8px;">
+                  <div class="btn-group" style="background-color:#eee;">
+                    <button type="button" class="btn btn-default btn-sm active">AND</button>
+                    <button type="button" class="btn btn-default btn-sm">OR</button>
+                  </div>
+                  <hr/>
+                </div>
+              </div>
+              <!--- End Filter Group --->
+
+
+
+
+              <!--- Start Filter Group --->
+              <div class="col-xs-12 filters-selected">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="filter-item">
+                      <div class="panel panel-default">
+                        <div class="dropdown">
+                          <div class="panel-heading">Date <a href="##"><i class="fa fa-times" style="float:right;color: #AAA;margin-top: 3px;"></i></a></div>
+                        </div>
+                        <div class="panel-body" style="cursor:pointer;">
+                          07/31/14 - 07/31/14 <a href="##" style="float:right;"><i class="fa fa-pencil-square-o" style="color:#ccc;"></i></a>
+                        </div>
+                      </div>
+                      <div class="btn-group-vertical" style="float:right;margin-top:20px;">
+                        <button type="button" class="btn btn-xs btn-default active" style="font-size:10px;">AND</button>
+                        <button type="button" class="btn btn-xs btn-default" style="font-size:10px;">OR</button>
+                      </div>
+                    </div><!--- Filter Item End --->
+
+                    <div class="filter-item">
+                      <div class="panel panel-default">
+                        <div class="dropdown">
+                          <div class="panel-heading">Gender <a href="##"><i class="fa fa-times" style="float:right;color: #AAA;margin-top: 3px;"></i></a></div>
+
+                        </div>
+                        <div class="panel-body" style="cursor:pointer;">
+                          Female  <a href="##" style="float:right;"><i class="fa fa-pencil-square-o" style="color:#ccc;"></i></a>
+                        </div>
+                      </div>
+                      <div class="btn-group-vertical" style="float:right;margin-top:20px;">
+                        <button type="button" class="btn btn-xs btn-default active" style="font-size:10px;">AND</button>
+                        <button type="button" class="btn btn-xs btn-default" style="font-size:10px;">OR</button>
+                      </div>
+                    </div><!--- Filter Item End --->
+
+                    <div class="filter-item">
+                      <div class="panel panel-default">
+                        <div class="dropdown">
+                          <div class="panel-heading">Product Type <a href="##"><i class="fa fa-times" style="float:right;color: #AAA;margin-top: 3px;"></i></a></div>
+
+                        </div>
+                        <div class="panel-body" style="cursor:pointer;">
+                          Boots <a href="##" style="float:right;"><i class="fa fa-pencil-square-o" style="color:#ccc;"></i></a>
+                        </div>
+                      </div>
+                    </div><!--- Filter Item End --->
+
+                  </div>
+
+
+                </div>
+
+                <!--- Add another filter to filter set --->
+                <div class="row add-filter-box">
+                  <div class="col-xs-12">
+                    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#add-filter2">Add Filter</button>
+                    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#add-filter-group2">Add New Filter Group</button>
+
+                    <!--- Add another filter to filter set --->
+                    <div class="row add-filter-box">
+                      <div class="col-xs-12 collapse add-filter" id="add-filter-group2">
+                        <div class="row">
+                          <div class="col-xs-12">
+
+                            <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#add-filter-group"></i></h4>
+
+                            <div class="row">
+                              <div class="col-xs-4">
+                                Select From Orders:
+                                <div class="option-dropdown">
+                                  <select class="form-control input-sm">
+                                    <option disabled="disabled" selected="selected">Select From Orders:</option>
+                                    <option value="one">One</option>
+                                    <option value="two">Two</option>
+                                    <option value="three">Three</option>
+                                    <option value="four">Four</option>
+                                    <option value="five">Five</option>
+                                  </select>
+                                </div>
+
+                              </div>
+
+                              <div class="col-xs-4">
+                                <h4>Criteria</h4>
+
+                                <form id="form_id" action="index.html" method="post">
+                                  <div class="filter-group-item">
+                                    <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div class="and-or-box">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default btn-sm">AND</button>
+                                      <button type="button" class="btn btn-default btn-sm active">OR</button>
+                                    </div>
+                                    <hr/>
+                                  </div>
+                                </form>
+
+                                <form id="form_id" action="index.html" method="post">
+                                  <div class="filter-group-item">
+                                    <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div class="and-or-box">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Criteria</button>
+                                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Group</button>
+                                    </div>
+                                    <hr/>
+                                  </div>
+                                </form>
+
+                              </div>
+
+                              <div class="col-xs-4">
+                                <div class="button-select-group">
+                                  <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
+                                  <div class="or-box">OR</div>
+                                  <button type="button" class="btn btn-ten24">Save & Finish</button>
+                                </div>
+                                <div class="form-group">
+                                  <div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"> Add To New Group</label></div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div><!--- Row --->
+
+                    <!--- Add another filter to filter set --->
+                    <div class="row add-filter-box">
+                      <div class="col-xs-12 collapse add-filter" id="add-filter2">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#add-filter"></i></h4>
+                            <div class="row">
+                              <div class="col-xs-4">
+                                Select From Orders:
+                                <div class="option-dropdown">
+                                  <select class="form-control input-sm">
+                                    <option disabled="disabled" selected="selected">Select From Orders:</option>
+                                    <option value="one">One</option>
+                                    <option value="two">Two</option>
+                                    <option value="three">Three</option>
+                                    <option value="four">Four</option>
+                                    <option value="five">Five</option>
+                                  </select>
+                                </div>
+
+                              </div>
+
+                              <div class="col-xs-4">
+                                <h4>Criteria</h4>
+
+                                <form id="form_id" action="index.html" method="post">
+                                  <div class="filter-group-item">
+                                    <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div class="and-or-box">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default btn-sm">AND</button>
+                                      <button type="button" class="btn btn-default btn-sm active">OR</button>
+                                    </div>
+                                    <hr/>
+                                  </div>
+                                </form>
+
+                                <form id="form_id" action="index.html" method="post">
+                                  <div class="filter-group-item">
+                                    <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 no-padding">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div class="and-or-box">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Criteria</button>
+                                      <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Group</button>
+                                    </div>
+                                    <hr/>
+                                  </div>
+                                </form>
+
+                              </div>
+
+                              <div class="col-xs-4">
+                                <div class="button-select-group">
+                                  <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
+                                  <div class="or-box">OR</div>
+                                  <button type="button" class="btn btn-ten24">Save & Finish</button>
+                                </div>
+                                <div class="form-group">
+                                  <div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"> Add To New Group</label></div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div><!--- Row --->
+                  </div>
+                </div>
+
+              </div>
+              <!--- End Filter Group --->
+
+            </div>
+          </div>
+
+        </div><!--- Tab Pane --->
+
+        <div class="tab-pane" id="display-options">
+          <div style="width:100%;text-align:center;font-weight:bold;">Ther are no fields selected</div>
+          <button class="btn btn-ten24">Add Display Field</button>
+        </div><!--- Tab Pane --->
+
+      </div>
+
+      <style media="screen">
+        .nav-tabs {padding:0px 15px;}
+
+        .tab-content .tab-pane {background-color: #eeeeee;padding:0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999999;box-shadow:inset 0 0 2px #999999;padding:20px 15px}
+        .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {color: #555;cursor: default;background: none;border: none;border-bottom-color: none;border-bottom:4px solid #F58620}
+        .nav-tabs>li>a {border:none;color:#999999;}
+        .nav-tabs>li>a:hover {background:none;border:none;color:#555;}
+        .dl-horizontal dt {text-align:left;}
+        .dl-horizontal dd {margin-left:auto;}
+
+      </style>
+
+    </div><!--- Row --->
+    <!--- Tab panes for menu options end--->
 
     <div class="row content-nav">
       <div class="col-md-12 align-right">
@@ -21,417 +661,6 @@
           </div>
         </form>
 
-        <button type="button" class="btn btn-grey btn-sm content-nav-button" data-toggle="collapse" data-target="#option-select"><i class="fa fa-cogs"></i></button>
-        <button type="button" class="btn btn-ten24 btn-sm content-nav-button"><i class="fa fa-plus"></i></button>
-
-        <div id="option-select" class="collapse align-left">
-
-          <div class="panel-group" id="accordion">
-            <div class="panel panel-default">
-              <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                <h4 class="panel-title">
-                    Properties
-                </h4>
-              </div>
-              <div id="collapseOne" class="panel-collapse collapse in">
-                <div class="panel-body">
-                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                </div>
-              </div>
-            </div>
-            <div class="panel panel-default">
-              <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                <h4 class="panel-title">
-                    Filters
-                </h4>
-              </div>
-              <div id="collapseTwo" class="panel-collapse collapse setting-options">
-                <div class="panel-body">
-
-                  <div class="row setting-options-header">
-                    <div class="col-xs-3">
-                      <button type="button" class="btn btn-grey btn-sm"><i class="fa fa-pencil-square-o"></i> Edit Filters</button>
-                    </div>
-                    <div class="col-xs-9 option-row">
-
-                      <div class="option-dropdown">
-                        <select class="form-control input-sm">
-                          <option disabled="disabled" selected="selected">Copy From Existing Collection</option>
-                          <option value="one">One</option>
-                          <option value="two">Two</option>
-                          <option value="three">Three</option>
-                          <option value="four">Four</option>
-                          <option value="five">Five</option>
-                        </select>
-                      </div>
-
-                      <div class="option-buttons">
-                        <button type="button" class="btn btn-grey btn-sm"><i class="fa fa-files-o"></i> Copy</button>
-                        <button type="button" class="btn btn-ten24 btn-sm"><i class="fa fa-floppy-o"></i> Save</button>
-                      </div>
-
-                    </div>
-                  </div>
-
-                  <div class="row setting-options-body">
-                    <div class="col-xs-12 filters-selected">
-                      <div class="row">
-                        <div class="filter-item">
-                          <div class="panel panel-default">
-                            <div class="dropdown">
-                              <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
-                              <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
-                              </ul>
-                            </div>
-                            <div class="panel-body">
-                              $20.99 - $200.00
-                            </div>
-                          </div>
-                          <span class="and-icon"></span>
-                        </div><!--- Filter Item End --->
-
-                        <div class="filter-item">
-                          <div class="panel panel-default">
-                            <div class="dropdown">
-                              <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
-                              <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
-                              </ul>
-                            </div>
-                            <div class="panel-body">
-                              $20.99 - $200.00
-                            </div>
-                          </div>
-                          <span class="or-icon"></span>
-                        </div><!--- Filter Item End --->
-
-                        <!--- <div class="filter-group">
-                          <div class="filter-item">
-                            <div class="panel panel-default">
-                              <div class="dropdown">
-                                <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
-                                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
-                                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
-                                </ul>
-                              </div>
-                              <div class="panel-body">
-                                $20.99 - $200.00
-                              </div>
-                            </div>
-                            <span class="or-icon"></span>
-                          </div>
-
-                          <div class="filter-item">
-                            <div class="panel panel-default">
-                              <div class="dropdown">
-                                <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
-                                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
-                                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
-                                </ul>
-                              </div>
-                              <div class="panel-body">
-                                $20.99 - $200.00
-                              </div>
-                            </div>
-                            <span class="and-icon"></span>
-                          </div>
-                        </div> --->
-
-                        <div class="filter-item">
-                          <div class="panel panel-default">
-                            <div class="dropdown">
-                              <div class="panel-heading dropdown-toggle" id="filter-option-drop" data-toggle="dropdown">Order Total</div>
-                              <ul class="dropdown-menu" role="menu" aria-labelledby="filter-option-drop">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove</a></li>
-                              </ul>
-                            </div>
-                            <div class="panel-body">
-                              $20.99 - $200.00
-                            </div>
-                          </div>
-                        </div><!--- Filter Item End --->
-
-                      </div>
-
-                      <!--- Add another filter to filter set --->
-                      <div class="row add-filter-box">
-                        <div class="col-xs-12">
-                          <button type="button" class="btn btn-ten24 btn-sm" data-toggle="collapse" data-target="#add-filter"><i class="fa fa-plus"></i> ADD</button>
-                        </div>
-                        <div class="col-xs-12 collapse add-filter" id="add-filter">
-                          <div class="row">
-                            <div class="col-xs-12">
-
-                              <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#add-filter"></i></h4>
-
-                              <div class="row">
-                                <div class="col-xs-4">
-                                  Select From Orders:
-                                  <div class="option-dropdown">
-                                    <select class="form-control input-sm">
-                                      <option disabled="disabled" selected="selected">Select From Orders:</option>
-                                      <option value="one">One</option>
-                                      <option value="two">Two</option>
-                                      <option value="three">Three</option>
-                                      <option value="four">Four</option>
-                                      <option value="five">Five</option>
-                                    </select>
-                                  </div>
-
-                                </div>
-
-                                <div class="col-xs-4">
-                                  <h4>Criteria</h4>
-
-                                  <form id="form_id" action="index.html" method="post">
-                                    <div class="filter-group-item">
-                                      <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
-                                      <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
-                                        <div class="col-sm-12 no-padding">
-                                          <select class="form-control input-sm">
-                                            <option>1 week</option>
-                                            <option>2 week</option>
-                                            <option>3 week</option>
-                                            <option>4 week</option>
-                                            <option>5 week</option>
-                                          </select>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                      </div>
-                                      <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                        <div class="col-sm-12 no-padding">
-                                          <input type="text" class="form-control" id="input" placeholder="12">
-                                        </div>
-                                        <div class="clearfix"></div>
-                                      </div>
-                                    </div>
-                                    <div class="and-or-box">
-                                      <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-sm">AND</button>
-                                        <button type="button" class="btn btn-default btn-sm active">OR</button>
-                                      </div>
-                                      <hr/>
-                                    </div>
-                                  </form>
-
-                                  <form id="form_id" action="index.html" method="post">
-                                    <div class="filter-group-item">
-                                      <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
-                                      <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
-                                        <div class="col-sm-12 no-padding">
-                                          <select class="form-control input-sm">
-                                            <option>1 week</option>
-                                            <option>2 week</option>
-                                            <option>3 week</option>
-                                            <option>4 week</option>
-                                            <option>5 week</option>
-                                          </select>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                      </div>
-                                      <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                        <div class="col-sm-12 no-padding">
-                                          <input type="text" class="form-control" id="input" placeholder="12">
-                                        </div>
-                                        <div class="clearfix"></div>
-                                      </div>
-                                    </div>
-                                    <div class="and-or-box">
-                                      <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Criteria</button>
-                                        <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Group</button>
-                                      </div>
-                                      <hr/>
-                                    </div>
-                                  </form>
-
-                                </div>
-
-                                <div class="col-xs-4">
-                                  <div class="button-select-group">
-                                    <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
-                                    <div class="or-box">OR</div>
-                                    <button type="button" class="btn btn-ten24">Save & Finish</button>
-                                  </div>
-                                  <div class="form-group">
-                                    <div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"> Add To New Group</label></div>
-                                  </div>
-                                </div>
-                              </div>
-
-                            </div>
-                          </div>
-                        </div>
-                      </div><!--- Row --->
-
-                    </div>
-
-
-
-                    <!--- Add and/or filter set --->
-                    <div class="col-xs-12">
-
-                      <!--- Add another filter to filter set --->
-                      <div class="row add-filter-box">
-                        <div class="col-xs-12">
-                          <button type="button" class="btn btn-ten24" data-toggle="collapse" data-target="#add-filter-set"><i class="fa fa-plus"></i> Add Filter To New Group</button>
-                        </div>
-                        <div class="col-xs-12 collapse add-filter" id="add-filter-set">
-                          <div class="row">
-                            <div class="col-xs-12">
-
-                              <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#add-filter-set"></i></h4>
-
-                              <div class="row">
-                                <div class="col-xs-4">
-                                  Select From Orders:
-                                  <div class="option-dropdown">
-                                    <select class="form-control input-sm">
-                                      <option disabled="disabled" selected="selected">Select From Orders:</option>
-                                      <option value="one">One</option>
-                                      <option value="two">Two</option>
-                                      <option value="three">Three</option>
-                                      <option value="four">Four</option>
-                                      <option value="five">Five</option>
-                                    </select>
-                                  </div>
-
-                                </div>
-
-                                <div class="col-xs-4">
-                                  <h4>Criteria</h4>
-
-                                  <form id="form_id" action="index.html" method="post">
-                                    <div class="filter-group-item">
-                                      <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
-                                      <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
-                                        <div class="col-sm-12 no-padding">
-                                          <select class="form-control input-sm">
-                                            <option>1 week</option>
-                                            <option>2 week</option>
-                                            <option>3 week</option>
-                                            <option>4 week</option>
-                                            <option>5 week</option>
-                                          </select>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                      </div>
-                                      <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                        <div class="col-sm-12 no-padding">
-                                          <input type="text" class="form-control" id="input" placeholder="12">
-                                        </div>
-                                        <div class="clearfix"></div>
-                                      </div>
-                                    </div>
-                                    <div class="and-or-box">
-                                      <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-sm">AND</button>
-                                        <button type="button" class="btn btn-default btn-sm active">OR</button>
-                                      </div>
-                                      <hr/>
-                                    </div>
-                                  </form>
-
-
-                                  <form id="form_id" action="index.html" method="post">
-                                    <div class="filter-group-item">
-                                      <button class="btn btn-xs btn-grey remove"><i class="fa fa-times"></i> remove</button>
-                                      <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Date Conditions:</label>
-                                        <div class="col-sm-12 no-padding">
-                                          <select class="form-control input-sm">
-                                            <option>1 week</option>
-                                            <option>2 week</option>
-                                            <option>3 week</option>
-                                            <option>4 week</option>
-                                            <option>5 week</option>
-                                          </select>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                      </div>
-                                      <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label no-padding" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                        <div class="col-sm-12 no-padding">
-                                          <input type="text" class="form-control" id="input" placeholder="12">
-                                        </div>
-                                        <div class="clearfix"></div>
-                                      </div>
-                                    </div>
-                                    <div class="and-or-box">
-                                      <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Criteria</button>
-                                        <button type="button" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Define Additional Group</button>
-                                      </div>
-                                      <hr/>
-                                    </div>
-                                  </form>
-
-                                </div>
-                                <div class="col-xs-4">
-                                  <div class="button-select-group">
-                                    <button type="button" class="btn btn-ten24">Save & Add Another Button</button>
-                                    <div class="or-box">OR</div>
-                                    <button type="button" class="btn btn-ten24">Save & Finish</button>
-                                  </div>
-                                  <div class="form-group">
-                                    <div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"> Add To New Group</label></div>
-                                  </div>
-                                </div>
-                              </div>
-
-                            </div>
-                          </div>
-                        </div>
-                      </div><!--- Row --->
-
-                    </div><!--- Col --->
-
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-            <div class="panel panel-default">
-              <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                <h4 class="panel-title">
-                    Display Options
-                </h4>
-              </div>
-              <div id="collapseThree" class="panel-collapse collapse">
-                <div class="panel-body">
-                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                </div>
-              </div>
-            </div>
-            <hr/>
-          </div>
-        </div>
-
-        <!--- Drop down option you can delete if you don't need--->
-        <!--- <div class="btn-group">
-          <button type="button" class="btn btn-ten24 btn-sm dropdown-toggle content-nav-button" data-toggle="dropdown">
-            <span class="glyphicon glyphicon-cog"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Properties</a></li>
-            <li><a href="#">Filters</a></li>
-            <li><a href="#">Display Options</a></li>
-          </ul>
-        </div> --->
-
       </div>
     </div>
 
@@ -440,146 +669,168 @@
             <tr>
                 <th>Row</span></th>
                 <th class="sortable">ID</th>
-                <th class="sortable">Company</th>
-                <th class="sortable">First Name</th>
-                <th class="sortable">Last Name</th>
-                <th class="sortable">Type</th>
-                <th class="sortable">Status</th>
-                <th class="sortable">Origin</th>
-                <th class="sortable">Created</th>
-                <th class="sortable">Date Placed</th>
-                <th class="sortable">Total</th>
-                <th>View</th>
+                <th class="sortable">Brand</th>
+                <th class="sortable">Style</th>
+                <th class="sortable">Color</th>
+                <th class="sortable">Gender</th>
+                <th class="sortable">Material</th>
+                <th class="sortable">Purchase Date</th>
+                <th class="sortable">Price</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
 
           <!---TR 1--->
           <tr class="even-tr">
-            <td><div class="checkbox"><input type="checkbox" id="checkbox1"><label for="checkbox1"></label></div></td>
+            <td><div class="checkbox"><input type="checkbox" id="checkbox"><label for="checkbox"></label></div></td>
             <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
+            <td>Ario</td>
+            <td>Square Toe</td>
+            <td>Black</td>
+            <td>Male</td>
+            <td>Leather</td>
+            <td>July 06, 2014 05:36 PM</td>
+            <td>$130.99</td>
+            <td class="edit-elements">
+              <ul>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+              </ul>
+            </td>
           </tr>
 
           <!---TR 2--->
           <tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox2"><label for="checkbox2"></label></div></td>
             <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
+            <td>Ario</td>
+            <td>Square Toe</td>
+            <td>Black</td>
+            <td>Male</td>
+            <td>Leather</td>
+            <td>July 06, 2014 05:36 PM</td>
+            <td>$130.99</td>
+            <td class="edit-elements">
+              <ul>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+              </ul>
+            </td>
           </tr>
 
           <!---TR 3--->
           <tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></div></td>
             <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
+            <td>Ario</td>
+            <td>Square Toe</td>
+            <td>Black</td>
+            <td>Male</td>
+            <td>Leather</td>
+            <td>July 06, 2014 05:36 PM</td>
+            <td>$130.99</td>
+            <td class="edit-elements">
+              <ul>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+              </ul>
+            </td>
           </tr>
 
           <!---TR 4--->
           <tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></div></td>
             <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
+            <td>Ario</td>
+            <td>Square Toe</td>
+            <td>Black</td>
+            <td>Male</td>
+            <td>Leather</td>
+            <td>July 06, 2014 05:36 PM</td>
+            <td>$130.99</td>
+            <td class="edit-elements">
+              <ul>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+              </ul>
+            </td>
           </tr>
 
           <!---TR 11--->
           <tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox11"><label for="checkbox11"></label></div></td>
             <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
+            <td>Ario</td>
+            <td>Square Toe</td>
+            <td>Black</td>
+            <td>Male</td>
+            <td>Leather</td>
+            <td>July 06, 2014 05:36 PM</td>
+            <td>$130.99</td>
+            <td class="edit-elements">
+              <ul>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+              </ul>
+            </td>
           </tr>
 
           <!---TR 12--->
           <tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox12"><label for="checkbox12"></label></div></td>
             <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
+            <td>Ario</td>
+            <td>Square Toe</td>
+            <td>Black</td>
+            <td>Male</td>
+            <td>Leather</td>
+            <td>July 06, 2014 05:36 PM</td>
+            <td>$130.99</td>
+            <td class="edit-elements">
+              <ul>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+              </ul>
+            </td>
           </tr>
 
           <!---TR 13--->
           <tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox13"><label for="checkbox13"></label></div></td>
             <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
+            <td>Ario</td>
+            <td>Square Toe</td>
+            <td>Black</td>
+            <td>Male</td>
+            <td>Leather</td>
+            <td>July 06, 2014 05:36 PM</td>
+            <td>$130.99</td>
+            <td class="edit-elements">
+              <ul>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+              </ul>
+            </td>
           </tr>
 
           <!---TR 14--->
           <tr class="even-tr">
             <td><div class="checkbox"><input type="checkbox" id="checkbox14"><label for="checkbox14"></label></div></td>
             <td>2691402</td>
-            <td>Ten24</td>
-            <td>James</td>
-            <td>Earl</td>
-            <td>Sales Order</td>
-            <td>New</td>
-            <td>West</td>
-            <td>Jun 06, 2014 05:36 PM</td>
-            <td>Jun 06, 2014 05:43 PM</td>
-            <td>$183.90</td>
-            <td class="view-element"></td>
+            <td>Ario</td>
+            <td>Square Toe</td>
+            <td>Black</td>
+            <td>Male</td>
+            <td>Leather</td>
+            <td>July 06, 2014 05:36 PM</td>
+            <td>$130.99</td>
+            <td class="edit-elements">
+              <ul>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                <li><span class="tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+              </ul>
+            </td>
           </tr>
 
         </tbody>
@@ -589,12 +840,12 @@
       <div class="col-md-12 align-right">
         <ul class="pagination pagination-sm">
           <li><a href="#">&laquo;</a></li>
-          <li><a href="#">1</a></li>
+          <li class="active"><a href="#">1</a></li>
           <li><a href="#">2</a></li>
           <li><a href="#">3</a></li>
           <li><a href="#">4</a></li>
           <li><a href="#">5</a></li>
-          <li><a href="#">&raquo;</a></li>
+          <li class="disabled"><a href="#">&raquo;</a></li>
         </ul>
       </div>
     </div>
@@ -611,10 +862,13 @@
 
   body {font-family: 'Open Sans', sans-serif;color:#666666;}
   th {font-weight:600;}
+  a {color:#F58620;}
+  a:hover, a:focus {color: #F9AC68;text-decoration: underline;}
 
-  .view-element {text-align:center;cursor:pointer;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
-  .view-element:hover {background-color:#f58620 !important;border-color:#f58620 !important;color:#fff;}
-  .view-element:after{font-family:'FontAwesome';content:"\f06e";}
+  .edit-elements {width:60px;}
+  .edit-elements ul {margin:0px;padding:0px;}
+  .edit-elements ul li {text-align:center;cursor:pointer;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;display:inline-block;text-decoration:none;margin-right:5px;}
+  .edit-elements ul li:hover {color:#f58620;}
 
   .no-padding {padding:0px !important;}
   .align-right {text-align:right;}
@@ -643,11 +897,15 @@
   .navbar-inverse .navbar-nav>li>a {color:#b0b0b0;}
   .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}
 
+  .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {background-color:#F58620;border-color:#F58620;}
+
+  .pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {color: #CCC;}
+
+
+
   .btn:focus {outline: none;}
   .panel, .panel-group .panel {border-radius:0px;}
   .panel-default>.panel-heading {background-color:#606060;color:#ffffff;}
-  #accordion .panel-default>.panel-heading {cursor: pointer;}
-  /*#accordion .panel-default>.panel-heading:before {font-family: 'FontAwesome';content: "\f067";float: left;margin-right: 6px;margin-top: -1px;}*/
   .panel-group .panel-heading+.panel-collapse>.panel-body {border-top: none;}
   .panel-heading {border-top-left-radius: 0px;border-top-right-radius: 0px}
   .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
@@ -657,6 +915,9 @@
   .content-nav .dropdown-menu {background-color:#F9F9F9;}
   .dropdown-menu li.active > a:hover, .dropdown-menu li > a:hover {background-color: #FC770D;background-image: -moz-linear-gradient(top, #f58620, #f58620);background-image: -ms-linear-gradient(top, #f58620, #f58620);background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f58620), to(#f58620));background-image: -webkit-linear-gradient(top, #f58620, #f58620);background-image: -o-linear-gradient(top, #f58620, #f58620);background-image: linear-gradient(top, #f58620, #f58620);color: #FFF !important;}
   .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {background-color:#f58620;color:#ffffff;border-color:#f58620;}
+  .btn-group-vertical .btn-default.active {background-color: #aaaaaa;color: #FFF;border-color: #aaaaaa;}
+  .btn-group-vertical .btn-default:hover {background-color: #aaaaaa;color: #FFF;border-color: #aaaaaa;}
+
   .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#F58620;color:#ffffff;border-color: #F58620;}
 
   .btn-ten24 {background-color: #f58620;border-color: #f1790b;color: #ffffff;}
@@ -704,7 +965,7 @@
   .pagination {margin:0px;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
 
-  .setting-options-body .filter-item {margin-bottom: 10px;display: inline-block;width: 200px;margin-left: 15px;margin-right: 15px;margin-top:2px;}
+  .setting-options-body .filter-item {vertical-align:top;margin-bottom: 10px;display: inline-block;width: 250px;margin-left: 3px;margin-top:2px;}
   .setting-options-body .filter-item span.or-icon {position: relative;top: -10px;left: 22px;}
   .setting-options-body .filter-item span.or-icon:after {content: "or";color: #ccc;}
   .setting-options-body .filter-item span.and-icon {position: relative;top: -10px;left: 18px;}
@@ -716,27 +977,26 @@
 
   .setting-options-body .add-filter-button-box {border-bottom:1px solid}
 
-  .setting-options-body .panel {display:inline-block;width:84%;}
-  .setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;cursor:pointer;}
-  .setting-options-body .panel-heading:after {font-family: 'FontAwesome';content: "\f0c9";float:right;color: #aaaaaa;}
+  .setting-options-body .panel {display:inline-block;width:84%;margin-bottom:5px;}
+  .setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;}
   .setting-options-body .panel-body {padding: 10px 15px;}
 
   .setting-options-body .setting-and-or {width: 100%;padding: 10px 0px 16px 0px;display: block;font-weight: 700;}
   .setting-options-body .setting-and-or .btn {min-width:52px;text-align:center;}
-  .setting-options-body .filters-selected .add-filter-box {border-bottom: 1px solid #EEE;padding-bottom: 15px;margin-bottom: 8px;}
 
   .setting-options-body .add-filter {background:#eaeaea;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
   .setting-options-body .add-filter .row:first-child {padding-top: 15px; padding-bottom:30px; }
   .setting-options-body .add-filter h4 i {float:right;cursor:pointer;}
   .setting-options-body .add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;}
   .setting-options-body .add-filter label {font-weight:normal;}
-  .setting-options-body .add-filter .and-or-box {text-align:center;height:40px;}
-  .setting-options-body .add-filter .and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
-  .setting-options-body .add-filter .and-or-box .btn-group {z-index: 10;background: #e5e9ec;padding: 0px 10px;}
+  .and-or-box {text-align:center;height:40px;}
+  .and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
+  .and-or-box .btn-group {z-index: 10;background: #e5e9ec;padding: 0px 10px;}
   .setting-options-body .add-filter button.remove {float:right;}
   .setting-options-body .add-filter .button-select-group {text-align:center;border-bottom:3px dotted #DDDDDD;margin-bottom:15px;}
   .setting-options-body .add-filter .button-select-group .btn {margin-bottom:15px;margin-top:15px;}
   .setting-options-body .add-filter .filter-group-item {background: #F2F2F2;border-radius: 4px;padding: 15px;margin-bottom:10px;}
+  .setting-options-body .filter-item:first-child {margin-left:0px;}
 
 
 
@@ -744,5 +1004,9 @@
   #search-results {display:none;}
 
 </style>
+
+<script charset="utf-8">
+  $('.tool-tip-item').tooltip()
+</script>
 
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
