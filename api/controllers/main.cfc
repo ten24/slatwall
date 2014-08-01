@@ -29,7 +29,7 @@ component output="false" accessors="true" {
 		arguments.rc.apiResponse.statusCode = "400";
 	}*/
 	
-	public any function getExistingCollections(){
+	public any function getExistingCollectionsByBaseEntity(required string baseEntity){
 		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
@@ -41,14 +41,24 @@ component output="false" accessors="true" {
 			}
 		];
 			
+		collectionConfigStruct.filterGroups = [
+			{
+				filterGroup = [
+					{
+						propertyIdentifier = "baseEntityName",
+						comparisonOperator = "=",
+						value=arguments.baseEntity
+					}
+				]
+			}
+		];
+			
 		collectionConfigStruct.orderBy = [
 			{
 				propertyIdentifier="Collection.collectionName",
 				direction="ASC"
 			}
 		];
-		//writeDump( collectionEntity.getPageRecords());abort;
-		//var ApiResponseStruct = collectionService.getFormattedPageRecords(collectionEntity,collectionEntity.getDefaultPropertyIdentifierList());
 		var data = {data=collectionEntity.getRecords()};
 		
 		structAppend(arguments.rc.apiResponse,data);
