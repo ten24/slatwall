@@ -95,6 +95,7 @@ component output="false" accessors="true" {
 				var pageShow = rc['P:Show'];
 			}
 			
+			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = collectionService.getAPIResponseForEntityName(	arguments.rc.entityName,
