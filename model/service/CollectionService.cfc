@@ -159,7 +159,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return collectionEntity;
 	}
 	
-	public any function createTransientCollection(required string entityName, string collectionConfig = "", string propertyIdentifiersList = "", string filterList = "", string orderBysList = ""){
+	public any function createTransientCollection(required string entityName, string collectionConfig = "" string propertyIdentifiersList = "", string filterList = "", string orderByList =""){
 		
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 		
@@ -170,7 +170,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		
 		//now that we have the basic structure of the collectionconfigStruct, lets add the other things
-		if(arguments.propertyIdentifiersList neq ''){
+		if(len(arguments.propertyIdentifiersList)){
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
 		}
 		if(len(arguments.orderBysList)){
