@@ -1,1 +1,54 @@
 /* New Styles Here */
+  body {font-family: 'Open Sans', sans-serif;margin-top:60px;content:"\e105";font-color:#ccc;}
+  
+  .btn-group {float:right;}
+  .btn-toolbar .btn-group {float:right;}
+  
+  /* Object Attributes */
+  .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;align:center;position:relative;text-align:left;left:15px;}
+  label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;text-align:left;left:15px;}
+  
+  /* Tabs */
+  .nav-pill .active {border:1px solid #cccccc;border-right:0px;position:relative;align:left;}
+  .nav-pill {position:relative;left:-15px;}
+
+  
+  /********************/	
+  /*   Reyjay's CSS   */
+  /********************/
+  th {font-weight:600;}
+  
+  .view-element {text-align:center;cursor:pointer;}
+  .view-element:after{font-family:'Glyphicons Halflings';content:"\e105";}
+  
+  .no-padding {padding:0px !important;}
+  .align-right {text-align:right;}
+  .align-left {text-align:left;}
+  .content-nav-button {display:inline-block;}
+  .content-nav button.content-nav-button {margin-top:8px;margin-bottom:8px;}
+  .search-bar {display:inline-block;}
+  .hiddenRow {padding: 0 !important;}
+
+  .panel {border-radius:0px;}
+  .panel-heading {border-top-left-radius: 0px;border-top-right-radius: 0px}
+  .panel-title {font-weight:700;}
+  .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
+  
+  table tr th.sortable:after {font-family:'Glyphicons Halflings';content: "\e119";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
+  table tr th .glyphicon {vertical-align:text-top;}
+  
+  /*CHECK BOX STYLES START*/
+  .checkbox {text-align:center;}
+  .checkbox {margin:0px;}
+  .checkbox label {padding-left: 0px;margin-top:2px;}
+  .checkbox label{display:inline-block;position:relative;}
+  .checkbox label:before{content:"";display:inline-block;width:15px;height:15px;border:1px solid #cccccc;border-radius:3px;background-color:#fff;-webkit-transition:border 0.15s ease-in-out, color 0.15s ease-in-out;transition:border 0.15s ease-in-out, color 0.15s ease-in-out;vertical-align:text-top;}
+  .checkbox label:after{display:inline-block;position:absolute;width:16px;height:16px;left:0;top:0;padding-right:1px;padding-top:2px;font-size:9px;color:#555555;vertical-align:text-top;}
+  @-moz-document url-prefix() {.checkbox label:after {padding-top:3px;}}
+  .checkbox input[type=checkbox]{display:none;}
+  .checkbox input[type=checkbox]:checked + label:after{font-family:'Glyphicons Halflings';content:"\e013";}
+  .checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
+  .checkbox input[type=checkbox]:disabled + label:before{background-color:#eeeeee;cursor:not-allowed;}
+  /*CHECK BOX STYLES END*/
+  
+
