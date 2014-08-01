@@ -473,31 +473,28 @@ component extends="FW1.framework" {
 		param name="request.context.ajaxResponse" default="#structNew()#";
 		param name="request.context.apiRequest" default="false";
 		param name="request.context.apiResponse" default="#structNew()#";
-		
+		param name="request.context.apiResponse.statusCode" default="200";
+		param name="request.context.apiResponse.statusText" default="OK";
+		param name="request.context.apiResponse.contentType" default="application/json"; 
 		
 		endHibachiLifecycle();
 		
-		// Announce the applicationRequestStart event
+		// Announce the applicatoinRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
 		// Check for an API Response
 		if(request.context.apiRequest) {
-			param name="request.context.statusCode" default="200";
-			param name="request.context.statusText" default="OK";
-			param name="request.context.contentType" default="application/json"; 
     		//need response header for api
     		var context = getPageContext();
     		context.getOut().clearBuffer();
     		var response = context.getResponse();
-    		response.setContentType(request.context.contentType);
-    		response.setStatus(request.context.statusCode,request.context.statusText);
+    		response.setContentType(request.context.apiResponse.contentType);
+    		response.setStatus(request.context.apiResponse.statusCode,request.context.apiResponse.statusText);
     		var responseString = '';
     		//leaving a note here in case we ever wish to support XML for api responses
-    		if(isStruct(request.context.apiResponse) && request.context.contentType eq 'application/json'){
+    		if(request.context.apiResponse.contentType eq 'application/json'){
     			responseString = serializeJSON(request.context.apiResponse);
-    		}
-    		if(isStruct(request.context.apiResponse) && request.context.contentType eq 'application/xml'){
-    			//response String to xml placeholder
+    			
     		}
     		
 			writeOutput( responseString );

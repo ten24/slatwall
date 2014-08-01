@@ -1,6 +1,6 @@
 //services return promises which can be handled uniquely based on success or failure by the controller
 
-angular.module('slatwalladmin.services',[]).config(["$provide", function ($provide) {
+angular.module('slatwalladmin.services',['ngResource','ngCookies']).config(["$provide", function ($provide) {
     $provide.constant("baseURL", 'http://cf10.localhost/');
 }])
 .factory('slatwallService',['$http','$q','baseURL',
@@ -23,7 +23,7 @@ function($http,$q,baseURL){
 		});
 		return deferred.promise;
 		
-	},
+	}
 	factory.saveEntity = function(entityName,id,params){
 		var deferred = $q.defer();
 		var urlString = baseURL+'index.cfm/?slatAction=api:main.post&entityName='+entityName+'&entityId='+id;	
@@ -40,33 +40,7 @@ function($http,$q,baseURL){
 			deferred.resolve(reason);
 		});
 		return deferred.promise;
-	},
-	factory.getExistingCollections = function(){
-		var deferred = $q.defer();
-		var urlString = baseURL+'index.cfm/?slatAction=api:main.getExistingCollections';
-		
-		$http.get(urlString)
-		.success(function(data){
-			deferred.resolve(data);
-		}).error(function(reason){
-			deferred.resolve(reason);
-		});
-		return deferred.promise;
-		
-	},
-	factory.getFilterPropertiesByBaseEntityName = function(entityName){
-		var deferred = $q.defer();
-		var urlString = baseURL+'index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
-		
-		$http.get(urlString)
-		.success(function(data){
-			deferred.resolve(data);
-		}).error(function(reason){
-			deferred.resolve(reason);
-		});
-		return deferred.promise;
 	}
-	
 	return factory;
 }]);
 
