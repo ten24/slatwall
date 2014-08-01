@@ -40,7 +40,48 @@ function($http,$q,baseURL){
 			deferred.resolve(reason);
 		});
 		return deferred.promise;
+<<<<<<< HEAD
 	}
+=======
+	},
+	factory.getExistingCollectionsByBaseEntity = function(entityName){
+		var deferred = $q.defer();
+		var urlString = baseURL+'index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
+		
+		$http.get(urlString)
+		.success(function(data){
+			deferred.resolve(data);
+		}).error(function(reason){
+			deferred.resolve(reason);
+		});
+		return deferred.promise;
+		
+	},
+	factory.getFilterPropertiesByBaseEntityName = function(entityName){
+		var deferred = $q.defer();
+		var urlString = baseURL+'index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
+		
+		$http.get(urlString)
+		.success(function(data){
+			deferred.resolve(data);
+		}).error(function(reason){
+			deferred.resolve(reason);
+		});
+		return deferred.promise;
+	}
+	/*,
+	factory.formatFilterProperties = function(filterProperties){
+		for(var i in filterProperties.DATA){
+			var filterProperty = filterProperties.DATA[i];
+			if(typeof id !== "undefined") {
+			console.log(filterProperty);
+		}
+		return filterProperties;
+	}
+	*/
+	
+	
+>>>>>>> parent of 1d87bfe... Revert "Merge branch 'feature-bs3-collections' of https://github.com/ten24/Slatwall into feature-bs3-collections"
 	return factory;
 }]);
 

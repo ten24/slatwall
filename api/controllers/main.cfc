@@ -26,6 +26,52 @@ component output="false" accessors="true" {
 		arguments.rc.apiResponse.statusCode = "400";
 	}*/
 	
+<<<<<<< HEAD
+=======
+	public any function getExistingCollectionsByBaseEntity(required struct rc){
+		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');
+		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+		collectionConfigStruct.columns = [
+			{
+				propertyIdentifier="Collection.collectionName"	
+			},
+			{
+				propertyIdentifier="Collection.collectionConfig"	
+			}
+		];
+			
+		collectionConfigStruct.filterGroups = [
+			{
+				filterGroup = [
+					{
+						propertyIdentifier = "baseEntityName",
+						comparisonOperator = "=",
+						value=rc.entityName
+					}
+				]
+			}
+		];
+			
+		collectionConfigStruct.orderBy = [
+			{
+				propertyIdentifier="Collection.collectionName",
+				direction="ASC"
+			}
+		];
+		var data = {data=collectionEntity.getRecords()};
+		
+		structAppend(arguments.rc.apiResponse,data);
+	}
+	
+	public any function getFilterPropertiesByBaseEntityName( required struct rc){
+		var filterProperties = {
+									data = hibachiService.getFilterPropertiesByEntityName(rc.entityName),
+									entityName=rc.entityName
+								};
+		structAppend(arguments.rc.apiResponse, filterProperties);
+	}
+	
+>>>>>>> parent of 1d87bfe... Revert "Merge branch 'feature-bs3-collections' of https://github.com/ten24/Slatwall into feature-bs3-collections"
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
 			create a base default properties function that can be overridden at the entity level via function
