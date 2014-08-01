@@ -5,9 +5,6 @@ angular.module('slatwalladmin')
 		templateUrl: '/admin/client/slatwalladmin/js/directives/partials/paginationBar.html',
 		scope: {
 			collection: '='
-		},
-		controller: function($scope){
-			console.log($scope);
 		}
 	}
 });

@@ -4,9 +4,8 @@ angular.module('slatwalladmin').controller('ngtest', [ '$scope','slatwallService
 	console.log(promise);
 	promise.then(function(value){
 		console.log(value);
-		
 	},function(reason){
-		//display error message
+		
 	})
 	
 	var postData = {

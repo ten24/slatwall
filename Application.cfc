@@ -134,7 +134,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		if ( arguments.subsystem eq '' ) {
 			return '';
 		}
-		if ( !listFindNoCase('admin,api,client,frontend,public', arguments.subsystem) ) {
+		if ( !listFindNoCase('admin,api,frontend,public', arguments.subsystem) ) {
 			return 'integrationServices/' & arguments.subsystem & '/';
 		}
 		return arguments.subsystem & '/';

@@ -285,24 +285,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
-	public any function getDefaultProperties(string includesList = "", string excludesList = ""){
+	public any function getDefaultProperties(string includesList = ""){
 		var properties = getProperties();
 		var defaultProperties = [];
 		for(var p=1; p<=arrayLen(properties); p++) {
-			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
+			if((len(includesList) && ListFind(arguments.includesList,properties[p].name)) 
 			|| !structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
-				arrayAppend(defaultProperties,properties[p]);	
-			}
-		}
-		return defaultProperties;
-	}
-	
-	public any function getFilterProperties(string includesList = "", string excludesList = ""){
-		var properties = getProperties();
-		var defaultProperties = [];
-		for(var p=1; p<=arrayLen(properties); p++) {
-			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
-			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
 				arrayAppend(defaultProperties,properties[p]);	
 			}
 		}

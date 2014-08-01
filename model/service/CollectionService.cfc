@@ -329,8 +329,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
 		
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
-		//var response = getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);;
-		//writeDump(var=response,top=2);abort;
 		for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
 			if(isObject(paginatedCollectionOfEntities[1])) {
 				response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );

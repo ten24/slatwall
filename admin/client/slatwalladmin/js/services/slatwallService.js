@@ -41,9 +41,9 @@ function($http,$q,baseURL){
 		});
 		return deferred.promise;
 	},
-	factory.getExistingCollectionsByBaseEntity = function(entityName){
+	factory.getExistingCollections = function(){
 		var deferred = $q.defer();
-		var urlString = baseURL+'index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
+		var urlString = baseURL+'index.cfm/?slatAction=api:main.getExistingCollections';
 		
 		$http.get(urlString)
 		.success(function(data){
@@ -66,17 +66,6 @@ function($http,$q,baseURL){
 		});
 		return deferred.promise;
 	}
-	/*,
-	factory.formatFilterProperties = function(filterProperties){
-		for(var i in filterProperties.DATA){
-			var filterProperty = filterProperties.DATA[i];
-			if(typeof id !== "undefined") {
-			console.log(filterProperty);
-		}
-		return filterProperties;
-	}
-	*/
-	
 	
 	return factory;
 }]);
