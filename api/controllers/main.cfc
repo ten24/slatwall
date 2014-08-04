@@ -125,8 +125,11 @@ component output="false" accessors="true" {
 	public any function post( required struct rc ) {
 		param name="arguments.rc.context" default="save";
 		param name="arguments.rc.entityID" default="";
-		param name="arguments.rc.apiResponse.content.messages" default="";
 		param name="arguments.rc.apiResponse.content.errors" default="";
+		
+		if(isNull(arguments.rc.apiResponse.content.messages)){
+			arguments.rc.apiResponse.content.messages = [];
+		}
 		
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
 		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
@@ -161,7 +164,10 @@ component output="false" accessors="true" {
 		}
 		
 		if(!isnull(entity.getHibachiMessages()) && structCount(entity.getHibachiMessages().getMessages())){
-			arguments.rc.apiResponse.content.messages = entity.getHibachiMessages().getMessages();
+			var messages = entity.getHibachiMessages().getMessages();
+			for(message in messages){
+				arrayAppend(arguments.rc.apiResponse.content.messages,messages[message]);	
+			}
 		}
 		
 		if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
