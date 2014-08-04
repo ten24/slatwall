@@ -86,6 +86,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:product.addProductReview", true );
 		}
+		
+		if(!product.hasErrors()) {
+			
+			// Get the last added product review
+			productReview =  product.getProductReviews()[arraylen(product.getProductReviews())];
+			
+			// Save the product review so that custom attributes get set
+			productReview = getProductService().saveProductReview( productReview, arguments.rc );
+		}
 	}
 	
 }
