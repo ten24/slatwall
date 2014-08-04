@@ -166,7 +166,11 @@ component output="false" accessors="true" {
 		if(!isnull(entity.getHibachiMessages()) && structCount(entity.getHibachiMessages().getMessages())){
 			var messages = entity.getHibachiMessages().getMessages();
 			for(message in messages){
-				arrayAppend(arguments.rc.apiResponse.content.messages,messages[message]);	
+				var messageData ={
+					message = messages[message],
+					messageType = ""
+				};
+				arrayAppend(arguments.rc.apiResponse.content.messages,messageData);	
 			}
 		}
 		
