@@ -160,7 +160,8 @@ component output="false" accessors="true" {
 			arguments.rc.apiResponse.content.success = false;
 		}else{
 			arguments.rc.apiResponse.content.success = true;
-			arguments.rc.apiResponse.content.messages = "#rc.context# #arguments.rc.entityName# successful";
+			var successMessageData = {message = "#rc.context# #arguments.rc.entityName# successful"};
+			arrayAppend(arguments.rc.apiResponse.content.messages,successMessageData);
 		}
 		
 		if(!isnull(entity.getHibachiMessages()) && structCount(entity.getHibachiMessages().getMessages())){
