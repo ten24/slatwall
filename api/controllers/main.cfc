@@ -146,7 +146,10 @@ component output="false" accessors="true" {
 			//respond with data
 			arguments.rc.apiResponse.content.data = {};
 			for(propertyIdentifier in arguments.rc.propertyIdentifiers){
-				arguments.rc.apiResponse.content.data[propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
+				//check if method exists before trying to retrieve a property
+				if(isDefined('entity.get#propertyIdentifier#')){
+					arguments.rc.apiResponse.content.data[propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
+				}
 			}
 		}
 		
