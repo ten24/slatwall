@@ -1172,14 +1172,13 @@ Notes:
 			</div>
 			
 <!--- ======================= ORDER PLACED & CONFIRMATION ============================= --->
-		<cfelseif $.slatwall.hasSessionValue('confirmationOrderID')>
+		<cfelseif not isNull($.slatwall.getSession().getLastPlacedOrderID())>
 			
 			<!--- setup the order that just got placed in a local variable to be used by the following display --->
-			<cfset order = $.slatwall.getService('orderService').getOrder( $.slatwall.getSessionValue('confirmationOrderID') ) />
+			<cfset order = $.slatwall.getService('orderService').getOrder( $.slatwall.getSession().getLastPlacedOrderID() ) />
 			
 			<!--- Overview & Status --->
 			<h4>Your Order Has Been Placed!</h4>
-			
 			
 			<!--- START: SAVE GUEST ACCOUNT --->
 				
