@@ -472,7 +472,7 @@ component extends="FW1.framework" {
 		param name="request.context.ajaxRequest" default="false";
 		param name="request.context.ajaxResponse" default="#structNew()#";
 		param name="request.context.apiRequest" default="false";
-		param name="request.context.apiResponse" default="#structNew()#";
+		param name="request.context.apiResponse.content" default="#structNew()#";
 		
 		
 		endHibachiLifecycle();
@@ -482,21 +482,23 @@ component extends="FW1.framework" {
 		
 		// Check for an API Response
 		if(request.context.apiRequest) {
-			param name="request.context.statusCode" default="200";
-			param name="request.context.statusText" default="OK";
-			param name="request.context.contentType" default="application/json"; 
+			param name="request.context.headers.statusCode" default="200";
+			param name="request.context.headers.statusText" default="OK";
+			param name="request.context.headers.contentType" default="application/json"; 
     		//need response header for api
     		var context = getPageContext();
     		context.getOut().clearBuffer();
     		var response = context.getResponse();
-    		response.setContentType(request.context.contentType);
-    		response.setStatus(request.context.statusCode,request.context.statusText);
+    		for(header in request.context.headers){
+    			response.setHeader(header,request.context.headers[header]);
+    		}
+    		
     		var responseString = '';
     		//leaving a note here in case we ever wish to support XML for api responses
-    		if(isStruct(request.context.apiResponse) && request.context.contentType eq 'application/json'){
-    			responseString = serializeJSON(request.context.apiResponse);
+    		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/json'){
+    			responseString = serializeJSON(request.context.apiResponse.content);
     		}
-    		if(isStruct(request.context.apiResponse) && request.context.contentType eq 'application/xml'){
+    		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
     			//response String to xml placeholder
     		}
     		

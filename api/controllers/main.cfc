@@ -4,23 +4,20 @@ component output="false" accessors="true" {
 	property name="hibachiService" type="any";
 	property name="collectionService" type="any";
 	
-	
-	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
 	}
-	
 	
 	public any function before( required struct rc ) {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
 		//could possibly check whether we want a different contentType other than json in the future
-		param name="arguments.rc.statusCode" default="200";
-		param name="arguments.rc.statusText" default="OK";
-		param name="rc.contentType" default="application/json"; 
-		arguments.rc.contentType = rc.contentType;
-		if(isnull(arguments.rc.apiResponse)){
-			arguments.rc.apiResponse = {};
+		param name="arguments.rc.headers.statusCode" default="200";
+		param name="arguments.rc.headers.statusText" default="OK";
+		param name="rc.headers.contentType" default="application/json"; 
+		arguments.rc.headers.contentType = rc.headers.contentType;
+		if(isnull(arguments.rc.apiResponse.content)){
+			arguments.rc.apiResponse.content = {};
 		}
 		
 	}
@@ -61,7 +58,7 @@ component output="false" accessors="true" {
 		];
 		var data = {data=collectionEntity.getRecords()};
 		
-		structAppend(arguments.rc.apiResponse,data);
+		structAppend(arguments.rc.apiResponse.content,data);
 	}
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
@@ -69,7 +66,7 @@ component output="false" accessors="true" {
 									data = hibachiService.getFilterPropertiesByEntityName(rc.entityName),
 									entityName=rc.entityName
 								};
-		structAppend(arguments.rc.apiResponse, filterProperties);
+		structAppend(arguments.rc.apiResponse.content, filterProperties);
 	}
 	
 	public any function get( required struct rc ) {
@@ -81,8 +78,8 @@ component output="false" accessors="true" {
 		param name="arguments.rc.propertyIdentifiers" default="";
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
-			arguments.rc.apiResponse['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-			arguments.rc.apiResponse['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
+			arguments.rc.apiResponse.contnent['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
+			arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
 				
 		} else {
 			//get entity service by entity name
@@ -101,7 +98,7 @@ component output="false" accessors="true" {
 																			arguments.rc.propertyIdentifiers,
 																			currentPage,
 																			pageShow);
-				structAppend(arguments.rc.apiResponse,result);
+				structAppend(arguments.rc.apiResponse.content,result);
 			}else{
 				//figure out if we have a collection or a basic entity
 				var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
@@ -112,14 +109,14 @@ component output="false" accessors="true" {
 																				arguments.rc.propertyIdentifiers,
 																				currentPage,
 																				pageShow);
-					structAppend(arguments.rc.apiResponse,result);
+					structAppend(arguments.rc.apiResponse.content,result);
 				}else{
 					//should be able to add select and where filters here
 					var result = collectionService.getAPIResponseForCollection(	collectionEntity,
 																				arguments.rc.propertyIdentifiers,
 																				currentPage,
 																				pageShow);
-					structAppend(arguments.rc.apiResponse,result);
+					structAppend(arguments.rc.apiResponse.content,result);
 				}
 			}
 		}
@@ -128,9 +125,11 @@ component output="false" accessors="true" {
 	public any function post( required struct rc ) {
 		param name="arguments.rc.context" default="save";
 		param name="arguments.rc.entityID" default="";
+		param name="arguments.rc.apiResponse.content.messages" default="";
+		param name="arguments.rc.apiResponse.content.errors" default="";
+		
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
 		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
-		
 		// SAVE
 		if(arguments.rc.context eq 'save') {
 			entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=arguments.rc});
@@ -142,9 +141,30 @@ component output="false" accessors="true" {
 		} else {
 			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.context});
 		}
-		//structAppend(arguments.rc.apiResponse);
+
+		if(!isnull(arguments.rc.propertyIdentifiers)){
+			//respond with data
+			arguments.rc.apiResponse.content.data = {};
+			for(propertyIdentifier in arguments.rc.propertyIdentifiers){
+				arguments.rc.apiResponse.content.data[propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
+			}
+		}
 		
-		arguments.rc.apiResponse = {};
+		if(entity.hasErrors()){
+			arguments.rc.apiResponse.content.success = false;
+		}else{
+			arguments.rc.apiResponse.content.success = true;
+			arguments.rc.apiResponse.content.messages = "#rc.context# #arguments.rc.entityName# successful";
+		}
+		
+		if(!isnull(entity.getHibachiMessages()) && structCount(entity.getHibachiMessages().getMessages())){
+			arguments.rc.apiResponse.content.messages = entity.getHibachiMessages().getMessages();
+		}
+		
+		if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
+			arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
+		}
+		
 	}
 	
 	public any function put( required struct rc ) {
