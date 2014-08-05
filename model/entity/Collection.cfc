@@ -42,8 +42,10 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string";
+	property name="description" ormtype="string";
 	property name="baseEntityName" ormtype="string" hb_formFieldType="select";
 	property name="CollectionObject" cfc="collection" ;
+	
 	
 	property name="collectionConfig" ormtype="string" length="4000" hint="json object used to construct the base collection HQL query";
 	
@@ -422,8 +424,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		}
 		return variables.pageRecords;
 	}
-	
-	
 	
 	public void function clearRecordsCount() {
 		structDelete(variables, "recordsCount");
