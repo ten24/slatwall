@@ -182,37 +182,59 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
-	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
-		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+	private any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier){
+		var pageRecordStruct = {};
+		if(isObject(arguments.pageRecord)) {
+			var value = arguments.pageRecord.getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier, formatValue=true );
+			if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+				pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
+			} else {
+				pageRecordStruct[ arguments.propertyIdentifier ] = value;
+			}
 		
-		var formattedPageRecords[ "pageRecords" ] = [];
-		for(var i=1; i<=arrayLen(paginatedCollectionOfEntities); i++) {
+		}else{
+			if(structKeyExists(arguments.pageRecord,propertyIdentifier)){
+				if(isObject(arguments.pageRecord[arguments.propertyIdentifier])){
+					var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
+					pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers);
+				}else if(isArray(arguments.pageRecord[arguments.propertyIdentifier])){
+					writeDump(var=arguments.pageRecord[arguments.propertyIdentifier],top=2);abort;
+				//	var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
+					//pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers);
+			
+				}else{
+					var value = arguments.pageRecord[arguments.propertyIdentifier];
+					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+						pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
+					} else {
+						pageRecordStruct[ arguments.propertyIdentifier ] = value;
+					}
+				}
+			}
+		}
+		return pageRecordStruct;
+	}
+	
+	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers){
+		var formattedObjectRecords = [];
+		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
 			var thisRecord = {};
 			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
 				if(arguments.propertyIdentifiers[p] neq 'pageRecords'){
 					//check if page records returns an array of orm objects or hashmap structs and handle them appropriatley
-					if(isObject(paginatedCollectionOfEntities[i])) {
-						var value = paginatedCollectionOfEntities[i].getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifiers[p], formatValue=true );
-						if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-							thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
-						} else {
-							thisRecord[ arguments.propertyIdentifiers[p] ] = value;
-						}
-					
-					}else{
-						if(structKeyExists(paginatedCollectionOfEntities[i],arguments.propertyIdentifiers[p])){
-							var value = paginatedCollectionOfEntities[i][arguments.propertyIdentifiers[p]];
-							if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-								thisRecord[ arguments.propertyIdentifiers[p] ] = value & " ";
-							} else {
-								thisRecord[ arguments.propertyIdentifiers[p] ] = value;
-							}
-						}
-					}
+					structAppend(thisRecord,getFormattedPageRecord(arguments.objectRecords[i],arguments.propertyIdentifiers[p]));
 				}
 			}
-			arrayAppend(formattedPageRecords[ "pageRecords" ], thisRecord);
+			arrayAppend(formattedObjectRecords, thisRecord);
 		}
+		return formattedObjectRecords;
+	}
+	
+	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
+		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		
+		var formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers);
+		
 		formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
 		formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords());
 		formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
@@ -224,7 +246,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return formattedPageRecords;
 	}
 	
-	private array function getPropertyIdentifierList(required string entityName){
+	private array function getPropertyIdentifierArray(required string entityName){
 		//if we were supplied with a list of property identifiers then we should only return whats on that list
 		/* TODO: validate that the user is allowed to return the column*/
 		
@@ -297,10 +319,15 @@ component extends="HibachiService" accessors="true" output="false" {
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
 		}
 		
-		var defaultPropertyIdentifiers = getPropertyIdentifierList(arguments.entityName);
 		
-		return getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);
-	
+		if(len(arguments.propertyIdentifiersList)){
+			var propertyIdentifierArray = ListToArray(arguments.propertyIdentifiersList);
+			return getFormattedPageRecords(collectionEntity,propertyIdentifierArray);
+		}else{
+			var defaultPropertyIdentifiers = getPropertyIdentifierArray(arguments.entityName);
+		
+			return getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);
+		}
 	}
 	
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10){
@@ -313,7 +340,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
 		}
 		
-		var defaultPropertyIdentifiers = getPropertyIdentifierList(arguments.entityName);
+		var defaultPropertyIdentifiers = getPropertyIdentifierArray(arguments.entityName);
 
 		//set up search by id				
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
@@ -350,14 +377,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.propertyIdentifiersList);
 		}
 		
-		var defaultPropertyIdentifiers = getPropertyIdentifierList('collection');
+		var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 		var response = {};
 		for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
 			response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 		}
 		
 		//get default property identifiers for the records that the collection refers to
-		var collectionPropertyIdentifiers = getPropertyIdentifierList(collectionEntity.getBaseEntityName());;
+		var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getBaseEntityName());;
 		
 		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
 		var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);

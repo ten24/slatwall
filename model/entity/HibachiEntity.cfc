@@ -287,6 +287,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
 	public any function getDefaultProperties(string includesList = ""){
 		var properties = getProperties();
+		
 		var defaultProperties = [];
 		for(var p=1; p<=arrayLen(properties); p++) {
 			if((len(includesList) && ListFind(arguments.includesList,properties[p].name)) 
@@ -295,6 +296,27 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			}
 		}
 		return defaultProperties;
+	}
+	
+	public any function getDefaultPropertiesIdentifierList(){
+		var defaultEntityPropertiesList = getDefaultProperties();
+	}
+	
+	public array function getDefaultPropertyIdentifierArray(){
+		
+		var defaultPropertyIdentifiersList = getDefaultPropertyIdentifiersList();
+		// Turn the property identifiers into an array
+		return listToArray( defaultPropertyIdentifiersList );
+	}
+	
+	public string function getDefaultPropertyIdentifiersList(){
+		// Lets figure out the properties that need to be returned
+		var defaultProperties = getDefaultProperties();
+		var defaultPropertyIdentifiersList = "";
+		for(var i=1; i<=arrayLen(defaultProperties); i++) {
+			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i].NAME);
+		}
+		return defaultPropertyIdentifiersList;
 	}
 
 }
