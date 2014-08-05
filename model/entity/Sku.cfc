@@ -73,7 +73,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
-	property name="productReviews" singlularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="productReviews" singlularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
@@ -678,10 +678,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	// Product Reviews (one-to-many)
 	public void function addProductReview(required any productReview) {
-		arguments.productReview.setProduct( this );
+		arguments.productReview.setSku( this );
 	}
 	public void function removeProductReview(required any productReview) {
-		arguments.productReview.removeProduct( this );
+		arguments.productReview.removeSku( this );
 	}
 	
 	// Promotion Rewards (many-to-many - inverse)
