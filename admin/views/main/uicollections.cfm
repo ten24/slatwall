@@ -29,6 +29,13 @@
               </div>
             </div>
             <div class="form-group">
+              <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
+              <div class="col-sm-10">
+                <input style="display:none" type="text" class="form-control" id="inputPassword" value="876567">
+                <p class="form-control-static">876567</p>
+              </div>
+            </div>
+            <div class="form-group">
               <label for="inputPassword" class="col-sm-2 control-label">Description: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection description"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
                 <input style="display:none" type="text" class="form-control" id="inputPassword" value="A selection for the best selling mens and womens boots from the month of july 2014. These will be used to display on the product listing pages for b15 marketing strategy plan.">
@@ -36,9 +43,8 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
+              <label for="inputPassword" class="col-sm-2 control-label">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input style="display:none" type="text" class="form-control" id="inputPassword" value="876567">
                 <p class="form-control-static">876567</p>
               </div>
             </div>
@@ -55,7 +61,7 @@
                 <div class="row">
                   <ul class="col-xs-12 list-unstyled">
 
-                    <li style="display:inline;">
+                    <li >
 
                       <!--- Filter display --->
                       <div class="s-filter-item">
@@ -141,7 +147,7 @@
 
                     </li>
 
-                    <li class="s-filter-group" style="display:inline;">
+                    <li class="s-filter-group" >
 
                       <!--- Filter display --->
                       <div class="s-filter-item">
@@ -161,7 +167,7 @@
                           <ul class="col-xs-12 list-unstyled s-no-paddings">
 
                             <!--- Filter display --->
-                            <li style="display:inline;">
+                            <li >
 
                               <!--- Nested Filter Display --->
                               <div class="s-filter-item">
@@ -249,7 +255,7 @@
                             <!--- //Filter display --->
 
                             <!--- Filter display --->
-                            <li style="display:inline;">
+                            <li >
 
                               <!--- Nested Filter Display --->
                               <div class="s-filter-item">
@@ -269,7 +275,7 @@
                                   <ul class="col-xs-12 list-unstyled s-no-paddings">
 
                                     <!--- Filter display --->
-                                    <li style="display:inline;">
+                                    <li >
 
                                       <!--- Nested Filter Display --->
                                       <div class="s-filter-item">
@@ -368,9 +374,9 @@
 
                     </li>
 
-                    <li style="display:inline;">
+                    <li class="s-new-filter">
                       <!--- New Filter Panel Buttons --->
-                      <div class="s-filter-item" style="margin-top: 30px;">
+                      <div class="s-filter-item" margin-top:30px;>
                         <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
                         <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
                       </div>
@@ -784,7 +790,7 @@
   .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {color: #555;cursor: default;background: none;border: none;border-bottom-color: none;border-bottom:4px solid #F58620}
   .nav-tabs>li>a {border:none;color:#999999;}
   .nav-tabs>li>a:hover {background:none;border:none;color:#555;}
-  .s-properties label {text-align:left !important;width: 135px;}
+  .s-properties label {text-align:left !important;width: 170px;}
 
 
   /*Custom CSS*/
@@ -817,8 +823,10 @@
   .s-edit-btn-group {position: absolute;right: 10px;margin-top: -9px;}
   .s-options .tab-pane{padding:20px;}
   .s-options .tab-pane .dl-horizontal{text-align:left;}
+  .s-filters-selected .s-new-filter .s-filter-item {margin-top:30px !important;}
   .s-filters-selected .s-filter-item .panel .panel-header a i{float:right;color:#AAA;margin-top:3px;}
   .s-setting-options-body .panel-heading a{color:#aaa;float:right;}
+  .s-setting-options li {display:inline;}
   .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;}
   .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:#ccc;}
   .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;}
@@ -843,6 +851,8 @@
   .s-search-bar {display:inline-block;}
   .hiddenRow {padding: 0 !important;}
   .s-alert-footer {border-radius: 0px;position: fixed;left: 0;right: 0;bottom: 0;margin: 0;z-index:3000;text-align:center;}
+  .s-disabled {pointer-events: none;opacity: 0.5;}
+  .s-focus {border: 1px solid rgba(0, 0, 0, 0.8);box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);}
 
   .s-checkbox {text-align:center;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
   .s-checkbox {margin:0px;}
@@ -930,30 +940,11 @@
 
 <script charset="utf-8">
   $('.s-filter-item .panel-body').click(function(){
-    $(this).parent().parent().parent().siblings('li').toggleClass('disables');
-    $(this).parent().toggleClass('focus');
+    $(this).parent().parent().parent().siblings('li').toggleClass('s-disabled');
+    $(this).parent().toggleClass('s-focus');
   });
 </script>
-<style media="screen">
-  .disables
-    {
-      pointer-events: none;
-      opacity: 0.5;
-    }
-    .focus {
-      border: 1px solid rgba(0, 0, 0, 0.8);
-      box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
-    }
-    .s-multi-filter .btn-group-vertical {
-      float:none !important;
-      width: 35px;
-      margin: auto;
-      margin-right: 51%;
-      display:block;
-      margin-top:10px !important;
-    }
 
-</style>
 
 
 
