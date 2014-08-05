@@ -12,8 +12,8 @@ component output="false" accessors="true" {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
 		//could possibly check whether we want a different contentType other than json in the future
-		param name="arguments.rc.headers.statusCode" default="200";
-		param name="arguments.rc.headers.statusText" default="OK";
+		//param name="arguments.rc.headers.statusCode" default="200";
+		//param name="arguments.rc.headers.statusText" default="OK";
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers.contentType = rc.headers.contentType;
 		if(isnull(arguments.rc.apiResponse.content)){
@@ -78,7 +78,7 @@ component output="false" accessors="true" {
 		param name="arguments.rc.propertyIdentifiers" default="";
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
-			arguments.rc.apiResponse.contnent['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
+			arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
 			arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
 				
 		} else {
@@ -91,6 +91,9 @@ component output="false" accessors="true" {
 			if(structKeyExists(rc,'P:Show')){
 				var pageShow = rc['P:Show'];
 			}
+			
+			//considering using all url variables to create a transient collectionConfig for api response
+			var transientCollectionConfigStruct = collectionService.getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
@@ -178,7 +181,6 @@ component output="false" accessors="true" {
 		if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
 			arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 		}
-		
 	}
 	
 	public any function put( required struct rc ) {

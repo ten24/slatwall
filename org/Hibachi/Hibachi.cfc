@@ -475,15 +475,22 @@ component extends="FW1.framework" {
 		param name="request.context.apiResponse.content" default="#structNew()#";
 		
 		
-		endHibachiLifecycle();
 		
-		// Announce the applicationRequestStart event
-		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
 		// Check for an API Response
 		if(request.context.apiRequest) {
-			param name="request.context.headers.statusCode" default="200";
-			param name="request.context.headers.statusText" default="OK";
+			try{
+				endHibachiLifecycle();
+				// Announce the applicationRequestStart event
+				getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
+			}catch(any e){
+				var context = getPageContext();
+				var response = context.getResponse();
+				response.setStatus(500);
+				request.context.apiResponse.content.success = false;
+				//request.context.apiResponse.content.errors = e.message;
+				request.context.apiResponse.content.messages = [{message = "#request.context.context# #request.context.entityName# failed"}];
+			}
 			param name="request.context.headers.contentType" default="application/json"; 
     		//need response header for api
     		var context = getPageContext();
@@ -503,6 +510,11 @@ component extends="FW1.framework" {
     		}
     		
 			writeOutput( responseString );
+		}else{
+			endHibachiLifecycle();
+		
+			// Announce the applicationRequestStart event
+			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		}
 		
 		// Check for an Ajax Response
@@ -697,6 +709,14 @@ component extends="FW1.framework" {
 		var appKey = hash(filePath);
 		
 		return appKey;
+	}
+	
+	public void function onError(any exception, string event){
+		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
+		var context = getPageContext();
+		var response = context.getResponse();
+		response.setStatus(500);
+		super.onError(arguments.exception,arguments.event);
 	}
 	
 	// THESE METHODS ARE INTENTIONALLY LEFT BLANK

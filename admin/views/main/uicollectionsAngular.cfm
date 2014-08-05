@@ -19,26 +19,27 @@
       <div class="tab-content" id="j-property-box">
 
         <div class="tab-pane active" id="j-properties">
-          <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
-          <form class="form-horizontal s-properties" role="form">
+          <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection('collection',collection,collectionForm)" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
+          <form class="form-horizontal s-properties" role="form" name="collectionForm">
+            <input style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
             <div class="form-group">
               <label class="col-sm-2 control-label">Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input style="display:none" ng-model="collection.collectionName" type="text" class="form-control" id="inputPassword" value="">
+                <input style="display:none" ng-model="collection.collectionName" name="collectionName" type="text" class="form-control" id="inputPassword" value="" required>
                 <p class="form-control-static" ng-bind="collection.collectionName"><!---collection Name ---></p>
               </div>
             </div>
             <div class="form-group">
               <label for="inputPassword" class="col-sm-2 control-label">Description: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection description"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input style="display:none" ng-model="collection.description" type="text" class="form-control" id="inputPassword" value="">
+                <input style="display:none" ng-model="collection.description" name="description" type="text" class="form-control" id="inputPassword" value="" >
                 <p ng-bind="collection.description" class="form-control-static"><!---collection description ---></p>
               </div>
             </div>
             <div class="form-group">
               <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input ng-model="collection.collectionCode" style="display:none" type="text" class="form-control" id="inputPassword" value="">
+                <input ng-model="collection.collectionCode" style="display:none" name="collectionCode" type="text" class="form-control" id="inputPassword" value="" required>
                 <p class="form-control-static" ng-bind="collection.collectionCode"><!---collection Code ---></p>
               </div>
             </div>

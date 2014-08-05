@@ -54,6 +54,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("collectionService");
 	}
 	
+	public void function getTransientCollectionConfigStructByURLParamsTest(){
+	/*	var rc = {
+			entityName = 'account',
+			columns
+		};
+		
+		var collectionConfigStruct = variables.service.getTransientCollectionConfigStructByURLParams(rc);
+		request.debug(collectionConfigStruct);
+	}*/
+	
 	public void function getCapitalCaseTest(){
 		MakePublic(variables.service,'capitalCase');
 		var word = 'testingword';

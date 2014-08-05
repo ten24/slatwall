@@ -19,7 +19,7 @@ function($http,$q,baseURL){
 		.success(function(data){
 			deferred.resolve(data);
 		}).error(function(reason){
-			deferred.resolve(reason);
+			deferred.reject(reason);
 		});
 		return deferred.promise;
 		
@@ -35,9 +35,12 @@ function($http,$q,baseURL){
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		})
 		.success(function(data){
+			console.log('httpsuccess');
 			deferred.resolve(data);
+			
 		}).error(function(reason){
-			deferred.resolve(reason);
+			console.log('httpfaile');
+			deferred.reject(reason);
 		});
 		return deferred.promise;
 	},
@@ -49,7 +52,7 @@ function($http,$q,baseURL){
 		.success(function(data){
 			deferred.resolve(data);
 		}).error(function(reason){
-			deferred.resolve(reason);
+			deferred.reject(reason);
 		});
 		return deferred.promise;
 		
@@ -62,7 +65,7 @@ function($http,$q,baseURL){
 		.success(function(data){
 			deferred.resolve(data);
 		}).error(function(reason){
-			deferred.resolve(reason);
+			deferred.reject(reason);
 		});
 		return deferred.promise;
 	}

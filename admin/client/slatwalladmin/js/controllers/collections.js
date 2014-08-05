@@ -1,27 +1,27 @@
 angular.module('slatwalladmin')
 //using $location to get url params, this will probably change to using routes eventually
 .controller('collections', [ '$scope','$location','slatwallService', function($scope,$location,slatwallService){
-	
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionid;
 	var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
 	
 	collectionListingPromise.then(function(value){
 		$scope.collection = value;
+		$scope.collectionInitial = angular.copy($scope.collection);
 		console.log($scope.collection.collectionName);
 		console.log($scope.collection.collectionConfig);
 		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
-		console.log($scope.collectionConfig);
+		//console.log($scope.collectionConfig);
 		//$scope.collection.totalPagesArray = new Array(parseInt($scope.collection.totalPages));
 		
 		//add filterProperties
-		var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+		/*var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
 		
 		filterPropertiesPromise.then(function(value){
 			//var fomattedFilterProperties = slatwallService.formatFilterProperties(value)
 			
 			$scope.filterProperties = value;
-			console.log($scope.filterProperties);
+			//console.log($scope.filterProperties);
 		}, function(reason){
 			
 		});
@@ -32,13 +32,30 @@ angular.module('slatwalladmin')
 			$scope.existingCollections = value.DATA;
 		},function(reason){
 			
-		});
+		});*/
 		
 	},function(reason){
 		//display error message
 	});
 	
 	//public functions
+	$scope.saveCollection = function(entityName,collection,collectionForm){
+		//console.log();
+		
+		if(isFormValid(collectionForm)){
+			var data = angular.copy(collection);
+			//has to be removed in order to save transient correctly
+			delete data.pageRecords;
+			
+			var saveCollectionPromise = slatwallService.saveEntity(entityName,collection.collectionID,data);
+			saveCollectionPromise.then(function(value){
+				
+			}, function(reason){
+				$scope.collection = angular.copy($scope.collectionInitial);
+			});
+		}
+	}
+	
 	$scope.copyExistingCollection = function(){
 		console.log($scope.selectedExistingCollection);
 		$scope.collection.collectionConfig = $scope.selectedExistingCollection;
@@ -83,4 +100,29 @@ angular.module('slatwalladmin')
 			}
 		}
 	}
+	
+	//private Function
+	var isFormValid = function (angularForm){
+		var formValid = true;
+	     for (field in angularForm) {
+	         // look at each form input with a name attribute set
+	         // checking if it is pristine and not a '$' special field
+	         if (field[0] != '$') {
+			 	// need to use formValid variable instead of formController.$valid because checkbox dropdown is not an input
+				// and somehow formController didn't invalid if checkbox dropdown is invalid
+			 	if (angularForm[field].$invalid) {
+					formValid = false;
+				}
+				if (angularForm[field].$pristine) {
+					if (angularForm[field].$viewValue === undefined) {
+						angularForm[field].$setViewValue("");
+					}
+					else {
+						angularForm[field].$setViewValue(angularForm[field].$viewValue);
+					}
+				}
+	         }
+	     }
+		 return formValid;   
+	};
 }]);

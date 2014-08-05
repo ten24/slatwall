@@ -41,7 +41,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
-	property name="collectionCode" ormtype="string";
+	property name="collectionCode" ormtype="string" unique="true" index="PI_COLLECTIONCODE";
 	property name="description" ormtype="string";
 	property name="baseEntityName" ormtype="string" hb_formFieldType="select";
 	property name="CollectionObject" cfc="collection" ;

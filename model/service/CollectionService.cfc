@@ -310,6 +310,63 @@ component extends="HibachiService" accessors="true" output="false" {
 		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);*/
 	}
 	
+	private any function getColumnsAndJoinsStructPropertyIdentifiersList(propertyIdentifiersList){
+		var columnsAndJoinsStruct = {};
+		
+		return columnsAndJoinsStruct;
+	}
+	
+	public any function getTransientCollectionConfigStructByURLParams(required any rc){
+		//propertyIdentifers
+		var collectionConfigStruct = {
+			baseEntityName = 'Slatwall#arguments.rc.entityName#',
+			baseEntityAlias = rc.entityName
+		};
+		
+		//adds to columns section if preceeded by a period then add to joins section, check for parenthesis for aggregates
+		//&propertyIdentifiers=propertyIdentifier,join.propertyIdentifier,aggregate|join.propertyIdentifier
+		/*if(!isNull(arguments.rc.propertyIdentifiers)){
+			var columnsAndJoinsStruct = getColumnsAndJoinsStructByUrlPropertyIdentifiersList(arguments.rc.propertyIdentifiers);
+			collectionConfigStruct.columns = columnsAndJoinsStruct.columns;
+			collectionConfigStruct.joins = columnsAndJoinsStruct.joins;
+		}*/
+
+		//this should handle sorting 
+		//&orderBy=propertyIdentifier|direction
+		/*if(!isNull(arguments.rc.orderBy)){
+			collectionConfig.orderBy = getOrderByArrayByURLParams(arguments.rc.orderBy);
+		}*/
+		
+		//this should be how we handle filterGroups
+		// + 
+		//&filterGroups=propertyIdentifier,comparisonOperator,value|propertyIdentifier,comparisonOperator,value,logicalOperator
+		//comparisonOperatorValues
+		/*
+		e = '='
+		ne = '!='
+		> = '>'
+		< = '<'
+		l = 'like'
+		nl = 'not like'
+		i = 'in'
+		ni = 'not in'
+		b = 'between'
+		? = 'is null'
+		n? = 'is not null'
+		
+		logicalOperatorValues
+		+ = 'AND'
+		- = 'OR'
+		*/
+	
+										
+		/*if(!isNull(arguments.rc.filterGroups)){
+			collectionConfig.filterGroups = getFilterGroupsArray(arguments.rc.filterGroups);
+		}*/
+		
+		return collectionConfigStruct;
+	}
+	
 	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
