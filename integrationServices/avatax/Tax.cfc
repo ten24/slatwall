@@ -53,118 +53,135 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Resquest
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
 		
-		// Setup the request data structure
-		var requestDataStruct = {
-			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
-			DocDate = dateFormat(now(),'yyyy-mm-dd'),
-			DocType = 'SalesInvoice',
-			Addresses = [
-				{
-					AddressCode = 1,
-					Line1 = setting('sourceStreetAddress'),
-					Line2 = setting('sourceStreetAddress2'),
-					City = setting('sourceCity'),
-					Region = setting('sourceRegion'),
-					Country = setting('sourceCountry'),
-					PostalCode = setting('sourcePostalCode')
-				}
-			],
-			Lines = []
-		};
-		
-		if(!isNull(arguments.requestBean.getAccount())) {
-			requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
-		}
-		
-		// Loop over each unique tax address
-		var addressIndex = 1;
-		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
-			addressIndex ++;
-			
-			// Pull out just the items for this address
-			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
-			
-			// Setup this address data
-			var addressData = {
-				AddressCode = addressIndex,
-				Line1 = addressTaxRequestItems[1].getTaxStreetAddress(),
-				Line2 = addressTaxRequestItems[1].getTaxStreet2Address(),
-				City = addressTaxRequestItems[1].getTaxCity(),
-				Region = addressTaxRequestItems[1].getTaxStateCode(),
-				Country = addressTaxRequestItems[1].getTaxCountryCode(),
-				PostalCode = addressTaxRequestItems[1].getTaxPostalCode()
-			};
-			
-			// Add this address to the request data struct
-			arrayAppend(requestDataStruct.addresses, addressData );
-			
-			// Loop over each unique item for this address
-			for(var item in addressTaxRequestItems) {
-				
-				// Setup the itemData
-				var itemData = {};
-				itemData.LineNo = item.getOrderItemID();
-				itemData.DestinationCode = addressIndex;
-				itemData.OriginCode = 1;
-				itemData.ItemCode = item.getOrderItem().getSku().getSkuCode();
-				itemData.TaxCode = item.getTaxCategoryRateCode();
-				if(!isNull(item.getOrderItem().getSku().getSkuDescription()) && len(item.getOrderItem().getSku().getSkuDescription())) {
-					itemData.Description = item.getOrderItem().getSku().getSkuDescription();
-				} else if (!isNull(item.getOrderItem().getSku().getProduct().getProductDescription()) && len(item.getOrderItem().getSku().getProduct().getProductDescription())) {
-					itemData.Description = item.getOrderItem().getSku().getProduct().getProductDescription();	
-				}
-				itemData.Qty = item.getQuantity();
-				itemData.Amount = item.getExtendedPriceAfterDiscount();
-				
-				arrayAppend(requestDataStruct.Lines, itemData);
+		var taxExempt = false;
+		var taxForce = false;
+		if(len(setting('taxExemptPropertyIdentifier'))) {
+			var piValue = arguments.requestBean.getOrder().getValueByPropertyIdentifier( setting('taxExemptPropertyIdentifier') );
+			if(len(piValue) && isBoolean(piValue)) {
+				taxExempt = piValue;
 			}
 		}
+		if(len(setting('taxForcePropertyIdentifier'))) {
+			var piValue = arguments.requestBean.getOrder().getValueByPropertyIdentifier( setting('taxForcePropertyIdentifier') );
+			if(len(piValue) && isBoolean(piValue)) {
+				taxForce = piValue;
+			}
+		}
+		
+		if( !taxExempt || taxForce ) {
 			
-		// Setup the auth string
-		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
-		
-		// Setup Request to push to Avatax
-        var httpRequest = new http();
-        httpRequest.setMethod("POST");
-        if(setting('testingFlag')) {
-        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/get");	
-        } else {
-        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/get");
-        }
-		httpRequest.addParam(type="header", name="Content-type", value="application/json");
-		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
-		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
-		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
-		
-		var responseData = DeserializeJSON(httpRequest.send().getPrefix().fileContent);
-		
-		// Loop over all orderItems in response
-		for(var taxLine in responseData.TaxLines) {
+			// Setup the request data structure
+			var requestDataStruct = {
+				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
+				DocDate = dateFormat(now(),'yyyy-mm-dd'),
+				DocType = 'SalesInvoice',
+				Addresses = [
+					{
+						AddressCode = 1,
+						Line1 = setting('sourceStreetAddress'),
+						Line2 = setting('sourceStreetAddress2'),
+						City = setting('sourceCity'),
+						Region = setting('sourceRegion'),
+						Country = setting('sourceCountry'),
+						PostalCode = setting('sourcePostalCode')
+					}
+				],
+				Lines = []
+			};
 			
-			// Make sure that there is a taxAmount for this orderItem
-			if(taxLine.Tax > 0) {
+			if(!isNull(arguments.requestBean.getAccount())) {
+				requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
+			}
+			
+			// Loop over each unique tax address
+			var addressIndex = 1;
+			for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
+				addressIndex ++;
 				
-				// Loop over the details of that taxAmount
-				for(var taxDetail in taxLine.TaxDetails) {
+				// Pull out just the items for this address
+				var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
+				
+				// Setup this address data
+				var addressData = {
+					AddressCode = addressIndex,
+					Line1 = addressTaxRequestItems[1].getTaxStreetAddress(),
+					Line2 = addressTaxRequestItems[1].getTaxStreet2Address(),
+					City = addressTaxRequestItems[1].getTaxCity(),
+					Region = addressTaxRequestItems[1].getTaxStateCode(),
+					Country = addressTaxRequestItems[1].getTaxCountryCode(),
+					PostalCode = addressTaxRequestItems[1].getTaxPostalCode()
+				};
+				
+				// Add this address to the request data struct
+				arrayAppend(requestDataStruct.addresses, addressData );
+				
+				// Loop over each unique item for this address
+				for(var item in addressTaxRequestItems) {
 					
-					// For each detail make sure that it is applied to this item
-					if(taxDetail.Tax > 0) {
+					// Setup the itemData
+					var itemData = {};
+					itemData.LineNo = item.getOrderItemID();
+					itemData.DestinationCode = addressIndex;
+					itemData.OriginCode = 1;
+					itemData.ItemCode = item.getOrderItem().getSku().getSkuCode();
+					itemData.TaxCode = item.getTaxCategoryRateCode();
+					if(!isNull(item.getOrderItem().getSku().getSkuDescription()) && len(item.getOrderItem().getSku().getSkuDescription())) {
+						itemData.Description = item.getOrderItem().getSku().getSkuDescription();
+					} else if (!isNull(item.getOrderItem().getSku().getProduct().getProductDescription()) && len(item.getOrderItem().getSku().getProduct().getProductDescription())) {
+						itemData.Description = item.getOrderItem().getSku().getProduct().getProductDescription();	
+					}
+					itemData.Qty = item.getQuantity();
+					itemData.Amount = item.getExtendedPriceAfterDiscount();
+					
+					arrayAppend(requestDataStruct.Lines, itemData);
+				}
+			}
+				
+			// Setup the auth string
+			var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
+			
+			// Setup Request to push to Avatax
+	        var httpRequest = new http();
+	        httpRequest.setMethod("POST");
+	        if(setting('testingFlag')) {
+	        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/get");	
+	        } else {
+	        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/get");
+	        }
+			httpRequest.addParam(type="header", name="Content-type", value="application/json");
+			httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
+			httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
+			httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
+			
+			var responseData = DeserializeJSON(httpRequest.send().getPrefix().fileContent);
+			
+			// Loop over all orderItems in response
+			for(var taxLine in responseData.TaxLines) {
+				
+				// Make sure that there is a taxAmount for this orderItem
+				if(taxLine.Tax > 0) {
+					
+					// Loop over the details of that taxAmount
+					for(var taxDetail in taxLine.TaxDetails) {
 						
-						// Add the details of the taxes charged
-						responseBean.addTaxRateItem(
-							orderItemId = taxLine.LineNo,
-							taxAmount = taxDetail.Tax, 
-							taxRate = taxDetail.Rate * 100,
-							taxJurisdictionName=taxDetail.JurisName,
-							taxJurisdictionType=taxDetail.JurisType,
-							taxImpositionName=taxDetail.TaxName
-						);
+						// For each detail make sure that it is applied to this item
+						if(taxDetail.Tax > 0) {
 							
+							// Add the details of the taxes charged
+							responseBean.addTaxRateItem(
+								orderItemId = taxLine.LineNo,
+								taxAmount = taxDetail.Tax, 
+								taxRate = taxDetail.Rate * 100,
+								taxJurisdictionName=taxDetail.JurisName,
+								taxJurisdictionType=taxDetail.JurisType,
+								taxImpositionName=taxDetail.TaxName
+							);
+								
+						}
 					}
 				}
 			}
 		}
-		
 		return responseBean;
 	}
 
