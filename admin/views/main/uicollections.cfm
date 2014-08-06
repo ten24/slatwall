@@ -359,6 +359,15 @@
                                     </li>
                                     <!--- //Filter display --->
 
+                                    <li class="s-new-filter">
+                                      <!--- New Filter Panel Buttons --->
+                                      <div class="s-filter-item">
+                                        <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
+                                        <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
+                                      </div>
+                                      <!--- //New Filter Panel Buttons --->
+                                    </li>
+
                                   </ul>
                                 </div>
                               </div>
@@ -366,6 +375,15 @@
 
                             </li>
                             <!--- //Filter display --->
+
+                            <li class="s-new-filter">
+                              <!--- New Filter Panel Buttons --->
+                              <div class="s-filter-item">
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
+                              </div>
+                              <!--- //New Filter Panel Buttons --->
+                            </li>
 
                           </ul>
                         </div>
