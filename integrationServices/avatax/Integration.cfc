@@ -72,7 +72,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			sourcePostalCode = {fieldType="text"},
 			testingFlag = {fieldType="yesno", defaultValue="1"},
 			taxExemptPropertyIdentifier = {fieldType="text"},
-			taxForcePropertyIdentifier = {fieldType="text"}
+			taxExemptRequiresCompanyPaymentMethodFlag = {fieldType="yesno", defaultValue="0"}
 		};
 
 		return settings;

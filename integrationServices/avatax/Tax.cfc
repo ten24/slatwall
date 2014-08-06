@@ -61,11 +61,15 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				taxExempt = piValue;
 			}
 		}
-		if(len(setting('taxForcePropertyIdentifier'))) {
-			var piValue = arguments.requestBean.getOrder().getValueByPropertyIdentifier( setting('taxForcePropertyIdentifier') );
-			if(len(piValue) && isBoolean(piValue)) {
-				taxForce = piValue;
+		if(len(setting('taxExemptRequiresCompanyPaymentMethodFlag'))) {
+			var opSmartList = arguments.requestBean.getOrder().getOrderPaymentsSmartList();
+			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
+			if(arrayLen(opSmartList.getRecords())) {
+				if(isNull(opSmartList.getRecords()[1].getCompanyPaymentMethodFlag()) || !opSmartList.getRecords()[1].getCompanyPaymentMethodFlag())  {
+					taxForce = true;
+				}
 			}
+			
 		}
 		
 		if( !taxExempt || taxForce ) {
