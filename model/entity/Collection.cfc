@@ -43,7 +43,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string" unique="true" index="PI_COLLECTIONCODE";
 	property name="description" ormtype="string";
-	property name="baseEntityName" ormtype="string" hb_formFieldType="select";
+	property name="baseEntityName" ormtype="string" ;
 	property name="CollectionObject" cfc="collection" ;
 	
 	
@@ -108,6 +108,23 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		variables.collectionConfig = '{}';
+	}
+	
+	public void function setBaseEntityName(required string baseEntityName){
+		var slatwallBaseEntity = "";
+		if(find('Slatwall',arguments.baseEntityName)){
+			slatwallBaseEntity = arguments.baseEntityName;
+		}else{
+			slatwallBaseEntity = "Slatwall#arguments.baseEntityName#";
+		}
+		
+		variables.baseEntityName = "#slatwallBaseEntity#";
+		if(variables.collectionConfig eq '{}' ){
+			variables.collectionConfig = '{
+				"baseEntityName":"#slatwallBaseEntity#",
+				"baseEntityAlias":"#arguments.baseEntityName#"
+			}';
+		}
 	}
 	
 	//ADD FUNCTIONS

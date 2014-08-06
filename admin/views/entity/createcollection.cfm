@@ -56,7 +56,9 @@ Notes:
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.collection#" property="baseEntityName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		

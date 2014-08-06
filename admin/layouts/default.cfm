@@ -350,7 +350,6 @@ Notes:
 			</div>
 			<div class="alert s-alert-footer alert-{{alert.type}}" role="alert" 
 			ng-repeat="alert in alerts" 
-			ng-bind="alerts"
 			>
 		  	<!---<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>--->
 		  	

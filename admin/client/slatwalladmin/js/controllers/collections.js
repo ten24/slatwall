@@ -3,7 +3,7 @@ angular.module('slatwalladmin')
 .controller('collections', [ '$scope','$location','slatwallService','alertService', function($scope,$location,slatwallService,alertService){
 	
 	//get url param to retrieve collection listing
-	$scope.collectionID = $location.search().collectionid;
+	$scope.collectionID = $location.search().collectionID;
 	var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
 	collectionListingPromise.then(function(value){
 		$scope.collection = value;
