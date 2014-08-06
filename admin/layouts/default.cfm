@@ -348,13 +348,7 @@ Notes:
 					#body#
 				</div>
 			</div>
-			<div class="alert s-alert-footer alert-{{alert.type}}" role="alert" 
-			ng-repeat="alert in alerts" 
-			>
-		  	<!---<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>--->
-		  	
-		  	<i class="fa fa-check"></i>{{alert.msg}}
-		  </div>
+			
 		</div>
 		
 		<div id="adminModal" class="modal fade">
@@ -383,11 +377,14 @@ Notes:
 				</div>
 			</div>
 		</div>
+		<div ng-class="{fade:alert.fade}" class="alert s-alert-footer alert-{{alert.type}} " role="alert" 
+		ng-repeat="alert in alerts"
+		>
+		  	<button ng-show="alert.type === 'warning' || alert.type === 'info'" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		  	
+		  	<i class="fa fa-check" ng-show="alert.type === 'success'"></i>{{alert.msg}}
+	    </div>
 	</body>
-	<style>
-		.s-alert-footer {border-radius: 0px;position: fixed;left: 0;right: 0;bottom: 0;margin: 0;z-index:3000;text-align:center;}
-	</style>
-	
 </html>
 </cfoutput>
 		

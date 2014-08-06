@@ -489,7 +489,7 @@ component extends="FW1.framework" {
 				response.setStatus(500);
 				request.context.apiResponse.content.success = false;
 				//request.context.apiResponse.content.errors = e.message;
-				request.context.apiResponse.content.messages = [{message = "#request.context.context# #request.context.entityName# failed", type="error"}];
+				request.context.apiResponse.content.messages = [{message = "#request.context.context# #request.context.entityName# failed", type="danger"}];
 			}
 			param name="request.context.headers.contentType" default="application/json"; 
     		//need response header for api

@@ -38,7 +38,6 @@ angular.module('slatwalladmin')
 	
 	//public functions
 	$scope.saveCollection = function(entityName,collection,collectionForm){
-		//console.log();
 		
 		if(isFormValid(collectionForm)){
 			var data = angular.copy(collection);
@@ -51,7 +50,11 @@ angular.module('slatwalladmin')
 				var alerts = alertService.formatMessagesToAlerts(messages);
 				alertService.addAlerts(alerts);
 			}, function(reason){
+				//revert to original
 				$scope.collection = angular.copy($scope.collectionInitial);
+				var messages = reason.MESSAGES;
+				var alerts = alertService.formatMessagesToAlerts(messages);
+				alertService.addAlerts(alerts);
 			});
 		}
 	}

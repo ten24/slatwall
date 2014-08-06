@@ -641,11 +641,11 @@
     </div>
 
   </div>
-  <div class="alert s-alert-footer alert-{{alert.type}}" role="alert" ng-repeat="alert in alerts">
+ <!--- <div class="alert s-alert-footer alert-{{alert.type}}" role="alert" ng-repeat="alert in alerts">
   	<!---<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>--->
   	
   	<i class="fa fa-check"></i>{{alert.msg}}
-  </div>
+  </div>--->
 </div>
 
 <!--- Example success and warning alerts - These can be places anywhere and should always be in the footer area --->
@@ -810,13 +810,6 @@
 </style>
 
 <script charset="utf-8">
-  //activate tooltips
-  $(function(){
-    $('.j-tool-tip-item').tooltip();
-  })();
-</script>
-
-<script charset="utf-8">
   //This was created for example only to toggle the edit save icons
   $(function(){
     $('#j-edit-btn').click(function(){
@@ -831,8 +824,17 @@
       $('.s-properties p').toggle();
       $('.s-properties input').toggle();
     });
-  })();
+  });
 </script>
+
+<script charset="utf-8">
+  //activate tooltips
+  $(function(){
+    $('.j-tool-tip-item').tooltip();
+  });
+</script>
+
+
 
 
 

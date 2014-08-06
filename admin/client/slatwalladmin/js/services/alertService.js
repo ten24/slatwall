@@ -1,9 +1,8 @@
 //services return promises which can be handled uniquely based on success or failure by the controller
 
 angular.module('slatwalladmin.services')
-.factory('alertService',[ '$rootScope',
-function($rootScope){
-	console.log($rootScope.alerts);
+.factory('alertService',[ '$rootScope','$timeout',
+function($rootScope,$timeout){
 	return factory = {
 		addAlert: function(alert){
 			$rootScope.alerts.push(alert);
@@ -23,6 +22,13 @@ function($rootScope){
 					type:messages[message].TYPE
 				};
 				alerts.push(alert);
+				if(alert.type === 'success' || alert.type === 'danger'){
+					 $timeout(function() {
+				      alert.fade = true;
+				    }, 5000);
+				}else{
+					alert.fade = false;
+				}
 			}
 			console.log(alerts);
 			return alerts;
