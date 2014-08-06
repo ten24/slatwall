@@ -540,10 +540,10 @@
     </div><!--- //Row --->
     <!--- //Tab panes for menu options end--->
 
-    <div class="row content-nav">
-      <div class="col-md-12 s-align-right">
+    <div class="row s-table-content-nav">
+      <div class="col-xs-12 s-align-left">
 
-        <form class="navbar-form s-search-bar s-no-paddings" role="search">
+        <form class="navbar-form s-search-bar s-no-horiz-paddings" role="search">
           <div class="input-group">
             <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
             <div class="input-group-btn">
@@ -551,201 +551,221 @@
             </div>
           </div>
         </form>
+        <ul class="list-inline list-unstyled s-pagination-content">
+          <li>
 
-      </div>
-    </div>
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label for="inputPassword" class="col-xs-8 control-label">View</label>
+                <div class="col-xs-4 styleSelect">
+                  <select size="1" name="" aria-controls="" class="form-control">
+                    <option value="5" selected="selected">5</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="-1">All</option>
+                  </select>
+                </div>
+              </div>
+            </form>
 
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Row</span></th>
-                <th class="s-sortable">ID</th>
-                <th class="s-sortable">Brand</th>
-                <th class="s-sortable">Style</th>
-                <th class="s-sortable">Color</th>
-                <th class="s-sortable">Gender</th>
-                <th class="s-sortable">Material</th>
-                <th class="s-sortable">Purchase Date</th>
-                <th class="s-sortable">Price</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-
-          <!---TR 1--->
-          <tr class="even-tr">
-            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
-            <td>2691402</td>
-            <td>Ario</td>
-            <td>Square Toe</td>
-            <td>Black</td>
-            <td>Male</td>
-            <td>Leather</td>
-            <td>July 06, 2014 05:36 PM</td>
-            <td>$130.99</td>
-            <td class="s-edit-elements">
-              <ul>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-              </ul>
-            </td>
-          </tr>
-
-          <!---TR 2--->
-          <tr class="even-tr">
-            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox2"><label for="j-checkbox2"></label></div></td>
-            <td>2691402</td>
-            <td>Ario</td>
-            <td>Square Toe</td>
-            <td>Black</td>
-            <td>Male</td>
-            <td>Leather</td>
-            <td>July 06, 2014 05:36 PM</td>
-            <td>$130.99</td>
-            <td class="s-edit-elements">
-              <ul>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-              </ul>
-            </td>
-          </tr>
-
-          <!---TR 3--->
-          <tr class="even-tr">
-            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox3"><label for="j-checkbox3"></label></div></td>
-            <td>2691402</td>
-            <td>Ario</td>
-            <td>Square Toe</td>
-            <td>Black</td>
-            <td>Male</td>
-            <td>Leather</td>
-            <td>July 06, 2014 05:36 PM</td>
-            <td>$130.99</td>
-            <td class="s-edit-elements">
-              <ul>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-              </ul>
-            </td>
-          </tr>
-
-          <!---TR 4--->
-          <tr class="even-tr">
-            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox4"><label for="j-checkbox4"></label></div></td>
-            <td>2691402</td>
-            <td>Ario</td>
-            <td>Square Toe</td>
-            <td>Black</td>
-            <td>Male</td>
-            <td>Leather</td>
-            <td>July 06, 2014 05:36 PM</td>
-            <td>$130.99</td>
-            <td class="s-edit-elements">
-              <ul>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-              </ul>
-            </td>
-          </tr>
-
-          <!---TR 11--->
-          <tr class="even-tr">
-            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox11"><label for="j-checkbox11"></label></div></td>
-            <td>2691402</td>
-            <td>Ario</td>
-            <td>Square Toe</td>
-            <td>Black</td>
-            <td>Male</td>
-            <td>Leather</td>
-            <td>July 06, 2014 05:36 PM</td>
-            <td>$130.99</td>
-            <td class="s-edit-elements">
-              <ul>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-              </ul>
-            </td>
-          </tr>
-
-          <!---TR 12--->
-          <tr class="even-tr">
-            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox12"><label for="j-checkbox12"></label></div></td>
-            <td>2691402</td>
-            <td>Ario</td>
-            <td>Square Toe</td>
-            <td>Black</td>
-            <td>Male</td>
-            <td>Leather</td>
-            <td>July 06, 2014 05:36 PM</td>
-            <td>$130.99</td>
-            <td class="s-edit-elements">
-              <ul>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-              </ul>
-            </td>
-          </tr>
-
-          <!---TR 13--->
-          <tr class="even-tr">
-            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox13"><label for="j-checkbox13"></label></div></td>
-            <td>2691402</td>
-            <td>Ario</td>
-            <td>Square Toe</td>
-            <td>Black</td>
-            <td>Male</td>
-            <td>Leather</td>
-            <td>July 06, 2014 05:36 PM</td>
-            <td>$130.99</td>
-            <td class="s-edit-elements">
-              <ul>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-              </ul>
-            </td>
-          </tr>
-
-          <!---TR 14--->
-          <tr class="even-tr">
-            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox14"><label for="j-checkbox14"></label></div></td>
-            <td>2691402</td>
-            <td>Ario</td>
-            <td>Square Toe</td>
-            <td>Black</td>
-            <td>Male</td>
-            <td>Leather</td>
-            <td>July 06, 2014 05:36 PM</td>
-            <td>$130.99</td>
-            <td class="s-edit-elements">
-              <ul>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-              </ul>
-            </td>
-          </tr>
-
-        </tbody>
-    </table>
-
-    <div class="row">
-      <div class="col-md-12 s-align-right">
-        <ul class="pagination pagination-sm">
-          <li><a href="#">&laquo;</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">&raquo;</a></li>
+          </li>
+          <li class="s-table-pagination">
+            <ul class="pagination pagination-sm s-align-right">
+              <li><a href="#">&laquo;</a></li>
+              <li class="active"><a href="#">1</a></li>
+              <li><a href="#">2</a></li>
+              <li><a href="#">3</a></li>
+              <li><a href="#">4</a></li>
+              <li><a href="#">5</a></li>
+              <li class="disabled"><a href="#">&raquo;</a></li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+          <thead>
+              <tr>
+                  <th>Row</span></th>
+                  <th class="s-sortable">ID</th>
+                  <th class="s-sortable">Brand</th>
+                  <th class="s-sortable">Style</th>
+                  <th class="s-sortable">Color</th>
+                  <th class="s-sortable">Gender</th>
+                  <th class="s-sortable">Material</th>
+                  <th class="s-sortable">Purchase Date</th>
+                  <th class="s-sortable">Price</th>
+                  <th></th>
+              </tr>
+          </thead>
+          <tbody>
 
+            <!---TR 1--->
+            <tr class="even-tr">
+              <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
+              <td>2691402</td>
+              <td>Ario</td>
+              <td>Square Toe</td>
+              <td>Black</td>
+              <td>Male</td>
+              <td>Leather</td>
+              <td>July 06, 2014 05:36 PM</td>
+              <td>$130.99</td>
+              <td class="s-edit-elements">
+                <ul>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+                </ul>
+              </td>
+            </tr>
+
+            <!---TR 2--->
+            <tr class="even-tr">
+              <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox2"><label for="j-checkbox2"></label></div></td>
+              <td>2691402</td>
+              <td>Ario</td>
+              <td>Square Toe</td>
+              <td>Black</td>
+              <td>Male</td>
+              <td>Leather</td>
+              <td>July 06, 2014 05:36 PM</td>
+              <td>$130.99</td>
+              <td class="s-edit-elements">
+                <ul>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+                </ul>
+              </td>
+            </tr>
+
+            <!---TR 3--->
+            <tr class="even-tr">
+              <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox3"><label for="j-checkbox3"></label></div></td>
+              <td>2691402</td>
+              <td>Ario</td>
+              <td>Square Toe</td>
+              <td>Black</td>
+              <td>Male</td>
+              <td>Leather</td>
+              <td>July 06, 2014 05:36 PM</td>
+              <td>$130.99</td>
+              <td class="s-edit-elements">
+                <ul>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+                </ul>
+              </td>
+            </tr>
+
+            <!---TR 4--->
+            <tr class="even-tr">
+              <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox4"><label for="j-checkbox4"></label></div></td>
+              <td>2691402</td>
+              <td>Ario</td>
+              <td>Square Toe</td>
+              <td>Black</td>
+              <td>Male</td>
+              <td>Leather</td>
+              <td>July 06, 2014 05:36 PM</td>
+              <td>$130.99</td>
+              <td class="s-edit-elements">
+                <ul>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+                </ul>
+              </td>
+            </tr>
+
+            <!---TR 11--->
+            <tr class="even-tr">
+              <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox11"><label for="j-checkbox11"></label></div></td>
+              <td>2691402</td>
+              <td>Ario</td>
+              <td>Square Toe</td>
+              <td>Black</td>
+              <td>Male</td>
+              <td>Leather</td>
+              <td>July 06, 2014 05:36 PM</td>
+              <td>$130.99</td>
+              <td class="s-edit-elements">
+                <ul>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+                </ul>
+              </td>
+            </tr>
+
+            <!---TR 12--->
+            <tr class="even-tr">
+              <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox12"><label for="j-checkbox12"></label></div></td>
+              <td>2691402</td>
+              <td>Ario</td>
+              <td>Square Toe</td>
+              <td>Black</td>
+              <td>Male</td>
+              <td>Leather</td>
+              <td>July 06, 2014 05:36 PM</td>
+              <td>$130.99</td>
+              <td class="s-edit-elements">
+                <ul>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+                </ul>
+              </td>
+            </tr>
+
+            <!---TR 13--->
+            <tr class="even-tr">
+              <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox13"><label for="j-checkbox13"></label></div></td>
+              <td>2691402</td>
+              <td>Ario</td>
+              <td>Square Toe</td>
+              <td>Black</td>
+              <td>Male</td>
+              <td>Leather</td>
+              <td>July 06, 2014 05:36 PM</td>
+              <td>$130.99</td>
+              <td class="s-edit-elements">
+                <ul>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+                </ul>
+              </td>
+            </tr>
+
+            <!---TR 14--->
+            <tr class="even-tr">
+              <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox14"><label for="j-checkbox14"></label></div></td>
+              <td>2691402</td>
+              <td>Ario</td>
+              <td>Square Toe</td>
+              <td>Black</td>
+              <td>Male</td>
+              <td>Leather</td>
+              <td>July 06, 2014 05:36 PM</td>
+              <td>$130.99</td>
+              <td class="s-edit-elements">
+                <ul>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+                  <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+                </ul>
+              </td>
+            </tr>
+
+          </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="dataTables_info" id="example3_info">Showing <b>1 to 10</b> of 57 entries</div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!---Example success and warning alerts - These can be places anywhere and should always be in the footer area--->
-<div class="alert alert-danger alert-dismissible s-alert-footer" role="alert">
+<!--- <div class="alert alert-danger alert-dismissible s-alert-footer" role="alert">
   <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
   <strong>Warning!</strong> Better check yourself, you're not looking too good.
 </div>
@@ -753,7 +773,7 @@
   <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
   <strong>Error!</strong> Collection code must be unique.
 </div>
-<div class="alert alert-success s-alert-footer" role="alert"><i class="fa fa-check"></i> Saved</div>
+<div class="alert alert-success s-alert-footer" role="alert"><i class="fa fa-check"></i> Saved</div> --->
 
 
 <style>
@@ -778,11 +798,12 @@
   .panel-default>.panel-heading {background-color:#606060;color:#ffffff;}
   .panel-group .panel-heading+.panel-collapse>.panel-body {border-top: none;}
   .panel-heading {border-top-left-radius: 0px;border-top-right-radius: 0px}
+  .table th {white-space: nowrap;}
   .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
   .table-bordered>thead>tr>th, .table-bordered>thead>tr>td {border-bottom-width:1px;}
   .btn-default {color:#767676;}
-  .content-nav .dropdown-menu {left:auto;right:0;top:88%;border-radius:0px;}
-  .content-nav .dropdown-menu {background-color:#F9F9F9;}
+  .s-table-content-nav .dropdown-menu {left:auto;right:0;top:88%;border-radius:0px;}
+  .s-table-content-nav .dropdown-menu {background-color:#F9F9F9;}
   .dropdown-menu li.active > a:hover, .dropdown-menu li > a:hover {background-color: #FC770D;background-image: -moz-linear-gradient(top, #f58620, #f58620);background-image: -ms-linear-gradient(top, #f58620, #f58620);background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f58620), to(#f58620));background-image: -webkit-linear-gradient(top, #f58620, #f58620);background-image: -o-linear-gradient(top, #f58620, #f58620);background-image: linear-gradient(top, #f58620, #f58620);color: #FFF !important;}
   .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#F58620;color:#ffffff;border-color: #F58620;}
   .nav-tabs {padding:0px 15px;}
@@ -791,6 +812,7 @@
   .nav-tabs>li>a {border:none;color:#999999;}
   .nav-tabs>li>a:hover {background:none;border:none;color:#555;}
   .s-properties label {text-align:left !important;width: 170px;}
+  select.form-control {border-color: #DDD;color: #767676;height: 29px;cursor:pointer;box-shadow:none;}
 
 
   /*Custom CSS*/
@@ -844,10 +866,11 @@
   .s-edit-elements ul li a:hover {color:#F58620;}
 
   .s-no-paddings {padding:0px !important;}
+  .s-no-horiz-paddings {padding-left:0px !important; padding-right:0px !important;}
   .s-align-right {text-align:right;}
   .s-align-left {text-align:left;}
-  .content-nav-button {display:inline-block;}
-  .content-nav button.content-nav-button {margin-top:8px;margin-bottom:8px;}
+  .s-table-content-nav-button {display:inline-block;}
+  .s-table-content-nav button.s-table-content-nav-button {margin-top:8px;margin-bottom:8px;}
   .s-search-bar {display:inline-block;}
   .hiddenRow {padding: 0 !important;}
   .s-alert-footer {border-radius: 0px;position: fixed;left: 0;right: 0;bottom: 0;margin: 0;z-index:3000;text-align:center;}
@@ -868,6 +891,7 @@
 
   table tr th.s-sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
+
 
   .pagination {margin:0px;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
@@ -906,6 +930,14 @@
   .s-setting-options-body .s-add-filter .s-button-select-group {text-align:center;border-bottom:3px dotted #DDDDDD;margin-bottom:15px;}
   .s-setting-options-body .s-add-filter .s-button-select-group .btn {margin-bottom:15px;margin-top:15px;}
   .s-setting-options-body .s-add-filter .s-filter-group-item {background: #F2F2F2;border-radius: 4px;padding: 15px;margin-bottom:10px;}
+
+  .s-table-content-nav .s-pagination-content {margin: 8px 0px 8px 0px;vertical-align: bottom;float: right;}
+  .s-table-content-nav .s-pagination-content li {vertical-align:middle;padding:0px;}
+  .s-table-content-nav .s-pagination-content li .form-group {margin-bottom:0px;width:200px;}
+  .s-table-content-nav .s-pagination-content li label {padding-top: 4px;font-weight: normal;padding-right: 0px;text-align: right;}
+  .s-table-content-nav .s-pagination-content li .form-group>div {padding-left:5px;}
+  .s-table-content-nav .s-pagination-content li ul {vertical-align:middle;}
+  .s-table-content-nav .s-pagination-content .s-table-pagination {vertical-align:middle;padding:0px;}
 
 </style>
 
@@ -967,7 +999,7 @@
   </div>
   <div class="panel-body">
 
-    <div class="row content-nav">
+    <div class="row s-table-content-nav">
       <div class="col-md-12 align-right">
     <!---most likely using angular filter searching here --->
         <form class="navbar-form search-bar no-padding" role="search">
@@ -979,8 +1011,8 @@
           </div>
         </form>
 
-        <button type="button" class="btn btn-grey btn-xs content-nav-button" data-toggle="collapse" data-target="#option-select"><i class="fa fa-cogs"></i></button>
-        <button type="button" class="btn btn-ten24 btn-xs content-nav-button"><i class="fa fa-plus"></i></button>
+        <button type="button" class="btn btn-grey btn-xs s-table-content-nav-button" data-toggle="collapse" data-target="#option-select"><i class="fa fa-cogs"></i></button>
+        <button type="button" class="btn btn-ten24 btn-xs s-table-content-nav-button"><i class="fa fa-plus"></i></button>
 
         <div id="option-select" class="collapse align-left">
 
@@ -1375,7 +1407,7 @@
 
         <!--- Drop down option you can delete if you don't need--->
         <!--- <div class="btn-group">
-          <button type="button" class="btn btn-ten24 btn-xs dropdown-toggle content-nav-button" data-toggle="dropdown">
+          <button type="button" class="btn btn-ten24 btn-xs dropdown-toggle s-table-content-nav-button" data-toggle="dropdown">
             <span class="glyphicon glyphicon-cog"></span>
           </button>
           <ul class="dropdown-menu" role="menu">
@@ -1461,8 +1493,8 @@
   .no-padding {padding:0px !important;}
   .align-right {text-align:right;}
   .align-left {text-align:left;}
-  .content-nav-button {display:inline-block;}
-  .content-nav button.content-nav-button {margin-top:8px;margin-bottom:8px;}
+  .s-table-content-nav-button {display:inline-block;}
+  .s-table-content-nav button.s-table-content-nav-button {margin-top:8px;margin-bottom:8px;}
   .search-bar {display:inline-block;}
   .hiddenRow {padding: 0 !important;}
 
@@ -1495,8 +1527,8 @@
   .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
   .table-bordered>thead>tr>th, .table-bordered>thead>tr>td {border-bottom-width:1px;}
   .btn-default {color:#767676;}
-  .content-nav .dropdown-menu {left:auto;right:0;top:88%;border-radius:0px;}
-  .content-nav .dropdown-menu {background-color:#F9F9F9;}
+  .s-table-content-nav .dropdown-menu {left:auto;right:0;top:88%;border-radius:0px;}
+  .s-table-content-nav .dropdown-menu {background-color:#F9F9F9;}
   .dropdown-menu li.active > a:hover, .dropdown-menu li > a:hover {background-color: #FC770D;background-image: -moz-linear-gradient(top, #f58620, #f58620);background-image: -ms-linear-gradient(top, #f58620, #f58620);background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f58620), to(#f58620));background-image: -webkit-linear-gradient(top, #f58620, #f58620);background-image: -o-linear-gradient(top, #f58620, #f58620);background-image: linear-gradient(top, #f58620, #f58620);color: #FFF !important;}
   .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {background-color:#f58620;color:#ffffff;border-color:#f58620;}
   .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#F58620;color:#ffffff;border-color: #F58620;}
