@@ -1,11 +1,7 @@
 angular.module('slatwalladmin')
 //using $location to get url params, this will probably change to using routes eventually
-.controller('collections', [ '$scope','$location','slatwallService', function($scope,$location,slatwallService){
-	$scope.alerts = [
-	    { type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.' },
-	    { type: 'success', msg: 'Well done! You successfully read this important alert message.' }
-	  ];
-	console.log($scope.alerts);
+.controller('collections', [ '$scope','$location','slatwallService','alertService', function($scope,$location,slatwallService,alertService){
+	
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionid;
 	var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
@@ -51,7 +47,9 @@ angular.module('slatwalladmin')
 			
 			var saveCollectionPromise = slatwallService.saveEntity(entityName,collection.collectionID,data);
 			saveCollectionPromise.then(function(value){
-				
+				var messages = value.MESSAGES;
+				var alerts = alertService.formatMessagesToAlerts(messages);
+				alertService.addAlerts(alerts);
 			}, function(reason){
 				$scope.collection = angular.copy($scope.collectionInitial);
 			});

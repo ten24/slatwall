@@ -331,10 +331,15 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
+		<!---modules --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/js/slatwall.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/slatwalladmin.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/services/slatwallservice.js"></script>
+	 	<!---services --->
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/services/slatwallService.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/services/alertService.js"></script>
+	 	<!---controllers --->
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/controllers/collections.js"></script>
+	 	<!---directives --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/pagination.js"></script>
 		
 		<div class="container-fluid">
@@ -343,6 +348,14 @@ Notes:
 					#body#
 				</div>
 			</div>
+			<div class="alert s-alert-footer alert-{{alert.type}}" role="alert" 
+			ng-repeat="alert in alerts" 
+			ng-bind="alerts"
+			>
+		  	<!---<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>--->
+		  	
+		  	<i class="fa fa-check"></i>{{alert.msg}}
+		  </div>
 		</div>
 		
 		<div id="adminModal" class="modal fade">
@@ -372,7 +385,9 @@ Notes:
 			</div>
 		</div>
 	</body>
-	
+	<style>
+		.s-alert-footer {border-radius: 0px;position: fixed;left: 0;right: 0;bottom: 0;margin: 0;z-index:3000;text-align:center;}
+	</style>
 	
 </html>
 </cfoutput>

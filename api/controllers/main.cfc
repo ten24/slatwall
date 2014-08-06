@@ -163,7 +163,7 @@ component output="false" accessors="true" {
 			arguments.rc.apiResponse.content.success = false;
 		}else{
 			arguments.rc.apiResponse.content.success = true;
-			var successMessageData = {message = "#rc.context# #arguments.rc.entityName# successful"};
+			var successMessageData = {message = "#rc.context# #arguments.rc.entityName# successful", type="success"};
 			arrayAppend(arguments.rc.apiResponse.content.messages,successMessageData);
 		}
 		
