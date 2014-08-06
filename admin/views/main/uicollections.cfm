@@ -151,7 +151,7 @@
 
                       <!--- Filter display --->
                       <div class="s-filter-item">
-                        <div class="panel panel-default">
+                        <div class="panel panel-default s-filter-group-style">
                           <div class="panel-heading">Filter Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
                           <div data-toggle="collapse" data-target="#j-nested-filter-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
                             (3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
@@ -259,7 +259,7 @@
 
                               <!--- Nested Filter Display --->
                               <div class="s-filter-item">
-                                <div class="panel panel-default">
+                                <div class="panel panel-default s-filter-group-style">
                                   <div class="panel-heading">Filter Group 2 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
                                   <div data-toggle="collapse" data-target="#j-nested-filter-1-1-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
                                     (3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
@@ -850,7 +850,7 @@
   .s-setting-options li {display:inline;}
   .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;}
   .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:#ccc;}
-  .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;}
+  .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;margin-right:7px;}
   .s-filters-selected .s-filter-item .btn-group-vertical .btn{font-size:10px;}
   .s-filters-selected .s-and-or-box .btn-group{background-color:#eee;position:relative;top:-4px;}
   .s-filters-selected .s-define-box {text-align: center;border-top: 3px dotted #DDD;margin-top: 23px;padding-top: 20px;}
@@ -874,7 +874,11 @@
   .hiddenRow {padding: 0 !important;}
   .s-alert-footer {border-radius: 0px;position: fixed;left: 0;right: 0;bottom: 0;margin: 0;z-index:3000;text-align:center;}
   .s-disabled {pointer-events: none;opacity: 0.5;}
-  .s-focus {border: 1px solid rgba(0, 0, 0, 0.8);box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);}
+  .s-focus {box-shadow: 0px 0px 10px 0px #aaa;}
+  .s-filter-group-style.s-focus {background-color: white;-webkit-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),4px 7px 7px   0 #aaaaaa;-moz-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),4px 7px 7px   0 #aaaaaa;box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),4px 7px 7px   0 #aaaaaa;}
+  .s-focus .panel-heading {background-color:#F58620 !important;}
+  .s-focus .panel-heading .fa {color:#ffffff !important;}
+  .s-filter-group-style {background-color: white;-webkit-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);-moz-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);margin-right:6px;}
 
   .s-checkbox {text-align:center;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
   .s-checkbox {margin:0px;}
@@ -895,7 +899,7 @@
   .pagination {margin:0px;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
 
-  .s-setting-options-body .s-filter-item {vertical-align:top;margin-bottom: 10px;display: inline-block;width: 250px;margin-left: 3px;margin-top:2px;}
+  .s-setting-options-body .s-filter-item {vertical-align:top;margin-bottom: 10px;display: inline-block;width: 260px;margin-left: 3px;margin-top:2px;}
   .s-setting-options-body .s-filter-item span.s-or-icon {position: relative;top: -10px;left: 22px;}
   .s-setting-options-body .s-filter-item span.s-or-icon:after {content: "or";color: #ccc;}
   .s-setting-options-body .s-filter-item span.s-and-icon {position: relative;top: -10px;left: 18px;}
@@ -908,7 +912,7 @@
 
   .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid}
 
-  .s-setting-options-body .panel {display:inline-block;width:84%;margin-bottom:5px;}
+  .s-setting-options-body .panel {display:inline-block;width:80%;margin-bottom:5px;border:none;}
   .s-setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;border-bottom:none;}
   .s-setting-options-body .panel-body {padding: 10px 15px;}
 
