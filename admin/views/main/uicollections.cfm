@@ -813,7 +813,6 @@
   .s-properties label {text-align:left !important;width: 170px;}
   select.form-control {border-color: #DDD;color: #767676;height: 29px;cursor:pointer;box-shadow:none;}
 
-
   /*Custom CSS*/
   .s-btn-ten24 {background-color: #F58620;border-color: #f1790b;color: #ffffff;}
   .s-btn-ten24:hover,.s-btn-ten24:focus,.s-btn-ten24:active,.s-btn-ten24.active {background-color: #f1790b;border-color: #f1790b;color:#ffffff;}
@@ -850,7 +849,7 @@
   .s-setting-options li {display:inline;}
   .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;}
   .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:#ccc;}
-  .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;margin-right:7px;}
+  .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;margin-right:21px;}
   .s-filters-selected .s-filter-item .btn-group-vertical .btn{font-size:10px;}
   .s-filters-selected .s-and-or-box .btn-group{background-color:#eee;position:relative;top:-4px;}
   .s-filters-selected .s-define-box {text-align: center;border-top: 3px dotted #DDD;margin-top: 23px;padding-top: 20px;}
@@ -879,6 +878,8 @@
   .s-focus .panel-heading {background-color:#F58620 !important;}
   .s-focus .panel-heading .fa {color:#ffffff !important;}
   .s-filter-group-style {background-color: white;-webkit-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);-moz-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);margin-right:6px;}
+  .s-filter-group-style + .btn-group-vertical {margin-right:19px !important;}
+
 
   .s-checkbox {text-align:center;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
   .s-checkbox {margin:0px;}
@@ -899,7 +900,7 @@
   .pagination {margin:0px;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
 
-  .s-setting-options-body .s-filter-item {vertical-align:top;margin-bottom: 10px;display: inline-block;width: 260px;margin-left: 3px;margin-top:2px;}
+  .s-setting-options-body .s-filter-item {vertical-align:top;margin-bottom: 16px;display: inline-block;width: 270px;margin-left: 3px;margin-top:2px;}
   .s-setting-options-body .s-filter-item span.s-or-icon {position: relative;top: -10px;left: 22px;}
   .s-setting-options-body .s-filter-item span.s-or-icon:after {content: "or";color: #ccc;}
   .s-setting-options-body .s-filter-item span.s-and-icon {position: relative;top: -10px;left: 18px;}
@@ -912,7 +913,7 @@
 
   .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid}
 
-  .s-setting-options-body .panel {display:inline-block;width:80%;margin-bottom:5px;border:none;}
+  .s-setting-options-body .panel {display:inline-block;width:190px;margin-bottom:5px;border:none;}
   .s-setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;border-bottom:none;}
   .s-setting-options-body .panel-body {padding: 10px 15px;}
 
