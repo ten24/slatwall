@@ -87,7 +87,7 @@ Notes:
 			</script>
 		</cfif>
 	</head>
-	<body>
+	<body style="margin-top:40px;">
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
