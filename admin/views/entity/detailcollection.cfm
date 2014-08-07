@@ -774,7 +774,7 @@
 	 </div>
     <div class="row">
       <div class="col-md-12">
-        <div class="dataTables_info" id="example3_info">Showing <b>1 to 10</b> of 57 entries</div>
+        <div class="dataTables_info" id="example3_info">Showing <b><span ng-bind="collection.pageRecordsStart"><!--- record start ---></span> to <span ng-bind="collection.pageRecordsEnd"><!---records end ---><span></b> of <span ng-bind="collection.recordsCount"><!--- records Count ---></span> entries</div>
       </div>
     </div>
   </div>
