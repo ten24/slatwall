@@ -378,7 +378,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	public void function getHQLAdvancedFilterTest(){
+	public void function getHQLNestedFilterTest(){
 		
 		var collectionEntityData = {
 			collectionid = '',
@@ -436,18 +436,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"true"
 								},
 								{
-									"logicalOperator":"OR",
+									"logicalOperator":"AND",
 									"propertyIdentifier":"Account.superUserFlag",
 									"comparisonOperator":"=",
 									"value":"false"
 								},
 								{
 									"logicalOperator":"AND",
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"is not",
-									"value":"null"
-								},
-								{
 									"filterGroup":[
 										{
 											"propertyIdentifier":"Account.superUserFlag",
@@ -459,6 +454,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 											"propertyIdentifier":"Account.superUserFlag",
 											"comparisonOperator":"=",
 											"value":"false"
+										},
+										{
+											"logicalOperator":"AND",
+											"filterGroup":[
+												{
+													"propertyIdentifier":"Account.superUserFlag",
+													"comparisonOperator":"=",
+													"value":"true"
+												},
+												{
+													"logicalOperator":"OR",
+													"propertyIdentifier":"Account.superUserFlag",
+													"comparisonOperator":"=",
+													"value":"false"
+												}
+											]
 										}
 									]
 								}
