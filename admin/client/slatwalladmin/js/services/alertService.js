@@ -6,7 +6,6 @@ function($rootScope,$timeout){
 	return factory = {
 		addAlert: function(alert){
 			$rootScope.alerts.push(alert);
-			console.log($rootScope.alerts);
 		},
 		addAlerts: function(alerts){
 			console.log(alerts);
@@ -25,12 +24,13 @@ function($rootScope,$timeout){
 				if(alert.type === 'success' || alert.type === 'danger'){
 					 $timeout(function() {
 				      alert.fade = true;
-				    }, 5000);
+				    }, 3500);
+				    alert.dismissable = false;
 				}else{
 					alert.fade = false;
+					alert.dismissable = true;
 				}
 			}
-			console.log(alerts);
 			return alerts;
 		}
 	};

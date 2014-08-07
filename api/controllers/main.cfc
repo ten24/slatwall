@@ -161,6 +161,11 @@ component output="false" accessors="true" {
 		
 		if(entity.hasErrors()){
 			arguments.rc.apiResponse.content.success = false;
+			var context = getPageContext();
+    		context.getOut().clearBuffer();
+    		var response = context.getResponse();
+			response.setStatus(500);
+			
 		}else{
 			arguments.rc.apiResponse.content.success = true;
 			var successMessageData = {message = "#rc.context# #arguments.rc.entityName# successful", type="success"};

@@ -641,24 +641,7 @@
     </div>
 
   </div>
- <!--- <div class="alert s-alert-footer alert-{{alert.type}}" role="alert" ng-repeat="alert in alerts">
-  	<!---<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>--->
-  	
-  	<i class="fa fa-check"></i>{{alert.msg}}
-  </div>--->
 </div>
-
-<!--- Example success and warning alerts - These can be places anywhere and should always be in the footer area --->
-
-
-
-<!---<div class="alert alert-warning alert-dismissible s-alert-footer" role="alert">
-  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-  <strong>Warning!</strong> Better check yourself, you're not looking too good.
-</div>--->
-
-
-<!---<div sw-alert-success="collection"></div>--->
 
 <style>
 

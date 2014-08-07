@@ -474,23 +474,14 @@ component extends="FW1.framework" {
 		param name="request.context.apiRequest" default="false";
 		param name="request.context.apiResponse.content" default="#structNew()#";
 		
-		
+		endHibachiLifecycle();
+		// Announce the applicationRequestStart event
+		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
 		
 		// Check for an API Response
 		if(request.context.apiRequest) {
-			try{
-				endHibachiLifecycle();
-				// Announce the applicationRequestStart event
-				getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
-			}catch(any e){
-				var context = getPageContext();
-				var response = context.getResponse();
-				response.setStatus(500);
-				request.context.apiResponse.content.success = false;
-				//request.context.apiResponse.content.errors = e.message;
-				request.context.apiResponse.content.messages = [{message = "#request.context.context# #request.context.entityName# failed", type="danger"}];
-			}
+				
 			param name="request.context.headers.contentType" default="application/json"; 
     		//need response header for api
     		var context = getPageContext();
@@ -510,13 +501,7 @@ component extends="FW1.framework" {
     		}
     		
 			writeOutput( responseString );
-		}else{
-			endHibachiLifecycle();
-		
-			// Announce the applicationRequestStart event
-			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
-		}
-		
+		}		
 		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			if(isStruct(request.context.ajaxResponse)){
