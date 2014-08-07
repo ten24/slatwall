@@ -378,6 +378,138 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getHQLAdvancedFilterTest(){
+		
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'BestAccounts',
+			baseEntityName = 'Account',
+			collectionConfig = '
+				{
+					"isDistinct":"true",
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.firstName"
+							
+						},
+						{
+							"propertyIdentifier":"Account.lastName"
+						},
+						{
+							"propertyIdentifier":"Account_accountEmailAddresses.emailAddress"
+						},
+						{
+							"propertyIdentifier":"Account_accountEmailAddresses_accountEmailType.type"
+						}
+						
+					],
+					"joins":[
+						{
+							"associationName":"accountEmailAddresses",
+							"alias":"Account_accountEmailAddresses",
+							"joins":[
+								{
+									"associationName":"accountEmailType",
+									"alias":"Account_accountEmailAddresses_accountEmailType"
+								}
+							]
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"direction":"ASC"
+						},
+						{
+							"propertyIdentifier":"Account.lastName",
+							"direction":"ASC"
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"=",
+									"value":"false"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"is not",
+									"value":"null"
+								},
+								{
+									"filterGroup":[
+										{
+											"propertyIdentifier":"Account.superUserFlag",
+											"comparisonOperator":"=",
+											"value":"true"
+										},
+										{
+											"logicalOperator":"OR",
+											"propertyIdentifier":"Account.superUserFlag",
+											"comparisonOperator":"=",
+											"value":"false"
+										}
+									]
+								}
+							]
+						}
+					]
+					
+				}
+			'
+		};
+
+		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		
+		//creating a post filter group struct
+		var postOrderBy = {
+				"propertyIdentifier":"Account_accountEmailAddresses.emailAddress",
+				"direction":"DESC"
+			};
+		
+		
+		var postFilterGroup = {
+			logicalOperator = "AND",
+			filterGroup = [
+				{
+					propertyIdentifier = "Account.lastName",
+					comparisonOperator = "=",
+					value="Marchand"
+				}
+			]
+		};
+		
+		collectionEntity.addPostOrderBy(postOrderBy);
+		request.debug(collectionEntity.getPostOrderBys());
+		
+		collectionEntity.addPostFilterGroup(postFilterGroup);
+		
+		request.debug(collectionEntity.getPostFilterGroups());
+		
+		var collectionEntityHQL = collectionEntity.getHQL();
+		
+		request.debug(collectionEntityHQL);
+		request.debug(collectionEntity);
+		request.debug(collectionEntity.gethqlParams());
+		//ORMExecuteQuery('FROM SlatwallAccount where accountID = :p1',{p1='2'});
+		
+		//var query = collectionEntity.executeHQL();
+		var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
+		request.debug(query);
+		
+	}
+	
 	public void function getHQLTest(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
@@ -470,7 +602,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 								},
 								{
 									"logicalOperator":"AND",
-									"propertyIdentifier":"superUserFlag",
+									"propertyIdentifier":"Account.superUserFlag",
 									"comparisonOperator":"is not",
 									"value":"null"
 								}
@@ -608,6 +740,38 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"propertyIdentifier":"superUserFlag",
 									"comparisonOperator":"=",
 									"value":"false"
+								},
+								{
+									"logicalOperator":"AND",
+									"filterGroup":[
+										{
+											"propertyIdentifier":"Account.superUserFlag",
+											"comparisonOperator":"=",
+											"value":"true"
+										},
+										{
+											"logicalOperator":"OR",
+											"propertyIdentifier":"Account.superUserFlag",
+											"comparisonOperator":"=",
+											"value":"false"
+										},
+										{
+											"logicalOperator":"AND",
+											"filterGroup":[
+												{
+													"propertyIdentifier":"Account.superUserFlag",
+													"comparisonOperator":"=",
+													"value":"true"
+												},
+												{
+													"logicalOperator":"OR",
+													"propertyIdentifier":"Account.superUserFlag",
+													"comparisonOperator":"=",
+													"value":"false"
+												}
+											]
+										}
+									]
 								}
 							]';
 							

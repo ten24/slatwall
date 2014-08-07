@@ -319,12 +319,18 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				if(structKeyExists(filter,"logicalOperator")){
 					logicalOperator = filter.logicalOperator;
 				}
+				//check filter is a nested filterGroup or a filter itself
+				if(structKeyExists(filter,"filterGroup")){
+					
+					filterGroupHQL &= getFilterGroupsHQL([filter]);
+				}else{
+					var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
 				
-				var comparisonOperator = getComparisonOperator(filter.comparisonOperator);
+					var predicate = getPredicate(filter);
+					
+					filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
+				}
 				
-				var predicate = getPredicate(filter);
-				
-				filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
 			}
 		}
 		return filterGroupHQL;
