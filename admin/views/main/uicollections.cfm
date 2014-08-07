@@ -557,14 +557,6 @@
 
     </div><!--- //Row --->
     <!--- //Tab panes for menu options end--->
-<style media="screen">
-  .s-table-options {display: inline-block;width: 100%;}
-  .s-table-options .control-label {font-weight:normal;vertical-align:middle;padding-top: 4px;}
-  .s-table-options .navbar-form {margin-right:15px;}
-  .s-table-options .btn-group {margin-top:15px;margin-top: 8px;margin-bottom: 8px;margin-left:15px;}
-  .s-table-options .s-table-header-search {padding-left:0px;}
-  .s-table-options .s-table-header-right {float:right;}
-</style>
     <div class="s-table-options">
       <form class="navbar-form navbar-left form-horizontal" role="search">
         <div class="form-group">
@@ -823,8 +815,6 @@
   input::-moz-focus-inner { border: 0; }
   a, a:active, a:focus {outline: none;}
 
-
-
   /*Bootstrap overwrite*/
   .navbar-inverse .navbar-nav>li>a {color:#b0b0b0;}
   .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}
@@ -851,7 +841,6 @@
   .nav-tabs>li>a:hover {background:none;border:none;color:#555;}
   .s-properties label {text-align:left !important;width: 170px;}
   .form-control {border-color: #DDD !important;color: #767676;height: 30px;box-shadow:none;box-shadow:none;}
-
 
   /*Custom CSS*/
   .s-btn-ten24 {background-color: #F58620;border-color: #f1790b;color: #ffffff;}
@@ -921,7 +910,6 @@
   .s-filter-group-style {background-color: white;-webkit-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);-moz-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);margin-right:6px;}
   .s-filter-group-style + .btn-group-vertical {margin-right:19px !important;}
 
-
   .s-checkbox {text-align:center;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
   .s-checkbox {margin:0px;}
   .s-checkbox label {padding-left: 0px;margin-top:2px; cursor:pointer;}
@@ -936,7 +924,6 @@
 
   table tr th.s-sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
-
 
   .pagination {margin: 8px 0;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
@@ -978,273 +965,47 @@
   .s-add-filter .s-checkbox label:before {margin-top:2px;}
   .s-add-filter .s-checkbox label:after {margin-top:2px;}
 
+  /* Selectbox css used to style select menues for cross browser support */
+  .selectboxit-container{position:relative;display:inline-block;vertical-align:top}
+  .selectboxit-container *{font:12px Helvetica,Arial;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:-moz-none;-ms-user-select:none;-o-user-select:none;user-select:none;outline:none;white-space:nowrap}
+  .selectboxit-container .selectboxit{width:220px;cursor:pointer;margin:0;padding:0;border-radius:3px;overflow:hidden;display:block;position:relative}
+  .selectboxit-container span,.selectboxit-container .selectboxit-options a{height:29px;line-height:29px;display:block}
+  .selectboxit-container .selectboxit:focus{outline:0}
+  .selectboxit.selectboxit-disabled,.selectboxit-options .selectboxit-disabled{opacity:.65;filter:alpha(opacity=65);-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;cursor:default}
+  .selectboxit-text{text-indent:5px;overflow:hidden;text-overflow:ellipsis;float:left}
+  .selectboxit .selectboxit-option-icon-container{margin-left:5px}
+  .selectboxit-container .selectboxit-options{-moz-box-sizing:border-box;box-sizing:border-box;min-width:100%;*width:100%;margin:0;padding:0;list-style:none;position:absolute;overflow-x:hidden;overflow-y:auto;cursor:pointer;display:none;z-index:9999999999999;text-align:left;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none}
+  .selectboxit-option .selectboxit-option-anchor{padding:0 2px}
+  .selectboxit-option .selectboxit-option-anchor:hover{text-decoration:none}
+  .selectboxit-option,.selectboxit-optgroup-header{text-indent:5px;margin:0;list-style-type:none}
+  .selectboxit-option-first{border-top-right-radius:6px;border-top-left-radius:6px}
+  .selectboxit-optgroup-header + .selectboxit-option-first{border-top-right-radius:0;border-top-left-radius:0}
+  .selectboxit-option-last{border-bottom-right-radius:6px;border-bottom-left-radius:6px}
+  .selectboxit-optgroup-header{font-weight:700}
+  .selectboxit-optgroup-header:hover{cursor:default}
+  .selectboxit-arrow-container{width:30px;position:absolute;right:0}
+  .selectboxit .selectboxit-arrow-container .selectboxit-arrow{margin:0 auto;position:absolute;top:50%;right:0;left:0}
+  .selectboxit .selectboxit-arrow-container .selectboxit-arrow.ui-icon{top:30%}
+  .selectboxit-option-icon-container{float:left}
+  .selectboxit-container .selectboxit-option-icon{margin:0;padding:0;vertical-align:middle}
+  .selectboxit-option-icon-url{width:18px;background-size:18px 18px;background-repeat:no-repeat;height:100%;background-position:center;float:left}
+  .selectboxit-rendering{display:inline-block!important;*display:inline!important;zoom:1!important;visibility:visible!important;position:absolute!important;top:-9999px!important;left:-9999px!important}
+  .jqueryui .ui-icon{background-color:inherit}
+  .jqueryui .ui-icon-triangle-1-s{background-position:-64px -16px}
+  .selectboxit-btn.selectboxit-enabled:hover,.selectboxit-btn.selectboxit-enabled:focus,.selectboxit-btn.selectboxit-enabled:active{color:#767676;background-color:#fff}
+  .selectboxit-btn.selectboxit-enabled:hover,.selectboxit-btn.selectboxit-enabled:focus{color:#767676;text-decoration:none;background-position:0 -15px}
+  .selectboxit-default-arrow{width:0;height:0;border-top:4px solid #ccc;border-right:4px solid transparent;border-left:4px solid transparent}
+  .selectboxit-list{background-color:#fff;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.2);-webkit-box-shadow:0 5px 10px rgba(0,0,0,0.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,0.2);box-shadow:0 5px 10px rgba(0,0,0,0.2)}
+  .selectboxit-list .selectboxit-option-anchor{color:#767676}
+  .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor{color:#fff;background-color:#F58620}
+  .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor{color:#999}
 
-
-
-
-
-
-  /*
- * jquery.selectBoxIt.css 3.8.1
- * Author: @gregfranko
- */
-
-/*
-  Common CSS Properties
-  ---------------------
-  These properties will be applied to any themes that you use
-*/
-
-/* SelectBoxIt container */
-.selectboxit-container {
-  position: relative;
-  display: inline-block;
-  vertical-align: top;
-}
-
-/* Styles that apply to all SelectBoxIt elements */
-.selectboxit-container * {
-  font: 12px Helvetica, Arial;
-  /* Prevents text selection */
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-  outline: none;
-  white-space: nowrap;
-}
-
-/* Button */
-.selectboxit-container .selectboxit {
-  width: 220px; /* Width of the dropdown button */
-  cursor: pointer;
-  margin: 0;
-  padding: 0;
-  border-radius: 3px;
-  overflow: hidden;
-  display: block;
-  position: relative;
-}
-
-/* Height and Vertical Alignment of Text */
-.selectboxit-container span, .selectboxit-container .selectboxit-options a {
-  height: 29px; /* Height of the drop down */
-  line-height: 29px; /* Vertically positions the drop down text */
-  display: block;
-}
-
-/* Focus pseudo selector */
-.selectboxit-container .selectboxit:focus {
-  outline: 0;
-}
-
-/* Disabled Mouse Interaction */
-.selectboxit.selectboxit-disabled, .selectboxit-options .selectboxit-disabled {
-  opacity: 0.65;
-  filter: alpha(opacity=65);
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  cursor: default;
-}
-
-/* Button Text */
-.selectboxit-text {
-  text-indent: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  float: left;
-}
-
-.selectboxit .selectboxit-option-icon-container {
-  margin-left: 5px;
-}
-
-/* Options List */
-.selectboxit-container .selectboxit-options {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  min-width: 100%;  /* Minimum Width of the dropdown list box options */
-  *width: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  position: absolute;
-  overflow-x: hidden;
-  overflow-y: auto;
-  cursor: pointer;
-  display: none;
-  z-index: 9999999999999;
-  text-align: left;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-
-/* Individual options */
- .selectboxit-option .selectboxit-option-anchor{
-  padding: 0 2px;
-}
-
-/* Individual Option Hover Action */
-.selectboxit-option .selectboxit-option-anchor:hover {
-  text-decoration: none;
-}
-
-/* Individual Option Optgroup Header */
-.selectboxit-option, .selectboxit-optgroup-header {
-  text-indent: 5px; /* Horizontal Positioning of the select box option text */
-  margin: 0;
-  list-style-type: none;
-}
-
-/* The first Drop Down option */
-.selectboxit-option-first {
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
-}
-
-/* The first Drop Down option optgroup */
-.selectboxit-optgroup-header + .selectboxit-option-first {
-  border-top-right-radius: 0px;
-  border-top-left-radius: 0px;
-}
-
-/* The last Drop Down option */
-.selectboxit-option-last {
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
-}
-
-/* Drop Down optgroup headers */
-.selectboxit-optgroup-header {
-  font-weight: bold;
-}
-
-/* Drop Down optgroup header hover psuedo class */
-.selectboxit-optgroup-header:hover {
-  cursor: default;
-}
-
-/* Drop Down down arrow container */
-.selectboxit-arrow-container {
-  /* Positions the down arrow */
-  width: 30px;
-  position: absolute;
-  right: 0;
-}
-
-/* Drop Down down arrow */
-.selectboxit .selectboxit-arrow-container .selectboxit-arrow {
-  /* Horizontally centers the down arrow */
-  margin: 0 auto;
-  position: absolute;
-  top: 50%;
-  right: 0;
-  left: 0;
-}
-
-/* Drop Down down arrow for jQueryUI and jQuery Mobile */
-.selectboxit .selectboxit-arrow-container .selectboxit-arrow.ui-icon {
-  top: 30%;
-}
-
-/* Drop Down individual option icon positioning */
-.selectboxit-option-icon-container {
-  float: left;
-}
-
-.selectboxit-container .selectboxit-option-icon {
-  margin: 0;
-  padding: 0;
-  vertical-align: middle;
-}
-
-/* Drop Down individual option icon positioning */
-.selectboxit-option-icon-url {
-  width: 18px;
-  background-size: 18px 18px;
-  background-repeat: no-repeat;
-  height: 100%;
-  background-position: center;
-  float: left;
-}
-
-.selectboxit-rendering {
-  display: inline-block !important;
-  *display: inline !important;
-  zoom: 1 !important;
-  visibility: visible !important;
-  position: absolute !important;
-  top: -9999px !important;
-  left: -9999px !important;
-}
-
-/* jQueryUI and jQuery Mobile compatability fix - Feel free to remove this style if you are not using jQuery Mobile */
-.jqueryui .ui-icon {
-  background-color: inherit;
-}
-
-/* Another jQueryUI and jQuery Mobile compatability fix - Feel free to remove this style if you are not using jQuery Mobile */
-.jqueryui .ui-icon-triangle-1-s {
-  background-position: -64px -16px;
-}
-
-/*
-  Default Theme
-  -------------
-  Note: Feel free to remove all of the CSS underneath this line if you are not using the default theme
-*/
-.selectboxit-btn {
-
-}
-
-.selectboxit-btn.selectboxit-enabled:hover,
-.selectboxit-btn.selectboxit-enabled:focus,
-.selectboxit-btn.selectboxit-enabled:active {
-  color: #767676;
-  background-color: #ffffff;
-}
-
-.selectboxit-btn.selectboxit-enabled:hover,
-.selectboxit-btn.selectboxit-enabled:focus {
-  color: #767676;
-  text-decoration: none;
-  background-position: 0 -15px;
-}
-
-.selectboxit-default-arrow {
-  width: 0;
-  height: 0;
-  border-top: 4px solid #ccc;
-  border-right: 4px solid transparent;
-  border-left: 4px solid transparent;
-}
-
-.selectboxit-list {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-}
-
-.selectboxit-list .selectboxit-option-anchor {
-  color: #767676;
-}
-
-.selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor {
-  color: #ffffff;
-  background-color: #F58620;
-}
-
-.selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor {
-  color: #999999;
-}
+  .s-table-options {display: inline-block;width: 100%;}
+  .s-table-options .control-label {font-weight:normal;vertical-align:middle;padding-top: 4px;}
+  .s-table-options .navbar-form {margin-right:15px;}
+  .s-table-options .btn-group {margin-top:15px;margin-top: 8px;margin-bottom: 8px;margin-left:15px;}
+  .s-table-options .s-table-header-search {padding-left:0px;}
+  .s-table-options .s-table-header-right {float:right;}
 
 
 </style>
