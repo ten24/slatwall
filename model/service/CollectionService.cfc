@@ -376,7 +376,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
 		}
 		
-		
 		if(len(arguments.propertyIdentifiersList)){
 			var propertyIdentifierArray = ListToArray(arguments.propertyIdentifiersList);
 			return getFormattedPageRecords(collectionEntity,propertyIdentifierArray);

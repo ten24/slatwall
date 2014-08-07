@@ -458,21 +458,23 @@
         <thead>
             <tr>
                 <th>Row</span></th>
-                <th class="s-sortable">ID</th>
-                <th class="s-sortable">Brand</th>
-                <th class="s-sortable">Style</th>
-                <th class="s-sortable">Color</th>
-                <th class="s-sortable">Gender</th>
-                <th class="s-sortable">Material</th>
-                <th class="s-sortable">Purchase Date</th>
-                <th class="s-sortable">Price</th>
+                <th ng-repeat="(key,value) in collection.pageRecords[0]" class="s-sortable" ng-bind="key"></th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-
+			<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
+	            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
+	            <td ng-repeat="(key,value) in pageRecord" ng-bind="value"></td>
+	           <td class="s-edit-elements">
+	              <ul>
+	                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+	                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+	              </ul>
+	            </td>
+          	</tr>
           <!---TR 1--->
-          <tr class="even-tr">
+          <!---<tr class="even-tr">
             <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
             <td>2691402</td>
             <td>Ario</td>
@@ -621,7 +623,7 @@
                 <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
               </ul>
             </td>
-          </tr>
+          </tr>--->
 
         </tbody>
     </table>
