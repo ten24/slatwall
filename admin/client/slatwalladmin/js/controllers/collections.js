@@ -1,6 +1,14 @@
 angular.module('slatwalladmin')
 //using $location to get url params, this will probably change to using routes eventually
-.controller('collections', [ '$scope','$location','slatwallService','alertService', function($scope,$location,slatwallService,alertService){
+.controller('collections', [ '$scope','$location','slatwallService','alertService','$log', function($scope,$location,slatwallService,alertService,$log){
+	//init values
+	$scope.pageShowOptions = [
+		{display:5,value:5},
+		{display:10,value:10},
+		{display:20,value:20},
+		{display:"All",value:"All"}
+	];
+	$scope.pageShowOptions.selected = $scope.pageShowOptions[1];
 	
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionID;
@@ -9,7 +17,12 @@ angular.module('slatwalladmin')
 		$scope.collection = value;
 		$scope.collectionInitial = angular.copy($scope.collection);
 		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
-		//console.log($scope.collectionConfig);
+		$scope.filterGroups = $scope.collectionConfig.filterGroups;
+		
+		//on the backend everything is treated as a filter group. To the user, a filter group with only one filter is seen as a filter and not a filter group
+		console.log($scope.collection);
+		
+		
 		//$scope.collection.totalPagesArray = new Array(parseInt($scope.collection.totalPages));
 		
 		//add filterProperties
@@ -33,7 +46,10 @@ angular.module('slatwalladmin')
 		});*/
 		
 	},function(reason){
-		//display error message
+		//display error message if getter fails
+		var messages = reason.MESSAGES;
+		var alerts = alertService.formatMessagesToAlerts(messages);
+		alertService.addAlerts(alerts);
 	});
 	
 	//public functions
@@ -102,6 +118,10 @@ angular.module('slatwalladmin')
 					break;
 			}
 		}
+	}
+	
+	$scope.pageShowOptionChanged = function(pageShowOption){
+		slatwallService.getEntity('collection',$scope.collectionID);
 	}
 	
 	//private Function

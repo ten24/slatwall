@@ -8,7 +8,6 @@ function($rootScope,$timeout){
 			$rootScope.alerts.push(alert);
 		},
 		addAlerts: function(alerts){
-			console.log(alerts);
 			for(alert in alerts){
 				$rootScope.alerts.push(alerts[alert]);
 			}
