@@ -30,6 +30,13 @@
               </div>
             </div>
             <div class="form-group">
+              <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
+              <div class="col-sm-10">
+                <input ng-model="collection.collectionCode" style="display:none" name="collectionCode" type="text" class="form-control" id="inputPassword" value="" required>
+                <p class="form-control-static" ng-bind="collection.collectionCode"><!---collection Code ---></p>
+              </div>
+            </div>
+            <div class="form-group">
               <label for="inputPassword" class="col-sm-2 control-label">Description: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection description"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
                 <input style="display:none" ng-model="collection.description" name="description" type="text" class="form-control" id="inputPassword" value="" >
@@ -37,10 +44,9 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
+              <label for="inputPassword" class="col-sm-2 control-label">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input ng-model="collection.collectionCode" style="display:none" name="collectionCode" type="text" class="form-control" id="inputPassword" value="" required>
-                <p class="form-control-static" ng-bind="collection.collectionCode"><!---collection Code ---></p>
+                <p ng-bind="collectionConfig.baseEntityAlias" class="form-control-static"><!---collection base entity alias ---></p>
               </div>
             </div>
           </form>
@@ -206,16 +212,66 @@
           </div>
         </div><!--- //Tab Pane --->
 
-        <div class="tab-pane s-display-options" id="j-display-options">
+        <!---<div class="tab-pane s-display-options" id="j-display-options">
           <div class="s-none-selected">There are no fields selected</div>
           <button class="btn s-btn-ten24">Add Display Field</button>
-        </div><!--- //Tab Pane --->
+        </div>---><!--- //Tab Pane --->
       </div>
 
     </div><!--- //Row --->
     <!--- //Tab panes for menu options end--->
-
-    <div class="row s-table-content-nav">
+    <div class="s-table-options">
+      <form class="navbar-form navbar-left form-horizontal" role="search">
+        <div class="form-group">
+          <label for="name" class="control-label">Bulk Action</label>
+          <select size="1" name="" aria-controls="" class="form-control">
+            <option value="15" selected="selected" disabled="disabled">Select</option>
+            <option value="20">Last Changed</option>
+            <option value="20">Delete</option>
+            <option value="20">Examples</option>
+            <option value="20">Examples</option>
+            <option value="-1">Examples</option>
+          </select>
+        </div>
+      </form>
+      <form class="navbar-form navbar-left s-table-header-search">
+        <div class="input-group">
+          <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
+          <div class="input-group-btn">
+            <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
+          </div>
+        </div>
+      </form>
+      <div class="s-table-header-right">
+        <form class="navbar-form form-horizontal navbar-left">
+          <div class="form-group">
+            <label for="inputPassword" class="control-label">View</label>
+            <select size="1" name="" aria-controls="" class="form-control">
+              <option value="5" selected="selected">5</option>
+              <option value="15">10</option>
+              <option value="20">25</option>
+              <option value="20">50</option>
+              <option value="20">100</option>
+              <option value="20">250</option>
+              <option value="-1">Auto</option>
+            </select>
+          </div>
+        </form>
+        <ul class="pagination pagination-sm navbar-left">
+          <li><a href="#">&laquo;</a></li>
+          <li class="active"><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">5</a></li>
+          <li class="disabled"><a href="#">&raquo;</a></li>
+        </ul>
+        <div class="btn-group" class="navbar-left">
+          <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+   <!--- <div class="row s-table-content-nav">
       <div class="col-xs-12 s-align-left">
 
         <form class="navbar-form s-search-bar s-no-horiz-paddings" role="search">
@@ -256,7 +312,7 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div>--->
 	<!---TODO: make this list view section a directive that we pass a collection into --->
     <div class="table-responsive">
     <table class="table table-bordered table-striped">
@@ -569,14 +625,10 @@ $('form').submit(function(){
 });
 </script>
 
-<br />
-<br />
 
 <!--- Add new default font --->
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 
-        <button type="button" class="btn btn-grey btn-xs content-nav-button" data-toggle="collapse" data-target="#option-select"><i class="fa fa-cogs"></i></button>
-        <button type="button" class="btn btn-ten24 btn-xs content-nav-button"><i class="fa fa-plus"></i></button>
 
 <!---If you uncomment this content you will be able to drag table columns to sort them
 <style media="screen">
