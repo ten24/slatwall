@@ -16,7 +16,15 @@ angular.module('slatwalladmin')
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
-		}
+		},
+		controller: function ($scope, $element, $attrs) {
+			$scope.uuid = guid();
+			$scope.isFocus = false;
+			
+			$scope.toggleFocus = function(){
+				$scope.isFocus = !$scope.isFocus;
+			}
+        } 
 	}
 }]);
 	

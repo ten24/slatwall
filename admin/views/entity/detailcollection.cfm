@@ -420,7 +420,7 @@
   .s-setting-options li {display:inline;}
   .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;}
   .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:#ccc;}
-  .s-filters-selected .s-filter-item .btn-group-vertical{float:left;margin-top:20px;margin-right:21px;}
+  .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;margin-right:21px;}
   .s-filters-selected .s-filter-item .btn-group-vertical .btn {font-size:10px;}
   .s-filters-selected .s-filter-item .btn-group-vertical .btn.active {box-shadow:none;}
   .s-filters-selected .s-and-or-box .btn-group{background-color:#eee;position:relative;top:-4px;}

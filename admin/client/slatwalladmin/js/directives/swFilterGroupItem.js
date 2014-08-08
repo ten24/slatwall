@@ -18,6 +18,11 @@ angular.module('slatwalladmin')
 		},
 		controller: function ($scope, $element, $attrs) {
 			$scope.uuid = guid();
+			$scope.isFocus = false;
+			
+			$scope.toggleFocus = function(){
+				$scope.isFocus = !$scope.isFocus;
+			}
         }  
 	}
 }]);
