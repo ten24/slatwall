@@ -1,13 +1,15 @@
-<li >
 
+<li >
+ 
   <!--- Filter display --->
   <div class="s-filter-item">
     <div class="panel panel-default">
-      <div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+      <div class="panel-heading"><span ng-bind="filterItem.displayPropertyIdentifier"></span> <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
       <div data-toggle="collapse" data-target="#j-edit-filter-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-        Male <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+        <span ng-bind="filterItem.value"></span> <a href="##"><i class="fa fa-pencil-square-o"></i></a>
       </div>
     </div>
+    <!-- logical operator evaluation -->
     <div class="btn-group-vertical btn-toggle">
       <button class="btn btn-xs btn-default">AND</button>
       <button class="btn btn-xs btn-defualt active">OR</button>

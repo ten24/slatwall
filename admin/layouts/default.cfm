@@ -327,7 +327,19 @@ Notes:
 			</div>
 		</div>
 		--->
-		
+		<script type="text/javascript">
+			var guid = (function() {
+			  function s4() {
+			    return Math.floor((1 + Math.random()) * 0x10000)
+			               .toString(16)
+			               .substring(1);
+			  }
+			  return function() {
+			    return s4() + s4() + s4() + s4() +
+			           s4() + s4() + s4() + s4();
+			  };
+			})();
+		</script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
@@ -340,7 +352,7 @@ Notes:
 	 	<!---controllers --->
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/controllers/collections.js"></script>
 	 	<!---directives --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroup.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroups.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroupItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/pagination.js"></script>

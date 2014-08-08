@@ -17,12 +17,12 @@ angular.module('slatwalladmin')
 		$scope.collection = value;
 		$scope.collectionInitial = angular.copy($scope.collection);
 		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
-		$scope.filterGroups = $scope.collectionConfig.filterGroups;
-		
+		//$scope.filterGroups = $scope.collectionConfig.filterGroups;
+		//console.log($scope.filterGroups[0].filterGroup[2].hasOwnProperty('filterGroup'));
 		//on the backend everything is treated as a filter group. To the user, a filter group with only one filter is seen as a filter and not a filter group
 		console.log($scope.collection);
-		
-		
+		console.log($scope.collectionConfig);
+		console.log($scope.collectionConfig.hasOwnProperty('filterGroups'));
 		//$scope.collection.totalPagesArray = new Array(parseInt($scope.collection.totalPages));
 		
 		//add filterProperties

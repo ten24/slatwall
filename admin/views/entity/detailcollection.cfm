@@ -61,9 +61,7 @@
               <div class="col-xs-12 s-filters-selected">
                 <div class="row">
                 	<!---filterGroups gets taken apart here --->
-                	<ul class="col-xs-12 list-unstyled">
-                		<span sw-filter-item></span>
-                		<span sw-filter-group-item></span>
+                	<ul ng-if="collectionConfig.hasOwnProperty('filterGroups')" class="col-xs-12 list-unstyled" sw-filter-groups filter-groups="collectionConfig.filterGroups[0].filterGroup">
                 	</ul>
                 </div>
 
