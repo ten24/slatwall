@@ -1,7 +1,10 @@
 <li class="s-filter-group" >
-
   <!--- Filter display --->
   <div class="s-filter-item">
+   	<div ng-if="logicalOperator" class="btn-group-vertical btn-toggle">
+      <button class="btn btn-xs btn-default" ng-class="{active:logicalOperator === 'AND'}">AND</button>
+      <button class="btn btn-xs btn-default" ng-class="{active:logicalOperator === 'OR'}">OR</button>
+    </div>
     <div class="panel panel-default s-filter-group-style">
       <div class="panel-heading">Filter Group <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
       <div data-toggle="collapse" data-target="#j-nested-filter-{{uuid}}" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">

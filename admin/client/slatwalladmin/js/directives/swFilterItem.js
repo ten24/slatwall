@@ -7,10 +7,8 @@ angular.module('slatwalladmin')
 		},
 		link: function(scope, element,attrs){
 			
-			console.log(scope.filterItem);
 			var propertyAlias = scope.filterItem.propertyIdentifier.split(".").pop();
 			scope.filterItem.displayPropertyIdentifier = propertyAlias;
-			console.log(scope.filterItem);
 			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/filterItem.html"
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){

@@ -3,11 +3,11 @@ angular.module('slatwalladmin')
 	return {
 		restrict: 'A',
 		scope:{
-			filterGroupItem: "="
+			filterGroupItem: "=",
+			logicalOperator: "="
 		},
 		link: function(scope, element,attrs){
-			//console.log();
-			
+			console.log(scope.logicalOperator);
 			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/filterGroupItem.html"
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
