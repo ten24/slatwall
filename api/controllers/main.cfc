@@ -12,8 +12,6 @@ component output="false" accessors="true" {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
 		//could possibly check whether we want a different contentType other than json in the future
-		//param name="arguments.rc.headers.statusCode" default="200";
-		//param name="arguments.rc.headers.statusText" default="OK";
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers.contentType = rc.headers.contentType;
 		if(isnull(arguments.rc.apiResponse.content)){
@@ -21,10 +19,6 @@ component output="false" accessors="true" {
 		}
 		
 	}
-	
-	/*public any function onMissingMethod(required string name, required struct rc){
-		arguments.rc.apiResponse.statusCode = "400";
-	}*/
 	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
 		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');

@@ -341,6 +341,8 @@ Notes:
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/controllers/collections.js"></script>
 	 	<!---directives --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroup.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterItem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroupItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/pagination.js"></script>
 		
 		<div class="container-fluid">

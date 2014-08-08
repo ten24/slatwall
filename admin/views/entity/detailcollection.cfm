@@ -54,67 +54,11 @@
               <!--- Start Filter Group --->
               <div class="col-xs-12 s-filters-selected">
                 <div class="row">
-                	<ul class="col-xs-12 list-unstyled" ng-model="filterGroups" sw-filter-groups>
-                		
+                	<!---filterGroups gets taken apart here --->
+                	<ul class="col-xs-12 list-unstyled">
+                		<span sw-filter-item></span>
+                		<span sw-filter-group-item></span>
                 	</ul>
-                  <!---<ul class="col-xs-12 list-unstyled">
-					<!--- filter items go here make directive eventually--->
-					<li ng-if="filterGroups[0].hasOwnProperty('filterGroup')" ng-repeat="filter in filterGroups[0].filterGroup" ng-class="{'s-filter-group':filterGroups[0].hasOwnProperty('filterGroup')}">
-						<!---filter --->
-						<div class="s-filter-item" ng-if="!filter.hasOwnProperty('filterGroup')">
-							<div class="panel panel-default">
-							  <div class="panel-heading">{{filter.propertyIdentifier}} <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-							  <div data-toggle="collapse" data-target="#j-edit-filter-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-								{{filter.value}} <a href="##"><i class="fa fa-pencil-square-o"></i></a>
-							  </div>
-							</div>
-							<div class="btn-group-vertical">
-							  <button type="button" class="btn btn-xs s-btn-white active">AND</button>
-							  <button type="button" class="btn btn-xs s-btn-white">OR</button>
-							</div>
-						</div>
-						<!---filterGroup --->
-						<div class="s-filter-item" ng-if="filter.hasOwnProperty('filterGroup')">
-						    <div class="panel panel-default s-filter-group-style">
-						      <div class="panel-heading">Filter Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-						      <div data-toggle="collapse" data-target="#j-nested-filter-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-						        ({{filter.filterGroup.length}}) Filters <a href="##"><i class="fa fa-inbox"></i></a>
-						      </div>
-						    </div>
-					  	</div>
-					  	<div ng-if="filter.hasOwnProperty('filterGroup')" class="col-xs-12 collapse" id="j-nested-filter-1">
-	                        <div class="row">
-	                          <ul class="col-xs-12 list-unstyled s-no-paddings">
-	                            <!--- Filter display --->
-	                            <li >
-									<div class="s-filter-item" >
-										<div class="panel panel-default">
-										  <div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-										  <div data-toggle="collapse" data-target="#j-edit-filter-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-											Male <a href="##"><i class="fa fa-pencil-square-o"></i></a>
-										  </div>
-										</div>
-										<div class="btn-group-vertical">
-										  <button type="button" class="btn btn-xs s-btn-white active">AND</button>
-										  <button type="button" class="btn btn-xs s-btn-white">OR</button>
-										</div>
-									</div>
-	                            </li>
-	                          </ul>
-	                        </div>
-	                    </div>
-					</li>
-
-                    <li class="s-new-filter">
-                      <!--- New Filter Panel Buttons --->
-                      <div class="s-filter-item">
-                        <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
-                        <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
-                      </div>
-                      <!--- //New Filter Panel Buttons --->
-                    </li>
-
-                  </ul>--->
                 </div>
 
                 <!--- New Filter Panel --->
