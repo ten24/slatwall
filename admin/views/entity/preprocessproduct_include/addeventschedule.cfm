@@ -78,6 +78,10 @@ Notes:
 		<!--- /Monthly schedule --->
 		
 		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="scheduleEndDate" edit="#rc.edit#">
+			
+		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="createBundleFlag" edit="true" />
+		
+		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="sellIndividualSkuFlag" edit="true" />
 		
 	</cf_HibachiDisplayToggle>
 	

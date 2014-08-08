@@ -58,6 +58,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="eventEndDateTime" hb_rbKey="entity.sku.eventEndDateTime" hb_formFieldType="datetime";
 	property name="bundleLocationConfigurationFlag" hb_formFieldType="yesno";
 	property name="locationConfigurations" hb_rbKey="entity.sku.locationConfigurations";
+	property name="createBundleFlag" hb_formFieldType="yesno";
+	property name="sellIndividualSkuFlag" hb_formFieldType="yesno";
 	
 	// Scheduling-related properties
 	property name="schedulingType" hb_formFieldType="select" hint="single instance or recurring?";

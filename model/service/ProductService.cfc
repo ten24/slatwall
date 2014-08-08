@@ -478,6 +478,13 @@ component extends="HibachiService" accessors="true" {
 			// Set product association
 			newProductSchedule.setProduct( arguments.product );
 			
+			// Create a list of all existing  skus in the product
+			var existingSkuIDList = "";
+			
+			for(var sku in product.getSkus()) {
+				existingSkuIDList = listAppend(existingSkuIDList,sku.getSkuID());
+			}
+			
 			// DAILY
 			if( arguments.processObject.getRecurringTimeUnit() == "Daily" ) {
 				createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
@@ -497,6 +504,27 @@ component extends="HibachiService" accessors="true" {
 			
 			// Persist new product schedule
 			newProductSchedule = getProductScheduleService().saveProductSchedule( newProductSchedule );
+			
+			// Create a sku bundle for all the skus in the schedule based on response to createBundleFlag
+			if( arguments.processObject.getCreateBundleFlag() ) {	
+				var skus = "";
+				
+				for(var sku in product.getSkus()) {
+					if(!sku.getBundleFlag() && !listFindNoCase(existingSkuIDList,sku.getSkuID())){
+						skus = listAppend(skus, sku.getSkuID());
+					}
+				}
+				
+				// Set up new bundle data
+				var newBundleData = {
+					skuCode = "#product.getProductCode()#-#arrayLen(product.getSkus()) + 1#",
+					price = 0,
+					skus = skus
+				};
+				
+				// Add sku to the new bundle
+				product = this.processProduct( product, newBundleData, 'addSkuBundle' );
+			}
 		}
 		
 		// Return the product
@@ -517,9 +545,41 @@ component extends="HibachiService" accessors="true" {
   			var skuArray = listToArray( arguments.processObject.getSkus() );
   		
   			if(arguments.product.getBaseProductType() == "event") {
-  				newSku.setEventStartDateTime( getSkuService().getSku( skuArray[1] ).getEventStartDateTime() );
-  				newSku.setEventEndDateTime( getSkuService().getSku( skuArray[arrayLen(skuArray)] ).getEventEndDateTime() );
-  				newSku.setEventAttendanceCode( getEventRegistrationService().generateAttendanceCode(8) );
+				var capacities = "";
+				
+				for(var sku in arguments.processObject.getSkus()) {
+					
+					capacities =  listAppend(capacities, sku.getEventCapacity());
+					
+					for(var locationConfiguration in sku.getLocationConfigurations()) {
+						
+						if(preEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) {
+							preEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime');
+						}
+						if(postEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime')){
+							postEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime');
+						}
+						
+						newSku.addLocationConfiguration( locationConfiguration );
+					}
+				}
+				
+				var startResDateTime = arguments.startDateTime;
+				var endResDateTime = arguments.endDateTime;
+				if(isNumeric(preEventRegistrationMinutes) && preEventRegistrationMinutes gt 0) {
+					startResDateTime = dateAdd("m", preEventRegistrationMinutes*-1, startResDateTime);
+				}
+				if(isNumeric(postEventRegistrationMinutes) && postEventRegistrationMinutes gt 0) {
+					endResDateTime = dateAdd("m", postEventRegistrationMinutes, endResDateTime);
+				}
+				
+				newSku.setStartReservationDateTime( startResDateTime );
+				newSku.setEndReservationDateTime( endResDateTime );
+				newSku.setEventStartDateTime( getSkuService().getSku( skuArray[1] ).getEventStartDateTime() );
+				newSku.setEventEndDateTime( getSkuService().getSku( skuArray[arrayLen(skuArray)] ).getEventEndDateTime() );
+				newSku.generateAndSetAttendanceCode();
+  				newSku.setEventCapacity( arrayMax(listToArray(capacities)) );
+  				
   			}
   		}
   		
@@ -542,6 +602,9 @@ component extends="HibachiService" accessors="true" {
 				skuBundle = getSkuService().saveSkuBundle( skuBundle );
 			}
 		}
+		
+		// Return the product
+		return arguments.product;
 	}
 	
 	public any function processProduct_addSku(required any product, required any processObject, any data) {
