@@ -308,20 +308,24 @@
 			return theKey;
 		}
 		
-		public function createPasswordBasedEncryptionKey(required string password, string salt="", numeric iterationCount=1000, numeric iterationIndex=1) {
-			// Derive key using password, salt, and current iteration index
-			var hashResult = hash("#arguments.password##arguments.salt##arguments.iterationIndex#", "MD5" );
-			var key = binaryEncode(binaryDecode(hashResult, "hex"), "base64");
-			
-			// Notes: Implementation using Java 'PBKDF2WithHmacSHA1'
+		public function createPasswordBasedEncryptionKey(required string password, string salt="", numeric iterationCount=1000) {
+			// Notes: Another possible implementation using Java 'PBKDF2WithHmacSHA1'
 			// https://gist.github.com/scotttam/874426
 			
+			var hashResult = "";
+			var key = "";
+			var iterationIndex = 1;
+			
+			// Derive key using password, salt, and current iteration index
 			// Use current iteration generated key output as salt input for the next iteration
-			if (arguments.iterationIndex < arguments.iterationCount) {
-				arguments.salt=key;
-				arguments.iterationIndex++;
-				return createPasswordBasedEncryptionKey(argumentCollection=arguments);
-			}
+			do {
+				hashResult = hash("#arguments.password##arguments.salt##iterationIndex#", "MD5" );
+				key = binaryEncode(binaryDecode(hashResult, "hex"), "base64");
+				
+				// Update salt for next iteration
+				arguments.salt = key;
+				iterationIndex++;
+			} while (iterationIndex <= arguments.iterationCount);
 			
 			return key;
 		}
