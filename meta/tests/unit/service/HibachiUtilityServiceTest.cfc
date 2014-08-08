@@ -119,6 +119,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(2, structCount(data));
 	}
 	
+	public void function getSeedBasedEncryptionKey() {
+		if (false) {
+			var keyAlgorithms = ["AES", "BLOWFISH", "DES", "DESEDE"];
+			var keySamples = [];
+			
+			for (var i in keyAlgorithms) {
+				var sample = {};
+				sample.keyInBase64 = generateSecretKey(i);
+				sample.sizeInBytes = len(binaryEncode(toBinary(sample.keyInBase64), "hex")) / 2;
+				sample.sizeInBits = sample.sizeInBytes * 8;
+				sample.algo = i;
+				arrayAppend(keySamples, sample);
+			}
+		}
+		
+		// Test inputs
+		var password = "this is my custom seed name";
+		var saltBasedOnEntityID = "30E69FFF9067343922F6FF15BD9434A139AEEAB5";
+		
+		// Password-based encryption method
+		var methodBases = {};
+		for (var i = 1; i <= 1001; i += 100) {
+			methodBases[i].key = variables.service.createPasswordBasedEncryptionKey(password, saltBasedOnEntityID, i);
+			methodBases[i].resultEncrypt = encrypt("testing_string", methodBases[i].key, "AES/CBC/PKCS5Padding" );
+			methodBases[i].resultDecrypt = decrypt(methodBases[i].resultEncrypt, methodBases[i].key, "AES/CBC/PKCS5Padding" );
+		}
+		
+		addToDebug(local);
+	}
 }
 
 

@@ -308,6 +308,24 @@
 			return theKey;
 		}
 		
+		public function createPasswordBasedEncryptionKey(required string password, string salt="", numeric iterationCount=1000, numeric iterationIndex=1) {
+			// Derive key using password, salt, and current iteration index
+			var hashResult = hash("#arguments.password##arguments.salt##arguments.iterationIndex#", "MD5" );
+			var key = binaryEncode(binaryDecode(hashResult, "hex"), "base64");
+			
+			// Notes: Implementation using Java 'PBKDF2WithHmacSHA1'
+			// https://gist.github.com/scotttam/874426
+			
+			// Use current iteration generated key output as salt input for the next iteration
+			if (arguments.iterationIndex < arguments.iterationCount) {
+				arguments.salt=key;
+				arguments.iterationIndex++;
+				return createPasswordBasedEncryptionKey(argumentCollection=arguments);
+			}
+			
+			return key;
+		}
+		
 		public string function getEncryptionKey() {
 			if(!encryptionKeyExists()){
 				createEncryptionKey();
@@ -336,6 +354,18 @@
 		private void function storeEncryptionKey(required string key) {
 			var theKey = "<crypt><key>#arguments.key#</key></crypt>";
 			fileWrite(getEncryptionKeyFilePath(),theKey);
+		}
+		
+		private string function getEncryptionPasswordFilePath() {
+			return getEncryptionKeyLocation() & getEncryptionPasswordFileName();
+		}
+		
+		private string function getEncryptionPasswordFileName() {
+			return "password.txt.cfm";
+		}
+		
+		private boolean function encryptionPasswordExists() {
+			return fileExists(getEncryptionPasswordFilePath());
 		}
 	</cfscript>
 	
