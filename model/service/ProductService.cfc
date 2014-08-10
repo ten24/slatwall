@@ -102,6 +102,11 @@ component extends="HibachiService" accessors="true" {
 				newSku.getProduct().setDefaultSku( newSku );
 			}
 			
+			// Set publish flag based upon the response to sellIndividualSkuFlag
+			if( arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
+				newSku.setPublishedFlag( true );
+			}	
+			
 			// Get the event capacity and 
 			var eventCapacity = 0;
 			var preEventRegistrationMinutes = 0;
@@ -113,6 +118,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				
 				eventCapacity += locationConfiguration.getLocationConfigurationCapacity();
+				
 				if(preEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) {
 					preEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime');
 				}
@@ -164,6 +170,12 @@ component extends="HibachiService" accessors="true" {
 				if( isNull( newSku.getProduct().getDefaultSku() ) ) {
 					newSku.getProduct().setDefaultSku( newSku );
 				}
+				
+				// Set publish flag based upon the response to sellIndividualSkuFlag
+				if( arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
+					newSku.setPublishedFlag( true );
+				}
+			
 				var startResDateTime = arguments.startDateTime;
 				var endResDateTime = arguments.endDateTime;
 				if(isNumeric(locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) && locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime') gt 0) {
@@ -522,7 +534,7 @@ component extends="HibachiService" accessors="true" {
 					skus = skus
 				};
 				
-				// Add sku to the new bundle
+				// Bundle newly created skus
 				product = this.processProduct( product, newBundleData, 'addSkuBundle' );
 			}
 		}
@@ -543,15 +555,18 @@ component extends="HibachiService" accessors="true" {
 
   		if(listLen( arguments.processObject.getSkus() )) {
   			var skuArray = listToArray( arguments.processObject.getSkus() );
-  		
+  			
+  			// Setup additional data for event product
   			if(arguments.product.getBaseProductType() == "event") {
 				var capacities = "";
+				var preEventRegistrationMinutes = 0;
+				var postEventRegistrationMinutes = 0;
 				
-				for(var sku in arguments.processObject.getSkus()) {
+				for(var i=1; i<=arrayLen(skuArray); i++) {
 					
-					capacities =  listAppend(capacities, sku.getEventCapacity());
+					capacities =  listAppend(capacities, getSkuService().getSku( skuArray[i] ).getEventCapacity());
 					
-					for(var locationConfiguration in sku.getLocationConfigurations()) {
+					for(var locationConfiguration in getSkuService().getSku( skuArray[i] ).getLocationConfigurations()) {
 						
 						if(preEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) {
 							preEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime');
@@ -564,8 +579,10 @@ component extends="HibachiService" accessors="true" {
 					}
 				}
 				
-				var startResDateTime = arguments.startDateTime;
-				var endResDateTime = arguments.endDateTime;
+				// Calculating pre and post reservation times (setup / teardown)
+				var startResDateTime = getSkuService().getSku( skuArray[1] ).getEventStartDateTime();
+				var endResDateTime = getSkuService().getSku( skuArray[arrayLen(skuArray)] ).getEventEndDateTime();
+				
 				if(isNumeric(preEventRegistrationMinutes) && preEventRegistrationMinutes gt 0) {
 					startResDateTime = dateAdd("m", preEventRegistrationMinutes*-1, startResDateTime);
 				}
