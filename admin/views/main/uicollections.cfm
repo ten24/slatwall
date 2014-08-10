@@ -550,8 +550,79 @@
         </div><!--- //Tab Pane --->
 
         <div class="tab-pane s-display-options" id="j-display-options">
-          <div class="s-none-selected">There are no fields selected</div>
+
+          <!-- Dragable List group -->
+          <ul class="list-group s-j-draggablePanelList">
+
+            <li class="list-group-item" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+              <div class="row">
+                <div class="col-xs-6 s-pannel-name"><i class="fa fa-arrows-v"></i> Type (4)</div>
+                <div class="col-xs-6 s-pannel-body">
+
+                  <div class="btn-group">
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Download"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+
+            <li class="list-group-item" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+              <div class="row">
+                <div class="col-xs-6 s-pannel-name"><i class="fa fa-arrows-v"></i> Date (1)</div>
+                <div class="col-xs-6 s-pannel-body">
+
+                  <div class="btn-group">
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Download"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+
+            <li class="list-group-item" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+              <div class="row">
+                <div class="col-xs-6 s-pannel-name"><i class="fa fa-arrows-v"></i> Color (8)</div>
+                <div class="col-xs-6 s-pannel-body">
+
+                  <div class="btn-group">
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Download"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+
+            <li class="list-group-item" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+              <div class="row">
+                <div class="col-xs-6 s-pannel-name"><i class="fa fa-arrows-v"></i> Style (11)</div>
+                <div class="col-xs-6 s-pannel-body">
+
+                  <div class="btn-group">
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Download"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+
+          </ul>
+
+          <div class="s-none-selected" style="display:none;">There are no fields selected</div>
           <button class="btn s-btn-ten24">Add Display Field</button>
+
         </div><!--- //Tab Pane --->
       </div>
 
@@ -1007,6 +1078,19 @@
   .s-table-options .s-table-header-search {padding-left:0px;}
   .s-table-options .s-table-header-right {float:right;}
 
+  .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
+  .s-j-draggablePanelList a:active, .s-j-draggablePanelList button:focus {webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;background:none !important;background-color:green;}
+  .s-j-draggablePanelList a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
+  .s-j-draggablePanelList a.active {border:0px;box-shadow:none;-moz-box-shadow:    inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);-webkit-box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);border:0px;}
+  .s-j-draggablePanelList a i {margin-top:50%;}
+  .s-j-draggablePanelList a.active:hover {background-color:#F79C49;color:#ffffff;}
+  .s-j-draggablePanelList a:last-child {border:0px;}
+  .s-j-draggablePanelList .s-remove:hover, .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
+  .s-j-draggablePanelList .list-group-item {margin-bottom:2px;}
+  .s-j-draggablePanelList .s-pannel-name {padding:10px 15px;cursor: move;}
+  .s-j-draggablePanelList .s-pannel-name i {color:#ccc;}
+  .s-j-draggablePanelList .s-pannel-body {text-align:right;padding-right:0px;}
+
 
 </style>
 
@@ -1080,6 +1164,43 @@ $('form').submit(function(){
     return false;
 });
 </script>
+
+<script charset="utf-8">
+    jQuery(function($) {
+        var panelList = $('.s-j-draggablePanelList');
+
+        panelList.sortable({
+            // Only make the .panel-heading child elements support dragging.
+            // Omit this to make then entire <li>...</li> draggable.
+            handle: '.s-pannel-name',
+            update: function() {
+                $('.s-pannel-name', panelList).each(function(index, elem) {
+                     var $listItem = $(elem),
+                         newIndex = $listItem.index();
+
+                     // Persist the new indices.
+                });
+            }
+        });
+    });
+</script>
+
+<script charset="utf-8">
+  //Dragable pannel for filters
+  $('.s-j-draggablePanelList .btn-group a').click(function(e){
+    e.preventDefault();
+    $(this).toggleClass('active');
+  });
+</script>
+
+<script charset="utf-8">
+  //Remove sortable items and add message when none are left
+  $('.s-remove').click(function(){
+    $(this).closest('.list-group-item').remove();
+    if($('.s-j-draggablePanelList .list-group-item').length < 1){$('.s-none-selected').show()};
+  });
+</script>
+
 
 
 <!--- Add new default font --->
