@@ -621,7 +621,7 @@
           </ul>
 
           <div class="s-none-selected" style="display:none;">There are no fields selected</div>
-          <button class="btn s-btn-ten24">Add Display Field</button>
+          <button class="btn btn-xs s-btn-ten24">Add Display Field</button>
 
         </div><!--- //Tab Pane --->
       </div>
