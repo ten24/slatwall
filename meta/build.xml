@@ -73,7 +73,7 @@
 		<echo file="tests/config/${computer.hostname}.ini">
 # Parameters needed by all tests
 [common]
-login=testrunner@ten24web.com
+login=testrunnersupperuser@mailinator.com
 password=testrunner
 
 # Parameters for UI tests
