@@ -87,16 +87,19 @@
 
                             <div class="row">
                               <div class="col-xs-2">
-                                Select From Orders:
-                                <div class="option-dropdown">
-                                  <select class="form-control input-sm">
-                                    <option disabled="disabled" selected="selected">Select From Orders:</option>
-                                    <option value="one">One</option>
-                                    <option value="two">Two</option>
-                                    <option value="three">Three</option>
-                                    <option value="four">Four</option>
-                                    <option value="five">Five</option>
-                                  </select>
+                                <div class="form-group form-group-sm">
+                                  <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders:</label>
+                                  <div class="col-sm-12 s-no-paddings">
+                                    <select class="form-control input-sm">
+                                      <option disabled="disabled" selected="selected">Select From Orders:</option>
+                                      <option value="one">One</option>
+                                      <option value="two">Two</option>
+                                      <option value="three">Three</option>
+                                      <option value="four">Four</option>
+                                      <option value="five">Five</option>
+                                    </select>
+                                  </div>
+                                  <div class="clearfix"></div>
                                 </div>
                               </div>
                               <div class="col-xs-6 s-criteria">
@@ -1051,7 +1054,7 @@
   .s-add-filter .s-button-select-group {text-align:center;}
   .s-add-filter .s-checkbox {margin-top:15px;}
   .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
-  
+
   /* Selectbox css used to style select menues for cross browser support */
   .selectboxit-container{position:relative;display:inline-block;vertical-align:top}
   .selectboxit-container *{font:12px Helvetica,Arial;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:-moz-none;-ms-user-select:none;-o-user-select:none;user-select:none;outline:none;white-space:nowrap}
