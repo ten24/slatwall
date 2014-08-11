@@ -554,15 +554,19 @@
           <!-- Dragable List group -->
           <ul class="list-group s-j-draggablePanelList">
 
-            <li class="list-group-item" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+            <li class="list-group-item">
               <div class="row">
-                <div class="col-xs-6 s-pannel-name"><i class="fa fa-arrows-v"></i> Type (4)</div>
-                <div class="col-xs-6 s-pannel-body">
+                <div class="col-xs-5 s-pannel-name">
+                  <span>1</span>
+                  <i class="fa fa-arrows-v"></i> ID
+                </div>
+                <div class="col-xs-7 s-pannel-body">
 
                   <div class="btn-group">
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i><i class="fa fa-sort-amount-desc" style="display:none;"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
-                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Download"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
                     <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
                   </div>
 
@@ -570,15 +574,19 @@
               </div>
             </li>
 
-            <li class="list-group-item" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+            <li class="list-group-item">
               <div class="row">
-                <div class="col-xs-6 s-pannel-name"><i class="fa fa-arrows-v"></i> Date (1)</div>
-                <div class="col-xs-6 s-pannel-body">
+                <div class="col-xs-5 s-pannel-name">
+                  <span>2</span>
+                  <i class="fa fa-arrows-v"></i> Brand
+                </div>
+                <div class="col-xs-7 s-pannel-body">
 
                   <div class="btn-group">
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i><i class="fa fa-sort-amount-desc" style="display:none;"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
-                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Download"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
                     <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
                   </div>
 
@@ -586,15 +594,19 @@
               </div>
             </li>
 
-            <li class="list-group-item" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+            <li class="list-group-item">
               <div class="row">
-                <div class="col-xs-6 s-pannel-name"><i class="fa fa-arrows-v"></i> Color (8)</div>
-                <div class="col-xs-6 s-pannel-body">
+                <div class="col-xs-5 s-pannel-name">
+                  <span>3</span>
+                  <i class="fa fa-arrows-v"></i> Style
+                </div>
+                <div class="col-xs-7 s-pannel-body">
 
                   <div class="btn-group">
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i><i class="fa fa-sort-amount-desc" style="display:none;"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
-                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Download"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
                     <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
                   </div>
 
@@ -602,15 +614,19 @@
               </div>
             </li>
 
-            <li class="list-group-item" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+            <li class="list-group-item">
               <div class="row">
-                <div class="col-xs-6 s-pannel-name"><i class="fa fa-arrows-v"></i> Style (11)</div>
-                <div class="col-xs-6 s-pannel-body">
+                <div class="col-xs-5 s-pannel-name">
+                  <span>4</span>
+                  <i class="fa fa-arrows-v"></i> Color
+                </div>
+                <div class="col-xs-7 s-pannel-body">
 
                   <div class="btn-group">
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i><i class="fa fa-sort-amount-desc" style="display:none;"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
-                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Download"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
                     <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
                   </div>
 
@@ -1028,13 +1044,13 @@
   .s-and-or-box {text-align:center;height:40px;}
   .s-and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
   .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
-  .s-criteria .s-and-or-box .btn-group {background-color:#EAEAEA;}
-  .s-setting-options-body .s-add-filter button.s-remove {float:right;}
+  /*.s-criteria .s-and-or-box .btn-group {background-color:#EAEAEA;}
+  .s-setting-options-body .s-add-filter a.s-remove { background-color:#DA5757;}
   .s-setting-options-body .s-add-filter .s-button-select-group {text-align:center;border-bottom:3px dotted #DDDDDD;margin-bottom:15px;}
   .s-setting-options-body .s-add-filter .s-button-select-group .btn {margin-bottom:15px;margin-top:15px;}
   .s-setting-options-body .s-add-filter .s-filter-group-item {background: #F2F2F2;border-radius: 4px;padding: 15px;margin-bottom:10px;}
   .s-add-filter .s-checkbox label:before {margin-top:2px;}
-  .s-add-filter .s-checkbox label:after {margin-top:2px;}
+  .s-add-filter .s-checkbox label:after {margin-top:2px;}*/
 
   /* Selectbox css used to style select menues for cross browser support */
   .selectboxit-container{position:relative;display:inline-block;vertical-align:top}
@@ -1085,11 +1101,19 @@
   .s-j-draggablePanelList a i {margin-top:50%;}
   .s-j-draggablePanelList a.active:hover {background-color:#F79C49;color:#ffffff;}
   .s-j-draggablePanelList a:last-child {border:0px;}
-  .s-j-draggablePanelList .s-remove:hover, .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
+  .s-j-draggablePanelList .s-remove {background-color:#DA5757;color:#ffffff !important;}
+  .s-j-draggablePanelList .s-remove:hover {background-color:#D66B6B !important;}
+  .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
+  .s-j-draggablePanelList .s-sort.active {background-color:#ffffff !important;color:#767676 !important;box-shadow:none;}
+  .s-j-draggablePanelList .s-sort:hover {background-color:#eeeeee !important;color:#767676 !important;box-shadow:none;}
   .s-j-draggablePanelList .list-group-item {margin-bottom:2px;}
   .s-j-draggablePanelList .s-pannel-name {padding:10px 15px;cursor: move;}
   .s-j-draggablePanelList .s-pannel-name i {color:#ccc;}
   .s-j-draggablePanelList .s-pannel-body {text-align:right;padding-right:0px;}
+  .s-j-draggablePanelList .list-group-item {padding-top:0px;padding-bottom:0px;border-radius:0px;}
+  .s-j-draggablePanelList .s-pannel-name > span {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);color: #FFF;display: inline-block;padding-top: 11px;font-size: 12px;color: #DDD;}
+  .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;}
+  .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
 
 
 </style>
@@ -1166,30 +1190,35 @@ $('form').submit(function(){
 </script>
 
 <script charset="utf-8">
-    jQuery(function($) {
-        var panelList = $('.s-j-draggablePanelList');
+  //Make panels dragable
+  jQuery(function($) {
+      var panelList = $('.s-j-draggablePanelList');
 
-        panelList.sortable({
-            // Only make the .panel-heading child elements support dragging.
-            // Omit this to make then entire <li>...</li> draggable.
-            handle: '.s-pannel-name',
-            update: function() {
-                $('.s-pannel-name', panelList).each(function(index, elem) {
-                     var $listItem = $(elem),
-                         newIndex = $listItem.index();
+      panelList.sortable({
+          // Only make the .panel-heading child elements support dragging.
+          // Omit this to make then entire <li>...</li> draggable.
+          handle: '.s-pannel-name',
+          update: function() {
+              $('.s-pannel-name', panelList).each(function(index, elem) {
+                   var $listItem = $(elem),
+                       newIndex = $listItem.index();
 
-                     // Persist the new indices.
-                });
-            }
-        });
-    });
+                   // Persist the new indices.
+              });
+          }
+      });
+  });
 </script>
 
 <script charset="utf-8">
   //Dragable pannel for filters
   $('.s-j-draggablePanelList .btn-group a').click(function(e){
     e.preventDefault();
-    $(this).toggleClass('active');
+    if($(this).hasClass('s-sort')){
+      $(this).children('i').toggle();
+    }else{
+      $(this).toggleClass('active');
+    };
   });
 </script>
 
