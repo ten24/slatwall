@@ -81,10 +81,12 @@
                       <!--- Edit Filter Box --->
                       <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1">
                         <div class="row">
+                          <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
                           <div class="col-xs-12">
-                            <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
+
+
                             <div class="row">
-                              <div class="col-xs-4">
+                              <div class="col-xs-2">
                                 Select From Orders:
                                 <div class="option-dropdown">
                                   <select class="form-control input-sm">
@@ -97,7 +99,7 @@
                                   </select>
                                 </div>
                               </div>
-                              <div class="col-xs-4 s-criteria">
+                              <div class="col-xs-6 s-criteria">
                                 <h4>Criteria</h4>
 
                                 <!--- Filter Criteria Start --->
@@ -129,11 +131,11 @@
                                 <!--- //Filter Criteria End --->
 
                               </div>
-                              <div class="col-xs-4">
+                              <div class="col-xs-3">
                                 <div class="s-button-select-group">
-                                  <button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
-                                  <div class="s-or-box">OR</div>
-                                  <button type="button" class="btn s-btn-ten24">Save & Finish</button>
+                                  <button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
+                                  <div class="s-or-box">-OR-</div>
+                                  <button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
                                 </div>
                                 <div class="form-group">
                                   <div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
@@ -1026,7 +1028,7 @@
   .s-setting-options-body .filter-group .s-filter-item:first-child {margin-left:0px;}
   .s-setting-options-body .filter-group .s-filter-item:last-child {margin-right:0px;}
 
-  .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid}
+  .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid;}
 
   .s-setting-options-body .panel {display:inline-block;width:190px;margin-bottom:5px;border:none;}
   .s-setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;border-bottom:none;}
@@ -1036,22 +1038,20 @@
   .s-setting-options-body .s-setting-and-or .btn {min-width:52px;text-align:center;}
 
   .s-setting-options-body .s-add-filter {background:#eaeaea;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
-  .s-setting-options-body .s-add-filter .row:first-child {padding-top: 15px; padding-bottom:30px; }
-  .s-setting-options-body .s-add-filter h4 i {float:right;cursor:pointer;}
+  .s-setting-options-body .s-add-filter h4 i {float:right;cursor:pointer;padding-top:2px;}
   .s-setting-options-body .s-add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;}
-  .s-setting-options-body .s-add-filter label {font-weight:normal;}
+  .s-setting-options-body .s-add-filter label {font-weight:normal;font-size:12px;}
   .s-add-filter-box .s-and-or-box {margin-top: 20px;margin-bottom: 8px;}
   .s-and-or-box {text-align:center;height:40px;}
   .s-and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
   .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
-  /*.s-criteria .s-and-or-box .btn-group {background-color:#EAEAEA;}
-  .s-setting-options-body .s-add-filter a.s-remove { background-color:#DA5757;}
-  .s-setting-options-body .s-add-filter .s-button-select-group {text-align:center;border-bottom:3px dotted #DDDDDD;margin-bottom:15px;}
-  .s-setting-options-body .s-add-filter .s-button-select-group .btn {margin-bottom:15px;margin-top:15px;}
-  .s-setting-options-body .s-add-filter .s-filter-group-item {background: #F2F2F2;border-radius: 4px;padding: 15px;margin-bottom:10px;}
-  .s-add-filter .s-checkbox label:before {margin-top:2px;}
-  .s-add-filter .s-checkbox label:after {margin-top:2px;}*/
-
+  .s-add-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #DDD;}
+  .s-add-filter > .row {padding-top:0px !important;}
+  .s-add-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;margin-right: 20px;padding-right: 40px;padding-left: 40px;margin-left: 16px;margin-bottom: 15px;}
+  .s-add-filter .s-button-select-group {text-align:center;}
+  .s-add-filter .s-checkbox {margin-top:15px;}
+  .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
+  
   /* Selectbox css used to style select menues for cross browser support */
   .selectboxit-container{position:relative;display:inline-block;vertical-align:top}
   .selectboxit-container *{font:12px Helvetica,Arial;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:-moz-none;-ms-user-select:none;-o-user-select:none;user-select:none;outline:none;white-space:nowrap}
