@@ -84,7 +84,6 @@
                           <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
                           <div class="col-xs-12">
 
-
                             <div class="row">
                               <div class="col-xs-2">
                                 <div class="form-group form-group-sm">
@@ -563,7 +562,9 @@
               <div class="row">
                 <div class="col-xs-5 s-pannel-name">
                   <span>1</span>
-                  <i class="fa fa-arrows-v"></i> ID
+                  <i class="fa fa-arrows-v"></i>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">ID</a>
+                  <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
                 </div>
                 <div class="col-xs-7 s-pannel-body">
 
@@ -583,7 +584,9 @@
               <div class="row">
                 <div class="col-xs-5 s-pannel-name">
                   <span>2</span>
-                  <i class="fa fa-arrows-v"></i> Brand
+                  <i class="fa fa-arrows-v"></i>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Brand</a>
+                  <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
                 </div>
                 <div class="col-xs-7 s-pannel-body">
 
@@ -603,27 +606,9 @@
               <div class="row">
                 <div class="col-xs-5 s-pannel-name">
                   <span>3</span>
-                  <i class="fa fa-arrows-v"></i> Style
-                </div>
-                <div class="col-xs-7 s-pannel-body">
-
-                  <div class="btn-group">
-                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i><i class="fa fa-sort-amount-desc" style="display:none;"></i></a>
-                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
-                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
-                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
-                    <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
-                  </div>
-
-                </div>
-              </div>
-            </li>
-
-            <li class="list-group-item">
-              <div class="row">
-                <div class="col-xs-5 s-pannel-name">
-                  <span>4</span>
-                  <i class="fa fa-arrows-v"></i> Color
+                  <i class="fa fa-arrows-v"></i>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Style</a>
+                  <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
                 </div>
                 <div class="col-xs-7 s-pannel-body">
 
@@ -641,8 +626,31 @@
 
           </ul>
 
+          <!--- Message if no items --->
           <div class="s-none-selected" style="display:none;">There are no fields selected</div>
-          <button class="btn btn-xs s-btn-ten24">Add Display Field</button>
+
+          <!--- Button to show create option --->
+          <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
+
+          <!--- Create option dropdown --->
+          <div class="row s-add-display-field collapse" id="j-add-row">
+            <div class="col-xs-12">
+              <i class="fa fa-plus"></i>
+              <select class="form-control">
+                <option value="Select from Orders" disabled="disabled" selected="selected">Order Items</option>
+                <option value="Order Total">Order Total</option>
+                <option value="Order Item Total">Order Item Total</option>
+              </select>
+
+              <select class="form-control">
+                <option value="Select from Orders" disabled="disabled" selected="selected">Select From Account</option>
+                <option value="Order Total">First Name</option>
+                <option value="Order Item Total">Last Name</option>
+              </select>
+              <button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
+              <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+            </div>
+          </div>
 
         </div><!--- //Tab Pane --->
       </div>
@@ -978,6 +986,11 @@
   .s-options .tab-content,.s-options .tab-pane dl dd.s-value{margin-bottom:15px;}
   .s-options .tab-pane label span i,.s-filters-selected .s-filter-item .panel .panel-body i{color:#ccc;}
 
+  .s-add-display-field {background: #EAEAEA;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;margin-top: 15px;margin-right:0px;margin-left:0px;}
+  .s-add-display-field > div {padding:15px;}
+  .s-add-display-field > div > i.fa-plus {top: 4px;position: relative;margin-right: 5px;}
+  .s-add-display-field > div button {margin-top: 4px;}
+
   .s-edit-elements {width:60px;}
   .s-edit-elements ul {margin:0px;padding:0px;}
   .s-edit-elements ul li {text-align:center;cursor:pointer;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;display:inline-block;text-decoration:none;margin-right:5px;}
@@ -1098,7 +1111,7 @@
   .s-table-options .s-table-header-right {float:right;}
 
   .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
-  .s-j-draggablePanelList a:active, .s-j-draggablePanelList button:focus {webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;background:none !important;background-color:green;}
+
   .s-j-draggablePanelList a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
   .s-j-draggablePanelList a.active {border:0px;box-shadow:none;-moz-box-shadow:    inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);-webkit-box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);border:0px;}
   .s-j-draggablePanelList a i {margin-top:50%;}
@@ -1110,13 +1123,18 @@
   .s-j-draggablePanelList .s-sort.active {background-color:#ffffff !important;color:#767676 !important;box-shadow:none;}
   .s-j-draggablePanelList .s-sort:hover {background-color:#eeeeee !important;color:#767676 !important;box-shadow:none;}
   .s-j-draggablePanelList .list-group-item {margin-bottom:2px;}
-  .s-j-draggablePanelList .s-pannel-name {padding:10px 15px;cursor: move;}
+  .s-j-draggablePanelList .s-pannel-name {cursor: move;height:40px;}
+  .s-j-draggablePanelList .s-pannel-name input {width: 164px;display:inline-block;margin-top:5px;margin-right:5px;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title {cursor: pointer;color:#666666;background:none;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title:hover {text-decoration:none;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title:active {box-shadow:none !important;background:none !important;}
   .s-j-draggablePanelList .s-pannel-name i {color:#ccc;}
   .s-j-draggablePanelList .s-pannel-body {text-align:right;padding-right:0px;}
   .s-j-draggablePanelList .list-group-item {padding-top:0px;padding-bottom:0px;border-radius:0px;}
-  .s-j-draggablePanelList .s-pannel-name > span {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);color: #FFF;display: inline-block;padding-top: 11px;font-size: 12px;color: #DDD;}
-  .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;}
+  .s-j-draggablePanelList .s-pannel-name > span:first-child {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);color: #FFF;display: inline-block;padding-top: 11px;font-size: 12px;color: #DDD;}
+  .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
   .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
+  .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
 
 
 </style>
@@ -1232,29 +1250,17 @@ $('form').submit(function(){
     if($('.s-j-draggablePanelList .list-group-item').length < 1){$('.s-none-selected').show()};
   });
 </script>
-
-
+<script charset="utf-8">
+  //Sort filter - rename header
+  $('.list-group-item .s-pannel-name .s-pannel-title').click(function(){
+    $(this).fadeToggle('fast');
+    $(this).siblings(".s-title-edit-menu").toggle('slide', { direction: 'left' }, 300);
+  });
+  $('.list-group-item .s-pannel-name .s-save-btn').click(function(){
+    $(this).parent().siblings('.s-pannel-title').fadeToggle();
+    $(this).parent().toggle('slide', { direction: 'left' }, 300);
+  });
+</script>
 
 <!--- Add new default font --->
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
-
-
-<!---If you uncomment this content you will be able to drag table columns to sort them
-<style media="screen">
-  .dragtable-sortable { list-style-type: none; margin: 0; padding: 0; -moz-user-select: none;}
-  .dragtable-sortable li {float: left; background: white;}
-  .dragtable-sortable th, .dragtable-sortable td{border-left: 0px;}
-  .dragtable-sortable li:first-child th, .dragtable-sortable li:first-child td {border-left: 1px solid #CCC;}
-  .ui-sortable-helper {opacity: 0.7;filter: alpha(opacity=70);}
-  .ui-sortable-placeholder {-moz-box-shadow: 4px 5px 4px #C6C6C6 inset;-webkit-box-shadow: 4px 5px 4px #C6C6C6 inset;box-shadow: 4px 5px 4px #C6C6C6 inset;border-bottom: 1px solid #CCCCCC;border-top: 1px solid #CCCCCC;visibility: visible !important;background: #EFEFEF !important;visibility: visible !important;}
-  .ui-sortable-placeholder * {opacity: 0.0; visibility: hidden;}
-</style>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-<script charset="utf-8">
-  (function(e){function r(){var t=e('<style id="__dragtable_disable_text_selection__" type="text/css">body { -ms-user-select:none;-moz-user-select:-moz-none;-khtml-user-select:none;-webkit-user-select:none;user-select:none; }</style>');e(document.head).append(t);e(document.body).attr("onselectstart","return false;").attr("unselectable","on");if(window.getSelection){window.getSelection().removeAllRanges()}else{document.selection.empty()}}function i(){e("#__dragtable_disable_text_selection__").remove();if(t){e(document.body).attr("onselectstart",t)}else{e(document.body).removeAttr("onselectstart")}if(n){e(document.body).attr("unselectable",n)}else{e(document.body).removeAttr("unselectable")}}function s(e,t){var n=e.parentNode;var r=e.nextSibling===t?e:e.nextSibling;t.parentNode.insertBefore(e,t);n.insertBefore(t,r)}e.widget("akottr.dragtable",{options:{revert:false,dragHandle:".table-handle",maxMovingRows:40,excludeFooter:false,onlyHeaderThreshold:100,dragaccept:null,persistState:null,restoreState:null,exact:true,clickDelay:10,containment:null,cursor:"move",cursorAt:false,distance:0,tolerance:"pointer",axis:"x",beforeStart:e.noop,beforeMoving:e.noop,beforeReorganize:e.noop,beforeStop:e.noop},originalTable:{el:null,selectedHandle:null,sortOrder:null,startIndex:0,endIndex:0},sortableTable:{el:e(),selectedHandle:e(),movingRow:e()},persistState:function(){var t=this;this.originalTable.el.find("th").each(function(e){if(this.id!==""){t.originalTable.sortOrder[this.id]=e}});e.ajax({url:this.options.persistState,data:this.originalTable.sortOrder})},_restoreState:function(t){for(var n in t){this.originalTable.startIndex=e("#"+n).closest("th").prevAll().size()+1;this.originalTable.endIndex=parseInt(t[n]+1,10);this._bubbleCols()}},_bubbleCols:function(){var e,t,n,r;var i=this.originalTable.startIndex;var o=this.originalTable.endIndex;var u=this.originalTable.el.children();if(this.options.excludeFooter){u=u.not("tfoot")}if(i<o){for(e=i;e<o;e++){n=u.find("> tr > td:nth-child("+e+")").add(u.find("> tr > th:nth-child("+e+")"));r=u.find("> tr > td:nth-child("+(e+1)+")").add(u.find("> tr > th:nth-child("+(e+1)+")"));for(t=0;t<n.length;t++){s(n[t],r[t])}}}else{for(e=i;e>o;e--){n=u.find("> tr > td:nth-child("+e+")").add(u.find("> tr > th:nth-child("+e+")"));r=u.find("> tr > td:nth-child("+(e-1)+")").add(u.find("> tr > th:nth-child("+(e-1)+")"));for(t=0;t<n.length;t++){s(n[t],r[t])}}}},_rearrangeTableBackroundProcessing:function(){var t=this;return function(){t._bubbleCols();t.options.beforeStop(t.originalTable);t.sortableTable.el.remove();i();if(t.options.persistState!==null){e.isFunction(t.options.persistState)?t.options.persistState(t.originalTable):t.persistState()}}},_rearrangeTable:function(){var e=this;return function(){e.originalTable.selectedHandle.removeClass("dragtable-handle-selected");e.sortableTable.el.sortable("disable");e.sortableTable.el.addClass("dragtable-disabled");e.options.beforeReorganize(e.originalTable,e.sortableTable);e.originalTable.endIndex=e.sortableTable.movingRow.prevAll().size()+1;setTimeout(e._rearrangeTableBackroundProcessing(),50)}},_generateSortable:function(t){!t.cancelBubble&&(t.cancelBubble=true);var n=this;var i=this.originalTable.el[0].attributes;var s="";for(var o=0;o<i.length;o++){if(i[o].nodeValue&&i[o].nodeName!="id"&&i[o].nodeName!="width"){s+=i[o].nodeName+'="'+i[o].nodeValue+'" '}}var u=[];var a=[];this.originalTable.el.find("tr").slice(0,this.options.maxMovingRows).each(function(t,n){var r=this.attributes;var i="";for(var s=0;s<r.length;s++){if(r[s].nodeValue&&r[s].nodeName!="id"){i+=" "+r[s].nodeName+'="'+r[s].nodeValue+'"'}}u.push(i);a.push(e(this).height())});var f=[];var l=0;var c=n.originalTable.el.children();if(this.options.excludeFooter){c=c.not("tfoot")}c.find("> tr > th").each(function(t,n){var r=e(this).outerWidth();f.push(r);l+=r});if(n.options.exact){var h=l-n.originalTable.el.outerWidth();f[0]-=h}l+=2;var p='<ul class="dragtable-sortable" style="position:absolute; width:'+l+'px;">';c.find("> tr > th").each(function(t,r){p+="<li>";p+="<table "+s+">";var i=c.find("> tr > th:nth-child("+(t+1)+")");if(n.options.maxMovingRows>1){i=i.add(c.find("> tr > td:nth-child("+(t+1)+")").slice(0,n.options.maxMovingRows-1))}i.each(function(t){var n=e(this).clone().wrap("<div></div>").parent().html();if(n.toLowerCase().indexOf("<th")===0)p+="<thead>";p+="<tr "+u[t]+'" style="height:'+a[t]+'px;">';p+=n;if(n.toLowerCase().indexOf("<th")===0)p+="</thead>";p+="</tr>"});p+="</table>";p+="</li>"});p+="</ul>";this.sortableTable.el=this.originalTable.el.before(p).prev();this.sortableTable.el.find("> li > table").each(function(t,n){e(this).css("width",f[t]+"px")});this.sortableTable.selectedHandle=this.sortableTable.el.find("th .dragtable-handle-selected");var d=!this.options.dragaccept?"li":"li:has("+this.options.dragaccept+")";this.sortableTable.el.sortable({items:d,stop:this._rearrangeTable(),revert:this.options.revert,tolerance:this.options.tolerance,containment:this.options.containment,cursor:this.options.cursor,cursorAt:this.options.cursorAt,distance:this.options.distance,axis:this.options.axis});this.originalTable.startIndex=e(t.target).closest("th").prevAll().size()+1;this.options.beforeMoving(this.originalTable,this.sortableTable);this.sortableTable.movingRow=this.sortableTable.el.find("> li:nth-child("+this.originalTable.startIndex+")");r();this.sortableTable.movingRow.trigger(e.extend(e.Event(t.type),{which:1,clientX:t.clientX,clientY:t.clientY,pageX:t.pageX,pageY:t.pageY,screenX:t.screenX,screenY:t.screenY}));var v=this.sortableTable.el.find(".ui-sortable-placeholder");if(!v.height()<=0){v.css("height",this.sortableTable.el.find(".ui-sortable-helper").height())}v.html('<div class="outer" style="height:100%;"><div class="inner" style="height:100%;"></div></div>')},bindTo:{},_create:function(){this.originalTable={el:this.element,selectedHandle:e(),sortOrder:{},startIndex:0,endIndex:0};this.bindTo=this.originalTable.el.find("th");if(this.options.dragaccept){this.bindTo=this.bindTo.filter(this.options.dragaccept)}if(this.bindTo.find(this.options.dragHandle).size()>0){this.bindTo=this.bindTo.find(this.options.dragHandle)}if(this.options.restoreState!==null){e.isFunction(this.options.restoreState)?this.options.restoreState(this.originalTable):this._restoreState(this.options.restoreState)}var t=this;this.bindTo.mousedown(function(n){if(n.which!==1)return;if(t.options.beforeStart(t.originalTable)===false){return}clearTimeout(this.downTimer);this.downTimer=setTimeout(function(){t.originalTable.selectedHandle=e(this);t.originalTable.selectedHandle.addClass("dragtable-handle-selected");t._generateSortable(n)},t.options.clickDelay)}).mouseup(function(e){clearTimeout(this.downTimer)})},redraw:function(){this.destroy();this._create()},destroy:function(){this.bindTo.unbind("mousedown");e.Widget.prototype.destroy.apply(this,arguments)}});var t=e(document.body).attr("onselectstart"),n=e(document.body).attr("unselectable")})(jQuery)
-</script>
-<script charset="utf-8">
-$(document).ready(function() {
-  $('.table-striped').dragtable();
-});
-</script>--->
