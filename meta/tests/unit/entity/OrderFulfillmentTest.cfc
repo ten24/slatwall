@@ -166,5 +166,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
-	
+	// getRequiredShippingInfoExistsFlag()
+	public void function getRequiredShippingInfoExistsFlag_returns_false_by_default() {
+		assertFalse(variables.entity.getRequiredShippingInfoExistsFlag());
+	}
 }

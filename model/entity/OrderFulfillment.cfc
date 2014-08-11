@@ -89,7 +89,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="accountAddressOptions" type="array" persistent="false";
 	property name="saveAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
-	
+	property name="requiredShippingInfoExistsFlag" persistent="false";
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="discountAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="fulfillmentMethodType" type="numeric" persistent="false";
@@ -217,6 +217,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
     	
     	return quantityDelivered;
+    }
+    
+    public boolean function getRequiredShippingInfoExistsFlag() {
+    	var eb = getShippingAddress().validate(context="full", setErrors=false);
+    	return !eb.hasErrors();
     }
     
     public any function getShippingMethodOptions() {
