@@ -1,5 +1,5 @@
 
-<li >
+<li ng-class="{'s\-disabled':filterItem.disabled}">
  
   <!--- Filter display --->
   <div class="s-filter-item">
@@ -9,7 +9,7 @@
     </div>
     <div class="panel panel-default"  ng-class="{'s\-focus':isFocus}" >
       <div class="panel-heading"><span ng-bind="filterItem.displayPropertyIdentifier"></span> <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-      <div ng-click="toggleFocus()" data-toggle="collapse" data-target="#j-edit-filter-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+      <div ng-click="toggleFocus()" ng-class="{}" data-toggle="collapse" data-target="#j-edit-filter-1"  class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
         <span ng-bind="filterItem.value"></span> <a  href="##"><i class="fa fa-pencil-square-o"></i></a>
       </div>
     </div>

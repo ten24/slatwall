@@ -1,13 +1,13 @@
-<li class="s-filter-group" >
+<li class="s-filter-group" ng-class="{'s\-disabled':disabled}">
   <!--- Filter display --->
   <div class="s-filter-item">
    	<div ng-if="logicalOperator" class="btn-group-vertical btn-toggle">
       <button class="btn btn-xs btn-default" ng-class="{active:logicalOperator === 'AND'}">AND</button>
       <button class="btn btn-xs btn-default" ng-class="{active:logicalOperator === 'OR'}">OR</button>
     </div>
-    <div class="panel panel-default s-filter-group-style" ng-class="{'s\-focus':isFocus}" >
-      <div class="panel-heading">Filter Group <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-      <div data-toggle="collapse" ng-click="toggleFocus()" data-target="#j-nested-filter-{{uuid}}" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+    <div class="panel panel-default s-filter-group-style" ng-class="{'s\-focus':filterGroupItem.focus}" >
+      <div class="panel-heading">Filter Group <a href="##" class="j-tool-tip-item"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+      <div  ng-click="selectFilterGroupItem(filterGroupItem)" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
         (<span ng-bind="filterGroupItem.length"></span>) Filters <a href="##" ><i class="fa fa-inbox"></i></a>
       </div>
     </div>
@@ -15,11 +15,11 @@
   <!--- //Filter display --->
 
   <!---Nested Filter Box --->
-  <div class="col-xs-12 collapse" id="j-nested-filter-{{uuid}}">
+  <div class="col-xs-12" ng-class="{collapse:filterGroupItem.isClosed}">
     <div class="row">
-      <ul class="col-xs-12 list-unstyled s-no-paddings" sw-filter-groups filter-groups="filterGroupItem">
+      <span sw-filter-groups filter-group-item="filterGroupItem">
 
-      </ul>
+      </span>
     </div>
   </div>
   <!---//Nested Filter Box --->

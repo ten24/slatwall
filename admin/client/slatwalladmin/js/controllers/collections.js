@@ -1,6 +1,7 @@
 angular.module('slatwalladmin')
 //using $location to get url params, this will probably change to using routes eventually
-.controller('collections', [ '$scope','$location','slatwallService','alertService','$log', function($scope,$location,slatwallService,alertService,$log){
+.controller('collections', [ '$scope','$location','slatwallService','alertService','collectionService', function($scope,$location,slatwallService,alertService,collectionService){
+	
 	//init values
 	$scope.pageShowOptions = [
 		{display:5,value:5},
@@ -17,33 +18,8 @@ angular.module('slatwalladmin')
 		$scope.collection = value;
 		$scope.collectionInitial = angular.copy($scope.collection);
 		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
-		//$scope.filterGroups = $scope.collectionConfig.filterGroups;
-		//console.log($scope.filterGroups[0].filterGroup[2].hasOwnProperty('filterGroup'));
-		//on the backend everything is treated as a filter group. To the user, a filter group with only one filter is seen as a filter and not a filter group
-		console.log($scope.collection);
-		console.log($scope.collectionConfig);
-		console.log($scope.collectionConfig.hasOwnProperty('filterGroups'));
-		//$scope.collection.totalPagesArray = new Array(parseInt($scope.collection.totalPages));
+		collectionService.setFilterGroups($scope.collectionConfig.filterGroups[0]);
 		
-		//add filterProperties
-		/*var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
-		
-		filterPropertiesPromise.then(function(value){
-			//var fomattedFilterProperties = slatwallService.formatFilterProperties(value)
-			
-			$scope.filterProperties = value;
-			//console.log($scope.filterProperties);
-		}, function(reason){
-			
-		});
-		
-		//populate existing collections drop down
-		var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity($scope.collectionConfig.baseEntityName);
-		existingCollectionsPromise.then(function(value){
-			$scope.existingCollections = value.DATA;
-		},function(reason){
-			
-		});*/
 		
 	},function(reason){
 		//display error message if getter fails
