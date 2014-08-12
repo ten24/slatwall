@@ -16,6 +16,36 @@ angular.module('slatwalladmin')
 			});
 		},
 		controller: function($scope,$element,$attrs){
+			$scope.addFilterItem = function(filterItemGroup){
+				console.log(filterItemGroup);
+				if(filterItemGroup.length === 0){
+					var filterItem = {
+						propertyIdentifier:"",
+						comparisonOperator:"=",
+						value:""					
+					}
+				}else{
+					filterItem = {
+						logicalOperator:"AND",
+						propertyIdentifier:"",
+						comparisonOperator:"=",
+						value:""					
+					}
+				}
+				
+				filterItemGroup.push(filterItem);
+				console.log(filterItemGroup);
+			}
+			$scope.addFilterGroupItem = function(filterItemGroup){
+				console.log(filterItemGroup);
+				filterGroupItem = {
+					logicalOperator:"AND",
+					filterGroup:[]			
+				}
+				filterItemGroup.push(filterGroupItem);
+				console.log(filterItemGroup);
+			}
+			
 		}
 	}
 }]);

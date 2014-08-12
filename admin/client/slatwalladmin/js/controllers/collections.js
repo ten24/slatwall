@@ -24,9 +24,6 @@ angular.module('slatwalladmin')
 		$scope.collection = value;
 		$scope.collectionInitial = angular.copy($scope.collection);
 		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
-		collectionService.setFilterGroups($scope.collectionConfig.filterGroups[0]);
-		
-		
 	},function(reason){
 		//display error message if getter fails
 		var messages = reason.MESSAGES;
