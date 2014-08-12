@@ -3,10 +3,10 @@ angular.module('slatwalladmin')
 	return {
 		restrict: 'A',
 		scope:{
-			filterItem: "="
+			filterItem: "=",
+			siblingItems: "="
 		},
 		link: function(scope, element,attrs){
-			
 			var propertyAlias = scope.filterItem.propertyIdentifier.split(".").pop();
 			scope.filterItem.displayPropertyIdentifier = propertyAlias;
 			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/filterItem.html"
@@ -18,7 +18,26 @@ angular.module('slatwalladmin')
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
-			$scope.uuid = guid();
+			$scope.filterItem.disabled = false;
+			$scope.filterItem.uuid = guid();
+			$scope.filterItem.isClosed = true;
+			$scope.filterItem.siblingItems = $scope.siblingItems;
+			
+			$scope.selectFilterItem = function(filterItem){
+				if(filterItem.isClosed){
+					for(i in filterItem.siblingItems){
+						filterItem.siblingItems[i].isClosed = true;
+						filterItem.siblingItems[i].disabled = true;
+					}
+					filterItem.isClosed = false;
+					filterItem.disabled = false;
+				}else{
+					for(i in filterItem.siblingItems){
+						filterItem.siblingItems[i].disabled = false;
+					}
+					filterItem.isClosed = true;
+				}		
+			}
         } 
 	}
 }]);

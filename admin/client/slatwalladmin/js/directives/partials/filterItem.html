@@ -7,9 +7,9 @@
       <button class="btn btn-xs btn-default" ng-class="{active:filterItem.logicalOperator === 'AND'}">AND</button>
       <button class="btn btn-xs btn-default" ng-class="{active:filterItem.logicalOperator === 'OR'}">OR</button>
     </div>
-    <div class="panel panel-default"  ng-class="{'s\-focus':isFocus}" >
+    <div class="panel panel-default"  ng-class="{'s\-focus':!filterItem.isClosed}" >
       <div class="panel-heading"><span ng-bind="filterItem.displayPropertyIdentifier"></span> <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-      <div ng-click="toggleFocus()" ng-class="{}" data-toggle="collapse" data-target="#j-edit-filter-1"  class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+      <div ng-click="selectFilterItem(filterItem)" ng-class="{}"   class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
         <span ng-bind="filterItem.value"></span> <a  href="##"><i class="fa fa-pencil-square-o"></i></a>
       </div>
     </div>
@@ -18,9 +18,9 @@
   <!--- //Filter display --->
 
   <!--- Edit Filter Box --->
-  <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1">
+  <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1"  ng-class="{collapse:filterItem.isClosed}">
     <div class="row">
-      <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
+      <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o"  ></i></h4>
       <div class="col-xs-12">
 
         <div class="row">

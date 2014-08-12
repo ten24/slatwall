@@ -4,7 +4,6 @@ angular.module('slatwalladmin')
 		restrict: 'A',
 		scope:{
 			filterGroupItem: "=",
-			logicalOperator: "=",
 			siblingItems:"="
 		},
 		link: function(scope, element,attrs){
@@ -17,46 +16,25 @@ angular.module('slatwalladmin')
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
-			$scope.filterGroupItem.focus = false;
+			console.log($scope.filterGroupItem);
+			//for(item in filterGroupItem){}
+			
 			$scope.filterGroupItem.disabled = false;
-			$scope.filterGroupItem.uuid = guid();
 			$scope.filterGroupItem.isClosed = true;
 			$scope.filterGroupItem.siblingItems = $scope.siblingItems;
 			$scope.selectFilterGroupItem = function(filterGroupItem){
-				/*
-				when I select an item many things happen
-				toggle isClosed
-				based on isClosed set disabled
-				*/
 				if(filterGroupItem.isClosed){
 					for(i in filterGroupItem.siblingItems){
 						filterGroupItem.siblingItems[i].disabled = true;
-						console.log(filterGroupItem.siblingItems[i]);
-						//filterGroupItem.siblingItems[i].filterGroup.isClosed = true;
-						if(filterGroupItem.siblingItems[i].hasOwnProperty('filterGroup')){
-							filterGroupItem.siblingItems[i].filterGroup.isClosed = true;
-						}
 					}
 					filterGroupItem.isClosed = false;
+					filterGroupItem.disabled = false;
 				}else{
 					for(i in filterGroupItem.siblingItems){
 						filterGroupItem.siblingItems[i].disabled = false;
-						console.log(filterGroupItem.siblingItems[i]);
-						//filterGroupItem.siblingItems[i].filterGroup.isClosed = true;
-						if(filterGroupItem.siblingItems[i].hasOwnProperty('filterGroup')){
-							filterGroupItem.siblingItems[i].filterGroup.isClosed = true;
-						}
 					}
 					filterGroupItem.isClosed = true;
-				}		
-				/*
-				if(collectionService.hasFilterGroupItemBreadCrumb(filterGroupItem)){
-					collectionService.removeFilterGroupItemBreadCrumbs(filterGroupItem);
-					//collectionService.enableFilterGroupItems($scope.siblingItems);
-				}else{
-					collectionService.addFilterGroupItemBreadCrumb(filterGroupItem);
-					//collectionService.disableFilterGroupItems($scope.siblingItems);
-				}*/
+				}
 			}
         }  
 	}
