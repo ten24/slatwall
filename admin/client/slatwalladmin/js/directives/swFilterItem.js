@@ -1,10 +1,11 @@
 angular.module('slatwalladmin')
-.directive('swFilterItem', ['$http','$compile','$templateCache',function($http,$compile,$templateCache){
+.directive('swFilterItem', ['$http','$compile','$templateCache','collectionService',function($http,$compile,$templateCache,collectionService){
 	return {
 		restrict: 'A',
 		scope:{
 			filterItem: "=",
-			siblingItems: "="
+			siblingItems: "=",
+			setItemInUse: "&"
 		},
 		link: function(scope, element,attrs){
 			var propertyAlias = scope.filterItem.propertyIdentifier.split(".").pop();
@@ -18,25 +19,20 @@ angular.module('slatwalladmin')
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
-			$scope.filterItem.disabled = false;
-			$scope.filterItem.uuid = guid();
-			$scope.filterItem.isClosed = true;
-			$scope.filterItem.siblingItems = $scope.siblingItems;
+			if(typeof($scope.filterItem.isClosed) === 'undefined'){
+				$scope.filterItem.isClosed = true;
+			}
+			if(typeof($scope.filterItem.disabled) === 'undefined'){
+				$scope.filterItem.disabled = false;
+			}
+			if(typeof($scope.filterItem.siblingItems) === 'undefined'){
+				$scope.filterItem.siblingItems = $scope.siblingItems;
+			}
+			$scope.filterItem.setItemInUse = $scope.setItemInUse;
 			
 			$scope.selectFilterItem = function(filterItem){
-				if(filterItem.isClosed){
-					for(i in filterItem.siblingItems){
-						filterItem.siblingItems[i].isClosed = true;
-						filterItem.siblingItems[i].disabled = true;
-					}
-					filterItem.isClosed = false;
-					filterItem.disabled = false;
-				}else{
-					for(i in filterItem.siblingItems){
-						filterItem.siblingItems[i].disabled = false;
-					}
-					filterItem.isClosed = true;
-				}		
+				collectionService.selectFilterItem(filterItem);
+				
 			}
         } 
 	}

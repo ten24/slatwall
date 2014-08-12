@@ -5,7 +5,8 @@ angular.module('slatwalladmin')
 		scope:{
 			filterGroupItem: "=",
 			siblingItems:"=",
-			incrementFilterCount:"&" 
+			incrementFilterCount:"&",
+			setItemInUse:"&" 
 		},
 		link: function(scope, element,attrs){
 			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/filterGroupItem.html"
@@ -17,25 +18,17 @@ angular.module('slatwalladmin')
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
-			console.log($scope.filterGroupItem);
 			//for(item in filterGroupItem){}
+			$scope.filterGroupItem.setItemInUse = $scope.setItemInUse;
 			
 			$scope.filterGroupItem.disabled = false;
-			$scope.filterGroupItem.isClosed = true;
+			if(typeof($scope.filterGroupItem.isClosed) === 'undefined'){
+				$scope.filterGroupItem.isClosed = true;
+			}
+			
 			$scope.filterGroupItem.siblingItems = $scope.siblingItems;
 			$scope.selectFilterGroupItem = function(filterGroupItem){
-				if(filterGroupItem.isClosed){
-					for(i in filterGroupItem.siblingItems){
-						filterGroupItem.siblingItems[i].disabled = true;
-					}
-					filterGroupItem.isClosed = false;
-					filterGroupItem.disabled = false;
-				}else{
-					for(i in filterGroupItem.siblingItems){
-						filterGroupItem.siblingItems[i].disabled = false;
-					}
-					filterGroupItem.isClosed = true;
-				}
+				collectionService.selectFilterGroupItem(filterGroupItem);
 			}
         }  
 	}

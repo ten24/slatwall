@@ -357,6 +357,7 @@ Notes:
 	 	<!---directives --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroups.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterItem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swAddFilterButtons.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swEditFilterItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroupItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/pagination.js"></script>

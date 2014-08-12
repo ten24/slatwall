@@ -13,7 +13,6 @@ angular.module('slatwalladmin')
 	
 	$scope.filterCount = 0;
 	$scope.incrementFilterCount = function(){
-		console.log('increment filter');
 		$scope.filterCount++;
 	}
 	

@@ -1,11 +1,12 @@
 <ul class="col-xs-12 list-unstyled s-no-paddings">
-	<span ng-repeat="filterGroup in filterGroupItem" ng-init="incrementFilterCount()">
+	{{itemInUse}}<span ng-repeat="filterGroup in filterGroupItem" ng-init="incrementFilterCount()">
 		<!-- figure out if item is filterItem or filterGroup-->
 		<span ng-switch on="filterGroup.hasOwnProperty('filterGroup')" >
 			<span 	ng-switch-when="false" 
 					sw-filter-item 
 					filter-item="filterGroup" 
 					sibling-items="filterGroupItem"
+					set-item-in-use="setItemInUse(booleanValue)"
 					>
 			</span>
 			<span 	ng-switch-when="true" 
@@ -13,16 +14,14 @@
 					filter-group-item="filterGroup",
 					sibling-items="filterGroupItem"
 					increment-filter-count="incrementFilterCount()" 
+					set-item-in-use="setItemInUse(booleanValue)"
 					>
 			</span>
 		</span>
 	</span>
-	<li class="s-new-filter">
-      <!--- New Filter Panel Buttons --->
-      <div class="s-filter-item">
-        <button type="button" class="btn btn-xs btn-default" ng-click="addFilterItem(filterGroupItem)"><i class="fa fa-plus"></i> Filter</button>
-        <button type="button" class="btn btn-xs btn-default" ng-click="addFilterGroupItem(filterGroupItem)"><i class="fa fa-plus"></i> Filter Group</button>
-      </div>
-      <!--- //New Filter Panel Buttons --->
-    </li>
+	<span 	sw-add-filter-buttons
+			filter-group-item="filterGroupItem"
+			item-in-use="itemInUse"
+	>
+	</span>
 </ul>

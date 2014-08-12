@@ -15,7 +15,9 @@ angular.module('slatwalladmin')
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
-			
+			if(typeof($scope.filterItem.isClosed) === 'undefined'){
+				$scope.filterItem.isClosed = true;
+			}
         } 
 	}
 }]);
