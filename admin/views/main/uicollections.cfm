@@ -5,7 +5,7 @@
     <div class="row s-header-bar">
       <div class="col-md-7"><h1>Best Selling Mens & Womens Boots From July 2014</h1></div>
       <div class="col-md-5 s-header-nav">
-        <ul class="nav nav-tabs" role="tablist">
+        <ul class="nav nav-tabs" style="padding-right:0px;" role="tablist">
           <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
           <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(6)</span></a></li>
           <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
@@ -81,23 +81,27 @@
                       <!--- Edit Filter Box --->
                       <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1">
                         <div class="row">
+                          <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
                           <div class="col-xs-12">
-                            <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
+
                             <div class="row">
-                              <div class="col-xs-4">
-                                Select From Orders:
-                                <div class="option-dropdown">
-                                  <select class="form-control input-sm">
-                                    <option disabled="disabled" selected="selected">Select From Orders:</option>
-                                    <option value="one">One</option>
-                                    <option value="two">Two</option>
-                                    <option value="three">Three</option>
-                                    <option value="four">Four</option>
-                                    <option value="five">Five</option>
-                                  </select>
+                              <div class="col-xs-2">
+                                <div class="form-group form-group-sm">
+                                  <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders:</label>
+                                  <div class="col-sm-12 s-no-paddings">
+                                    <select class="form-control input-sm">
+                                      <option disabled="disabled" selected="selected">Select From Orders:</option>
+                                      <option value="one">One</option>
+                                      <option value="two">Two</option>
+                                      <option value="three">Three</option>
+                                      <option value="four">Four</option>
+                                      <option value="five">Five</option>
+                                    </select>
+                                  </div>
+                                  <div class="clearfix"></div>
                                 </div>
                               </div>
-                              <div class="col-xs-4 s-criteria">
+                              <div class="col-xs-6 s-criteria">
                                 <h4>Criteria</h4>
 
                                 <!--- Filter Criteria Start --->
@@ -129,11 +133,11 @@
                                 <!--- //Filter Criteria End --->
 
                               </div>
-                              <div class="col-xs-4">
+                              <div class="col-xs-3">
                                 <div class="s-button-select-group">
-                                  <button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
-                                  <div class="s-or-box">OR</div>
-                                  <button type="button" class="btn s-btn-ten24">Save & Finish</button>
+                                  <button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
+                                  <div class="s-or-box">-OR-</div>
+                                  <button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
                                 </div>
                                 <div class="form-group">
                                   <div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
@@ -550,8 +554,104 @@
         </div><!--- //Tab Pane --->
 
         <div class="tab-pane s-display-options" id="j-display-options">
-          <div class="s-none-selected">There are no fields selected</div>
-          <button class="btn s-btn-ten24">Add Display Field</button>
+
+          <!-- Dragable List group -->
+          <ul class="list-group s-j-draggablePanelList">
+
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-xs-5 s-pannel-name">
+                  <span>1</span>
+                  <i class="fa fa-arrows-v"></i>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">ID</a>
+                  <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                </div>
+                <div class="col-xs-7 s-pannel-body">
+
+                  <div class="btn-group">
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i><i class="fa fa-sort-amount-desc" style="display:none;"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-xs-5 s-pannel-name">
+                  <span>2</span>
+                  <i class="fa fa-arrows-v"></i>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">Brand</a>
+                  <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                </div>
+                <div class="col-xs-7 s-pannel-body">
+
+                  <div class="btn-group">
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i><i class="fa fa-sort-amount-desc" style="display:none;"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-xs-5 s-pannel-name">
+                  <span>3</span>
+                  <i class="fa fa-arrows-v"></i>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">Style</a>
+                  <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                </div>
+                <div class="col-xs-7 s-pannel-body">
+
+                  <div class="btn-group">
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i><i class="fa fa-sort-amount-desc" style="display:none;"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
+                    <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+
+          </ul>
+
+          <!--- Message if no items --->
+          <div class="s-none-selected" style="display:none;">There are no fields selected</div>
+
+          <!--- Button to show create option --->
+          <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
+
+          <!--- Create option dropdown --->
+          <div class="row s-add-display-field collapse" id="j-add-row">
+            <div class="col-xs-12">
+              <i class="fa fa-plus"></i>
+              <select class="form-control">
+                <option value="Select from Orders" disabled="disabled" selected="selected">Order Items</option>
+                <option value="Order Total">Order Total</option>
+                <option value="Order Item Total">Order Item Total</option>
+              </select>
+
+              <select class="form-control">
+                <option value="Select from Orders" disabled="disabled" selected="selected">Select From Account</option>
+                <option value="Order Total">First Name</option>
+                <option value="Order Item Total">Last Name</option>
+              </select>
+              <button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
+              <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+            </div>
+          </div>
+
         </div><!--- //Tab Pane --->
       </div>
 
@@ -560,9 +660,9 @@
     <div class="s-table-options">
       <form class="navbar-form navbar-left form-horizontal" role="search">
         <div class="form-group">
-          <label for="name" class="control-label">Bulk Action</label>
+          <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
           <select size="1" name="" aria-controls="" class="form-control">
-            <option value="15" selected="selected" disabled="disabled">Select</option>
+            <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
             <option value="20">Last Changed</option>
             <option value="20">Delete</option>
             <option value="20">Examples</option>
@@ -609,7 +709,7 @@
       </div>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive s-filter-table-box">
       <table class="table table-bordered table-striped">
           <thead>
               <tr>
@@ -886,6 +986,11 @@
   .s-options .tab-content,.s-options .tab-pane dl dd.s-value{margin-bottom:15px;}
   .s-options .tab-pane label span i,.s-filters-selected .s-filter-item .panel .panel-body i{color:#ccc;}
 
+  .s-add-display-field {background: #EAEAEA;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;margin-top: 15px;margin-right:0px;margin-left:0px;}
+  .s-add-display-field > div {padding:15px;}
+  .s-add-display-field > div > i.fa-plus {top: 4px;position: relative;margin-right: 5px;}
+  .s-add-display-field > div button {margin-top: 4px;}
+
   .s-edit-elements {width:60px;}
   .s-edit-elements ul {margin:0px;padding:0px;}
   .s-edit-elements ul li {text-align:center;cursor:pointer;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;display:inline-block;text-decoration:none;margin-right:5px;}
@@ -916,7 +1021,7 @@
   .s-checkbox label{display:inline-block;position:relative;}
   .s-checkbox label:before{content:"";display:inline-block;width:15px;height:15px;border:1px solid #cccccc;border-radius:3px;background-color:#fff;-webkit-transition:border 0.15s ease-in-out, color 0.15s ease-in-out;transition:border 0.15s ease-in-out, color 0.15s ease-in-out;vertical-align:text-top;}
   .s-checkbox label:after{display:inline-block;position:absolute;width:16px;height:16px;left:0;top:0;padding-right:1px;padding-top:2px;font-size:9px;color:#555555;vertical-align:text-top;}
-  @-moz-document url-prefix() {.s-checkbox label:after {padding-top:3px;}}
+  @-moz-document url-prefix() {.s-checkbox label:after {padding-top:2px;}}
   .s-checkbox input[type=checkbox]{display:none;}
   .s-checkbox input[type=checkbox]:checked + label:after{font-family:'Glyphicons Halflings';content:"\e013";}
   .s-checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
@@ -924,6 +1029,7 @@
 
   table tr th.s-sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
+  .s-filter-table-box tr td:first-child {width:46px;}
 
   .pagination {margin: 8px 0;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
@@ -939,7 +1045,7 @@
   .s-setting-options-body .filter-group .s-filter-item:first-child {margin-left:0px;}
   .s-setting-options-body .filter-group .s-filter-item:last-child {margin-right:0px;}
 
-  .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid}
+  .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid;}
 
   .s-setting-options-body .panel {display:inline-block;width:190px;margin-bottom:5px;border:none;}
   .s-setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;border-bottom:none;}
@@ -949,27 +1055,25 @@
   .s-setting-options-body .s-setting-and-or .btn {min-width:52px;text-align:center;}
 
   .s-setting-options-body .s-add-filter {background:#eaeaea;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
-  .s-setting-options-body .s-add-filter .row:first-child {padding-top: 15px; padding-bottom:30px; }
-  .s-setting-options-body .s-add-filter h4 i {float:right;cursor:pointer;}
+  .s-setting-options-body .s-add-filter h4 i {float:right;cursor:pointer;padding-top:2px;}
   .s-setting-options-body .s-add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;}
-  .s-setting-options-body .s-add-filter label {font-weight:normal;}
+  .s-setting-options-body .s-add-filter label {font-weight:normal;font-size:12px;}
   .s-add-filter-box .s-and-or-box {margin-top: 20px;margin-bottom: 8px;}
   .s-and-or-box {text-align:center;height:40px;}
   .s-and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
   .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
-  .s-criteria .s-and-or-box .btn-group {background-color:#EAEAEA;}
-  .s-setting-options-body .s-add-filter button.s-remove {float:right;}
-  .s-setting-options-body .s-add-filter .s-button-select-group {text-align:center;border-bottom:3px dotted #DDDDDD;margin-bottom:15px;}
-  .s-setting-options-body .s-add-filter .s-button-select-group .btn {margin-bottom:15px;margin-top:15px;}
-  .s-setting-options-body .s-add-filter .s-filter-group-item {background: #F2F2F2;border-radius: 4px;padding: 15px;margin-bottom:10px;}
-  .s-add-filter .s-checkbox label:before {margin-top:2px;}
-  .s-add-filter .s-checkbox label:after {margin-top:2px;}
+  .s-add-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #DDD;}
+  .s-add-filter > .row {padding-top:0px !important;}
+  .s-add-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;margin-right: 20px;padding-right: 40px;padding-left: 40px;margin-left: 16px;margin-bottom: 15px;}
+  .s-add-filter .s-button-select-group {text-align:center;}
+  .s-add-filter .s-checkbox {margin-top:15px;}
+  .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
 
   /* Selectbox css used to style select menues for cross browser support */
   .selectboxit-container{position:relative;display:inline-block;vertical-align:top}
   .selectboxit-container *{font:12px Helvetica,Arial;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:-moz-none;-ms-user-select:none;-o-user-select:none;user-select:none;outline:none;white-space:nowrap}
   .selectboxit-container .selectboxit{width:220px;cursor:pointer;margin:0;padding:0;border-radius:3px;overflow:hidden;display:block;position:relative}
-  .selectboxit-container span,.selectboxit-container .selectboxit-options a{height:29px;line-height:29px;display:block}
+  .selectboxit-container span,.selectboxit-container .selectboxit-options a{height:29px;line-height:29px;display:block;}
   .selectboxit-container .selectboxit:focus{outline:0}
   .selectboxit.selectboxit-disabled,.selectboxit-options .selectboxit-disabled{opacity:.65;filter:alpha(opacity=65);-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;cursor:default}
   .selectboxit-text{text-indent:5px;overflow:hidden;text-overflow:ellipsis;float:left}
@@ -983,8 +1087,9 @@
   .selectboxit-option-last{border-bottom-right-radius:6px;border-bottom-left-radius:6px}
   .selectboxit-optgroup-header{font-weight:700}
   .selectboxit-optgroup-header:hover{cursor:default}
-  .selectboxit-arrow-container{width:30px;position:absolute;right:0}
-  .selectboxit .selectboxit-arrow-container .selectboxit-arrow{margin:0 auto;position:absolute;top:50%;right:0;left:0}
+  .selectboxit-arrow-container{width:30px;position:absolute;right:0;}
+  .s-table-options .selectboxit-arrow-container{background-color:#eeeeee;}
+  .selectboxit .selectboxit-arrow-container .selectboxit-arrow{margin:0 auto;position:absolute;top:44%;right:0;left:0}
   .selectboxit .selectboxit-arrow-container .selectboxit-arrow.ui-icon{top:30%}
   .selectboxit-option-icon-container{float:left}
   .selectboxit-container .selectboxit-option-icon{margin:0;padding:0;vertical-align:middle}
@@ -994,18 +1099,47 @@
   .jqueryui .ui-icon-triangle-1-s{background-position:-64px -16px}
   .selectboxit-btn.selectboxit-enabled:hover,.selectboxit-btn.selectboxit-enabled:focus,.selectboxit-btn.selectboxit-enabled:active{color:#767676;background-color:#fff}
   .selectboxit-btn.selectboxit-enabled:hover,.selectboxit-btn.selectboxit-enabled:focus{color:#767676;text-decoration:none;background-position:0 -15px}
-  .selectboxit-default-arrow{width:0;height:0;border-top:4px solid #ccc;border-right:4px solid transparent;border-left:4px solid transparent}
+  .selectboxit-default-arrow{width:0;height:0;border-top:4px solid #767676;border-right:4px solid transparent;border-left:4px solid transparent;color:#767676 !important;}
   .selectboxit-list{background-color:#fff;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.2);-webkit-box-shadow:0 5px 10px rgba(0,0,0,0.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,0.2);box-shadow:0 5px 10px rgba(0,0,0,0.2)}
   .selectboxit-list .selectboxit-option-anchor{color:#767676}
-  .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor{color:#fff;background-color:#F58620}
-  .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor{color:#999}
+  .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor{background-color:#F58620;color:#ffffff;}
+  .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor{color:#ccc}
 
   .s-table-options {display: inline-block;width: 100%;}
   .s-table-options .control-label {font-weight:normal;vertical-align:middle;padding-top: 4px;}
   .s-table-options .navbar-form {margin-right:15px;}
+  .s-table-options .navbar-form:first-child {margin-left:17px;}
   .s-table-options .btn-group {margin-top:15px;margin-top: 8px;margin-bottom: 8px;margin-left:15px;}
   .s-table-options .s-table-header-search {padding-left:0px;}
+  .s-table-options .s-table-header-search button {color:#5E5E5E;background-color:#eeeeee;}
   .s-table-options .s-table-header-right {float:right;}
+  .s-table-options .fa-level-down {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;}
+
+  .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
+
+  .s-j-draggablePanelList a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
+  .s-j-draggablePanelList a.active {border:0px;box-shadow:none;-moz-box-shadow:    inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);-webkit-box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);border:0px;}
+  .s-j-draggablePanelList a i {margin-top:50%;}
+  .s-j-draggablePanelList a.active:hover {background-color:#F79C49;color:#ffffff;}
+  .s-j-draggablePanelList a:last-child {border:0px;}
+  .s-j-draggablePanelList .s-remove {background-color:#DA5757;color:#ffffff !important;}
+  .s-j-draggablePanelList .s-remove:hover {background-color:#D66B6B !important;}
+  .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
+  .s-j-draggablePanelList .s-sort.active {background-color:#ffffff !important;color:#767676 !important;box-shadow:none;}
+  .s-j-draggablePanelList .s-sort:hover {background-color:#eeeeee !important;color:#767676 !important;box-shadow:none;}
+  .s-j-draggablePanelList .list-group-item {margin-bottom:2px;}
+  .s-j-draggablePanelList .s-pannel-name {cursor: move;height:40px;}
+  .s-j-draggablePanelList .s-pannel-name input {width: 164px;display:inline-block;margin-top:5px;margin-right:5px;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title {cursor: pointer;color:#666666;background:none;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title:hover {text-decoration:none;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title:active {box-shadow:none !important;background:none !important;}
+  .s-j-draggablePanelList .s-pannel-name i {color:#ccc;}
+  .s-j-draggablePanelList .s-pannel-body {text-align:right;padding-right:0px;}
+  .s-j-draggablePanelList .list-group-item {padding-top:0px;padding-bottom:0px;border-radius:0px;}
+  .s-j-draggablePanelList .s-pannel-name > span:first-child {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);color: #FFF;display: inline-block;padding-top: 11px;font-size: 12px;color: #DDD;}
+  .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
+  .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
+  .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
 
 
 </style>
@@ -1081,27 +1215,57 @@ $('form').submit(function(){
 });
 </script>
 
-
-<!--- Add new default font --->
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
-
-
-<!---If you uncomment this content you will be able to drag table columns to sort them
-<style media="screen">
-  .dragtable-sortable { list-style-type: none; margin: 0; padding: 0; -moz-user-select: none;}
-  .dragtable-sortable li {float: left; background: white;}
-  .dragtable-sortable th, .dragtable-sortable td{border-left: 0px;}
-  .dragtable-sortable li:first-child th, .dragtable-sortable li:first-child td {border-left: 1px solid #CCC;}
-  .ui-sortable-helper {opacity: 0.7;filter: alpha(opacity=70);}
-  .ui-sortable-placeholder {-moz-box-shadow: 4px 5px 4px #C6C6C6 inset;-webkit-box-shadow: 4px 5px 4px #C6C6C6 inset;box-shadow: 4px 5px 4px #C6C6C6 inset;border-bottom: 1px solid #CCCCCC;border-top: 1px solid #CCCCCC;visibility: visible !important;background: #EFEFEF !important;visibility: visible !important;}
-  .ui-sortable-placeholder * {opacity: 0.0; visibility: hidden;}
-</style>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 <script charset="utf-8">
-  (function(e){function r(){var t=e('<style id="__dragtable_disable_text_selection__" type="text/css">body { -ms-user-select:none;-moz-user-select:-moz-none;-khtml-user-select:none;-webkit-user-select:none;user-select:none; }</style>');e(document.head).append(t);e(document.body).attr("onselectstart","return false;").attr("unselectable","on");if(window.getSelection){window.getSelection().removeAllRanges()}else{document.selection.empty()}}function i(){e("#__dragtable_disable_text_selection__").remove();if(t){e(document.body).attr("onselectstart",t)}else{e(document.body).removeAttr("onselectstart")}if(n){e(document.body).attr("unselectable",n)}else{e(document.body).removeAttr("unselectable")}}function s(e,t){var n=e.parentNode;var r=e.nextSibling===t?e:e.nextSibling;t.parentNode.insertBefore(e,t);n.insertBefore(t,r)}e.widget("akottr.dragtable",{options:{revert:false,dragHandle:".table-handle",maxMovingRows:40,excludeFooter:false,onlyHeaderThreshold:100,dragaccept:null,persistState:null,restoreState:null,exact:true,clickDelay:10,containment:null,cursor:"move",cursorAt:false,distance:0,tolerance:"pointer",axis:"x",beforeStart:e.noop,beforeMoving:e.noop,beforeReorganize:e.noop,beforeStop:e.noop},originalTable:{el:null,selectedHandle:null,sortOrder:null,startIndex:0,endIndex:0},sortableTable:{el:e(),selectedHandle:e(),movingRow:e()},persistState:function(){var t=this;this.originalTable.el.find("th").each(function(e){if(this.id!==""){t.originalTable.sortOrder[this.id]=e}});e.ajax({url:this.options.persistState,data:this.originalTable.sortOrder})},_restoreState:function(t){for(var n in t){this.originalTable.startIndex=e("#"+n).closest("th").prevAll().size()+1;this.originalTable.endIndex=parseInt(t[n]+1,10);this._bubbleCols()}},_bubbleCols:function(){var e,t,n,r;var i=this.originalTable.startIndex;var o=this.originalTable.endIndex;var u=this.originalTable.el.children();if(this.options.excludeFooter){u=u.not("tfoot")}if(i<o){for(e=i;e<o;e++){n=u.find("> tr > td:nth-child("+e+")").add(u.find("> tr > th:nth-child("+e+")"));r=u.find("> tr > td:nth-child("+(e+1)+")").add(u.find("> tr > th:nth-child("+(e+1)+")"));for(t=0;t<n.length;t++){s(n[t],r[t])}}}else{for(e=i;e>o;e--){n=u.find("> tr > td:nth-child("+e+")").add(u.find("> tr > th:nth-child("+e+")"));r=u.find("> tr > td:nth-child("+(e-1)+")").add(u.find("> tr > th:nth-child("+(e-1)+")"));for(t=0;t<n.length;t++){s(n[t],r[t])}}}},_rearrangeTableBackroundProcessing:function(){var t=this;return function(){t._bubbleCols();t.options.beforeStop(t.originalTable);t.sortableTable.el.remove();i();if(t.options.persistState!==null){e.isFunction(t.options.persistState)?t.options.persistState(t.originalTable):t.persistState()}}},_rearrangeTable:function(){var e=this;return function(){e.originalTable.selectedHandle.removeClass("dragtable-handle-selected");e.sortableTable.el.sortable("disable");e.sortableTable.el.addClass("dragtable-disabled");e.options.beforeReorganize(e.originalTable,e.sortableTable);e.originalTable.endIndex=e.sortableTable.movingRow.prevAll().size()+1;setTimeout(e._rearrangeTableBackroundProcessing(),50)}},_generateSortable:function(t){!t.cancelBubble&&(t.cancelBubble=true);var n=this;var i=this.originalTable.el[0].attributes;var s="";for(var o=0;o<i.length;o++){if(i[o].nodeValue&&i[o].nodeName!="id"&&i[o].nodeName!="width"){s+=i[o].nodeName+'="'+i[o].nodeValue+'" '}}var u=[];var a=[];this.originalTable.el.find("tr").slice(0,this.options.maxMovingRows).each(function(t,n){var r=this.attributes;var i="";for(var s=0;s<r.length;s++){if(r[s].nodeValue&&r[s].nodeName!="id"){i+=" "+r[s].nodeName+'="'+r[s].nodeValue+'"'}}u.push(i);a.push(e(this).height())});var f=[];var l=0;var c=n.originalTable.el.children();if(this.options.excludeFooter){c=c.not("tfoot")}c.find("> tr > th").each(function(t,n){var r=e(this).outerWidth();f.push(r);l+=r});if(n.options.exact){var h=l-n.originalTable.el.outerWidth();f[0]-=h}l+=2;var p='<ul class="dragtable-sortable" style="position:absolute; width:'+l+'px;">';c.find("> tr > th").each(function(t,r){p+="<li>";p+="<table "+s+">";var i=c.find("> tr > th:nth-child("+(t+1)+")");if(n.options.maxMovingRows>1){i=i.add(c.find("> tr > td:nth-child("+(t+1)+")").slice(0,n.options.maxMovingRows-1))}i.each(function(t){var n=e(this).clone().wrap("<div></div>").parent().html();if(n.toLowerCase().indexOf("<th")===0)p+="<thead>";p+="<tr "+u[t]+'" style="height:'+a[t]+'px;">';p+=n;if(n.toLowerCase().indexOf("<th")===0)p+="</thead>";p+="</tr>"});p+="</table>";p+="</li>"});p+="</ul>";this.sortableTable.el=this.originalTable.el.before(p).prev();this.sortableTable.el.find("> li > table").each(function(t,n){e(this).css("width",f[t]+"px")});this.sortableTable.selectedHandle=this.sortableTable.el.find("th .dragtable-handle-selected");var d=!this.options.dragaccept?"li":"li:has("+this.options.dragaccept+")";this.sortableTable.el.sortable({items:d,stop:this._rearrangeTable(),revert:this.options.revert,tolerance:this.options.tolerance,containment:this.options.containment,cursor:this.options.cursor,cursorAt:this.options.cursorAt,distance:this.options.distance,axis:this.options.axis});this.originalTable.startIndex=e(t.target).closest("th").prevAll().size()+1;this.options.beforeMoving(this.originalTable,this.sortableTable);this.sortableTable.movingRow=this.sortableTable.el.find("> li:nth-child("+this.originalTable.startIndex+")");r();this.sortableTable.movingRow.trigger(e.extend(e.Event(t.type),{which:1,clientX:t.clientX,clientY:t.clientY,pageX:t.pageX,pageY:t.pageY,screenX:t.screenX,screenY:t.screenY}));var v=this.sortableTable.el.find(".ui-sortable-placeholder");if(!v.height()<=0){v.css("height",this.sortableTable.el.find(".ui-sortable-helper").height())}v.html('<div class="outer" style="height:100%;"><div class="inner" style="height:100%;"></div></div>')},bindTo:{},_create:function(){this.originalTable={el:this.element,selectedHandle:e(),sortOrder:{},startIndex:0,endIndex:0};this.bindTo=this.originalTable.el.find("th");if(this.options.dragaccept){this.bindTo=this.bindTo.filter(this.options.dragaccept)}if(this.bindTo.find(this.options.dragHandle).size()>0){this.bindTo=this.bindTo.find(this.options.dragHandle)}if(this.options.restoreState!==null){e.isFunction(this.options.restoreState)?this.options.restoreState(this.originalTable):this._restoreState(this.options.restoreState)}var t=this;this.bindTo.mousedown(function(n){if(n.which!==1)return;if(t.options.beforeStart(t.originalTable)===false){return}clearTimeout(this.downTimer);this.downTimer=setTimeout(function(){t.originalTable.selectedHandle=e(this);t.originalTable.selectedHandle.addClass("dragtable-handle-selected");t._generateSortable(n)},t.options.clickDelay)}).mouseup(function(e){clearTimeout(this.downTimer)})},redraw:function(){this.destroy();this._create()},destroy:function(){this.bindTo.unbind("mousedown");e.Widget.prototype.destroy.apply(this,arguments)}});var t=e(document.body).attr("onselectstart"),n=e(document.body).attr("unselectable")})(jQuery)
+  //Make panels dragable
+  jQuery(function($) {
+      var panelList = $('.s-j-draggablePanelList');
+
+      panelList.sortable({
+          // Only make the .panel-heading child elements support dragging.
+          // Omit this to make then entire <li>...</li> draggable.
+          handle: '.s-pannel-name',
+          update: function() {
+              $('.s-pannel-name', panelList).each(function(index, elem) {
+                   var $listItem = $(elem),
+                       newIndex = $listItem.index();
+
+                   // Persist the new indices.
+              });
+          }
+      });
+  });
+</script>
+
+<script charset="utf-8">
+  //Dragable pannel for filters
+  $('.s-j-draggablePanelList .btn-group a').click(function(e){
+    e.preventDefault();
+    if($(this).hasClass('s-sort')){
+      $(this).children('i').toggle();
+    }else{
+      $(this).toggleClass('active');
+    };
+  });
+</script>
+
+<script charset="utf-8">
+  //Remove sortable items and add message when none are left
+  $('.s-remove').click(function(){
+    $(this).closest('.list-group-item').remove();
+    if($('.s-j-draggablePanelList .list-group-item').length < 1){$('.s-none-selected').show()};
+  });
 </script>
 <script charset="utf-8">
-$(document).ready(function() {
-  $('.table-striped').dragtable();
-});
-</script>--->
+  //Sort filter - rename header
+  $('.list-group-item .s-pannel-name .s-pannel-title').click(function(){
+    $(this).fadeToggle('fast');
+    $(this).siblings(".s-title-edit-menu").toggle('slide', { direction: 'left' }, 300);
+  });
+  $('.list-group-item .s-pannel-name .s-save-btn').click(function(){
+    $(this).parent().siblings('.s-pannel-title').fadeToggle();
+    $(this).parent().toggle('slide', { direction: 'left' }, 300);
+  });
+</script>
+
+<!-- Add new default font -->
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
