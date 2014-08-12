@@ -5,7 +5,7 @@
     <div class="row s-header-bar">
       <div class="col-md-7"><h1>Best Selling Mens & Womens Boots From July 2014</h1></div>
       <div class="col-md-5 s-header-nav">
-        <ul class="nav nav-tabs" role="tablist">
+        <ul class="nav nav-tabs" style="padding-right:0px;" role="tablist">
           <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
           <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(6)</span></a></li>
           <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
