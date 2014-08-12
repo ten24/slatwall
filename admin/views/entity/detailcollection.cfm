@@ -61,7 +61,7 @@
               <div class="col-xs-12 s-filters-selected">
                 <div class="row">
                 	<!---filterGroups gets taken apart here --->
-                	<ul ng-if="collectionConfig.hasOwnProperty('filterGroups')" class="col-xs-12 list-unstyled" 
+                	<ul class="col-xs-12 list-unstyled" 
                 		sw-filter-groups 
                 		increment-filter-count="incrementFilterCount()" 
                 		filter-group-item="collectionConfig.filterGroups[0].filterGroup">

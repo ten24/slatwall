@@ -1,5 +1,5 @@
 <ul class="col-xs-12 list-unstyled s-no-paddings">
-	{{itemInUse}}<span ng-repeat="filterGroup in filterGroupItem" ng-init="incrementFilterCount()">
+	<span ng-repeat="filterGroup in filterGroupItem" ng-init="incrementFilterCount()">
 		<!-- figure out if item is filterItem or filterGroup-->
 		<span ng-switch on="filterGroup.hasOwnProperty('filterGroup')" >
 			<span 	ng-switch-when="false" 
@@ -22,6 +22,7 @@
 	<span 	sw-add-filter-buttons
 			filter-group-item="filterGroupItem"
 			item-in-use="itemInUse"
+			set-item-in-use="setItemInUse(booleanValue)"
 	>
 	</span>
 </ul>

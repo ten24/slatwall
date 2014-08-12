@@ -23,6 +23,17 @@ angular.module('slatwalladmin')
 		$scope.collection = value;
 		$scope.collectionInitial = angular.copy($scope.collection);
 		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
+		//check if we have any filter Groups
+		if(typeof($scope.collectionConfig.filterGroups) === 'undefined'){
+			$scope.collectionConfig.filterGroups = [
+				{
+					filterGroup:[
+						
+					]
+				}
+			];
+		}
+		
 	},function(reason){
 		//display error message if getter fails
 		var messages = reason.MESSAGES;

@@ -4,7 +4,8 @@ angular.module('slatwalladmin')
 		restrict: 'A',
 		scope:{
 			filterGroupItem: "=",
-			itemInUse:"="
+			itemInUse:"=",
+			setItemInUse:"&"
 		},
 		link: function(scope, element,attrs){
 			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/addFilterButtons.html"
@@ -17,11 +18,11 @@ angular.module('slatwalladmin')
 		},
 		controller: function ($scope, $element, $attrs) {
 			$scope.addFilterItem = function(filterItemGroup){
-				collectionService.newFilterItem(filterItemGroup);
+				collectionService.newFilterItem(filterItemGroup,$scope.setItemInUse);
 			}
 			
 			$scope.addFilterGroupItem = function(filterItemGroup){
-				collectionService.newFilterGroupItem(filterItemGroup);
+				collectionService.newFilterGroupItem(filterItemGroup,$scope.setItemInUse);
 			}
         } 
 	}

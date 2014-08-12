@@ -41,7 +41,7 @@ function(){
 			filterGroupItem.setItemInUse({booleanValue:!filterGroupItem.isClosed});
 		},
 		
-		newFilterItem: function(filterItemGroup){
+		newFilterItem: function(filterItemGroup,setItemInUse){
 			console.log(filterItemGroup);
 			filterItem = {
 					propertyIdentifier:"empty",
@@ -49,27 +49,27 @@ function(){
 					value:"",
 					disabled:"false",
 					isClosed:"true",
-					siblingItems:filterItemGroup				
+					siblingItems:filterItemGroup,
+					setItemInUse:setItemInUse				
 				}
 			
 			if(filterItemGroup.length !== 0){
 				filterItem.logicalOperator = "AND";
-				filterItem.setItemInUse = filterItemGroup[filterItemGroup.length-1].setItemInUse;
 			}
 			filterItemGroup.push(filterItem);
 			collectionService.selectFilterItem(filterItem);
 		},
-		newFilterGroupItem: function(filterItemGroup){
+		newFilterGroupItem: function(filterItemGroup,setItemInUse){
 			
 			var filterGroupItem = {
 				filterGroup:[],
 				disabled:"false",
 				isClosed:"true",
-				siblingItems:filterItemGroup		
+				siblingItems:filterItemGroup,
+				setItemInUse:setItemInUse	
 			}
 			if(filterItemGroup.length !== 0){
 				filterGroupItem.logicalOperator = "AND"
-				filterGroupItem.setItemInUse = filterItemGroup[filterItemGroup.length-1].setItemInUse;
 			}
 			filterItemGroup.push(filterGroupItem);
 			collectionService.selectFilterGroupItem(filterGroupItem);
