@@ -11,6 +11,12 @@ angular.module('slatwalladmin')
 	];
 	$scope.pageShowOptions.selected = $scope.pageShowOptions[1];
 	
+	$scope.filterCount = 0;
+	$scope.incrementFilterCount = function(){
+		console.log('increment filter');
+		$scope.filterCount++;
+	}
+	
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionID;
 	var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);

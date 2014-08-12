@@ -4,7 +4,8 @@ angular.module('slatwalladmin')
 		restrict: 'A',
 		scope:{
 			filterGroupItem: "=",
-			siblingItems:"="
+			siblingItems:"=",
+			incrementFilterCount:"&" 
 		},
 		link: function(scope, element,attrs){
 			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/filterGroupItem.html"
