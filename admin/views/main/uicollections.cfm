@@ -660,7 +660,7 @@
     <div class="s-table-options">
       <form class="navbar-form navbar-left form-horizontal" role="search">
         <div class="form-group">
-          <label for="name" class="control-label"><div class="icon icon-level-down s-bent-arrow"><!--- Css creates arrow ---></div></label>
+          <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
           <select size="1" name="" aria-controls="" class="form-control">
             <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
             <option value="20">Last Changed</option>
@@ -1113,7 +1113,7 @@
   .s-table-options .s-table-header-search {padding-left:0px;}
   .s-table-options .s-table-header-search button {color:#5E5E5E;background-color:#eeeeee;}
   .s-table-options .s-table-header-right {float:right;}
-  .s-table-options .s-bent-arrow {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;}
+  .s-table-options .fa-level-down {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;}
 
   .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
 
@@ -1267,6 +1267,5 @@ $('form').submit(function(){
   });
 </script>
 
-<!--- Add new default font --->
+<!-- Add new default font -->
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
-<link href="https://fontastic.s3.amazonaws.com/Virro378BPFkPLauCYrcBK/icons.css" rel="stylesheet">
