@@ -12,8 +12,24 @@ function(){
 		
 		//public functions
 		addFilterGroupItemBreadCrumb: function(filterGroupItem){
+			console.log('addFilterGroupItemBreadCrumb');
 			filterGroupItem.focus = true;
 			filterGroupItem.isClosed = false;
+			//check if the new selected item is a child or sibling of the last item in the array 
+			//if(filterGroupItem)
+			for(i in filterGroupItem.siblingItems){
+				var lastItem = collectionService.filterGroupItemBreadCrumbs[collectionService.filterGroupItemBreadCrumbs.length - 1];
+				if(typeof(lastItem) !== 'undefined' && filterGroupItem.siblingItems[i].filterGroup === lastItem){
+					console.log('sibling');
+					console.log(lastItem);
+					lastItem.focus = false;
+					lastItem.disabled = true;
+					collectionService.filterGroupItemBreadCrumbs.pop();
+					
+				}
+			}
+			
+			
 			collectionService.filterGroupItemBreadCrumbs.push(filterGroupItem);
 			collectionService.disableFilterGroupItems(filterGroupItem.siblingItems);
 			console.log(collectionService.filterGroupItemBreadCrumbs);

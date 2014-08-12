@@ -23,14 +23,40 @@ angular.module('slatwalladmin')
 			$scope.filterGroupItem.isClosed = true;
 			$scope.filterGroupItem.siblingItems = $scope.siblingItems;
 			$scope.selectFilterGroupItem = function(filterGroupItem){
-				//$scope.isFocus = !$scope.isFocus;
+				/*
+				when I select an item many things happen
+				toggle isClosed
+				based on isClosed set disabled
+				*/
+				if(filterGroupItem.isClosed){
+					for(i in filterGroupItem.siblingItems){
+						filterGroupItem.siblingItems[i].disabled = true;
+						console.log(filterGroupItem.siblingItems[i]);
+						//filterGroupItem.siblingItems[i].filterGroup.isClosed = true;
+						if(filterGroupItem.siblingItems[i].hasOwnProperty('filterGroup')){
+							filterGroupItem.siblingItems[i].filterGroup.isClosed = true;
+						}
+					}
+					filterGroupItem.isClosed = false;
+				}else{
+					for(i in filterGroupItem.siblingItems){
+						filterGroupItem.siblingItems[i].disabled = false;
+						console.log(filterGroupItem.siblingItems[i]);
+						//filterGroupItem.siblingItems[i].filterGroup.isClosed = true;
+						if(filterGroupItem.siblingItems[i].hasOwnProperty('filterGroup')){
+							filterGroupItem.siblingItems[i].filterGroup.isClosed = true;
+						}
+					}
+					filterGroupItem.isClosed = true;
+				}		
+				/*
 				if(collectionService.hasFilterGroupItemBreadCrumb(filterGroupItem)){
 					collectionService.removeFilterGroupItemBreadCrumbs(filterGroupItem);
 					//collectionService.enableFilterGroupItems($scope.siblingItems);
 				}else{
 					collectionService.addFilterGroupItemBreadCrumb(filterGroupItem);
 					//collectionService.disableFilterGroupItems($scope.siblingItems);
-				}
+				}*/
 			}
         }  
 	}
