@@ -563,7 +563,7 @@
                 <div class="col-xs-5 s-pannel-name">
                   <span>1</span>
                   <i class="fa fa-arrows-v"></i>
-                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">ID</a>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">ID</a>
                   <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
                 </div>
                 <div class="col-xs-7 s-pannel-body">
@@ -585,7 +585,7 @@
                 <div class="col-xs-5 s-pannel-name">
                   <span>2</span>
                   <i class="fa fa-arrows-v"></i>
-                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Brand</a>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">Brand</a>
                   <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
                 </div>
                 <div class="col-xs-7 s-pannel-body">
@@ -607,7 +607,7 @@
                 <div class="col-xs-5 s-pannel-name">
                   <span>3</span>
                   <i class="fa fa-arrows-v"></i>
-                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Style</a>
+                  <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">Style</a>
                   <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
                 </div>
                 <div class="col-xs-7 s-pannel-body">
@@ -660,9 +660,9 @@
     <div class="s-table-options">
       <form class="navbar-form navbar-left form-horizontal" role="search">
         <div class="form-group">
-          <label for="name" class="control-label">Bulk Action</label>
+          <label for="name" class="control-label"><div class="icon icon-level-down s-bent-arrow"><!--- Css creates arrow ---></div></label>
           <select size="1" name="" aria-controls="" class="form-control">
-            <option value="15" selected="selected" disabled="disabled">Select</option>
+            <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
             <option value="20">Last Changed</option>
             <option value="20">Delete</option>
             <option value="20">Examples</option>
@@ -709,7 +709,7 @@
       </div>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive s-filter-table-box">
       <table class="table table-bordered table-striped">
           <thead>
               <tr>
@@ -1021,7 +1021,7 @@
   .s-checkbox label{display:inline-block;position:relative;}
   .s-checkbox label:before{content:"";display:inline-block;width:15px;height:15px;border:1px solid #cccccc;border-radius:3px;background-color:#fff;-webkit-transition:border 0.15s ease-in-out, color 0.15s ease-in-out;transition:border 0.15s ease-in-out, color 0.15s ease-in-out;vertical-align:text-top;}
   .s-checkbox label:after{display:inline-block;position:absolute;width:16px;height:16px;left:0;top:0;padding-right:1px;padding-top:2px;font-size:9px;color:#555555;vertical-align:text-top;}
-  @-moz-document url-prefix() {.s-checkbox label:after {padding-top:3px;}}
+  @-moz-document url-prefix() {.s-checkbox label:after {padding-top:2px;}}
   .s-checkbox input[type=checkbox]{display:none;}
   .s-checkbox input[type=checkbox]:checked + label:after{font-family:'Glyphicons Halflings';content:"\e013";}
   .s-checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
@@ -1029,6 +1029,7 @@
 
   table tr th.s-sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
+  .s-filter-table-box tr td:first-child {width:46px;}
 
   .pagination {margin: 8px 0;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
@@ -1072,7 +1073,7 @@
   .selectboxit-container{position:relative;display:inline-block;vertical-align:top}
   .selectboxit-container *{font:12px Helvetica,Arial;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:-moz-none;-ms-user-select:none;-o-user-select:none;user-select:none;outline:none;white-space:nowrap}
   .selectboxit-container .selectboxit{width:220px;cursor:pointer;margin:0;padding:0;border-radius:3px;overflow:hidden;display:block;position:relative}
-  .selectboxit-container span,.selectboxit-container .selectboxit-options a{height:29px;line-height:29px;display:block}
+  .selectboxit-container span,.selectboxit-container .selectboxit-options a{height:29px;line-height:29px;display:block;}
   .selectboxit-container .selectboxit:focus{outline:0}
   .selectboxit.selectboxit-disabled,.selectboxit-options .selectboxit-disabled{opacity:.65;filter:alpha(opacity=65);-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;cursor:default}
   .selectboxit-text{text-indent:5px;overflow:hidden;text-overflow:ellipsis;float:left}
@@ -1086,8 +1087,9 @@
   .selectboxit-option-last{border-bottom-right-radius:6px;border-bottom-left-radius:6px}
   .selectboxit-optgroup-header{font-weight:700}
   .selectboxit-optgroup-header:hover{cursor:default}
-  .selectboxit-arrow-container{width:30px;position:absolute;right:0}
-  .selectboxit .selectboxit-arrow-container .selectboxit-arrow{margin:0 auto;position:absolute;top:50%;right:0;left:0}
+  .selectboxit-arrow-container{width:30px;position:absolute;right:0;}
+  .s-table-options .selectboxit-arrow-container{background-color:#eeeeee;}
+  .selectboxit .selectboxit-arrow-container .selectboxit-arrow{margin:0 auto;position:absolute;top:44%;right:0;left:0}
   .selectboxit .selectboxit-arrow-container .selectboxit-arrow.ui-icon{top:30%}
   .selectboxit-option-icon-container{float:left}
   .selectboxit-container .selectboxit-option-icon{margin:0;padding:0;vertical-align:middle}
@@ -1097,18 +1099,21 @@
   .jqueryui .ui-icon-triangle-1-s{background-position:-64px -16px}
   .selectboxit-btn.selectboxit-enabled:hover,.selectboxit-btn.selectboxit-enabled:focus,.selectboxit-btn.selectboxit-enabled:active{color:#767676;background-color:#fff}
   .selectboxit-btn.selectboxit-enabled:hover,.selectboxit-btn.selectboxit-enabled:focus{color:#767676;text-decoration:none;background-position:0 -15px}
-  .selectboxit-default-arrow{width:0;height:0;border-top:4px solid #ccc;border-right:4px solid transparent;border-left:4px solid transparent}
+  .selectboxit-default-arrow{width:0;height:0;border-top:4px solid #767676;border-right:4px solid transparent;border-left:4px solid transparent;color:#767676 !important;}
   .selectboxit-list{background-color:#fff;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.2);-webkit-box-shadow:0 5px 10px rgba(0,0,0,0.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,0.2);box-shadow:0 5px 10px rgba(0,0,0,0.2)}
   .selectboxit-list .selectboxit-option-anchor{color:#767676}
-  .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor{color:#fff;background-color:#F58620}
-  .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor{color:#999}
+  .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor{background-color:#F58620;color:#ffffff;}
+  .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor{color:#ccc}
 
   .s-table-options {display: inline-block;width: 100%;}
   .s-table-options .control-label {font-weight:normal;vertical-align:middle;padding-top: 4px;}
   .s-table-options .navbar-form {margin-right:15px;}
+  .s-table-options .navbar-form:first-child {margin-left:17px;}
   .s-table-options .btn-group {margin-top:15px;margin-top: 8px;margin-bottom: 8px;margin-left:15px;}
   .s-table-options .s-table-header-search {padding-left:0px;}
+  .s-table-options .s-table-header-search button {color:#5E5E5E;background-color:#eeeeee;}
   .s-table-options .s-table-header-right {float:right;}
+  .s-table-options .s-bent-arrow {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;}
 
   .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
 
@@ -1264,3 +1269,4 @@ $('form').submit(function(){
 
 <!--- Add new default font --->
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
+<link href="https://fontastic.s3.amazonaws.com/Virro378BPFkPLauCYrcBK/icons.css" rel="stylesheet">
