@@ -51,11 +51,15 @@
 	   	<soapenv:Header/>
 	   	<soapenv:Body>
 	      	<urn:VertexEnvelope>
-	         	<urn:Login>
-	            	<urn:UserName>#setting('username')#</urn:UserName>
-	            	<urn:Password>#setting('password')#</urn:Password>
-	         	</urn:Login>
-				<urn:QuotationRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
+	      		<cfif len(setting('trustedID'))>
+	      			<urn:TrustedID>#setting('trustedID')#</urn:TrustedID>
+	      		<cfelseif len(setting('username'))>
+		      		<urn:Login>
+		            	<urn:UserName>#setting('username')#</urn:UserName>
+		            	<urn:Password>#setting('password')#</urn:Password>
+		         	</urn:Login>
+	      		</cfif>
+	         	<urn:QuotationRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
 				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
 				  	<urn:Seller>
 				    	<urn:Company>#setting('company')#</urn:Company>
