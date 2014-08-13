@@ -197,8 +197,8 @@ component entityname="SlatwallVendor" table="SwVendor" persistent="true" accesso
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
 		} else if (arrayLen(getVendorEmailAddresses())) {
-			setPrimaryEmailAddress(getVendorEmailAddresses()[1]);
-			return getVendorEmailAddresses()[1];
+			setPrimaryEmailAddress(getVendorEmailAddresses()[i]);
+			return getVendorEmailAddresses()[i];
 		} else {
 			return getService("vendorService").newVendorEmailAddress();
 		}
@@ -208,8 +208,8 @@ component entityname="SlatwallVendor" table="SwVendor" persistent="true" accesso
 		if(!isNull(variables.primaryPhoneNumber)) {
 			return variables.primaryPhoneNumber;
 		} else if (arrayLen(getVendorPhoneNumbers())) {
-			setPrimaryPhoneNumber(getVendorPhoneNumbers()[1]);
-			return getVendorPhoneNumbers()[1];
+			setPrimaryPhoneNumber(getVendorPhoneNumbers()[i]);
+			return getVendorPhoneNumbers()[i];
 		} else {
 			return getService("vendorService").newVendorPhoneNumber();
 		}
@@ -219,8 +219,8 @@ component entityname="SlatwallVendor" table="SwVendor" persistent="true" accesso
 		if(!isNull(variables.primaryAddress)) {
 			return variables.primaryAddress;
 		} else if (arrayLen(getVendorAddresses())) {
-			setPrimaryAddress(getVendorAddresses()[1]);
-			return getVendorAddresses()[1];
+			setPrimaryAddress(getVendorAddresses()[i]);
+			return getVendorAddresses()[i];
 		} else {
 			return getService("vendorService").newVendorAddress();
 		}
