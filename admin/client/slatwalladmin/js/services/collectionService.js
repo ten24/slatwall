@@ -8,7 +8,6 @@ function(){
 		//properties
 		selectFilterItem: function(filterItem){
 			if(filterItem.isClosed){
-				
 				for(i in filterItem.siblingItems){
 					filterItem.siblingItems[i].isClosed = true;
 					filterItem.siblingItems[i].disabled = true;
@@ -21,7 +20,6 @@ function(){
 				}
 				filterItem.isClosed = true;
 			}	
-			//console.log(filterItem);
 			filterItem.setItemInUse({booleanValue:!filterItem.isClosed});
 		},
 		
@@ -40,7 +38,6 @@ function(){
 			}
 			filterGroupItem.setItemInUse({booleanValue:!filterGroupItem.isClosed});
 		},
-		
 		newFilterItem: function(filterItemGroup,setItemInUse){
 			console.log(filterItemGroup);
 			filterItem = {
@@ -52,7 +49,6 @@ function(){
 					siblingItems:filterItemGroup,
 					setItemInUse:setItemInUse				
 				}
-			
 			if(filterItemGroup.length !== 0){
 				filterItem.logicalOperator = "AND";
 			}
@@ -60,7 +56,6 @@ function(){
 			collectionService.selectFilterItem(filterItem);
 		},
 		newFilterGroupItem: function(filterItemGroup,setItemInUse){
-			
 			var filterGroupItem = {
 				filterGroup:[],
 				disabled:"false",
@@ -73,6 +68,13 @@ function(){
 			}
 			filterItemGroup.push(filterGroupItem);
 			collectionService.selectFilterGroupItem(filterGroupItem);
+		},
+		formatFilterPropertiesList: function(filterPropertiesList){
+			console.log('format');
+			for(i in filterPropertiesList.DATA){
+				filterPropertiesList.DATA[i].propertyIdentifier = filterPropertiesList.ENTITYNAME + '.' +filterPropertiesList.DATA[i].NAME;
+				console.log(filterPropertiesList.DATA[i]);
+			}
 		}
 		//private functions
 		

@@ -1,8 +1,10 @@
 angular.module('slatwalladmin')
-.directive('swPaginationBar', function(){
+.directive('swPaginationBar',
+'partialsPath', 
+function(partialsPath){
 	return {
 		retrict:'A',
-		templateUrl: '/admin/client/slatwalladmin/js/directives/partials/paginationBar.html',
+		templateUrl: partialsPath+'paginationBar.html',
 		scope: {
 			collection: '='
 		}

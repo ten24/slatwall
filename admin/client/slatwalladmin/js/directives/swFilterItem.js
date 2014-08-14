@@ -1,16 +1,28 @@
 angular.module('slatwalladmin')
-.directive('swFilterItem', ['$http','$compile','$templateCache','collectionService',function($http,$compile,$templateCache,collectionService){
+.directive('swFilterItem', 
+['$http',
+'$compile',
+'$templateCache',
+'collectionService',
+'partialsPath',
+
+function($http,
+$compile,
+$templateCache,
+collectionService,
+partialsPath){
 	return {
 		restrict: 'A',
 		scope:{
 			filterItem: "=",
 			siblingItems: "=",
-			setItemInUse: "&"
+			setItemInUse: "&",
+			filterPropertiesList:"="
 		},
 		link: function(scope, element,attrs){
 			var propertyAlias = scope.filterItem.propertyIdentifier.split(".").pop();
 			scope.filterItem.displayPropertyIdentifier = propertyAlias;
-			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/filterItem.html"
+			var filterGroupsPartial = partialsPath+"filterItem.html"
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);

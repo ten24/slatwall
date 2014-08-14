@@ -1,9 +1,10 @@
 angular.module('slatwalladmin', ['slatwalladmin.services',function($locationProvider){
 	$locationProvider.html5Mode(true);
+}]).config(["$provide", function ($provide) {
+	$provide.constant("partialsPath", '/admin/client/slatwalladmin/js/directives/partials/');
 }]).run(function($rootScope) {
 	//adding alerts to the root Scope
-    $rootScope.alerts = [
-  ];
+    $rootScope.alerts = [];
 })
 
 angular.module('slatwall',['slatwalladmin']);

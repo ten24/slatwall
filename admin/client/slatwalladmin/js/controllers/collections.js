@@ -34,6 +34,14 @@ angular.module('slatwalladmin')
 			];
 		}
 		
+		var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+		filterPropertiesPromise.then(function(value){
+			$scope.filterPropertiesList = value;
+			collectionService.formatFilterPropertiesList($scope.filterPropertiesList);
+		}, function(reason){
+			
+		});
+		
 	},function(reason){
 		//display error message if getter fails
 		var messages = reason.MESSAGES;
@@ -112,6 +120,7 @@ angular.module('slatwalladmin')
 	$scope.pageShowOptionChanged = function(pageShowOption){
 		slatwallService.getEntity('collection',$scope.collectionID);
 	}
+	
 	
 	//private Function
 	var isFormValid = function (angularForm){

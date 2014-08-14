@@ -1,5 +1,16 @@
 angular.module('slatwalladmin')
-.directive('swAddFilterButtons', ['$http','$compile','$templateCache','collectionService',function($http,$compile,$templateCache,collectionService){
+.directive('swAddFilterButtons', 
+['$http',
+'$compile',
+'$templateCache',
+'collectionService',
+'partialsPath',
+
+function($http,
+$compile,
+$templateCache,
+collectionService,
+partialsPath){
 	return {
 		restrict: 'A',
 		scope:{
@@ -8,7 +19,7 @@ angular.module('slatwalladmin')
 			setItemInUse:"&"
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/addFilterButtons.html"
+			var filterGroupsPartial = partialsPath+"addFilterButtons.html"
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);

@@ -64,7 +64,8 @@
                 	<ul class="col-xs-12 list-unstyled" 
                 		sw-filter-groups 
                 		increment-filter-count="incrementFilterCount()" 
-                		filter-group-item="collectionConfig.filterGroups[0].filterGroup">
+                		filter-group-item="collectionConfig.filterGroups[0].filterGroup"
+                		filter-properties-list="filterPropertiesList">
                 	</ul>
                 </div>
 
