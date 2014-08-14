@@ -11,4 +11,5 @@
   
   .col-md-12 {margin-top:30px;}
   .btn-group {float:right;}
-  .btn-toolbar .btn-group {float:right;}
+  .btn-toolbar {float:right;}
+  
