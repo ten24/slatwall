@@ -699,19 +699,22 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function setBillingAccountAddress( required any accountAddress ) {
-		
-		// If the shippingAddress is a new shippingAddress
-		if( isNull(getBillingAddress()) ) {
-			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
-		
-		// Else if there was no accountAddress before, or the accountAddress has changed
-		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
-			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+		if(isNull(arguments.accountAddress)) {
+			structDelete(variables, "billingAccountAddress");
+		} else {
+			// If the shippingAddress is a new shippingAddress
+			if( isNull(getBillingAddress()) ) {
+				setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 			
+			// Else if there was no accountAddress before, or the accountAddress has changed
+			} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+				getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+				
+			}
+			
+			// Set the actual accountAddress
+			variables.billingAccountAddress = arguments.accountAddress;	
 		}
-		
-		// Set the actual accountAddress
-		variables.billingAccountAddress = arguments.accountAddress;
 	}
 	
 	// ==================  END:  Overridden Methods ========================
