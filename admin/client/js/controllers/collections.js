@@ -1,6 +1,17 @@
 angular.module('slatwalladmin')
 //using $location to get url params, this will probably change to using routes eventually
-.controller('collections', [ '$scope','$location','slatwallService','alertService','collectionService', function($scope,$location,slatwallService,alertService,collectionService){
+.controller('collections', 
+[ '$scope',
+'$location',
+'slatwallService',
+'alertService',
+'collectionService', 
+function($scope,
+$location,
+slatwallService,
+alertService,
+collectionService
+){
 	
 	//init values
 	$scope.pageShowOptions = [
@@ -49,6 +60,8 @@ angular.module('slatwalladmin')
 		alertService.addAlerts(alerts);
 	});
 	
+	
+	
 	//public functions
 	$scope.saveCollection = function(entityName,collection,collectionForm){
 		
@@ -73,7 +86,6 @@ angular.module('slatwalladmin')
 	}
 	
 	$scope.copyExistingCollection = function(){
-		console.log($scope.selectedExistingCollection);
 		$scope.collection.collectionConfig = $scope.selectedExistingCollection;
 	}
 	
@@ -83,7 +95,6 @@ angular.module('slatwalladmin')
 	
 	$scope.setSelectedFilterProperty = function(selectedFilterProperty){
 		$scope.selectedFilterProperty = selectedFilterProperty;
-		console.log($scope.selectedFilterProperty);
 		
 		//after we have selected a property we need to figure out what to show them
 		if(typeof $scope.selectedFilterProperty.ORMTYPE !== "undefined"){

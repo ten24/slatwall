@@ -1,6 +1,5 @@
 <div class="row" ng-controller="collections" style="margin-top:12px;">
   <div class="col-xs-12">
-
     <!--- Header nav with title start --->
     <div class="row s-header-bar">
       <div class="col-md-7"><h1 ng-bind="collection.collectionName"></h1></div>

@@ -19,7 +19,7 @@ partialsPath){
 			setItemInUse:"&"
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"addFilterButtons.html"
+			var filterGroupsPartial = partialsPath+"addFilterButtons.html";
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);

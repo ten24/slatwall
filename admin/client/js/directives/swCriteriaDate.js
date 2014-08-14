@@ -1,5 +1,5 @@
 angular.module('slatwalladmin')
-.directive('swFilterGroups', 
+.directive('swCriteriaDate', 
 ['$http',
 '$compile',
 '$templateCache',
@@ -15,12 +15,11 @@ partialsPath){
 		restrict: 'A',
 		scope:{
 			filterGroupItem: "=",
-			filterPropertiesList:"=",
-			incrementFilterCount:"&"
-			
+			itemInUse:"=",
+			setItemInUse:"&"
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"filterGroups.html";
+			var filterGroupsPartial = partialsPath+"criteriaDate.html";
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
@@ -28,14 +27,10 @@ partialsPath){
 				element.replaceWith($compile(element.html())(scope));
 			});
 		},
-		controller: function($scope,$element,$attrs){
-			console.log($scope.filterPropertiesList);
-			$scope.itemInUse = false;
-			$scope.setItemInUse = function(booleanValue){
-				$scope.itemInUse = booleanValue;
-			}
+		controller: function ($scope, $element, $attrs) {
 			
-		}
+			
+        } 
 	}
 }]);
 	

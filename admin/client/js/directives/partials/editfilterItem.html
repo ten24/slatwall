@@ -8,9 +8,13 @@
 	        <div class="form-group form-group-sm">
 	          <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList.ENTITYNAME"></span>:</label>
 	          <div class="col-sm-12 s-no-paddings">
-	            <select ng-model="filterPropertiesList.selectedFilterProperty" 
-	            		ng-change="selectedFilterPropertyChanged(filterPropertiesList.selectedFilterProperty)" 
-	            		ng-options="filterProperty as filterProperty.NAME group by filterProperty.FIELDTYPE for filterProperty in filterPropertiesList.DATA track by filterProperty.propertyIdentifier" 
+	            <select ng-model="selectedFilterProperty" 
+	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
+	            		ng-options="filterProperty as filterProperty.NAME 
+	            					group by filterProperty.FIELDTYPE 
+	            					for filterProperty in filterPropertiesList.DATA 
+	            					track by filterProperty.propertyIdentifier
+	            					| orderBy:filterProperty.NAME" 
 	            		class="form-control input-sm">
 	              <option value="">Select From {{filterPropertiesList.ENTITYNAME}}:</option>
 	            </select>
@@ -22,31 +26,42 @@
 	        <h4>Criteria</h4>
 	
 	        <!--- Filter Criteria Start --->
-	        <form action="index.html" method="post">
-	          <div class="s-filter-group-item">
-	
-	            <div class="form-group form-group-sm">
-	              <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-	              <div class="col-sm-12 s-no-paddings">
-	                <select class="form-control input-sm">
-	                  <option>1 week</option>
-	                  <option>2 week</option>
-	                  <option>3 week</option>
-	                  <option>4 week</option>
-	                  <option>5 week</option>
-	                </select>
-	              </div>
-	              <div class="clearfix"></div>
-	            </div>
-	            <div class="form-group form-group-sm">
-	              <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-	              <div class="col-sm-12 s-no-paddings">
-	                <input type="text" class="form-control" id="input" placeholder="12">
-	              </div>
-	              <div class="clearfix"></div>
-	            </div>
-	          </div>
-	        </form>
+	        <span ng-switch on="selectedFilterProperty.ORMTYPE" >
+	        	<!-- is it a simple item -->
+	        	<span ng-switch-when="boolean"></span>
+	        	<span ng-switch-when="string"></span>
+	        	<span ng-switch-when="timestamp"
+	        		sw-criteria-date
+	        		filter-item="filterItem"
+	        		selected-filter-property="selectedFilterProperty"
+	        	></span>
+	        	<!--is it complex-->
+	        	</span ng-switch-default>
+	        		<span ng-switch on="selectedFilterProperty.FIELDTYPE">
+	        			<span ng-switch-when="one-to-one"></span>
+	        			<span ng-switch-when="one-to-many"></span>
+	        			<span ng-switch-when="many-to-one"></span>
+	        			<span ng-switch-when="many-to-many"></span>
+	        		</span>
+	        	</span>
+				<!--<span 	ng-switch-when="false" 
+						sw-filter-item 
+						filter-item="filterGroup" 
+						sibling-items="filterGroupItem"
+						set-item-in-use="setItemInUse(booleanValue)"
+						filter-properties-list="filterPropertiesList"
+						>
+				</span>
+				<span 	ng-switch-when="true" 
+						sw-filter-group-item 
+						filter-group-item="filterGroup",
+						sibling-items="filterGroupItem"
+						increment-filter-count="incrementFilterCount()" 
+						set-item-in-use="setItemInUse(booleanValue)"
+						filter-properties-list="filterPropertiesList"
+						>
+				</span>-->
+			</span>
 	        <!--- //Filter Criteria End --->
 	
 	      </div>

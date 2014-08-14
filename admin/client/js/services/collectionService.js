@@ -22,7 +22,6 @@ function(){
 			}	
 			filterItem.setItemInUse({booleanValue:!filterItem.isClosed});
 		},
-		
 		selectFilterGroupItem: function(filterGroupItem){
 			if(filterGroupItem.isClosed){
 				for(i in filterGroupItem.siblingItems){
@@ -70,10 +69,8 @@ function(){
 			collectionService.selectFilterGroupItem(filterGroupItem);
 		},
 		formatFilterPropertiesList: function(filterPropertiesList){
-			console.log('format');
 			for(i in filterPropertiesList.DATA){
 				filterPropertiesList.DATA[i].propertyIdentifier = filterPropertiesList.ENTITYNAME + '.' +filterPropertiesList.DATA[i].NAME;
-				console.log(filterPropertiesList.DATA[i]);
 			}
 		}
 		//private functions
