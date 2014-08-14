@@ -52,6 +52,7 @@
 		</cfif>
 		
 		<cfoutput>
+			<hr>
 			<div class="row">
 				<div class="col-sm-2">
 					<div class="navbar-header">
