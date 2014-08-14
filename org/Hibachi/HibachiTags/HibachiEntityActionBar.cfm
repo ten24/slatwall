@@ -42,9 +42,9 @@
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h1>#attributes.pageTitle#</h1>
+						<h5>#attributes.pageTitle#</h5>
 					</div>
-					<div class="span8">
+					<div class="col-md-8">
 						<div class="btn-toolbar">
 							
 							<!--- ================ Listing =================== --->
