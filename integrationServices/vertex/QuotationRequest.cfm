@@ -51,12 +51,12 @@
 	   	<soapenv:Header/>
 	   	<soapenv:Body>
 	      	<urn:VertexEnvelope>
-	      		<cfif len(setting('trustedID'))>
-	      			<urn:TrustedID>#setting('trustedID')#</urn:TrustedID>
-	      		<cfelseif len(setting('username'))>
+	      		<cfif len(setting('webServicesTrustedID'))>
+	      			<urn:TrustedID>#setting('webServicesTrustedID')#</urn:TrustedID>
+	      		<cfelseif len(setting('webServicesUsername'))>
 		      		<urn:Login>
-		            	<urn:UserName>#setting('username')#</urn:UserName>
-		            	<urn:Password>#setting('password')#</urn:Password>
+		            	<urn:UserName>#setting('webServicesUsername')#</urn:UserName>
+		            	<urn:Password>#setting('webServicesPassword')#</urn:Password>
 		         	</urn:Login>
 	      		</cfif>
 	         	<urn:QuotationRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
@@ -66,10 +66,10 @@
 				    	<urn:Division>#setting('division')#</urn:Division>
 				    	<urn:Department>#setting('department')#</urn:Department>
 				    	<urn:PhysicalOrigin>
-				      		<urn:City>#setting('city')#</urn:City>
-				      		<urn:MainDivision>#setting('mainDivision')#</urn:MainDivision>
-				      		<urn:PostalCode>#setting('postalCode')#</urn:PostalCode>
-				     		<urn:Country>#setting('country')#</urn:Country>
+				      		<urn:City>#setting('originCity')#</urn:City>
+				      		<urn:MainDivision>#setting('originMainDivision')#</urn:MainDivision>
+				      		<urn:PostalCode>#setting('originPostalCode')#</urn:PostalCode>
+				     		<urn:Country>#setting('originCountry')#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				   		</urn:PhysicalOrigin>
 				  	</urn:Seller>
