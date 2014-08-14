@@ -1077,7 +1077,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 			
-			return delete( arguments.account );
 		}
 		
 		return delete( arguments.account );
@@ -1093,10 +1092,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountEmailAddress.getAccount().setPrimaryEmailAddress(javaCast("null",""));
 			}
 			
-			return delete(arguments.accountEmailAddress);
 		}
 		
-		return false;
+		return delete(arguments.accountEmailAddress);
 	}
 	
 	public boolean function deleteAccountPhoneNumber(required any accountPhoneNumber) {
@@ -1109,10 +1107,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountPhoneNumber.getAccount().setPrimaryPhoneNumber(javaCast("null",""));
 			}
 			
-			return delete(arguments.accountPhoneNumber);
 		}
 		
-		return false;
+		return delete(arguments.accountPhoneNumber);
 	}
 	
 	public boolean function deleteAccountAddress(required any accountAddress) {
@@ -1130,10 +1127,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			
-			return delete(arguments.accountAddress);
 		}
 		
-		return false;
+		return delete(arguments.accountAddress);
 	}
 	
 	public boolean function deleteAccountPaymentMethod(required any accountPaymentMethod) {
@@ -1146,10 +1142,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountPaymentMethod.getAccount().setPrimaryPaymentMethod(javaCast("null",""));
 			}
 			
-			return delete(arguments.accountPaymentMethod);
 		}
 		
-		return false;
+		return delete(arguments.accountPaymentMethod);
 	}
 	
 	// =====================  END: Delete Overrides ===========================
