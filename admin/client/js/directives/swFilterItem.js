@@ -22,7 +22,7 @@ partialsPath){
 		link: function(scope, element,attrs){
 			var propertyAlias = scope.filterItem.propertyIdentifier.split(".").pop();
 			scope.filterItem.displayPropertyIdentifier = propertyAlias;
-			var filterGroupsPartial = partialsPath+"filterItem.html"
+			var filterGroupsPartial = partialsPath+"filterItem.html";
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
@@ -31,6 +31,7 @@ partialsPath){
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
+			console.log($scope.filterPropertiesList);
 			if(typeof($scope.filterItem.isClosed) === 'undefined'){
 				$scope.filterItem.isClosed = true;
 			}
@@ -46,6 +47,7 @@ partialsPath){
 				collectionService.selectFilterItem(filterItem);
 				
 			}
+			
         } 
 	}
 }]);

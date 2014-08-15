@@ -6,6 +6,7 @@ angular.module('slatwalladmin.services',[]).config(["$provide", function ($provi
 .factory('slatwallService',['$http','$q','baseURL',
 function($http,$q,baseURL){
 	var factory = {};
+	
 	//basic entity getter where id is optional, returns a promise
 	factory.getEntity = function(entityName,id){
 		

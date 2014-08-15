@@ -21,7 +21,7 @@ partialsPath){
 			filterPropertiesList:"="
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"filterGroupItem.html"
+			var filterGroupsPartial = partialsPath+"filterGroupItem.html";
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);

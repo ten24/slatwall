@@ -16,7 +16,7 @@ partialsPath){
 			filterPropertiesList:"="
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"editFilterItem.html"
+			var filterGroupsPartial = partialsPath+"editFilterItem.html";
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
@@ -25,14 +25,19 @@ partialsPath){
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
+			//initialize directive
 			if(typeof($scope.filterItem.isClosed) === 'undefined'){
 				$scope.filterItem.isClosed = true;
 			}
-			console.log($scope.selectedFilterProperty);
-			//$scope.filterPropertiesList.selectedFilterProperty = $scope.filterItem.propertyIdentifier;
-			console.log($scope.selectedFilterProperty);
-			console.log($scope.filterItem);
+			for(i in $scope.filterPropertiesList.DATA){
+				var filterProperty = $scope.filterPropertiesList.DATA[i];
+				console.log(filterProperty.propertyIdentifier);
+				if(filterProperty.propertyIdentifier === $scope.filterItem.propertyIdentifier){
+					$scope.selectedFilterProperty = $scope.filterItem;
+				}
+			}
 			
+			//public functions
 			$scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				console.log(selectedFilterProperty);
 			}
