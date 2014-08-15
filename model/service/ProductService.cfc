@@ -104,7 +104,7 @@ component extends="HibachiService" accessors="true" {
 			
 			// Set publish flag based upon the response to sellIndividualSkuFlag
 			if( arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
-				newSku.setPublishedFlag( true );
+				newSku.setPublishedFlag( false );
 			}	
 			
 			// Get the event capacity and 
