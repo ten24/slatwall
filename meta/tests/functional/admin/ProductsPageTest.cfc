@@ -1,6 +1,5 @@
 component extends="AdminTestBase" {
 
-	/*
 	//Tests that adding an option group to a product disables the ability to add skus
 	public function addingOptionGroupDisablesAddSkuTest(){
 		
@@ -87,5 +86,4 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( ListProducts );	
 		
 	}
-	*/
 }
