@@ -135,10 +135,10 @@ Notes:
 						<cf_HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" displayType="table">
 					</cfif>
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="currencyCode" edit="false" displayType="table">
-					<cf_HibachiPropertyDisplay object="#rc.order#" property="subtotal" edit="false" displayType="table">
-					<cf_HibachiPropertyDisplay object="#rc.order#" property="taxtotal" edit="false" displayType="table">
-					<cf_HibachiPropertyDisplay object="#rc.order#" property="fulfillmenttotal" edit="false" displayType="table">
-					<cf_HibachiPropertyDisplay object="#rc.order#" property="discounttotal" edit="false" displayType="table">
+					<cf_HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false" displayType="table">
+					<cf_HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
+					<cf_HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false" displayType="table">
+					<cf_HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false" displayType="table">
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
 					<cf_HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.payments')#" />
 					<cf_HibachiPropertyDisplay object="#rc.order#" property="paymentAmountReceivedTotal" edit="false" displayType="table">

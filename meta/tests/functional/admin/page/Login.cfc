@@ -1,6 +1,11 @@
 component extends="PageObject"{
 	
+	variables.slatAction = "main.login";
 	variables.title = "Login | Slatwall";
+	variables.locators = {
+		integrationsDropdown = '//html/body/div[1]/div/div/ul/li[2]/a',
+		muraImage 			 = '//html/body/div[1]/div/div/a[2]/img'
+	};
 	
 	function login(username, password) {
 		logout();

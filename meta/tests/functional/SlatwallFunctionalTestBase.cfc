@@ -54,10 +54,10 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
 
-		variables.testUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
+		variables.configureTestUtiltiy = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
 		
 		// Read Config
-		variables.configuration = variables.testUtiltiy.readLocalConfiguration();
+		variables.configuration = variables.configureTestUtiltiy.readLocalConfiguration();
 		
 		// Setup variables for Selenium
 	    variables.browserURL = variables.configuration.ui.browserUrl; 
@@ -67,7 +67,33 @@ component extends="CFSelenium.CFSeleniumTestCase" {
 	}
 	
 	private function assertPageIsLoaded( required any pageObject , string message=""){
-		assertEquals(arguments.pageObject.getTitle(), variables.selenium.getTitle(), arguments.message);
+		
+		if(!len(arguments.message)) {
+			arguments.message = "Expected to be on slatAction of #arguments.pageObject.getSlatAction()#, but this is the url that selenium has #variables.selenium.getLocation()#";
+		}
+		if(len(arguments.pageObject.getSlatAction())) {
+			assert( findNoCase("slataction=#arguments.pageObject.getSlatAction()#", variables.selenium.getLocation()), arguments.message);	
+		} else {
+			assert( !findNoCase("slataction", variables.selenium.getLocation()), arguments.message);
+		}
 	}
+	
+	private function openPage( required any url, required any pageObjectName ) {
+		selenium.open( arguments.url );
+		
+		var loadTime = waitForPageToLoad();
+		
+		return createObject("Slatwall.meta.tests.functional.admin.page.#arguments.pageObjectName#").init(selenium, loadTime);
+	}
+	
+	private function waitForPageToLoad(time=10000) {
+		
+		var start = getTickCount();
+		
+		variables.selenium.waitForPageToLoad(time);
+		
+		return getTickCount() - start;
+	}
+	
 	
 }

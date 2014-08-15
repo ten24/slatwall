@@ -52,6 +52,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
+	property name="hibachiAuditService" type="any";
 	property name="paymentService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
@@ -310,7 +311,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Take the email address and get all of the user accounts by primary e-mail address
 		var accountAuthentications = getInternalAccountAuthenticationsByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
-		var invalidData = {emailAddress=arguments.processObject.getEmailAddress()};
+		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
 		
 		if(arrayLen(accountAuthentications)) {
 			for(var i=1; i<=arrayLen(accountAuthentications); i++) {
@@ -333,13 +334,13 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 			arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
-			invalidData.account = accountAuthentications[1].getAccount();
+			invalidLoginData.account = accountAuthentications[1].getAccount();
 		} else {
 			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
 		}
 		
 		// Login was invalid
-		getHibachiSessionService().loginAccountInvalid(data=invalidData);
+		getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
 		
 		return arguments.account;
 	}
@@ -1102,7 +1103,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 			
-			return delete( arguments.account );
 		}
 		
 		return delete( arguments.account );
@@ -1118,10 +1118,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountEmailAddress.getAccount().setPrimaryEmailAddress(javaCast("null",""));
 			}
 			
-			return delete(arguments.accountEmailAddress);
 		}
 		
-		return false;
+		return delete(arguments.accountEmailAddress);
 	}
 	
 	public boolean function deleteAccountPhoneNumber(required any accountPhoneNumber) {
@@ -1134,10 +1133,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountPhoneNumber.getAccount().setPrimaryPhoneNumber(javaCast("null",""));
 			}
 			
-			return delete(arguments.accountPhoneNumber);
 		}
 		
-		return false;
+		return delete(arguments.accountPhoneNumber);
 	}
 	
 	public boolean function deleteAccountAddress(required any accountAddress) {
@@ -1155,10 +1153,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			
-			return delete(arguments.accountAddress);
 		}
 		
-		return false;
+		return delete(arguments.accountAddress);
 	}
 	
 	public boolean function deleteAccountPaymentMethod(required any accountPaymentMethod) {
@@ -1171,10 +1168,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountPaymentMethod.getAccount().setPrimaryPaymentMethod(javaCast("null",""));
 			}
 			
-			return delete(arguments.accountPaymentMethod);
 		}
 		
-		return false;
+		return delete(arguments.accountPaymentMethod);
 	}
 	
 	// =====================  END: Delete Overrides ===========================

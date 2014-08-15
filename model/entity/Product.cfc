@@ -108,6 +108,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Non-Persistent Properties
 	property name="allowBackorderFlag" type="boolean" persistent="false";
 	property name="availableForPurchaseFlag" type="boolean" persistent="false";
+	property name="allowAddOptionGroupFlag" type="boolean" persistent="false";
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
@@ -220,6 +221,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	
 	// Non-Persistent Helpers
+	
+	public boolean function getAllowAddOptionGroupFlag() {
+ 		return arrayLen(getSkus()) eq 1 || getOptionGroupCount() gt 0;
+ 	}
 	
 	public string function getPageIDs() { 
 		var pageIDs = "";

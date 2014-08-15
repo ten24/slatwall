@@ -52,7 +52,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods,'default');
-	this.secureMethods=listAppend(this.secureMethods,'export');
+	this.secureMethods=listAppend(this.secureMethods,'exportxls');
+	this.secureMethods=listAppend(this.secureMethods,'exportcsv');
 
 	public void function default(required struct rc) {
 		param name="arguments.rc.reportID" default="";

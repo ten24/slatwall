@@ -227,9 +227,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(arguments.rc.$.slatwall.getLoggedInFlag()) {
 			
 			// Force the payment method to be added to the current account
-			arguments.rc.account.accountID = arguments.rc.$.slatwall.getAccount().getAccountID();
+			var accountPaymentMethod = arguments.rc.$.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethods' );
 			
-			accountPaymentMethod = getAccountService().saveAccountPaymentMethod( arguments.rc.$.slatwall.getService('accountService').newAccountPaymentMethod(), arguments.rc );
+			accountPaymentMethod.setAccount( arguments.rc.$.slatwall.getAccount() );
+			
+			accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.rc );
 			
 			arguments.rc.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
 			

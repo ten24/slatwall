@@ -112,6 +112,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentChargeTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
 	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
@@ -369,11 +370,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getFulfillmentTotal() {
-		var fulfillmentTotal = 0;
+		return precisionEvaluate(getFulfillmentChargeTotal() - getFulfillmentRefundTotal());
+	}
+	
+	public numeric function getFulfillmentChargeTotal() {
+		var fulfillmentChargeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			fulfillmentTotal = precisionEvaluate(fulfillmentTotal + getOrderFulfillments()[i].getFulfillmentCharge());
+			fulfillmentChargeTotal = precisionEvaluate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
-		return fulfillmentTotal;
+		return fulfillmentChargeTotal;
 	}
 	
 	public numeric function getFulfillmentRefundTotal() {
@@ -977,35 +982,41 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public any function setShippingAccountAddress( required any accountAddress ) {
-		
-		// If the shippingAddress is a new shippingAddress
-		if( isNull(getShippingAddress()) ) {
-			setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
-		
-		// Else if there was no accountAddress before, or the accountAddress has changed
-		} else if (!structKeyExists(variables, "shippingAccountAddress") || (structKeyExists(variables, "shippingAccountAddress") && variables.shippingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
-			getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+		if(isNull(arguments.accountAddress)) {
+			structDelete(variables, "shippingAccountAddress");
+		} else {
+			// If the shippingAddress is a new shippingAddress
+			if( isNull(getShippingAddress()) ) {
+				setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 			
+			// Else if there was no accountAddress before, or the accountAddress has changed
+			} else if (!structKeyExists(variables, "shippingAccountAddress") || (structKeyExists(variables, "shippingAccountAddress") && variables.shippingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+				getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+				
+			}
+			
+			// Set the actual accountAddress
+			variables.shippingAccountAddress = arguments.accountAddress;	
 		}
-		
-		// Set the actual accountAddress
-		variables.shippingAccountAddress = arguments.accountAddress;
 	}
 	
 	public any function setBillingAccountAddress( required any accountAddress ) {
-		
-		// If the shippingAddress is a new shippingAddress
-		if( isNull(getBillingAddress()) ) {
-			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
-		
-		// Else if there was no accountAddress before, or the accountAddress has changed
-		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
-			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+		if(isNull(arguments.accountAddress)) {
+			structDelete(variables, "billingAccountAddress");
+		} else {
+			// If the shippingAddress is a new shippingAddress
+			if( isNull(getBillingAddress()) ) {
+				setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 			
+			// Else if there was no accountAddress before, or the accountAddress has changed
+			} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+				getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+				
+			}
+			
+			// Set the actual accountAddress
+			variables.billingAccountAddress = arguments.accountAddress;
 		}
-		
-		// Set the actual accountAddress
-		variables.billingAccountAddress = arguments.accountAddress;
 	}
 	
 	// ==================  END:  Overridden Methods ========================

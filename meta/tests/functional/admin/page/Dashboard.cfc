@@ -1,6 +1,12 @@
 component extends="PageObject"{
 	
+	variables.slatAction = "";
 	variables.title = "Dashboard | Slatwall";
+	variables.locators = {
+		logoutMenuIcon = '//html/body/div[1]/div/div/div/ul/li[1]/a',
+		logoutDropdownMenu = '//html/body/div[1]/div/div/div/ul/li[1]/ul',
+		logoutOption = '//html/body/div[1]/div/div/div/ul/li[1]/ul/li[2]/a'
+	};
 	
 	variables.menuItems = {
 		"Products" = {
@@ -13,10 +19,13 @@ component extends="PageObject"{
 		},
 		"Orders" = {
 			"Orders" = "ListOrders", 
-			"Carts & Quotes" = "ListCartsAndQuotes"
+			"Carts & Quotes" = "ListCartsAndQuotes",
+			"Vendor Orders" = "ListVendorOrder"
 		},
 		"Config" = {
-			"Tax Categories" = "ListTaxCategories"
+			"Tax Categories" = "ListTaxCategories",
+			"View A List of Settings" = "Settings",
+			"Integrations" = "ListIntegration"
 		}
 	};
 	
@@ -33,7 +42,7 @@ component extends="PageObject"{
 		}
 	}
 	
-	function openMenuLink(menu, menuLinkTitle){
+	function clickMenuLink(menu, menuLinkTitle){
 		selenium.click("link=#menu#");
 		//We wait here to avoid any problems with selenium moving faster than the browser
 		selenium.waitForElementPresent("//a[@title='#menuLinkTitle#']");

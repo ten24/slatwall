@@ -56,7 +56,8 @@ Notes:
 						   recordDetailModal=true>
 	
 	<cf_HibachiListingColumn propertyIdentifier="auditDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="sessionAccountFullName" />					      
+	<cf_HibachiListingColumn propertyIdentifier="sessionAccountFullName" />
+	<cf_HibachiListingColumn propertyIdentifier="sessionAccountEmailAddress" />
 	<cf_HibachiListingColumn propertyIdentifier="auditType" filter="true" />
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
 	<cf_HibachiListingColumn propertyIdentifier="baseObject" />

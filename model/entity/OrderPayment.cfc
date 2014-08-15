@@ -55,6 +55,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="checkNumberEncrypted" ormType="string";
+	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
@@ -62,8 +63,10 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="expirationYear" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
 	property name="giftCardNumberEncrypted" ormType="string";
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
-	property name="providerToken" ormType="string";
 	property name="paymentDueDate" hb_populateEnabled="public" ormtype="timestamp";
+	property name="providerToken" ormType="string";
+	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
+	
 	
 	// Related Object Properties (many-to-one)
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
@@ -147,6 +150,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.accountPaymentMethod.getPaymentMethod() );
 		
+		// Company PaymentMethod Flag
+		if(!isNull(arguments.accountPaymentMethod.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.accountPaymentMethod.getCompanyPaymentMethodFlag() );
+		}
+		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			if(!isNull(arguments.accountPaymentMethod.getCreditCardNumber())) {
@@ -178,6 +186,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Credit Card & Term Payment
 		if(listFindNoCase("creditCard,termPayment", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
 			setBillingAddress( arguments.accountPaymentMethod.getBillingAddress().copyAddress( true ) );
+			
+			// Try also copying a billingAccountAddress first from the accountPaymentMethod
+			if(!isNull(arguments.accountPaymentMethod.getBillingAccountAddress())) {
+				setBillingAccountAddress( arguments.accountPaymentMethod.getBillingAccountAddress() );
+			}
 		}
 		
 	}
@@ -190,6 +203,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Check for a relational Account Payment Method
 		if(!isNull(arguments.orderPayment.getAccountPaymentMethod())) {
 			setAccountPaymentMethod(arguments.orderPayment.getAccountPaymentMethod());
+		}
+		
+		// Company PaymentMethod Flag
+		if(!isNull(arguments.accountPaymentMethod.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.accountPaymentMethod.getCompanyPaymentMethodFlag() );
 		}
 		
 		// Credit Card
@@ -222,6 +240,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		// Credit Card & Term Payment
 		if(listFindNoCase("creditCard,termPayment", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
 			setBillingAddress( arguments.orderPayment.getBillingAddress().copyAddress( true ) );
+			
+			// Try also copying a billingAccountAddress first from the accountPaymentMethod
+			if(!isNull(arguments.orderPayment.getBillingAccountAddress())) {
+				setBillingAccountAddress( arguments.orderPayment.getBillingAccountAddress() );
+			}
 		}
 		
 	}
@@ -676,19 +699,22 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function setBillingAccountAddress( required any accountAddress ) {
-		
-		// If the shippingAddress is a new shippingAddress
-		if( isNull(getBillingAddress()) ) {
-			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
-		
-		// Else if there was no accountAddress before, or the accountAddress has changed
-		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
-			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+		if(isNull(arguments.accountAddress)) {
+			structDelete(variables, "billingAccountAddress");
+		} else {
+			// If the shippingAddress is a new shippingAddress
+			if( isNull(getBillingAddress()) ) {
+				setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 			
+			// Else if there was no accountAddress before, or the accountAddress has changed
+			} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+				getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+				
+			}
+			
+			// Set the actual accountAddress
+			variables.billingAccountAddress = arguments.accountAddress;	
 		}
-		
-		// Set the actual accountAddress
-		variables.billingAccountAddress = arguments.accountAddress;
 	}
 	
 	// ==================  END:  Overridden Methods ========================

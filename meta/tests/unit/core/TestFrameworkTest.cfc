@@ -60,6 +60,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(structKeyExists(brandData, "activeFlag"));
 	}
 	
+	
+	public void function addingTestDataWorks() {
+		variables.configureTestUtility.updateTestData();
+	}
 }
 
 

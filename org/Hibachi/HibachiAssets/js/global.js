@@ -929,7 +929,7 @@ function updateTextAutocompleteSuggestions( autocompleteField, data ) {
 						jQuery( '#' + jQuery(autocompleteField).data('sugessionsid') ).html('');
 					}
 					jQuery.each( r["pageRecords"], function(ri, rv) {
-						var innerLI = '<li><a href="#" class="textautocompleteadd" data-acvalue="' + rv[ jQuery(autocompleteField).data('acvalueproperty') ] + '" data-acname="' + rv[ jQuery(autocompleteField).data('acnameproperty') ] + '">';
+						var innerLI = '<li><a href="#" id="suggestionoption' + rv[ jQuery(autocompleteField).data('acvalueproperty') ] + '" class="textautocompleteadd" data-acvalue="' + rv[ jQuery(autocompleteField).data('acvalueproperty') ] + '" data-acname="' + rv[ jQuery(autocompleteField).data('acnameproperty') ] + '">';
 						
 						jQuery.each( piarr, function(pi, pv) {
 							var pvarr = pv.split('.');

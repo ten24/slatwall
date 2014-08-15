@@ -58,13 +58,17 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="billToPostalCode" type="string";   
 	property name="billToCountryCode" type="string";  
 	
-	//TaxRateItemRequestBeans 
+	// TaxRateItemRequestBeans
 	property name="taxRateItemRequestBeans" type="array";
 	property name="taxRateItemRequestBeansByAddressID" type="struct";
 	
-	//Header Element Properties 
+	// Pertinent Reference Information
+	property name="accountID" type="string"; 
 	property name="orderID" type="string";
-	property name="accountID" type="string";
+	
+	// Reference Objects
+	property name="account" type="any";
+	property name="order" type="any";
 	
 	public any function init() {
 		// Set defaults
@@ -97,22 +101,26 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 	}
 	
-	public void function addTaxRateItemRequestBean(required any orderItem, any taxAddress) {
+	public void function addTaxRateItemRequestBean(required any orderItem, required any taxCategoryRate, any taxAddress) {
 		
 		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
 		
+		// Setup taxCategoryRateCode and taxCategoryCode
+		if(!isNull(arguments.taxCategoryRate.getTaxCategory().getTaxCategoryCode())) {
+			taxRateItemRequestBean.setTaxCategoryCode( arguments.taxCategoryRate.getTaxCategory().getTaxCategoryCode() );
+		}
+		if(!isNull(arguments.taxCategoryRate.getTaxCategoryRateCode())) {
+			taxRateItemRequestBean.setTaxCategoryRateCode( arguments.taxCategoryRate.getTaxCategoryRateCode() );
+		}
+		
+		// Set the reference object for orderItem
+		taxRateItemRequestBean.setOrderItem( arguments.orderItem );
+		
 		// Populate with orderItem quantities, price, and orderItemID fields
-		if(!isNull(arguments.orderItem.getOrderItemID())) {
-			taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
-		}
-		if(!isNull(arguments.orderItem.getQuantity())) {
-			taxRateItemRequestBean.setQuantity(arguments.orderItem.getQuantity());
-		}
+		taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
+		taxRateItemRequestBean.setQuantity(arguments.orderItem.getQuantity());
 		if(!isNull(arguments.orderItem.getPrice())) {
 			taxRateItemRequestBean.setPrice(arguments.orderItem.getPrice());
-		}
-		if(!isNull(arguments.orderItem.getOrderItemID())) {
-			taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
 		}
 		if(!isNull(arguments.orderItem.getExtendedPrice())) {
 			taxRateItemRequestBean.setExtendedPrice(arguments.orderItem.getExtendedPrice());
@@ -125,10 +133,12 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 		
 		if(!isNull(taxAddress)) {
+			
+			// Set the reference object for taxAddress
+			taxRateItemRequestBean.setTaxAddress( arguments.taxAddress );
+			
 			// Set the taxAddressValues
-			if(!isNull(arguments.taxAddress.getAddressID())) {
-				taxRateItemRequestBean.setTaxAddressID(arguments.taxAddress.getAddressID());
-			}
+			taxRateItemRequestBean.setTaxAddressID(arguments.taxAddress.getAddressID());
 			if(!isNull(arguments.taxAddress.getStreetAddress())) {
 				taxRateItemRequestBean.setTaxStreetAddress(arguments.taxAddress.getStreetAddress());
 			}

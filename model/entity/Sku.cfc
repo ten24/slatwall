@@ -90,6 +90,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
 	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; 
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
+	property name="productReviews" singlularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
@@ -941,13 +942,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		arguments.stock.removeSku( this );
 	}
 	
+	// Product Reviews (one-to-many)
+	public void function addProductReview(required any productReview) {
+		arguments.productReview.setSku( this );
+	}
+	public void function removeProductReview(required any productReview) {
+		arguments.productReview.removeSku( this );
+	}
+
 	// Bundled Skus (one-to-many)
 	public void function addBundledSku(required any bundledSku) {
 		arguments.bundledSku.setSku( this );
 	}
 	public void function removeBundledSku(required any bundledSku) {
 		arguments.bundledSku.removeSku( this );
-	}	
+	}
 	
 	// Access Contents (many-to-many - owner)    
 	public void function addAccessContent(required any accessContent) {    

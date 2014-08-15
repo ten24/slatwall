@@ -115,12 +115,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
 						
-						if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+						if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
 							
 							// If this rate has an integration, then try to pull the data from the response bean for that integration
 							if(!isNull(taxCategoryRate.getTaxIntegration())) {
+								
 								// Look for all of the rates responses for this interation, on this orderItem
 								if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
+									
 									var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];	
 									
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
@@ -149,7 +151,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											}
 											
 										}
- 										
+										
 									}
 									
 								}
@@ -316,8 +318,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		taxRatesRequestBean.setOrderID( arguments.order.getOrderID() );
-		if(!isNull(arguments.order.getAccount()))
-		taxRatesRequestBean.setAccountID( arguments.order.getAccount().getAccountID() );
+		taxRatesRequestBean.setOrder( arguments.order );
+		if(!isNull(arguments.order.getAccount())) {
+			taxRatesRequestBean.setAccountID( arguments.order.getAccount().getAccountID() );
+			taxRatesRequestBean.setAccount( arguments.order.getAccount() );
+		}
 		
 		// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
 		for(var orderItem in arguments.order.getOrderItems()) {
@@ -340,9 +345,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
 						
 						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
-													
-						if(getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
-							taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxAddress=taxAddress);
+						
+						if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+							taxRatesRequestBean.addTaxRateItemRequestBean(orderItem=orderItem, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
 						}
 					}
 					

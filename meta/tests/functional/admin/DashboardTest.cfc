@@ -11,10 +11,10 @@ component extends="AdminTestBase" {
 	* @mxunit:dataprovider menuItems
 	*/
 	function all_top_level_menu_items_render( menuItem ){
-		var page = variables.dashboardPage.openMenuLink(arguments.menuItem.menu, arguments.menuItem.menuLinkTitle);	
+		var page = variables.dashboardPage.clickMenuLink(arguments.menuItem.menu, arguments.menuItem.menuLinkTitle);	
 		assertPageIsLoaded( page, "Unable to navigate to: #arguments.menuItem.menu# > #arguments.menuItem.menuLinkTitle#" );
 	}
-	
+
 	// ================ Private Helpers ======================
 	
 	private function flattenMenuItems( menuItems ){
