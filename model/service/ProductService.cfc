@@ -102,6 +102,11 @@ component extends="HibachiService" accessors="true" {
 				newSku.getProduct().setDefaultSku( newSku );
 			}
 			
+			// Set publish flag based upon the response to sellIndividualSkuFlag
+			if( !arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
+				newSku.setPublishedFlag( false );
+			}	
+			
 			// Get the event capacity and 
 			var eventCapacity = 0;
 			var preEventRegistrationMinutes = 0;
@@ -113,6 +118,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				
 				eventCapacity += locationConfiguration.getLocationConfigurationCapacity();
+				
 				if(preEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) {
 					preEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime');
 				}
@@ -164,6 +170,12 @@ component extends="HibachiService" accessors="true" {
 				if( isNull( newSku.getProduct().getDefaultSku() ) ) {
 					newSku.getProduct().setDefaultSku( newSku );
 				}
+				
+				// Set publish flag based upon the response to sellIndividualSkuFlag
+				if( arguments.processObject.getSellIndividualSkuFlag() && arguments.processObject.getSchedulingType() == "recurring" ) {
+					newSku.setPublishedFlag( true );
+				}
+			
 				var startResDateTime = arguments.startDateTime;
 				var endResDateTime = arguments.endDateTime;
 				if(isNumeric(locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) && locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime') gt 0) {
@@ -478,6 +490,13 @@ component extends="HibachiService" accessors="true" {
 			// Set product association
 			newProductSchedule.setProduct( arguments.product );
 			
+			// Create a list of all existing  skus in the product
+			var existingSkuIDList = "";
+			
+			for(var sku in product.getSkus()) {
+				existingSkuIDList = listAppend(existingSkuIDList,sku.getSkuID());
+			}
+			
 			// DAILY
 			if( arguments.processObject.getRecurringTimeUnit() == "Daily" ) {
 				createDailyScheduledSkus(arguments.product, arguments.processObject, newProductSchedule);
@@ -497,6 +516,27 @@ component extends="HibachiService" accessors="true" {
 			
 			// Persist new product schedule
 			newProductSchedule = getProductScheduleService().saveProductSchedule( newProductSchedule );
+			
+			// Create a sku bundle for all the skus in the schedule based on response to createBundleFlag
+			if( arguments.processObject.getCreateBundleFlag() ) {	
+				var skus = "";
+				
+				for(var sku in product.getSkus()) {
+					if(!sku.getBundleFlag() && !listFindNoCase(existingSkuIDList,sku.getSkuID())){
+						skus = listAppend(skus, sku.getSkuID());
+					}
+				}
+				
+				// Set up new bundle data
+				var newBundleData = {
+					skuCode = "#product.getProductCode()#-#arrayLen(product.getSkus()) + 1#",
+					price = 0,
+					skus = skus
+				};
+				
+				// Bundle newly created skus
+				product = this.processProduct( product, newBundleData, 'addSkuBundle' );
+			}
 		}
 		
 		// Return the product
@@ -515,11 +555,48 @@ component extends="HibachiService" accessors="true" {
 
   		if(listLen( arguments.processObject.getSkus() )) {
   			var skuArray = listToArray( arguments.processObject.getSkus() );
-  		
+  			
+  			// Setup additional data for event product
   			if(arguments.product.getBaseProductType() == "event") {
-  				newSku.setEventStartDateTime( getSkuService().getSku( skuArray[1] ).getEventStartDateTime() );
-  				newSku.setEventEndDateTime( getSkuService().getSku( skuArray[arrayLen(skuArray)] ).getEventEndDateTime() );
-  				newSku.setEventAttendanceCode( getEventRegistrationService().generateAttendanceCode(8) );
+				var capacities = "";
+				var preEventRegistrationMinutes = 0;
+				var postEventRegistrationMinutes = 0;
+				
+				for(var i=1; i<=arrayLen(skuArray); i++) {
+					
+					capacities =  listAppend(capacities, getSkuService().getSku( skuArray[i] ).getEventCapacity());
+					
+					for(var locationConfiguration in getSkuService().getSku( skuArray[i] ).getLocationConfigurations()) {
+						
+						if(preEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) {
+							preEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime');
+						}
+						if(postEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime')){
+							postEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPostReservationTime');
+						}
+						
+						newSku.addLocationConfiguration( locationConfiguration );
+					}
+				}
+				
+				// Calculating pre and post reservation times (setup / teardown)
+				var startResDateTime = getSkuService().getSku( skuArray[1] ).getEventStartDateTime();
+				var endResDateTime = getSkuService().getSku( skuArray[arrayLen(skuArray)] ).getEventEndDateTime();
+				
+				if(isNumeric(preEventRegistrationMinutes) && preEventRegistrationMinutes gt 0) {
+					startResDateTime = dateAdd("m", preEventRegistrationMinutes*-1, startResDateTime);
+				}
+				if(isNumeric(postEventRegistrationMinutes) && postEventRegistrationMinutes gt 0) {
+					endResDateTime = dateAdd("m", postEventRegistrationMinutes, endResDateTime);
+				}
+				
+				newSku.setStartReservationDateTime( startResDateTime );
+				newSku.setEndReservationDateTime( endResDateTime );
+				newSku.setEventStartDateTime( getSkuService().getSku( skuArray[1] ).getEventStartDateTime() );
+				newSku.setEventEndDateTime( getSkuService().getSku( skuArray[arrayLen(skuArray)] ).getEventEndDateTime() );
+				newSku.generateAndSetAttendanceCode();
+  				newSku.setEventCapacity( arrayMax(listToArray(capacities)) );
+  				
   			}
   		}
   		
@@ -542,6 +619,9 @@ component extends="HibachiService" accessors="true" {
 				skuBundle = getSkuService().saveSkuBundle( skuBundle );
 			}
 		}
+		
+		// Return the product
+		return arguments.product;
 	}
 	
 	public any function processProduct_addSku(required any product, required any processObject, any data) {

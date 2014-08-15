@@ -82,6 +82,7 @@ Notes:
 	<cfif local.skusSmartList.getRecordsCount() gt 0>
 		<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", true) />
 		<cfset local.skusSmartList.addKeywordProperty(propertyIdentifier="hasEventConflict", weight=1)>
+		<cfset local.skusSmartList.addFilter("bundleFlag", "false")>
 		
 	
 		<cf_HibachiListingDisplay smartList="#local.skusSmartList#"
