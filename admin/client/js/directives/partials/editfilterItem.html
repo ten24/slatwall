@@ -28,8 +28,16 @@
 	        <!--- Filter Criteria Start --->
 	        <span ng-switch on="selectedFilterProperty.ORMTYPE" >
 	        	<!-- is it a simple item -->
-	        	<span ng-switch-when="boolean"></span>
-	        	<span ng-switch-when="string"></span>
+	        	<span ng-switch-when="boolean"
+	        		sw-criteria-boolean
+	        		filter-item="filterItem"
+	        		selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        	<span ng-switch-when="string"
+	        		sw-criteria-string
+	        		filter-item="filterItem"
+	        		selected-filter-property="selectedFilterProperty"
+	        	></span>
 	        	<span ng-switch-when="timestamp"
 	        		sw-criteria-date
 	        		filter-item="filterItem"
@@ -38,29 +46,28 @@
 	        	<!--is it complex-->
 	        	</span ng-switch-default>
 	        		<span ng-switch on="selectedFilterProperty.FIELDTYPE">
-	        			<span ng-switch-when="one-to-one"></span>
-	        			<span ng-switch-when="one-to-many"></span>
-	        			<span ng-switch-when="many-to-one"></span>
-	        			<span ng-switch-when="many-to-many"></span>
+	        			<span ng-switch-when="one-to-one"
+	        				sw-criteria-one-to-one
+	        				filter-item="filterItem"
+	        				selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        			<span ng-switch-when="one-to-many"
+	        				sw-criteria-one-to-many
+	        				filter-item="filterItem"
+	        				selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        			<span ng-switch-when="many-to-one"
+	        				sw-criteria-many-to-one
+	        				filter-item="filterItem"
+	        				selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        			<span ng-switch-when="many-to-many"
+	        				sw-criteria-many-to-many
+	        				filter-item="filterItem"
+	        				selected-filter-property="selectedFilterProperty"
+	        			></span>
 	        		</span>
 	        	</span>
-				<!--<span 	ng-switch-when="false" 
-						sw-filter-item 
-						filter-item="filterGroup" 
-						sibling-items="filterGroupItem"
-						set-item-in-use="setItemInUse(booleanValue)"
-						filter-properties-list="filterPropertiesList"
-						>
-				</span>
-				<span 	ng-switch-when="true" 
-						sw-filter-group-item 
-						filter-group-item="filterGroup",
-						sibling-items="filterGroupItem"
-						increment-filter-count="incrementFilterCount()" 
-						set-item-in-use="setItemInUse(booleanValue)"
-						filter-properties-list="filterPropertiesList"
-						>
-				</span>-->
 			</span>
 	        <!--- //Filter Criteria End --->
 	
