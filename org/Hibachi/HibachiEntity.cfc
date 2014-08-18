@@ -713,9 +713,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		// These are more complicated options that should not be called during application setup
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
 			
-			// Call the calculatedProperties update
-			updateCalculatedProperties();
-			
 			// Set createdByAccount
 			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );	
@@ -766,9 +763,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		// These are more complicated options that should not be called during application setup
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
 		
-			// Call the calculatedProperties update
-			updateCalculatedProperties();
-		
 			// Set modifiedByAccount
 			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
@@ -791,13 +785,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	public void function preLoad(any entity){
 	}
-	
+	*/
 	public void function postInsert(any entity){
+		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
+		// Call the calculatedProperties update
+			updateCalculatedProperties();
+		}
 	}
 	
 	public void function postUpdate(any entity){
+		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
+		// Call the calculatedProperties update
+			updateCalculatedProperties();
+		}
 	}
-	
+	/*
 	public void function postDelete(any entity){
 	}
 	
