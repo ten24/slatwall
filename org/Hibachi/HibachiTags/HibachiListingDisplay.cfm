@@ -568,7 +568,7 @@
 		
 		<cfif attributes.smartList.getTotalPages() gt 1>
 			<div class="pagination" data-tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
-				<ul>
+				<ul class="pagination">
 					<li><a href="##" class="paging-show-toggle">#attributes.hibachiScope.rbKey('define.show')# <span class="details">(#attributes.smartList.getPageRecordsStart()# - #attributes.smartList.getPageRecordsEnd()# #lcase(attributes.hibachiScope.rbKey('define.of'))# #attributes.smartList.getRecordsCount()#)</span></a></li>
 					<li><a href="##" class="show-option" data-show="10">10</a></li>
 					<li><a href="##" class="show-option" data-show="25">25</a></li>
@@ -576,6 +576,8 @@
 					<li><a href="##" class="show-option" data-show="100">100</a></li>
 					<li><a href="##" class="show-option" data-show="500">500</a></li>
 					<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
+				</ul>
+				<ul class="pagination">	
 					<cfif attributes.smartList.getCurrentPage() gt 1>
 						<li><a href="##" class="listing-pager page-option prev" data-page="#attributes.smartList.getCurrentPage() - 1#">&laquo;</a></li>
 					<cfelse>
