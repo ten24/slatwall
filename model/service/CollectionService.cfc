@@ -80,6 +80,19 @@ component extends="HibachiService" accessors="true" output="false" {
 		return options;
 	}*/
 	
+	public array function getObjectOptions() {
+		if(!structKeyExists(variables, "ObjectOptions")) {
+			var emd = getService("hibachiService").getEntitiesMetaData();
+			var enArr = listToArray(structKeyList(emd));
+			arraySort(enArr,"text");
+			variables.ObjectOptions = [{name=getHibachiScope().rbKey('define.select'), value=''}];
+			for(var i=1; i<=arrayLen(enArr); i++) {
+				arrayAppend(variables.ObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
+			}
+		}
+		return variables.ObjectOptions;
+	}
+	
 	public any function getEntityNameColumnProperties( required string EntityName ) {
 		var returnArray = getentityNameProperties( arguments.entityName );
 		for(var i=arrayLen(returnArray); i>=1; i--) {

@@ -32,13 +32,13 @@ partialsPath){
 		},
 		controller: function ($scope, $element, $attrs) {
 			console.log($scope.filterPropertiesList);
-			if(typeof($scope.filterItem.isClosed) === 'undefined'){
+			if(angular.isUndefined($scope.filterItem.isClosed)){
 				$scope.filterItem.isClosed = true;
 			}
-			if(typeof($scope.filterItem.disabled) === 'undefined'){
+			if(angular.isUndefined($scope.filterItem.disabled)){
 				$scope.filterItem.disabled = false;
 			}
-			if(typeof($scope.filterItem.siblingItems) === 'undefined'){
+			if(angular.isUndefined($scope.filterItem.siblingItems)){
 				$scope.filterItem.siblingItems = $scope.siblingItems;
 			}
 			$scope.filterItem.setItemInUse = $scope.setItemInUse;

@@ -14,6 +14,7 @@ collectionService
 ){
 	
 	//init values
+	
 	$scope.pageShowOptions = [
 		{display:5,value:5},
 		{display:10,value:10},
@@ -27,6 +28,9 @@ collectionService
 		$scope.filterCount++;
 	}
 	
+	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
+	
+	
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionID;
 	var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
@@ -35,7 +39,7 @@ collectionService
 		$scope.collectionInitial = angular.copy($scope.collection);
 		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
 		//check if we have any filter Groups
-		if(typeof($scope.collectionConfig.filterGroups) === 'undefined'){
+		if(angular.isUndefined($scope.collectionConfig.filterGroups)){
 			$scope.collectionConfig.filterGroups = [
 				{
 					filterGroup:[
@@ -97,7 +101,7 @@ collectionService
 		$scope.selectedFilterProperty = selectedFilterProperty;
 		
 		//after we have selected a property we need to figure out what to show them
-		if(typeof $scope.selectedFilterProperty.ORMTYPE !== "undefined"){
+		if(angular.isDefined($scope.selectedFilterProperty.ORMTYPE)){
 			switch($scope.selectedFilterProperty.ORMTYPE){
 				case "boolean":
 					//then display partial for boolean toggle
@@ -110,7 +114,7 @@ collectionService
 					break;
 			}
 		}
-		if(typeof $scope.selectedFilterProperty.FIELDTYPE !== "undefined"){
+		if(angular.isDefined($scope.selectedFilterProperty.FIELDTYPE)){
 			switch($scope.selectedFilterProperty.FIELDTYPE){
 				case "many-to-one":
 					//display partial for many-to-one
@@ -146,7 +150,7 @@ collectionService
 					formValid = false;
 				}
 				if (angularForm[field].$pristine) {
-					if (angularForm[field].$viewValue === undefined) {
+					if (angular.isUndefined(angularForm[field].$viewValue)) { 
 						angularForm[field].$setViewValue("");
 					}
 					else {

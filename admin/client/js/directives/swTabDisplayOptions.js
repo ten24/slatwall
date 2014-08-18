@@ -1,5 +1,5 @@
 angular.module('slatwalladmin')
-.directive('swDisplayOptions',
+.directive('swTabDisplayOptions',
 ['$http',
 '$compile',
 '$templateCache',
@@ -21,7 +21,7 @@ partialsPath){
 			filterPropertiesList:"="
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"displayOptions.html";
+			var filterGroupsPartial = partialsPath+"tabDisplayOptions.html";
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);

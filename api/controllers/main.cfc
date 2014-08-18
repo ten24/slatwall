@@ -20,6 +20,11 @@ component output="false" accessors="true" {
 		
 	}
 	
+	public any function getObjectOptions(required struct rc){
+		var data = collectionService.getObjectOptions();
+		arguments.rc.apiResponse.content = {data=data};
+	}
+	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
 		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
