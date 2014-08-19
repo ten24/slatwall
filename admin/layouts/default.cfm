@@ -357,13 +357,12 @@ Notes:
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collections.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collectionsTabController.js"></script>
 	 	<!---directives --->
-<<<<<<< HEAD
+
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroups.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroupItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/pagination.js"></script>
 
-=======
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swHeaderWithTabs.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swDirective.js"></script>
 	 	
@@ -378,8 +377,6 @@ Notes:
 		
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/pagination.js"></script>
 		
-		
->>>>>>> FETCH_HEAD
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
