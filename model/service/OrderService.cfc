@@ -176,7 +176,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newOrderFulfillment.setShippingMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod() );	
 				}
 				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
-					newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress().copyAddress() );
+					newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress().copyAddress( arguments.saveNewFlag ) );
 				}
 				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
 					newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
@@ -198,13 +198,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Dupliace Shipping & Billing Addresses
 		if(!isNull(arguments.order.getShippingAddress())) {
-			newOrder.setShippingAddress( arguments.order.getShippingAddress().copyAddress() );
+			newOrder.setShippingAddress( arguments.order.getShippingAddress().copyAddress( arguments.saveNewFlag ) );
 		}
 		if(!isNull(arguments.order.getShippingAccountAddress())) {
 			newOrder.setShippingAccountAddress( arguments.order.getShippingAccountAddress() );
 		}
 		if(!isNull(arguments.order.getBillingAddress())) {
-			newOrder.setBillingAddress( arguments.order.getBillingAddress().copyAddress() );
+			newOrder.setBillingAddress( arguments.order.getBillingAddress().copyAddress( arguments.saveNewFlag ) );
 		}
 		if(!isNull(arguments.order.getBillingAccountAddress())) {
 			newOrder.setBillingAccountAddress( arguments.order.getBillingAccountAddress() );
