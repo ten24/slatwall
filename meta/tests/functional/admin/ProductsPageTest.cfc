@@ -76,7 +76,7 @@ component extends="AdminTestBase" {
 		
 		var formData = {};
 		formData['productName'] = 'TestRunner Temporary Product Creation';
-		formData['productCode'] = 'TRTP';
+		formData['productCode'] = 'TRTP-#rand()#';
 		formData['price'] = '100';
 		
 		var DetailProduct = CreateProduct.submitCreateForm( formData );
