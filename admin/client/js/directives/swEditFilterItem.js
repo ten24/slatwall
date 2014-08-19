@@ -26,7 +26,7 @@ partialsPath){
 		},
 		controller: function ($scope, $element, $attrs) {
 			//initialize directive
-			if(typeof($scope.filterItem.isClosed) === 'undefined'){
+			if(angular.isUndefined($scope.filterItem.isClosed)){
 				$scope.filterItem.isClosed = true;
 			}
 			for(i in $scope.filterPropertiesList.DATA){
@@ -40,6 +40,7 @@ partialsPath){
 			//public functions
 			$scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				console.log(selectedFilterProperty);
+				$scope.selectedFilterProperty = selectedFilterProperty;
 			}
         } 
 	}

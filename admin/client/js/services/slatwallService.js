@@ -12,7 +12,7 @@ function($http,$q,baseURL){
 		
 		var deferred = $q.defer();
 		var urlString = baseURL+'index.cfm/?slatAction=api:main.get&entityName='+entityName;
-		if(typeof id !== "undefined") {
+		if(angular.isDefined(id)) {
 			urlString += '&entityId='+id;	
 		}
 			

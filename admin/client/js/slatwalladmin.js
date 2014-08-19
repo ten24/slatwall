@@ -7,4 +7,5 @@ angular.module('slatwalladmin', ['slatwalladmin.services',function($locationProv
     $rootScope.alerts = [];
 })
 
+
 angular.module('slatwall',['slatwalladmin']);

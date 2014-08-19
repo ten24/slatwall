@@ -24,9 +24,9 @@
 	      </div>
 	      <div class="col-xs-6 s-criteria">
 	        <h4>Criteria</h4>
-	
+			{{selectedFilterProperty.ORMTYPE}}
 	        <!--- Filter Criteria Start --->
-	        <span ng-switch on="selectedFilterProperty.ORMTYPE" >
+	        <span ng-switch="selectedFilterProperty.ORMTYPE" >
 	        	<!-- is it a simple item -->
 	        	<span ng-switch-when="boolean"
 	        		sw-criteria-boolean
