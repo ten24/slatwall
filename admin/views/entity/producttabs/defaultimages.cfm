@@ -51,7 +51,7 @@ Notes:
 <cfoutput>
 	<ul class="thumbnails">
 		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
-			<li class="span3">
+			<li class="col-md-4">
 				<div class="thumbnail"<cfif imageFile eq rc.product.getDefaultSku().getImageFile()> style="border-color:##08C;"</cfif>>
 					<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
 					<div class="img-container">
