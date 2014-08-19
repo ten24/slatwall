@@ -1,6 +1,5 @@
 component extends="AdminTestBase" {
 
-	/*
 	//Tests that adding an option group to a product disables the ability to add skus
 	public function addingOptionGroupDisablesAddSkuTest(){
 		
@@ -77,7 +76,7 @@ component extends="AdminTestBase" {
 		
 		var formData = {};
 		formData['productName'] = 'TestRunner Temporary Product Creation';
-		formData['productCode'] = 'TRTP';
+		formData['productCode'] = 'TRTP-#rand()#';
 		formData['price'] = '100';
 		
 		var DetailProduct = CreateProduct.submitCreateForm( formData );
@@ -87,5 +86,4 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( ListProducts );	
 		
 	}
-	*/
 }
