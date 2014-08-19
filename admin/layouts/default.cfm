@@ -62,6 +62,7 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
@@ -87,7 +88,7 @@ Notes:
 			</script>
 		</cfif>
 	</head>
-	<body style="margin-top:40px;">
+	<body>
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
@@ -343,20 +344,42 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
+		
 		<!---modules --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/js/slatwall.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/slatwalladmin.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/slatwalladmin.js"></script>
 	 	<!---services --->
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/services/slatwallService.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/services/alertService.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/slatwallService.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/alertService.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/collectionService.js"></script>
+	 	
 	 	<!---controllers --->
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/controllers/collections.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collections.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collectionsTabController.js"></script>
 	 	<!---directives --->
+<<<<<<< HEAD
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroups.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroupItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/pagination.js"></script>
 
+=======
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swHeaderWithTabs.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swDirective.js"></script>
+	 	
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterGroups.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterItem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swAddFilterButtons.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swEditFilterItem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterGroupItem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swCriteriaDate.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swCriteriaString.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swTabDisplayOptions.js"></script>
+		
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/pagination.js"></script>
+		
+		
+>>>>>>> FETCH_HEAD
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">

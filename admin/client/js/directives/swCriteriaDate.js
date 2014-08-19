@@ -1,14 +1,25 @@
 angular.module('slatwalladmin')
-.directive('swFilterGroupItem',['$http','$compile','$templateCache',function($http,$compile,$templateCache){
+.directive('swCriteriaDate', 
+['$http',
+'$compile',
+'$templateCache',
+'collectionService',
+'partialsPath',
+
+function($http,
+$compile,
+$templateCache,
+collectionService,
+partialsPath){
 	return {
 		restrict: 'A',
 		scope:{
 			filterGroupItem: "=",
-			logicalOperator: "="
+			itemInUse:"=",
+			setItemInUse:"&"
 		},
 		link: function(scope, element,attrs){
-			console.log(scope.logicalOperator);
-			var filterGroupsPartial = "/admin/client/slatwalladmin/js/directives/partials/filterGroupItem.html"
+			var filterGroupsPartial = partialsPath+"criteriaDate.html";
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
@@ -17,14 +28,9 @@ angular.module('slatwalladmin')
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
-			$scope.uuid = guid();
-			$scope.isFocus = false;
 			
-			$scope.toggleFocus = function(){
-				$scope.isFocus = !$scope.isFocus;
-			}
-        }  
+			
+        } 
 	}
 }]);
-	
 	

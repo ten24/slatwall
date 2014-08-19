@@ -52,7 +52,6 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
-		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">

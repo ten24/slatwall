@@ -43,7 +43,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string" unique="true" index="PI_COLLECTIONCODE";
 	property name="description" ormtype="string";
-	property name="baseEntityName" ormtype="string" ;
+	property name="baseEntityName" ormtype="string" hb_formFieldType="select";
 	property name="CollectionObject" cfc="collection" ;
 	
 	
@@ -88,9 +88,24 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
 	
-	property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
+	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
+	property name="baseEntityNameOptions" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	//returns an array of name/value structs for 
+	public array function getBaseEntitynameOptions() {
+		if(!structKeyExists(variables, "BaseEntitynameOptions")) {
+			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
+			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
+			arraySort(entitiesMetaDataArray,"text");
+			variables.BaseEntitynameOptions = [];
+			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
+				arrayAppend(variables.BaseEntitynameOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
+			}
+		}
+		return variables.BaseEntitynameOptions;
+	}
 	
 	public any function init(){
 		super.init();
@@ -254,19 +269,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return '';
 	}
 	
-	//returns an array of name/value structs for 
-	public array function getEntityNameOptions() {
-		if(!structKeyExists(variables, "EntityNameOptions")) {
-			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
-			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
-			arraySort(entitiesMetaDataArray,"text");
-			variables.EntityNameOptions = [];
-			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
-				arrayAppend(variables.EntityNameOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
-			}
-		}
-		return variables.EntityNameOptions;
-	}
+	
 	
 	private string function getFilterCriteria(required string filterCriteria){
 		switch(arguments.filterCriteria){

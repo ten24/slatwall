@@ -1,13 +1,24 @@
 <div class="row" ng-controller="collections" style="margin-top:12px;">
+  
   <div class="col-xs-12">
-
     <!--- Header nav with title start --->
+   <!--- <span ng-controller="collectionsTabController">--->
+	<!---<span 	sw-header-with-tabs
+			header-title="collection.collectionName"
+			tab-array="[{tabTitle:'PROPERTIES',isActive:true,id:'properties'},
+						{tabTitle:'FILTERS ('+filterCount+')',isActive:false,id:'filters'},
+						{tabTitle:'DISPLAY OPTIONS',isActive:false,id:'display-options',directive:'sw-tab-display-options'}
+			]"
+	>
+	</span>--->
+	
+    <!---</span>--->
     <div class="row s-header-bar">
       <div class="col-md-7"><h1 ng-bind="collection.collectionName"></h1></div>
       <div class="col-md-5 s-header-nav">
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
-          <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(6)</span></a></li>
+          <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount"></span>)</span></a></li>
           <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
         </ul>
       </div>
@@ -15,6 +26,7 @@
     <!--- //Header nav with title end --->
 
     <!--- Tab panes for menu options start--->
+    
     <div class="row s-options">
       <div class="tab-content" id="j-property-box">
 
@@ -46,13 +58,13 @@
             <div class="form-group">
               <label for="inputPassword" class="col-sm-2 control-label">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
+                <input disabled="disabled" style="display:none" ng-model="collectionConfig.baseEntityAlias" type="text" class="form-control" value="" >
                 <p ng-bind="collectionConfig.baseEntityAlias" class="form-control-static"><!---collection base entity alias ---></p>
               </div>
             </div>
           </form>
 
         </div>
-
         <div class="tab-pane" id="j-filters">
           <div class="s-setting-options">
             <div class="row s-setting-options-body">
@@ -61,159 +73,20 @@
               <div class="col-xs-12 s-filters-selected">
                 <div class="row">
                 	<!---filterGroups gets taken apart here --->
-                	<ul ng-if="collectionConfig.hasOwnProperty('filterGroups')" class="col-xs-12 list-unstyled" sw-filter-groups filter-groups="collectionConfig.filterGroups[0].filterGroup">
+                	<ul class="col-xs-12 list-unstyled" 
+                		sw-filter-groups 
+                		increment-filter-count="incrementFilterCount()" 
+                		filter-group-item="collectionConfig.filterGroups[0].filterGroup"
+                		filter-properties-list="filterPropertiesList">
                 	</ul>
-                </div>
-
-                <!--- New Filter Panel --->
-                <!---<div class="s-add-filter-box">
-                  <div class="row s-add-filter">
-                    <div class="col-xs-12 collapse j-add-filter" id="j-add-filter-group">
-                      <div class="row">
-                        <div class="col-xs-12">
-                          <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter-group"></i></h4>
-                          <div class="row">
-                            <div class="col-xs-4">
-                              Select From Orders:
-                              <div class="option-dropdown">
-                                <select class="form-control input-sm">
-                                  <option disabled="disabled" selected="selected">Select From Orders:</option>
-                                  <option value="one">One</option>
-                                  <option value="two">Two</option>
-                                  <option value="three">Three</option>
-                                  <option value="four">Four</option>
-                                  <option value="five">Five</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="col-xs-4 s-criteria">
-                              <h4>Criteria</h4>
-
-                              <!--- Filter Criteria Start --->
-                              <form action="index.html" method="post">
-                                <div class="s-filter-group-item">
-
-                                  <div class="form-group form-group-sm">
-                                    <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-                                    <div class="col-sm-12 s-no-paddings">
-                                      <select class="form-control input-sm">
-                                        <option>1 week</option>
-                                        <option>2 week</option>
-                                        <option>3 week</option>
-                                        <option>4 week</option>
-                                        <option>5 week</option>
-                                      </select>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                  </div>
-                                  <div class="form-group form-group-sm">
-                                    <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                    <div class="col-sm-12 s-no-paddings">
-                                      <input type="text" class="form-control" id="input" placeholder="12">
-                                    </div>
-                                    <div class="clearfix"></div>
-                                  </div>
-                                </div>
-                              </form>
-                              <!--- //Filter Criteria End --->
-
-                            </div>
-                            <div class="col-xs-4">
-                              <div class="s-button-select-group">
-                                <button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
-                                <div class="s-or-box">OR</div>
-                                <button type="button" class="btn s-btn-ten24">Save & Finish</button>
-                              </div>
-                              <div class="form-group">
-                                <div class="s-checkbox"><input type="checkbox" id="j-checkbox1"><label for="checkbox1"> Add To New Group</label></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>---><!--- //Row --->
-
-                  <!---<div class="row s-add-filter-box">
-                    <div class="col-xs-12 collapse s-add-filter" id="j-add-filter">
-                      <div class="row">
-                        <div class="col-xs-12">
-                          <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter"></i></h4>
-                          <div class="row">
-                            <div class="col-xs-4">
-                              Select From Orders:
-                              <div class="option-dropdown">
-                                <select class="form-control input-sm">
-                                  <option disabled="disabled" selected="selected">Select From Orders:</option>
-                                  <option value="one">One</option>
-                                  <option value="two">Two</option>
-                                  <option value="three">Three</option>
-                                  <option value="four">Four</option>
-                                  <option value="five">Five</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="col-xs-4 s-criteria">
-                              <h4>Criteria</h4>
-
-                              <!--- Filter Criteria Start --->
-                              <form action="index.html" method="post">
-                                <div class="s-filter-group-item">
-
-                                  <div class="form-group form-group-sm">
-                                    <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-                                    <div class="col-sm-12 s-no-paddings">
-                                      <select class="form-control input-sm">
-                                        <option>1 week</option>
-                                        <option>2 week</option>
-                                        <option>3 week</option>
-                                        <option>4 week</option>
-                                        <option>5 week</option>
-                                      </select>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                  </div>
-                                  <div class="form-group form-group-sm">
-                                    <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-                                    <div class="col-sm-12 s-no-paddings">
-                                      <input type="text" class="form-control" id="input" placeholder="12">
-                                    </div>
-                                    <div class="clearfix"></div>
-                                  </div>
-                                </div>
-                              </form>
-                              <!--- //Filter Criteria End --->
-
-                            </div>
-                            <div class="col-xs-4">
-                              <div class="s-button-select-group">
-                                <button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
-                                <div class="s-or-box">OR</div>
-                                <button type="button" class="btn s-btn-ten24">Save & Finish</button>
-                              </div>
-                              <div class="form-group">
-                                <div class="s-checkbox"><input type="checkbox" id="j-checkbox1"><label for="checkbox1"> Add To New Group</label></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>---><!--- //Row --->
-
                 </div>
                 <!--- //New Filter Panel --->
               </div>
               <!--- //End Filter Group --->
-
             </div>
           </div>
         </div><!--- //Tab Pane --->
-
-        <!---<div class="tab-pane s-display-options" id="j-display-options">
-          <div class="s-none-selected">There are no fields selected</div>
-          <button class="btn s-btn-ten24">Add Display Field</button>
-        </div>---><!--- //Tab Pane --->
+		<span sw-tab-display-options></span>
       </div>
 
     </div><!--- //Row --->
@@ -269,6 +142,7 @@
         </div>
       </div>
     </div>
+    <!---tab view end --->
    <!--- <div class="row s-table-content-nav">
       <div class="col-xs-12 s-align-left">
 
@@ -312,29 +186,31 @@
       </div>
     </div>--->
 	<!---TODO: make this list view section a directive that we pass a collection into --->
+    <!---list view begin --->
     <div class="table-responsive">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Row</span></th>
-                <th ng-repeat="(key,value) in collection.pageRecords[0]" class="s-sortable" ng-bind="key"></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-			<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
-	            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
-	            <td ng-repeat="(key,value) in pageRecord" ng-bind="value"></td>
-	           <td class="s-edit-elements">
-	              <ul>
-	                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-	                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-	              </ul>
-	            </td>
-          	</tr>
-        </tbody>
-    </table>
+	    <table class="table table-bordered table-striped">
+	        <thead>
+	            <tr>
+	                <th>Row</span></th>
+	                <th ng-repeat="(key,value) in collection.pageRecords[0]" class="s-sortable" ng-bind="key"></th>
+	                <th></th>
+	            </tr>
+	        </thead>
+	        <tbody>
+				<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
+		            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
+		            <td ng-repeat="(key,value) in pageRecord" ng-bind="value"></td>
+		           <td class="s-edit-elements">
+		              <ul>
+		                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+		                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+		              </ul>
+		            </td>
+	          	</tr>
+	        </tbody>
+	    </table>
 	 </div>
+	<!---list view end --->
     <div class="row">
       <div class="col-md-12">
         <div class="dataTables_info" id="example3_info">Showing <b><span ng-bind="collection.pageRecordsStart"><!--- record start ---></span> to <span ng-bind="collection.pageRecordsEnd"><!---records end ---><span></b> of <span ng-bind="collection.recordsCount"><!--- records Count ---></span> entries</div>
@@ -420,13 +296,18 @@
   .s-setting-options li {display:inline;}
   .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;}
   .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:#ccc;}
-  .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;margin-right:21px;}
+  .s-filters-selected .s-filter-item .btn-group-vertical{float:left;margin-top:20px;margin-right:21px;}
   .s-filters-selected .s-filter-item .btn-group-vertical .btn {font-size:10px;}
   .s-filters-selected .s-filter-item .btn-group-vertical .btn.active {box-shadow:none;}
   .s-filters-selected .s-and-or-box .btn-group{background-color:#eee;position:relative;top:-4px;}
   .s-filters-selected .s-define-box {text-align: center;border-top: 3px dotted #DDD;margin-top: 23px;padding-top: 20px;}
   .s-options .tab-content,.s-options .tab-pane dl dd.s-value{margin-bottom:15px;}
   .s-options .tab-pane label span i,.s-filters-selected .s-filter-item .panel .panel-body i{color:#ccc;}
+
+  .s-add-display-field {background: #EAEAEA;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;margin-top: 15px;margin-right:0px;margin-left:0px;}
+  .s-add-display-field > div {padding:15px;}
+  .s-add-display-field > div > i.fa-plus {top: 4px;position: relative;margin-right: 5px;}
+  .s-add-display-field > div button {margin-top: 4px;}
 
   .s-edit-elements {width:60px;}
   .s-edit-elements ul {margin:0px;padding:0px;}
@@ -458,7 +339,7 @@
   .s-checkbox label{display:inline-block;position:relative;}
   .s-checkbox label:before{content:"";display:inline-block;width:15px;height:15px;border:1px solid #cccccc;border-radius:3px;background-color:#fff;-webkit-transition:border 0.15s ease-in-out, color 0.15s ease-in-out;transition:border 0.15s ease-in-out, color 0.15s ease-in-out;vertical-align:text-top;}
   .s-checkbox label:after{display:inline-block;position:absolute;width:16px;height:16px;left:0;top:0;padding-right:1px;padding-top:2px;font-size:9px;color:#555555;vertical-align:text-top;}
-  @-moz-document url-prefix() {.s-checkbox label:after {padding-top:3px;}}
+  @-moz-document url-prefix() {.s-checkbox label:after {padding-top:2px;}}
   .s-checkbox input[type=checkbox]{display:none;}
   .s-checkbox input[type=checkbox]:checked + label:after{font-family:'Glyphicons Halflings';content:"\e013";}
   .s-checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
@@ -466,6 +347,7 @@
 
   table tr th.s-sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
+  .s-filter-table-box tr td:first-child {width:46px;}
 
   .pagination {margin: 8px 0;}
   .pagination>li>a, .pagination>li>span {color:#767676;}
@@ -481,7 +363,7 @@
   .s-setting-options-body .filter-group .s-filter-item:first-child {margin-left:0px;}
   .s-setting-options-body .filter-group .s-filter-item:last-child {margin-right:0px;}
 
-  .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid}
+  .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid;}
 
   .s-setting-options-body .panel {display:inline-block;width:190px;margin-bottom:5px;border:none;}
   .s-setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;border-bottom:none;}
@@ -491,27 +373,25 @@
   .s-setting-options-body .s-setting-and-or .btn {min-width:52px;text-align:center;}
 
   .s-setting-options-body .s-add-filter {background:#eaeaea;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
-  .s-setting-options-body .s-add-filter .row:first-child {padding-top: 15px; padding-bottom:30px; }
-  .s-setting-options-body .s-add-filter h4 i {float:right;cursor:pointer;}
+  .s-setting-options-body .s-add-filter h4 i {float:right;cursor:pointer;padding-top:2px;}
   .s-setting-options-body .s-add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;}
-  .s-setting-options-body .s-add-filter label {font-weight:normal;}
+  .s-setting-options-body .s-add-filter label {font-weight:normal;font-size:12px;}
   .s-add-filter-box .s-and-or-box {margin-top: 20px;margin-bottom: 8px;}
   .s-and-or-box {text-align:center;height:40px;}
   .s-and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
   .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
-  .s-criteria .s-and-or-box .btn-group {background-color:#EAEAEA;}
-  .s-setting-options-body .s-add-filter button.s-remove {float:right;}
-  .s-setting-options-body .s-add-filter .s-button-select-group {text-align:center;border-bottom:3px dotted #DDDDDD;margin-bottom:15px;}
-  .s-setting-options-body .s-add-filter .s-button-select-group .btn {margin-bottom:15px;margin-top:15px;}
-  .s-setting-options-body .s-add-filter .s-filter-group-item {background: #F2F2F2;border-radius: 4px;padding: 15px;margin-bottom:10px;}
-  .s-add-filter .s-checkbox label:before {margin-top:2px;}
-  .s-add-filter .s-checkbox label:after {margin-top:2px;}
+  .s-add-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #DDD;}
+  .s-add-filter > .row {padding-top:0px !important;}
+  .s-add-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;margin-right: 20px;padding-right: 40px;padding-left: 40px;margin-left: 16px;margin-bottom: 15px;}
+  .s-add-filter .s-button-select-group {text-align:center;}
+  .s-add-filter .s-checkbox {margin-top:15px;}
+  .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
 
   /* Selectbox css used to style select menues for cross browser support */
   .selectboxit-container{position:relative;display:inline-block;vertical-align:top}
   .selectboxit-container *{font:12px Helvetica,Arial;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:-moz-none;-ms-user-select:none;-o-user-select:none;user-select:none;outline:none;white-space:nowrap}
   .selectboxit-container .selectboxit{width:220px;cursor:pointer;margin:0;padding:0;border-radius:3px;overflow:hidden;display:block;position:relative}
-  .selectboxit-container span,.selectboxit-container .selectboxit-options a{height:29px;line-height:29px;display:block}
+  .selectboxit-container span,.selectboxit-container .selectboxit-options a{height:29px;line-height:29px;display:block;}
   .selectboxit-container .selectboxit:focus{outline:0}
   .selectboxit.selectboxit-disabled,.selectboxit-options .selectboxit-disabled{opacity:.65;filter:alpha(opacity=65);-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;cursor:default}
   .selectboxit-text{text-indent:5px;overflow:hidden;text-overflow:ellipsis;float:left}
@@ -525,8 +405,9 @@
   .selectboxit-option-last{border-bottom-right-radius:6px;border-bottom-left-radius:6px}
   .selectboxit-optgroup-header{font-weight:700}
   .selectboxit-optgroup-header:hover{cursor:default}
-  .selectboxit-arrow-container{width:30px;position:absolute;right:0}
-  .selectboxit .selectboxit-arrow-container .selectboxit-arrow{margin:0 auto;position:absolute;top:50%;right:0;left:0}
+  .selectboxit-arrow-container{width:30px;position:absolute;right:0;}
+  .s-table-options .selectboxit-arrow-container{background-color:#eeeeee;}
+  .selectboxit .selectboxit-arrow-container .selectboxit-arrow{margin:0 auto;position:absolute;top:44%;right:0;left:0}
   .selectboxit .selectboxit-arrow-container .selectboxit-arrow.ui-icon{top:30%}
   .selectboxit-option-icon-container{float:left}
   .selectboxit-container .selectboxit-option-icon{margin:0;padding:0;vertical-align:middle}
@@ -536,18 +417,47 @@
   .jqueryui .ui-icon-triangle-1-s{background-position:-64px -16px}
   .selectboxit-btn.selectboxit-enabled:hover,.selectboxit-btn.selectboxit-enabled:focus,.selectboxit-btn.selectboxit-enabled:active{color:#767676;background-color:#fff}
   .selectboxit-btn.selectboxit-enabled:hover,.selectboxit-btn.selectboxit-enabled:focus{color:#767676;text-decoration:none;background-position:0 -15px}
-  .selectboxit-default-arrow{width:0;height:0;border-top:4px solid #ccc;border-right:4px solid transparent;border-left:4px solid transparent}
+  .selectboxit-default-arrow{width:0;height:0;border-top:4px solid #767676;border-right:4px solid transparent;border-left:4px solid transparent;color:#767676 !important;}
   .selectboxit-list{background-color:#fff;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.2);-webkit-box-shadow:0 5px 10px rgba(0,0,0,0.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,0.2);box-shadow:0 5px 10px rgba(0,0,0,0.2)}
   .selectboxit-list .selectboxit-option-anchor{color:#767676}
-  .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor{color:#fff;background-color:#F58620}
-  .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor{color:#999}
+  .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor{background-color:#F58620;color:#ffffff;}
+  .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor{color:#ccc}
 
   .s-table-options {display: inline-block;width: 100%;}
   .s-table-options .control-label {font-weight:normal;vertical-align:middle;padding-top: 4px;}
   .s-table-options .navbar-form {margin-right:15px;}
+  .s-table-options .navbar-form:first-child {margin-left:17px;}
   .s-table-options .btn-group {margin-top:15px;margin-top: 8px;margin-bottom: 8px;margin-left:15px;}
   .s-table-options .s-table-header-search {padding-left:0px;}
+  .s-table-options .s-table-header-search button {color:#5E5E5E;background-color:#eeeeee;}
   .s-table-options .s-table-header-right {float:right;}
+  .s-table-options .fa-level-down {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;}
+
+  .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
+
+  .s-j-draggablePanelList a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
+  .s-j-draggablePanelList a.active {border:0px;box-shadow:none;-moz-box-shadow:    inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);-webkit-box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);border:0px;}
+  .s-j-draggablePanelList a i {margin-top:50%;}
+  .s-j-draggablePanelList a.active:hover {background-color:#F79C49;color:#ffffff;}
+  .s-j-draggablePanelList a:last-child {border:0px;}
+  .s-j-draggablePanelList .s-remove {background-color:#DA5757;color:#ffffff !important;}
+  .s-j-draggablePanelList .s-remove:hover {background-color:#D66B6B !important;}
+  .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
+  .s-j-draggablePanelList .s-sort.active {background-color:#ffffff !important;color:#767676 !important;box-shadow:none;}
+  .s-j-draggablePanelList .s-sort:hover {background-color:#eeeeee !important;color:#767676 !important;box-shadow:none;}
+  .s-j-draggablePanelList .list-group-item {margin-bottom:2px;}
+  .s-j-draggablePanelList .s-pannel-name {cursor: move;height:40px;}
+  .s-j-draggablePanelList .s-pannel-name input {width: 164px;display:inline-block;margin-top:5px;margin-right:5px;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title {cursor: pointer;color:#666666;background:none;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title:hover {text-decoration:none;}
+  .s-j-draggablePanelList .s-pannel-name .s-pannel-title:active {box-shadow:none !important;background:none !important;}
+  .s-j-draggablePanelList .s-pannel-name i {color:#ccc;}
+  .s-j-draggablePanelList .s-pannel-body {text-align:right;padding-right:0px;}
+  .s-j-draggablePanelList .list-group-item {padding-top:0px;padding-bottom:0px;border-radius:0px;}
+  .s-j-draggablePanelList .s-pannel-name > span:first-child {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);color: #FFF;display: inline-block;padding-top: 11px;font-size: 12px;color: #DDD;}
+  .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
+  .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
+  .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
 
 
 </style>
@@ -556,7 +466,7 @@
   //activate tooltips
   $(function(){
     $('.j-tool-tip-item').tooltip();
-  })();
+  });
 </script>
 
 <script charset="utf-8">
@@ -574,7 +484,7 @@
       $('.s-properties p').toggle();
       $('.s-properties input').toggle();
     });
-  })();
+  });
 </script>
 
 
@@ -621,6 +531,58 @@ $('form').submit(function(){
 	alert($(this["options"]).val());
     return false;
 });
+</script>
+
+<script charset="utf-8">
+  //Make panels dragable
+  jQuery(function($) {
+      var panelList = $('.s-j-draggablePanelList');
+
+      panelList.sortable({
+          // Only make the .panel-heading child elements support dragging.
+          // Omit this to make then entire <li>...</li> draggable.
+          handle: '.s-pannel-name',
+          update: function() {
+              $('.s-pannel-name', panelList).each(function(index, elem) {
+                   var $listItem = $(elem),
+                       newIndex = $listItem.index();
+
+                   // Persist the new indices.
+              });
+          }
+      });
+  });
+</script>
+
+<script charset="utf-8">
+  //Dragable pannel for filters
+  $('.s-j-draggablePanelList .btn-group a').click(function(e){
+    e.preventDefault();
+    if($(this).hasClass('s-sort')){
+      $(this).children('i').toggle();
+    }else{
+      $(this).toggleClass('active');
+    };
+  });
+</script>
+
+<script charset="utf-8">
+  //Remove sortable items and add message when none are left
+  $('.s-remove').click(function(){
+    $(this).closest('.list-group-item').remove();
+    if($('.s-j-draggablePanelList .list-group-item').length < 1){$('.s-none-selected').show()};
+  });
+</script>
+<script charset="utf-8">
+  //Sort filter - rename header
+  $('.list-group-item .s-pannel-name .s-pannel-title').click(function(){
+    $(this).fadeToggle('fast');
+    $(this).siblings(".s-title-edit-menu").toggle('slide', { direction: 'left' }, 300);
+  });
+  $('.list-group-item .s-pannel-name .s-save-btn').click(function(){
+    $(this).parent().siblings('.s-pannel-title').fadeToggle();
+    $(this).parent().toggle('slide', { direction: 'left' }, 300);
+  });
 </script>
 
 

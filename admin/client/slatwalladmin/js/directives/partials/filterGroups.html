@@ -1,7 +1,0 @@
-<span ng-repeat="filterGroup in filterGroups">
-	<span ng-switch on="filterGroup.hasOwnProperty('filterGroup')">
-		<span ng-switch-when="false" sw-filter-item filter-item="filterGroup"></span>
-		<span ng-switch-when="true" sw-filter-group-item ng-model="filterGroup.filterGroup" logical-operator="filterGroup.logicalOperator" filter-group-item="filterGroup.filterGroup"></span>
-	</span>
-</span>
-

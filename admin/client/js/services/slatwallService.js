@@ -6,12 +6,13 @@ angular.module('slatwalladmin.services',[]).config(["$provide", function ($provi
 .factory('slatwallService',['$http','$q','baseURL',
 function($http,$q,baseURL){
 	var factory = {};
+	
 	//basic entity getter where id is optional, returns a promise
 	factory.getEntity = function(entityName,id){
 		
 		var deferred = $q.defer();
 		var urlString = baseURL+'index.cfm/?slatAction=api:main.get&entityName='+entityName;
-		if(typeof id !== "undefined") {
+		if(angular.isDefined(id)) {
 			urlString += '&entityId='+id;	
 		}
 			

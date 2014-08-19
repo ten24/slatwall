@@ -35,16 +35,16 @@
 <cfelse>
 	<cfif not structKeyExists(request.context, "modal") or not request.context.modal>
 		<cfoutput>
-			<div class="actionnav well well-small">
+			<div class="actionnav well well-sm">
 				<div class="row">
 					<div class="col-md-4">
 						<!--- Page Title --->
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h1>#attributes.pageTitle#</h1>
+						<h4>#attributes.pageTitle#</h4>
 					</div>
-					<div class="span8">
+					<div class="col-md-8">
 						<div class="btn-toolbar">
 							
 							<!--- ================ Listing =================== --->
@@ -185,7 +185,7 @@
 										<!--- Delete --->
 										<cfif attributes.showdelete>
 											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
-											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-inverse" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-primary" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
 										</cfif>
 										
 										<!--- Edit --->

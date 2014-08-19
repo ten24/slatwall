@@ -1,0 +1,30 @@
+<ul class="col-xs-12 list-unstyled s-no-paddings">
+	<span ng-repeat="filterGroup in filterGroupItem" ng-init="incrementFilterCount()">
+		<!-- figure out if item is filterItem or filterGroup-->
+		<span ng-switch on="filterGroup.hasOwnProperty('filterGroup')" >
+			<span 	ng-switch-when="false" 
+					sw-filter-item 
+					filter-item="filterGroup" 
+					sibling-items="filterGroupItem"
+					set-item-in-use="setItemInUse(booleanValue)"
+					filter-properties-list="filterPropertiesList"
+					>
+			</span>
+			<span 	ng-switch-when="true" 
+					sw-filter-group-item 
+					filter-group-item="filterGroup",
+					sibling-items="filterGroupItem"
+					increment-filter-count="incrementFilterCount()" 
+					set-item-in-use="setItemInUse(booleanValue)"
+					filter-properties-list="filterPropertiesList"
+					>
+			</span>
+		</span>
+	</span>
+	<span 	sw-add-filter-buttons
+			filter-group-item="filterGroupItem"
+			item-in-use="itemInUse"
+			set-item-in-use="setItemInUse(booleanValue)"
+	>
+	</span>
+</ul>

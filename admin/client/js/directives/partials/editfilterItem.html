@@ -1,0 +1,88 @@
+<div class="col-xs-12 s-add-filter"  ng-class="{collapse:filterItem.isClosed}">
+	<div class="row">
+	  <h4> Define Filter: <span ng-bind="filterPropertiesList.ENTITYNAME"></span><i class="fa fa-minus-square-o"  ></i></h4>
+	  <div class="col-xs-12">
+	
+	    <div class="row">
+	      <div class="col-xs-2">
+	        <div class="form-group form-group-sm">
+	          <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList.ENTITYNAME"></span>:</label>
+	          <div class="col-sm-12 s-no-paddings">
+	            <select ng-model="selectedFilterProperty" 
+	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
+	            		ng-options="filterProperty as filterProperty.NAME 
+	            					group by filterProperty.FIELDTYPE 
+	            					for filterProperty in filterPropertiesList.DATA 
+	            					track by filterProperty.propertyIdentifier
+	            					| orderBy:filterProperty.NAME" 
+	            		class="form-control input-sm">
+	              <option value="">Select From {{filterPropertiesList.ENTITYNAME}}:</option>
+	            </select>
+	          </div>
+	          <div class="clearfix"></div>
+	        </div>
+	      </div>
+	      <div class="col-xs-6 s-criteria">
+	        <h4>Criteria</h4>
+			{{selectedFilterProperty.ORMTYPE}}
+	        <!--- Filter Criteria Start --->
+	        <span ng-switch="selectedFilterProperty.ORMTYPE" >
+	        	<!-- is it a simple item -->
+	        	<span ng-switch-when="boolean"
+	        		sw-criteria-boolean
+	        		filter-item="filterItem"
+	        		selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        	<span ng-switch-when="string"
+	        		sw-criteria-string
+	        		filter-item="filterItem"
+	        		selected-filter-property="selectedFilterProperty"
+	        	></span>
+	        	<span ng-switch-when="timestamp"
+	        		sw-criteria-date
+	        		filter-item="filterItem"
+	        		selected-filter-property="selectedFilterProperty"
+	        	></span>
+	        	<!--is it complex-->
+	        	</span ng-switch-default>
+	        		<span ng-switch on="selectedFilterProperty.FIELDTYPE">
+	        			<span ng-switch-when="one-to-one"
+	        				sw-criteria-one-to-one
+	        				filter-item="filterItem"
+	        				selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        			<span ng-switch-when="one-to-many"
+	        				sw-criteria-one-to-many
+	        				filter-item="filterItem"
+	        				selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        			<span ng-switch-when="many-to-one"
+	        				sw-criteria-many-to-one
+	        				filter-item="filterItem"
+	        				selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        			<span ng-switch-when="many-to-many"
+	        				sw-criteria-many-to-many
+	        				filter-item="filterItem"
+	        				selected-filter-property="selectedFilterProperty"
+	        			></span>
+	        		</span>
+	        	</span>
+			</span>
+	        <!--- //Filter Criteria End --->
+	
+	      </div>
+	      <div class="col-xs-3">
+	        <div class="s-button-select-group">
+	          <button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
+	          <div class="s-or-box">-OR-</div>
+	          <button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
+	        </div>
+	        <div class="form-group">
+	          <div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</div>
