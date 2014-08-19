@@ -1,16 +1,15 @@
   /* Bootstrap 3 Overrides */
   
-  body {font-family: 'Open Sans', sans-serif;margin-top:60px;content:"\e105";font-color:#ccc;}
+  body {font-family: 'Open Sans', sans-serif;margin-top:60px;}
   hr {border-right:1px solid #cccccc;}
   
   /* Detail Views */
-  .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;align:center;position:relative;text-align:left;left:15px;}
+  .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;position:relative;text-align:left;left:15px;}
   label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;text-align:left;left:15px;}
 
-  .navbar-collapse .nav-pill {border-right:1px solid #cccccc;}
-  .navbar-collapse .active {border:1px solid #cccccc;border-right:0px;position:relative;align:left;}
+  .navbar-collapse .nav-pill {border-right:1px solid #cccccc;padding:0px;}
+  .navbar-collapse .active {border:1px solid #cccccc;border-right:0px;position:relative;align:left;padding:0px;}
   
-  .col-md-12 {margin-top:30px;}
   .btn-group {float:right;}
   .btn-toolbar {float:right;}
   

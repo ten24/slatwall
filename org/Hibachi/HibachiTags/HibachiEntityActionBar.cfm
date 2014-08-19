@@ -35,14 +35,14 @@
 <cfelse>
 	<cfif not structKeyExists(request.context, "modal") or not request.context.modal>
 		<cfoutput>
-			<div class="actionnav well well-small">
+			<div class="actionnav well well-sm">
 				<div class="row">
 					<div class="col-md-4">
 						<!--- Page Title --->
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h5>#attributes.pageTitle#</h5>
+						<h4>#attributes.pageTitle#</h4>
 					</div>
 					<div class="col-md-8">
 						<div class="btn-toolbar">
