@@ -1,4 +1,3 @@
-<div class="row" ng-app="collections">
   <div class="col-xs-12">
 
     <!--- Header nav with title starts --->
@@ -933,7 +932,7 @@
   .s-table-content-nav .dropdown-menu {left:auto;right:0;top:88%;border-radius:0px;}
   .s-table-content-nav .dropdown-menu {background-color:#F9F9F9;}
   .dropdown-menu li.active > a:hover, .dropdown-menu li > a:hover {background-color: #FC770D;background-image: -moz-linear-gradient(top, #f58620, #f58620);background-image: -ms-linear-gradient(top, #f58620, #f58620);background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f58620), to(#f58620));background-image: -webkit-linear-gradient(top, #f58620, #f58620);background-image: -o-linear-gradient(top, #f58620, #f58620);background-image: linear-gradient(top, #f58620, #f58620);color: #FFF !important;}
-  .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#F58620;color:#ffffff;border-color: #F58620;}
+  .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#F58620;color:#ffffff;}
   .nav-tabs {padding:0px 15px;}
   .tab-content .tab-pane {background-color: #eeeeee;padding:0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999999;box-shadow:inset 0 0 2px #999999;padding:20px 15px}
   .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {color: #555;cursor: default;background: none;border: none;border-bottom-color: none;border-bottom:4px solid #F58620}
@@ -1140,20 +1139,19 @@
   .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
   .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
   .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
+  .HIDEN {}
 
 
 </style>
 
 <script charset="utf-8">
   //activate tooltips
-  $(function(){
     $('.j-tool-tip-item').tooltip();
-  })();
 </script>
 
 <script charset="utf-8">
   //This was created for example only to toggle the edit save icons
-  $(function(){
+
     $('#j-edit-btn').click(function(){
       $(this).toggle();
       $(this).siblings('#j-save-btn').toggle();
@@ -1166,12 +1164,8 @@
       $('.s-properties p').toggle();
       $('.s-properties input').toggle();
     });
-  })();
+
 </script>
-
-
-
-
 
 <script charset="utf-8">
   $('.s-filter-item .panel-body').click(function(){
