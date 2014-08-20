@@ -1,20 +1,20 @@
-<div id="name">
+<!--- <div id="name">
   <div ng-controller="AccordionDemoCtrl">
+
     <accordion close-others="oneAtATime">
-      <accordion-group heading="Static Header, initially expanded" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
-        This content is straight in the template.
-      </accordion-group>
-      <accordion-group heading="{{group.title}}" ng-repeat="group in groups">
-        {{group.content}}
-      </accordion-group>
-      <accordion-group heading="Dynamic Body Content">
-        <p>The body of the accordion group grows to fit the contents</p>
-          <button class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
-          <div ng-repeat="item in items">{{item}}</div>
+      <accordion-group is-open="status.isFirstOpen">
+          <accordion-heading>
+            <div class="s-accordion-header">
+              I can have markup, too! <i class="pull-right fa fa-caret-left"></i>
+            </div>
+          </accordion-heading>
+          This is just some content to illustrate fancy headings.
       </accordion-group>
       <accordion-group is-open="status.open">
           <accordion-heading>
-              I can have markup, too! <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+              <div class="s-accordion-header">
+                I can have markup, too! <i class="pull-right fa fa-caret-left"></i>
+              </div>
           </accordion-heading>
           This is just some content to illustrate fancy headings.
       </accordion-group>
@@ -24,10 +24,12 @@
 <br/>
 <br/>
 <br/>
-<br/>
+<br/> --->
 
 
-
+<style media="screen">
+  .s-accordion-header {width:100%;margin-top:-10px;margin-bottom:-10px;padding-top:10px;padding-bottom:10px;cursor:pointer;}
+</style>
   <div class="row s-body-nav">
     <nav class="navbar navbar-default" role="navigation" style="background-color: #FFF;margin-bottom: 0px;margin-top: -30px;border-radius: 0px;border-top: 0px;">
       <div class="col-md-4">
@@ -52,6 +54,9 @@
                 <li><a title="Add Sku" class="modalload" href="#" data-toggle="modal" data-target="#adminModal">Add Sku</a></li> <li><a title="Add Image" class="adminentitycreateImage  modalload" href="#" data-toggle="modal" data-target="#adminModal">Add Image</a></li> <li><a title="Add File" class="modalload" href="#" data-toggle="modal" data-target="#adminModal">Add File</a></li> <li><a title="Add Comment" class="modalload" href="#" data-toggle="modal" data-target="#adminModal">Add Comment</a></li>
               </ul>
             </div>
+          </div>
+
+          <div class="btn-group btn-group-sm">
             <button type="button" class="btn s-btn-grey s-remove">Delete</button>
             <button type="button" class="btn s-btn-grey">Cancel</button>
             <button type="button" class="btn btn-success">Save</button>
@@ -1294,15 +1299,15 @@
   .s-setting-options-body .s-setting-and-or {width: 100%;padding: 10px 0px 16px 0px;display: block;font-weight: 700;}
   .s-setting-options-body .s-setting-and-or .btn {min-width:52px;text-align:center;}
 
-  .s-setting-options-body .s-add-filter {background:#eaeaea;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
+  .s-setting-options-body .s-add-filter {background:#ffffff;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
   .s-setting-options-body .s-add-filter h4 i {float:right;cursor:pointer;padding-top:2px;}
-  .s-setting-options-body .s-add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;}
+  .s-setting-options-body .s-add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;font-size:16px;}
   .s-setting-options-body .s-add-filter label {font-weight:normal;font-size:12px;}
   .s-add-filter-box .s-and-or-box {margin-top: 20px;margin-bottom: 8px;}
   .s-and-or-box {text-align:center;height:40px;}
   .s-and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
   .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
-  .s-add-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #DDD;}
+  .s-add-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #ffffff;}
   .s-add-filter > .row {padding-top:0px !important;}
   .s-add-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;margin-right: 20px;padding-right: 40px;padding-left: 40px;margin-left: 16px;margin-bottom: 15px;}
   .s-add-filter .s-button-select-group {text-align:center;}
@@ -1327,8 +1332,8 @@
   .selectboxit-option-last{border-bottom-right-radius:6px;border-bottom-left-radius:6px}
   .selectboxit-optgroup-header{font-weight:700}
   .selectboxit-optgroup-header:hover{cursor:default}
-  .selectboxit-arrow-container{width:30px;position:absolute;right:0;}
-  .s-table-options .selectboxit-arrow-container{background-color:#eeeeee;}
+  .selectboxit-arrow-container{width:30px;position:absolute;right:0;border-left:6px solid #ffffff;}
+  .selectboxit-arrow-container{background-color:#eeeeee;}
   .selectboxit .selectboxit-arrow-container .selectboxit-arrow{margin:0 auto;position:absolute;top:44%;right:0;left:0}
   .selectboxit .selectboxit-arrow-container .selectboxit-arrow.ui-icon{top:30%}
   .selectboxit-option-icon-container{float:left}
@@ -1350,7 +1355,7 @@
   .s-table-options .navbar-form {margin-right:15px;}
   .s-table-options .navbar-form:first-child {margin-left:17px;}
   .s-table-options .btn-group {margin-top:15px;margin-top: 8px;margin-bottom: 8px;margin-left:15px;}
-  .s-table-options .s-table-header-search {padding-left:0px;}
+  .s-table-options .s-table-header-search {padding-left:0px;width:200px;}
   .s-table-options .s-table-header-search button {color:#5E5E5E;background-color:#eeeeee;}
   .s-table-options .s-table-header-right {float:right;}
   .s-table-options .fa-level-down {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;}
