@@ -276,7 +276,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"Ryan"
 								}
 							]
-							
 						}
 					]
 					

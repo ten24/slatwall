@@ -6,9 +6,9 @@
       <div class="col-sm-12 s-no-paddings">
         <select class="form-control input-sm"
         		ng-model="selectedFilterProperty.selectedCriteriaType" 
+        		ng-change="selectedConditionChanged(selectedFilterProperty.selectedCriteriaType)"
         		ng-options="dateOption as dateOption.display 
         					for dateOption in dateOptions 
-        					track by dateOption.comparisonOperator
         					" 	
         >
         	<option selected="selected" value="">Select Condition</option>
@@ -19,10 +19,18 @@
     <div class="form-group form-group-sm">
       <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
       <div class="col-sm-12 s-no-paddings">
-        <input ng-model="selectedFilterProperty.criteriaRangeStart" type="text" class="form-control" id="input" placeholder="12">
-      </div>
-      <div class="col-sm-12 s-no-paddings">
-        <input ng-model="selectedFilterProperty.criteriaRangeEnd" type="text" class="form-control" id="input" placeholder="12">
+      	<p class="input-group">
+          <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="selectedFilterProperty.criteriaRangeStart" is-open="openedCalendarStart"  ng-required="true" close-text="Close" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+        <p class="input-group">
+          <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="selectedFilterProperty.criteriaRangeEnd" is-open="openedCalendarEnd" ng-required="true" close-text="Close" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
       </div>
       <div class="clearfix"></div>
     </div>

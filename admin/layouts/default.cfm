@@ -88,7 +88,7 @@ Notes:
 			</script>
 		</cfif>
 	</head>
-	<body>
+	<body style="margin-top:40px;">
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
 				<div class="navbar-header">
@@ -344,6 +344,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
+		<script type="text/javascript" src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
 		
 		<!---modules --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/js/slatwall.js"></script>
@@ -357,12 +358,6 @@ Notes:
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collections.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collectionsTabController.js"></script>
 	 	<!---directives --->
-
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroups.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterItem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/swFilterGroupItem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/slatwalladmin/js/directives/pagination.js"></script>
-
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swHeaderWithTabs.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swDirective.js"></script>
 	 	
@@ -377,6 +372,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swCriteriaBoolean.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swTabDisplayOptions.js"></script>
 		
+    
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/pagination.js"></script>
 		
 		<div class="container-fluid">

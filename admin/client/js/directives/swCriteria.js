@@ -122,63 +122,133 @@ partialsPath){
     	var dateOptions = [
     		{
     			display:"Date",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				behavior:'exactDate'
+    			}
     		},
     		{
     			display:"In Range",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'range'
+    			}
     		},
     		{
     			display:"Not In Range",
-    			comparisonOperator:	"not between"
+    			comparisonOperator:	"not between",
+    			dateInfo:{
+    				type:'range'
+    			}
     		},
     		{
     			display:"Today",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'d',
+    				measureCount:0,
+    				behavior:'toDate'
+    			}
     		},
     		{
     			display:"Yesterday",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'d',
+    				measureCount:-1,
+    				behavior:'toDate'
+    			}
     		},
     		{
     			display:"This Week",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'w',
+    				measureCount:-1,
+    				behavior:'toDate'
+    			}
     		},
     		{
     			display:"This Month",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'m',
+    				measureCount:-1,
+    				behavior:'toDate'
+    			}
     		},
     		{
     			display:"This Quarter",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'q',
+    				measureCount:-1,
+    				behavior:'toDate'
+    			}
     		},
     		{
     			display:"This Year",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'y',
+    				measureCount:-1,
+    				behavior:'toDate'
+    			}
     		},
     		{
     			display:"Last N Hour(s)",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'h',
+    			}
     		},
     		{
     			display:"Last N Day(s)",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'d',
+    			}
     		},
     		{
     			display:"Last N Week(s)",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'w',
+    			}
     		},
     		{
     			display:"Last N Month(s)",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'m',
+    			}
     		},
     		{
     			display:"Last N Quarter(s)",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'q',
+    			}
     		},
     		{
     			display:"Last N Year(s)",
-    			comparisonOperator:	"between"
+    			comparisonOperator:	"between",
+    			dateInfo:{
+    				type:'calculation',
+    				measureType:'y',
+    			}
     		},
     		{
     			display:"Defined",
@@ -232,6 +302,40 @@ partialsPath){
 	        selectedFilterProperty:"="
 		},
 		link: linker,
+		controller:function ($scope) {
+			  $scope.today = function() {
+			    $scope.dt = new Date();
+			    $scope.dtx = new Date();
+			  };
+			  $scope.today();
+			
+			  $scope.clear = function () {
+			    $scope.dt = null;
+			    $scope.dtx = null;
+			  };
+			
+			  $scope.openCalendarStart = function($event) {
+			    $event.preventDefault();
+			    $event.stopPropagation();
+			
+			    $scope.openedCalendarStart = true;
+			  };
+			  
+			  $scope.openCalendarEnd = function($event) {
+			    $event.preventDefault();
+			    $event.stopPropagation();
+			
+			    $scope.openedCalendarEnd = true;
+			  };
+			
+			  $scope.initDate = new Date('2016-15-20');
+			  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+			  $scope.format = $scope.formats[1];
+			  
+			  $scope.selectedConditionChanged = function(selectedCondition){
+			  	console.log(selectedCondition);
+			  }
+		}
 	}
 }]);
 	

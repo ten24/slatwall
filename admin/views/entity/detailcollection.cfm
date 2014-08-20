@@ -94,9 +94,9 @@
     <div class="s-table-options">
       <form class="navbar-form navbar-left form-horizontal" role="search">
         <div class="form-group">
-          <label for="name" class="control-label">Bulk Action</label>
+          <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
           <select size="1" name="" aria-controls="" class="form-control">
-            <option value="15" selected="selected" disabled="disabled">Select</option>
+            <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
             <option value="20">Last Changed</option>
             <option value="20">Delete</option>
             <option value="20">Examples</option>
@@ -251,7 +251,7 @@
   .s-table-content-nav .dropdown-menu {left:auto;right:0;top:88%;border-radius:0px;}
   .s-table-content-nav .dropdown-menu {background-color:#F9F9F9;}
   .dropdown-menu li.active > a:hover, .dropdown-menu li > a:hover {background-color: #FC770D;background-image: -moz-linear-gradient(top, #f58620, #f58620);background-image: -ms-linear-gradient(top, #f58620, #f58620);background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f58620), to(#f58620));background-image: -webkit-linear-gradient(top, #f58620, #f58620);background-image: -o-linear-gradient(top, #f58620, #f58620);background-image: linear-gradient(top, #f58620, #f58620);color: #FFF !important;}
-  .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#F58620;color:#ffffff;border-color: #F58620;}
+  .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {background-color:#F58620;color:#ffffff;}
   .nav-tabs {padding:0px 15px;}
   .tab-content .tab-pane {background-color: #eeeeee;padding:0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999999;box-shadow:inset 0 0 2px #999999;padding:20px 15px}
   .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {color: #555;cursor: default;background: none;border: none;border-bottom-color: none;border-bottom:4px solid #F58620}

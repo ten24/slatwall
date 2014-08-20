@@ -82,10 +82,13 @@ partialsPath){
 	                break;
 	            case 'timestamp':
 	            	//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+	            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	            	
 					if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 						filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 					}else{
-						
+						var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+						filterItem.value = dataValueString;
 					}
 	                break;	
 				}
