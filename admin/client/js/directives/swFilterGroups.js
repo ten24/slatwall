@@ -17,7 +17,6 @@ partialsPath){
 			filterGroupItem: "=",
 			filterPropertiesList:"=",
 			incrementFilterCount:"&"
-			
 		},
 		link: function(scope, element,attrs){
 			var filterGroupsPartial = partialsPath+"filterGroups.html";
@@ -29,7 +28,6 @@ partialsPath){
 			});
 		},
 		controller: function($scope,$element,$attrs){
-			console.log($scope.filterPropertiesList);
 			$scope.itemInUse = false;
 			$scope.setItemInUse = function(booleanValue){
 				$scope.itemInUse = booleanValue;

@@ -4,25 +4,14 @@
     <div class="form-group form-group-sm">
       <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
       <div class="col-sm-12 s-no-paddings">
-        <select class="form-control input-sm">
-          <option value="-- Select Condition">-- Select Condition</option>
-          <option value="Exact Date">Exact Date</option>
-          <option value="Range">Range</option>
-          <option value="Today">Today</option>
-          <option selected="" value="This Week">This Week</option>
-          <option value="This Month">This Month</option>
-          <option value="This Quarter">This Quarter</option>
-          <option value="This Year">This Year</option>
-          <option value="---">---</option>
-          <option value="Last Day">Last Day</option>
-          <option value="Last Week">Last Week</option>
-          <option value="Last Month">Last Month</option>
-          <option value="Last Quarter">Last Quarter</option>
-          <option value="Last Year">Last Year</option>
-          <option value="---">---</option>
-          <option value="N days ago">N days ago</option>
-          <option value="N weeks ago">N weeks ago</option>
-          <option value="N months ago">N months ago</option>
+        <select class="form-control input-sm"
+        		ng-model="selectedFilterProperty.selectedCriteriaType" 
+        		ng-options="dateOption as dateOption.display 
+        					for dateOption in dateOptions 
+        					track by dateOption.comparisonOperator
+        					" 	
+        >
+        	<option selected="selected" value="">Select Condition</option>
         </select>
       </div>
       <div class="clearfix"></div>
@@ -30,7 +19,10 @@
     <div class="form-group form-group-sm">
       <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
       <div class="col-sm-12 s-no-paddings">
-        <input type="text" class="form-control" id="input" placeholder="12">
+        <input ng-model="selectedFilterProperty.criteriaRangeStart" type="text" class="form-control" id="input" placeholder="12">
+      </div>
+      <div class="col-sm-12 s-no-paddings">
+        <input ng-model="selectedFilterProperty.criteriaRangeEnd" type="text" class="form-control" id="input" placeholder="12">
       </div>
       <div class="clearfix"></div>
     </div>

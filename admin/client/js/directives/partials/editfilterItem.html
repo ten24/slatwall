@@ -22,53 +22,13 @@
 	          <div class="clearfix"></div>
 	        </div>
 	      </div>
-	      <div class="col-xs-6 s-criteria">
+	      
+	      <div class="col-xs-6 s-criteria" ng-if="selectedFilterProperty.ORMTYPE !== 'undefined'">
 	        <h4>Criteria</h4>
-			{{selectedFilterProperty.ORMTYPE}}
-	        <!--- Filter Criteria Start --->
-	        <span ng-switch="selectedFilterProperty.ORMTYPE" >
-	        	<!-- is it a simple item -->
-	        	<span ng-switch-when="boolean"
-	        		sw-criteria-boolean
-	        		filter-item="filterItem"
-	        		selected-filter-property="selectedFilterProperty"
-	        			></span>
-	        	<span ng-switch-when="string"
-	        		sw-criteria-string
-	        		filter-item="filterItem"
-	        		selected-filter-property="selectedFilterProperty"
-	        	></span>
-	        	<span ng-switch-when="timestamp"
-	        		sw-criteria-date
-	        		filter-item="filterItem"
-	        		selected-filter-property="selectedFilterProperty"
-	        	></span>
-	        	<!--is it complex-->
-	        	</span ng-switch-default>
-	        		<span ng-switch on="selectedFilterProperty.FIELDTYPE">
-	        			<span ng-switch-when="one-to-one"
-	        				sw-criteria-one-to-one
-	        				filter-item="filterItem"
-	        				selected-filter-property="selectedFilterProperty"
-	        			></span>
-	        			<span ng-switch-when="one-to-many"
-	        				sw-criteria-one-to-many
-	        				filter-item="filterItem"
-	        				selected-filter-property="selectedFilterProperty"
-	        			></span>
-	        			<span ng-switch-when="many-to-one"
-	        				sw-criteria-many-to-one
-	        				filter-item="filterItem"
-	        				selected-filter-property="selectedFilterProperty"
-	        			></span>
-	        			<span ng-switch-when="many-to-many"
-	        				sw-criteria-many-to-many
-	        				filter-item="filterItem"
-	        				selected-filter-property="selectedFilterProperty"
-	        			></span>
-	        		</span>
-	        	</span>
-			</span>
+	       	<span	sw-criteria
+	       			filter-item="filterItem"
+	       			selected-filter-property="selectedFilterProperty"
+	       	></span>
 	        <!--- //Filter Criteria End --->
 	
 	      </div>
@@ -76,7 +36,7 @@
 	        <div class="s-button-select-group">
 	          <button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
 	          <div class="s-or-box">-OR-</div>
-	          <button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
+	          <button type="button" ng-click="saveFilter(selectedFilterProperty,filterItem)" class="btn btn-sm s-btn-ten24">Save & Finish</button>
 	        </div>
 	        <div class="form-group">
 	          <div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>

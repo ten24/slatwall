@@ -12,7 +12,7 @@ partialsPath){
 	return {
 		restrict: 'A',
 		scope:{
-			filterItem: "=",
+			filterItem:"=",
 			filterPropertiesList:"="
 		},
 		link: function(scope, element,attrs){
@@ -33,14 +33,64 @@ partialsPath){
 				var filterProperty = $scope.filterPropertiesList.DATA[i];
 				console.log(filterProperty.propertyIdentifier);
 				if(filterProperty.propertyIdentifier === $scope.filterItem.propertyIdentifier){
-					$scope.selectedFilterProperty = $scope.filterItem;
+					$scope.selectedFilterProperty = filterProperty;
 				}
 			}
 			
 			//public functions
 			$scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
+				
+			}
+			
+			$scope.saveFilter = function(selectedFilterProperty,filterItem){
+				//populate filterItem with selectedFilterProperty values
+				filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
+				var propertyAlias = filterItem.propertyIdentifier.split(".").pop();
+				filterItem.displayPropertyIdentifier = propertyAlias; 
+				
+				switch(selectedFilterProperty.ORMTYPE){
+					case 'boolean':
+               		filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+               		filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                break;
+	            case 'string':
+					filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+					
+					//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+					if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+					
+						filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+					}else{
+						//if has a pattern then we need to evaluate where to add % for like statement
+						if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
+							switch(selectedFilterProperty.selectedCriteriaType.pattern){
+								case "%w%":
+									filterItem.value = '%'+selectedFilterProperty.criteriaValue+'%';
+									break;
+								case "%w":
+									filterItem.value = '%'+selectedFilterProperty.criteriaValue;
+									break;
+								case "w%":
+									filterItem.value = selectedFilterProperty.criteriaValue+'%';
+									break;
+							}
+						}else{
+							filterItem.value = selectedFilterProperty.criteriaValue;
+						}
+					}
+					
+	                break;
+	            case 'timestamp':
+	            	//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+					if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+						filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+					}else{
+						
+					}
+	                break;	
+				}
 				console.log(selectedFilterProperty);
-				$scope.selectedFilterProperty = selectedFilterProperty;
+				console.log(filterItem);
 			}
         } 
 	}

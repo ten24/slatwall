@@ -56,10 +56,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newCollection();
 	}
 	
-	public void function getCollectionObjectOptionsTest(){
+	/*public void function getCollectionObjectOptionsTest(){
 		variables.entity.setBaseEntityName('Account');
 		assert(isArray(variables.entity.getEntityNameOptions()));
-	}
+	}*/
 	
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
@@ -519,6 +519,37 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
 		request.debug(query);
 		
+	}
+	
+	public void function getHQLTest_Contains(){
+		var collectionBestAcountEmailAddressesData = {
+			collectionid = '',
+			collectionCode = 'BestAccountEmailAddresses',
+			baseEntityName="Account",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"Account",
+					
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"Account.firstName",
+									"comparisonOperator":"like",
+									"value":"Ryan%"
+								}
+							]
+							
+						}
+					]
+					
+				}
+			'
+		};
+		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
+		
+		request.debug(collectionBestAcountEmailAddresses.getPageRecords());
 	}
 	
 	public void function getHQLTest(){
