@@ -49,7 +49,7 @@ Notes:
 
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en" ng-App="slatwall">
+<html lang="en" ng-app="slatwall">
 	<head>
 		<meta charset="utf-8">
 		<title>#rc.pageTitle# &##124; Slatwall</title>
@@ -58,7 +58,9 @@ Notes:
 		<link rel="shortcut icon" href="#request.slatwallScope.getBaseURL()#/assets/images/favicon.png" type="image/png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
+
+
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
@@ -341,10 +343,12 @@ Notes:
 			  };
 			})();
 		</script>
+
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/ui.bootstrap.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
-		
+
 		<!---modules --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/js/slatwall.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/slatwalladmin.js"></script>
@@ -352,7 +356,7 @@ Notes:
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/slatwallService.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/alertService.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/collectionService.js"></script>
-	 	
+
 	 	<!---controllers --->
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collections.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collectionsTabController.js"></script>
@@ -365,7 +369,7 @@ Notes:
 
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swHeaderWithTabs.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swDirective.js"></script>
-	 	
+
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterGroups.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swAddFilterButtons.js"></script>
@@ -376,13 +380,15 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swCriteriaString.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swCriteriaBoolean.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swTabDisplayOptions.js"></script>
-		
+
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/pagination.js"></script>
-		
+
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
+
 					#body#
+
 				</div>
 			</div>
 
@@ -424,5 +430,8 @@ Notes:
 		  	<i class="fa fa-check" ng-show="alert.type === 'success'"></i>{{alert.msg}}
 	    </div>
 	</body>
+
+	<!-- Angular module that reyjay added  - needs to be changed -->
+	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/controllers.js"></script>
 </html>
 </cfoutput>
