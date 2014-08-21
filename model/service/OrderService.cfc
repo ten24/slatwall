@@ -126,7 +126,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
-	public any function duplicateOrder(required any order, boolean saveNewFlag=false) {
+	public any function duplicateOrder(required any order, boolean saveNewFlag=false, boolean copyPersonalDataFlag=false) {
 		var newOrder = this.newOrder();
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
@@ -175,14 +175,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod())) {
 					newOrderFulfillment.setShippingMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod() );	
 				}
-				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
-					newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress().copyAddress( arguments.saveNewFlag ) );
-				}
-				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
-					newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
-				}
-				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress())) {
-					newOrderFulfillment.setEmailAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress() );
+				
+				// Personal Info
+				if(arguments.copyPersonalDataFlag){
+					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
+						newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress().copyAddress( arguments.saveNewFlag ) );
+					}
+					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
+						newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
+					}
+					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress())) {
+						newOrderFulfillment.setEmailAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress() );
+					}
 				}
 				
 			}
@@ -191,23 +195,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		}
 		
-		// Duplicate Account
-		if(!isNull(arguments.order.getAccount())) {
+		// Duplicate Account if copyPersonalDataFlag and accountExists
+		if(arguments.copyPersonalDataFlag && !isNull(arguments.order.getAccount())) {
 			newOrder.setAccount( arguments.order.getAccount() );
 		}
 		
+		// Personal Info
 		// Dupliace Shipping & Billing Addresses
-		if(!isNull(arguments.order.getShippingAddress())) {
-			newOrder.setShippingAddress( arguments.order.getShippingAddress().copyAddress( arguments.saveNewFlag ) );
-		}
-		if(!isNull(arguments.order.getShippingAccountAddress())) {
-			newOrder.setShippingAccountAddress( arguments.order.getShippingAccountAddress() );
-		}
-		if(!isNull(arguments.order.getBillingAddress())) {
-			newOrder.setBillingAddress( arguments.order.getBillingAddress().copyAddress( arguments.saveNewFlag ) );
-		}
-		if(!isNull(arguments.order.getBillingAccountAddress())) {
-			newOrder.setBillingAccountAddress( arguments.order.getBillingAccountAddress() );
+		if(arguments.copyPersonalDataFlag){
+			if(!isNull(arguments.order.getShippingAddress())) {
+				newOrder.setShippingAddress( arguments.order.getShippingAddress().copyAddress( arguments.saveNewFlag ) );
+			}
+			if(!isNull(arguments.order.getShippingAccountAddress())) {
+				newOrder.setShippingAccountAddress( arguments.order.getShippingAccountAddress() );
+			}
+			if(!isNull(arguments.order.getBillingAddress())) {
+				newOrder.setBillingAddress( arguments.order.getBillingAddress().copyAddress( arguments.saveNewFlag ) );
+			}
+			if(!isNull(arguments.order.getBillingAccountAddress())) {
+				newOrder.setBillingAccountAddress( arguments.order.getBillingAccountAddress() );
+			}
 		}
 		
 		if(arguments.saveNewFlag) {
@@ -218,23 +225,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {
-		var newOrder = duplicateOrder(arguments.originalOrder, true);
+		var newOrder = duplicateOrder(order=arguments.originalOrder, saveNewFlag=true, copyPersonalDataFlag=false);
 		
-		// Clear out account specific stuff in fulfillments
-		for(var fulfillment in newOrder.getOrderFulfillments()) {
-			fulfillment.setShippingAddress( javaCast("null", "" ) );
-			fulfillment.setAccountAddress( javaCast("null", "" ) );
-			fulfillment.setEmailAddress( javaCast("null", "" ) );
-		}
-		
-		// Remove account
+		// Update Account
 		newOrder.setAccount( arguments.newAccount );
-
-		// Remove Addresses		
-		newOrder.setShippingAddress( javaCast("null", "" ) );
-		newOrder.setShippingAccountAddress( javaCast("null", "" ) );
-		newOrder.setBillingAddress( javaCast("null", "" ) );
-		newOrder.setBillingAccountAddress( javaCast("null", "" ) );
 		
 		// Update any errors from the previous account to the new account
 		newOrder.getAccount().setHibachiErrors( originalOrder.getAccount().getHibachiErrors() );
