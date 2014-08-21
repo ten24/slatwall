@@ -25,7 +25,8 @@
           			ng-change="criteriaRangeChanged(selectedFilterProperty)"
           			/>
         </p>
-      	
+      	<label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Date:</label>
+      
       	<p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
           <input 	type="text" class="form-control" 
           			datepicker-popup="{{format}}" 
@@ -40,6 +41,8 @@
             <button type="button" class="btn btn-default" ng-click="openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </p>
+        <label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Date:</label>
+      
         <p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
           <input 	type="text" class="form-control" 
           			datepicker-popup="{{format}}"  

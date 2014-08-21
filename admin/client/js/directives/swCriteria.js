@@ -367,8 +367,9 @@ $log){
 	  						//get this Measure to date
 	  						switch(selectedCondition.dateInfo.measureType){
 	  							case 'd':
-	  								var todayBOD = Date.parse('today').setHours(0,0,0,0);
-	  								selectedFilterProperty.criteriaRangeStart = todayBOD.add(selectedCondition.dateInfo.measureCount).days();
+	  								var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
+	  								dateBOD.setHours(0,0,0,0);
+	  								selectedFilterProperty.criteriaRangeStart = dateBOD;
 	  								break;
 	  							case 'w':
 	  								var firstDayOfWeek = Date.today().last().monday();
@@ -409,6 +410,8 @@ $log){
 			  			selectedCondition.disableCriteriaEnd = true;
 			  			selectedCondition.showNumberOf = false; 
 			  			selectedCondition.conditionDisplay = '';
+			  			selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0,0,0,0);
+  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
 			  		}
 			  	}else{
 			  		selectedCondition.showCriteriaStart = false;
@@ -424,54 +427,69 @@ $log){
 			  
 			  $scope.criteriaRangeChanged = function(selectedFilterProperty){
 			  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
-			  	
-			  	var measureCount = selectedFilterProperty.criteriaNumberOf;
-  				switch(selectedCondition.dateInfo.measureType){
-  					case 'h':
-  						var today = Date.parse('today');
-	  					selectedFilterProperty.criteriaRangeEnd = today;
-	  					var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
-	  					selectedFilterProperty.criteriaRangeStart = todayXHoursAgo;
-  						break;
-  					case 'd':
-  						var lastFullDay = Date.parse('today').add(-1).days();
-  						lastFullDay.setHours(23,59,59,999);
-  						selectedFilterProperty.criteriaRangeEnd = lastFullDay;
-  						var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
-						selectedFilterProperty.criteriaRangeStart = lastXDaysAgo;
-						break;
-					case 'w':
-						var lastFullWeekEnd = Date.today().last().sunday();
-						lastFullWeekEnd.setHours(23,59,59,999);
-						selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd;
-						var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
-						selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo;
-						break;
-					case 'm':
-						var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
-						lastFullMonthEnd.setHours(23,59,59,999);
-	  					selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd;
-	  					var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
-	  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo;
-						break;
-					case 'q':
-						 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));	
-						 var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-						 var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
-						 selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter;
-						 
-						 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-					 	lastXQuartersAgo.add(-(measureCount * 3)).months();
-					 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo;
-						 
-						break;
-					case 'y':
-						var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
-						lastFullYearEnd.setHours(23,59,59,999);
-	  					selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd;
-	  					var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount)-1).years();
-	  					selectedFilterProperty.criteriaRangeStart = lastXYearsAgo;
-						break;
+			  	if(selectedCondition.dateInfo.type === 'calculation'){
+				  	var measureCount = selectedFilterProperty.criteriaNumberOf;
+	  				switch(selectedCondition.dateInfo.measureType){
+	  					case 'h':
+	  						var today = Date.parse('today');
+		  					selectedFilterProperty.criteriaRangeEnd = today;
+		  					var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
+		  					selectedFilterProperty.criteriaRangeStart = todayXHoursAgo;
+	  						break;
+	  					case 'd':
+	  						var lastFullDay = Date.parse('today').add(-1).days();
+	  						lastFullDay.setHours(23,59,59,999);
+	  						selectedFilterProperty.criteriaRangeEnd = lastFullDay;
+	  						var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
+							selectedFilterProperty.criteriaRangeStart = lastXDaysAgo;
+							break;
+						case 'w':
+							var lastFullWeekEnd = Date.today().last().sunday();
+							lastFullWeekEnd.setHours(23,59,59,999);
+							selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd;
+							var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
+							selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo;
+							break;
+						case 'm':
+							var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
+							lastFullMonthEnd.setHours(23,59,59,999);
+		  					selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd;
+		  					var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
+		  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo;
+							break;
+						case 'q':
+							 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));	
+							 var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+							 var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
+							 lastDayOfPreviousQuarter.setHours(23,59,59,999);
+							 selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter;
+							 
+							 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+						 	lastXQuartersAgo.add(-(measureCount * 3)).months();
+						 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo;
+							 
+							break;
+						case 'y':
+							var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
+							lastFullYearEnd.setHours(23,59,59,999);
+		  					selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd;
+		  					var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount)-1).years();
+		  					selectedFilterProperty.criteriaRangeStart = lastXYearsAgo;
+							break;
+	  				}
+  				}
+  				
+  				if(selectedCondition.dateInfo.type === 'exactDate'){
+  					selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0,0,0,0);
+  					selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+  				}
+  				if(selectedCondition.dateInfo.type === 'range'){
+  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart)){
+  						selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
+  					}
+  					if(angular.isDefined(selectedFilterProperty.criteriaRangeEnd)){
+  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23,59,59,999);
+  					}
   				}
 			  	
 			  	$log.debug('criteriaRangeChanged');
