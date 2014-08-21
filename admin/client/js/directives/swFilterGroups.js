@@ -32,7 +32,6 @@ partialsPath){
 			$scope.setItemInUse = function(booleanValue){
 				$scope.itemInUse = booleanValue;
 			}
-			
 		}
 	}
 }]);

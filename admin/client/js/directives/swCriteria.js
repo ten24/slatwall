@@ -207,7 +207,7 @@ partialsPath){
     			comparisonOperator:	"between",
     			dateInfo:{
     				type:'calculation',
-    				measureType:'h',
+    				measureType:'h'
     			}
     		},
     		{
@@ -215,7 +215,7 @@ partialsPath){
     			comparisonOperator:	"between",
     			dateInfo:{
     				type:'calculation',
-    				measureType:'d',
+    				measureType:'d'
     			}
     		},
     		{
@@ -223,7 +223,7 @@ partialsPath){
     			comparisonOperator:	"between",
     			dateInfo:{
     				type:'calculation',
-    				measureType:'w',
+    				measureType:'w'
     			}
     		},
     		{
@@ -231,7 +231,7 @@ partialsPath){
     			comparisonOperator:	"between",
     			dateInfo:{
     				type:'calculation',
-    				measureType:'m',
+    				measureType:'m'
     			}
     		},
     		{
@@ -239,7 +239,7 @@ partialsPath){
     			comparisonOperator:	"between",
     			dateInfo:{
     				type:'calculation',
-    				measureType:'q',
+    				measureType:'q'
     			}
     		},
     		{
@@ -247,7 +247,7 @@ partialsPath){
     			comparisonOperator:	"between",
     			dateInfo:{
     				type:'calculation',
-    				measureType:'y',
+    				measureType:'y'
     			}
     		},
     		{
