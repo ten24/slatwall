@@ -24,6 +24,9 @@ $log){
             case 'timestamp':
                 templatePath = partialsPath+"criteriaDate.html";
                 break;
+            case 'big_decimal':
+            	templatePath = partialsPath+"criteriaBigDecimal.html";
+            	break;
         }
         
         var templateLoader = $http.get(templatePath,{cache:$templateCache});
@@ -269,26 +272,71 @@ $log){
     	return dateOptions;
     }
     
+    var getBigDecimalOptions = function(){
+    	var bigDecimalOptions = [
+    		{
+				display:"Equals",
+				comparisonOperator:"="
+			},
+			{
+				display:"Doesn't Equal",
+				comparisonOperator:"<>"
+			},
+			{
+    			display:"In Range",
+    			comparisonOperator:	"between"
+    		},
+    		{
+    			display:"Not In Range",
+    			comparisonOperator:	"not between"
+    		},
+    		{
+    			display:"Greater Than",
+    			comparisonOperator:">"
+    		},
+    		{
+    			display:"Greater Than Or Equal",
+    			comparisonOperator:">="
+    		},
+    		{
+    			display:"Less Than",
+    			comparisonOperator:"<"
+    		},
+    		{
+    			display:"Less Than Or Equal",
+    			comparisonOperator:"<="
+    		},
+			{
+				display:"In List",
+				comparisonOperator:"in"
+			},
+			{
+				display:"Not In List",
+				comparisonOperator:"not in"
+			},
+			{
+				display:"Defined",
+				comparisonOperator:"is",
+				value:"null"
+			},
+			{
+				display:"Not Defined",
+				comparisonOperator:"not is",
+				value:"null"
+			}
+    	]
+    	return bigDecimalOptions;
+    }
+    
     var linker = function(scope, element, attrs){
     	
 		scope.stringOptions = getStringOptions();
 		scope.dateOptions = getDateOptions();
 		scope.booleanOptions = getBooleanOptions();
+		scope.bigDecimalOptions = getBigDecimalOptions();
 		
 		$log.debug('booleanOptions');
 		$log.debug(scope.booleanOptions);
-		
-		/*switch(selectedFilterProperty.ORMTYPE){
-			case 'boolean':
-               	
-                break;
-            case 'string':
-
-                break;
-            case 'timestamp':
-
-                break;	
-		}*/
 		
 		scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
 			if(angular.isDefined(selectedFilterProperty)){
@@ -410,7 +458,7 @@ $log){
 			  			selectedCondition.disableCriteriaEnd = true;
 			  			selectedCondition.showNumberOf = false; 
 			  			selectedCondition.conditionDisplay = '';
-			  			selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0,0,0,0);
+			  			selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
   						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
 			  		}
 			  	}else{
