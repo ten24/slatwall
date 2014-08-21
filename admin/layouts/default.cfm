@@ -343,6 +343,8 @@ Notes:
 			  };
 			})();
 		</script>
+		
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date.min.js"></script>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/ui.bootstrap.js"></script>
