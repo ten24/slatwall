@@ -303,12 +303,14 @@ function setupEventHandlers() {
 
 			initUIElements('#adminModal');
 			
+			/*
 			jQuery('#adminModal').css({
 				'width': 'auto',
 				'margin-left': function () {
 		            return -(jQuery('#adminModal').width() / 2);
 		        }
 			});
+			*/
 		});
 		
 	});
@@ -319,7 +321,9 @@ function setupEventHandlers() {
 		
 		jQuery('#adminModal').load( modalLink, function(){
 
-			initUIElements('#adminModal');			
+			initUIElements('#adminModal');
+			
+			/*
 			angularCompileModal();
 			
 			// make width 90% of screen, 80% height
@@ -343,7 +347,8 @@ function setupEventHandlers() {
 				'max-height': function(){
 					return(bodyHeight+'px');
 				}
-				})
+				});
+			*/
 		});	
 		
 	});
