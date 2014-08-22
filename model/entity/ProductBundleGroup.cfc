@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Base Template</name>
-<help></help>
-<starttext><![CDATA[/*
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -50,14 +46,20 @@
 Notes:
 
 */
-component entityname="$${EntityName}" table="$${TableName}" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="$${serviceName}" {
+component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="sku.productBundleGroups" {
 	
 	// Persistent Properties
-	property name="$${idPropertyName}" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="productBundleGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
+	property name="minimumQuantity" ormtype="integer";
+	property name="maximumQuantity" ormtype="integer";
+	property name="amountType" ormtype="string";
+	property name="amount" ormtype="big_decimal";
 
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="productBundleSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="productBundleSkuID";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -119,6 +121,4 @@ component entityname="$${EntityName}" table="$${TableName}" persistent="true" ac
 	
 	// ==================  END:  Deprecated Methods ========================
 	
-}]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>
+}
