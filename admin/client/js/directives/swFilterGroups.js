@@ -31,8 +31,8 @@ partialsPath){
 			$scope.itemInUse = false;
 			$scope.setItemInUse = function(booleanValue){
 				$scope.itemInUse = booleanValue;
-			}
+			};
 		}
-	}
+	};
 }]);
 	

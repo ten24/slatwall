@@ -69,7 +69,7 @@ function($http,$q,baseURL){
 			deferred.reject(reason);
 		});
 		return deferred.promise;
-	}
+	};
 	/*,
 	factory.formatFilterProperties = function(filterProperties){
 		for(var i in filterProperties.DATA){

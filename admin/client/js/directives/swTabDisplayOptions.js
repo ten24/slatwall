@@ -31,7 +31,7 @@ partialsPath){
 		},
 		controller: function ($scope, $element, $attrs) {
         }  
-	}
+	};
 }]);
 	
 	

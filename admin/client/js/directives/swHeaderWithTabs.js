@@ -28,8 +28,8 @@ partialsPath){
 			//public functions
 			$scope.selectedTabChanged = function(selectedTab){
 				
-			}
+			};
         } 
-	}
+	};
 }]);
 	

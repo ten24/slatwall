@@ -26,7 +26,7 @@ collectionService
 	$scope.filterCount = 0;
 	$scope.incrementFilterCount = function(){
 		$scope.filterCount++;
-	}
+	};
 	
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 	
@@ -87,15 +87,15 @@ collectionService
 				alertService.addAlerts(alerts);
 			});
 		}
-	}
+	};
 	
 	$scope.copyExistingCollection = function(){
 		$scope.collection.collectionConfig = $scope.selectedExistingCollection;
-	}
+	};
 	
 	$scope.setSelectedExistingCollection = function(selectedExistingCollection){
 		$scope.selectedExistingCollection = selectedExistingCollection;
-	}
+	};
 	
 	$scope.setSelectedFilterProperty = function(selectedFilterProperty){
 		$scope.selectedFilterProperty = selectedFilterProperty;
@@ -130,11 +130,11 @@ collectionService
 					break;
 			}
 		}
-	}
+	};
 	
 	$scope.pageShowOptionChanged = function(pageShowOption){
 		slatwallService.getEntity('collection',$scope.collectionID);
-	}
+	};
 	
 	
 	//private Function

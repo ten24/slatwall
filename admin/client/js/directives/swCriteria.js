@@ -16,7 +16,7 @@ $log){
 		var templatePath = '';
         switch(criteriaORMType){
             case 'boolean':
-               templatePath = partialsPath+"criteriaBoolean.html"
+               templatePath = partialsPath+"criteriaBoolean.html";
                 break;
             case 'string':
                 templatePath = partialsPath+"criteriaString.html";
@@ -121,7 +121,7 @@ $log){
     		}
     	];
     	return booleanOptions;
-    }
+    };
     
     var getDateOptions = function(){
     	var dateOptions = [
@@ -277,6 +277,7 @@ $log){
     		{
 				display:"Equals",
 				comparisonOperator:"="
+				
 			},
 			{
 				display:"Doesn't Equal",
@@ -324,9 +325,9 @@ $log){
 				comparisonOperator:"not is",
 				value:"null"
 			}
-    	]
+    	];
     	return bigDecimalOptions;
-    }
+    };
     
     var linker = function(scope, element, attrs){
     	
@@ -340,7 +341,7 @@ $log){
 		
 		scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
 			if(angular.isDefined(selectedFilterProperty)){
-				var templateLoader = getTemplate(selectedFilterProperty.ORMTYPE)
+				var templateLoader = getTemplate(selectedFilterProperty.ORMTYPE);
 		    	var promise = templateLoader.success(function(html){
 					element.html(html);
 					$compile(element.contents())(scope);
@@ -471,7 +472,7 @@ $log){
 		  		$log.debug('selectedConditionChanged');
 		  		$log.debug(selectedCondition); 
 		  		$log.debug(selectedFilterProperty);
-			  }
+			  };
 			  
 			  $scope.criteriaRangeChanged = function(selectedFilterProperty){
 			  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
@@ -543,8 +544,8 @@ $log){
 			  	$log.debug('criteriaRangeChanged');
 		  		$log.debug(selectedCondition); 
 		  		$log.debug(selectedFilterProperty);
-			  }
+			  };
 		}
-	}
+	};
 }]);
 	

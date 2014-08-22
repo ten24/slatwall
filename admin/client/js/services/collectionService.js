@@ -47,7 +47,7 @@ function(){
 					isClosed:"true",
 					siblingItems:filterItemGroup,
 					setItemInUse:setItemInUse				
-				}
+				};
 			if(filterItemGroup.length !== 0){
 				filterItem.logicalOperator = "AND";
 			}
@@ -61,10 +61,10 @@ function(){
 				isClosed:"true",
 				siblingItems:filterItemGroup,
 				setItemInUse:setItemInUse	
-			}
+			};
 			if(filterItemGroup.length !== 0){
-				filterGroupItem.logicalOperator = "AND"
-			}
+				filterGroupItem.logicalOperator = "AND";
+			};
 			filterItemGroup.push(filterGroupItem);
 			collectionService.selectFilterGroupItem(filterGroupItem);
 		},

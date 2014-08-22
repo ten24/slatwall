@@ -30,12 +30,12 @@ partialsPath){
 		controller: function ($scope, $element, $attrs) {
 			$scope.addFilterItem = function(filterItemGroup){
 				collectionService.newFilterItem(filterItemGroup,$scope.setItemInUse);
-			}
+			};
 			
 			$scope.addFilterGroupItem = function(filterItemGroup){
 				collectionService.newFilterGroupItem(filterItemGroup,$scope.setItemInUse);
-			}
+			};
         } 
-	}
+	};
 }]);
 	

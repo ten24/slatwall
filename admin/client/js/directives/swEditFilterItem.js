@@ -41,7 +41,7 @@ $log){
 			//public functions
 			$scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				
-			}
+			};
 			
 			$scope.saveFilter = function(selectedFilterProperty,filterItem){
 				//populate filterItem with selectedFilterProperty values
@@ -100,8 +100,8 @@ $log){
 				
 				console.log(selectedFilterProperty);
 				console.log(filterItem);
-			}
+			};
         } 
-	}
+	};
 }]);
 	

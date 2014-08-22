@@ -46,9 +46,9 @@ partialsPath){
 			$scope.selectFilterItem = function(filterItem){
 				collectionService.selectFilterItem(filterItem);
 				
-			}
+			};
 			
         } 
-	}
+	};
 }]);
 	

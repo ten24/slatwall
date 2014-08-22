@@ -21,13 +21,13 @@ $compile){
 		        });
 		    }
 	        
-	        template += + '>'
-	        template += '</span>'
+	        template += + '>';
+	        template += '</span>';
 	
 	        // Render the template.
 	        element.html('').append($compile(template)(scope));
 	    }
-	}
+	};
 }]);
 	
 	

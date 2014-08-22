@@ -41,9 +41,9 @@ partialsPath){
 			$scope.filterGroupItem.siblingItems = $scope.siblingItems;
 			$scope.selectFilterGroupItem = function(filterGroupItem){
 				collectionService.selectFilterGroupItem(filterGroupItem);
-			}
+			};
         }  
-	}
+	};
 }]);
 	
 	

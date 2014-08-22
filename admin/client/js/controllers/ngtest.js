@@ -6,12 +6,12 @@ angular.module('slatwalladmin').controller('ngtest', [ '$scope','slatwallService
 		console.log(value);
 	},function(reason){
 		
-	})
+	});
 	
 	var postData = {
 		collectionName:"postCollectionName",
 		context:"save"
-	}
+	};
 	
 	var postPromise = slatwallService.saveEntity('collection','abcd',postData);
 		

@@ -8,7 +8,7 @@ function(partialsPath){
 		scope: {
 			collection: '='
 		}
-	}
+	};
 });
 	
 
