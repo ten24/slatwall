@@ -80,7 +80,7 @@
                       <!--- Edit Filter Box --->
                       <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1">
                         <div class="row">
-                          <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
+                          <h4> Define Filters: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
                           <div class="col-xs-12">
 
                             <div class="row">
@@ -127,6 +127,250 @@
                                       </div>
                                       <div class="clearfix"></div>
                                     </div>
+                                  </div>
+                                </form>
+                                <!--- //Filter Criteria End --->
+
+                                <br/><br/><br/>
+
+                                <h4>Options</h4>
+
+                                <!--- Filter Criteria Start --->
+                                <form action="index.html" method="post">
+                                  <div class="s-filter-group-item">
+
+                                    <div class="s-options-group">
+                                      <div class="radio" style="border-bottom: 3px dotted #DDD;padding-bottom: 15px;margin-bottom: 20px;">
+                                        <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" value="option1" checked>
+                                        <label for="radio1">
+                                            Use account field:
+                                        </label>
+                                        <div class="col-sm-12 s-no-paddings s-account-field-select" style="padding-left:5px !important;">
+                                          <select class="form-control input-sm">
+                                            <option disabled="disabled" selected="selected">-- Select From Account --</option>
+                                            <option>First Name</option>
+                                            <option>Last Name</option>
+                                            <option>Company</option>
+                                            <option disabled="disabled">----</option>
+                                            <option>Primary E-Mail Address</option>
+                                            <option disabled="disabled">----</option>
+                                            <option>Addresses</option>
+                                          </select>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                      </div>
+                                      <div class="radio">
+                                        <input type="radio" name="radio1" id="radio2" value="option2">
+                                        <label for="radio2">
+                                            Has account
+                                        </label>
+                                      </div>
+                                      <div class="radio">
+                                        <input type="radio" name="radio1" id="radio3" value="option3">
+                                        <label for="radio3">
+                                            Doesn't Has account
+                                        </label>
+                                      </div>
+                                    </div>
+
+                                    <script charset="utf-8">
+                                      $('.s-options-group input:radio').change(function(){
+                                        if($(this).hasClass('s-account-field-radio')){
+                                          $(this).siblings('.s-account-field-select').removeClass("s-disabled");
+                                        }else{
+                                          $(this).parent().siblings().find('.s-account-field-select').addClass("s-disabled");
+                                        };
+                                      });
+                                    </script>
+                                    <style media="screen">
+                                      .s-disabled {opacity: .5;pointer-events: none;}
+                                    </style>
+
+
+                                  </div>
+                                </form>
+                                <!--- //Filter Criteria End --->
+
+
+                                <br/><br/><br/>
+
+                                <h4>Criteria</h4>
+
+                                <!--- Filter Criteria Start --->
+                                <form action="index.html" method="post">
+                                  <div class="s-filter-group-item">
+
+
+
+                                      <!-- Define Filter List group -->
+                                      <ul class="list-group s-define-filter-group">
+
+                                        <!-- //Filter item -->
+                                        <li class="s-define-filter-item">
+                                          <span class="s-define-filter-number">1</span>
+                                          <span class="s-define-filter-title">
+                                            <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+
+                                          </span>
+                                          <span>
+                                            <select class="form-control input-sm">
+
+                                              <option value="-- Condition">-- Condition --</option>
+                                              <option value="Equals">Equals</option>
+                                              <option value="Does Not Equal">Does Not Equal</option>
+                                              <option selected="selected" value="Contains">Contains</option>
+                                              <option value="Does Not Contain">Does Not Contain</option>
+                                              <option value="Starts With">Starts With</option>
+                                              <option value="Ends With">Ends With</option>
+                                              <option value="Like">Like</option>
+                                              <option value="Not Lke">Not Lke</option>
+                                              <option value="In">In</option>
+                                              <option value="Not In">Not In</option>
+
+                                            </select>
+                                          </span>
+                                          <span class="s-define-filter-compare">
+                                            <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Coolness Shirt</a>
+                                          </span>
+                                          <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+                                        </li>
+                                        <!-- //Filter item -->
+
+                                        <!-- //Filter item -->
+                                        <li class="s-define-filter-item">
+                                          <span class="s-define-filter-number">2</span>
+                                          <span class="s-define-filter-title">
+                                            <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+
+                                          </span>
+                                          <span>
+                                            <select class="form-control input-sm">
+
+                                              <option value="-- Condition">-- Condition --</option>
+                                              <option value="Equals">Equals</option>
+                                              <option value="Does Not Equal">Does Not Equal</option>
+                                              <option value="Contains">Contains</option>
+                                              <option value="Does Not Contain">Does Not Contain</option>
+                                              <option selected="selected" value="Starts With">Starts With</option>
+                                              <option value="Ends With">Ends With</option>
+                                              <option value="Like">Like</option>
+                                              <option value="Not Lke">Not Lke</option>
+                                              <option value="In">In</option>
+                                              <option value="Not In">Not In</option>
+
+                                            </select>
+                                          </span>
+                                          <span class="s-define-filter-compare">
+                                            <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Happy</a>
+                                          </span>
+                                          <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+                                        </li>
+                                        <!-- //Filter item -->
+
+                                        <!-- //Filter item -->
+                                        <li class="s-define-filter-item">
+                                          <span class="s-define-filter-number">3</span>
+                                          <span class="s-define-filter-title">
+                                            <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+
+                                          </span>
+                                          <span>
+                                            <select class="form-control input-sm">
+
+                                              <option value="-- Condition">-- Condition --</option>
+                                              <option selected="selected" value="Equals">Equals</option>
+                                              <option value="Does Not Equal">Does Not Equal</option>
+                                              <option value="Contains">Contains</option>
+                                              <option value="Does Not Contain">Does Not Contain</option>
+                                              <option value="Starts With">Starts With</option>
+                                              <option value="Ends With">Ends With</option>
+                                              <option value="Like">Like</option>
+                                              <option value="Not Lke">Not Lke</option>
+                                              <option value="In">In</option>
+                                              <option value="Not In">Not In</option>
+
+                                            </select>
+                                          </span>
+                                          <span class="s-define-filter-compare">
+                                            <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Simple</a>
+                                          </span>
+                                          <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+                                        </li>
+                                        <!-- //Filter item -->
+
+
+                                      </ul>
+
+                                      <script charset="utf-8">
+                                        $('.s-define-filter-item .s-define-filter-title a').click(function(e){
+                                          e.preventDefault();
+                                          $(this).siblings('.s-define-filter-title-edit').css('display','inline-block');
+                                        });
+                                        $('.s-define-filter-group .s-save-btn').click(function(){
+                                          $(this).parent().hide();
+                                        });
+                                        $('.s-define-filter-item .s-define-filter-compare a').click(function(e){
+                                          e.preventDefault();
+                                          $(this).siblings('.s-define-filter-compare-edit').css('display','inline-block');
+                                        });
+                                      </script>
+                                      <style media="screen">
+                                        .s-define-filter-group .selectboxit-container {height:32px;margin-right:5px;margin-left:5px;}
+                                        .s-define-filter-group .selectboxit-container .selectboxit {height: 100%;border-top: 0px;border-bottom: 0px;border-radius: 0px;background-color: #F3F3F3;padding-top:2px;}
+                                        .s-define-filter-group .selectboxit-btn.selectboxit-enabled:hover {background-color: #eeeeee;}
+                                        .s-define-filter-group .selectboxit-btn.selectboxit-enabled:focus {background-color: #F3F3F2;}
+                                        .s-define-filter-group .form-control:focus {box-shadow:none;}
+                                        .s-define-filter-group .s-define-filter-item {width:100%;padding:0px;display:inline-block;background-color:#fff;border: 1px solid #DDD;font-size: 12px;}
+                                        .s-define-filter-group .s-define-filter-number {width: 32px;text-align: center;height: 32px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);display: inline-block;padding-top: 8px;font-size: 12px;color: #DDD;}
+                                        .s-define-filter-group .s-define-filter-title {margin-left:5px;}
+                                        .s-define-filter-group .s-define-filter-title-edit {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;z-index: 3000;background-color: #EEE;padding: 2px 10px 2px 10px;display:none;}
+                                        .s-define-filter-group .s-define-filter-title-edit input {margin-right: 10px;}
+                                        .s-define-filter-group .s-define-filter-title-edit button {margin-bottom: 2px;height: 25px;}
+                                        .s-define-filter-group .s-define-filter-title a {color:#666;}
+                                        .s-define-filter-group .s-define-filter-title a:hover {text-decoration:none;color:#666;}
+                                        .s-define-filter-group .s-define-filter-compare > span {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;z-index: 3000;background-color: #EEE;padding: 2px 10px 2px 10px;display:none;}
+                                        .s-define-filter-group .s-define-filter-compare > span > input {margin-right: 10px;}
+                                        .s-define-filter-group .s-define-filter-compare button {margin-bottom: 2px;height: 25px;}
+                                        .s-define-filter-group .s-define-filter-compare a {color:#666;}
+                                        .s-define-filter-group .s-define-filter-compare a:hover {text-decoration:none;color:#666;}
+                                        .s-define-filter-group .s-define-filter-remove {float:right;}
+                                        .s-define-filter-group .s-define-filter-remove a {border: none;border-radius: 0px;background-color: #DA5757;color: #FFF !important;}
+                                      </style>
+
+                                      <!--- Message if no items --->
+                                      <div class="s-none-selected" style="display:none;">There are no fields selected</div>
+
+                                      <!--- Button to show create option --->
+                                      <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
+
+                                      <!--- Create option dropdown --->
+                                      <div class="row s-add-display-field collapse" id="j-add-row">
+                                        <div class="col-xs-12">
+                                          <i class="fa fa-plus"></i>
+                                          <select class="form-control">
+                                            <option value="Select from Orders" disabled="disabled" selected="selected">Order Items</option>
+                                            <option value="Order Total">Order Total</option>
+                                            <option value="Order Item Total">Order Item Total</option>
+                                          </select>
+
+                                          <select class="form-control">
+                                            <option value="Select from Orders" disabled="disabled" selected="selected">Select From Account</option>
+                                            <option value="Order Total">First Name</option>
+                                            <option value="Order Item Total">Last Name</option>
+                                          </select>
+                                          <button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
+                                          <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+                                        </div>
+                                      </div>
+
+
+
                                   </div>
                                 </form>
                                 <!--- //Filter Criteria End --->
@@ -191,7 +435,7 @@
                               <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1">
                                 <div class="row">
                                   <div class="col-xs-12">
-                                    <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
+                                    <h4> Define Filters: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
                                     <div class="row">
                                       <div class="col-xs-4">
                                         Select From Orders:
@@ -1027,6 +1271,29 @@
   .s-checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
   .s-checkbox input[type=checkbox]:disabled + label:before{background-color:#eeeeee;cursor:not-allowed;}
 
+  .radio label{display:inline-block;position:relative;padding-left:5px}
+  .radio label:before{content:"";display:inline-block;position:absolute;width:17px;height:17px;left:0;margin-left:-20px;border:1px solid #ccc;border-radius:50%;background-color:#fff;-webkit-transition:border .15s ease-in-out;-o-transition:border .15s ease-in-out;transition:border .15s ease-in-out}
+  .radio label:after{display:inline-block;position:absolute;content:" ";width:11px;height:11px;left:3px;top:3px;margin-left:-20px;border-radius:50%;background-color:#555;-webkit-transform:scale(0,0);-ms-transform:scale(0,0);-o-transform:scale(0,0);transform:scale(0,0);-webkit-transition:-webkit-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-moz-transition:-moz-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-o-transition:-o-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);transition:transform .1s cubic-bezier(0.8,-0.33,0.2,1.33)}
+  .radio input[type=radio]{display:none}
+  .radio input[type=radio]:checked + label:after{-webkit-transform:scale(1,1);-ms-transform:scale(1,1);-o-transform:scale(1,1);transform:scale(1,1)}
+  .radio input[type=radio]:disabled + label{opacity:.65}
+  .radio input[type=radio]:disabled + label:before{cursor:not-allowed}
+  .radio-primary input[type=radio] + label:after{background-color:#428bca}
+  .radio-primary input[type=radio]:checked + label:before{border-color:#428bca}
+  .radio-primary input[type=radio]:checked + label:after{background-color:#428bca}
+  .radio-danger input[type=radio] + label:after{background-color:#d9534f}
+  .radio-danger input[type=radio]:checked + label:before{border-color:#d9534f}
+  .radio-danger input[type=radio]:checked + label:after{background-color:#d9534f}
+  .radio-info input[type=radio] + label:after{background-color:#5bc0de}
+  .radio-info input[type=radio]:checked + label:before{border-color:#5bc0de}
+  .radio-info input[type=radio]:checked + label:after{background-color:#5bc0de}
+  .radio-warning input[type=radio] + label:after{background-color:#f0ad4e}
+  .radio-warning input[type=radio]:checked + label:before{border-color:#f0ad4e}
+  .radio-warning input[type=radio]:checked + label:after{background-color:#f0ad4e}
+  .radio-success input[type=radio] + label:after{background-color:#5cb85c}
+  .radio-success input[type=radio]:checked + label:before{border-color:#5cb85c}
+  .radio-success input[type=radio]:checked + label:after{background-color:#5cb85c}
+
   table tr th.s-sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
   .s-filter-table-box tr td:first-child {width:46px;}
@@ -1127,7 +1394,7 @@
   .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
   .s-j-draggablePanelList .s-sort.active {background-color:#ffffff !important;color:#767676 !important;box-shadow:none;}
   .s-j-draggablePanelList .s-sort:hover {background-color:#eeeeee !important;color:#767676 !important;box-shadow:none;}
-  .s-j-draggablePanelList .list-group-item {margin-bottom:2px;}
+  .s-j-draggablePanelList .list-group-item {margin-bottom:2px;display:inline-block;width:100%;}
   .s-j-draggablePanelList .s-pannel-name {cursor: move;height:40px;}
   .s-j-draggablePanelList .s-pannel-name input {width: 164px;display:inline-block;margin-top:5px;margin-right:5px;}
   .s-j-draggablePanelList .s-pannel-name .s-pannel-title {cursor: pointer;color:#666666;background:none;}
@@ -1205,7 +1472,6 @@
 });
 
 $('form').submit(function(){
-	alert($(this["options"]).val());
     return false;
 });
 </script>

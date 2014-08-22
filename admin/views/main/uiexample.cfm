@@ -26,7 +26,6 @@
 <br/>
 <br/> --->
 
-
 <style media="screen">
   .s-accordion-header {width:100%;margin-top:-10px;margin-bottom:-10px;padding-top:10px;padding-bottom:10px;cursor:pointer;}
 </style>
@@ -69,17 +68,33 @@
 
   <style media="screen">
     body {background-color:#eee;}
-    .s-body-nav .s-remove:hover {background-color:#DA5757;color:#ffffff !important;border:1px solid #DA5757;}
+    .s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;border:1px solid #DA5757 !important;}
   </style>
 
 
 
+<div class="row s-pannel-control" style="margin-top:10px;padding-bottom:2px;padding-right:2px;">
+  <div class="col-md-12" style="text-align:right;"><a href="#" class="openall" style="border-right:1px solid #999;padding-right:4px;">Open All</a> <a href="#" class="closeall">Close All</a></div>
+</div>
+
+<script charset="utf-8">
+  $('.closeall').click(function(){
+  $('.panel-collapse.in')
+    .collapse('hide');
+});
+$('.openall').click(function(){
+  $('.panel-collapse:not(".in")')
+    .collapse('show');
+});
+</script>
+<style media="screen">
+  .s-pannel-control a {color:#888;font-size:11px;}
+  .s-pannel-control a:hover {text-decoration:none;}
+  .panel-heading h4.panel-title {font-size:14px !important;}
+</style>
 
 
-
-
-
-    <div class="panel-group s-pannel-group" style="margin-top:20px;" id="accordion">
+    <div class="panel-group s-pannel-group" id="accordion">
       <div class="panel panel-default">
         <a data-toggle="collapse"  href="#collapseOne">
           <div class="panel-heading">
@@ -111,11 +126,11 @@
         		</div>
         		<div class="col-md-6" style="margin-bottom:0px;">
         			<dl class="dl-horizontal">
-        				<dt class="title">Brand <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
+        				<dt class="title" style="font-weight:600;">Brand <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
         						<dd class="value">Mozys</dd>
-        				<dt class="title">Product Type <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
+        				<dt class="title" style="font-weight:600;">Product Type <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
         						<dd class="value">Main Product</dd>
-        				<dt class="title">Available To Sell <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
+        				<dt class="title" style="font-weight:600;">Available To Sell <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
         						<dd class="value">1000</dd>
         			</dl>
         		</div>
@@ -128,8 +143,25 @@
           </div>
         </div>
       </div>
+
       <div class="panel panel-default">
         <a data-toggle="collapse"  href="#collapseTwo">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+                <span>Skus <span style="background-color: #858585;border-radius: 20%;padding: 3px;font-size: 10px;width: 18px;display: inline-block;height: 15px;position: relative;margin-left: 7px;color: #CCC;text-align:center;">35</span></span>
+                <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            </h4>
+          </div>
+        </a>
+        <div id="collapseTwo" class="panel-collapse collapse">
+          <div class="panel-body">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <a data-toggle="collapse"  href="#collapseImages">
           <div class="panel-heading">
             <h4 class="panel-title">
                 <span>Images</span>
@@ -137,7 +169,7 @@
             </h4>
           </div>
         </a>
-        <div id="collapseTwo" class="panel-collapse collapse">
+        <div id="collapseImages" class="panel-collapse collapse">
           <div class="panel-body">
             <div class="col-xs-12 s-filter-content">
 
@@ -171,25 +203,25 @@
         </div>
       </div>
       <div class="panel panel-default">
-        <a data-toggle="collapse"  href="#collapseThree">
+        <a data-toggle="collapse"  href="#collapseFour">
           <div class="panel-heading">
             <h4 class="panel-title">
-                <span>Skus</span>
+                <span>Venders</span>
                 <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
             </h4>
           </div>
         </a>
-        <div id="collapseThree" class="panel-collapse collapse">
+        <div id="collapseFour" class="panel-collapse collapse">
           <div class="panel-body">
             Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
           </div>
         </div>
       </div>
       <div class="panel panel-default">
-        <a data-toggle="collapse"  href="#collapseFour">
+        <a data-toggle="collapse"  href="#collapseBest">
           <div class="panel-heading">
             <h4 class="panel-title">
-                <span>Best Selling Mens T-Shirts</span>
+                <span>Best Selling Mens T-Shirts <span style="background-color: #858585;border-radius: 20%;padding: 3px;font-size: 10px;width: 18px;display: inline-block;height: 15px;position: relative;margin-left: 7px;color: #CCC;text-align:center;">4</span></span>
                 <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
             </h4>
           </div>
@@ -207,7 +239,7 @@
             });
           });
         </script>
-        <div id="collapseFour" class="panel-collapse collapse">
+        <div id="collapseBest" class="panel-collapse collapse">
           <div class="panel-body">
 
 
@@ -579,8 +611,8 @@
                                               <li class="s-new-filter">
                                                 <!--- New Filter Panel Buttons --->
                                                 <div class="s-filter-item">
-                                                  <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
-                                                  <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
+                                                  <button type="button" class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
+                                                  <button type="button" class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
                                                 </div>
                                                 <!--- //New Filter Panel Buttons --->
                                               </li>
@@ -596,8 +628,8 @@
                                       <li class="s-new-filter">
                                         <!--- New Filter Panel Buttons --->
                                         <div class="s-filter-item">
-                                          <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
-                                          <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
+                                          <button type="button" class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
+                                          <button type="button" class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
                                         </div>
                                         <!--- //New Filter Panel Buttons --->
                                       </li>
@@ -612,8 +644,8 @@
                               <li class="s-new-filter">
                                 <!--- New Filter Panel Buttons --->
                                 <div class="s-filter-item">
-                                  <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
-                                  <button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
+                                  <button type="button" class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Filter</button>
+                                  <button type="button" class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Filter Group</button>
                                 </div>
                                 <!--- //New Filter Panel Buttons --->
                               </li>
@@ -861,7 +893,7 @@
                           <option value="Order Item Total">Last Name</option>
                         </select>
                         <button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
-                        <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+                        <button class="btn s-btn-grey btn-xs s-remove"><i class="fa fa-times"></i> Remove</button>
                       </div>
                     </div>
 
@@ -1097,7 +1129,7 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <div class="dataTables_info" id="example3_info">Showing <b>1 to 10</b> of 57 entries</div>
+                  <div class="dataTables_info" id="example3_info" style="font-size:12px;">Showing <b>1 to 10</b> of 57 entries</div>
                 </div>
               </div>
             </div>
@@ -1110,6 +1142,39 @@
           </div>
         </div>
       </div>
+      <div class="panel panel-default">
+        <a data-toggle="collapse"  href="#collapseFive">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+                <span>Product Description</span>
+                <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            </h4>
+          </div>
+        </a>
+        <div id="collapseFive" class="panel-collapse collapse">
+          <div class="panel-body">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <a data-toggle="collapse"  href="#collapseSix">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+                <span>Listing Pages</span>
+                <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            </h4>
+          </div>
+        </a>
+        <div id="collapseSix" class="panel-collapse collapse">
+          <div class="panel-body">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
 
 
@@ -1121,7 +1186,6 @@
 
 
 <style media="screen">
-  .s-pannel-group .panel+.panel {margin-top:-1px;}
   .s-pannel-group .panel-default .panel-heading {background-color:#606060;color:#fff; border-color:#888;}
   .s-pannel-group .panel-default a {text-decoration:none;}
 </style>
@@ -1184,7 +1248,7 @@
   .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {color: #555;cursor: default;background: none;border: none;border-bottom-color: none;border-bottom:4px solid #F58620}
   .nav-tabs>li>a {border:none;color:#999999;}
   .nav-tabs>li>a:hover {background:none;border:none;color:#555;}
-  .s-properties label {text-align:left !important;width: 170px;}
+  .s-properties label {text-align:left !important;width: 170px;font-weight:600;}
   .form-control {border-color: #DDD !important;color: #767676;height: 30px;box-shadow:none;box-shadow:none;}
 
   /*Custom CSS*/
@@ -1231,7 +1295,7 @@
   .s-options .tab-content,.s-options .tab-pane dl dd.s-value{margin-bottom:15px;}
   .s-options .tab-pane label span i,.s-filters-selected .s-filter-item .panel .panel-body i{color:#ccc;}
 
-  .s-add-display-field {background: #EAEAEA;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;margin-top: 15px;margin-right:0px;margin-left:0px;}
+  .s-add-display-field {background: #ffffff;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;margin-top: 15px;margin-right:0px;margin-left:0px;}
   .s-add-display-field > div {padding:15px;}
   .s-add-display-field > div > i.fa-plus {top: 4px;position: relative;margin-right: 5px;}
   .s-add-display-field > div button {margin-top: 4px;}
@@ -1307,7 +1371,7 @@
   .s-and-or-box {text-align:center;height:40px;}
   .s-and-or-box hr {border: 0;border-top: 3px dotted #DDDDDD;position: relative;top: -36px;z-index: 0;}
   .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
-  .s-add-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #ffffff;}
+  .s-add-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #ffffff;font-size:14px;}
   .s-add-filter > .row {padding-top:0px !important;}
   .s-add-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;margin-right: 20px;padding-right: 40px;padding-left: 40px;margin-left: 16px;margin-bottom: 15px;}
   .s-add-filter .s-button-select-group {text-align:center;}
