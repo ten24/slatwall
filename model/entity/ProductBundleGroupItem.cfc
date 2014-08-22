@@ -46,20 +46,19 @@
 Notes:
 
 */
-component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="productBundleSku.productBundleGroups" {
+component entityname="SlatwallProductBundleGroupItem" table="SwProductBundleGroupItem" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="productBundleGroup.productBundleGroupItems" {
 	
 	// Persistent Properties
-	property name="productBundleGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean";
-	property name="minimumQuantity" ormtype="integer";
-	property name="maximumQuantity" ormtype="integer";
-	property name="amountType" ormtype="string";
-	property name="amount" ormtype="big_decimal";
-
+	property name="productBundleGroupItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="excludeFlag" ormtype="boolean";
+	
 	// Calculated Properties
-
+	
 	// Related Object Properties (many-to-one)
-	property name="productBundleSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="productBundleSkuID";
+	property name="productBundleGroup" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
+	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -90,24 +89,6 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
-	
-	// Product Bundle Sku (many-to-one)    
-	public void function setProductBundleSku(required any productBundleSku) {    
-		variables.productBundleSku = arguments.productBundleSku;    
-		if(isNew() or !arguments.productBundleSku.hasProductBundleGroup( this )) {    
-			arrayAppend(arguments.productBundleSku.getProductBundleGroups(), this);    
-		}    
-	}    
-	public void function removeProductBundleSku(any productBundleSku) {    
-		if(!structKeyExists(arguments, "productBundleSku")) {    
-			arguments.productBundleSku = variables.productBundleSku;    
-		}    
-		var index = arrayFind(arguments.productBundleSku.getProductBundleGroups(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.productBundleSku.getProductBundleGroups(), index);    
-		}    
-		structDelete(variables, "productBundleSku");    
-	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

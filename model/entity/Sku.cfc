@@ -73,6 +73,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
+	property name="productBundleGroups" singlularname="productBundleGroup" cfc="ProductBundleGroup" fieldtype="one-to-many" fkcolumn="productBundleSkuID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singlularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
@@ -674,6 +675,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	public void function removeStock(required any stock) {
 		arguments.stock.removeSku( this );
+	}
+	
+	// Product Bundle Groups (one-to-many)    
+	public void function addProductBundleGroup(required any productBundleGroup) {    
+		arguments.productBundleGroup.setProductBundleSku( this );    
+	}    
+	public void function removeProductBundleGroup(required any productBundleGroup) {    
+		arguments.productBundleGroup.removeProductBundleSku( this );    
 	}
 	
 	// Product Reviews (one-to-many)
