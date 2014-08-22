@@ -47,7 +47,7 @@ function($http,$q,baseURL){
 	},
 	factory.getExistingCollectionsByBaseEntity = function(entityName){
 		var deferred = $q.defer();
-		var urlString = baseURL+'index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
+		var urlString = baseURL+'index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName=Slatwall'+entityName;
 		
 		$http.get(urlString)
 		.success(function(data){

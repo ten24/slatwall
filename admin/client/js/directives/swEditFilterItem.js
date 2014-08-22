@@ -51,8 +51,8 @@ $log){
 				
 				switch(selectedFilterProperty.ORMTYPE){
 					case 'boolean':
-               		filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-               		filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	               		filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	               		filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 	                break;
 		            case 'string':
 						filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
@@ -107,8 +107,6 @@ $log){
 								filterItem.value = decimalValueString;
 							}
 						}
-						
-						
 						break;
 				}
 				$log.debug(selectedFilterProperty);
