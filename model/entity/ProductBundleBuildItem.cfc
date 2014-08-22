@@ -46,20 +46,18 @@
 Notes:
 
 */
-component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="productBundleSku.productBundleGroups" {
+component entityname="SlatwallProductBundleBuildItem" table="SwProductBundleBuildItem" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="productBundleBuild.productBundleBuildItems" {
 	
 	// Persistent Properties
-	property name="productBundleGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean";
-	property name="minimumQuantity" ormtype="integer";
-	property name="maximumQuantity" ormtype="integer";
-	property name="amountType" ormtype="string";
-	property name="amount" ormtype="big_decimal";
-
+	property name="productBundleBuildItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="quantity" ormtype="integer";
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="productBundleSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="productBundleSkuID";
+	property name="productBundleBuild" cfc="ProductBundleBuild" fieldtype="many-to-one" fkcolumn="productBundleBuildID";
+	property name="productBundleGroup" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	
 	// Related Object Properties (one-to-many)
 	

@@ -46,20 +46,17 @@
 Notes:
 
 */
-component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="productBundleSku.productBundleGroups" {
+component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="this" {
 	
 	// Persistent Properties
-	property name="productBundleGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean";
-	property name="minimumQuantity" ormtype="integer";
-	property name="maximumQuantity" ormtype="integer";
-	property name="amountType" ormtype="string";
-	property name="amount" ormtype="big_decimal";
-
+	property name="productBundleBuildID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
 	property name="productBundleSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="productBundleSkuID";
+	property name="session" cfc="Session" fieldtype="many-to-one" fkcolumn="sessionID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	
 	// Related Object Properties (one-to-many)
 	
