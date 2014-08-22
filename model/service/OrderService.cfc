@@ -264,7 +264,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderDAO().getOrderPaymentNonNullAmountTotal(argumentcollection=arguments);
 	}
 	
-	public struct function getOrderItemDBQuantity(required any orderItemID) {
+	public numeric function getOrderItemDBQuantity(required any orderItemID) {
 		return getOrderDAO().getOrderItemDBQuantity(argumentcollection=arguments);
 	}
 		
