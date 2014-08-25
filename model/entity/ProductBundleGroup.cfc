@@ -55,6 +55,7 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	property name="maximumQuantity" ormtype="integer";
 	property name="amountType" ormtype="string";
 	property name="amount" ormtype="big_decimal";
+	property name="skuCollectionConfig" ormtype="string";
 
 	// Calculated Properties
 
@@ -82,6 +83,50 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 
 
 	// ==================== START: Logical Methods =========================
+	/*
+	public any function getSkuOptionsCollection() {
+		
+		var bgiCollection = var soCollection = getService('collectionService').newCollection();
+		bgiCollection.setBaseEntityName('ProductBundleGroupItem');
+		bgiCollection.addFilter('productBundleGroup.productBundleGroupID', this.getProductBundleGroupID());
+		
+		var soCollection = getService('collectionService').newCollection();
+		soCollection.setBaseEntityName('Sku');
+		
+		soCollection.addFilter('sku.skuID in bgiCollection.sku.skID');
+		// OR
+		soCollection.addFilter('sku.product.productID in bgiCollection.product.productID');
+		// OR
+		soCollection.addFilter('sku.product.brand.brandID in bgiCollection.brand.brandID');
+		// OR
+		
+		
+		SELECT
+			sku
+		FROM
+			Sku sku
+		WHERE
+			// BAKED IN
+			
+			sku.skuID in (SELECT skuID FROM ProductBundleGroupItem pbgi WHERE pbgi.productBundleGroup.productBundleGroupID = this.getProductBundleGroupID() )
+		  OR
+		  	sku.product.productID in (SELECT productID FROM ProductBundleGroupItem pbgi WHERE pbgi.productBundleGroup.productBundleGroupID = this.getProductBundleGroupID())
+		  OR
+		  	sku.product.productTypeID in (SELECT productID FROM ProductBundleGroupItem pbgi WHERE pbgi.productBundleGroup.productBundleGroupID = this.getProductBundleGroupID())
+		  OR
+		  	sku.skuID in ( {SKU COLLECTION QUERY HERE} )	
+		  	
+		  	// CUSTOM ADDED FILTERS BY USER
+		  AND
+		  	sku.brand.brandID 
+		
+	}
+	*/
+	public any function getSkuOptions() {
+		return getSkuOptionsCollection().getRecords(returnObjects=true);
+	}
+	
+	
 	
 	// ====================  END: Logical Methods ==========================
 	

@@ -56,6 +56,7 @@ component entityname="SlatwallProductBundleGroupItem" table="SwProductBundleGrou
 	
 	// Related Object Properties (many-to-one)
 	property name="productBundleGroup" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
+	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
