@@ -101,12 +101,59 @@
                                 </div>
                               </div>
                               <div class="col-xs-6 s-criteria">
+
+
+
+
+
                                 <h4>Criteria</h4>
 
                                 <!--- Filter Criteria Start --->
                                 <form action="index.html" method="post">
                                   <div class="s-filter-group-item">
 
+                                    <div class="alert alert-warning" role="alert">Select field or dataset to begin</div>
+
+                                  </div>
+                                </form>
+                                <!--- //Filter Criteria End --->
+
+                                <br/><br/><br/>
+
+
+                                <h4>Criteria</h4>
+
+                                <!--- Filter Criteria Start --->
+                                <form action="index.html" method="post">
+                                  <div class="s-filter-group-item">
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
+                                      <div class="col-sm-12 s-no-paddings">
+                                        <select class="form-control input-sm">
+                                          <option>1 week</option>
+                                          <option>2 week</option>
+                                          <option>3 week</option>
+                                          <option>4 week</option>
+                                          <option>5 week</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
+                                      <div class="col-sm-12 s-no-paddings">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div style="border-bottom: 3px dotted #DDD;">
+                                    <div class="btn-group btn-toggle" style="background-color:#EAEAEA;float:none;">
+                                      <button class="btn btn-xs btn-default">AND</button>
+                                      <button class="btn btn-xs btn-defualt active">OR</button>
+                                    </div>
+                                  </div>
+                                  <div class="s-filter-group-item">
                                     <div class="form-group form-group-sm">
                                       <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
                                       <div class="col-sm-12 s-no-paddings">
@@ -202,86 +249,138 @@
 
 
 
-                                      <!-- Define Filter List group -->
-                                      <ul class="list-group s-define-filter-group">
+                                    <!-- Define Filter List group -->
+                                    <ul class="list-group s-define-filter-group">
 
-                                        <!-- //Filter item -->
-                                        <li class="s-define-filter-item">
-                                          <span class="s-define-filter-number">1</span>
-                                          <span class="s-define-filter-title">
-                                            <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
-                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+                                      <!-- //Filter item -->
+                                      <li class="s-define-filter-item">
+                                        <span class="s-define-filter-number">1</span>
+                                        <span class="s-define-filter-title">
+                                          <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                          <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
 
-                                          </span>
-                                          <span>
+                                        </span>
+                                        <span>
+                                          <select class="form-control input-sm">
+
+                                            <option value="-- Condition">-- Condition --</option>
+                                            <option value="Equals">Equals</option>
+                                            <option value="Does Not Equal">Does Not Equal</option>
+                                            <option selected="selected" value="Contains">Contains</option>
+                                            <option value="Does Not Contain">Does Not Contain</option>
+                                            <option value="Starts With">Starts With</option>
+                                            <option value="Ends With">Ends With</option>
+                                            <option value="Like">Like</option>
+                                            <option value="Not Lke">Not Lke</option>
+                                            <option value="In">In</option>
+                                            <option value="Not In">Not In</option>
+
+                                          </select>
+                                        </span>
+                                        <span class="s-define-filter-compare">
+                                          <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                          <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Coolness Shirt</a>
+                                        </span>
+                                        <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+                                      </li>
+                                      <!-- //Filter item -->
+
+                                      <!-- //Filter item -->
+                                      <li class="s-define-filter-item">
+                                        <span class="s-define-filter-number">2</span>
+                                        <span class="s-define-filter-title">
+                                          <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                          <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+
+                                        </span>
+                                        <span>
+                                          <select class="form-control input-sm">
+
+                                            <option value="-- Condition">-- Condition --</option>
+                                            <option value="Equals">Equals</option>
+                                            <option value="Does Not Equal">Does Not Equal</option>
+                                            <option value="Contains">Contains</option>
+                                            <option value="Does Not Contain">Does Not Contain</option>
+                                            <option selected="selected" value="Starts With">Starts With</option>
+                                            <option value="Ends With">Ends With</option>
+                                            <option value="Like">Like</option>
+                                            <option value="Not Lke">Not Lke</option>
+                                            <option value="In">In</option>
+                                            <option value="Not In">Not In</option>
+
+                                          </select>
+                                        </span>
+                                        <span class="s-define-filter-compare">
+                                          <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                          <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Happy</a>
+                                        </span>
+                                        <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+                                      </li>
+                                      <!-- //Filter item -->
+
+                                      <!-- //Filter item -->
+                                      <li class="s-define-filter-item">
+                                        <span class="s-define-filter-number">3</span>
+                                        <span class="s-define-filter-title">
+                                          <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                          <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+
+                                        </span>
+                                        <span>
+                                          <select class="form-control input-sm">
+                                            <option value="-- Condition">-- Condition --</option>
+                                            <option selected="selected" value="Equals">Equals</option>
+                                            <option value="Does Not Equal">Does Not Equal</option>
+                                            <option value="Contains">Contains</option>
+                                            <option value="Does Not Contain">Does Not Contain</option>
+                                            <option value="Starts With">Starts With</option>
+                                            <option value="Ends With">Ends With</option>
+                                            <option value="Like">Like</option>
+                                            <option value="Not Lke">Not Lke</option>
+                                            <option value="In">In</option>
+                                            <option value="Not In">Not In</option>
+                                          </select>
+                                        </span>
+                                        <span class="s-define-filter-compare">
+                                          <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+                                          <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Simple</a>
+                                        </span>
+                                        <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+                                      </li>
+                                      <!-- //Filter item -->
+                                    </ul>
+
+                                    <script charset="utf-8">
+                                      $('.s-define-filter-item .s-define-filter-title a').click(function(e){
+                                        e.preventDefault();
+                                        $(this).siblings('.s-define-filter-title-edit').css('display','inline-block');
+                                      });
+                                      $('.s-define-filter-group .s-save-btn').click(function(){
+                                        $(this).parent().hide();
+                                      });
+                                      $('.s-define-filter-item .s-define-filter-compare a').click(function(e){
+                                        e.preventDefault();
+                                        $(this).siblings('.s-define-filter-compare-edit').css('display','inline-block');
+                                      });
+                                    </script>
+
+                                    <!--- Message if no items --->
+                                    <div class="s-none-selected" style="display:none;">There are no fields selected</div>
+
+                                    <!--- Button to show create option --->
+                                    <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
+
+                                    <!--- Create option dropdown --->
+                                    <div class="row s-add-display-field collapse" id="j-add-row">
+                                      <div class="col-xs-12">
+                                        <form role="form">
+                                          <div class="form-group">
+                                            <label for="exampleInputEmail2">Criteria Name</label>
+                                            <input type="text" class="form-control">
+                                          </div>
+                                          <div class="form-group">
+                                            <label for="" style="width:100%;">Criteria</label>
                                             <select class="form-control input-sm">
-
-                                              <option value="-- Condition">-- Condition --</option>
-                                              <option value="Equals">Equals</option>
-                                              <option value="Does Not Equal">Does Not Equal</option>
-                                              <option selected="selected" value="Contains">Contains</option>
-                                              <option value="Does Not Contain">Does Not Contain</option>
-                                              <option value="Starts With">Starts With</option>
-                                              <option value="Ends With">Ends With</option>
-                                              <option value="Like">Like</option>
-                                              <option value="Not Lke">Not Lke</option>
-                                              <option value="In">In</option>
-                                              <option value="Not In">Not In</option>
-
-                                            </select>
-                                          </span>
-                                          <span class="s-define-filter-compare">
-                                            <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
-                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Coolness Shirt</a>
-                                          </span>
-                                          <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
-                                        </li>
-                                        <!-- //Filter item -->
-
-                                        <!-- //Filter item -->
-                                        <li class="s-define-filter-item">
-                                          <span class="s-define-filter-number">2</span>
-                                          <span class="s-define-filter-title">
-                                            <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
-                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
-
-                                          </span>
-                                          <span>
-                                            <select class="form-control input-sm">
-
-                                              <option value="-- Condition">-- Condition --</option>
-                                              <option value="Equals">Equals</option>
-                                              <option value="Does Not Equal">Does Not Equal</option>
-                                              <option value="Contains">Contains</option>
-                                              <option value="Does Not Contain">Does Not Contain</option>
-                                              <option selected="selected" value="Starts With">Starts With</option>
-                                              <option value="Ends With">Ends With</option>
-                                              <option value="Like">Like</option>
-                                              <option value="Not Lke">Not Lke</option>
-                                              <option value="In">In</option>
-                                              <option value="Not In">Not In</option>
-
-                                            </select>
-                                          </span>
-                                          <span class="s-define-filter-compare">
-                                            <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
-                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Happy</a>
-                                          </span>
-                                          <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
-                                        </li>
-                                        <!-- //Filter item -->
-
-                                        <!-- //Filter item -->
-                                        <li class="s-define-filter-item">
-                                          <span class="s-define-filter-number">3</span>
-                                          <span class="s-define-filter-title">
-                                            <span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
-                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
-
-                                          </span>
-                                          <span>
-                                            <select class="form-control input-sm">
-
                                               <option value="-- Condition">-- Condition --</option>
                                               <option selected="selected" value="Equals">Equals</option>
                                               <option value="Does Not Equal">Does Not Equal</option>
@@ -293,84 +392,17 @@
                                               <option value="Not Lke">Not Lke</option>
                                               <option value="In">In</option>
                                               <option value="Not In">Not In</option>
-
                                             </select>
-                                          </span>
-                                          <span class="s-define-filter-compare">
-                                            <span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
-                                            <a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Simple</a>
-                                          </span>
-                                          <span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
-                                        </li>
-                                        <!-- //Filter item -->
-
-
-                                      </ul>
-
-                                      <script charset="utf-8">
-                                        $('.s-define-filter-item .s-define-filter-title a').click(function(e){
-                                          e.preventDefault();
-                                          $(this).siblings('.s-define-filter-title-edit').css('display','inline-block');
-                                        });
-                                        $('.s-define-filter-group .s-save-btn').click(function(){
-                                          $(this).parent().hide();
-                                        });
-                                        $('.s-define-filter-item .s-define-filter-compare a').click(function(e){
-                                          e.preventDefault();
-                                          $(this).siblings('.s-define-filter-compare-edit').css('display','inline-block');
-                                        });
-                                      </script>
-                                      <style media="screen">
-                                        .s-define-filter-group .selectboxit-container {height:32px;margin-right:5px;margin-left:5px;}
-                                        .s-define-filter-group .selectboxit-container .selectboxit {height: 100%;border-top: 0px;border-bottom: 0px;border-radius: 0px;background-color: #F3F3F3;padding-top:2px;}
-                                        .s-define-filter-group .selectboxit-btn.selectboxit-enabled:hover {background-color: #eeeeee;}
-                                        .s-define-filter-group .selectboxit-btn.selectboxit-enabled:focus {background-color: #F3F3F2;}
-                                        .s-define-filter-group .form-control:focus {box-shadow:none;}
-                                        .s-define-filter-group .s-define-filter-item {width:100%;padding:0px;display:inline-block;background-color:#fff;border: 1px solid #DDD;font-size: 12px;}
-                                        .s-define-filter-group .s-define-filter-number {width: 32px;text-align: center;height: 32px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);display: inline-block;padding-top: 8px;font-size: 12px;color: #DDD;}
-                                        .s-define-filter-group .s-define-filter-title {margin-left:5px;}
-                                        .s-define-filter-group .s-define-filter-title-edit {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;z-index: 3000;background-color: #EEE;padding: 2px 10px 2px 10px;display:none;}
-                                        .s-define-filter-group .s-define-filter-title-edit input {margin-right: 10px;}
-                                        .s-define-filter-group .s-define-filter-title-edit button {margin-bottom: 2px;height: 25px;}
-                                        .s-define-filter-group .s-define-filter-title a {color:#666;}
-                                        .s-define-filter-group .s-define-filter-title a:hover {text-decoration:none;color:#666;}
-                                        .s-define-filter-group .s-define-filter-compare > span {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;z-index: 3000;background-color: #EEE;padding: 2px 10px 2px 10px;display:none;}
-                                        .s-define-filter-group .s-define-filter-compare > span > input {margin-right: 10px;}
-                                        .s-define-filter-group .s-define-filter-compare button {margin-bottom: 2px;height: 25px;}
-                                        .s-define-filter-group .s-define-filter-compare a {color:#666;}
-                                        .s-define-filter-group .s-define-filter-compare a:hover {text-decoration:none;color:#666;}
-                                        .s-define-filter-group .s-define-filter-remove {float:right;}
-                                        .s-define-filter-group .s-define-filter-remove a {border: none;border-radius: 0px;background-color: #DA5757;color: #FFF !important;}
-                                      </style>
-
-                                      <!--- Message if no items --->
-                                      <div class="s-none-selected" style="display:none;">There are no fields selected</div>
-
-                                      <!--- Button to show create option --->
-                                      <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
-
-                                      <!--- Create option dropdown --->
-                                      <div class="row s-add-display-field collapse" id="j-add-row">
-                                        <div class="col-xs-12">
-                                          <i class="fa fa-plus"></i>
-                                          <select class="form-control">
-                                            <option value="Select from Orders" disabled="disabled" selected="selected">Order Items</option>
-                                            <option value="Order Total">Order Total</option>
-                                            <option value="Order Item Total">Order Item Total</option>
-                                          </select>
-
-                                          <select class="form-control">
-                                            <option value="Select from Orders" disabled="disabled" selected="selected">Select From Account</option>
-                                            <option value="Order Total">First Name</option>
-                                            <option value="Order Item Total">Last Name</option>
-                                          </select>
+                                          </div>
+                                          <div class="form-group">
+                                            <label for="">Criteria Value</label>
+                                            <input type="text" class="form-control">
+                                          </div>
                                           <button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
                                           <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
-                                        </div>
+                                        </form>
                                       </div>
-
-
-
+                                    </div>
                                   </div>
                                 </form>
                                 <!--- //Filter Criteria End --->
@@ -1407,7 +1439,27 @@
   .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
   .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
   .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
-  .HIDEN {}
+
+  .s-define-filter-group .selectboxit-container {height:32px;margin-right:5px;margin-left:5px;}
+  .s-define-filter-group .selectboxit-container .selectboxit {height: 100%;border-top: 0px;border-bottom: 0px;border-radius: 0px;background-color: #F3F3F3;padding-top:2px;}
+  .s-define-filter-group .selectboxit-btn.selectboxit-enabled:hover {background-color: #eeeeee;}
+  .s-define-filter-group .selectboxit-btn.selectboxit-enabled:focus {background-color: #F3F3F2;}
+  .s-define-filter-group .form-control:focus {box-shadow:none;}
+  .s-define-filter-group .s-define-filter-item {width:100%;padding:0px;display:inline-block;background-color:#fff;border: 1px solid #DDD;font-size: 12px;}
+  .s-define-filter-group .s-define-filter-number {width: 32px;text-align: center;height: 32px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);display: inline-block;padding-top: 8px;font-size: 12px;color: #DDD;}
+  .s-define-filter-group .s-define-filter-title {margin-left:20px;}
+  .s-define-filter-group .s-define-filter-title-edit {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;z-index: 3000;background-color: #EEE;padding: 2px 10px 2px 10px;display:none;}
+  .s-define-filter-group .s-define-filter-title-edit input {margin-right: 10px;}
+  .s-define-filter-group .s-define-filter-title-edit button {margin-bottom: 2px;height: 25px;}
+  .s-define-filter-group .s-define-filter-title a {color:#666;}
+  .s-define-filter-group .s-define-filter-title a:hover {text-decoration:none;color:#666;}
+  .s-define-filter-group .s-define-filter-compare > span {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;z-index: 3000;background-color: #EEE;padding: 2px 10px 2px 10px;display:none;}
+  .s-define-filter-group .s-define-filter-compare > span > input {margin-right: 10px;}
+  .s-define-filter-group .s-define-filter-compare button {margin-bottom: 2px;height: 25px;}
+  .s-define-filter-group .s-define-filter-compare a {color:#666;}
+  .s-define-filter-group .s-define-filter-compare a:hover {text-decoration:none;color:#666;}
+  .s-define-filter-group .s-define-filter-remove {float:right;}
+  .s-define-filter-group .s-define-filter-remove a {border: none;border-radius: 0px;background-color: #DA5757;color: #FFF !important;}
 
 
 </style>
