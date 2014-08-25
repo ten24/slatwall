@@ -27,8 +27,12 @@ $log){
 		},
 		controller: function ($scope, $element, $attrs) {
 			//initialize directive
+			
 			if(angular.isUndefined($scope.filterItem.isClosed)){
 				$scope.filterItem.isClosed = true;
+			}
+			if(angular.isUndefined($scope.filterItem.breadCrumbs)){
+				$scope.filterItem.breadCrumbs = "";
 			}
 			for(i in $scope.filterPropertiesList.DATA){
 				var filterProperty = $scope.filterPropertiesList.DATA[i];
@@ -40,7 +44,9 @@ $log){
 			
 			//public functions
 			$scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
-				
+				$log.debug('selectedFilterProperty');
+				$log.debug(selectedFilterProperty);
+				//$scope.selectedFilterProperty.breadCrumbs += 
 			};
 			
 			$scope.saveFilter = function(selectedFilterProperty,filterItem){

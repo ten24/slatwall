@@ -347,8 +347,8 @@ slatwallService){
     	return bigDecimalOptions;
     };
     
-    var getManyToOneOptions = function(){
-    	var manyToOneOptions = [
+    var getOneToManyOptions = function(){
+    	var oneToManyOptions = [
         	{
         		display:"All Exist In Collection",
         		comparisonOperator:"All"
@@ -372,39 +372,27 @@ slatwallService){
         		value:"null"
         	}
         ];
-    	return manyToOneOptions;
+    	return oneToManyOptions;
     };
     
     var getManyToManyOptions = function(){
     	var manyToManyOptions = [
         	{
-        		display:"All Exist In Collection",
-        		comparisonOperator:"All"
-        	},
-        	{
-        		display:"None Exist In Collection",
-        		comparisonOperator:"None"
-        	},
-        	{
-        		display:"Some Exist In Collection",
-        		comparisonOperator:"One"
-        	},
-        	{
-        		display:"Empty",
-        		comparisonOperator:"is",
-        		value:"null"
-        	},
-        	{
-        		display:"Not Empty",
-        		comparisonOperator:"is not",
-        		value:"null"
-        	}
+            	display:"Defined",
+            	comparisonOperator:"is",
+            	value:"null"
+            },
+            {
+            	display:"Not Defined",
+            	comparisonOperator:"is not",
+            	value:"null"
+            }
         ];
     	return manyToManyOptions;
     };
     
-    var getOneToManyOptions = function(){
-    	var oneToManyOptions = [
+    var getManyToOneOptions = function(){
+    	var manyToOneOptions = [
             {
             	display:"Defined",
             	comparisonOperator:"is",
@@ -416,7 +404,7 @@ slatwallService){
             	value:"null"
             }
         ];
-    	return oneToManyOptions;
+    	return manyToOneOptions;
     };
     
     var linker = function(scope, element, attrs){
@@ -704,7 +692,7 @@ slatwallService){
 		},
 		link: linker,
 		controller:function ($scope) {
-			  
+			
 			  
 		}
 	};

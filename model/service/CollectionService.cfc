@@ -200,9 +200,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(isObject(arguments.pageRecord)) {
 			var value = arguments.pageRecord.getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier, formatValue=true );
 			if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-				pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
+				pageRecordStruct[ arguments.pageRecord.getPropertyTitle(arguments.propertyIdentifier) ] = value & " ";
 			} else {
-				pageRecordStruct[ arguments.propertyIdentifier ] = value;
+				pageRecordStruct[ arguments.pageRecord.getPropertyTitle(arguments.propertyIdentifier) ] = value;
 			}
 		
 		}else{
@@ -218,9 +218,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				}else{
 					var value = arguments.pageRecord[arguments.propertyIdentifier];
 					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-						pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
+						pageRecordStruct[ pageRecord.getPropertyTitle(arguments.propertyIdentifier) ] = value & " ";
 					} else {
-						pageRecordStruct[ arguments.propertyIdentifier ] = value;
+						pageRecordStruct[ pageRecord.getPropertyTitle(arguments.propertyIdentifier) ] = value;
 					}
 				}
 			}
