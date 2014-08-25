@@ -419,7 +419,7 @@ Notes:
 			<!---only show a dismissable button if we are showing info or a warning --->
 		  	<button ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 		  	<!---show check mark only if success, always display message --->
-		  	<i class="fa fa-check" ng-show="alert.type === 'success'"></i>{{alert.msg}}
+		  	<i class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
 	    </div>
 	</body>
 
