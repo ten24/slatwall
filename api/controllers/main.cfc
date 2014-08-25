@@ -250,6 +250,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(!isnull(entity.getHibachiMessages()) && structCount(entity.getHibachiMessages().getMessages())){
 			var messages = entity.getHibachiMessages().getMessages();
+			
 			for(message in messages){
 				var messageData ={
 					message = messages[message],
@@ -261,6 +262,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
 			arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.#rc.context#_error" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "error");
+			
+			for(message in rc.messages){
+				message.type = 'danger';
+				arrayAppend(arguments.rc.apiResponse.content.messages,message);	
+			}
 		}
 	}
 	
