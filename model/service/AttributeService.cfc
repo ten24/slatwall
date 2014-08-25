@@ -70,7 +70,7 @@ component  extends="HibachiService" accessors="true" {
 			return getHibachiCacheService().getCachedValue(key);
 		}
 		
-		var attribute = getHibachiCacheService().getOrCacheFunctionValue('attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#', this, 'getAttributeByAttributeCode', arguments);
+		var attribute = this.getAttributeByAttributeCode(arguments.attributeCode);
 		var atributeName = "";
 		if (!isNull(attribute)) {
 			atributeName = attribute.getAttributeName();

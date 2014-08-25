@@ -64,7 +64,8 @@ Notes:
 			{alias='taxImpositionName', title=rbKey('entity.taxApplied.taxImpositionName')},
 			{alias='taxImpositionType', title=rbKey('entity.taxApplied.taxImpositionType')},
 			{alias='taxJurisdictionName', title=rbKey('entity.taxApplied.taxJurisdictionName')},
-			{alias='taxJurisdictionType', title=rbKey('entity.taxApplied.taxJurisdictionType')}
+			{alias='taxJurisdictionType', title=rbKey('entity.taxApplied.taxJurisdictionType')},
+			{alias='fulfillmentMethodName', title=rbKey('entity.fulfillmentMethod.fulfillmentMethodName')}
 		] />
 	</cffunction>
 	
@@ -90,6 +91,7 @@ Notes:
 					SwProductType.productTypeID,
 					SwProductType.productTypeName,
 					SwOrder.orderID,
+					SwFulfillmentMethod.fulfillmentMethodName,
 					SwAddress.countryCode,
 					SwAddress.stateCode,
 					SwAddress.city,
@@ -119,6 +121,8 @@ Notes:
 					SwOrderItem on SwTaxApplied.orderItemID = SwOrderItem.orderItemID
 				  INNER JOIN
 				  	SwOrderFulfillment on SwOrderItem.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
+				  INNER JOIN
+				  	SwFulfillmentMethod on SwOrderFulfillment.fulfillmentMethodID = SwFulfillmentMethod.fulfillmentMethodID
 				  INNER JOIN
 				  	SwOrder on SwOrderFulfillment.orderID = SwOrder.orderID
 				  INNER JOIN

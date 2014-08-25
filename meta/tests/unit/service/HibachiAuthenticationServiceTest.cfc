@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,23 +45,27 @@
 
 Notes:
 
---->
-<cfparam name="rc.auditSmartList" type="any" />
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-<cfset rc.auditSmartList.addOrder('auditDateTime|DESC') />
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getService("hibachiAuthenticationService");
+	}
+	
+	// getAuthenticationSubsystemNamesArray()
+	public void function getAuthenticationSubsystemNamesArray_returns_more_than_three_because_of_integrations() {
+		var subsytemNamesArray = variables.service.getAuthenticationSubsystemNamesArray();
+		assert(arrayLen(subsytemNamesArray) > 3);
+	}
+	
+	// authenticateActionByAccount()
+	public void function authenticateActionByAccount_returns_false_for_mura_integration() {
+		assertFalse( variables.service.authenticateActionByAccount('mura:main.default', request.slatwallScope.newEntity('Account')) );
+	}
+	
+	
+}
 
-<cf_HibachiListingDisplay smartList="#rc.auditSmartList#"
-						   recordDetailAction="admin:entity.preprocessaudit"
-						   recordDetailQueryString="processContext=rollback"
-						   recordDetailModal=true>
-	
-	<cf_HibachiListingColumn propertyIdentifier="auditDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="sessionAccountFullName" />
-	<cf_HibachiListingColumn propertyIdentifier="sessionAccountEmailAddress" />
-	<cf_HibachiListingColumn propertyIdentifier="auditType" filter="true" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
-	<cf_HibachiListingColumn propertyIdentifier="baseObject" />
-	<cf_HibachiListingColumn propertyIdentifier="baseID" />
-	
-</cf_HibachiListingDisplay>
 

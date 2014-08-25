@@ -50,7 +50,10 @@ component extends="Slatwall.org.Hibachi.HibachiController" output="false" access
 
 	property name="hibachiUtilityService" type="any";
 
-	this.secureMethods="default,updateviews";
+	//this.secureMethods="default,updateviews";
+	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'default');
+	this.secureMethods=listAppend(this.secureMethods, 'updateviews');
 	
 	public void function updateViews() {
 		var baseSlatwallPath = getDirectoryFromPath(expandPath("/muraWRM/plugins/Slatwall/frontend/views/")); 

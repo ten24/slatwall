@@ -73,6 +73,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
+	property name="productReview" cfc="ProductReview" fieldtype="many-to-one" fkcolumn="productReviewID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="subscriptionBenefit" cfc="SubscriptionBenefit" fieldtype="many-to-one" fkcolumn="subscriptionBenefitID";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
@@ -351,6 +352,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.productType.getAttributeValues(), index);
 		}
 		structDelete(variables, "productType");
+	}
+	
+	// Product Review (many-to-one)
+	public void function setProductReview(required any productReview) {
+		variables.productReview = arguments.productReview;
+		if(isNew() or !arguments.productReview.hasAttributeValue( this )) {
+			arrayAppend(arguments.productReview.getAttributeValues(), this);
+		}
+	}
+	public void function removeProductReview(any productReview) {
+		if(!structKeyExists(arguments, "productReview")) {
+			arguments.productReview = variables.productReview;
+		}
+		var index = arrayFind(arguments.productReview.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.productReview.getAttributeValues(), index);
+		}
+		structDelete(variables, "productReview");
 	}
 	
 	// Sku (many-to-one)    

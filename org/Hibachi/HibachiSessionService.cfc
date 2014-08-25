@@ -71,26 +71,27 @@ component output="false" accessors="true" extends="HibachiService"  {
 		currentSession.setAccount( arguments.account );
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
 		
-		getHibachiAuditService().logAccountActivity("login");
-		
 		// Make sure that we persist the session
 		persistSession();
 		
 		// Make sure that this login is persisted
 		getHibachiDAO().flushORMSession();
 		
+		var auditLogData = {
+			account = arguments.account
+		};
+		getHibachiAuditService().logAccountActivity( "login", auditLogData );
 		getHibachiEventService().announceEvent("onSessionAccountLogin");
 	}
 	
-	public void function loginAccountInvalid(struct data) {
-		arguments.auditType="loginInvalid";
-		getHibachiAuditService().logAccountActivity(argumentCollection=arguments);
-	}
-	
 	public void function logoutAccount() {
+		
 		var currentSession = getHibachiScope().getSession();
 		
-		getHibachiAuditService().logAccountActivity("logout");
+		var auditLogData = {};
+		if(!isNull(currentSession.getAccount())) {
+			auditLogData.account = currentSession.getAccount();
+		}		
 		
 		currentSession.removeAccount();
 		currentSession.removeAccountAuthentication();
@@ -98,6 +99,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Make sure that this logout is persisted
 		getHibachiDAO().flushORMSession();
 		
+		getHibachiAuditService().logAccountActivity("logout", auditLogData);
 		getHibachiEventService().announceEvent("onSessionAccountLogout");
 	}
 	
