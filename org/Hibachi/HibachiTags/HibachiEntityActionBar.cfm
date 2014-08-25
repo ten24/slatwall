@@ -35,18 +35,23 @@
 <cfelse>
 	<cfif not structKeyExists(request.context, "modal") or not request.context.modal>
 		<cfoutput>
-			<div class="actionnav well well-sm">
-				<div class="row">
-					<div class="col-md-4">
+			
+			<div class="row s-body-nav">
+			    <nav class="navbar navbar-default" role="navigation">
+			      <div class="col-md-4">
+					<!---<div class="actionnav well well-sm">
+						<div class="row">
+							<div class="col-md-4">--->
 						<!--- Page Title --->
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h4>#attributes.pageTitle#</h4>
+						<h1 class="actionbar-title">#attributes.pageTitle#</h1>
 					</div>
 					<div class="col-md-8">
 						<div class="btn-toolbar">
 							
+							<div class="btn-group btn-group-sm">
 							<!--- ================ Listing =================== --->
 							<cfif attributes.type eq "listing" >
 								<cfparam name="request.context.keywords" default="" />
@@ -209,12 +214,13 @@
 									<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
 								</div>
 							</cfif>
+							</div>
 							
 							<!--- Clear the generated content so that it isn't rendered --->
 							<cfset thistag.generatedcontent = "" />
 						</div>
 					</div>
-				</div>
+				</nav>
 			</div>
 		</cfoutput>
 		

@@ -63,22 +63,84 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createfile" querystring="baseObject=#rc.product.getClassName()#&baseID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="productID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</cf_HibachiEntityActionBar>
+		<div class="row s-pannel-control" style="margin-top:10px;padding-bottom:2px;padding-right:2px;">
+		  <div class="col-md-12" style="text-align:right;"><a href="##" class="openall" style="border-right:1px solid ##999;padding-right:4px;">Open All</a> <a href="##" class="closeall">Close All</a></div>
+		</div>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="col-md-6">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="urlTitle" edit="#rc.edit#" valueLink="#rc.product.getProductURL()#">
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="col-md-6">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productType" edit="#rc.edit#">
-				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qats.full')#" value="#rc.product.getQuantity('QATS')#">
-				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qiats.full')#" value="#rc.product.getQuantity('QIATS')#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<script charset="utf-8">
+		$('.closeall').click(function(){
+		  $('.panel-collapse.in')
+		    .collapse('hide');
+		});
+		$('.openall').click(function(){
+		  $('.panel-collapse:not(".in")')
+		    .collapse('show');
+		});
+		</script>
+		<style media="screen">
+		  .s-pannel-control a {color:##888;font-size:11px;}
+		  .s-pannel-control a:hover {text-decoration:none;}
+		  .panel-heading h4.panel-title {font-size:14px !important;}
+		</style>
+		
+		<div class="panel-group s-pannel-group" id="accordion">
+	      <div class="panel panel-default">
+	        <a data-toggle="collapse"  href="##collapseOne">
+	          <div class="panel-heading">
+	            <h4 class="panel-title">
+	                <span>Basic</span>
+	                <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+	            </h4>
+	          </div>
+	        </a>
+	        <div id="collapseOne" class="panel-collapse collapse in">
+	        	<div class="panel-body">
+					
+					
+					<cf_HibachiPropertyRow>
+						<cf_HibachiPropertyList divClass="col-md-6">
+							<cf_HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
+							<cf_HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
+							<cf_HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
+							<cf_HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">
+							<cf_HibachiPropertyDisplay object="#rc.product#" property="urlTitle" edit="#rc.edit#" valueLink="#rc.product.getProductURL()#">
+						</cf_HibachiPropertyList>
+						<cf_HibachiPropertyList divClass="col-md-6">
+							<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">
+							<cf_HibachiPropertyDisplay object="#rc.product#" property="productType" edit="#rc.edit#">
+							<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qats.full')#" value="#rc.product.getQuantity('QATS')#">
+							<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qiats.full')#" value="#rc.product.getQuantity('QIATS')#">
+						</cf_HibachiPropertyList>
+					</cf_HibachiPropertyRow>
+					
+					
+					
+				</div>
+			</div>
+		  </div>
+		</div>
+		
+		
+	  <div class="panel panel-default">
+        <a data-toggle="collapse"  href="##collapseTwo">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+                <span>Skus <span style="background-color: ##858585;border-radius: 20%;padding: 3px;font-size: 10px;width: 18px;display: inline-block;height: 15px;position: relative;margin-left: 7px;color: ##CCC;text-align:center;">35</span></span>
+                <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            </h4>
+          </div>
+        </a>
+        <div id="collapseTwo" class="panel-collapse collapse">
+          <div class="panel-body">
+          	<!--- Skus --->
+			<cf_HibachiPropertyRow>
+				<cf_HibachiPropertyList divClass="col-md-12"> 
+					<cf_HibachiPropertyDisplay object="#rc.product#" property="skus" edit="#rc.edit#" />
+				</cf_HibachiPropertyList>
+			</cf_HibachiPropertyRow>
+          </div>
+        </div>
+      </div>
 		
 		<cf_HibachiTabGroup object="#rc.product#">
 			<!--- Skus --->

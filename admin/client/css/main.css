@@ -1,8 +1,8 @@
   /* Bootstrap 3 Overrides */
   
-  body {font-family: 'Open Sans', sans-serif;margin-top:60px;}
+  body {background-color:#eee;font-family: 'Open Sans', sans-serif;margin-top:60px;}
   hr {border-right:1px solid #cccccc;}
-  
+
   /* Detail Views */
   .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;position:relative;text-align:left;left:15px;}
   label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;text-align:left;left:15px;}
@@ -17,3 +17,7 @@
   .table>thead>tr>td.admin.admin2, .table>tbody>tr>td.admin.admin2, .table>thead>tr>td.admin.admin1, .table>tbody>tr>td.admin.admin1 {text-align:center;width:75px;}
   .table>thead>tr>td.admin.admin3, .table>tbody>tr>td.admin.admin3 {text-align:center;width:100px;}  
 
+  .s-accordion-header {width:100%;margin-top:-10px;margin-bottom:-10px;padding-top:10px;padding-bottom:10px;cursor:pointer;}
+  .row .s-body-nav .navbar .navbar-default {background-color: #FFF;margin-bottom: 0px;margin-top: -30px;border-radius: 0px;border-top: 0px;}
+  .actionbar-title{padding: 0px;margin: 0px;font-size: 16px;font-weight: 600;vertical-align: middle;margin-top: 18px;}
+  .s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;border:1px solid #DA5757 !important;}
