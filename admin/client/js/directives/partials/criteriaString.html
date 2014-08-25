@@ -4,6 +4,7 @@
       <div class="col-sm-12 s-no-paddings">
       	<select id="u52_input" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
       			ng-model="selectedFilterProperty.selectedCriteriaType" 
+      			ng-change="selectedConditionChanged(selectedFilterProperty)"
         		ng-options="stringOption as stringOption.display 
         					for stringOption in stringOptions 
         					" 	
@@ -13,10 +14,12 @@
       </div>
       <div class="clearfix"></div>
     </div>
-    <div class="form-group form-group-sm">
+    <div class="form-group form-group-sm" ng-show="selectedFilterProperty.showCriteriaValue">
       <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Value:</label>
       <div class="col-sm-12 s-no-paddings">
-        <input ng-model="selectedFilterProperty.criteriaValue"  style="" type="text" class="form-control" 
+        <input 	ng-model="selectedFilterProperty.criteriaValue"  
+        		style="" type="text" class="form-control" 
+        		/>
       </div>
       <div class="clearfix"></div>
     </div>

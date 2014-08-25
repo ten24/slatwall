@@ -81,6 +81,7 @@ $log){
 						}
 						
 		                break;
+		                //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
 		            case 'timestamp':
 		            	//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
 		            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
@@ -94,12 +95,24 @@ $log){
 						}
 		                break;	
 		            case 'big_decimal':
+						filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+						//is null, is not null
+						if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+							filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+						}else{
+							if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.type)){
+								filterItem.value = selectedFilterProperty.criteriaValue;
+							}else{
+								var decimalValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+								filterItem.value = decimalValueString;
+							}
+						}
+						
 						
 						break;
 				}
-				
-				console.log(selectedFilterProperty);
-				console.log(filterItem);
+				$log.debug(selectedFilterProperty);
+				$log.debug(filterItem);
 			};
         } 
 	};
