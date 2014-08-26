@@ -62,7 +62,12 @@ Notes:
 		</cf_HibachiPropertyRow>
 
 		<cf_HibachiTabGroup object="#rc.productReview#">
-			<!--- <cf_HibachiTab view="admin:section/tabsfolder/view" /> --->
+				
+		<!--- Custom Attributes --->
+		<cfloop array="#rc.productReview.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+			<cf_SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
+		</cfloop>
+		
 		</cf_HibachiTabGroup>
 
 	</cf_HibachiEntityDetailForm>
