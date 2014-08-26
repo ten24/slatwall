@@ -61,7 +61,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="amount" ormType="big_decimal" hb_formatType="custom";
 	property name="amountType" ormType="string" hb_formatType="rbKey";
 	property name="rewardType" ormType="string" hb_formatType="rbKey";
-	property name="applicableTerm" ormType="string" hb_formatType="rbKey";
+	property name="applicableTerm" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
 	property name="maximumUsePerOrder" ormType="integer" hb_nullRBKey="define.unlimited";
 	property name="maximumUsePerItem" ormtype="integer" hb_nullRBKey="define.unlimited";
 	property name="maximumUsePerQualification" ormtype="integer" hb_nullRBKey="define.unlimited";

@@ -106,8 +106,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') < maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
+					if(!getNewFlag()) {
+						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
+					}
 				} else if(getSKU().getQuantity('QATS') < maxQTY) {
 					maxQTY = getSku().getQuantity('QATS');
+					if(!getNewFlag()) {
+						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
+					}
 				}
 			}	
 		}

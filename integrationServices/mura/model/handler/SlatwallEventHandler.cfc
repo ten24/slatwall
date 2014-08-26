@@ -46,7 +46,7 @@
 	Notes:
 	
 --->
-<cfcomponent extends="handler" output="false" accessors="true">
+<cfcomponent extends="Handler" output="false" accessors="true">
 	
 	<cfproperty name="assignedSiteIDArray" type="array" />
 	
