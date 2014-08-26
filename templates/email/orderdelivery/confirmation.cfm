@@ -219,9 +219,9 @@ Notes:
 		</cfif>
 		Shipping Method : #orderDelivery.getShippingMethod().getShippingMethodName()#
         Ship-To Address:
-        <cfif len(orderDelivery.getShippingAdddress().getName())>#local.orderFulfillment.getAddress().getName()#</cfif>
-		<cfif len(orderDelivery.getShippingAdddress().getStreetAddress())>#local.orderFulfillment.getAddress().getStreetAddress()#</cfif>
-		<cfif len(orderDelivery.getShippingAdddress().getStreet2Address())>#local.orderFulfillment.getAddress().getStreet2Address()#</cfif>
+        <cfif len(orderDelivery.getShippingAdddress().getName())>#orderDelivery.getShippingAdddress().getName()#</cfif>
+		<cfif len(orderDelivery.getShippingAdddress().getStreetAddress())>#orderDelivery.getShippingAdddress().getStreetAddress()#</cfif>
+		<cfif len(orderDelivery.getShippingAdddress().getStreet2Address())>#orderDelivery.getShippingAdddress().getStreet2Address()#</cfif>
 		#orderDelivery.getShippingAdddress().getCity()#, #orderDelivery.getShippingAdddress().getStateCode()# #orderDelivery.getShippingAdddress().getPostalCode()#
 		#orderDelivery.getShippingAdddress().getCountryCode()#
 		</cfif>
@@ -230,7 +230,7 @@ Notes:
 		===========================================================================
 		<cfloop array="#orderDelivery.getOrderDeliveryItems()#" index="local.orderDeliveryItem">
 		#local.orderDeliveryItem.getOrderItem().getSku().getProduct().getTitle()#
-		<cfif len(orderItem.getSku().displayOptions())>#local.orderDeliveryItem.getOrderItem().getSku().displayOptions()#</cfif>
+		<cfif len(local.orderDeliveryItem.getOrderItem().getSku().displayOptions())>#local.orderDeliveryItem.getOrderItem().getSku().displayOptions()#</cfif>
 		#local.orderDeliveryItem.getOrderItem().getFormattedValue('price', 'currency')# | #NumberFormat(local.orderDeliveryItem.getOrderItem().getQuantity())# | #local.orderDeliveryItem.getOrderItem().getFormattedValue('extendedPrice', 'currency')# 
 		---------------------------------------------------------------------------
 		</cfloop>

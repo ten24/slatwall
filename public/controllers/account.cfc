@@ -50,6 +50,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	property name="fw" type="any";
 	property name="accountService" type="any";
+	property name="orderService" type="any";
 	property name="subscriptionService" type="any";
 	
 	public void function init( required any fw ) {
@@ -272,6 +273,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
+		}
+	}
+	
+	public void function duplicateOrder() {
+		param name="arguments.rc.orderID" default="";
+		param name="arguments.rc.setAsCartFlag" default="0";
+		
+		var order = getOrderService().getOrder( arguments.rc.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID()) {
+			var duplicateOrder = getOrderService().duplicateOrder(order=order, saveNewFlag=true, copyPersonalDataFlag=true);
+			if(isBoolean(arguments.rc.setAsCartFlag) && arguments.rc.setAsCartFlag) {
+				arguments.rc.$.slatwall.getSession().setOrder( duplicateOrder );
+			}
+			arguments.rc.$.slatwall.addActionResult( "public:account.duplicateOrder", false );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:account.duplicateOrder", true );
 		}
 	}
 	
