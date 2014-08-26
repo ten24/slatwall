@@ -31,14 +31,14 @@ partialsPath){
 		},
 		controller: function ($scope, $element, $attrs) {
 			//for(item in filterGroupItem){}
-			$scope.filterGroupItem.setItemInUse = $scope.setItemInUse;
+			$scope.filterGroupItem.$$setItemInUse = $scope.setItemInUse;
 			
-			$scope.filterGroupItem.disabled = false;
-			if(angular.isUndefined($scope.filterGroupItem.isClosed)){
-				$scope.filterGroupItem.isClosed = true;
+			$scope.filterGroupItem.$$disabled = false;
+			if(angular.isUndefined($scope.filterGroupItem.$$isClosed)){
+				$scope.filterGroupItem.$$isClosed = true;
 			}
 			
-			$scope.filterGroupItem.siblingItems = $scope.siblingItems;
+			$scope.filterGroupItem.$$siblingItems = $scope.siblingItems;
 			$scope.selectFilterGroupItem = function(filterGroupItem){
 				collectionService.selectFilterGroupItem(filterGroupItem);
 			};

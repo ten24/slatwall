@@ -5,19 +5,21 @@ angular.module('slatwalladmin')
 '$templateCache',
 'collectionService',
 'partialsPath',
-
+'$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath){
+partialsPath,
+$log){
 	return {
 		restrict: 'A',
 		scope:{
 			filterItem: "=",
 			siblingItems: "=",
 			setItemInUse: "&",
-			filterPropertiesList:"="
+			filterPropertiesList:"=",
+			saveCollection:"&"
 		},
 		link: function(scope, element,attrs){
 			var propertyAlias = scope.filterItem.propertyIdentifier.split(".").pop();
@@ -31,20 +33,27 @@ partialsPath){
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
-			if(angular.isUndefined($scope.filterItem.isClosed)){
-				$scope.filterItem.isClosed = true;
+			console.log($scope.filterItem);
+			if(angular.isUndefined($scope.filterItem.$$isClosed)){
+				$scope.filterItem.$$isClosed = true;
 			}
-			if(angular.isUndefined($scope.filterItem.disabled)){
-				$scope.filterItem.disabled = false;
+			if(angular.isUndefined($scope.filterItem.$$disabled)){
+				$scope.filterItem.$$disabled = false;
 			}
-			if(angular.isUndefined($scope.filterItem.siblingItems)){
-				$scope.filterItem.siblingItems = $scope.siblingItems;
+			if(angular.isUndefined($scope.filterItem.$$siblingItems)){
+				$scope.filterItem.$$siblingItems = $scope.siblingItems;
 			}
-			$scope.filterItem.setItemInUse = $scope.setItemInUse;
+			$scope.filterItem.$$setItemInUse = $scope.setItemInUse;
 			
 			$scope.selectFilterItem = function(filterItem){
+				
 				collectionService.selectFilterItem(filterItem);
 				
+			};
+			$scope.removeFilterItem = function(filterItem){
+				$log.debug('removeFilterItem');
+				$log.debug(filterItem);
+				collectionService.removeFilterItem(filterItem);
 			};
 			
         } 

@@ -5,16 +5,19 @@ angular.module('slatwalladmin')
 '$templateCache',
 'partialsPath',
 '$log',
+'slatwallService',
 function($http,
 $compile,
 $templateCache,
 partialsPath,
-$log){
+$log,
+slatwallService){
 	return {
 		restrict: 'A',
 		scope:{
 			filterItem:"=",
-			filterPropertiesList:"="
+			filterPropertiesList:"=",
+			saveCollection:"&"
 		},
 		link: function(scope, element,attrs){
 			var filterGroupsPartial = partialsPath+"editFilterItem.html";
@@ -28,11 +31,11 @@ $log){
 		controller: function ($scope, $element, $attrs) {
 			//initialize directive
 			
-			if(angular.isUndefined($scope.filterItem.isClosed)){
-				$scope.filterItem.isClosed = true;
+			if(angular.isUndefined($scope.filterItem.$$isClosed)){
+				$scope.filterItem.$$isClosed = true;
 			}
 			if(angular.isUndefined($scope.filterItem.breadCrumbs)){
-				$scope.filterItem.breadCrumbs = "";
+				$scope.filterItem.$$breadCrumbs = "";
 			}
 			for(i in $scope.filterPropertiesList.data){
 				var filterProperty = $scope.filterPropertiesList.data[i];
@@ -115,6 +118,9 @@ $log){
 							}
 							break;
 					}
+					
+					//persist Config and 
+					$scope.saveCollection();
 					$log.debug(selectedFilterProperty);
 					$log.debug(filterItem);
 				}
