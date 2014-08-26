@@ -1,4 +1,4 @@
-component output="false" accessors="true" {
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	
 	property name="fw" type="any";
 	property name="hibachiService" type="any";
@@ -18,15 +18,16 @@ component output="false" accessors="true" {
 			arguments.rc.apiResponse.content = {};
 		}
 		
+		
 	}
 	
 	public any function getObjectOptions(required struct rc){
-		var data = collectionService.getObjectOptions();
+		var data = getCollectionService().getObjectOptions();
 		arguments.rc.apiResponse.content = {data=data};
 	}
 	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
-		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');
+		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection');
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
 			{
@@ -56,16 +57,12 @@ component output="false" accessors="true" {
 			}
 		];
 		var data = {data=collectionEntity.getRecords()};
-		
-		structAppend(arguments.rc.apiResponse.content,data);
+		arguments.rc.apiResponse.content['data'] = collectionEntity.getRecords();
 	}
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
-		var filterProperties = {
-									data = hibachiService.getFilterPropertiesByEntityName(rc.entityName),
-									entityName=rc.entityName
-								};
-		structAppend(arguments.rc.apiResponse.content, filterProperties);
+		arguments.rc.apiResponse.content['data'] = getHibachiService().getFilterPropertiesByEntityName(rc.entityName);
+		arguments.rc.apiResponse.content['entityName'] = rc.entityName;
 	}
 	
 	public any function get( required struct rc ) {
@@ -92,21 +89,21 @@ component output="false" accessors="true" {
 			}
 			
 			//considering using all url variables to create a transient collectionConfig for api response
-			var transientCollectionConfigStruct = collectionService.getTransientCollectionConfigStructByURLParams(arguments.rc);			
+			var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
-				var result = collectionService.getAPIResponseForEntityName(	arguments.rc.entityName,
+				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
 																			arguments.rc.propertyIdentifiers,
 																			currentPage,
 																			pageShow);
 				structAppend(arguments.rc.apiResponse.content,result);
 			}else{
 				//figure out if we have a collection or a basic entity
-				var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
+				var collectionEntity = getCollectionService().getCollectionByCollectionID(arguments.rc.entityID);
 				if(isNull(collectionEntity)){
 					//should only be able to add selects (&propertyIdentifier=)
-					var result = collectionService.getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
+					var result = getCollectionService().getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
 																				arguments.rc.entityID,
 																				arguments.rc.propertyIdentifiers,
 																				currentPage,
@@ -114,7 +111,7 @@ component output="false" accessors="true" {
 					structAppend(arguments.rc.apiResponse.content,result);
 				}else{
 					//should be able to add select and where filters here
-					var result = collectionService.getAPIResponseForCollection(	collectionEntity,
+					var result = getCollectionService().getAPIResponseForCollection(	collectionEntity,
 																				arguments.rc.propertyIdentifiers,
 																				currentPage,
 																				pageShow);
@@ -167,12 +164,15 @@ component output="false" accessors="true" {
 			
 		}else{
 			arguments.rc.apiResponse.content.success = true;
-			var successMessageData = {message = "#rc.context# #arguments.rc.entityName# successful", type="success"};
+			//
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "success");
+			var successMessageData = {message = rc.messages[1].message, type=rc.messages[1].messageType};
 			arrayAppend(arguments.rc.apiResponse.content.messages,successMessageData);
 		}
 		
 		if(!isnull(entity.getHibachiMessages()) && structCount(entity.getHibachiMessages().getMessages())){
 			var messages = entity.getHibachiMessages().getMessages();
+			
 			for(message in messages){
 				var messageData ={
 					message = messages[message],
@@ -184,6 +184,11 @@ component output="false" accessors="true" {
 		
 		if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
 			arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "error");
+			for(message in rc.messages){
+				var failureMessageData = {message = rc.messages[1].message, type=rc.messages[1].messageType};
+				arrayAppend(arguments.rc.apiResponse.content.messages,failureMessageData);	
+			}
 		}
 	}
 	

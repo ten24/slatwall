@@ -161,8 +161,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	//join introspects on itself for nested joins to ensure that all joins are added in the correct order
 	private string function addJoinHQL(required string parentAlias, required any join){
-		
-		var joinHQL = ' left join #parentAlias#.#arguments.join.associationName# as #arguments.join.alias# ';
+		var fullJoinName = "#parentAlias#.#arguments.join.associationName#";
+		addHQLAlias(fullJoinName,arguments.join.alias);
+		var joinHQL = ' left join #fullJoinName# as #arguments.join.alias# ';
 		if(!isnull(arguments.join.joins)){
 			for(childJoin in arguments.join.joins){
 				joinHQL &= addJoinHQL(join.alias,childJoin);
@@ -368,6 +369,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	private string function getFromHQL(required string baseEntityName, required string baseEntityAlias, required any joins){
 		var fromHQL = ' FROM #arguments.baseEntityName# as #arguments.baseEntityAlias#';
+		addHQLAlias(arguments.baseEntityName,arguments.baseEntityAlias);
 		for(join in arguments.joins){
 			fromHQL &= addJoinHQL(arguments.baseEntityAlias,join);
 		}
@@ -393,6 +395,17 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getBaseEntityName(),maincollectionAlias).name;
 		
 		//None,One,All
+		/*withaliases
+		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
+			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getHQLAliases()['#collectionEntity.getBaseEntityName()#']#.#collectionProperty# ';
+		}else{
+			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getBaseEntityName());
+			
+			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getBaseEntityName()#) FROM #fullEntityName# as #collectionEntity.getBaseEntityName()# WHERE #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) 
+			= (SELECT count(#collectionEntity.getBaseEntityName()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getHQLAliases()['#collectionEntity.getBaseEntityName()#']#.#collectionProperty# = #mainCollectionAlias#) ';
+		}
+		*/
+		
 		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
 			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getBaseEntityName()#.#collectionProperty# ';
 		}else{

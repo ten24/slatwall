@@ -16,7 +16,8 @@ partialsPath){
 		scope:{
 			filterGroupItem: "=",
 			filterPropertiesList:"=",
-			incrementFilterCount:"&"
+			incrementFilterCount:"&",
+			saveCollection:"&"
 		},
 		link: function(scope, element,attrs){
 			var filterGroupsPartial = partialsPath+"filterGroups.html";

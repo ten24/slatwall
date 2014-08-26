@@ -413,13 +413,13 @@ Notes:
 			</div>
 		</div>
 		<!---displays alerts to the user --->
-		<div ng-class="{fade:alert.fade}" class="alert s-alert-footer alert-{{alert.type}} " role="alert"
+		<div ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer"role="alert"
 		ng-repeat="alert in alerts"
 		>
 			<!---only show a dismissable button if we are showing info or a warning --->
 		  	<button ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 		  	<!---show check mark only if success, always display message --->
-		  	<i class="fa fa-check" ng-show="alert.type === 'success'"></i>{{alert.msg}}
+		  	<i class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
 	    </div>
 	</body>
 

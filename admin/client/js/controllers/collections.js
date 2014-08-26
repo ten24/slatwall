@@ -6,11 +6,13 @@ angular.module('slatwalladmin')
 'slatwallService',
 'alertService',
 'collectionService', 
+'$log',
 function($scope,
 $location,
 slatwallService,
 alertService,
-collectionService
+collectionService,
+$log
 ){
 	
 	//init values
@@ -37,7 +39,7 @@ collectionService
 	collectionListingPromise.then(function(value){
 		$scope.collection = value;
 		$scope.collectionInitial = angular.copy($scope.collection);
-		$scope.collectionConfig = JSON.parse($scope.collection.collectionConfig);
+		$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
 		//check if we have any filter Groups
 		if(angular.isUndefined($scope.collectionConfig.filterGroups)){
 			$scope.collectionConfig.filterGroups = [
@@ -64,11 +66,32 @@ collectionService
 		alertService.addAlerts(alerts);
 	});
 	
-	
+	$scope.setCollectionForm= function(form){
+	   $scope.collectionForm = form;
+	};
 	
 	//public functions
-	$scope.saveCollection = function(entityName,collection,collectionForm){
-		
+	$scope.saveCollection = function(){
+		$log.debug('saving Collection');
+		var entityName = 'collection';
+		var collection = $scope.collection;
+		$log.debug($scope.collectionConfig);
+		var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
+		/*var cache = [];
+		var collectionConfigString = JSON.stringify($scope.collectionConfig,function(key, val) {
+		   if (typeof val == "object") {
+		        if (cache.indexOf(val) >= 0)
+		            return;
+		        cache.push(val);
+		    }
+		    return val;
+		});
+		cache = null;*/
+		$log.debug(collectionConfigString);
+		collection.collectionConfig = collectionConfigString;
+		console.log(collection);
+		console.log($scope.collectionConfig);
+		var collectionForm = $scope.collectionFormScope;
 		if(isFormValid(collectionForm)){
 			var data = angular.copy(collection);
 			//has to be removed in order to save transient correctly
@@ -101,8 +124,8 @@ collectionService
 		$scope.selectedFilterProperty = selectedFilterProperty;
 		
 		//after we have selected a property we need to figure out what to show them
-		if(angular.isDefined($scope.selectedFilterProperty.ORMTYPE)){
-			switch($scope.selectedFilterProperty.ORMTYPE){
+		if(angular.isDefined($scope.selectedFilterProperty.ormtype)){
+			switch($scope.selectedFilterProperty.ormtype){
 				case "boolean":
 					//then display partial for boolean toggle
 					break;
@@ -114,8 +137,8 @@ collectionService
 					break;
 			}
 		}
-		if(angular.isDefined($scope.selectedFilterProperty.FIELDTYPE)){
-			switch($scope.selectedFilterProperty.FIELDTYPE){
+		if(angular.isDefined($scope.selectedFilterProperty.fieldtype)){
+			switch($scope.selectedFilterProperty.fieldtype){
 				case "many-to-one":
 					//display partial for many-to-one
 					break;

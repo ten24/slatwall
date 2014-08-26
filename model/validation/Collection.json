@@ -1,5 +1,6 @@
 {
 	"properties":{
-		"collectionCode":			[{"contexts":"save","uniqueOrNull":true}]
+		"collectionCode":	[{"contexts":"save","uniqueOrNull":true,"required":true}],
+		"collectionName":		[{"contexts":"save","required":true}]
 	}
 }

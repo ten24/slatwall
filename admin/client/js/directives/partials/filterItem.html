@@ -1,5 +1,5 @@
 
-<li ng-class="{'s\-disabled':filterItem.disabled}">
+<li ng-class="{'s\-disabled':filterItem.$$disabled}">
  
   <!--- Filter display --->
   <div class="s-filter-item">
@@ -7,8 +7,8 @@
       <button class="btn btn-xs btn-default" ng-class="{active:filterItem.logicalOperator === 'AND'}">AND</button>
       <button class="btn btn-xs btn-default" ng-class="{active:filterItem.logicalOperator === 'OR'}">OR</button>
     </div>
-    <div class="panel panel-default"  ng-class="{'s\-focus':!filterItem.isClosed}" >
-      <div class="panel-heading"><span ng-bind="filterItem.displayPropertyIdentifier"></span> <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+    <div class="panel panel-default"  ng-class="{'s\-focus':!filterItem.$$isClosed}" >
+      <div class="panel-heading"><span ng-bind="filterItem.displayPropertyIdentifier"></span> <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove" ng-click="removeFilterItem(filterItem)"><i class="fa fa-times"></i></a></div>
       <div ng-click="selectFilterItem(filterItem)" ng-class="{}"   class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
         <span ng-bind="filterItem.value"></span> <a  href="##"><i class="fa fa-pencil-square-o"></i></a>
       </div>
@@ -21,7 +21,8 @@
   <span sw-edit-filter-item
   		filter-item="filterItem"
   		filter-properties-list="filterPropertiesList"
-  		ng-if="filterPropertiesList.hasOwnProperty('DATA')"
+  		ng-if="filterPropertiesList.hasOwnProperty('data')"
+  		save-collection="saveCollection()"
   >
   </span>
   <!--- //Edit Filter Box --->

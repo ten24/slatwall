@@ -31,8 +31,8 @@
       <div class="tab-content" id="j-property-box">
 
         <div class="tab-pane active" id="j-properties">
-          <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection('collection',collection,collectionForm)" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
-          <form class="form-horizontal s-properties" role="form" name="collectionForm">
+          <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection()" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
+          <form class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
             <input style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
             <div class="form-group">
               <label class="col-sm-2 control-label">Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
@@ -77,7 +77,9 @@
                 		sw-filter-groups 
                 		increment-filter-count="incrementFilterCount()" 
                 		filter-group-item="collectionConfig.filterGroups[0].filterGroup"
-                		filter-properties-list="filterPropertiesList">
+                		filter-properties-list="filterPropertiesList"
+                		save-collection="saveCollection()"
+                		>
                 	</ul>
                 </div>
                 <!--- //New Filter Panel --->
