@@ -17,9 +17,9 @@ slatwallService){
 	var getTemplate = function(selectedFilterProperty){
         var template = '';
 		var templatePath = '';
-		var criteriaORMType = selectedFilterProperty.ORMTYPE;
-		var criteriaFieldType = selectedFilterProperty.FIELDTYPE;
-        switch(criteriaORMType){
+		var criteriaormtype = selectedFilterProperty.ormtype;
+		var criteriafieldtype = selectedFilterProperty.fieldtype;
+        switch(criteriaormtype){
             case 'boolean':
                templatePath = partialsPath+"criteriaBoolean.html";
                 break;
@@ -34,7 +34,7 @@ slatwallService){
             	break;
         }
         
-        switch(criteriaFieldType){
+        switch(criteriafieldtype){
 	        case "many-to-one":
 	        	templatePath = partialsPath+"criteriaManyToOne.html";
 				break;
@@ -411,8 +411,8 @@ slatwallService){
 		
 		scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
 			if(angular.isDefined(selectedFilterProperty)){
-				if(angular.isDefined(selectedFilterProperty.ORMTYPE)){
-					switch(scope.selectedFilterProperty.ORMTYPE){
+				if(angular.isDefined(selectedFilterProperty.ormtype)){
+					switch(scope.selectedFilterProperty.ormtype){
 						case "boolean":
 			    			scope.booleanOptions = getBooleanOptions();
 			    			break;
@@ -646,13 +646,13 @@ slatwallService){
 			    	}
 				}
 				console.log(scope.selectedFilterProperty);
-				if(angular.isDefined(scope.selectedFilterProperty.FIELDTYPE)){
-					switch(scope.selectedFilterProperty.FIELDTYPE){
+				if(angular.isDefined(scope.selectedFilterProperty.fieldtype)){
+					switch(scope.selectedFilterProperty.fieldtype){
 						case "many-to-one":
 							scope.manyToOneOptions = getManyToOneOptions();
-							var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity(selectedFilterProperty.CFC);
+							var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){
-								scope.collectionOptions = value.DATA;
+								scope.collectionOptions = value.data;
 								console.log(scope.collectionOptions);
 							},function(reason){
 								//display error message if getter fails

@@ -96,12 +96,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getObjectOptions(required struct rc){
-		var data = collectionService.getObjectOptions();
+		var data = getCollectionService().getObjectOptions();
 		arguments.rc.apiResponse.content = {data=data};
 	}
 	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
-		var collectionEntity = collectionService.getTransientCollectionByEntityName('collection');
+		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection');
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
 			{
@@ -131,16 +131,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 		];
 		var data = {data=collectionEntity.getRecords()};
-		
-		structAppend(arguments.rc.apiResponse.content,data);
+		arguments.rc.apiResponse.content['data'] = collectionEntity.getRecords();
 	}
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
-		var filterProperties = {
-									data = hibachiService.getFilterPropertiesByEntityName(rc.entityName),
-									entityName=rc.entityName
-								};
-		structAppend(arguments.rc.apiResponse.content, filterProperties);
+		arguments.rc.apiResponse.content['data'] = getHibachiService().getFilterPropertiesByEntityName(rc.entityName);
+		arguments.rc.apiResponse.content['entityName'] = rc.entityName;
 	}
 	
 	public any function get( required struct rc ) {
@@ -167,21 +163,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			
 			//considering using all url variables to create a transient collectionConfig for api response
-			var transientCollectionConfigStruct = collectionService.getTransientCollectionConfigStructByURLParams(arguments.rc);			
+			var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
-				var result = collectionService.getAPIResponseForEntityName(	arguments.rc.entityName,
+				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
 																			arguments.rc.propertyIdentifiers,
 																			currentPage,
 																			pageShow);
 				structAppend(arguments.rc.apiResponse.content,result);
 			}else{
 				//figure out if we have a collection or a basic entity
-				var collectionEntity = collectionService.getCollectionByCollectionID(arguments.rc.entityID);
+				var collectionEntity = getCollectionService().getCollectionByCollectionID(arguments.rc.entityID);
 				if(isNull(collectionEntity)){
 					//should only be able to add selects (&propertyIdentifier=)
-					var result = collectionService.getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
+					var result = getCollectionService().getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
 																				arguments.rc.entityID,
 																				arguments.rc.propertyIdentifiers,
 																				currentPage,
@@ -189,7 +185,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					structAppend(arguments.rc.apiResponse.content,result);
 				}else{
 					//should be able to add select and where filters here
-					var result = collectionService.getAPIResponseForCollection(	collectionEntity,
+					var result = getCollectionService().getAPIResponseForCollection(	collectionEntity,
 																				arguments.rc.propertyIdentifiers,
 																				currentPage,
 																				pageShow);

@@ -38,7 +38,7 @@ function(){
 			filterGroupItem.setItemInUse({booleanValue:!filterGroupItem.isClosed});
 		},
 		newFilterItem: function(filterItemGroup,setItemInUse){
-			console.log(filterItemGroup);
+			
 			filterItem = {
 					propertyIdentifier:"empty",
 					comparisonOperator:"=",
@@ -69,8 +69,8 @@ function(){
 			collectionService.selectFilterGroupItem(filterGroupItem);
 		},
 		formatFilterPropertiesList: function(filterPropertiesList){
-			for(i in filterPropertiesList.DATA){
-				filterPropertiesList.DATA[i].propertyIdentifier = filterPropertiesList.ENTITYNAME + '.' +filterPropertiesList.DATA[i].NAME;
+			for(i in filterPropertiesList.data){
+				filterPropertiesList.data[i].propertyIdentifier = filterPropertiesList.entityName + '.' +filterPropertiesList.data[i].name;
 			}
 		}
 		//private functions

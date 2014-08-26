@@ -320,7 +320,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		var defaultProperties = getDefaultProperties();
 		var defaultPropertyIdentifiersList = "";
 		for(var i=1; i<=arrayLen(defaultProperties); i++) {
-			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i].NAME);
+			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i]['name']);
 		}
 		return defaultPropertyIdentifiersList;
 	}

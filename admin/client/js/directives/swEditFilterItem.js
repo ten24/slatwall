@@ -34,9 +34,8 @@ $log){
 			if(angular.isUndefined($scope.filterItem.breadCrumbs)){
 				$scope.filterItem.breadCrumbs = "";
 			}
-			for(i in $scope.filterPropertiesList.DATA){
-				var filterProperty = $scope.filterPropertiesList.DATA[i];
-				console.log(filterProperty.propertyIdentifier);
+			for(i in $scope.filterPropertiesList.data){
+				var filterProperty = $scope.filterPropertiesList.data[i];
 				if(filterProperty.propertyIdentifier === $scope.filterItem.propertyIdentifier){
 					$scope.selectedFilterProperty = filterProperty;
 				}
@@ -55,7 +54,7 @@ $log){
 				var propertyAlias = filterItem.propertyIdentifier.split(".").pop();
 				filterItem.displayPropertyIdentifier = propertyAlias; 
 				
-				switch(selectedFilterProperty.ORMTYPE){
+				switch(selectedFilterProperty.ormtype){
 					case 'boolean':
 	               		filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 	               		filterItem.value = selectedFilterProperty.selectedCriteriaType.value;

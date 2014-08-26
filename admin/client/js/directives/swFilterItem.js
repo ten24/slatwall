@@ -31,7 +31,6 @@ partialsPath){
 			});
 		},
 		controller: function ($scope, $element, $attrs) {
-			console.log($scope.filterPropertiesList);
 			if(angular.isUndefined($scope.filterItem.isClosed)){
 				$scope.filterItem.isClosed = true;
 			}

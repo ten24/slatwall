@@ -101,8 +101,8 @@ collectionService
 		$scope.selectedFilterProperty = selectedFilterProperty;
 		
 		//after we have selected a property we need to figure out what to show them
-		if(angular.isDefined($scope.selectedFilterProperty.ORMTYPE)){
-			switch($scope.selectedFilterProperty.ORMTYPE){
+		if(angular.isDefined($scope.selectedFilterProperty.ormtype)){
+			switch($scope.selectedFilterProperty.ormtype){
 				case "boolean":
 					//then display partial for boolean toggle
 					break;
@@ -114,8 +114,8 @@ collectionService
 					break;
 			}
 		}
-		if(angular.isDefined($scope.selectedFilterProperty.FIELDTYPE)){
-			switch($scope.selectedFilterProperty.FIELDTYPE){
+		if(angular.isDefined($scope.selectedFilterProperty.fieldtype)){
+			switch($scope.selectedFilterProperty.fieldtype){
 				case "many-to-one":
 					//display partial for many-to-one
 					break;
