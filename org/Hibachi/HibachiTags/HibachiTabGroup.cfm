@@ -52,9 +52,8 @@
 		</cfif>
 		
 		<cfoutput>
-			<hr>
 			<div class="row">
-				<div class="col-sm-2">
+				<div class="col-sm-12 s-header-nav">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="##main-tab-nav">
 							<span class="sr-only">Toggle navigation</span>
@@ -64,7 +63,7 @@
 						</button>
 					</div>
 					<div class="collapse navbar-collapse" id="main-tab-nav">
-						<ul class="nav nav-pill nav-stacked">
+						<ul class="nav nav-tabs">
 							<cfloop array="#thistag.tabs#" index="tab">
 								<li <cfif activeTab eq tab.tabid>class="active"</cfif>><a href="###tab.tabid#" data-toggle="tab">#tab.text#<cfif len(tab.count) and tab.count gt 0> <span class="badge pull-right" style="padding-left:10px;">#tab.count#</span></cfif></a></li>
 							</cfloop>

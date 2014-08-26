@@ -67,7 +67,7 @@ Notes:
 		<cf_HibachiEntityDetailGroup object="#rc.product#">
 			
 			<!--- Basic --->
-			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
 			
 			<!--- Skus --->
 			<cf_HibachiEntityDetailItem property="skus" />

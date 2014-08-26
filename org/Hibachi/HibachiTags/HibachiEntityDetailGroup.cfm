@@ -52,6 +52,7 @@
 		</cfif>
 		
 		<cfoutput>
+
 			
 			<div class="row s-pannel-control">
 				<div class="col-md-12">

@@ -239,6 +239,17 @@ $(window).load( function() {
 	});
 });
 
+$(window).load( function() {
+    $('.panel-collapse.in').parent().find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+    $('.panel').on('shown.bs.collapse', function () {
+       $(this).find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+    });
+
+    $('.panel').on('hidden.bs.collapse', function () {
+       $(this).find('.panel-title i').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
+    });
+});
+
 function setupEventHandlers() {
 	
 	// Hide Alerts
