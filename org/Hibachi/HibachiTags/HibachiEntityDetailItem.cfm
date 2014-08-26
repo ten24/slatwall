@@ -6,6 +6,7 @@
 	<cfparam name="attributes.tabcontent" type="string" default="" />
 	<cfparam name="attributes.params" type="struct" default="#structNew()#" />
 	<cfparam name="attributes.count" type="string" default="" />
+	<cfparam name="attributes.open" type="boolean" default="false" />
 	
 	<cfassociate basetag="cf_HibachiEntityDetailGroup" datacollection="tabs">
 </cfif>

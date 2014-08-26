@@ -227,6 +227,17 @@ function initUIElements( scopeSelector ) {
 		}				
 	});
 }
+// Accordian All Open and All Close
+$(window).load( function() {
+	$('.closeall').click(function(){
+	  $('.panel-collapse.in')
+	    .collapse('hide');
+	});
+	$('.openall').click(function(){
+	  $('.panel-collapse:not(".in")')
+	    .collapse('show');
+	});
+});
 
 function setupEventHandlers() {
 	

@@ -63,13 +63,11 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createfile" querystring="baseObject=#rc.product.getClassName()#&baseID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="productID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</cf_HibachiEntityActionBar>
-		
-		
-		
+				
 		<cf_HibachiEntityDetailGroup object="#rc.product#">
 			
 			<!--- Basic --->
-			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/basic" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" />
 			
 			<!--- Skus --->
 			<cf_HibachiEntityDetailItem property="skus" />

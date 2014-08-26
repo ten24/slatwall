@@ -54,66 +54,37 @@
 		<cfoutput>
 			
 			<div class="row s-pannel-control">
-			  <div class="col-md-12"><a href="##" class="openall">Open All</a> <a href="##" class="closeall">Close All</a></div>
+				<div class="col-md-12">
+					<a href="##" class="openall">Open All</a>
+					<a href="##" class="closeall">Close All</a>
+				</div>
 			</div>
-			
-			<script charset="utf-8">
-			$('.closeall').click(function(){
-			  $('.panel-collapse.in')
-			    .collapse('hide');
-			});
-			$('.openall').click(function(){
-			  $('.panel-collapse:not(".in")')
-			    .collapse('show');
-			});
-			</script>
-			<script charset="utf-8">
-	          $(document).ready(function(){
-	            $('.panel-collapse.in').parent().find('.panel-title i').removeClass('fa-caret-left').addClass('fa-caret-down');
-	            $('.panel').on('shown.bs.collapse', function () {
-	               $(this).find('.panel-title i').removeClass('fa-caret-left').addClass('fa-caret-down');
-	            });
-	
-	            $('.panel').on('hidden.bs.collapse', function () {
-	               $(this).find('.panel-title i').removeClass('fa-caret-down').addClass('fa-caret-left');
-	            });
-	          });
-	        </script>
-			
-			
 			<cfset iteration = 0 />
-			<div class="panel-group s-pannel-group" id="accordion">
-			  
-			  <cfloop array="#thistag.tabs#" index="tab">
-				<cfset iteration++ />
-			   	  <div class="panel panel-default">
-			        <a data-toggle="collapse"  href="##collapse#iteration#">
-			          <div class="panel-heading">
-			            <h4 class="panel-title">
-			                <span>#tab.text#</span>
-			                <i class="fa fa-caret-left"></i>
-			            </h4>
-			          </div>
-			        </a>
-			        
-					
-					<div id="collapse#iteration#" class="panel-collapse collapse in">
-			          <div class="panel-body">
-			          	
-						
-						
-							<cfoutput>
-								<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
-									#tab.tabcontent#
-								</div>
-							</cfoutput>
-			
-					  
-					</div><!--- panel body --->
-				  </div><!--- panel-collapse collapse in --->
-				</div><!--- panel panel-default --->
-			  </cfloop>
+			<div class="panel-group s-pannel-group" id="accordion">		  
+				<cfloop array="#thistag.tabs#" index="tab">
+					<cfset iteration++ />
+					<div class="panel panel-default">
+						<a data-toggle="collapse"  href="##collapse#iteration#">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span>#tab.text#</span>
+									<i class="fa fa-caret-left"></i>
+								</h4>
+							</div>
+						</a>
+						<div id="collapse#iteration#" class="panel-collapse collapse<cfif tab.open> in</cfif>">
+							<div class="panel-body">
+								<cfoutput>
+									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
+										#tab.tabcontent#
+									</div>
+								</cfoutput>
+							</div><!--- panel body --->
+						</div><!--- panel-collapse collapse in --->
+					</div><!--- panel panel-default --->
+				</cfloop>
 			</div><!--- panel-group s-pannel-group --->
+				
 		</cfoutput>
 	</cfif>
 </cfif>					
