@@ -49,73 +49,75 @@ $log){
 			};
 			
 			$scope.saveFilter = function(selectedFilterProperty,filterItem){
-				//populate filterItem with selectedFilterProperty values
-				filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
-				var propertyAlias = filterItem.propertyIdentifier.split(".").pop();
-				filterItem.displayPropertyIdentifier = propertyAlias; 
-				
-				switch(selectedFilterProperty.ormtype){
-					case 'boolean':
-	               		filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-	               		filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-	                break;
-		            case 'string':
-						filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-						
-						//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
-						if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-						
-							filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-						}else{
-							//if has a pattern then we need to evaluate where to add % for like statement
-							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
-								switch(selectedFilterProperty.selectedCriteriaType.pattern){
-									case "%w%":
-										filterItem.value = '%'+selectedFilterProperty.criteriaValue+'%';
-										break;
-									case "%w":
-										filterItem.value = '%'+selectedFilterProperty.criteriaValue;
-										break;
-									case "w%":
-										filterItem.value = selectedFilterProperty.criteriaValue+'%';
-										break;
-								}
-							}else{
-								filterItem.value = selectedFilterProperty.criteriaValue;
-							}
-						}
-						
+				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
+					//populate filterItem with selectedFilterProperty values
+					filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
+					var propertyAlias = filterItem.propertyIdentifier.split(".").pop();
+					filterItem.displayPropertyIdentifier = propertyAlias; 
+					
+					switch(selectedFilterProperty.ormtype){
+						case 'boolean':
+		               		filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+		               		filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 		                break;
-		                //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
-		            case 'timestamp':
-		            	//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
-		            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-		            	
-						if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-							filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-						}else{
+			            case 'string':
+							filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 							
-							var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-							filterItem.value = dateValueString;
-						}
-		                break;	
-		            case 'big_decimal':
-						filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-						//is null, is not null
-						if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-							filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-						}else{
-							if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.type)){
-								filterItem.value = selectedFilterProperty.criteriaValue;
+							//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+							
+								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 							}else{
-								var decimalValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-								filterItem.value = decimalValueString;
+								//if has a pattern then we need to evaluate where to add % for like statement
+								if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
+									switch(selectedFilterProperty.selectedCriteriaType.pattern){
+										case "%w%":
+											filterItem.value = '%'+selectedFilterProperty.criteriaValue+'%';
+											break;
+										case "%w":
+											filterItem.value = '%'+selectedFilterProperty.criteriaValue;
+											break;
+										case "w%":
+											filterItem.value = selectedFilterProperty.criteriaValue+'%';
+											break;
+									}
+								}else{
+									filterItem.value = selectedFilterProperty.criteriaValue;
+								}
 							}
-						}
-						break;
+							
+			                break;
+			                //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
+			            case 'timestamp':
+			            	//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+			            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+			            	
+							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+							}else{
+								
+								var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+								filterItem.value = dateValueString;
+							}
+			                break;	
+			            case 'big_decimal':
+							filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+							//is null, is not null
+							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+							}else{
+								if(angular.isUndefined(selectedFilterProperty.selectedCriteriaType.type)){
+									filterItem.value = selectedFilterProperty.criteriaValue;
+								}else{
+									var decimalValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+									filterItem.value = decimalValueString;
+								}
+							}
+							break;
+					}
+					$log.debug(selectedFilterProperty);
+					$log.debug(filterItem);
 				}
-				$log.debug(selectedFilterProperty);
-				$log.debug(filterItem);
 			};
         } 
 	};

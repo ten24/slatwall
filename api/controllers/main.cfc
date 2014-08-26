@@ -18,80 +18,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.apiResponse.content = {};
 		}
 		
-		// Setup a Private structure in the RC that can't be overridden by the form scope
-		arguments.rc.entityActionDetails = {};
-		arguments.rc.entityActionDetails.thisAction = arguments.rc[ getFW().getAction() ];
-		arguments.rc.entityActionDetails.subsystemName = getFW().getSubsystem( arguments.rc.entityActionDetails.thisAction );
-		arguments.rc.entityActionDetails.sectionName = getFW().getSection( arguments.rc.entityActionDetails.thisAction );
-		arguments.rc.entityActionDetails.itemName = getFW().getItem( arguments.rc.entityActionDetails.thisAction );
-		
-		// Setup EntityActionDetails with default redirect / render values
-		arguments.rc.entityActionDetails.sRedirectURL = "";
-		arguments.rc.entityActionDetails.sRedirectAction = "";
-		arguments.rc.entityActionDetails.sRenderItem = "";
-		arguments.rc.entityActionDetails.sRedirectQS = "";
-		arguments.rc.entityActionDetails.fRedirectURL = "";
-		arguments.rc.entityActionDetails.fRedirectAction = "";
-		arguments.rc.entityActionDetails.fRenderItem = "";
-		arguments.rc.entityActionDetails.fRedirectQS = "";
-		
-		// Setup EntityActionDetails with all next actions set to this action
-		arguments.rc.entityActionDetails.itemEntityName = "";
-		arguments.rc.entityActionDetails.backAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.cancelAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.createAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.deleteAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.detailAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.editAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.exportAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.listAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.multiPreProcessAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.multiProcessAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.preProcessAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.processAction = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.saveAction = arguments.rc.entityActionDetails.thisAction;
-		
-		// Setup EntityActionDetails with the correct itemEntityName
-		if(left(arguments.rc.entityActionDetails.itemName, 4) == "list") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
-		} else if (left(arguments.rc.entityActionDetails.itemName, 4) == "edit") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
-		} else if (left(arguments.rc.entityActionDetails.itemName, 4) == "save") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-4);
-		} else if (left(arguments.rc.entityActionDetails.itemName, 6) == "detail") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
-		} else if (left(arguments.rc.entityActionDetails.itemName, 6) == "delete") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
-		} else if (left(arguments.rc.entityActionDetails.itemName, 6) == "create") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
-		} else if (left(arguments.rc.entityActionDetails.itemName, 7) == "process") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-7);
-		} else if (left(arguments.rc.entityActionDetails.itemName, 10) == "preprocess") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-10);
-		} else if (left(arguments.rc.entityActionDetails.itemName, 6) == "export") {
-			arguments.rc.entityActionDetails.itemEntityName = right(arguments.rc.entityActionDetails.itemName, len(arguments.rc.entityActionDetails.itemName)-6);
-		}
-		
-		// Setup EntityActionDetails with correct actions
-		if(arguments.rc.entityActionDetails.itemEntityName != "") {
-			arguments.rc.entityActionDetails.backAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails.itemEntityName#";
-			if(left(arguments.rc.entityActionDetails.itemName, 6) == "create") {
-				arguments.rc.entityActionDetails.cancelAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails.itemEntityName#";	
-			} else {
-				arguments.rc.entityActionDetails.cancelAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails.itemEntityName#";
-			}
-			arguments.rc.entityActionDetails.createAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.create#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.detailAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.detail#arguments.rc.entityActionDetails.itemEntityName#";		
-			arguments.rc.entityActionDetails.deleteAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.delete#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.editAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.edit#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.exportAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.export#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.listAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.list#arguments.rc.entityActionDetails.itemEntityName#"; 
-			arguments.rc.entityActionDetails.multiPreProcessAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.multipreprocess#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.multiProcessAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.multiprocess#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.preProcessAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.preprocess#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.processAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.process#arguments.rc.entityActionDetails.itemEntityName#";
-			arguments.rc.entityActionDetails.saveAction = "#arguments.rc.entityActionDetails.subsystemName#:#arguments.rc.entityActionDetails.sectionName#.save#arguments.rc.entityActionDetails.itemEntityName#";
-		}
 		
 	}
 	
@@ -239,7 +165,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}else{
 			arguments.rc.apiResponse.content.success = true;
 			//
-			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.#rc.context#_success" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "success");
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "success");
 			var successMessageData = {message = rc.messages[1].message, type=rc.messages[1].messageType};
 			arrayAppend(arguments.rc.apiResponse.content.messages,successMessageData);
 		}
@@ -258,11 +184,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
 			arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
-			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.#rc.context#_error" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "error");
-			
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "error");
 			for(message in rc.messages){
-				message.type = 'danger';
-				arrayAppend(arguments.rc.apiResponse.content.messages,message);	
+				var failureMessageData = {message = rc.messages[1].message, type=rc.messages[1].messageType};
+				arrayAppend(arguments.rc.apiResponse.content.messages,failureMessageData);	
 			}
 		}
 	}

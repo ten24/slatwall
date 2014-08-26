@@ -413,7 +413,7 @@ Notes:
 			</div>
 		</div>
 		<!---displays alerts to the user --->
-		<div ng-class="{fade:alert.fade}" class="alert s-alert-footer alert-{{alert.type}} " role="alert"
+		<div ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer"role="alert"
 		ng-repeat="alert in alerts"
 		>
 			<!---only show a dismissable button if we are showing info or a warning --->
