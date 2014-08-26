@@ -35,36 +35,42 @@ $log
 	
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionID;
-	var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
-	collectionListingPromise.then(function(value){
-		$scope.collection = value;
-		$scope.collectionInitial = angular.copy($scope.collection);
-		$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
-		//check if we have any filter Groups
-		if(angular.isUndefined($scope.collectionConfig.filterGroups)){
-			$scope.collectionConfig.filterGroups = [
-				{
-					filterGroup:[
-						
-					]
-				}
-			];
-		}
-		
-		var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
-		filterPropertiesPromise.then(function(value){
-			$scope.filterPropertiesList = value;
-			collectionService.formatFilterPropertiesList($scope.filterPropertiesList);
-		}, function(reason){
+	
+	
+	$scope.getCollection = function(){
+		var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
+		collectionListingPromise.then(function(value){
+			$scope.collection = value;
+			$scope.collectionInitial = angular.copy($scope.collection);
+			$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
+			//check if we have any filter Groups
+			if(angular.isUndefined($scope.collectionConfig.filterGroups)){
+				$scope.collectionConfig.filterGroups = [
+					{
+						filterGroup:[
+							
+						]
+					}
+				];
+			}
 			
+			var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+			filterPropertiesPromise.then(function(value){
+				$scope.filterPropertiesList = value;
+				collectionService.formatFilterPropertiesList($scope.filterPropertiesList);
+			}, function(reason){
+				
+			});
+			
+		},function(reason){
+			//display error message if getter fails
+			var messages = reason.MESSAGES;
+			var alerts = alertService.formatMessagesToAlerts(messages);
+			alertService.addAlerts(alerts);
 		});
-		
-	},function(reason){
-		//display error message if getter fails
-		var messages = reason.MESSAGES;
-		var alerts = alertService.formatMessagesToAlerts(messages);
-		alertService.addAlerts(alerts);
-	});
+	};
+	
+	$scope.getCollection();
 	
 	$scope.setCollectionForm= function(form){
 	   $scope.collectionForm = form;
@@ -77,16 +83,6 @@ $log
 		var collection = $scope.collection;
 		$log.debug($scope.collectionConfig);
 		var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
-		/*var cache = [];
-		var collectionConfigString = JSON.stringify($scope.collectionConfig,function(key, val) {
-		   if (typeof val == "object") {
-		        if (cache.indexOf(val) >= 0)
-		            return;
-		        cache.push(val);
-		    }
-		    return val;
-		});
-		cache = null;*/
 		$log.debug(collectionConfigString);
 		collection.collectionConfig = collectionConfigString;
 		console.log(collection);
@@ -102,6 +98,7 @@ $log
 				var messages = value.MESSAGES;
 				var alerts = alertService.formatMessagesToAlerts(messages);
 				alertService.addAlerts(alerts);
+				$scope.getCollection();
 			}, function(reason){
 				//revert to original
 				$scope.collection = angular.copy($scope.collectionInitial);

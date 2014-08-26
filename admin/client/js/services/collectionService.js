@@ -30,7 +30,7 @@ function(){
 				filterItem.$$disabled = false;
 			}else{
 				for(i in filterItem.$$siblingItems){
-					filterItem.$$siblingItems[i].disabled = false;
+					filterItem.$$siblingItems[i].$$disabled = false;
 				}
 				filterItem.$$isClosed = true;
 			}	
