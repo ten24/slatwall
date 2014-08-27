@@ -31,7 +31,7 @@ partialsPath){
 		},
 		controller: function ($scope, $element, $attrs) {
 			//for(item in filterGroupItem){}
-			$scope.filterGroupItem.$$setItemInUse = $scope.setItemInUse;
+			$scope.filterGroupItem.setItemInUse = $scope.setItemInUse;
 			
 			$scope.filterGroupItem.$$disabled = false;
 			if(angular.isUndefined($scope.filterGroupItem.$$isClosed)){

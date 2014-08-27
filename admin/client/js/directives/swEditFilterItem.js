@@ -55,8 +55,7 @@ slatwallService){
 				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
 					//populate filterItem with selectedFilterProperty values
 					filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
-					var propertyAlias = filterItem.propertyIdentifier.split(".").pop();
-					filterItem.displayPropertyIdentifier = propertyAlias; 
+					filterItem.displayPropertyIdentifier = selectedFilterProperty.displayPropertyIdentifier; 
 					
 					switch(selectedFilterProperty.ormtype){
 						case 'boolean':

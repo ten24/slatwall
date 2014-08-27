@@ -5,12 +5,13 @@ angular.module('slatwalladmin')
 '$templateCache',
 'collectionService',
 'partialsPath',
-
+'$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath){
+partialsPath,
+$log){
 	return {
 		restrict: 'A',
 		scope:{
@@ -32,6 +33,11 @@ partialsPath){
 			$scope.itemInUse = false;
 			$scope.setItemInUse = function(booleanValue){
 				$scope.itemInUse = booleanValue;
+			};
+			
+			$scope.removeFilterItem = function(filterItemIndex){
+				$log.debug('removeFIlterITem');
+				$log.debug(filterItemIndex);
 			};
 		}
 	};

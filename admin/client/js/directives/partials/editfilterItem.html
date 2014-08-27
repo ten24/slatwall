@@ -15,7 +15,7 @@
 	          <div class="col-sm-12 s-no-paddings">
 	            <select ng-model="selectedFilterProperty" 
 	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
-	            		ng-options="filterProperty as filterProperty.name 
+	            		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
 	            					group by filterProperty.fieldtype 
 	            					for filterProperty in filterPropertiesList.data 
 	            					track by filterProperty.propertyIdentifier

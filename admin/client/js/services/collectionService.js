@@ -34,7 +34,7 @@ function(){
 				}
 				filterItem.$$isClosed = true;
 			}	
-			filterItem.$$setItemInUse({booleanValue:!filterItem.$$isClosed});
+			filterItem.setItemInUse({booleanValue:!filterItem.$$isClosed});
 		},
 		selectFilterGroupItem: function(filterGroupItem){
 			if(filterGroupItem.$$isClosed){
@@ -47,7 +47,7 @@ function(){
 				for(i in filterGroupItem.$$siblingItems){
 					filterGroupItem.$$siblingItems[i].$$disabled = false;
 				}
-				filterGroupItem.isClosed = true;
+				filterGroupItem.$$isClosed = true;
 			}
 			filterGroupItem.setItemInUse({booleanValue:!filterGroupItem.$$isClosed});
 		},
@@ -60,7 +60,7 @@ function(){
 					$$disabled:"false",
 					$$isClosed:"true",
 					$$siblingItems:filterItemGroup,
-					$$setItemInUse:setItemInUse				
+					setItemInUse:setItemInUse				
 				};
 			if(filterItemGroup.length !== 0){
 				filterItem.logicalOperator = "AND";
@@ -74,7 +74,7 @@ function(){
 				$$disabled:"false",
 				$$isClosed:"true",
 				$$siblingItems:filterItemGroup,
-				$$setItemInUse:setItemInUse	
+				setItemInUse:setItemInUse	
 			};
 			if(filterItemGroup.length !== 0){
 				filterGroupItem.logicalOperator = "AND";
