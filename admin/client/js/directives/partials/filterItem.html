@@ -4,8 +4,18 @@
   <!--- Filter display --->
   <div class="s-filter-item">
   	<div ng-if="filterItem.logicalOperator" class="btn-group-vertical btn-toggle">
-      <button class="btn btn-xs btn-default" ng-class="{active:filterItem.logicalOperator === 'AND'}">AND</button>
-      <button class="btn btn-xs btn-default" ng-class="{active:filterItem.logicalOperator === 'OR'}">OR</button>
+      <button class="btn btn-xs " 
+      			ng-click="logicalOperatorChanged('AND')" 
+      			ng-class="{'btn\-default':filterItem.logicalOperator !== 'AND'}"
+      			>
+      			AND
+      </button>
+      <button class="btn btn-xs " 
+      			ng-class="{'btn\-default':filterItem.logicalOperator !== 'OR'}"
+      			ng-click="logicalOperatorChanged('OR')"
+      			>
+      			OR
+      </button>
     </div>
     <div class="panel panel-default"  ng-class="{'s\-focus':!filterItem.$$isClosed}" >
       <div class="panel-heading">

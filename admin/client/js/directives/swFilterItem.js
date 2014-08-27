@@ -49,6 +49,13 @@ $log){
 				collectionService.selectFilterItem(filterItem);
 			};
 			
+			$scope.logicalOperatorChanged = function(logicalOperatorValue){
+				$log.debug('logicalOperatorChanged');
+				$log.debug(logicalOperatorValue);
+				$scope.filterItem.logicalOperator = logicalOperatorValue;
+				$scope.saveCollection();
+			};
+			
 			console.log($scope.removeFilterItem);
 			console.log($scope.filterItemIndex);
 			

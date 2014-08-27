@@ -40,7 +40,11 @@ slatwallService){
 			for(i in $scope.filterPropertiesList.data){
 				var filterProperty = $scope.filterPropertiesList.data[i];
 				if(filterProperty.propertyIdentifier === $scope.filterItem.propertyIdentifier){
+					//selectItem from drop down
 					$scope.selectedFilterProperty = filterProperty;
+					//decorate with value and comparison Operator so we can use it in the Condition section
+					$scope.selectedFilterProperty.value = $scope.filterItem.value;
+					$scope.selectedFilterProperty.comparisonOperator = $scope.filterItem.comparisonOperator;
 				}
 			}
 			

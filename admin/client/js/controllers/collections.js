@@ -98,6 +98,7 @@ $log
 				var messages = value.MESSAGES;
 				var alerts = alertService.formatMessagesToAlerts(messages);
 				alertService.addAlerts(alerts);
+				$scope.filterCount = 0;
 				$scope.getCollection();
 			}, function(reason){
 				//revert to original

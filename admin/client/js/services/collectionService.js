@@ -54,6 +54,7 @@ function(){
 		newFilterItem: function(filterItemGroup,setItemInUse){
 			
 			filterItem = {
+					displayPropertyIdentifier:"empty",
 					propertyIdentifier:"empty",
 					comparisonOperator:"=",
 					value:"",
