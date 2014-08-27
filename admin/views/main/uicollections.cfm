@@ -70,9 +70,10 @@
                             Male <a href="##"><i class="fa fa-pencil-square-o"></i></a>
                           </div>
                         </div>
-                        <div class="btn-group-vertical btn-toggle">
-                          <button class="btn btn-xs btn-default">AND</button>
-                          <button class="btn btn-xs btn-defualt active">OR</button>
+                        <div class="btn-group-vertical">
+                          <button class="btn btn-xs btn-default">OR</button>
+                          <button class="btn btn-xs btn-default active">AND</button>
+
                         </div>
                       </div>
                       <!--- //Filter display --->
@@ -125,7 +126,10 @@
 
                                 <!--- Filter Criteria Start --->
                                 <form action="index.html" method="post">
-                                  <div class="s-filter-group-item">
+                                  <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
+                                    <span style="right: 52px;z-index:1000;position: absolute;margin-top: -9px;">
+                                      <button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+                                    </span>
                                     <div class="form-group form-group-sm">
                                       <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
                                       <div class="col-sm-12 s-no-paddings">
@@ -147,13 +151,16 @@
                                       <div class="clearfix"></div>
                                     </div>
                                   </div>
-                                  <div style="border-bottom: 3px dotted #DDD;">
-                                    <div class="btn-group btn-toggle" style="background-color:#EAEAEA;float:none;">
+                                  <div style="border-bottom: 3px dotted #DDD;text-align:center;margin-bottom: 29px;margin-top: 10px;">
+                                    <div class="btn-group btn-toggle" style="background-color:#EAEAEA;float:none;margin-bottom:-18px;">
                                       <button class="btn btn-xs btn-default">AND</button>
                                       <button class="btn btn-xs btn-defualt active">OR</button>
                                     </div>
                                   </div>
-                                  <div class="s-filter-group-item">
+                                  <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
+                                    <span style="right: 52px;z-index:1000;position: absolute;margin-top: -9px;">
+                                      <button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+                                    </span>
                                     <div class="form-group form-group-sm">
                                       <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
                                       <div class="col-sm-12 s-no-paddings">
@@ -235,6 +242,140 @@
 
 
                                   </div>
+                                </form>
+                                <!--- //Filter Criteria End --->
+
+                                <br/><br/><br/>
+
+
+                                <h4>Criteria</h4>
+
+                                <!--- Filter Criteria Start --->
+                                <form action="index.html" method="post">
+                                  <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
+                                    <span style="right: 52px;z-index:1000;position: absolute;margin-top: -9px;">
+                                      <button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+                                    </span>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
+                                      <div class="col-sm-12 s-no-paddings">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
+                                      <div class="col-sm-12 s-no-paddings">
+                                        <select class="form-control input-sm">
+                                          <option value="-- Condition">-- Condition --</option>
+                                          <option value="Equals">Equals</option>
+                                          <option value="Does Not Equal">Does Not Equal</option>
+                                          <option selected="selected" value="Contains">Contains</option>
+                                          <option value="Does Not Contain">Does Not Contain</option>
+                                          <option value="Starts With">Starts With</option>
+                                          <option value="Ends With">Ends With</option>
+                                          <option value="Like">Like</option>
+                                          <option value="Not Lke">Not Lke</option>
+                                          <option value="In">In</option>
+                                          <option value="Not In">Not In</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
+                                      <div class="col-sm-12 s-no-paddings">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+                                  <div style="border-bottom: 3px dotted #DDD;text-align:center;margin-bottom: 29px;margin-top: 10px;">
+                                    <div class="btn-group btn-toggle" style="background-color:#EAEAEA;float:none;margin-bottom:-18px;">
+                                      <button class="btn btn-xs btn-default">AND</button>
+                                      <button class="btn btn-xs btn-defualt active">OR</button>
+                                    </div>
+                                  </div>
+                                  <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
+                                    <span style="right: 52px;z-index:1000;position: absolute;margin-top: -9px;">
+                                      <button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+                                    </span>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
+                                      <div class="col-sm-12 s-no-paddings">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
+                                      <div class="col-sm-12 s-no-paddings">
+                                        <select class="form-control input-sm">
+                                          <option value="-- Condition">-- Condition --</option>
+                                          <option selected="selected" value="Equals">Equals</option>
+                                          <option value="Does Not Equal">Does Not Equal</option>
+                                          <option value="Contains">Contains</option>
+                                          <option value="Does Not Contain">Does Not Contain</option>
+                                          <option value="Starts With">Starts With</option>
+                                          <option value="Ends With">Ends With</option>
+                                          <option value="Like">Like</option>
+                                          <option value="Not Lke">Not Lke</option>
+                                          <option value="In">In</option>
+                                          <option value="Not In">Not In</option>
+                                        </select>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
+                                      <div class="col-sm-12 s-no-paddings">
+                                        <input type="text" class="form-control" id="input" placeholder="12">
+                                      </div>
+                                      <div class="clearfix"></div>
+                                    </div>
+                                  </div>
+
+                                  <button class="btn btn-xs s-btn-ten24" style="margin-bottom:10px; margin-top:10px;" data-toggle="collapse" data-target="#j-add-row-2">Add Display Field</button>
+                                  <div class="collapse" id="j-add-row-2">
+                                    <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
+                                        <div class="col-sm-12 s-no-paddings">
+                                          <input type="text" class="form-control" id="input" placeholder="12">
+                                        </div>
+                                        <div class="clearfix"></div>
+                                      </div>
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
+                                        <div class="col-sm-12 s-no-paddings">
+                                          <select class="form-control input-sm">
+                                            <option value="-- Condition">-- Condition --</option>
+                                            <option value="Equals">Equals</option>
+                                            <option value="Does Not Equal">Does Not Equal</option>
+                                            <option selected="selected" value="Contains">Contains</option>
+                                            <option value="Does Not Contain">Does Not Contain</option>
+                                            <option value="Starts With">Starts With</option>
+                                            <option value="Ends With">Ends With</option>
+                                            <option value="Like">Like</option>
+                                            <option value="Not Lke">Not Lke</option>
+                                            <option value="In">In</option>
+                                            <option value="Not In">Not In</option>
+                                          </select>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                      </div>
+                                      <div class="form-group form-group-sm">
+                                        <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
+                                        <div class="col-sm-12 s-no-paddings">
+                                          <input type="text" class="form-control" id="input" placeholder="12">
+                                        </div>
+                                        <div class="clearfix"></div>
+                                      </div>
+                                      <button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
+                                      <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+                                    </div>
+                                  </div>
+
                                 </form>
                                 <!--- //Filter Criteria End --->
 
@@ -1240,6 +1381,9 @@
   .s-btn-lgrey:hover,.s-btn-lgrey:focus,.s-btn-lgrey:active,.s-btn-lgrey.active {background-color: #bfbfbf;border-color: #b3b3b3;color:#888888;}
   .s-btn-lgrey.disabled:hover,.s-btn-lgrey.disabled:focus,.s-btn-lgrey.disabled:active,.s-btn-lgrey.disabled.active,.s-btn-lgrey[disabled]:hover,.s-btn-lgrey[disabled]:focus,.s-btn-lgrey[disabled]:active,.s-btn-lgrey[disabled].active,fieldset[disabled] .s-btn-lgrey:hover,fieldset[disabled] .s-btn-lgrey:focus,fieldset[disabled] .s-btn-lgrey:active,fieldset[disabled] .s-btn-lgrey.active {background-color: #cccccc;border-color: #cccccc;color:#888888;}
 
+  .btn-group-vertical .btn-default.active {-webkit-box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);-moz-box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);border-color:#db771f;}
+  .btn-group-vertical .btn-default:hover {background-color: #F58620;color: #FFF;border-color: #DB771F;}
+
   .s-display-options .s-none-selected {width:100%;text-align:center;font-weight:bold;}
   .s-header-bar h1{font-size:16px;margin-bottom:0;margin-top:9px;font-weight:600;}
   .s-header-bar .s-header-nav{text-align:right;}
@@ -1500,32 +1644,6 @@
 
 <script charset="utf-8">
   $("select").selectBoxIt();
-</script>
-
-<script charset="utf-8">
-  $('.btn-toggle').click(function() {
-    $(this).find('.btn').toggleClass('active');
-
-    if ($(this).find('.btn-primary').size()>0) {
-    	$(this).find('.btn').toggleClass('btn-primary');
-    }
-    if ($(this).find('.btn-danger').size()>0) {
-    	$(this).find('.btn').toggleClass('btn-danger');
-    }
-    if ($(this).find('.btn-success').size()>0) {
-    	$(this).find('.btn').toggleClass('btn-success');
-    }
-    if ($(this).find('.btn-info').size()>0) {
-    	$(this).find('.btn').toggleClass('btn-info');
-    }
-
-    $(this).find('.btn').toggleClass('btn-default');
-
-});
-
-$('form').submit(function(){
-    return false;
-});
 </script>
 
 <script charset="utf-8">

@@ -1,225 +1,329 @@
-<div class="row" ng-controller="collections" style="margin-top:12px;">
-  
-  <div class="col-xs-12">
-    <!--- Header nav with title start --->
-   <!--- <span ng-controller="collectionsTabController">--->
-	<!---<span 	sw-header-with-tabs
-			header-title="collection.collectionName"
-			tab-array="[{tabTitle:'PROPERTIES',isActive:true,id:'properties'},
-						{tabTitle:'FILTERS ('+filterCount+')',isActive:false,id:'filters'},
-						{tabTitle:'DISPLAY OPTIONS',isActive:false,id:'display-options',directive:'sw-tab-display-options'}
-			]"
-	>
-	</span>--->
-	
-    <!---</span>--->
-    <div class="row s-header-bar">
-      <div class="col-md-7"><h1 ng-bind="collection.collectionName"></h1></div>
-      <div class="col-md-5 s-header-nav">
-        <ul class="nav nav-tabs" role="tablist">
-          <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
-          <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount"></span>)</span></a></li>
-          <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
-        </ul>
+
+  <div class="row s-body-nav">
+    <nav class="navbar navbar-default" role="navigation" style="background-color: #FFF;margin-bottom: 0px;margin-top: -30px;border-radius: 0px;border-top: 0px;border:none;">
+      <div class="col-md-4">
+        <h1 style="padding: 0px;margin: 0px;font-size: 16px;font-weight: 600;vertical-align: middle;margin-top: 18px;">Create Bundle</h1>
       </div>
-    </div>
-    <!--- //Header nav with title end --->
-
-    <!--- Tab panes for menu options start--->
-    
-    <div class="row s-options">
-      <div class="tab-content" id="j-property-box">
-
-        <div class="tab-pane active" id="j-properties">
-          <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection()" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
-          <form class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
-            <input style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
-            <div class="form-group">
-              <label class="col-sm-2 control-label">Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
-              <div class="col-sm-10">
-                <input style="display:none" ng-model="collection.collectionName" name="collectionName" type="text" class="form-control" id="inputPassword" value="" required>
-                <p class="form-control-static" ng-bind="collection.collectionName"><!---collection Name ---></p>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
-              <div class="col-sm-10">
-                <input ng-model="collection.collectionCode" style="display:none" name="collectionCode" type="text" class="form-control" id="inputPassword" value="" required>
-                <p class="form-control-static" ng-bind="collection.collectionCode"><!---collection Code ---></p>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputPassword" class="col-sm-2 control-label">Description: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection description"> <i class="fa fa-question-circle"></i></span></label>
-              <div class="col-sm-10">
-                <input style="display:none" ng-model="collection.description" name="description" type="text" class="form-control" id="inputPassword" value="" >
-                <p ng-bind="collection.description" class="form-control-static"><!---collection description ---></p>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputPassword" class="col-sm-2 control-label">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
-              <div class="col-sm-10">
-                <input disabled="disabled" style="display:none" ng-model="collectionConfig.baseEntityAlias" type="text" class="form-control" value="" >
-                <p ng-bind="collectionConfig.baseEntityAlias" class="form-control-static"><!---collection base entity alias ---></p>
-              </div>
-            </div>
-          </form>
-
-        </div>
-        <div class="tab-pane" id="j-filters">
-          <div class="s-setting-options">
-            <div class="row s-setting-options-body">
-
-              <!--- Start Filter Group --->
-              <div class="col-xs-12 s-filters-selected">
-                <div class="row">
-                	<!---filterGroups gets taken apart here --->
-                	<ul class="col-xs-12 list-unstyled" 
-                		sw-filter-groups 
-                		increment-filter-count="incrementFilterCount()" 
-                		filter-group-item="collectionConfig.filterGroups[0].filterGroup"
-                		filter-properties-list="filterPropertiesList"
-                		save-collection="saveCollection()"
-                		>
-                	</ul>
-                </div>
-                <!--- //New Filter Panel --->
-              </div>
-              <!--- //End Filter Group --->
-            </div>
+      <div class="col-md-8">
+        <div class="btn-toolbar" style="margin-top: 10px;">
+          <div class="btn-group btn-group-sm">
+            <button type="button" class="btn s-btn-grey"><i class="fa fa-reply"></i> Products</button>
           </div>
-        </div><!--- //Tab Pane --->
-		<span sw-tab-display-options></span>
-      </div>
-
-    </div><!--- //Row --->
-    <!--- //Tab panes for menu options end--->
-    <div class="s-table-options">
-      <form class="navbar-form navbar-left form-horizontal" role="search">
-        <div class="form-group">
-          <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
-          <select size="1" name="" aria-controls="" class="form-control">
-            <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
-            <option value="20">Last Changed</option>
-            <option value="20">Delete</option>
-            <option value="20">Examples</option>
-            <option value="20">Examples</option>
-            <option value="-1">Examples</option>
-          </select>
-        </div>
-      </form>
-      <form class="navbar-form navbar-left s-table-header-search">
-        <div class="input-group">
-          <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
-          <div class="input-group-btn">
-            <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
+          <div class="btn-group btn-group-sm">
+            <button type="button" class="btn s-btn-grey s-remove">Delete</button>
+            <button type="button" class="btn s-btn-grey">Cancel</button>
+            <button type="button" class="btn btn-success">Save</button>
           </div>
         </div>
-      </form>
-      <div class="s-table-header-right">
-        <form class="navbar-form form-horizontal navbar-left">
-          <div class="form-group">
-            <label for="inputPassword" class="control-label">View</label>
-            <select size="1" name="" aria-controls="" class="form-control">
-              <option value="5" selected="selected">5</option>
-              <option value="15">10</option>
-              <option value="20">25</option>
-              <option value="20">50</option>
-              <option value="20">100</option>
-              <option value="20">250</option>
-              <option value="-1">Auto</option>
-            </select>
-          </div>
-        </form>
-        <ul class="pagination pagination-sm navbar-left">
-          <li><a href="#">&laquo;</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">&raquo;</a></li>
-        </ul>
-        <div class="btn-group" class="navbar-left">
-          <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
-        </div>
       </div>
-    </div>
-    <!---tab view end --->
-   <!--- <div class="row s-table-content-nav">
-      <div class="col-xs-12 s-align-left">
-
-        <form class="navbar-form s-search-bar s-no-horiz-paddings" role="search">
-          <div class="input-group">
-            <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
-            <div class="input-group-btn">
-              <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
-            </div>
-          </div>
-        </form>
-        <ul class="list-inline list-unstyled s-pagination-content">
-          <li>
-
-            <form class="form-horizontal" role="form">
-              <div class="form-group">
-                <label for="inputPassword" class="col-xs-8 control-label">View</label>
-                <div class="col-xs-4 styleSelect">
-                  <select 	ng-model="pageShowOptions.selected" 
-                  			ng-change="pageShowOptionChanged(pageShowOptions.selected)"
-                  			ng-options="pageShowOption.display for pageShowOption in pageShowOptions track by pageShowOption.value" 
-                  			size="1" name="" aria-controls="" class="form-control" >
-                  </select>
-                </div>
-              </div>
-            </form>
-
-          </li>
-          <li class="s-table-pagination">
-            <ul class="pagination pagination-sm s-align-right">
-              <li><a href="#">&laquo;</a></li>
-              <li class="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li class="disabled"><a href="#">&raquo;</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>--->
-	<!---TODO: make this list view section a directive that we pass a collection into --->
-    <!---list view begin --->
-    <div class="table-responsive">
-	    <table class="table table-bordered table-striped">
-	        <thead>
-	            <tr>
-	                <th>Row</span></th>
-	                <th ng-repeat="(key,value) in collection.pageRecords[0]" class="s-sortable" ng-bind="key"></th>
-	                <th></th>
-	            </tr>
-	        </thead>
-	        <tbody>
-				<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
-		            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
-		            <td ng-repeat="(key,value) in pageRecord" ng-bind="value"></td>
-		           <td class="s-edit-elements">
-		              <ul>
-		                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-		                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
-		              </ul>
-		            </td>
-	          	</tr>
-	        </tbody>
-	    </table>
-	 </div>
-	<!---list view end --->
-    <div class="row">
-      <div class="col-md-12">
-        <div class="dataTables_info" id="example3_info">Showing <b><span ng-bind="collection.pageRecordsStart"><!--- record start ---></span> to <span ng-bind="collection.pageRecordsEnd"><!---records end ---><span></b> of <span ng-bind="collection.recordsCount"><!--- records Count ---></span> entries</div>
-      </div>
-    </div>
+    </nav>
   </div>
-</div>
+
+  <div class="row s-bundle-header" style="padding-top:15px;background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;padding: 20px 15px;margin-bottom:20px;">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Bundle Name:</label>
+        <input type="text" class="form-control" id="" placeholder="">
+      </div>
+
+      <div class="form-group">
+        <label for="exampleInputEmail1">Bundle Code:</label>
+        <input type="text" class="form-control" id="" placeholder="">
+      </div>
+
+      <div class="form-group">
+        <label for="exampleInputEmail1">Bundle Base Price:</label>
+        <input type="text" class="form-control" id="" placeholder="">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Type:</label>
+        <select class="form-control">
+          <option value="one">One</option>
+          <option value="two">Two</option>
+          <option value="three">Three</option>
+          <option value="four">Four</option>
+          <option value="five">Five</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="exampleInputEmail1">Brand:</label>
+        <select class="form-control">
+          <option value="one">One</option>
+          <option value="two">Two</option>
+          <option value="three">Three</option>
+          <option value="four">Four</option>
+          <option value="five">Five</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+
+<style media="screen">
+  .s-bundle-header label {width:100%;}
+  .s-bundle-header .selectboxit-container {width:100% !important;}
+  .s-bundle-header .selectboxit-container .selectboxit-btn {width:100% !important;}
+  .s-bundle-header .selectboxit-container .selectboxit-options {width:100% !important;}
+</style>
+
+  <ul class="list-unstyled">
+    <li class="" style="background-color: #FFF;border: 1px solid #DDD;">
+      <div class="row">
+        <div class="col-xs-5">
+          <a data-toggle="collapse" data-target="#demo"><i class="fa fa-pencil" style="background-color: #606060;color: #FFF;padding: 13px;"></i></a>
+          <span style="margin-left:10px;color:">T-Shirts: Closeout Selections</span>
+          <span class="" style="display:none;"><input type="text" class="form-control" value="T-Shirts: Closeout Selections"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+        </div>
+        <div class="col-xs-7" style="text-align:right;">
+          <ul class="list-unstyled" style="display: inline-block;width: 38px;background-color: #CCC;text-align: center;margin-right:-2px;">
+            <li style="background: #DDD;font-size: 10px;">Min</li>
+            <li style="padding: 3px;font-weight: 600;">1</li>
+          </ul>
+          <ul class="list-unstyled"  style="display: inline-block;width: 38px;background-color: #CCC;text-align: center;margin-right:36px;">
+            <li style="background: #DDD;font-size: 10px;">Max</li>
+            <li style="padding: 3px;font-weight: 600;">1</li>
+          </ul>
+          <div class="btn-group">
+            <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove" style="background-color: #DA5757;color: #FFF !important;height: 40px;border-radius: 0px;border: 0px !important;margin: 0px !important;position: absolute;right: -1px;top: -1px;height: 42px;"><i class="fa fa-times" style="padding-top:7px;"></i></a>
+          </div>
+
+        </div>
+      </div>
+      <div id="demo" class="collapse" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;">
+        <div style="padding:15px;">
+
+          <div class="form-group">
+            <label for="">Group Name:</label>
+            <input type="text" class="form-control" value="T-Shirts: Closeout Selections">
+          </div>
+
+          <div class="form-group">
+            <label for="">Group Code:</label>
+            <input type="text" class="form-control" value="6573984">
+          </div>
+
+          <div class="row form-group">
+            <div class="col-md-2">
+              <label for="">Minimum Quantity:</label>
+              <input type="number" class="form-control" value="1">
+            </div>
+
+            <div class="col-md-2">
+              <label for="">Maximum Quantity:</label>
+              <input type="number" class="form-control" value="1">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" style="width:100%;height:20px;">Active: </label>
+            <div class="radio" style="float:left;margin-right:10px;">
+              <input type="radio" name="radio1" id="radio1" checked="checked" value="option2">
+              <label for="radio1">
+                  Yes
+              </label>
+            </div>
+            <div class="radio" style="margin-top:10px;float:left;">
+              <input type="radio" name="radio1" id="radio2" value="option2">
+              <label for="radio2">
+                  No
+              </label>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
+          <div class="row" style="margin-bottom:20px;">
+            <div class="col-xs-12">
+
+
+              <!-- Selected filters -->
+              <div style="border-top:3px dotted #DDD;padding-top:15px;">
+                <ul class="list-unstyled" style="height: 35px;border: 1px solid #DDD;">
+                  <li style="background: #FFF;margin-bottom:3px;">
+                    <ul class="list-unstyled list-inline">
+                      <li class="col-xs-3 j-tool-tip-item" style="font-weight:700;font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">Howling Wolf T-Shirt</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">WOLF-01</li>
+                      <li class="col-xs-2 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">Size XL (TShirtHowl-XL)</li>
+                      <li class="col-xs-4 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">A classic howling Wolf t-shirt design...</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="font-size: 12px;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">$9.99</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;"><a class="btn s-btn-ten24" style="border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 8px;background-color: #DA5757;color: #FFF !important;"><i class="fa fa-times"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </li>
+                </ul>
+              </div>
+              <!-- Selected filters -->
+
+              <div class="input-group" style="padding-top:20px;">
+                <div class="input-group-btn search-panel">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="border-bottom-left-radius: 0px;background-color: #EEE;">
+                  	<span id="search_concept">Filter by</span> <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu" style="border-radius: 0px;margin-top: -1px;">
+                    <li><a href="#contains">Collections</a></li>
+                    <li><a href="#its_equal">Brand</a></li>
+                    <li><a href="#greather_than">Product Type</a></li>
+                    <li><a href="#less_than">Products</a></li>
+                    <li><a href="#all">Skus</a></li>
+                  </ul>
+                </div>
+                <input id="j-temp-class-search" type="text" class="form-control" style="height: 34px;outline: none;-webkit-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);-moz-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);" name="x" placeholder="Search term...">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" style="border-bottom-right-radius: 0px;background-color: #EEE;"><span class="glyphicon glyphicon-search"></span></button>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="col-md-12" style="padding: 15px;background: #eee;border: 1px solid #CCC;border-top:0px;">
+                <h4 style="width:100%;text-align:center;display:none;" id="j-temp-class">There are no items selected</h4>
+<script charset="utf-8">
+$('#j-temp-class-search').change(function(){
+  if($('#j-temp-class-search').val()){
+    alert('has');
+  }else{
+    alert('none');
+  };
+});
+
+</script>
+                <ul class="list-unstyled" style="height: 35px;border: 1px solid #DDD;">
+                  <li style="background: #FFF;margin-bottom:3px;">
+                    <ul class="list-unstyled list-inline">
+                      <li class="col-xs-3 j-tool-tip-item" style="font-weight:700;font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">Howling Wolf T-Shirt</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">WOLF-01</li>
+                      <li class="col-xs-2 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">Size XL (TShirtHowl-XL)</li>
+                      <li class="col-xs-4 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">A classic howling Wolf t-shirt design...</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="font-size: 12px;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">$9.99</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;"><a class="btn s-btn-ten24" style="border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 8px;"><i class="fa fa-plus"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </li>
+
+                  <li style="background: #FFF;margin-bottom:3px;">
+                    <ul class="list-unstyled list-inline">
+                      <li class="col-xs-3 j-tool-tip-item" style="font-weight:700;font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">Howling Wolf T-Shirt</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">WOLF-01</li>
+                      <li class="col-xs-2 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">Size XL (TShirtHowl-XL)</li>
+                      <li class="col-xs-4 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">A classic howling Wolf t-shirt design...</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="font-size: 12px;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">$9.99</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;"><a class="btn s-btn-ten24" style="border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 8px;"><i class="fa fa-plus"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </li>
+
+                  <li style="background: #FFF;margin-bottom:3px;">
+                    <ul class="list-unstyled list-inline">
+                      <li class="col-xs-3 j-tool-tip-item" style="font-weight:700;font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">Howling Wolf T-Shirt</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">WOLF-01</li>
+                      <li class="col-xs-2 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">Size XL (TShirtHowl-XL)</li>
+                      <li class="col-xs-4 j-tool-tip-item" style="font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">A classic howling Wolf t-shirt design...</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="font-size: 12px;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;">$9.99</li>
+                      <li class="col-xs-1 j-tool-tip-item" style="display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;"><a class="btn s-btn-ten24" style="border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 8px;"><i class="fa fa-plus"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+
+
+          <button class="btn btn-xs s-btn-ten24" style="display:block;"><i class="fa fa-plus"></i> Save</button>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+
+  <script charset="utf-8">
+    $(document).ready(function(e){
+      $('.search-panel .dropdown-menu').find('a').click(function(e) {
+        e.preventDefault();
+        var param = $(this).attr("href").replace("#","");
+        var concept = $(this).text();
+        $('.search-panel span#search_concept').text(concept);
+        $('.input-group #search_param').val(param);
+      });
+    });
+  </script>
+
+  <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-edit-filter-1" style="margin-bottom:15px;"><i class="fa fa-plus"></i> Bundle Group</button>
+  <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-edit-filter-1" style="margin-bottom:15px;"><i class="fa fa-plus"></i> Copy from Existing Bundle Groups</button>
+  <!--- Edit Filter Box --->
+  <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1" style="background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;">
+    <div class="row">
+      <h4> Define Bundle Group<i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1" style="float: right;color: #DDD;font-soze:18px;cursor: pointer;padding-top: 2px;"></i></h4>
+      <div class="col-xs-12" style="padding:15px;">
+
+          <div class="form-group">
+            <label for="">Group Name:</label>
+            <input type="text" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="">Group Code:</label>
+            <input type="text" class="form-control">
+          </div>
+
+          <div class="row form-group">
+            <div class="col-md-2">
+              <label for="">Minimum Quantity:</label>
+              <input type="number" class="form-control" value="1">
+            </div>
+
+            <div class="col-md-2">
+              <label for="">Maximum Quantity:</label>
+              <input type="number" class="form-control" value="1">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" style="width:100%;height:20px;">Active: </label>
+            <div class="radio" style="float:left;margin-right:10px;">
+              <input type="radio" name="radio-test" id="radio6" checked="checked" value="yes">
+              <label for="radio6">
+                  Yes
+              </label>
+            </div>
+            <div class="radio" style="margin-top:10px;float:left;">
+              <input type="radio" name="radio-test" id="radio7" value="no">
+              <label for="radio7">
+                  No
+              </label>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
+
+
+
+
+
+
+          <button class="btn btn-xs s-btn-ten24" style="display:block;"><i class="fa fa-plus"></i> Save & Add</button>
+
+
+      </div>
+    </div>
+
+  </div>
+  <!--- //Edit Filter Box --->
+
+
+
+  <style media="screen">
+    body {/*background-color:#eee;*/}
+    .s-remove:hover {background-color:#DA5757 !important;>color:#ffffff !important;border:1px solid #DA5757 !important;}
+  </style>
+  <style media="screen">
+    .s-pannel-group .panel-default .panel-heading {background-color:#606060;color:#fff; border-color:#888;}
+    .s-pannel-group .panel-default a {text-decoration:none;}
+  </style>
+
 
 <style>
 
@@ -234,6 +338,7 @@
   button::-moz-focus-inner {border: 0;}
   input::-moz-focus-inner { border: 0; }
   a, a:active, a:focus {outline: none;}
+  label {font-weight:normal;}
 
   /*Bootstrap overwrite*/
   .navbar-inverse .navbar-nav>li>a {color:#b0b0b0;}
@@ -242,6 +347,7 @@
   .pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {color: #CCC;}
   .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {background-color:#f58620;color:#ffffff;border-color:#f58620;}
   .btn:focus {outline: none;}
+  .s-filter-content {padding-right:0px;padding-left:0px;}
   .panel, .panel-group .panel {border-radius:0px;}
   .panel-default>.panel-heading {background-color:#606060;color:#ffffff;}
   .panel-group .panel-heading+.panel-collapse>.panel-body {border-top: none;}
@@ -298,7 +404,7 @@
   .s-setting-options li {display:inline;}
   .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;}
   .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:#ccc;}
-  .s-filters-selected .s-filter-item .btn-group-vertical{float:left;margin-top:20px;margin-right:21px;}
+  .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;margin-right:21px;}
   .s-filters-selected .s-filter-item .btn-group-vertical .btn {font-size:10px;}
   .s-filters-selected .s-filter-item .btn-group-vertical .btn.active {box-shadow:none;}
   .s-filters-selected .s-and-or-box .btn-group{background-color:#eee;position:relative;top:-4px;}
@@ -346,6 +452,29 @@
   .s-checkbox input[type=checkbox]:checked + label:after{font-family:'Glyphicons Halflings';content:"\e013";}
   .s-checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
   .s-checkbox input[type=checkbox]:disabled + label:before{background-color:#eeeeee;cursor:not-allowed;}
+
+  .radio label{display:inline-block;position:relative;padding-left:5px}
+  .radio label:before{content:"";display:inline-block;position:absolute;width:17px;height:17px;left:0;margin-left:-20px;border:1px solid #ccc;border-radius:50%;background-color:#fff;-webkit-transition:border .15s ease-in-out;-o-transition:border .15s ease-in-out;transition:border .15s ease-in-out}
+  .radio label:after{display:inline-block;position:absolute;content:" ";width:11px;height:11px;left:3px;top:3px;margin-left:-20px;border-radius:50%;background-color:#555;-webkit-transform:scale(0,0);-ms-transform:scale(0,0);-o-transform:scale(0,0);transform:scale(0,0);-webkit-transition:-webkit-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-moz-transition:-moz-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-o-transition:-o-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);transition:transform .1s cubic-bezier(0.8,-0.33,0.2,1.33)}
+  .radio input[type=radio]{display:none}
+  .radio input[type=radio]:checked + label:after{-webkit-transform:scale(1,1);-ms-transform:scale(1,1);-o-transform:scale(1,1);transform:scale(1,1)}
+  .radio input[type=radio]:disabled + label{opacity:.65}
+  .radio input[type=radio]:disabled + label:before{cursor:not-allowed}
+  .radio-primary input[type=radio] + label:after{background-color:#428bca}
+  .radio-primary input[type=radio]:checked + label:before{border-color:#428bca}
+  .radio-primary input[type=radio]:checked + label:after{background-color:#428bca}
+  .radio-danger input[type=radio] + label:after{background-color:#d9534f}
+  .radio-danger input[type=radio]:checked + label:before{border-color:#d9534f}
+  .radio-danger input[type=radio]:checked + label:after{background-color:#d9534f}
+  .radio-info input[type=radio] + label:after{background-color:#5bc0de}
+  .radio-info input[type=radio]:checked + label:before{border-color:#5bc0de}
+  .radio-info input[type=radio]:checked + label:after{background-color:#5bc0de}
+  .radio-warning input[type=radio] + label:after{background-color:#f0ad4e}
+  .radio-warning input[type=radio]:checked + label:before{border-color:#f0ad4e}
+  .radio-warning input[type=radio]:checked + label:after{background-color:#f0ad4e}
+  .radio-success input[type=radio] + label:after{background-color:#5cb85c}
+  .radio-success input[type=radio]:checked + label:before{border-color:#5cb85c}
+  .radio-success input[type=radio]:checked + label:after{background-color:#5cb85c}
 
   table tr th.s-sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
   table tr th .glyphicon {vertical-align:text-top;}
@@ -447,7 +576,7 @@
   .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
   .s-j-draggablePanelList .s-sort.active {background-color:#ffffff !important;color:#767676 !important;box-shadow:none;}
   .s-j-draggablePanelList .s-sort:hover {background-color:#eeeeee !important;color:#767676 !important;box-shadow:none;}
-  .s-j-draggablePanelList .list-group-item {margin-bottom:2px;}
+  .s-j-draggablePanelList .list-group-item {margin-bottom:2px;display:inline-block;width:100%;}
   .s-j-draggablePanelList .s-pannel-name {cursor: move;height:40px;}
   .s-j-draggablePanelList .s-pannel-name input {width: 164px;display:inline-block;margin-top:5px;margin-right:5px;}
   .s-j-draggablePanelList .s-pannel-name .s-pannel-title {cursor: pointer;color:#666666;background:none;}
@@ -461,19 +590,38 @@
   .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
   .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
 
+  .s-define-filter-group .selectboxit-container {height:32px;margin-right:5px;margin-left:5px;}
+  .s-define-filter-group .selectboxit-container .selectboxit {height: 100%;border-top: 0px;border-bottom: 0px;border-radius: 0px;background-color: #F3F3F3;padding-top:2px;}
+  .s-define-filter-group .selectboxit-btn.selectboxit-enabled:hover {background-color: #eeeeee;}
+  .s-define-filter-group .selectboxit-btn.selectboxit-enabled:focus {background-color: #F3F3F2;}
+  .s-define-filter-group .form-control:focus {box-shadow:none;}
+  .s-define-filter-group .s-define-filter-item {width:100%;padding:0px;display:inline-block;background-color:#fff;border: 1px solid #DDD;font-size: 12px;}
+  .s-define-filter-group .s-define-filter-number {width: 32px;text-align: center;height: 32px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);display: inline-block;padding-top: 8px;font-size: 12px;color: #DDD;}
+  .s-define-filter-group .s-define-filter-title {margin-left:20px;}
+  .s-define-filter-group .s-define-filter-title-edit {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;z-index: 3000;background-color: #EEE;padding: 2px 10px 2px 10px;display:none;}
+  .s-define-filter-group .s-define-filter-title-edit input {margin-right: 10px;}
+  .s-define-filter-group .s-define-filter-title-edit button {margin-bottom: 2px;height: 25px;}
+  .s-define-filter-group .s-define-filter-title a {color:#666;}
+  .s-define-filter-group .s-define-filter-title a:hover {text-decoration:none;color:#666;}
+  .s-define-filter-group .s-define-filter-compare > span {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;z-index: 3000;background-color: #EEE;padding: 2px 10px 2px 10px;display:none;}
+  .s-define-filter-group .s-define-filter-compare > span > input {margin-right: 10px;}
+  .s-define-filter-group .s-define-filter-compare button {margin-bottom: 2px;height: 25px;}
+  .s-define-filter-group .s-define-filter-compare a {color:#666;}
+  .s-define-filter-group .s-define-filter-compare a:hover {text-decoration:none;color:#666;}
+  .s-define-filter-group .s-define-filter-remove {float:right;}
+  .s-define-filter-group .s-define-filter-remove a {border: none;border-radius: 0px;background-color: #DA5757;color: #FFF !important;}
+
 
 </style>
 
 <script charset="utf-8">
   //activate tooltips
-  $(function(){
     $('.j-tool-tip-item').tooltip();
-  });
 </script>
 
 <script charset="utf-8">
   //This was created for example only to toggle the edit save icons
-  $(function(){
+
     $('#j-edit-btn').click(function(){
       $(this).toggle();
       $(this).siblings('#j-save-btn').toggle();
@@ -486,12 +634,8 @@
       $('.s-properties p').toggle();
       $('.s-properties input').toggle();
     });
-  });
+
 </script>
-
-
-
-
 
 <script charset="utf-8">
   $('.s-filter-item .panel-body').click(function(){
@@ -509,9 +653,27 @@
 </script>
 
 <script charset="utf-8">
+  $('.btn-toggle').click(function() {
+    $(this).find('.btn').toggleClass('active');
+
+    if ($(this).find('.btn-primary').size()>0) {
+      $(this).find('.btn').toggleClass('btn-primary');
+    }
+    if ($(this).find('.btn-danger').size()>0) {
+      $(this).find('.btn').toggleClass('btn-danger');
+    }
+    if ($(this).find('.btn-success').size()>0) {
+      $(this).find('.btn').toggleClass('btn-success');
+    }
+    if ($(this).find('.btn-info').size()>0) {
+      $(this).find('.btn').toggleClass('btn-info');
+    }
+
+    $(this).find('.btn').toggleClass('btn-default');
+
+});
 
 $('form').submit(function(){
-	alert($(this["options"]).val());
     return false;
 });
 </script>
@@ -568,27 +730,5 @@ $('form').submit(function(){
   });
 </script>
 
-
-<!--- Add new default font --->
+<!-- Add new default font -->
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
-
-
-<!---If you uncomment this content you will be able to drag table columns to sort them
-<style media="screen">
-  .dragtable-sortable { list-style-type: none; margin: 0; padding: 0; -moz-user-select: none;}
-  .dragtable-sortable li {float: left; background: white;}
-  .dragtable-sortable th, .dragtable-sortable td{border-left: 0px;}
-  .dragtable-sortable li:first-child th, .dragtable-sortable li:first-child td {border-left: 1px solid #CCC;}
-  .ui-sortable-helper {opacity: 0.7;filter: alpha(opacity=70);}
-  .ui-sortable-placeholder {-moz-box-shadow: 4px 5px 4px #C6C6C6 inset;-webkit-box-shadow: 4px 5px 4px #C6C6C6 inset;box-shadow: 4px 5px 4px #C6C6C6 inset;border-bottom: 1px solid #CCCCCC;border-top: 1px solid #CCCCCC;visibility: visible !important;background: #EFEFEF !important;visibility: visible !important;}
-  .ui-sortable-placeholder * {opacity: 0.0; visibility: hidden;}
-</style>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-<script charset="utf-8">
-  (function(e){function r(){var t=e('<style id="__dragtable_disable_text_selection__" type="text/css">body { -ms-user-select:none;-moz-user-select:-moz-none;-khtml-user-select:none;-webkit-user-select:none;user-select:none; }</style>');e(document.head).append(t);e(document.body).attr("onselectstart","return false;").attr("unselectable","on");if(window.getSelection){window.getSelection().removeAllRanges()}else{document.selection.empty()}}function i(){e("#__dragtable_disable_text_selection__").remove();if(t){e(document.body).attr("onselectstart",t)}else{e(document.body).removeAttr("onselectstart")}if(n){e(document.body).attr("unselectable",n)}else{e(document.body).removeAttr("unselectable")}}function s(e,t){var n=e.parentNode;var r=e.nextSibling===t?e:e.nextSibling;t.parentNode.insertBefore(e,t);n.insertBefore(t,r)}e.widget("akottr.dragtable",{options:{revert:false,dragHandle:".table-handle",maxMovingRows:40,excludeFooter:false,onlyHeaderThreshold:100,dragaccept:null,persistState:null,restoreState:null,exact:true,clickDelay:10,containment:null,cursor:"move",cursorAt:false,distance:0,tolerance:"pointer",axis:"x",beforeStart:e.noop,beforeMoving:e.noop,beforeReorganize:e.noop,beforeStop:e.noop},originalTable:{el:null,selectedHandle:null,sortOrder:null,startIndex:0,endIndex:0},sortableTable:{el:e(),selectedHandle:e(),movingRow:e()},persistState:function(){var t=this;this.originalTable.el.find("th").each(function(e){if(this.id!==""){t.originalTable.sortOrder[this.id]=e}});e.ajax({url:this.options.persistState,data:this.originalTable.sortOrder})},_restoreState:function(t){for(var n in t){this.originalTable.startIndex=e("#"+n).closest("th").prevAll().size()+1;this.originalTable.endIndex=parseInt(t[n]+1,10);this._bubbleCols()}},_bubbleCols:function(){var e,t,n,r;var i=this.originalTable.startIndex;var o=this.originalTable.endIndex;var u=this.originalTable.el.children();if(this.options.excludeFooter){u=u.not("tfoot")}if(i<o){for(e=i;e<o;e++){n=u.find("> tr > td:nth-child("+e+")").add(u.find("> tr > th:nth-child("+e+")"));r=u.find("> tr > td:nth-child("+(e+1)+")").add(u.find("> tr > th:nth-child("+(e+1)+")"));for(t=0;t<n.length;t++){s(n[t],r[t])}}}else{for(e=i;e>o;e--){n=u.find("> tr > td:nth-child("+e+")").add(u.find("> tr > th:nth-child("+e+")"));r=u.find("> tr > td:nth-child("+(e-1)+")").add(u.find("> tr > th:nth-child("+(e-1)+")"));for(t=0;t<n.length;t++){s(n[t],r[t])}}}},_rearrangeTableBackroundProcessing:function(){var t=this;return function(){t._bubbleCols();t.options.beforeStop(t.originalTable);t.sortableTable.el.remove();i();if(t.options.persistState!==null){e.isFunction(t.options.persistState)?t.options.persistState(t.originalTable):t.persistState()}}},_rearrangeTable:function(){var e=this;return function(){e.originalTable.selectedHandle.removeClass("dragtable-handle-selected");e.sortableTable.el.sortable("disable");e.sortableTable.el.addClass("dragtable-disabled");e.options.beforeReorganize(e.originalTable,e.sortableTable);e.originalTable.endIndex=e.sortableTable.movingRow.prevAll().size()+1;setTimeout(e._rearrangeTableBackroundProcessing(),50)}},_generateSortable:function(t){!t.cancelBubble&&(t.cancelBubble=true);var n=this;var i=this.originalTable.el[0].attributes;var s="";for(var o=0;o<i.length;o++){if(i[o].nodeValue&&i[o].nodeName!="id"&&i[o].nodeName!="width"){s+=i[o].nodeName+'="'+i[o].nodeValue+'" '}}var u=[];var a=[];this.originalTable.el.find("tr").slice(0,this.options.maxMovingRows).each(function(t,n){var r=this.attributes;var i="";for(var s=0;s<r.length;s++){if(r[s].nodeValue&&r[s].nodeName!="id"){i+=" "+r[s].nodeName+'="'+r[s].nodeValue+'"'}}u.push(i);a.push(e(this).height())});var f=[];var l=0;var c=n.originalTable.el.children();if(this.options.excludeFooter){c=c.not("tfoot")}c.find("> tr > th").each(function(t,n){var r=e(this).outerWidth();f.push(r);l+=r});if(n.options.exact){var h=l-n.originalTable.el.outerWidth();f[0]-=h}l+=2;var p='<ul class="dragtable-sortable" style="position:absolute; width:'+l+'px;">';c.find("> tr > th").each(function(t,r){p+="<li>";p+="<table "+s+">";var i=c.find("> tr > th:nth-child("+(t+1)+")");if(n.options.maxMovingRows>1){i=i.add(c.find("> tr > td:nth-child("+(t+1)+")").slice(0,n.options.maxMovingRows-1))}i.each(function(t){var n=e(this).clone().wrap("<div></div>").parent().html();if(n.toLowerCase().indexOf("<th")===0)p+="<thead>";p+="<tr "+u[t]+'" style="height:'+a[t]+'px;">';p+=n;if(n.toLowerCase().indexOf("<th")===0)p+="</thead>";p+="</tr>"});p+="</table>";p+="</li>"});p+="</ul>";this.sortableTable.el=this.originalTable.el.before(p).prev();this.sortableTable.el.find("> li > table").each(function(t,n){e(this).css("width",f[t]+"px")});this.sortableTable.selectedHandle=this.sortableTable.el.find("th .dragtable-handle-selected");var d=!this.options.dragaccept?"li":"li:has("+this.options.dragaccept+")";this.sortableTable.el.sortable({items:d,stop:this._rearrangeTable(),revert:this.options.revert,tolerance:this.options.tolerance,containment:this.options.containment,cursor:this.options.cursor,cursorAt:this.options.cursorAt,distance:this.options.distance,axis:this.options.axis});this.originalTable.startIndex=e(t.target).closest("th").prevAll().size()+1;this.options.beforeMoving(this.originalTable,this.sortableTable);this.sortableTable.movingRow=this.sortableTable.el.find("> li:nth-child("+this.originalTable.startIndex+")");r();this.sortableTable.movingRow.trigger(e.extend(e.Event(t.type),{which:1,clientX:t.clientX,clientY:t.clientY,pageX:t.pageX,pageY:t.pageY,screenX:t.screenX,screenY:t.screenY}));var v=this.sortableTable.el.find(".ui-sortable-placeholder");if(!v.height()<=0){v.css("height",this.sortableTable.el.find(".ui-sortable-helper").height())}v.html('<div class="outer" style="height:100%;"><div class="inner" style="height:100%;"></div></div>')},bindTo:{},_create:function(){this.originalTable={el:this.element,selectedHandle:e(),sortOrder:{},startIndex:0,endIndex:0};this.bindTo=this.originalTable.el.find("th");if(this.options.dragaccept){this.bindTo=this.bindTo.filter(this.options.dragaccept)}if(this.bindTo.find(this.options.dragHandle).size()>0){this.bindTo=this.bindTo.find(this.options.dragHandle)}if(this.options.restoreState!==null){e.isFunction(this.options.restoreState)?this.options.restoreState(this.originalTable):this._restoreState(this.options.restoreState)}var t=this;this.bindTo.mousedown(function(n){if(n.which!==1)return;if(t.options.beforeStart(t.originalTable)===false){return}clearTimeout(this.downTimer);this.downTimer=setTimeout(function(){t.originalTable.selectedHandle=e(this);t.originalTable.selectedHandle.addClass("dragtable-handle-selected");t._generateSortable(n)},t.options.clickDelay)}).mouseup(function(e){clearTimeout(this.downTimer)})},redraw:function(){this.destroy();this._create()},destroy:function(){this.bindTo.unbind("mousedown");e.Widget.prototype.destroy.apply(this,arguments)}});var t=e(document.body).attr("onselectstart"),n=e(document.body).attr("unselectable")})(jQuery)
-</script>
-<script charset="utf-8">
-$(document).ready(function() {
-  $('.table-striped').dragtable();
-});
-</script>--->

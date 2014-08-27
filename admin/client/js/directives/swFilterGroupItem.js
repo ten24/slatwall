@@ -5,12 +5,13 @@ angular.module('slatwalladmin')
 '$templateCache',
 'collectionService',
 'partialsPath',
-
+'$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath){
+partialsPath,
+$log){
 	return {
 		restrict: 'A',
 		scope:{
@@ -18,7 +19,10 @@ partialsPath){
 			siblingItems:"=",
 			incrementFilterCount:"&",
 			setItemInUse:"&",
-			filterPropertiesList:"="
+			filterPropertiesList:"=",
+			saveCollection:"&",
+			removeFilterGroupItem:"&",
+			filterGroupItemIndex:"="
 		},
 		link: function(scope, element,attrs){
 			var filterGroupsPartial = partialsPath+"filterGroupItem.html";
@@ -28,10 +32,11 @@ partialsPath){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
+			scope.setItemInUse(false);
 		},
 		controller: function ($scope, $element, $attrs) {
 			//for(item in filterGroupItem){}
-			$scope.filterGroupItem.$$setItemInUse = $scope.setItemInUse;
+			$scope.filterGroupItem.setItemInUse = $scope.setItemInUse;
 			
 			$scope.filterGroupItem.$$disabled = false;
 			if(angular.isUndefined($scope.filterGroupItem.$$isClosed)){
@@ -41,6 +46,13 @@ partialsPath){
 			$scope.filterGroupItem.$$siblingItems = $scope.siblingItems;
 			$scope.selectFilterGroupItem = function(filterGroupItem){
 				collectionService.selectFilterGroupItem(filterGroupItem);
+			};
+			
+			$scope.logicalOperatorChanged = function(logicalOperatorValue){
+				$log.debug('logicalOperatorChanged');
+				$log.debug(logicalOperatorValue);
+				$scope.filterGroupItem.logicalOperator = logicalOperatorValue;
+				$scope.saveCollection();
 			};
         }  
 	};

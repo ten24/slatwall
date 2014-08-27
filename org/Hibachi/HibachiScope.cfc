@@ -210,6 +210,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return keyValue;
 	}
 	
+	public string function getRBKey(required string key, struct replaceStringData) {
+		return rbKey(argumentcollection=arguments);
+	}
+	
 	public boolean function authenticateAction( required string action ) {
 		return getService("hibachiAuthenticationService").authenticateActionByAccount( action=arguments.action, account=getAccount() );
 	}

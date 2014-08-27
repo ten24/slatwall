@@ -411,6 +411,10 @@ slatwallService){
 		
 		scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
 			if(angular.isDefined(selectedFilterProperty)){
+				$log.debug('watchSelectedFilterProperty');
+				$log.debug(scope.selectedFilterProperty);
+				//prepopulate if we have a comparison operator and value
+				
 				if(angular.isDefined(selectedFilterProperty.ormtype)){
 					switch(scope.selectedFilterProperty.ormtype){
 						case "boolean":
@@ -464,7 +468,7 @@ slatwallService){
 							scope.format = scope.formats[1];
 							
 							scope.selectedConditionChanged = function(selectedFilterProperty){
-								
+								$log.debug('selectedConditionChanged Begin');
 							  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 							  	//check whether condition is checking for null values in date
 							  	if(angular.isDefined(selectedCondition.dateInfo)){
@@ -544,7 +548,8 @@ slatwallService){
 							  		
 							  		selectedCondition.conditionDisplay = '';
 							  	}
-						  		$log.debug('selectedConditionChanged');
+						  		$log.debug('selectedConditionChanged End');
+						  		$log.debug('selectedConditionChanged Result');
 						  		$log.debug(selectedCondition); 
 						  		$log.debug(selectedFilterProperty);
 							  };
@@ -671,6 +676,14 @@ slatwallService){
 							break;
 					}
 				}
+				
+				/*
+				 * preselect options
+				 
+				 if(angular.isDefined(selectedFilterProperty.comparisonOperator)){
+					for()
+				}*/
+
 				
 				$log.debug('templateLoader');
 				$log.debug(selectedFilterProperty);

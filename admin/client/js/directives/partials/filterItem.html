@@ -4,11 +4,33 @@
   <!--- Filter display --->
   <div class="s-filter-item">
   	<div ng-if="filterItem.logicalOperator" class="btn-group-vertical btn-toggle">
-      <button class="btn btn-xs btn-default" ng-class="{active:filterItem.logicalOperator === 'AND'}">AND</button>
-      <button class="btn btn-xs btn-default" ng-class="{active:filterItem.logicalOperator === 'OR'}">OR</button>
+      <button class="btn btn-xs " 
+      			ng-click="logicalOperatorChanged('AND')" 
+      			ng-class="{'btn\-default':filterItem.logicalOperator !== 'AND'}"
+      			>
+      			AND
+      </button>
+      <button class="btn btn-xs " 
+      			ng-class="{'btn\-default':filterItem.logicalOperator !== 'OR'}"
+      			ng-click="logicalOperatorChanged('OR')"
+      			>
+      			OR
+      </button>
     </div>
     <div class="panel panel-default"  ng-class="{'s\-focus':!filterItem.$$isClosed}" >
-      <div class="panel-heading"><span ng-bind="filterItem.displayPropertyIdentifier"></span> <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove" ng-click="removeFilterItem(filterItem)"><i class="fa fa-times"></i></a></div>
+      <div class="panel-heading">
+      	<span ng-bind="filterItem.displayPropertyIdentifier"></span> 
+      	<a href="##" class="j-tool-tip-item" 
+      		data-toggle="tooltip" data-placement="top" 
+      		title="" data-original-title="Remove" 
+      		
+      		>
+      			<i class="fa fa-times"
+      				ng-click="removeFilterItem({filterItemIndex:filterItemIndex})"
+      				>
+      			</i>
+      	</a>
+      </div>
       <div ng-click="selectFilterItem(filterItem)" ng-class="{}"   class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
         <span ng-bind="filterItem.value"></span> <a  href="##"><i class="fa fa-pencil-square-o"></i></a>
       </div>

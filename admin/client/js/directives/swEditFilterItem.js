@@ -40,7 +40,11 @@ slatwallService){
 			for(i in $scope.filterPropertiesList.data){
 				var filterProperty = $scope.filterPropertiesList.data[i];
 				if(filterProperty.propertyIdentifier === $scope.filterItem.propertyIdentifier){
+					//selectItem from drop down
 					$scope.selectedFilterProperty = filterProperty;
+					//decorate with value and comparison Operator so we can use it in the Condition section
+					$scope.selectedFilterProperty.value = $scope.filterItem.value;
+					$scope.selectedFilterProperty.comparisonOperator = $scope.filterItem.comparisonOperator;
 				}
 			}
 			
@@ -55,8 +59,7 @@ slatwallService){
 				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
 					//populate filterItem with selectedFilterProperty values
 					filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
-					var propertyAlias = filterItem.propertyIdentifier.split(".").pop();
-					filterItem.displayPropertyIdentifier = propertyAlias; 
+					filterItem.displayPropertyIdentifier = selectedFilterProperty.displayPropertyIdentifier; 
 					
 					switch(selectedFilterProperty.ormtype){
 						case 'boolean':
