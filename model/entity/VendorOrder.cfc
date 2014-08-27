@@ -183,10 +183,10 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	
 	// Attribute Values (one-to-many)    
 	public void function addAttributeValue(required any attributeValue) {    
-		arguments.attributeValue.setAttributeValues( this );    
+		arguments.attributeValue.setVendorOrder( this );    
 	}    
 	public void function removeAttributeValue(required any attributeValue) {    
-		arguments.attributeValue.removeAttributeValues( this );    
+		arguments.attributeValue.removeVendorOrder( this );    
 	}
 	
 	// Stock Receivers (one-to-many)
