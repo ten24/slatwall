@@ -337,6 +337,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				
 			}
 		}
+		
 		return filterGroupHQL;
 	}
 	
@@ -350,8 +351,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			}
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
-			
-			filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+			if(len(filterGroupHQL)){
+				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+			}
 			
 		}
 		return filterGroupsHQL;
@@ -359,10 +361,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	private string function getFilterHQL(required array filterGroups){
 		//make the item without a logical operator first
-		var filterHQL = ' where ';
+		filterHQL = '';
 		
 		var filterGroupsHQL = getFilterGroupsHQL(arguments.filterGroups);
-		filterHQL &= filterGroupsHQL;
+		if(len(filterGroupsHQL)){
+			filterHQL &= ' where ';
+			filterHQL &= filterGroupsHQL;
+		}
+		
 		
 		return filterHQL;
 	}

@@ -41,6 +41,8 @@ $log){
 				//make sure first item has no logical operator if it exists
 				if($scope.filterGroupItem.length){
 					delete $scope.filterGroupItem[0].logicalOperator;
+				}else{
+					delete $scope.filterGroupItem;
 				}
 				
 				$log.debug('removeFilterItem');
@@ -54,6 +56,8 @@ $log){
 				//make sure first item has no logical operator if it exists
 				if($scope.filterGroupItem.length){
 					delete $scope.filterGroupItem[0].logicalOperator;
+				}else{
+					delete $scope.filterGroupItem;
 				}
 				$log.debug('removeFilterGroupItem');
 				$log.debug(filterGroupItemIndex);

@@ -645,25 +645,54 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		/*request.debug(collectionEntity.getHQLAliases());
-		request.debug(ormexecuteQuery('SELECT count(SlatwallAccountEmailAddress) 
-	FROM SlatwallAccountEmailAddress as AccountEmailAddress 
-	where ( AccountEmailAddress.verifiedFlag = false )  '));
-		*/
-		/*request.debug(ormexecuteQUery('SELECT new Map( Account.firstName as firstName) 
-FROM SlatwallAccount as Account 
-left join Account.primaryEmailAddress as Account_primaryEmailAddress 
-where ( Account.superUserFlag = true AND Account.superUserFlag = false ) 
-OR ( Account.superUserFlag = true OR Account.superUserFlag = false ) 
-AND ( 
-	( (SELECT count(SlatwallAccountEmailAddress) 
-	FROM SlatwallAccountEmailAddress as SlatwallAccountEmailAddress 
-	WHERE SlatwallAccountEmailAddress.account = Account) = (SELECT count(SlatwallAccountEmailAddress) 
-	FROM SlatwallAccountEmailAddress as AccountEmailAddress 
-	where ( AccountEmailAddress.verifiedFlag = false ) 
-	 AND SlatwallAccountEmailAddress.account = Account) )) ORDER BY Account.firstName DESC'));*/
-		
 		request.debug(collectionEntity.getPageRecords());
+		 
+	}
+	
+	public void function getHQLTest_emptyFilterGroup(){
+		var collectionBestAcountEmailAddressesData = {
+			collectionid = '',
+			collectionCode = 'BestAccountEmailAddresses',
+			baseEntityName="AccountEmailAddress",
+			collectionConfig = '
+				 {
+					  "baseEntityName": "SlatwallAccount",
+					  "baseEntityAlias": "Account",
+					  "filterGroups": [
+					    {
+					      "filterGroup": [
+					        {
+					          "filterGroup": [
+					            {
+					              "displayPropertyIdentifier": "Super User",
+					              "propertyIdentifier": "Account.superUserFlag",
+					              "comparisonOperator": "=",
+					              "value": "True"
+					            },
+					            {
+					              "displayPropertyIdentifier": "First Name",
+					              "propertyIdentifier": "Account.firstName",
+					              "comparisonOperator": "=",
+					              "value": "Ryan",
+					              "logicalOperator": "OR"
+					            }
+					          ]
+					        },
+					        {
+					          "filterGroup": [],
+					          "logicalOperator": "AND"
+					        }
+					      ]
+					    }
+					  ]
+					}
+			'
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
+		
+		
+		//ormexecutequery('FROM SlatwallAccount as Account where   (  (  Account.superUserFlag = "true"  OR Account.firstName = "true" ) )');
+		//request.debug(collectionEntity.getHQL());
 		 
 	}
 	
