@@ -18,7 +18,10 @@ partialsPath){
 			siblingItems:"=",
 			incrementFilterCount:"&",
 			setItemInUse:"&",
-			filterPropertiesList:"="
+			filterPropertiesList:"=",
+			saveCollection:"&",
+			removeFilterGroupItem:"&",
+			filterGroupItemIndex:"="
 		},
 		link: function(scope, element,attrs){
 			var filterGroupsPartial = partialsPath+"filterGroupItem.html";

@@ -36,8 +36,26 @@ $log){
 			};
 			
 			$scope.removeFilterItem = function(filterItemIndex){
-				$log.debug('removeFIlterITem');
+				//remove item
+				$scope.filterGroupItem.splice(filterItemIndex,1);
+				//make sure first item has no logical operator if it exists
+				if($scope.filterGroupItem.length){
+					delete $scope.filterGroupItem[0].logicalOperator;
+				}
+				
+				$log.debug('removeFilterItem');
 				$log.debug(filterItemIndex);
+				$scope.saveCollection();
+			};
+			
+			$scope.removeFilterGroupItem = function(filterGroupItemIndex){
+				
+				$scope.filterGroupItem.splice(filterGroupItemIndex,1);
+				
+				
+				$log.debug('removeFilterGroupItem');
+				$log.debug(filterGroupItemIndex);
+				$scope.saveCollection();
 			};
 		}
 	};

@@ -23,10 +23,12 @@
       	<a href="##" class="j-tool-tip-item" 
       		data-toggle="tooltip" data-placement="top" 
       		title="" data-original-title="Remove" 
-      		ng-click="filterItem.removeFilterItem(filterItemIndex)"
       		
       		>
-      			<i class="fa fa-times"></i>
+      			<i class="fa fa-times"
+      				ng-click="removeFilterItem({filterItemIndex:filterItemIndex})"
+      				>
+      			</i>
       	</a>
       </div>
       <div ng-click="selectFilterItem(filterItem)" ng-class="{}"   class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">

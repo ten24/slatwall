@@ -6,7 +6,14 @@
       <button class="btn btn-xs btn-default" ng-class="{active:filterGroupItem.logicalOperator === 'OR'}">OR</button>
     </div>
     <div class="panel panel-default s-filter-group-style" ng-class="{'s\-focus':!filterGroupItem.$$isClosed}" >
-      <div class="panel-heading">Filter Group <a href="##" class="j-tool-tip-item"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+      <div class="panel-heading">Filter Group 
+      	<a href="##" class="j-tool-tip-item"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+      		<i class="fa fa-times"
+      			ng-click="removeFilterGroupItem({filterGroupItemIndex:filterGroupItemIndex})"
+      		>
+      		</i>
+      	</a>
+      </div>
       <div ng-click="selectFilterGroupItem(filterGroupItem)" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
         (<span ng-bind="filterGroupItem.filterGroup.length"></span>) Filters <a href="##" ><i class="fa fa-inbox"></i></a>
       </div>
@@ -18,9 +25,10 @@
   <div class="col-xs-12" ng-class="{collapse:filterGroupItem.$$isClosed}">
     <div class="row">
       <span sw-filter-groups 
-      filter-group-item="filterGroupItem.filterGroup"
-      increment-filter-count="incrementFilterCount()" 
-      filter-properties-list="filterPropertiesList"
+		      filter-group-item="filterGroupItem.filterGroup"
+		      increment-filter-count="incrementFilterCount()" 
+		      filter-properties-list="filterPropertiesList"
+		      save-collection="saveCollection()"
       >
 
       </span>

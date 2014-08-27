@@ -32,6 +32,7 @@ $log){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
+			scope.setItemInUse(false);
 		},
 		controller: function ($scope, $element, $attrs) {
 			if(angular.isUndefined($scope.filterItem.$$isClosed)){
@@ -55,10 +56,7 @@ $log){
 				$scope.filterItem.logicalOperator = logicalOperatorValue;
 				$scope.saveCollection();
 			};
-			
-			console.log($scope.removeFilterItem);
-			console.log($scope.filterItemIndex);
-			
+			$log.debug($scope.removeFilterItem);
         } 
 	};
 }]);
