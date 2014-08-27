@@ -1,9 +1,18 @@
 <li class="s-filter-group" ng-class="{'s\-disabled':filterGroupItem.$$disabled}">
   <!--- Filter display --->
   <div class="s-filter-item">
+  
    	<div ng-if="filterGroupItem.logicalOperator" class="btn-group-vertical btn-toggle">
-      <button class="btn btn-xs btn-default" ng-class="{active:filterGroupItem.logicalOperator === 'AND'}">AND</button>
-      <button class="btn btn-xs btn-default" ng-class="{active:filterGroupItem.logicalOperator === 'OR'}">OR</button>
+      <button 	class="btn btn-xs btn-default" 
+      			ng-class="{active:filterGroupItem.logicalOperator === 'AND'}"
+      			ng-click="logicalOperatorChanged('OR')"
+      			>AND
+      </button>
+      <button 	class="btn btn-xs btn-default" 
+      			ng-class="{active:filterGroupItem.logicalOperator === 'OR'}"
+      			ng-click="logicalOperatorChanged('OR')"
+      			>OR
+      </button>
     </div>
     <div class="panel panel-default s-filter-group-style" ng-class="{'s\-focus':!filterGroupItem.$$isClosed}" >
       <div class="panel-heading">Filter Group 

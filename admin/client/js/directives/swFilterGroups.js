@@ -49,10 +49,12 @@ $log){
 			};
 			
 			$scope.removeFilterGroupItem = function(filterGroupItemIndex){
-				
+				//remove Item
 				$scope.filterGroupItem.splice(filterGroupItemIndex,1);
-				
-				
+				//make sure first item has no logical operator if it exists
+				if($scope.filterGroupItem.length){
+					delete $scope.filterGroupItem[0].logicalOperator;
+				}
 				$log.debug('removeFilterGroupItem');
 				$log.debug(filterGroupItemIndex);
 				$scope.saveCollection();

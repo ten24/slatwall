@@ -5,12 +5,13 @@ angular.module('slatwalladmin')
 '$templateCache',
 'collectionService',
 'partialsPath',
-
+'$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath){
+partialsPath,
+$log){
 	return {
 		restrict: 'A',
 		scope:{
@@ -31,6 +32,7 @@ partialsPath){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
+			scope.setItemInUse(false);
 		},
 		controller: function ($scope, $element, $attrs) {
 			//for(item in filterGroupItem){}
@@ -44,6 +46,13 @@ partialsPath){
 			$scope.filterGroupItem.$$siblingItems = $scope.siblingItems;
 			$scope.selectFilterGroupItem = function(filterGroupItem){
 				collectionService.selectFilterGroupItem(filterGroupItem);
+			};
+			
+			$scope.logicalOperatorChanged = function(logicalOperatorValue){
+				$log.debug('logicalOperatorChanged');
+				$log.debug(logicalOperatorValue);
+				$scope.filterGroupItem.logicalOperator = logicalOperatorValue;
+				$scope.saveCollection();
 			};
         }  
 	};
