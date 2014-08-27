@@ -76,7 +76,7 @@
 				<div class="tab-content col-sm-12">
 					<cfloop array="#thistag.tabs#" index="tab">
 						<cfoutput>
-							<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
+							<div <cfif activeTab eq tab.tabid> class="tab-pane active"<cfelse> class="tab-pane"</cfif> id="#tab.tabid#">
 								#tab.tabcontent#
 							</div>
 						</cfoutput>
