@@ -70,9 +70,10 @@
                             Male <a href="##"><i class="fa fa-pencil-square-o"></i></a>
                           </div>
                         </div>
-                        <div class="btn-group-vertical btn-toggle">
-                          <button class="btn btn-xs btn-default">AND</button>
-                          <button class="btn btn-xs btn-defualt active">OR</button>
+                        <div class="btn-group-vertical">
+                          <button class="btn btn-xs btn-default">OR</button>
+                          <button class="btn btn-xs btn-default active">AND</button>
+
                         </div>
                       </div>
                       <!--- //Filter display --->
@@ -1380,6 +1381,9 @@
   .s-btn-lgrey:hover,.s-btn-lgrey:focus,.s-btn-lgrey:active,.s-btn-lgrey.active {background-color: #bfbfbf;border-color: #b3b3b3;color:#888888;}
   .s-btn-lgrey.disabled:hover,.s-btn-lgrey.disabled:focus,.s-btn-lgrey.disabled:active,.s-btn-lgrey.disabled.active,.s-btn-lgrey[disabled]:hover,.s-btn-lgrey[disabled]:focus,.s-btn-lgrey[disabled]:active,.s-btn-lgrey[disabled].active,fieldset[disabled] .s-btn-lgrey:hover,fieldset[disabled] .s-btn-lgrey:focus,fieldset[disabled] .s-btn-lgrey:active,fieldset[disabled] .s-btn-lgrey.active {background-color: #cccccc;border-color: #cccccc;color:#888888;}
 
+  .btn-group-vertical .btn-default.active {-webkit-box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);-moz-box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);border-color:#db771f;}
+  .btn-group-vertical .btn-default:hover {background-color: #F58620;color: #FFF;border-color: #DB771F;}
+
   .s-display-options .s-none-selected {width:100%;text-align:center;font-weight:bold;}
   .s-header-bar h1{font-size:16px;margin-bottom:0;margin-top:9px;font-weight:600;}
   .s-header-bar .s-header-nav{text-align:right;}
@@ -1640,32 +1644,6 @@
 
 <script charset="utf-8">
   $("select").selectBoxIt();
-</script>
-
-<script charset="utf-8">
-  $('.btn-toggle').click(function() {
-    $(this).find('.btn').toggleClass('active');
-
-    if ($(this).find('.btn-primary').size()>0) {
-    	$(this).find('.btn').toggleClass('btn-primary');
-    }
-    if ($(this).find('.btn-danger').size()>0) {
-    	$(this).find('.btn').toggleClass('btn-danger');
-    }
-    if ($(this).find('.btn-success').size()>0) {
-    	$(this).find('.btn').toggleClass('btn-success');
-    }
-    if ($(this).find('.btn-info').size()>0) {
-    	$(this).find('.btn').toggleClass('btn-info');
-    }
-
-    $(this).find('.btn').toggleClass('btn-default');
-
-});
-
-$('form').submit(function(){
-    return false;
-});
 </script>
 
 <script charset="utf-8">
