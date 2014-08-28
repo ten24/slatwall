@@ -4,8 +4,8 @@
       <div class="col-sm-12 s-no-paddings">
       	<select id="u52_input" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
       			ng-model="selectedFilterProperty.selectedCriteriaType" 
-        		ng-options="bigDecimalOption as bigDecimalOption.display 
-        					for bigDecimalOption in bigDecimalOptions 
+        		ng-options="conditionOption as conditionOption.display 
+        					for conditionOption in conditionOptions 
         					" 	
         		ng-change="selectedConditionChanged(selectedFilterProperty)"
       	>

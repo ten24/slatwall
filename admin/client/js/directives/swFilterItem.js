@@ -23,8 +23,9 @@ $log){
 			removeFilterItem:"&",
 			filterItemIndex:"="
 		},
-		link: function(scope, element,attrs){
-			
+		link: function(scope, element,attrs, filterGroupsController){
+			console.log('filterGroupsController');
+			console.log(filterGroupsController);
 			var filterGroupsPartial = partialsPath+"filterItem.html";
 			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
@@ -33,31 +34,30 @@ $log){
 				element.replaceWith($compile(element.html())(scope));
 			});
 			scope.setItemInUse(false);
-		},
-		controller: function ($scope, $element, $attrs) {
-			if(angular.isUndefined($scope.filterItem.$$isClosed)){
-				$scope.filterItem.$$isClosed = true;
-			}
-			if(angular.isUndefined($scope.filterItem.$$disabled)){
-				$scope.filterItem.$$disabled = false;
-			}
-			if(angular.isUndefined($scope.filterItem.$$siblingItems)){
-				$scope.filterItem.$$siblingItems = $scope.siblingItems;
-			}
-			$scope.filterItem.setItemInUse = $scope.setItemInUse;
 			
-			$scope.selectFilterItem = function(filterItem){
+			if(angular.isUndefined(scope.filterItem.isClosed)){
+				scope.filterItem.isClosed = true;
+			}
+			if(angular.isUndefined(scope.filterItem.disabled)){
+				scope.filterItem.disabled = false;
+			}
+			if(angular.isUndefined(scope.filterItem.$$siblingItems)){
+				scope.filterItem.$$siblingItems = scope.siblingItems;
+			}
+			scope.filterItem.setItemInUse = scope.setItemInUse;
+			
+			scope.selectFilterItem = function(filterItem){
 				collectionService.selectFilterItem(filterItem);
 			};
 			
-			$scope.logicalOperatorChanged = function(logicalOperatorValue){
+			scope.logicalOperatorChanged = function(logicalOperatorValue){
 				$log.debug('logicalOperatorChanged');
 				$log.debug(logicalOperatorValue);
-				$scope.filterItem.logicalOperator = logicalOperatorValue;
-				$scope.saveCollection();
+				scope.filterItem.logicalOperator = logicalOperatorValue;
+				scope.saveCollection();
 			};
-			$log.debug($scope.removeFilterItem);
-        } 
+			$log.debug(scope.removeFilterItem);
+		}
 	};
 }]);
 	

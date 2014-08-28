@@ -7,8 +7,8 @@
         <select class="form-control input-sm"
         		ng-model="selectedFilterProperty.selectedCriteriaType" 
         		ng-change="selectedConditionChanged(selectedFilterProperty)"
-        		ng-options="dateOption as dateOption.display 
-        					for dateOption in dateOptions 
+        		ng-options="conditionOption as conditionOption.display 
+        					for conditionOption in conditionOptions 
         					" 	
         >
         	<option selected="selected" value="">Select Condition</option>

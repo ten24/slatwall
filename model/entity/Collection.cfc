@@ -229,6 +229,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			case "!=":
 				return "!=";
 			break;
+			case "<>":
+				return "<>";
+			break;
 			case ">":
 				return ">";
 			break;
@@ -337,6 +340,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				
 			}
 		}
+		
 		return filterGroupHQL;
 	}
 	
@@ -350,19 +354,23 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			}
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
-			
-			filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
-			
+			if(len(filterGroupHQL)){
+				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+			}
 		}
 		return filterGroupsHQL;
 	}
 	
 	private string function getFilterHQL(required array filterGroups){
 		//make the item without a logical operator first
-		var filterHQL = ' where ';
+		filterHQL = '';
 		
 		var filterGroupsHQL = getFilterGroupsHQL(arguments.filterGroups);
-		filterHQL &= filterGroupsHQL;
+		if(len(filterGroupsHQL)){
+			filterHQL &= ' where ';
+			filterHQL &= filterGroupsHQL;
+		}
+		
 		
 		return filterHQL;
 	}
@@ -537,7 +545,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				var toParamID = getParamID();
 				addHQLParam(toParamID,toValue);
 				
-				predicate = ":#fromParamID# AND #toParamID#";	
+				predicate = ":#fromParamID# AND :#toParamID#";	
 			}else{
 				//if list length is 1 then we treat it as a date range From Now() - Days to Now()
 				var fromValue = DateAdd("d",-arguments.filter.value,Now());
@@ -548,7 +556,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				var toParamID = getParamID();
 				addHQLParam(toParamID,toValue);
 				
-				predicate = ":#fromParamID# AND #toParamID#";	
+				predicate = ":#fromParamID# AND :#toParamID#";	
 			}
 						
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){

@@ -33,28 +33,27 @@ $log){
 				element.replaceWith($compile(element.html())(scope));
 			});
 			scope.setItemInUse(false);
-		},
-		controller: function ($scope, $element, $attrs) {
-			//for(item in filterGroupItem){}
-			$scope.filterGroupItem.setItemInUse = $scope.setItemInUse;
 			
-			$scope.filterGroupItem.$$disabled = false;
-			if(angular.isUndefined($scope.filterGroupItem.$$isClosed)){
-				$scope.filterGroupItem.$$isClosed = true;
+			//for(item in filterGroupItem){}
+			scope.filterGroupItem.setItemInUse = scope.setItemInUse;
+			
+			scope.filterGroupItem.disabled = false;
+			if(angular.isUndefined(scope.filterGroupItem.isClosed)){
+				scope.filterGroupItem.isClosed = true;
 			}
 			
-			$scope.filterGroupItem.$$siblingItems = $scope.siblingItems;
-			$scope.selectFilterGroupItem = function(filterGroupItem){
+			scope.filterGroupItem.$$siblingItems = scope.siblingItems;
+			scope.selectFilterGroupItem = function(filterGroupItem){
 				collectionService.selectFilterGroupItem(filterGroupItem);
 			};
 			
-			$scope.logicalOperatorChanged = function(logicalOperatorValue){
+			scope.logicalOperatorChanged = function(logicalOperatorValue){
 				$log.debug('logicalOperatorChanged');
 				$log.debug(logicalOperatorValue);
-				$scope.filterGroupItem.logicalOperator = logicalOperatorValue;
-				$scope.saveCollection();
+				scope.filterGroupItem.logicalOperator = logicalOperatorValue;
+				scope.saveCollection();
 			};
-        }  
+		}
 	};
 }]);
 	
