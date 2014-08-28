@@ -10,7 +10,7 @@
   
   .btn-group {float:right;}
   .btn-toolbar {float:right; margin-top:10px;}
-  
+  .listing-display-header {background-color:#fff;}
   .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
   .table>thead>tr>td.admin.admin2, .table>tbody>tr>td.admin.admin2, .table>thead>tr>td.admin.admin1, .table>tbody>tr>td.admin.admin1 {text-align:center;width:75px;}
   .table>thead>tr>td.admin.admin3, .table>tbody>tr>td.admin.admin3 {text-align:center;width:100px;}  
@@ -37,7 +37,7 @@
   /*Basic style overwrite*/
   body {font-family: 'Open Sans', sans-serif;color:#666666;padding-top:21px;}
   th {font-weight:600;}
-  a {color:#F58620;}
+  a {color:#666666;}
   a:hover, a:focus {color: #F9AC68;text-decoration: underline; }
   button::-moz-focus-inner {border: 0;}
   input::-moz-focus-inner { border: 0; }
