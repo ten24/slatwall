@@ -104,12 +104,12 @@ $filter){
 			},
 			{
 				display:"Defined",
-				comparisonOperator:"is",
+				comparisonOperator:"not is",
 				value:"null"
 			},
 			{
 				display:"Not Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is",
 				value:"null"
 			}
 		];
@@ -128,16 +128,16 @@ $filter){
     			comparisonOperator:"=",
     			value:"False"
     		},
-    		{
-    			display:"Defined",
-    			comparisonOperator:"is",
-    			value:"null"
-    		},
-    		{
-    			display:"Not Defined",
-    			comparisonOperator:"is not",
-    			value:"null"
-    		}
+			{
+				display:"Defined",
+				comparisonOperator:"not is",
+				value:"null"
+			},
+			{
+				display:"Not Defined",
+				comparisonOperator:"is",
+				value:"null"
+			}
     	];
     	return booleanOptions;
     };
@@ -276,16 +276,16 @@ $filter){
     				measureTypeDisplay:'Years'
     			}
     		},
-    		{
-    			display:"Defined",
-    			comparisonOperator:	"is",
-    			value:"null"
-    		},
-    		{
-    			display:"Not Defined",
-    			comparisonOperator:	"is not",
-    			value:"null"
-    		}
+			{
+				display:"Defined",
+				comparisonOperator:"not is",
+				value:"null"
+			},
+			{
+				display:"Not Defined",
+				comparisonOperator:"is",
+				value:"null"
+			}
     	];
     	
     	return dateOptions;
@@ -337,12 +337,12 @@ $filter){
 			},
 			{
 				display:"Defined",
-				comparisonOperator:"is",
+				comparisonOperator:"not is",
 				value:"null"
 			},
 			{
 				display:"Not Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is",
 				value:"null"
 			}
     	];
@@ -379,32 +379,34 @@ $filter){
     
     var getManyToManyOptions = function(){
     	var manyToManyOptions = [
-        	{
-            	display:"Defined",
-            	comparisonOperator:"is",
-            	value:"null"
-            },
-            {
-            	display:"Not Defined",
-            	comparisonOperator:"is not",
-            	value:"null"
-            }
+        	
+			{
+				display:"Defined",
+				comparisonOperator:"not is",
+				value:"null"
+			},
+			{
+				display:"Not Defined",
+				comparisonOperator:"is",
+				value:"null"
+			}
         ];
     	return manyToManyOptions;
     };
     
     var getManyToOneOptions = function(){
     	var manyToOneOptions = [
-            {
-            	display:"Defined",
-            	comparisonOperator:"is",
-            	value:"null"
-            },
-            {
-            	display:"Not Defined",
-            	comparisonOperator:"is not",
-            	value:"null"
-            }
+            
+			{
+				display:"Defined",
+				comparisonOperator:"not is",
+				value:"null"
+			},
+			{
+				display:"Not Defined",
+				comparisonOperator:"is",
+				value:"null"
+			}
         ];
     	return manyToOneOptions;
     };
