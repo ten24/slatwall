@@ -61,6 +61,7 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 
 	// Related Object Properties (many-to-one)
 	property name="productBundleSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="productBundleSkuID";
+	property name="productBundleGroupType" cfc="Type" fieldtype="many-to-one" fkcolumn="productBundleGroupTypeID" hb_optionsSmartListData="f:parentType.systemCode=productBundleGroupType";
 	
 	// Related Object Properties (one-to-many)
 	
