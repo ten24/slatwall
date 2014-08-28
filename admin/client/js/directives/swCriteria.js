@@ -434,7 +434,7 @@ $filter){
 			    			scope.conditionOptions = getStringOptions();
 			    			
 			    			scope.selectedConditionChanged = function(selectedFilterProperty){
-			    				scope.selectedFilterProperty.criteriaValue = '';
+			    				//scope.selectedFilterProperty.criteriaValue = '';
 			    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 			    					selectedFilterProperty.showCriteriaValue = false;
 			    				}else{
