@@ -354,7 +354,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			if(len(filterGroupHQL)){
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			}
-			
 		}
 		return filterGroupsHQL;
 	}
@@ -543,7 +542,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				var toParamID = getParamID();
 				addHQLParam(toParamID,toValue);
 				
-				predicate = ":#fromParamID# AND #toParamID#";	
+				predicate = ":#fromParamID# AND :#toParamID#";	
 			}else{
 				//if list length is 1 then we treat it as a date range From Now() - Days to Now()
 				var fromValue = DateAdd("d",-arguments.filter.value,Now());
@@ -554,7 +553,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				var toParamID = getParamID();
 				addHQLParam(toParamID,toValue);
 				
-				predicate = ":#fromParamID# AND #toParamID#";	
+				predicate = ":#fromParamID# AND :#toParamID#";	
 			}
 						
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){

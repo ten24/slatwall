@@ -56,11 +56,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newCollection();
 	}
 	
-	/*public void function getCollectionObjectOptionsTest(){
-		variables.entity.setBaseEntityName('Account');
-		assert(isArray(variables.entity.getEntityNameOptions()));
-	}*/
-	
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
 		var propertyIdentifier = "Account.firstName";
@@ -552,6 +547,50 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(collectionBestAcountEmailAddresses.getPageRecords());
 	}
 	
+	public void function getHQLTest_dateFilter(){
+		var collectionBestAcountEmailAddressesData = {
+		collectionid = '',
+		collectionCode = 'BestAccountEmailAddresses',
+		baseEntityName="Account",
+		collectionConfig = '{
+			  "baseEntityName": "SlatwallAccount",
+			  "baseEntityAlias": "Account",
+			  "filterGroups": [
+			    {
+			      "filterGroup": [
+			        {
+			          "displayPropertyIdentifier": "Super User",
+			          "propertyIdentifier": "Account.superUserFlag",
+			          "comparisonOperator": "=",
+			          "value": "True",
+			          "conditionDisplay": "True"
+			        },
+			        {
+			          "displayPropertyIdentifier": "First Name",
+			          "propertyIdentifier": "Account.firstName",
+			          "comparisonOperator": "=",
+			          "value": "Ryan",
+			          "logicalOperator": "OR",
+			          "conditionDisplay": "Equals"
+			        },
+			        {
+			          "displayPropertyIdentifier": "Created Date Time",
+			          "propertyIdentifier": "Account.createdDateTime",
+			          "comparisonOperator": "between",
+			          "value": "1407556800000-1407643199999",
+			          "logicalOperator": "AND",
+			          "conditionDisplay": "Date"
+			        }
+			      ]
+			    }
+			  ]
+			}'
+		};
+		
+		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
+		var items = ormExecuteQUery("FROM SlatwallAccount as Account where ( Account.superUserFlag = true OR Account.firstName = 'Ryan' AND Account.createdDateTime BETWEEN 1407556800000 AND 1407643199999 )");
+	}
+	
 	public void function getHQLTest(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
@@ -756,6 +795,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterHQL = variables.entity.getFilterHQL(filterGroups);
 		request.debug(filterHQL);
 	}
+	
+	
 	
 	public void function getFilterGroupHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupHQL');

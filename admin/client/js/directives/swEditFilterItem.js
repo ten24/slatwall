@@ -6,12 +6,14 @@ angular.module('slatwalladmin')
 'partialsPath',
 '$log',
 'slatwallService',
+'$filter',
 function($http,
 $compile,
 $templateCache,
 partialsPath,
 $log,
-slatwallService){
+slatwallService,
+$filter){
 	return {
 		restrict: 'A',
 		scope:{
@@ -31,8 +33,8 @@ slatwallService){
 		controller: function ($scope, $element, $attrs) {
 			//initialize directive
 			
-			if(angular.isUndefined($scope.filterItem.$$isClosed)){
-				$scope.filterItem.$$isClosed = true;
+			if(angular.isUndefined($scope.filterItem.isClosed)){
+				$scope.filterItem.isClosed = true;
 			}
 			if(angular.isUndefined($scope.filterItem.breadCrumbs)){
 				$scope.filterItem.$$breadCrumbs = "";
@@ -100,11 +102,14 @@ slatwallService){
 			            	
 							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+								filterItem.displayValue = filterItem.value;
 							}else{
-								
 								var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
 								filterItem.value = dateValueString;
+								var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
+								filterItem.displayValue = formattedDateValueString;
 							}
+							
 			                break;	
 			            case 'big_decimal':
 							filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
@@ -120,8 +125,22 @@ slatwallService){
 								}
 							}
 							break;
+						
+						
 					}
 					
+					if(angular.isUndefined(filterItem.displayValue)){
+						filterItem.displayValue = filterItem.value;
+					}
+					
+					if(angular.isDefined(selectedFilterProperty.ormtype)){
+						filterItem.ormtype = selectedFilterProperty.ormtype;
+					}
+					if(angular.isDefined(selectedFilterProperty.fieldtype)){
+						filterItem.fieldtype = selectedFilterProperty.fieldtype;
+					}
+					
+					filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
 					//persist Config and 
 					$scope.saveCollection();
 					$log.debug(selectedFilterProperty);

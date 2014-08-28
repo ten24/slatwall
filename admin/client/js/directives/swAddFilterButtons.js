@@ -26,16 +26,14 @@ partialsPath){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
-		},
-		controller: function ($scope, $element, $attrs) {
-			$scope.addFilterItem = function(filterItemGroup){
-				collectionService.newFilterItem(filterItemGroup,$scope.setItemInUse);
+			scope.addFilterItem = function(filterItemGroup){
+				collectionService.newFilterItem(filterItemGroup,scope.setItemInUse);
 			};
 			
-			$scope.addFilterGroupItem = function(filterItemGroup){
-				collectionService.newFilterGroupItem(filterItemGroup,$scope.setItemInUse);
+			scope.addFilterGroupItem = function(filterItemGroup){
+				collectionService.newFilterGroupItem(filterItemGroup,scope.setItemInUse);
 			};
-        } 
+		}
 	};
 }]);
 	

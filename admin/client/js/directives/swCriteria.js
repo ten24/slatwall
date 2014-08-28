@@ -418,10 +418,10 @@ slatwallService){
 				if(angular.isDefined(selectedFilterProperty.ormtype)){
 					switch(scope.selectedFilterProperty.ormtype){
 						case "boolean":
-			    			scope.booleanOptions = getBooleanOptions();
+			    			scope.conditionOptions = getBooleanOptions();
 			    			break;
 			    		case "string":
-			    			scope.stringOptions = getStringOptions();
+			    			scope.conditionOptions = getStringOptions();
 			    			
 			    			scope.selectedConditionChanged = function(selectedFilterProperty){
 			    				console.log(selectedFilterProperty);
@@ -433,7 +433,7 @@ slatwallService){
 			    			};
 			    			break;
 			    		case "timestamp":
-			    			scope.dateOptions = getDateOptions();
+			    			scope.conditionOptions = getDateOptions();
 							scope.today = function() {
 								if (angular.isDefined(scope.selectedFilterProperty)) {
 									scope.selectedFilterProperty.criteriaRangeStart = new Date();
@@ -497,27 +497,27 @@ slatwallService){
 					  							case 'd':
 					  								var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
 					  								dateBOD.setHours(0,0,0,0);
-					  								selectedFilterProperty.criteriaRangeStart = dateBOD;
+					  								selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
 					  								break;
 					  							case 'w':
 					  								var firstDayOfWeek = Date.today().last().monday();
-					  								selectedFilterProperty.criteriaRangeStart = firstDayOfWeek;
+					  								selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
 					  								break;
 					  							case 'm':
 					  								var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
-								  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth;
+								  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
 					  								break;
 					  							case 'q':
 					  								var month = Date.parse('today').toString('MM');
 					  								var year = Date.parse('today').toString('yyyy');
 					  								var quarterMonth = (Math.floor(month/3)*3);
 					  								var firstDayOfQuarter = new Date(year,quarterMonth,1);
-					  								selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter;
+					  								selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
 					  								break;
 					  							case 'y':
 					  								var year = Date.parse('today').toString('yyyy');
 					  								var firstDayOfYear = new Date(year,0,1);
-					  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear;
+					  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
 					  								break;
 					  						}
 					  						
@@ -561,49 +561,49 @@ slatwallService){
 					  				switch(selectedCondition.dateInfo.measureType){
 					  					case 'h':
 					  						var today = Date.parse('today');
-						  					selectedFilterProperty.criteriaRangeEnd = today;
+						  					selectedFilterProperty.criteriaRangeEnd = today.getTime();
 						  					var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
-						  					selectedFilterProperty.criteriaRangeStart = todayXHoursAgo;
+						  					selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
 					  						break;
 					  					case 'd':
 					  						var lastFullDay = Date.parse('today').add(-1).days();
 					  						lastFullDay.setHours(23,59,59,999);
-					  						selectedFilterProperty.criteriaRangeEnd = lastFullDay;
+					  						selectedFilterProperty.criteriaRangeEnd = lastFullDay.getTime();
 					  						var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
-											selectedFilterProperty.criteriaRangeStart = lastXDaysAgo;
+											selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
 											break;
 										case 'w':
 											var lastFullWeekEnd = Date.today().last().sunday();
 											lastFullWeekEnd.setHours(23,59,59,999);
-											selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd;
+											selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd.getTime();
 											var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
-											selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo;
+											selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
 											break;
 										case 'm':
 											var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
 											lastFullMonthEnd.setHours(23,59,59,999);
-						  					selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd;
+						  					selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd.getTime();
 						  					var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
-						  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo;
+						  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
 											break;
 										case 'q':
 											 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));	
 											 var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
 											 var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
 											 lastDayOfPreviousQuarter.setHours(23,59,59,999);
-											 selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter;
+											 selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
 											 
 											 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
 										 	lastXQuartersAgo.add(-(measureCount * 3)).months();
-										 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo;
+										 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
 											 
 											break;
 										case 'y':
 											var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
 											lastFullYearEnd.setHours(23,59,59,999);
-						  					selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd;
+						  					selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd.getTime();
 						  					var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount)-1).years();
-						  					selectedFilterProperty.criteriaRangeStart = lastXYearsAgo;
+						  					selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
 											break;
 					  				}
 				  				}
@@ -627,7 +627,7 @@ slatwallService){
 							  };
 			    			break;
 			    		case "big_decimal":
-			    			scope.bigDecimalOptions = getBigDecimalOptions();
+			    			scope.conditionOptions = getBigDecimalOptions();
 			    			scope.criteriaRangeChanged = function(selectedFilterProperty){
 							  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 							  	console.log(selectedFilterProperty);
@@ -677,13 +677,23 @@ slatwallService){
 					}
 				}
 				
+				$log.debug('filterItem');
+				$log.debug(scope.filterItem);
+				
+				angular.forEach(scope.conditionOptions, function(conditionOption){
+					if(conditionOption.display == scope.filterItem.conditionDisplay ){
+						scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+						scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+						scope.selectedFilterProperty.showCriteriaValue = true;
+					}
+				});
+				
+				//scope.selectedFilterProperty.selectedCriteriaType = scope.filterItem;
 				/*
 				 * preselect options
-				 
 				 if(angular.isDefined(selectedFilterProperty.comparisonOperator)){
 					for()
 				}*/
-
 				
 				$log.debug('templateLoader');
 				$log.debug(selectedFilterProperty);
@@ -703,11 +713,7 @@ slatwallService){
 			filterItem:"=",
 	        selectedFilterProperty:"="
 		},
-		link: linker,
-		controller:function ($scope) {
-			
-			  
-		}
+		link: linker
 	};
 }]);
 	

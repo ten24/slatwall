@@ -5,8 +5,8 @@
       	<select id="u52_input" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
       			ng-model="selectedFilterProperty.selectedCriteriaType" 
       			ng-change="selectedConditionChanged(selectedFilterProperty)"
-        		ng-options="stringOption as stringOption.display 
-        					for stringOption in stringOptions 
+        		ng-options="conditionOption as conditionOption.display 
+        					for conditionOption in conditionOptions 
         					" 	
       	>
       		<option selected="selected" value="">Select Condition</option>
