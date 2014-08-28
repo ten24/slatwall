@@ -102,7 +102,7 @@ $filter){
 			            case 'timestamp':
 			            	//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
 			            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
-			            	
+			            	//is it null or a range
 							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 								filterItem.displayValue = filterItem.value;

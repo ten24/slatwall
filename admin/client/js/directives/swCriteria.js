@@ -104,7 +104,7 @@ $filter){
 			},
 			{
 				display:"Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is not",
 				value:"null"
 			},
 			{
@@ -130,7 +130,7 @@ $filter){
     		},
 			{
 				display:"Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is not",
 				value:"null"
 			},
 			{
@@ -278,7 +278,7 @@ $filter){
     		},
 			{
 				display:"Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is not",
 				value:"null"
 			},
 			{
@@ -337,7 +337,7 @@ $filter){
 			},
 			{
 				display:"Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is not",
 				value:"null"
 			},
 			{
@@ -694,9 +694,14 @@ $filter){
 					if(conditionOption.display == scope.filterItem.conditionDisplay ){
 						scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
 						scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-						if(scope.filterItem.value !== 'null'){
-							scope.selectedFilterProperty.showCriteriaValue = true;
+						if(angular.isDefined(scope.selectedConditionChanged)){
+							scope.selectedConditionChanged(scope.selectedFilterProperty);
 						}
+						
+						
+						/*if(scope.filterItem.value !== 'null'){
+							scope.selectedFilterProperty.showCriteriaValue = true;
+						}*/
 						
 					}
 				});
