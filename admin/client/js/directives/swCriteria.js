@@ -694,15 +694,23 @@ $filter){
 					if(conditionOption.display == scope.filterItem.conditionDisplay ){
 						scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
 						scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+						
+						if(angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
+						&& angular.isDefined(scope.filterItem.value)
+						&& scope.filterItem.value.length
+						){
+							var dateRangeArray = scope.filterItem.value.split("-");
+							scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
+							scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
+						}
+						
+						if(angular.isDefined(scope.filterItem.criteriaNumberOf)){
+							scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
+						}
+						
 						if(angular.isDefined(scope.selectedConditionChanged)){
 							scope.selectedConditionChanged(scope.selectedFilterProperty);
 						}
-						
-						
-						/*if(scope.filterItem.value !== 'null'){
-							scope.selectedFilterProperty.showCriteriaValue = true;
-						}*/
-						
 					}
 				});
 				

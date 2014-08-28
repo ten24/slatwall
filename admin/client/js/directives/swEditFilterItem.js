@@ -90,6 +90,7 @@ $filter){
 											filterItem.value = selectedFilterProperty.criteriaValue+'%';
 											break;
 									}
+									
 									filterItem.displayValue = selectedFilterProperty.criteriaValue;
 								}else{
 									filterItem.value = selectedFilterProperty.criteriaValue;
@@ -111,6 +112,9 @@ $filter){
 								filterItem.value = dateValueString;
 								var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
 								filterItem.displayValue = formattedDateValueString;
+								if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+									filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+								}
 							}
 							
 			                break;	
