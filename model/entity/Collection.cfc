@@ -229,6 +229,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			case "!=":
 				return "!=";
 			break;
+			case "<>":
+				return "<>";
+			break;
 			case ">":
 				return ">";
 			break;

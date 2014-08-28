@@ -75,6 +75,7 @@ $filter){
 							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 							
 								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+								filterItem.displayValue = filterItem.value;
 							}else{
 								//if has a pattern then we need to evaluate where to add % for like statement
 								if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
@@ -89,8 +90,10 @@ $filter){
 											filterItem.value = selectedFilterProperty.criteriaValue+'%';
 											break;
 									}
+									filterItem.displayValue = selectedFilterProperty.criteriaValue;
 								}else{
 									filterItem.value = selectedFilterProperty.criteriaValue;
+									filterItem.displayValue = selectedFilterProperty.criteriaValue;
 								}
 							}
 							
@@ -125,8 +128,6 @@ $filter){
 								}
 							}
 							break;
-						
-						
 					}
 					
 					if(angular.isUndefined(filterItem.displayValue)){

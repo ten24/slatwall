@@ -1,5 +1,5 @@
 
-<li ng-class="{'s\-disabled':filterItem.$$disabled}">
+<li ng-class="{'s\-disabled':filterItem.disabled}">
  
   <!--- Filter display --->
   <div class="s-filter-item">
@@ -17,7 +17,7 @@
       			OR
       </button>
     </div>
-    <div class="panel panel-default"  ng-class="{'s\-focus':!filterItem.$$isClosed}" >
+    <div class="panel panel-default"  ng-class="{'s\-focus':!filterItem.isClosed}" >
       <div class="panel-heading">
       	<span ng-bind="filterItem.displayPropertyIdentifier"></span> 
       	<a href="##" class="j-tool-tip-item" 

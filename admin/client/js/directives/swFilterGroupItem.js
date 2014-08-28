@@ -37,7 +37,7 @@ $log){
 			//for(item in filterGroupItem){}
 			scope.filterGroupItem.setItemInUse = scope.setItemInUse;
 			
-			scope.filterGroupItem.$$disabled = false;
+			scope.filterGroupItem.disabled = false;
 			if(angular.isUndefined(scope.filterGroupItem.isClosed)){
 				scope.filterGroupItem.isClosed = true;
 			}

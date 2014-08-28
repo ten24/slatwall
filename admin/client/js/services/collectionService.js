@@ -21,35 +21,35 @@ function(){
 			
 		},
 		selectFilterItem: function(filterItem){
-			if(filterItem.$$isClosed){
+			if(filterItem.isClosed){
 				for(i in filterItem.$$siblingItems){
-					filterItem.$$siblingItems[i].$$isClosed = true;
-					filterItem.$$siblingItems[i].$$disabled = true;
+					filterItem.$$siblingItems[i].isClosed = true;
+					filterItem.$$siblingItems[i].disabled = true;
 				}
-				filterItem.$$isClosed = false;
-				filterItem.$$disabled = false;
+				filterItem.isClosed = false;
+				filterItem.disabled = false;
 			}else{
 				for(i in filterItem.$$siblingItems){
-					filterItem.$$siblingItems[i].$$disabled = false;
+					filterItem.$$siblingItems[i].disabled = false;
 				}
-				filterItem.$$isClosed = true;
+				filterItem.isClosed = true;
 			}	
-			filterItem.setItemInUse({booleanValue:!filterItem.$$isClosed});
+			filterItem.setItemInUse({booleanValue:!filterItem.isClosed});
 		},
 		selectFilterGroupItem: function(filterGroupItem){
-			if(filterGroupItem.$$isClosed){
+			if(filterGroupItem.isClosed){
 				for(i in filterGroupItem.$$siblingItems){
-					filterGroupItem.$$siblingItems[i].$$disabled = true;
+					filterGroupItem.$$siblingItems[i].disabled = true;
 				}
-				filterGroupItem.$$isClosed = false;
-				filterGroupItem.$$disabled = false;
+				filterGroupItem.isClosed = false;
+				filterGroupItem.disabled = false;
 			}else{
 				for(i in filterGroupItem.$$siblingItems){
-					filterGroupItem.$$siblingItems[i].$$disabled = false;
+					filterGroupItem.$$siblingItems[i].disabled = false;
 				}
-				filterGroupItem.$$isClosed = true;
+				filterGroupItem.isClosed = true;
 			}
-			filterGroupItem.setItemInUse({booleanValue:!filterGroupItem.$$isClosed});
+			filterGroupItem.setItemInUse({booleanValue:!filterGroupItem.isClosed});
 		},
 		newFilterItem: function(filterItemGroup,setItemInUse){
 			
@@ -58,8 +58,8 @@ function(){
 					propertyIdentifier:"empty",
 					comparisonOperator:"=",
 					value:"",
-					$$disabled:"false",
-					$$isClosed:"true",
+					disabled:"false",
+					isClosed:"true",
 					$$siblingItems:filterItemGroup,
 					setItemInUse:setItemInUse				
 				};
@@ -72,8 +72,8 @@ function(){
 		newFilterGroupItem: function(filterItemGroup,setItemInUse){
 			var filterGroupItem = {
 				filterGroup:[],
-				$$disabled:"false",
-				$$isClosed:"true",
+				disabled:"false",
+				isClosed:"true",
 				$$siblingItems:filterItemGroup,
 				setItemInUse:setItemInUse	
 			};

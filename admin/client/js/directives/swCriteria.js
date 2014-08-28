@@ -6,12 +6,14 @@ angular.module('slatwalladmin')
 'partialsPath',
 '$log',
 'slatwallService',
+'$filter',
 function($http,
 $compile,
 $templateCache,
 partialsPath,
 $log,
-slatwallService){
+slatwallService,
+$filter){
 	//private functions
 	
 	var getTemplate = function(selectedFilterProperty){
@@ -408,6 +410,12 @@ slatwallService){
     };
     
     var linker = function(scope, element, attrs){
+    	//show the user the value without % symbols as these are reserved
+    	scope.$watch('selectedFilterProperty.criteriaValue',function(criteriaValue){
+    		if(angular.isDefined(criteriaValue)){
+    			scope.selectedFilterProperty.criteriaValue = $filter('likeFilter')(criteriaValue);
+    		}
+    	});
 		
 		scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
 			if(angular.isDefined(selectedFilterProperty)){
@@ -424,7 +432,7 @@ slatwallService){
 			    			scope.conditionOptions = getStringOptions();
 			    			
 			    			scope.selectedConditionChanged = function(selectedFilterProperty){
-			    				console.log(selectedFilterProperty);
+			    				scope.selectedFilterProperty.criteriaValue = '';
 			    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 			    					selectedFilterProperty.showCriteriaValue = false;
 			    				}else{
@@ -684,7 +692,10 @@ slatwallService){
 					if(conditionOption.display == scope.filterItem.conditionDisplay ){
 						scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
 						scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-						scope.selectedFilterProperty.showCriteriaValue = true;
+						if(scope.filterItem.value !== 'null'){
+							scope.selectedFilterProperty.showCriteriaValue = true;
+						}
+						
 					}
 				});
 				
