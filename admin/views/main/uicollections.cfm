@@ -81,7 +81,7 @@
                       <!--- Edit Filter Box --->
                       <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1">
                         <div class="row">
-                          <h4> Define Filters: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
+                          <h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
                           <div class="col-xs-12">
 
                             <div class="row">
@@ -608,7 +608,7 @@
                               <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1">
                                 <div class="row">
                                   <div class="col-xs-12">
-                                    <h4> Define Filters: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
+                                    <h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
                                     <div class="row">
                                       <div class="col-xs-4">
                                         Select From Orders:
@@ -713,7 +713,7 @@
                                       <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1-1">
                                         <div class="row">
                                           <div class="col-xs-12">
-                                            <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
+                                            <h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
                                             <div class="row">
                                               <div class="col-xs-4">
                                                 Select From Orders:
@@ -830,7 +830,7 @@
                     <div class="col-xs-12 collapse j-add-filter" id="j-add-filter-group">
                       <div class="row">
                         <div class="col-xs-12">
-                          <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter-group"></i></h4>
+                          <h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter-group"></i></h4>
                           <div class="row">
                             <div class="col-xs-4">
                               Select From Orders:
@@ -897,7 +897,7 @@
                     <div class="col-xs-12 collapse s-add-filter" id="j-add-filter">
                       <div class="row">
                         <div class="col-xs-12">
-                          <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter"></i></h4>
+                          <h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter"></i></h4>
                           <div class="row">
                             <div class="col-xs-4">
                               Select From Orders:
@@ -1553,7 +1553,7 @@
   .s-table-options .navbar-form {margin-right:15px;}
   .s-table-options .navbar-form:first-child {margin-left:17px;}
   .s-table-options .btn-group {margin-top:15px;margin-top: 8px;margin-bottom: 8px;margin-left:15px;}
-  .s-table-options .s-table-header-search {padding-left:0px;}
+  .s-table-options .s-table-header-search {padding-left:0px;width:200px;}
   .s-table-options .s-table-header-search button {color:#5E5E5E;background-color:#eeeeee;}
   .s-table-options .s-table-header-right {float:right;}
   .s-table-options .fa-level-down {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;}

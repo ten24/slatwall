@@ -326,7 +326,7 @@ $('.openall').click(function(){
                                 <!--- Edit Filter Box --->
                                 <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1">
                                   <div class="row">
-                                    <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
+                                    <h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
                                     <div class="col-xs-12">
 
                                       <div class="row">
@@ -437,7 +437,7 @@ $('.openall').click(function(){
                                         <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1">
                                           <div class="row">
                                             <div class="col-xs-12">
-                                              <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
+                                              <h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
                                               <div class="row">
                                                 <div class="col-xs-4">
                                                   Select From Orders:
@@ -542,7 +542,7 @@ $('.openall').click(function(){
                                                 <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1-1">
                                                   <div class="row">
                                                     <div class="col-xs-12">
-                                                      <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
+                                                      <h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
                                                       <div class="row">
                                                         <div class="col-xs-4">
                                                           Select From Orders:
@@ -659,7 +659,7 @@ $('.openall').click(function(){
                               <div class="col-xs-12 collapse j-add-filter" id="j-add-filter-group">
                                 <div class="row">
                                   <div class="col-xs-12">
-                                    <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter-group"></i></h4>
+                                    <h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter-group"></i></h4>
                                     <div class="row">
                                       <div class="col-xs-4">
                                         Select From Orders:
@@ -726,7 +726,7 @@ $('.openall').click(function(){
                               <div class="col-xs-12 collapse s-add-filter" id="j-add-filter">
                                 <div class="row">
                                   <div class="col-xs-12">
-                                    <h4> Define Filter: <span>Orders</span><i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-add-filter"></i></h4>
+                                    <h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter"></i></h4>
                                     <div class="row">
                                       <div class="col-xs-4">
                                         Select From Orders:
