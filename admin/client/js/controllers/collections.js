@@ -42,7 +42,10 @@ $log
 		collectionListingPromise.then(function(value){
 			$scope.collection = value;
 			$scope.collectionInitial = angular.copy($scope.collection);
-			$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
+			if(angular.isUndefined($scope.collectionConfig)){
+				$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
+			}
+			
 			//check if we have any filter Groups
 			//console.log($scope.collectionConfig.columns);
 			if(angular.isUndefined($scope.collectionConfig.filterGroups)){
@@ -100,7 +103,9 @@ $log
 				var alerts = alertService.formatMessagesToAlerts(messages);
 				alertService.addAlerts(alerts);
 				$scope.filterCount = 0;
+				
 				$scope.getCollection();
+				//$scope.collectionConfig = $scope.collectionConfigCopy;
 			}, function(reason){
 				//revert to original
 				$scope.collection = angular.copy($scope.collectionInitial);

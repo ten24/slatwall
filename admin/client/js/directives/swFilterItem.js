@@ -35,11 +35,11 @@ $log){
 			});
 			scope.setItemInUse(false);
 			
-			if(angular.isUndefined(scope.filterItem.isClosed)){
-				scope.filterItem.isClosed = true;
+			if(angular.isUndefined(scope.filterItem.$$isClosed)){
+				scope.filterItem.$$isClosed = true;
 			}
-			if(angular.isUndefined(scope.filterItem.disabled)){
-				scope.filterItem.disabled = false;
+			if(angular.isUndefined(scope.filterItem.$$disabled)){
+				scope.filterItem.$$disabled = false;
 			}
 			if(angular.isUndefined(scope.filterItem.$$siblingItems)){
 				scope.filterItem.$$siblingItems = scope.siblingItems;
