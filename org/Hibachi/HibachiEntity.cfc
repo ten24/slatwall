@@ -789,14 +789,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public void function postInsert(any entity){
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
 		// Call the calculatedProperties update
-			updateCalculatedProperties();
+			//updateCalculatedProperties();
 		}
 	}
 	
 	public void function postUpdate(any entity){
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
 		// Call the calculatedProperties update
-			updateCalculatedProperties();
+			//updateCalculatedProperties();
 		}
 	}
 	/*
