@@ -26,6 +26,7 @@ partialsPath){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
+			
 			scope.addFilterItem = function(filterItemGroup){
 				collectionService.newFilterItem(filterItemGroup,scope.setItemInUse);
 			};

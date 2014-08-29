@@ -33,8 +33,8 @@ $filter){
 		controller: function ($scope, $element, $attrs) {
 			//initialize directive
 			
-			if(angular.isUndefined($scope.filterItem.isClosed)){
-				$scope.filterItem.isClosed = true;
+			if(angular.isUndefined($scope.filterItem.$$isClosed)){
+				$scope.filterItem.$$isClosed = true;
 			}
 			if(angular.isUndefined($scope.filterItem.breadCrumbs)){
 				$scope.filterItem.$$breadCrumbs = "";

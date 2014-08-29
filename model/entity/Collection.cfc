@@ -135,9 +135,23 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		
 		variables.baseEntityName = "#slatwallBaseEntity#";
 		if(variables.collectionConfig eq '{}' ){
+			//get default columns
+			//writeDump(var=newCollection(),top=2);
+			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.baseEntityName).invokeMethod("new#arguments.baseEntityName#");
+			var defaultProperties = newEntity.getDefaultProperties();
+			
+			var columnsArray = []; 
+			for(defaultProperty in defaultProperties){
+				var columnStruct = {};
+				columnStruct['propertyIdentifier'] = arguments.baseEntityName & '.' & defaultProperty.name;
+				columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
+				arrayAppend(columnsArray,columnStruct);
+			}
+			var columnsJson = serializeJson(columnsArray);
 			variables.collectionConfig = '{
 				"baseEntityName":"#slatwallBaseEntity#",
-				"baseEntityAlias":"#arguments.baseEntityName#"
+				"baseEntityAlias":"#arguments.baseEntityName#",
+				"columns":#columnsJson#
 			}';
 		}
 	}

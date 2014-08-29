@@ -196,6 +196,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	private any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier){
+		//populate pageRecordStruct with pageRecord info based on the passed in property identifier
+		
 		var pageRecordStruct = {};
 		if(isObject(arguments.pageRecord)) {
 			var value = arguments.pageRecord.getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier, formatValue=true );
@@ -206,29 +208,31 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		
 		}else{
+			
 			if(structKeyExists(arguments.pageRecord,propertyIdentifier)){
 				if(isObject(arguments.pageRecord[arguments.propertyIdentifier])){
 					var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
 					pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers);
 				}else if(isArray(arguments.pageRecord[arguments.propertyIdentifier])){
-					writeDump(var=arguments.pageRecord[arguments.propertyIdentifier],top=2);abort;
-				//	var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
-					//pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers);
 			
 				}else{
 					var value = arguments.pageRecord[arguments.propertyIdentifier];
 					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-						pageRecordStruct[ pageRecord.getPropertyTitle(arguments.propertyIdentifier) ] = value & " ";
+						
+						pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
 					} else {
-						pageRecordStruct[ pageRecord.getPropertyTitle(arguments.propertyIdentifier) ] = value;
+						pageRecordStruct[ arguments.propertyIdentifier ] = value;
 					}
 				}
+			}else{
+				pageRecordStruct[ arguments.propertyIdentifier ] = " ";
 			}
 		}
 		return pageRecordStruct;
 	}
 	
 	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers){
+		//validate columns against entities default property identifiers
 		var formattedObjectRecords = [];
 		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
 			var thisRecord = {};
@@ -457,7 +461,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
 		var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
-		
 		structAppend(response,collectionPaginationStruct);
 		return response;
 	}
