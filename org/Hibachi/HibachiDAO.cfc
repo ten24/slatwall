@@ -95,7 +95,14 @@
 	    }
 	    
 	    public void function flushORMSession() {
+	    	// Initate the first flush
 	    	ormFlush();
+	    	
+	    	// Loop over the modifiedEntities to call updateCalculatedProperties
+	    	for(var entity in getHibachiScope().getModifiedEntities()){
+	    		entity.updateCalculatedProperties();
+	    	}
+	    	
 	    	// flush again to persist any changes done during ORM Event handler
 			ormFlush();
 	    }
