@@ -374,6 +374,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swCriteria.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swTabDisplayOptions.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/pagination.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swPropertyDisplay.js"></script>
 
 		<div class="container-fluid">
 			<div class="row">

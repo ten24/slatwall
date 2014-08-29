@@ -49,6 +49,8 @@ $log){
 				scope.saveCollection();
 			};
 			
+			//scope.
+			
 			scope.removeFilterGroupItem = function(filterGroupItemIndex){
 				//remove Item
 				scope.filterGroupItem.splice(filterGroupItemIndex,1);

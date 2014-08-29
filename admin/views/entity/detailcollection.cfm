@@ -34,6 +34,12 @@
           <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection()" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
           <form class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
             <input style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
+            
+            <span 	sw-property-display
+            		object="colleciton"
+            		property="collection.collectionName",
+					isEditable="true"
+            ></span>
             <div class="form-group">
               <label class="col-sm-2 control-label">Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
@@ -194,14 +200,14 @@
 	        <thead>
 	            <tr>
 	                <th>Row</span></th>
-	                <th ng-repeat="(key,value) in collection.pageRecords[0]" class="s-sortable" ng-bind="key"></th>
+	                <th ng-repeat="(key,value) in collectionConfig.columns" class="s-sortable" ng-bind="value.title"></th>
 	                <th></th>
 	            </tr>
 	        </thead>
 	        <tbody>
 				<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
-		            <td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
-		            <td ng-repeat="(key,value) in pageRecord" ng-bind="value"></td>
+		            <td> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
+		            <td ng-repeat="(key,value) in collectionConfig.columns" ng-bind="pageRecord[value.propertyIdentifier.split('.').pop()]"></td>
 		           <td class="s-edit-elements">
 		              <ul>
 		                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>

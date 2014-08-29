@@ -44,6 +44,7 @@ $log
 			$scope.collectionInitial = angular.copy($scope.collection);
 			$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
 			//check if we have any filter Groups
+			//console.log($scope.collectionConfig.columns);
 			if(angular.isUndefined($scope.collectionConfig.filterGroups)){
 				$scope.collectionConfig.filterGroups = [
 					{
