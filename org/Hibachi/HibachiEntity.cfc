@@ -50,21 +50,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 						variables[ property.name ] = value;	
 					}
 
-				}
-			}
-		}
-	}
-	
-	public void function addCascadeCalculatedToModifiedEntities() {
-		
-		// Loop over all properties
-		for(var property in getProperties()) {
-			
-			// Look for any that have the cascadeCalculate set to true and call updateCalculatedProperties() on that object
-			if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate) {
+				} else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
 					
-				if( structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
-					getHibachiScope().addModifiedEntity( variables[ property.name ] );
+					variables[ property.name ].updateCalculatedProperties();
+					
 				}
 			}
 		}
@@ -750,7 +739,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			
 			// Add to the modifiedEntities
 			getHibachiScope().addModifiedEntity( this );
-			addCascadeCalculatedToModifiedEntities();
 		}
 		
 	}
@@ -792,20 +780,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			
 			// Add to the modifiedEntities
 			getHibachiScope().addModifiedEntity( this );
-			addCascadeCalculatedToModifiedEntities();
 		}
 		
 	}
 	
-	public void function preDelete(any entity){
-		// These are more complicated options that should not be called during application setup
-		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-			
-			// Add to the modifiedEntities
-			addCascadeCalculatedToModifiedEntities();
-		}
-	}
 	/*
+	public void function preDelete(any entity){
+	}
+	
 	public void function preLoad(any entity){
 	}
 	

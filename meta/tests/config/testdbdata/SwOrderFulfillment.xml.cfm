@@ -6,7 +6,6 @@
 		<column name="currencyCode" />
 		<column name="emailAddress" />
 		<column name="manualFulfillmentChargeFlag" />
-		<column name="remoteID" />
 		<column name="orderID" />
 		<column name="fulfillmentMethodID" />
 		<column name="shippingAddressID" />

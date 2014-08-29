@@ -17,7 +17,6 @@
 			}
 			
 			if ( !isNull( entity ) ) {
-				//entity.updateCalculatedProperties();
 				return entity;
 			}
 	
