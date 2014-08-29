@@ -56,6 +56,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
+	property name="creditCardNumberEncryptedDateTime" ormType="timestamp";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
 	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
@@ -224,6 +225,12 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		
 	}
 	
+	public void function setupEncryptedProperties() {
+		if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) && getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) {
+			encryptProperty('creditCardNumber');
+		}
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getPaymentMethodOptionsSmartList() {
@@ -318,15 +325,12 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
 		setCreditCardLastFour(Right(arguments.creditCardNumber, 4));
 		setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber));
-		if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) && getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) {
-			setCreditCardNumberEncrypted(encryptValue(arguments.creditCardNumber));
-		}
 	}
 	
 	public string function getCreditCardNumber() {
 		if(!structKeyExists(variables,"creditCardNumber")) {
 			if(nullReplace(getCreditCardNumberEncrypted(), "") NEQ "") {
-				variables.creditCardNumber = decryptValue(getCreditCardNumberEncrypted());
+				variables.creditCardNumber = decryptValue(getCreditCardNumberEncrypted(), getPrimaryIDValue());
 			} else {	
 				variables.creditCardNumber = "";
 			}

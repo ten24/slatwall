@@ -295,9 +295,6 @@
 			}
 			
 			var passwords = getEncryptionPasswordArray();
-			
-			logHibachi("**** Encrypted with the new method! value: '#arguments.value#', salt: '#arguments.salt#'");
-			
 			return encrypt(arguments.value, getEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
 		}
 	

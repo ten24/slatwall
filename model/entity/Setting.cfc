@@ -52,6 +52,7 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="settingName" ormtype="string";
 	property name="settingValue" ormtype="string" length="4000";
+	property name="settingValueEncryptedDateTime" ormType="timestamp";
 
 	// Non-Constrained related entity
 	property name="cmsContentID" ormtype="string";
@@ -82,6 +83,15 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 
 	public struct function getSettingMetaData() {
 		return getService("settingService").getSettingMetaData(settingName=getSettingName());
+	}
+	
+	public void function setupEncryptedProperties() {
+		var settingMetaData = getSettingMetaData();
+		
+		// Determine if we need to encrypt value
+		if(structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue == true) {
+			encryptProperty('settingValue', getSettingID());
+		}
 	}
 
 	// ============ START: Non-Persistent Property Methods =================

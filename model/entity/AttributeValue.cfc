@@ -57,6 +57,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
 	property name="attributeValueEncrypted" ormtype="string";
+	property name="attributeValueEncryptedDateTime" ormType="timestamp";
 	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
 	
 	// Related Object Properties (many-to-one)
@@ -93,6 +94,12 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
+	
+	public void function setupEncryptedProperties() {
+		if(getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attributeValue")) {
+			encryptProperty('attributeValue', getAttributeID());
+		}
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -454,7 +461,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		if(structKeyExists(variables, "attributeValueEncrypted") && len(variables.attributeValueEncrypted)) {
 			if(!isNull(getAttribute().getDecryptValueInAdminFlag()) && getAttribute().getDecryptValueInAdminFlag()) {
-				return decryptValue(variables.attributeValueEncrypted);	
+				return decryptValue(variables.attributeValueEncrypted, getAttributeValueID());	
 			}
 			return "********";
 		}
@@ -519,24 +526,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================
-	
-	public void function preInsert(){
-		if(getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attributeValue")) {
-			variables.attributeValueEncrypted = encryptValue(variables.attributeValue);
-			structDelete(variables, "attributeValue");
-		}
-		
-		super.preInsert();
-	}
-	
-	public void function preUpdate(struct oldData){
-		if(getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attrubuteValue")) {
-			variables.attributeValueEncrypted = encryptValue(variables.attributeValue);
-			structDelete(variables, "attributeValue");
-		}
-		
-		super.preUpdate(argumentcollection=arguments);
-	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }

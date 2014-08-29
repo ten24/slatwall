@@ -531,6 +531,34 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	// @hint handles encrypting a property based on conventions
+	public void function encryptProperty(required string propertyName) {
+		var encryptedPropertyValue = encryptValue(this.invokeMethod('get#arguments.propertyName#'), getPrimaryIDValue());
+		
+		if(this.hasProperty('#arguments.propertyName#Encrypted')) {
+			// Set corresponding property that should store the newly encrypted value and remove the unencrypted value from the corresponding unencrypted property (necessary if persistent)
+			this.invokeMethod("set#arguments.propertyName#Encrypted", {'1'=encryptedPropertyValue});
+			
+			var unencryptedProperty = this.getPropertiesStruct()['#arguments.propertyName#'];
+			
+			// Unencrypted property is persistent, remove the value from variables scope so it is not persisted as plaintext
+			if (!structKeyExists(unencryptedProperty, "persistent") || (structKeyExists(unencryptedProperty, "persistent") && unencryptedProperty.persistent)) {
+				structDelete(variables, arguments.propertyName);
+			}
+		} else {
+			// Overwrite property's unencrypted value with the newly encrypted value
+			this.invokeMethod('set#arguments.propertyName#', {'1'=encryptedPropertyValue});
+		}
+		
+		// Set encrypted datetime stamp
+		if(this.hasProperty('#arguments.propertyName#EncryptedDateTime')) {
+			this.invokeMethod("set#arguments.propertyName#EncryptedDateTime", {'1'=now()});
+		// Enforce that every encrypted property has the timestamp when the encryption takes place
+		} else {
+			throw("Entity '#getClassName()#' is missing the '#arguments.propertyName#EncryptedDateTime' property. Encrypting '#arguments.propertyName#' property value without a corresponding '#arguments.propertyName#EncryptedDateTime' property is not allowed.");	
+		}
+	}
+	
 	public string function getAuditablePropertyExclusionList() {
 		return "createdByAccount,createdByAccountID,createdDateTime,modifiedByAccount,modifiedByAccountID,modifiedDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID";
 	}
@@ -739,6 +767,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		
+		// Handle encrypted properties
+		if (structKeyExists(this, 'setupEncryptedProperties')) {
+			this.invokeMethod('setupEncryptedProperties');
+		}
+		
 		// Log audit only if admin user
 		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
 			getService("hibachiAuditService").logEntityModify(entity=this);
@@ -773,6 +806,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
+		}
+		
+		// Handle encrypted properties
+		if (structKeyExists(this, 'setupEncryptedProperties')) {
+			this.invokeMethod('setupEncryptedProperties');
 		}
 		
 		// Log audit only if admin user
