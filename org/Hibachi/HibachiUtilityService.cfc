@@ -373,7 +373,7 @@
 		}
 		
 		public any function createDefaultPasswordData() {
-			return {'iterationCount'= randRange(500, 2500), 'password'=createHibachiUUID(), 'createDateTime'=dateFormat(now(),"yyyy-mm-dd")};
+			return {'iterationCount'= randRange(500, 2500), 'password'=createHibachiUUID(), 'createdDateTime'=dateFormat(now(),"yyyy-mm-dd")};
 		}
 		
 		public any function getEncryptionPasswordArray() {
@@ -413,7 +413,37 @@
 				removeLegacyEncryptionKeyFile(method="rename");
 			}
 			
-			// TODO make sure passwords are sorted newest to oldest
+			var legacyPasswords = [];
+			var sortedPasswords = [];
+			
+			//  Sort passwords array from newest to oldest
+			if (arraylen(passwords) > 1) {
+				var sortValues = [];
+				
+				// Build array of sortValues using createdDateTime
+				for (var i=1; i<=arraylen(passwords); i++) {
+					if (structKeyExists(passwords[i], 'createdDateTime')) {
+						 arrayAppend(sortValues, dateFormat(passwords[i].createdDateTime, "YYYYMMDD") & timeFormat(passwords[i].createdDateTime, "HHMMSS") & "-" & i);
+					} else {
+						arrayAppend(legacyPasswords, passwords[i]);
+					}
+				}
+				
+				// Perform sort on createdDateTime
+				arraySort(sortValues, "numeric", "desc");
+				
+				// Build array of sorted passwords
+				for (var sv in sortValues) {
+					arrayAppend(sortedPasswords, passwords[listLast(sv, "-")]);
+				}
+				
+				// Append legacy keys
+				for (var lp in legacyPasswords) {
+					arrayAppend(sortedPasswords, lp);
+				}
+				
+				passwords = sortedPasswords;
+			}
 			
 			return passwords;
 		}
