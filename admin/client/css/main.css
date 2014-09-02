@@ -3,7 +3,7 @@
   hr {border-right:1px solid #cccccc;}
   th {font-weight:600;}
   a {color:#666666;}
-  a:hover, a:focus {color: #F9AC68;text-decoration: underline; }
+  a:hover, a:focus {color: #F9AC68; }
   button::-moz-focus-inner {border: 0;}
   input::-moz-focus-inner { border: 0; }
   a, a:active, a:focus {outline: none;}
@@ -29,6 +29,7 @@
   	.s-pannel-control a {color:#888;font-size:11px;}
 	.s-pannel-control a:hover {text-decoration:none;}
 	.panel-heading h4.panel-title {font-size:14px !important;}
+	.panel-heading h4.panel-title:hover {font-size:14px !important;text-decoration:none !important;}
   }
  
   .row .s-pannel-control {margin-top:10px;padding-bottom:2px;padding-right:2px;}
