@@ -16,8 +16,8 @@ partialsPath){
 			tabArray:"="
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"headerWithTabs.html";
-			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
+			var Partial = partialsPath+"headerWithTabs.html";
+			var templateLoader = $http.get(Partial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
 			}).then(function(response){

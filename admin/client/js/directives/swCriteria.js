@@ -1,3 +1,4 @@
+'use strict';
 angular.module('slatwalladmin')
 .directive('swCriteria', 
 ['$http',

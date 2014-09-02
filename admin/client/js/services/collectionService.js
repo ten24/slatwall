@@ -34,6 +34,8 @@ function(){
 				}
 				filterItem.$$isClosed = true;
 			}	
+			console.log('closed');
+			console.log(filterItem.$$isClosed);
 			filterItem.setItemInUse({booleanValue:!filterItem.$$isClosed});
 		},
 		selectFilterGroupItem: function(filterGroupItem){

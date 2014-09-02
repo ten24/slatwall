@@ -1,3 +1,4 @@
+'use strict';
 angular.module('slatwalladmin')
 .directive('swFilterGroupItem',
 ['$http',
@@ -16,7 +17,7 @@ $log){
 		restrict: 'A',
 		scope:{
 			filterGroupItem: "=",
-			siblingItems:"=",
+			$$siblingItems:"=",
 			incrementFilterCount:"&",
 			setItemInUse:"&",
 			filterPropertiesList:"=",
@@ -25,8 +26,8 @@ $log){
 			filterGroupItemIndex:"="
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"filterGroupItem.html";
-			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
+			var Partial = partialsPath+"filterGroupItem.html";
+			var templateLoader = $http.get(Partial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
 			}).then(function(response){
@@ -42,7 +43,7 @@ $log){
 				scope.filterGroupItem.$$isClosed = true;
 			}
 			
-			scope.filterGroupItem.$$siblingItems = scope.siblingItems;
+			scope.filterGroupItem.$$siblingItems = scope.$$siblingItems;
 			scope.selectFilterGroupItem = function(filterGroupItem){
 				collectionService.selectFilterGroupItem(filterGroupItem);
 			};

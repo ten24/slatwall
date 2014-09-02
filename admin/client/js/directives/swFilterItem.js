@@ -1,3 +1,4 @@
+'use strict';
 angular.module('slatwalladmin')
 .directive('swFilterItem', 
 ['$http',
@@ -16,18 +17,16 @@ $log){
 		restrict: 'A',
 		scope:{
 			filterItem: "=",
-			siblingItems: "=",
+			$$siblingItems: "=",
 			setItemInUse: "&",
 			filterPropertiesList:"=",
 			saveCollection:"&",
 			removeFilterItem:"&",
 			filterItemIndex:"="
 		},
-		link: function(scope, element,attrs, filterGroupsController){
-			console.log('filterGroupsController');
-			console.log(filterGroupsController);
-			var filterGroupsPartial = partialsPath+"filterItem.html";
-			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
+		link: function(scope, element,attrs){
+			var Partial = partialsPath+"filterItem.html";
+			var templateLoader = $http.get(Partial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
 			}).then(function(response){
@@ -42,7 +41,7 @@ $log){
 				scope.filterItem.$$disabled = false;
 			}
 			if(angular.isUndefined(scope.filterItem.$$siblingItems)){
-				scope.filterItem.$$siblingItems = scope.siblingItems;
+				scope.filterItem.$$siblingItems = scope.$$siblingItems;
 			}
 			scope.filterItem.setItemInUse = scope.setItemInUse;
 			

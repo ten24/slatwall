@@ -35,11 +35,11 @@
           <form class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
             <input style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
             
-            <span 	sw-property-display
-            		object="colleciton"
-            		property="collection.collectionName",
-					isEditable="true"
-            ></span>
+           <!-- <span 	sw-property-display
+            		object="collection"
+            		property="collectionName",
+					is-editable="true"
+            ></span>-->
             <div class="form-group">
               <label class="col-sm-2 control-label">Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
@@ -94,7 +94,19 @@
             </div>
           </div>
         </div><!--- //Tab Pane --->
-		<span sw-tab-display-options></span>
+        <div class="tab-pane s-display-options" id="j-display-options">
+			<span sw-display-options
+				columns="collectionConfig.columns"
+			>
+				<span 	ng-repeat="column in collectionConfig.columns" 
+						sw-column-item
+						data-column="column"
+						data-column-index="$index"
+						data-save-collection="saveCollection()"
+						
+				></span>
+			</span >
+		</div><!--- //Tab Pane --->
       </div>
 
     </div><!--- //Row --->

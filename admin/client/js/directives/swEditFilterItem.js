@@ -1,3 +1,4 @@
+'use strict';
 angular.module('slatwalladmin')
 .directive('swEditFilterItem', 
 ['$http',
@@ -22,8 +23,8 @@ $filter){
 			saveCollection:"&"
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"editFilterItem.html";
-			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
+			var Partial = partialsPath+"editFilterItem.html";
+			var templateLoader = $http.get(Partial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
 			}).then(function(response){
