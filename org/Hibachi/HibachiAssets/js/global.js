@@ -819,8 +819,6 @@ function setupEventHandlers() {
 	//[TODO]: Change Up JS
 	jQuery('.panel-collapse.in').parent().find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
 
-	
-
 	jQuery('body').on('shown.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
 		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
