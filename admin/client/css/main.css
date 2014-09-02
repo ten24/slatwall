@@ -1,6 +1,13 @@
-  body {background-color:#eee;font-family: 'Open Sans', sans-serif;margin-top:60px;}
+  /*Basic style overwrite*/
+  body {background-color:#eee;font-family: 'Open Sans', sans-serif;color:#666666;margin-top:60px;padding-top:21px;}
   hr {border-right:1px solid #cccccc;}
-
+  th {font-weight:600;}
+  a {color:#666666;}
+  a:hover, a:focus {color: #F9AC68;text-decoration: underline; }
+  button::-moz-focus-inner {border: 0;}
+  input::-moz-focus-inner { border: 0; }
+  a, a:active, a:focus {outline: none;}
+  
   /* Detail Views */
   .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;position:relative;text-align:left;left:15px;}
   label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;text-align:left;left:15px;}
@@ -32,13 +39,8 @@
   .panel-group .panel-heading {background-color:#606060;color:#fff;border-color:#888;}
   
   /*Basic style overwrite*/
-  body {font-family: 'Open Sans', sans-serif;color:#666666;padding-top:21px;}
-  th {font-weight:600;}
-  a {color:#666666;}
-  a:hover, a:focus {color: #F9AC68;text-decoration: underline; }
-  button::-moz-focus-inner {border: 0;}
-  input::-moz-focus-inner { border: 0; }
-  a, a:active, a:focus {outline: none;}
+  
+ 
 
   /*Bootstrap overwrite*/
   .navbar-inverse .navbar-nav>li>a {color:#b0b0b0;}
@@ -241,9 +243,10 @@
   .s-table-options .s-table-header-right {float:right;}
   .s-table-options .fa-level-down {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;}
 
+  /*
   .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
 
-  .s-j-draggablePanelList a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
+  .s-j-draggable-panel-list a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
   .s-j-draggablePanelList a.active {border:0px;box-shadow:none;-moz-box-shadow:    inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);-webkit-box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);border:0px;}
   .s-j-draggablePanelList a i {margin-top:50%;}
   .s-j-draggablePanelList a.active:hover {background-color:#F79C49;color:#ffffff;}
@@ -264,6 +267,5 @@
   .s-j-draggablePanelList .list-group-item {padding-top:0px;padding-bottom:0px;border-radius:0px;}
   .s-j-draggablePanelList .s-pannel-name > span:first-child {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);color: #FFF;display: inline-block;padding-top: 11px;font-size: 12px;color: #DDD;}
   .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
-  .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
+  .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;} */
   .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
-  .HIDEN {}

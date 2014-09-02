@@ -56,15 +56,15 @@
 			
 			<div class="row s-pannel-control">
 				<div class="col-md-12">
-					<a href="##" class="openall">Open All</a>
-					<a href="##" class="closeall">Close All</a>
+					<a href="##" class="j-openall">Open All</a>
+					<a href="##" class="j-closeall">Close All</a>
 				</div>
 			</div>
 			<cfset iteration = 0 />
 			<div class="panel-group s-pannel-group" id="accordion">		  
 				<cfloop array="#thistag.tabs#" index="tab">
 					<cfset iteration++ />
-					<div class="panel panel-default">
+					<div class="j-panel panel panel-default">
 						<a data-toggle="collapse"  href="##collapse#iteration#">
 							<div class="panel-heading">
 								<h4 class="panel-title">

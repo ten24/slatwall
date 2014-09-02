@@ -227,28 +227,6 @@ function initUIElements( scopeSelector ) {
 		}				
 	});
 }
-// Accordian All Open and All Close
-$(window).load( function() {
-	$('.closeall').click(function(){
-	  $('.panel-collapse.in')
-	    .collapse('hide');
-	});
-	$('.openall').click(function(){
-	  $('.panel-collapse:not(".in")')
-	    .collapse('show');
-	});
-});
-
-$(window).load( function() {
-    $('.panel-collapse.in').parent().find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
-    $('.panel').on('shown.bs.collapse', function () {
-       $(this).find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
-    });
-
-    $('.panel').on('hidden.bs.collapse', function () {
-       $(this).find('.panel-title i').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
-    });
-});
 
 function setupEventHandlers() {
 	
@@ -826,6 +804,32 @@ function setupEventHandlers() {
 		updateReport( jQuery(this).data('page') );
 	});
 	
+	
+	//Accordion Binding
+	jQuery('body').on('click','.j-closeall', function(e){
+		e.preventDefault();
+		jQuery('.panel-collapse.in').collapse('hide');
+	});
+	
+	jQuery('body').on('click','.j-openall', function(e){
+		e.preventDefault();
+		jQuery('.panel-collapse:not(".in")').collapse('show');
+	});
+	
+	//[TODO]: Change Up JS
+	jQuery('.panel-collapse.in').parent().find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+
+	
+
+	jQuery('body').on('shown.bs.collapse', '.j-panel', function(e){
+		e.preventDefault();
+		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+	});
+	
+	jQuery('body').on('hidden.bs.collapse', '.j-panel', function(e){
+		e.preventDefault();
+		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
+	});
 	
 }
 
