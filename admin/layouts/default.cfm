@@ -372,7 +372,8 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swEditFilterItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterGroupItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swCriteria.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swTabDisplayOptions.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swDisplayOptions.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swColumnItem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/pagination.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swPropertyDisplay.js"></script>
 

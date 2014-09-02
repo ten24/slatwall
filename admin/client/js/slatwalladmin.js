@@ -1,3 +1,4 @@
+'use strict';
 angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap',function($locationProvider){
 	$locationProvider.html5Mode(true);
 }]).config(["$provide",'$logProvider','$filterProvider', function ($provide, $logProvider,$filterProvider) {

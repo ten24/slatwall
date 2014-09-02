@@ -1,3 +1,4 @@
+'use strict';
 angular.module('slatwalladmin')
 .directive('swFilterGroups', 
 ['$http',
@@ -21,8 +22,8 @@ $log){
 			saveCollection:"&"
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"filterGroups.html";
-			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
+			var Partial = partialsPath+"filterGroups.html";
+			var templateLoader = $http.get(Partial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
 			}).then(function(response){

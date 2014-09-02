@@ -1,3 +1,4 @@
+'use strict';
 angular.module('slatwalladmin')
 .directive('swAddFilterButtons', 
 ['$http',
@@ -19,8 +20,8 @@ partialsPath){
 			setItemInUse:"&"
 		},
 		link: function(scope, element,attrs){
-			var filterGroupsPartial = partialsPath+"addFilterButtons.html";
-			var templateLoader = $http.get(filterGroupsPartial,{cache:$templateCache});
+			var Partial = partialsPath+"addFilterButtons.html";
+			var templateLoader = $http.get(Partial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
 			}).then(function(response){

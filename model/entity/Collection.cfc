@@ -136,7 +136,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.baseEntityName = "#slatwallBaseEntity#";
 		if(variables.collectionConfig eq '{}' ){
 			//get default columns
-			//writeDump(var=newCollection(),top=2);
 			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.baseEntityName).invokeMethod("new#arguments.baseEntityName#");
 			var defaultProperties = newEntity.getDefaultProperties();
 			
