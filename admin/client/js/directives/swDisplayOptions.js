@@ -16,17 +16,12 @@ $log){
 		restrict: 'A',
 		transclude:true,
 		scope:{
-			columns:'='
+			columns:'=',
+			propertiesList:"=",
+			saveCollection:"&"
 		},
 		templateUrl:partialsPath+"displayOptions.html",
 		controller: function($scope,$element,$attrs){
-			/*var Partial = partialsPath+"displayOptions.html";
-			var templateLoader = $http.get(Partial,{cache:$templateCache});
-			var promise = templateLoader.success(function(html){
-				$element.html(html);
-			}).then(function(response){
-				$element.replaceWith($compile($element.html())($scope));
-			});*/
 			this.removeColumn = function(columnIndex){
 				$log.debug('parent remove column');
 				$log.debug($scope.columns);
@@ -36,7 +31,20 @@ $log){
 				
 			};
 			
-		    
+			$scope.addColumn = function(selectedProperty){
+				$log.debug('add column');
+				$log.debug(selectedProperty);
+				$log.debug($scope.columns);
+				if(angular.isDefined(selectedProperty)){
+					var column = {};
+					column.title = selectedProperty.displayPropertyIdentifier;
+					column.propertyIdentifier = selectedProperty.propertyIdentifier;
+					column.isVisible = true;
+					$scope.columns.push(column);
+					$scope.saveCollection();
+				}
+				
+			};
 		}
 	};
 }]);
