@@ -15,19 +15,28 @@
   <div class="row s-add-display-field collapse" id="j-add-row">
     <div class="col-xs-12">
       <i class="fa fa-plus"></i>
-      <select class="form-control">
+      <!--<select class="form-control">
         <option value="Select from Orders" disabled="disabled" selected="selected">Order Items</option>
         <option value="Order Total">Order Total</option>
         <option value="Order Item Total">Order Item Total</option>
+      </select>-->
+      
+      <select ng-model="selectedProperty" 
+      		ng-change="selectedPropertyChanged(selectedProperty)" 
+      		ng-options="property as property.displayPropertyIdentifier
+      					group by property.fieldtype 
+      					for property in propertiesList.data 
+      					track by property.propertyIdentifier
+      					| orderBy:property.name" 
+      		class="form-control">
+        <option value="">Select From {{propertiesList.entityName}}:</option>
       </select>
-
-      <select class="form-control">
-        <option value="Select from Orders" disabled="disabled" selected="selected">Select From Account</option>
-        <option value="Order Total">First Name</option>
-        <option value="Order Item Total">Last Name</option>
-      </select>
-      <button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
-      <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+      
+      <button name="button" class="btn s-btn-ten24 btn-xs" ng-click="addColumn(selectedProperty)">
+      	<i class="fa fa-plus"></i> Column
+      </button>
+      <!-- <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button> -->
     </div>
   </div>
+  
 

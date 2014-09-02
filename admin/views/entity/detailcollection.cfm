@@ -81,10 +81,10 @@
                 	<!---filterGroups gets taken apart here --->
                 	<ul class="col-xs-12 list-unstyled" 
                 		sw-filter-groups 
-                		increment-filter-count="incrementFilterCount()" 
-                		filter-group-item="collectionConfig.filterGroups[0].filterGroup"
-                		filter-properties-list="filterPropertiesList"
-                		save-collection="saveCollection()"
+                		data-increment-filter-count="incrementFilterCount()" 
+                		data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
+                		data-filter-properties-list="filterPropertiesList"
+                		data-save-collection="saveCollection()"
                 		>
                 	</ul>
                 </div>
@@ -96,7 +96,9 @@
         </div><!--- //Tab Pane --->
         <div class="tab-pane s-display-options" id="j-display-options">
 			<span sw-display-options
-				columns="collectionConfig.columns"
+				data-columns="collectionConfig.columns"
+				data-properties-list="filterPropertiesList"
+				data-save-collection="saveCollection()"
 			>
 				<span 	ng-repeat="column in collectionConfig.columns" 
 						sw-column-item
