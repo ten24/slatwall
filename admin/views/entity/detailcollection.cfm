@@ -212,14 +212,14 @@
 	        <thead>
 	            <tr>
 	                <th>Row</span></th>
-	                <th ng-repeat="(key,value) in collectionConfig.columns" class="s-sortable" ng-bind="value.title"></th>
+	                <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.title" ng-show="column.isVisible"></th>
 	                <th></th>
 	            </tr>
 	        </thead>
 	        <tbody>
 				<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
 		            <td> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
-		            <td ng-repeat="(key,value) in collectionConfig.columns" ng-bind="pageRecord[value.propertyIdentifier.split('.').pop()]"></td>
+		            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
 		           <td class="s-edit-elements">
 		              <ul>
 		                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>

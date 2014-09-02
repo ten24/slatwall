@@ -144,6 +144,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				var columnStruct = {};
 				columnStruct['propertyIdentifier'] = arguments.baseEntityName & '.' & defaultProperty.name;
 				columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
+				columnStruct['isVisible'] = true;
 				arrayAppend(columnsArray,columnStruct);
 			}
 			var columnsJson = serializeJson(columnsArray);
