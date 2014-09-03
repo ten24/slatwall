@@ -35,17 +35,35 @@ $log){
 				scope.itemInUse = booleanValue;
 			};
 			
-			scope.removeFilterItem = function(filterItemIndex){
-				//remove item
-				scope.filterGroupItem.splice(filterItemIndex,1);
-				//make sure first item has no logical operator if it exists
-				if(scope.filterGroupItem.length){
-					delete scope.filterGroupItem[0].logicalOperator;
+			scope.deselectItems = function(filterItem){
+				for(i in filterItem.$$siblingItems){
+					filterItem.$$siblingItems[i].$$disabled = false;
 				}
-				
-				$log.debug('removeFilterItem');
-				$log.debug(filterItemIndex);
-				scope.saveCollection();
+			}
+			
+			scope.removeFilterItem = function(filterItemIndex){
+				console.log('remove')
+				console.log(scope.filterGroupItem);
+				if(angular.isDefined(filterItemIndex)){
+					
+					scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
+					scope.filterGroupItem[filterItemIndex].setItemInUse({booleanValue:false});
+					//remove item
+					$log.debug('removeFilterItem');
+					$log.debug(filterItemIndex);
+					scope.incrementFilterCount({number:-1});
+					
+					scope.filterGroupItem.splice(filterItemIndex,1);
+					//make sure first item has no logical operator if it exists
+					if(scope.filterGroupItem.length){
+						delete scope.filterGroupItem[0].logicalOperator;
+					}
+					
+					$log.debug('removeFilterItem');
+					$log.debug(filterItemIndex);
+					
+					scope.saveCollection();
+				}
 			};
 			
 			//scope.

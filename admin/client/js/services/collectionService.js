@@ -7,18 +7,11 @@ function(){
 	return collectionService = {
 		//properties
 		stringifyJSON: function(jsonObject){
-			
 			var jsonString = angular.toJson(jsonObject,true);
-			console.log('jsonString');
-			console.log(jsonString);
 			return jsonString;
 		},
 		removeFilterItem: function(filterItem){
-			console.log('serviceRemove');
-			
 			delete filterItem;
-			console.log(filterItem);
-			
 		},
 		selectFilterItem: function(filterItem){
 			if(filterItem.$$isClosed){
@@ -34,8 +27,6 @@ function(){
 				}
 				filterItem.$$isClosed = true;
 			}	
-			console.log('closed');
-			console.log(filterItem.$$isClosed);
 			filterItem.setItemInUse({booleanValue:!filterItem.$$isClosed});
 		},
 		selectFilterGroupItem: function(filterGroupItem){
@@ -56,12 +47,13 @@ function(){
 		newFilterItem: function(filterItemGroup,setItemInUse){
 			
 			filterItem = {
-					displayPropertyIdentifier:"empty",
-					propertyIdentifier:"empty",
+					displayPropertyIdentifier:"",
+					propertyIdentifier:"",
 					comparisonOperator:"=",
 					value:"",
 					$$disabled:"false",
 					$$isClosed:"true",
+					$$isNew:"true",
 					$$siblingItems:filterItemGroup,
 					setItemInUse:setItemInUse				
 				};
