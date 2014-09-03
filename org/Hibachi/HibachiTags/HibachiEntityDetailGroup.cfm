@@ -68,7 +68,7 @@
 						<a data-toggle="collapse"  href="##collapse#iteration#">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span>#tab.text#</span>
+									<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge pull-right" style="padding-left:10px;">#tab.count#</span></cfif>
 									<i class="fa fa-caret-left"></i>
 								</h4>
 							</div>

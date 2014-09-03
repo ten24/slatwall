@@ -67,9 +67,9 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.Promotion#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.Promotion#" property="promotionName" edit="#rc.edit#">
 				<cfif rc.promotion.isNew()>
+					<cf_HibachiPropertyDisplay object="#rc.Promotion#" property="activeFlag" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.Promotion#" property="promotionName" edit="#rc.edit#">
 					<hr />
 					<h5>#$.slatwall.rbKey('admin.pricing.detailpromotion.initialperiod')#</h5><br />
 					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].startDateTime" property="startDateTime" edit="#rc.edit#">
@@ -81,12 +81,13 @@ Notes:
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.promotion#">
-			<cf_HibachiTab view="admin:entity/promotiontabs/promotionperiods" />
-			<cf_HibachiTab view="admin:entity/promotiontabs/promotioncodes" />
-			<cf_HibachiTab view="admin:entity/promotiontabs/promotionsummary" />
-			<cf_HibachiTab view="admin:entity/promotiontabs/promotiondescription" />
-		</cf_HibachiTabGroup>
+		<cf_HibachiEntityDetailGroup object="#rc.promotion#">
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionsummary" />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotiondescription" />
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

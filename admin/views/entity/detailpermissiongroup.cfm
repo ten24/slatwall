@@ -53,18 +53,12 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.permissionGroup#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.permissionGroup#" property="permissionGroupName" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		
-		<cf_HibachiTabGroup object="#rc.permissionGroup#">
-			<cf_HibachiTab view="admin:entity/permissiongrouptabs/entitypermissions">
-			<cf_HibachiTab view="admin:entity/permissiongrouptabs/actionpermissions">
-		</cf_HibachiTabGroup>
+
+		<cf_HibachiEntityDetailGroup object="#rc.permissionGroup#">
+			<cf_HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/entitypermissions">
+			<cf_HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/actionpermissions">
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

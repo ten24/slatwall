@@ -17,7 +17,7 @@ $log){
 		restrict: 'A',
 		scope:{
 			filterGroupItem: "=",
-			$$siblingItems:"=",
+			siblingItems:"=",
 			incrementFilterCount:"&",
 			setItemInUse:"&",
 			filterPropertiesList:"=",
@@ -33,8 +33,7 @@ $log){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
-			scope.setItemInUse(false);
-			
+			;
 			//for(item in filterGroupItem){}
 			scope.filterGroupItem.setItemInUse = scope.setItemInUse;
 			
@@ -43,7 +42,7 @@ $log){
 				scope.filterGroupItem.$$isClosed = true;
 			}
 			
-			scope.filterGroupItem.$$siblingItems = scope.$$siblingItems;
+			scope.filterGroupItem.$$siblingItems = scope.siblingItems;
 			scope.selectFilterGroupItem = function(filterGroupItem){
 				collectionService.selectFilterGroupItem(filterGroupItem);
 			};

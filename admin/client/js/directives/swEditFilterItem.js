@@ -7,6 +7,7 @@ angular.module('slatwalladmin')
 'partialsPath',
 '$log',
 'slatwallService',
+'collectionService',
 '$filter',
 function($http,
 $compile,
@@ -14,13 +15,17 @@ $templateCache,
 partialsPath,
 $log,
 slatwallService,
+collectionService,
 $filter){
 	return {
 		restrict: 'A',
 		scope:{
 			filterItem:"=",
 			filterPropertiesList:"=",
-			saveCollection:"&"
+			saveCollection:"&",
+			removeFilterItem:"&",
+			filterItemIndex:"="
+		
 		},
 		link: function(scope, element,attrs){
 			var Partial = partialsPath+"editFilterItem.html";
@@ -30,36 +35,45 @@ $filter){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
-		},
-		controller: function ($scope, $element, $attrs) {
-			//initialize directive
 			
-			if(angular.isUndefined($scope.filterItem.$$isClosed)){
-				$scope.filterItem.$$isClosed = true;
+			if(angular.isUndefined(scope.filterItem.$$isClosed)){
+				scope.filterItem.$$isClosed = true;
 			}
-			if(angular.isUndefined($scope.filterItem.breadCrumbs)){
-				$scope.filterItem.$$breadCrumbs = "";
+			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
+				scope.filterItem.$$breadCrumbs = "";
 			}
-			for(i in $scope.filterPropertiesList.data){
-				var filterProperty = $scope.filterPropertiesList.data[i];
-				if(filterProperty.propertyIdentifier === $scope.filterItem.propertyIdentifier){
+			for(i in scope.filterPropertiesList.data){
+				var filterProperty = scope.filterPropertiesList.data[i];
+				if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
 					//selectItem from drop down
-					$scope.selectedFilterProperty = filterProperty;
+					scope.selectedFilterProperty = filterProperty;
 					//decorate with value and comparison Operator so we can use it in the Condition section
-					$scope.selectedFilterProperty.value = $scope.filterItem.value;
-					$scope.selectedFilterProperty.comparisonOperator = $scope.filterItem.comparisonOperator;
+					scope.selectedFilterProperty.value = scope.filterItem.value;
+					scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
 				}
 			}
 			
 			//public functions
-			$scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
+			scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				$log.debug('selectedFilterProperty');
 				$log.debug(selectedFilterProperty);
-				//$scope.selectedFilterProperty.breadCrumbs += 
+				//scope.selectedFilterProperty.breadCrumbs += 
 			};
 			
-			$scope.saveFilter = function(selectedFilterProperty,filterItem){
-				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
+			scope.cancelFilterItem = function(){
+				$log.debug('cancelFilterItem');
+				$log.debug(scope.filterItemIndex);
+				//scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
+				scope.filterItem.setItemInUse({booleanValue:false});
+				console.log(scope.filterItem);
+				scope.filterItem.$$isClosed = true;
+				if(angular.isDefined(scope.filterItem.$$isNew)){
+					scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
+				}
+			};
+			
+			scope.saveFilter = function(selectedFilterProperty,filterItem){
+				if(angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
 					//populate filterItem with selectedFilterProperty values
 					filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
 					filterItem.displayPropertyIdentifier = selectedFilterProperty.displayPropertyIdentifier; 
@@ -147,13 +161,14 @@ $filter){
 					}
 					
 					filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
+					filterItem.$$isNew = false;
 					//persist Config and 
-					$scope.saveCollection();
+					scope.saveCollection();
 					$log.debug(selectedFilterProperty);
 					$log.debug(filterItem);
 				}
 			};
-        } 
+		},
 	};
 }]);
 	

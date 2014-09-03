@@ -17,7 +17,7 @@ $log){
 		restrict: 'A',
 		scope:{
 			filterItem: "=",
-			$$siblingItems: "=",
+			siblingItems: "=",
 			setItemInUse: "&",
 			filterPropertiesList:"=",
 			saveCollection:"&",
@@ -32,7 +32,6 @@ $log){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
-			scope.setItemInUse(false);
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
@@ -40,8 +39,8 @@ $log){
 			if(angular.isUndefined(scope.filterItem.$$disabled)){
 				scope.filterItem.$$disabled = false;
 			}
-			if(angular.isUndefined(scope.filterItem.$$siblingItems)){
-				scope.filterItem.$$siblingItems = scope.$$siblingItems;
+			if(angular.isUndefined(scope.filterItem.siblingItems)){
+				scope.filterItem.$$siblingItems = scope.siblingItems;
 			}
 			scope.filterItem.setItemInUse = scope.setItemInUse;
 			
@@ -55,7 +54,6 @@ $log){
 				scope.filterItem.logicalOperator = logicalOperatorValue;
 				scope.saveCollection();
 			};
-			$log.debug(scope.removeFilterItem);
 		}
 	};
 }]);

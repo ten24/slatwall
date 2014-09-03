@@ -4,7 +4,7 @@
 		  <span swRelationshipBreadCrumb
 		  		
 		  ></span>
-		  <i class="fa fa-minus-square-o"  ></i>
+		  <i class="fa fa-times" ng-click="cancelFilterItem()" ></i>
 	  </h4>
 	  <div class="col-xs-12">
 	
@@ -31,8 +31,8 @@
 	      <div class="col-xs-6 s-criteria" ng-if="selectedFilterProperty.ormType !== 'undefined'">
 	        <h4>Criteria</h4>
 	       	<span	sw-criteria
-	       			filter-item="filterItem"
-	       			selected-filter-property="selectedFilterProperty"
+	       			data-filter-item="filterItem"
+	       			data-selected-filter-property="selectedFilterProperty"
 	       	></span>
 	        <!--- //Filter Criteria End --->
 	
