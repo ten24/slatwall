@@ -48,40 +48,27 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 		</cf_HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
-				<cfif rc.product.getBaseProductType() EQ "subscription">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="renewalPrice" edit="#rc.edit#">
-				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.sku#">
+		<cf_HibachiEntityDetailGroup object="#rc.sku#">
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.product.getBaseProductType() EQ "subscription">
-				<cf_HibachiTab view="admin:entity/skutabs/subscription" />
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/subscription" />
 			<cfelseif rc.product.getBaseProductType() EQ "contentaccess">
-				<cf_HibachiTab property="accessContents" />
+				<cf_HibachiEntityDetailItem property="accessContents" />
 			<cfelse>
-				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
-				<cf_HibachiTab view="admin:entity/skutabs/options" />
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/inventory" />
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/options" />
 			</cfif>
-			<cf_HibachiTab property="skuDescription" />
-			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
-			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
-			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
+			<cf_HibachiEntityDetailItem property="skuDescription" />
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/currencies" />
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/alternateskucodes" />
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/skusettings" />
 			<!---<cf_HibachiTab view="admin:entity/skutabs/pricegroups" />--->
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.sku.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.sku#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
