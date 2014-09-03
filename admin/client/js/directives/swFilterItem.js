@@ -17,7 +17,7 @@ $log){
 		restrict: 'A',
 		scope:{
 			filterItem: "=",
-			$$siblingItems: "=",
+			siblingItems: "=",
 			setItemInUse: "&",
 			filterPropertiesList:"=",
 			saveCollection:"&",
@@ -39,8 +39,8 @@ $log){
 			if(angular.isUndefined(scope.filterItem.$$disabled)){
 				scope.filterItem.$$disabled = false;
 			}
-			if(angular.isUndefined(scope.filterItem.$$siblingItems)){
-				scope.filterItem.$$siblingItems = scope.$$siblingItems;
+			if(angular.isUndefined(scope.filterItem.siblingItems)){
+				scope.filterItem.$$siblingItems = scope.siblingItems;
 			}
 			scope.filterItem.setItemInUse = scope.setItemInUse;
 			
