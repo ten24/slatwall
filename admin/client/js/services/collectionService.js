@@ -7,7 +7,7 @@ function(){
 	return collectionService = {
 		//properties
 		stringifyJSON: function(jsonObject){
-			var jsonString = angular.toJson(jsonObject,true);
+			var jsonString = angular.toJson(jsonObject);
 			return jsonString;
 		},
 		removeFilterItem: function(filterItem){
