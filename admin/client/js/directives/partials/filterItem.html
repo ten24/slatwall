@@ -2,7 +2,7 @@
 <li ng-class="{'s\-disabled':filterItem.$$disabled}">
  
   <!--- Filter display --->
-  <div class="s-filter-item">
+  <div class="s-filter-item" ng-show="!filterItem.$$isNew">
   	<div ng-if="filterItem.logicalOperator" class="btn-group-vertical btn-toggle">
       <button class="btn btn-xs " 
       			ng-click="logicalOperatorChanged('AND')" 
@@ -41,10 +41,12 @@
 
   <!--- Edit Filter Box --->
   <span sw-edit-filter-item
-  		filter-item="filterItem"
-  		filter-properties-list="filterPropertiesList"
+  		data-filter-item="filterItem"
+  		data-filter-properties-list="filterPropertiesList"
   		ng-if="filterPropertiesList.hasOwnProperty('data')"
-  		save-collection="saveCollection()"
+  		data-save-collection="saveCollection()"
+  		data-filter-item-index="filterItemIndex"
+  		data-remove-filter-item="removeFilterItem({filterItemIndex:filterItemIndex})"
   >
   </span>
   <!--- //Edit Filter Box --->

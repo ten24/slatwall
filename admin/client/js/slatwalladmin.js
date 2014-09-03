@@ -4,9 +4,6 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap',functio
 }]).config(["$provide",'$logProvider','$filterProvider', function ($provide, $logProvider,$filterProvider) {
 	$provide.constant("partialsPath", '/admin/client/js/directives/partials/');
 	// TODO: configure log provider on/off based on server side rules? 
-	
-	
-	
 	var debugEnabled = true;
 	$logProvider.debugEnabled(debugEnabled);
 	
@@ -14,9 +11,6 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap',functio
 		return function(text){
 			
 			if(angular.isDefined(text)){
-				console.log('string');
-				console.log(text);
-				console.log(text.replace(new RegExp('%', 'g'), ''));
 				return text.replace(new RegExp('%', 'g'), '');
 			}
 		};

@@ -27,8 +27,8 @@ $log
 	$scope.pageShowOptions.selected = $scope.pageShowOptions[1];
 	
 	$scope.filterCount = 0;
-	$scope.incrementFilterCount = function(){
-		$scope.filterCount++;
+	$scope.incrementFilterCount = function(number){
+		$scope.filterCount = $scope.filterCount + number;
 	};
 	
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];

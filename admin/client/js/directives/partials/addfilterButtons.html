@@ -2,7 +2,7 @@
   <!--- New Filter Panel Buttons --->
   <div class="s-filter-item">
     <button type="button" class="btn btn-xs btn-default" ng-click="addFilterItem(filterGroupItem)"><i class="fa fa-plus"></i> Filter</button>
-    <button type="button" class="btn btn-xs btn-default" ng-click="addFilterGroupItem(filterGroupItem)"><i class="fa fa-plus"></i> Filter Group</button>
+    <button type="button" class="btn btn-xs btn-default" ng-show="filterGroupItem.length" ng-click="addFilterGroupItem(filterGroupItem)"><i class="fa fa-plus"></i> Filter Group</button>
   </div>
   <!--- //New Filter Panel Buttons --->
 </li>
