@@ -273,7 +273,7 @@
 
   .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
   .s-j-draggable-panel-list a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
-  .s-j-draggablePanelList a.active {border:0px;box-shadow:none;-moz-box-shadow:    inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);-webkit-box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);box-shadow: inset  0  8px 8px -8px rgba(0, 0, 0, 0.125),inset  0 -8px 8px -8px rgba(0, 0, 0, 0.125);border:0px;}
+  .s-j-draggablePanelList a.active {border:0px;box-shadow:none;border:0px;}
   .s-j-draggablePanelList a i {margin-top:50%;}
   .s-j-draggablePanelList a.active:hover {background-color:#F79C49;color:#ffffff;}
   .s-j-draggablePanelList a:last-child {border:0px;}
