@@ -65,12 +65,12 @@
 		</cfcase>
 		<cfcase value="date">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="form-control #attributes.value#" class="#attributes.fieldClass# datepicker" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datepicker" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="dateTime">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="form-control #attributes.value#" class="#attributes.fieldClass# datetimepicker" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datetimepicker" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="file">
