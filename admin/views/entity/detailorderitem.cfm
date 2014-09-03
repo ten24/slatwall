@@ -67,9 +67,7 @@ Notes:
 			<!--- Hidden field to attach this to the order --->
 			<input type="hidden" name="order.orderID" value="#rc.order.getOrderID()#" />
 		</cfif>
-		
-		
-		
+
 		<!--- Tabs --->
 		<cf_HibachiEntityDetailGroup object="#rc.orderItem#">
 			<cf_HibachiEntityDetailItem view="admin:entity/orderitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
