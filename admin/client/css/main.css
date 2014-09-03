@@ -28,9 +28,11 @@
   @media screen {
   	.s-pannel-control a {color:#888;font-size:11px;}
 	.s-pannel-control a:hover {text-decoration:none;}
-	.panel-heading h4.panel-title {font-size:14px !important;}
-	.panel-heading h4.panel-title:hover {font-size:14px !important;text-decoration:none !important;}
+	.panel-heading h4.panel-title span {font-size:14px !important;text-decoration:none !important;}
+	.panel-heading h4.panel-title:hover {font-size:14px !important;}	
   }
+   
+  a:-webkit-any-link {text-decoration:none !important;}
  
   .row .s-pannel-control {margin-top:10px;padding-bottom:2px;padding-right:2px;}
   .row .s-pannel-control .col-md-12	{text-align:right;}
