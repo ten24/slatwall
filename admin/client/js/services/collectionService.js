@@ -69,6 +69,7 @@ function(){
 				$$disabled:"false",
 				$$isClosed:"true",
 				$$siblingItems:filterItemGroup,
+				$$isNew:"true",
 				setItemInUse:setItemInUse	
 			};
 			if(filterItemGroup.length !== 0){
@@ -82,6 +83,7 @@ function(){
 				filterPropertiesList.data[i].propertyIdentifier = filterPropertiesList.entityName + '.' +filterPropertiesList.data[i].name;
 			}
 		}
+		
 		//private functions
 		
 	};

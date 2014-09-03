@@ -70,6 +70,10 @@ $log){
 			
 			scope.removeFilterGroupItem = function(filterGroupItemIndex){
 				//remove Item
+				console.log(scope.filterGroupItem[filterGroupItemIndex]);
+				scope.deselectItems(scope.filterGroupItem[filterGroupItemIndex]);
+				scope.filterGroupItem[filterGroupItemIndex].setItemInUse({booleanValue:false});
+				
 				scope.filterGroupItem.splice(filterGroupItemIndex,1);
 				//make sure first item has no logical operator if it exists
 				if(scope.filterGroupItem.length){

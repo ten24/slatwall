@@ -33,7 +33,6 @@ $log){
 			}).then(function(response){
 				element.replaceWith($compile(element.html())(scope));
 			});
-			scope.setItemInUse(false);
 			
 			//for(item in filterGroupItem){}
 			scope.filterGroupItem.setItemInUse = scope.setItemInUse;

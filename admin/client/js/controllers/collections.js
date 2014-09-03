@@ -28,7 +28,9 @@ $log
 	
 	$scope.filterCount = 0;
 	$scope.incrementFilterCount = function(number){
-		$scope.filterCount = $scope.filterCount + number;
+		if(angular.isDefined(number)){
+			$scope.filterCount = $scope.filterCount + number;
+		}
 	};
 	
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
