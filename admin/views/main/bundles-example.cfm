@@ -21,24 +21,22 @@
 
   <div class="row s-bundle-header">
 
-
-
     <form class="form-horizontal" role="form">
       <div class="col-xs-6">
         <div class="form-group">
-          <label for="" class="col-sm-3 control-label">Bundle Name:</label>
+          <label for="" class="col-sm-3 control-label">Bundle Name: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The bundle name"> <i class="fa fa-question-circle"></i></span></label>
           <div class="col-sm-9">
             <input type="text" class="form-control" value="Custom T-Shirt" placeholder="">
           </div>
         </div>
         <div class="form-group">
-          <label for="" class="col-sm-3 control-label">Bundle Code:</label>
+          <label for="" class="col-sm-3 control-label">Bundle Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The bundle code"> <i class="fa fa-question-circle"></i></span></label>
           <div class="col-sm-9">
             <input type="text" class="form-control" value="283746" placeholder="">
           </div>
         </div>
         <div class="form-group">
-          <label for="" class="col-sm-3 control-label">Bundle Base Price:</label>
+          <label for="" class="col-sm-3 control-label">Bundle Base Price: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The starting price of the bundle"> <i class="fa fa-question-circle"></i></span></label>
           <div class="col-sm-9">
             <input type="text" class="form-control"value="$19.99" placeholder="">
           </div>
@@ -47,7 +45,7 @@
 
       <div class="col-xs-6">
         <div class="form-group">
-          <label for="" class="col-sm-3 control-label">Type:</label>
+          <label for="" class="col-sm-3 control-label">Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Select a type"> <i class="fa fa-question-circle"></i></span></label>
           <div class="col-sm-9">
             <select class="form-control">
               <option value="one">One</option>
@@ -59,7 +57,7 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="" class="col-sm-3 control-label">Brand:</label>
+          <label for="" class="col-sm-3 control-label">Brand: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Select a brand"> <i class="fa fa-question-circle"></i></span></label>
           <div class="col-sm-9">
             <select class="form-control">
               <option value="one">One</option>
@@ -101,174 +99,167 @@
       <div id="demo" class="collapse s-bundle-group-dropdown">
         <div class="s-bundle-group-dropdown-content">
 
+          <div class="s-filter-content">
 
-            <div class="s-filter-content">
-
-              <!--- Header nav with title starts --->
-              <div class="row s-header-bar">
-                <div class="col-xs-12 s-header-nav">
-                  <ul class="nav nav-tabs" role="tablist">
-                    <li class="active"><a href="##j-default-tab" role="tab" data-toggle="tab">Basic</a></li>
-                    <li><a href="##j-selections-tab" role="tab" data-toggle="tab">Selections</a></li>
-                  </ul>
-                </div>
+            <!--- Header nav with title starts --->
+            <div class="row s-header-bar">
+              <div class="col-xs-12 s-header-nav">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="active"><a href="##j-default-tab" role="tab" data-toggle="tab">Basic</a></li>
+                  <li><a href="##j-selections-tab" role="tab" data-toggle="tab">Selections</a></li>
+                </ul>
               </div>
-              <!--- //Header nav with title end --->
-
-              <!--- Tab panes for menu options start--->
-              <div class="s-options">
-                <div class="tab-content" id="j-property-box">
-
-                  <div class="tab-pane active" id="j-default-tab">
-                    <div class="form-group">
-                      <label for="">Group Name:</label>
-                      <input type="text" class="form-control" value="T-Shirts: Closeout Selections">
-                    </div>
-
-                    <div class="form-group">
-                      <label for="">Group Code:</label>
-                      <input type="text" class="form-control" value="6573984">
-                    </div>
-
-                    <div class="row form-group">
-                      <div class="col-xs-2">
-                        <label for="">Minimum Quantity:</label>
-                        <input type="number" class="form-control" value="1">
-                      </div>
-
-                      <div class="col-xs-2">
-                        <label for="">Maximum Quantity:</label>
-                        <input type="number" class="form-control" value="1">
-                      </div>
-                    </div>
-
-                    <div class="form-group s-bundle-group-active">
-                      <label class="control-label">Active: </label>
-                      <div class="radio">
-                        <input type="radio" name="radio1" id="radio1" checked="checked" value="option2">
-                        <label for="radio1">
-                            Yes
-                        </label>
-                      </div>
-                      <div class="radio">
-                        <input type="radio" name="radio1" id="radio2" value="option2">
-                        <label for="radio2">
-                            No
-                        </label>
-                      </div>
-                      <div class="clearfix"></div>
-                    </div>
-                  </div>
-
-                  <div class="tab-pane" id="j-selections-tab">
-
-                    <!-- Search for product -->
-                    <div class="row s-bundle-group-items">
-                      <div class="col-xs-12">
-                        <div class="input-group">
-                          <div class="input-group-btn search-panel">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                              <span id="search_concept">Product Type</span> <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                              <li><a href="#greather_than">Product Type</a></li>
-                              <li><a href="#contains">Collections</a></li>
-                              <li><a href="#its_equal">Brand</a></li>
-                              <li><a href="#less_than">Products</a></li>
-                              <li><a href="#all">Skus</a></li>
-                            </ul>
-                          </div>
-                          <input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search term...">
-                          <span class="input-group-btn">
-                            <button class="btn btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div class="col-xs-12 s-bundle-add-items">
-                        <div class="col-xs-12 s-bundle-add-items-inner">
-                          <h4 id="j-temp-class">There are no items selected</h4>
-                          <ul class="list-unstyled">
-                            <li class="s-bundle-add-obj">
-                              <ul class="list-unstyled list-inline">
-                                <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
-                                <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
-                                <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
-                              </ul>
-                              <div class="clearfix"></div>
-                            </li>
-
-                            <li class="s-bundle-add-obj">
-                              <ul class="list-unstyled list-inline">
-                                <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
-                                <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
-                                <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
-                              </ul>
-                              <div class="clearfix"></div>
-                            </li>
-
-                            <li class="s-bundle-add-obj">
-                              <ul class="list-unstyled list-inline">
-                                <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
-                                <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
-                                <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
-                              </ul>
-                              <div class="clearfix"></div>
-                            </li>
-
-                            <li class="s-bundle-add-obj">
-                              <ul class="list-unstyled list-inline">
-                                <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
-                                <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
-                                <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
-                                <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
-                              </ul>
-                              <div class="clearfix"></div>
-                            </li>
-
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- //Search for product -->
-
-                    <!-- Selected filters -->
-                    <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;">Selected Items</h2>
-                    <div class="s-bundle-group-items-list">
-                      <ul class="list-unstyled" >
-                        <li class="s-bundle-add-obj">
-                          <ul class="list-unstyled list-inline">
-                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
-                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
-                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
-                          </ul>
-                          <div class="clearfix"></div>
-                        </li>
-                      </ul>
-
-                    </div>
-                    <!-- //Selected filters -->
-
-                  </div>
-                </div>
-              </div>
-
             </div>
+            <!--- //Header nav with title end --->
 
+            <!--- Tab panes for menu options start--->
+            <div class="s-options">
+              <div class="tab-content" id="j-property-box">
+
+                <div class="tab-pane active" id="j-default-tab">
+                  <div class="form-group">
+                    <label for="">Bundle Group Type:</label>
+                    <input type="text" class="form-control" value="T-Shirts: Closeout Selections">
+                  </div>
+
+                  <div class="row form-group">
+                    <div class="col-xs-2">
+                      <label for="">Minimum Quantity:</label>
+                      <input type="number" class="form-control" value="1">
+                    </div>
+
+                    <div class="col-xs-2">
+                      <label for="">Maximum Quantity:</label>
+                      <input type="number" class="form-control" value="1">
+                    </div>
+                  </div>
+
+                  <div class="form-group s-bundle-group-active">
+                    <label class="control-label">Active: </label>
+                    <div class="radio">
+                      <input type="radio" name="radio1" id="radio1" checked="checked" value="option2">
+                      <label for="radio1">
+                          Yes
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <input type="radio" name="radio1" id="radio2" value="option2">
+                      <label for="radio2">
+                          No
+                      </label>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+
+                <div class="tab-pane" id="j-selections-tab">
+
+                  <!-- Selected filters -->
+                  <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                  <div class="s-bundle-group-items-list">
+                    <ul class="list-unstyled" >
+                      <li class="s-bundle-add-obj">
+                        <ul class="list-unstyled list-inline">
+                          <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                          <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                          <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                          <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                          <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                          <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
+                        </ul>
+                        <div class="clearfix"></div>
+                      </li>
+                    </ul>
+
+                  </div>
+                  <!-- //Selected filters -->
+
+                  <!-- Search for product -->
+                  <div class="row s-bundle-group-items">
+                    <div class="col-xs-12">
+                      <div class="input-group">
+                        <div class="dropdown input-group-btn search-panel">
+                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                            <span id="j-search-concept">Product Type</span>
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                            <li><a href="#greather_than">Product Type</a></li>
+                            <li><a href="#contains">Collections</a></li>
+                            <li><a href="#its_equal">Brand</a></li>
+                            <li><a href="#less_than">Products</a></li>
+                            <li><a href="#all">Skus</a></li>
+                          </ul>
+                        </div>
+                        <input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search term...">
+                        <span class="input-group-btn">
+                          <button class="btn btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="col-xs-12 s-bundle-add-items">
+                      <div class="col-xs-12 s-bundle-add-items-inner">
+                        <h4 id="j-temp-class">There are no items selected</h4>
+                        <ul class="list-unstyled">
+                          <li class="s-bundle-add-obj">
+                            <ul class="list-unstyled list-inline">
+                              <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                              <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                              <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                          </li>
+
+                          <li class="s-bundle-add-obj">
+                            <ul class="list-unstyled list-inline">
+                              <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                              <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                              <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                          </li>
+
+                          <li class="s-bundle-add-obj">
+                            <ul class="list-unstyled list-inline">
+                              <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                              <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                              <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                          </li>
+
+                          <li class="s-bundle-add-obj">
+                            <ul class="list-unstyled list-inline">
+                              <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                              <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                              <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                              <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                          </li>
+
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- //Search for product -->
+
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </li>
@@ -318,13 +309,8 @@
 
                   <div class="tab-pane active" id="j-default-tab2">
                     <div class="form-group">
-                      <label for="">Group Name:</label>
+                      <label for="">Bundle Group Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Bundle group type"> <i class="fa fa-question-circle"></i></span></label>
                       <input type="text" class="form-control" value="T-Shirts: Closeout Selections">
-                    </div>
-
-                    <div class="form-group">
-                      <label for="">Group Code:</label>
-                      <input type="text" class="form-control" value="6573984">
                     </div>
 
                     <div class="row form-group">
@@ -359,15 +345,36 @@
 
                   <div class="tab-pane" id="j-selections-tab2">
 
+                    <!-- Selected filters -->
+                    <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                    <div class="s-bundle-group-items-list">
+                      <ul class="list-unstyled" >
+                        <li class="s-bundle-add-obj">
+                          <ul class="list-unstyled list-inline">
+                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
+                          </ul>
+                          <div class="clearfix"></div>
+                        </li>
+                      </ul>
+
+                    </div>
+                    <!-- //Selected filters -->
+
                     <!-- Search for product -->
                     <div class="row s-bundle-group-items">
                       <div class="col-xs-12">
                         <div class="input-group">
-                          <div class="input-group-btn search-panel">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                              <span id="search_concept">Product Type</span> <span class="caret"></span>
+                          <div class="dropdown input-group-btn search-panel">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                              <span id="j-search-concept">Product Type</span>
+                              <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu">
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                               <li><a href="#greather_than">Product Type</a></li>
                               <li><a href="#contains">Collections</a></li>
                               <li><a href="#its_equal">Brand</a></li>
@@ -439,27 +446,6 @@
                       </div>
                     </div>
                     <!-- //Search for product -->
-
-
-                    <!-- Selected filters -->
-                    <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;">Selected Items</h2>
-                    <div class="s-bundle-group-items-list">
-                      <ul class="list-unstyled" >
-                        <li class="s-bundle-add-obj">
-                          <ul class="list-unstyled list-inline">
-                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
-                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
-                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
-                          </ul>
-                          <div class="clearfix"></div>
-                        </li>
-                      </ul>
-
-                    </div>
-                    <!-- //Selected filters -->
 
                   </div>
                 </div>
@@ -516,13 +502,8 @@
 
                   <div class="tab-pane active" id="j-default-tab3">
                     <div class="form-group">
-                      <label for="">Group Name:</label>
+                      <label for="">Bundle Group Type:</label>
                       <input type="text" class="form-control" value="T-Shirts: Closeout Selections">
-                    </div>
-
-                    <div class="form-group">
-                      <label for="">Group Code:</label>
-                      <input type="text" class="form-control" value="6573984">
                     </div>
 
                     <div class="row form-group">
@@ -557,15 +538,36 @@
 
                   <div class="tab-pane" id="j-selections-tab3">
 
+                    <!-- Selected filters -->
+                    <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                    <div class="s-bundle-group-items-list">
+                      <ul class="list-unstyled" >
+                        <li class="s-bundle-add-obj">
+                          <ul class="list-unstyled list-inline">
+                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
+                          </ul>
+                          <div class="clearfix"></div>
+                        </li>
+                      </ul>
+
+                    </div>
+                    <!-- //Selected filters -->
+
                     <!-- Search for product -->
                     <div class="row s-bundle-group-items">
                       <div class="col-xs-12">
                         <div class="input-group">
-                          <div class="input-group-btn search-panel">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                              <span id="search_concept">Product Type</span> <span class="caret"></span>
+                          <div class="dropdown input-group-btn search-panel">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                              <span id="j-search-concept">Product Type</span>
+                              <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu">
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                               <li><a href="#greather_than">Product Type</a></li>
                               <li><a href="#contains">Collections</a></li>
                               <li><a href="#its_equal">Brand</a></li>
@@ -637,27 +639,6 @@
                       </div>
                     </div>
                     <!-- //Search for product -->
-
-
-                    <!-- Selected filters -->
-                    <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;">Selected Items</h2>
-                    <div class="s-bundle-group-items-list">
-                      <ul class="list-unstyled" >
-                        <li class="s-bundle-add-obj">
-                          <ul class="list-unstyled list-inline">
-                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
-                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
-                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
-                          </ul>
-                          <div class="clearfix"></div>
-                        </li>
-                      </ul>
-
-                    </div>
-                    <!-- //Selected filters -->
 
                   </div>
                 </div>
@@ -714,13 +695,8 @@
 
                   <div class="tab-pane active" id="j-default-tab4">
                     <div class="form-group">
-                      <label for="">Group Name:</label>
+                      <label for="">Bundle Group Type:</label>
                       <input type="text" class="form-control" value="T-Shirts: Closeout Selections">
-                    </div>
-
-                    <div class="form-group">
-                      <label for="">Group Code:</label>
-                      <input type="text" class="form-control" value="6573984">
                     </div>
 
                     <div class="row form-group">
@@ -755,15 +731,36 @@
 
                   <div class="tab-pane" id="j-selections-tab4">
 
+                    <!-- Selected filters -->
+                    <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                    <div class="s-bundle-group-items-list">
+                      <ul class="list-unstyled" >
+                        <li class="s-bundle-add-obj">
+                          <ul class="list-unstyled list-inline">
+                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
+                          </ul>
+                          <div class="clearfix"></div>
+                        </li>
+                      </ul>
+
+                    </div>
+                    <!-- //Selected filters -->
+
                     <!-- Search for product -->
                     <div class="row s-bundle-group-items">
                       <div class="col-xs-12">
                         <div class="input-group">
-                          <div class="input-group-btn search-panel">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                              <span id="search_concept">Product Type</span> <span class="caret"></span>
+                          <div class="dropdown input-group-btn search-panel">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                              <span id="j-search-concept">Product Type</span>
+                              <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu">
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                               <li><a href="#greather_than">Product Type</a></li>
                               <li><a href="#contains">Collections</a></li>
                               <li><a href="#its_equal">Brand</a></li>
@@ -836,27 +833,6 @@
                     </div>
                     <!-- //Search for product -->
 
-
-                    <!-- Selected filters -->
-                    <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;">Selected Items</h2>
-                    <div class="s-bundle-group-items-list">
-                      <ul class="list-unstyled" >
-                        <li class="s-bundle-add-obj">
-                          <ul class="list-unstyled list-inline">
-                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
-                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
-                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
-                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
-                          </ul>
-                          <div class="clearfix"></div>
-                        </li>
-                      </ul>
-
-                    </div>
-                    <!-- //Selected filters -->
-
                   </div>
                 </div>
               </div>
@@ -869,15 +845,18 @@
   </ul>
 
 
+
+
   <script charset="utf-8">
     $(document).ready(function(e){
       $('.search-panel .dropdown-menu').each(function(){
         $(this).find('a').click(function(e) {
-          e.preventDefault();
+
           var param = $(this).attr("href").replace("#","");
           var concept = $(this).text();
-          $('.search-panel span#search_concept').text(concept);
-          $('.input-group #search_param').val(param);
+
+          $(this).parent().parent().parent().find('#j-search-concept').text(concept);
+
         });
       });
 
@@ -930,56 +909,178 @@
   <!-- //Copy from existing filter --> --->
 
   <!--- Edit Filter Box --->
-  <div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1" style="background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;">
+  <div class="col-xs-12 collapse s-add-filter s-bundle-group-dropdown" id="j-edit-filter-1" style="margin-top:10px;background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;">
     <div class="row">
-      <h4> Define Bundle Group<i class="fa fa-minus-square-o" data-toggle="collapse" data-target="#j-edit-filter-1" style="float: right;color: #DDD;font-soze:18px;cursor: pointer;padding-top: 2px;"></i></h4>
-      <div class="col-xs-12">
+      <h4> Define Bundle Group<i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-1" style="float: right;color: #DDD;font-size:18px;cursor: pointer;margin-top: -1px;"></i></h4>
 
-          <div class="form-group">
-            <label for="">Group Name:</label>
-            <input type="text" class="form-control">
-          </div>
 
-          <div class="form-group">
-            <label for="">Group Code:</label>
-            <input type="text" class="form-control">
-          </div>
 
-          <div class="row form-group">
-            <div class="col-xs-2">
-              <label for="">Minimum Quantity:</label>
-              <input type="number" class="form-control" value="1">
-            </div>
+      <div class="s-bundle-group-dropdown-content">
+        <div class="s-filter-content">
 
-            <div class="col-xs-2">
-              <label for="">Maximum Quantity:</label>
-              <input type="number" class="form-control" value="1">
+          <!--- Header nav with title starts --->
+          <div class="row s-header-bar">
+            <div class="col-xs-12 s-header-nav">
+              <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="##j-default-tab-9" role="tab" data-toggle="tab">Basic</a></li>
+                <li><a href="##j-selections-tab-9" role="tab" data-toggle="tab">Selections</a></li>
+              </ul>
             </div>
           </div>
+          <!--- //Header nav with title end --->
 
-          <div class="form-group s-radio-group">
-            <label class="control-label">Active: </label>
-            <div class="radio">
-              <input type="radio" name="radio-test" id="radio6" checked="checked" value="yes">
-              <label for="radio6">
-                  Yes
-              </label>
+          <!--- Tab panes for menu options start--->
+          <div class="s-options">
+            <div class="tab-content" id="j-property-box">
+
+              <div class="tab-pane active" id="j-default-tab-9">
+                <div class="form-group">
+                  <label for="">Bundle Group Type:</label>
+                  <input type="text" class="form-control" value="T-Shirts: Closeout Selections">
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-xs-2">
+                    <label for="">Minimum Quantity:</label>
+                    <input type="number" class="form-control" value="1">
+                  </div>
+
+                  <div class="col-xs-2">
+                    <label for="">Maximum Quantity:</label>
+                    <input type="number" class="form-control" value="1">
+                  </div>
+                </div>
+
+                <div class="form-group s-bundle-group-active">
+                  <label class="control-label">Active: </label>
+                  <div class="radio">
+                    <input type="radio" name="radio1" id="radio1" checked="checked" value="option2">
+                    <label for="radio1">
+                        Yes
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <input type="radio" name="radio1" id="radio2" value="option2">
+                    <label for="radio2">
+                        No
+                    </label>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <button class="btn btn-xs s-btn-ten24" style="display:block;margin-bottom:10px;"><i class="fa fa-plus"></i> Save & Select Options</button>
+              </div>
+
+              <div class="tab-pane" id="j-selections-tab-9">
+
+                <!-- Selected filters -->
+                <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                <div class="s-bundle-group-items-list">
+                  <ul class="list-unstyled" >
+                    <li class="s-bundle-add-obj">
+                      <ul class="list-unstyled list-inline">
+                        <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                        <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                        <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                        <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                        <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                        <li class="col-xs-1 j-tool-tip-item s-bundle-details-remove"><a class="btn s-btn-ten24"><i class="fa fa-times"></i></a></li>
+                      </ul>
+                      <div class="clearfix"></div>
+                    </li>
+                  </ul>
+
+                </div>
+                <!-- //Selected filters -->
+
+                <!-- Search for product -->
+                <div class="row s-bundle-group-items">
+                  <div class="col-xs-12">
+                    <div class="input-group">
+                      <div class="dropdown input-group-btn search-panel">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                          <span id="j-search-concept">Product Type</span>
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                          <li><a href="#greather_than">Product Type</a></li>
+                          <li><a href="#contains">Collections</a></li>
+                          <li><a href="#its_equal">Brand</a></li>
+                          <li><a href="#less_than">Products</a></li>
+                          <li><a href="#all">Skus</a></li>
+                        </ul>
+                      </div>
+                      <input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search term...">
+                      <span class="input-group-btn">
+                        <button class="btn btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="col-xs-12 s-bundle-add-items">
+                    <div class="col-xs-12 s-bundle-add-items-inner">
+                      <h4 id="j-temp-class">There are no items selected</h4>
+                      <ul class="list-unstyled">
+                        <li class="s-bundle-add-obj">
+                          <ul class="list-unstyled list-inline">
+                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                          </ul>
+                          <div class="clearfix"></div>
+                        </li>
+
+                        <li class="s-bundle-add-obj">
+                          <ul class="list-unstyled list-inline">
+                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                          </ul>
+                          <div class="clearfix"></div>
+                        </li>
+
+                        <li class="s-bundle-add-obj">
+                          <ul class="list-unstyled list-inline">
+                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                          </ul>
+                          <div class="clearfix"></div>
+                        </li>
+
+                        <li class="s-bundle-add-obj">
+                          <ul class="list-unstyled list-inline">
+                            <li class="col-xs-3 j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">WOLF-01</li>
+                            <li class="col-xs-2 j-tool-tip-item s-bundle-details">Size XL (TShirtHowl-XL)</li>
+                            <li class="col-xs-4 j-tool-tip-item s-bundle-details">A classic howling Wolf t-shirt design...</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details">$9.99</li>
+                            <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                          </ul>
+                          <div class="clearfix"></div>
+                        </li>
+
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <!-- //Search for product -->
+
+                <button class="btn btn-xs s-btn-ten24" style="display:block;margin-bottom:10px;"><i class="fa fa-plus"></i> Save & Add</button>
+              </div>
             </div>
-            <div class="radio">
-              <input type="radio" name="radio-test" id="radio7" value="no">
-              <label for="radio7">
-                  No
-              </label>
-            </div>
-            <div class="clearfix"></div>
           </div>
-
-          <button class="btn btn-xs s-btn-ten24" style="display:block;margin-bottom:10px;"><i class="fa fa-plus"></i> Save & Add</button>
-
-
+        </div>
       </div>
     </div>
-
   </div>
   <!--- //Edit Filter Box --->
 
