@@ -30,7 +30,7 @@
   .s-accordion-header {width:100%;margin-top:-10px;margin-bottom:-10px;padding-top:10px;padding-bottom:10px;cursor:pointer;}
 </style>
   <div class="row s-body-nav">
-    <nav class="navbar navbar-default" role="navigation" style="background-color: #FFF;margin-bottom: 0px;margin-top: -30px;border-radius: 0px;border-top: 0px;">
+    <nav class="navbar navbar-default" role="navigation" style="background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;">
       <div class="col-md-4">
         <h1 style="padding: 0px;margin: 0px;font-size: 16px;font-weight: 600;vertical-align: middle;margin-top: 18px;">ProgelTM Pleural Air Leak Sealant</h1>
       </div>
