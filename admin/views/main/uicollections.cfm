@@ -984,14 +984,14 @@
                 <div class="col-xs-7 s-pannel-body">
 
                   <div class="btn-group">
-                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc s-not-active"></i></a>
                     <span class="s-sort-num">
                       <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">1</a>
-                      <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 93px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
+                      <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
                         <input type="text" class="form-control" value="1">
                         <button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
                       </span>
                     </span>
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
@@ -1013,16 +1013,20 @@
                 <div class="col-xs-7 s-pannel-body">
 
                   <div class="btn-group">
-                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc s-not-active"></i></a>
-                    <span class="s-sort-num">
-                      <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">2</a>
-                      <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 93px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
-                        <input type="text" class="form-control" value="2">
+                    <span class="s-sort-num" style="display:none;">
+                      <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">3</a>
+                      <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
+                        <select class="form-control">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="2">3</option>
+                        </select>
                         <button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
                       </span>
                     </span>
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc s-not-active"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
-                    <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-default j-tool-tip-item disabled" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
                     <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a>
                   </div>
@@ -1042,14 +1046,14 @@
                 <div class="col-xs-7 s-pannel-body">
 
                   <div class="btn-group">
-                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-asc s-not-active"></i></a>
                     <span class="s-sort-num">
-                      <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">3</a>
-                      <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 93px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
-                        <input type="text" class="form-control" value="3">
+                      <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">2</a>
+                      <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
+                        <input type="text" class="form-control" value="2">
                         <button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
                       </span>
                     </span>
+                    <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order"><i class="fa fa-sort-amount-desc"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible"><i class="fa fa-eye"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search"><i class="fa fa-search"></i></a>
                     <a class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export"><i class="fa fa-download"></i></a>
@@ -1404,10 +1408,12 @@
       var currentSort = $(this).children('i:visible');
       if(currentSort.hasClass('s-not-active')){
         $(currentSort).removeAttr('class').addClass('fa fa-sort-amount-asc');
+        $(currentSort).parent().siblings('.s-sort-num').show();
       }else if(currentSort.hasClass('fa-sort-amount-asc')){
         $(currentSort).removeAttr('class').addClass('fa fa-sort-amount-desc');
       }else if(currentSort.hasClass('fa-sort-amount-desc')){
         $(currentSort).addClass('s-not-active');
+        $(currentSort).parent().siblings('.s-sort-num').hide();
       };
     }else{
       $(this).toggleClass('active');
