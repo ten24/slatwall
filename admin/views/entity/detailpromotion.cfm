@@ -65,6 +65,22 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createpromotionperiod" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 		</cf_HibachiEntityActionBar>
 		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cfif rc.promotion.isNew()>
+					<cf_HibachiPropertyDisplay object="#rc.Promotion#" property="activeFlag" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.Promotion#" property="promotionName" edit="#rc.edit#">
+					<hr />
+					<h5>#$.slatwall.rbKey('admin.pricing.detailpromotion.initialperiod')#</h5><br />
+					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].startDateTime" property="startDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].endDateTime" property="endDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].maximumUseCount" property="maximumUseCount" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].maximumAccountUseCount" property="maximumAccountUseCount" edit="#rc.edit#">
+					<input type="hidden" name="promotionPeriods[1].promotionPeriodID" value="#rc.promotionPeriod.getPromotionPeriodID()#" />
+				</cfif>
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
 		<cf_HibachiEntityDetailGroup object="#rc.promotion#">
 			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" />
