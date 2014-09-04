@@ -53,7 +53,10 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="activeFlag" ormtype="boolean";
 	property name="attributeSetName" ormtype="string";
 	property name="attributeSetCode" ormtype="string" index="PI_ATTRIBUTESETCODE";
-	property name="attributeSetDescription" ormtype="string" length="2000" ;
+	property name="attributeSetDescription" ormtype="string" length="2000";
+	
+	property name="attributeSetType" ormtype="string";
+	
 	property name="globalFlag" ormtype="boolean" default="1";
 	property name="requiredFlag" ormtype="boolean";
 	property name="accountSaveFlag" ormtype="boolean";
@@ -93,6 +96,31 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public array function getAttributeSetTypeOptions() {
+		return [
+			{value="account", name=rbKey("entity.Account")},
+			{value="accountPayment", name=rbKey("entity.AccountPayment")},
+			{value="attributeOption", name=rbKey("entity.AttributeOption")},
+			{value="brand", name=rbKey("entity.Brand")},
+			{value="file", name=rbKey("entity.File")},
+			{value="image", name=rbKey("entity.Image")},
+			{value="order", name=rbKey("entity.Order")},
+			{value="orderItem", name=rbKey("entity.OrderItem")},
+			{value="orderPayment", name=rbKey("entity.OrderPayment")},
+			{value="orderFulfillment", name=rbKey("entity.OrderFulfillment")},
+			{value="orderDelivery", name=rbKey("entity.OrderDelivery")},
+			{value="product", name=rbKey("entity.Product")},
+			{value="productBundleGroup", name=rbKey("entity.ProductBundleGroup")},
+			{value="productType", name=rbKey("entity.ProductType")},
+			{value="productReview", name=rbKey("entity.ProductReview")},
+			{value="sku", name=rbKey("entity.Sku")},
+			{value="subscriptionBenefit", name=rbKey("entity.SubscriptionBenefit")},
+			{value="type", name=rbKey("entity.Type")},
+			{value="vendor", name=rbKey("entity.Vendor")},
+			{value="vendorOrder", name=rbKey("entity.VendorOrder")}
+		];
+    }
     
 	// ============  END:  Non-Persistent Property Methods =================
 	

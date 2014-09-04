@@ -55,6 +55,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeCode" ormtype="string" index="PI_ATTRIBUTECODE";
 	property name="attributeDescription" ormtype="string" length="4000" ;
 	property name="attributeHint" ormtype="string";
+	property name="attributeType" ormtype="string" hb_formFieldType="select";
 	property name="defaultValue" ormtype="string";
 	property name="requiredFlag" ormtype="boolean" default="false" ;
 	property name="sortOrder" ormtype="integer" sortContext="attributeSet";
@@ -65,7 +66,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	
 	// Related Object Properties (Many-To-One)
 	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
-	property name="attributeType" cfc="Type" fieldtype="many-to-one" fkcolumn="attributeTypeID" hb_optionsSmartListData="f:parentType.systemCode=attributeType" fetch="join";
+	//property name="attributeType" cfc="Type" fieldtype="many-to-one" fkcolumn="attributeTypeID" hb_optionsSmartListData="f:parentType.systemCode=attributeType" fetch="join";
 	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
 
 	// Related Object Properties (One-To-Many)
@@ -95,16 +96,28 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
     // ============ START: Non-Persistent Property Methods =================
     
 	public array function getAttributeTypeOptions() {
-		if(!structKeyExists(variables, "attributeTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
-			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addSelect(propertyIdentifier="systemCode", alias="systemCode");
-			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="attributeType"); 
-			smartList.addOrder("type|ASC");
-			variables.attributeTypeOptions = smartList.getRecords();
-		}
-		return variables.attributeTypeOptions;
+		return [
+			{value="account", name=rbKey("entity.Account")},
+			{value="accountPayment", name=rbKey("entity.AccountPayment")},
+			{value="attributeOption", name=rbKey("entity.AttributeOption")},
+			{value="brand", name=rbKey("entity.Brand")},
+			{value="file", name=rbKey("entity.File")},
+			{value="image", name=rbKey("entity.Image")},
+			{value="order", name=rbKey("entity.Order")},
+			{value="orderItem", name=rbKey("entity.OrderItem")},
+			{value="orderPayment", name=rbKey("entity.OrderPayment")},
+			{value="orderFulfillment", name=rbKey("entity.OrderFulfillment")},
+			{value="orderDelivery", name=rbKey("entity.OrderDelivery")},
+			{value="product", name=rbKey("entity.Product")},
+			{value="productBundleGroup", name=rbKey("entity.ProductBundleGroup")},
+			{value="productType", name=rbKey("entity.ProductType")},
+			{value="productReview", name=rbKey("entity.ProductReview")},
+			{value="sku", name=rbKey("entity.Sku")},
+			{value="subscriptionBenefit", name=rbKey("entity.SubscriptionBenefit")},
+			{value="type", name=rbKey("entity.Type")},
+			{value="vendor", name=rbKey("entity.Vendor")},
+			{value="vendorOrder", name=rbKey("entity.VendorOrder")}
+		];
     }
     
 	public string function getFormFieldType() {
