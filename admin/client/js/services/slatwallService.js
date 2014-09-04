@@ -2,8 +2,8 @@
 angular.module('slatwalladmin.services',[]).config(["$provide", function ($provide) {
     $provide.constant("baseURL", '/');
 }])
-.factory('slatwallService',['$http','$q','baseURL',
-function($http,$q,baseURL){
+.factory('slatwallService',['$http','$q','baseURL','$log',
+function($http,$q,baseURL,$log){
 	var factory = {};
 	
 	//basic entity getter where id is optional, returns a promise
@@ -25,6 +25,7 @@ function($http,$q,baseURL){
 		
 	},
 	factory.saveEntity = function(entityName,id,params){
+		$log.debug('save'+ entityName);
 		var deferred = $q.defer();
 		var urlString = baseURL+'index.cfm/?slatAction=api:main.post&entityName='+entityName+'&entityId='+id;	
 			

@@ -1,4 +1,4 @@
-<ul class="col-xs-12 list-unstyled s-no-paddings">
+<ul class="col-xs-12 list-unstyled s-no-paddings" >
 	<span ng-repeat="filterGroup in filterGroupItem" ng-init="incrementFilterCount({number:1})">
 		<!-- figure out if item is filterItem or filterGroup-->
 		<span ng-switch on="filterGroup.hasOwnProperty('filterGroup')" >
@@ -6,12 +6,10 @@
 			<span 	ng-switch-when="false" 
 					sw-filter-item 
 					data-filter-item="filterGroup" 
-					data-sibling-items="filterGroupItem"
-					data-set-item-in-use="setItemInUse(booleanValue)"
 					data-filter-properties-list="filterPropertiesList"
-					data-save-collection="saveCollection()"
-					data-remove-filter-item="removeFilterItem(filterItemIndex)"
+					data-sibling-items="filterGroupItem"
 					data-filter-item-index="$index"
+					data-save-collection="saveCollection()"
 					>
 			</span>
 			<!-- filter Group Item -->
@@ -19,21 +17,16 @@
 					sw-filter-group-item 
 					data-filter-group-item="filterGroup",
 					data-sibling-items="filterGroupItem"
-					data-increment-filter-count="incrementFilterCount(number)" 
-					data-set-item-in-use="setItemInUse(booleanValue)"
 					data-filter-properties-list="filterPropertiesList"
-					data-save-collection="saveCollection()"
-					data-remove-filter-group-item="removeFilterGroupItem(filterGroupItemIndex)"
 					data-filter-group-item-index="$index"
+               		data-save-collection="saveCollection()"
 					>
 			</span>
 		</span>
 	</span>
 	<!-- buttons for adding filters -->
 	<span 	sw-add-filter-buttons
-			data-filter-group-item="filterGroupItem"
-			data-item-in-use="itemInUse"
-			data-set-item-in-use="setItemInUse(booleanValue)"
+	data-item-in-use="itemInUse"
 	>
 	</span>
 </ul>

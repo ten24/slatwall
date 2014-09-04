@@ -18,6 +18,7 @@ slatwallService,
 collectionService,
 $filter){
 	return {
+		require:'^swFilterGroups',
 		restrict: 'A',
 		scope:{
 			filterItem:"=",
@@ -27,14 +28,8 @@ $filter){
 			filterItemIndex:"="
 		
 		},
-		link: function(scope, element,attrs){
-			var Partial = partialsPath+"editFilterItem.html";
-			var templateLoader = $http.get(Partial,{cache:$templateCache});
-			var promise = templateLoader.success(function(html){
-				element.html(html);
-			}).then(function(response){
-				element.replaceWith($compile(element.html())(scope));
-			});
+		templateUrl:partialsPath+"editFilterItem.html",
+		link: function(scope, element,attrs,filterGroupsController){
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
@@ -53,6 +48,10 @@ $filter){
 				}
 			}
 			
+			scope.togglePrepareForFilterGroup = function(){
+				scope.filterItem.$$prepareForFilterGroup = !scope.filterItem.$$prepareForFilterGroup;
+			};
+			
 			//public functions
 			scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				$log.debug('selectedFilterProperty');
@@ -64,17 +63,18 @@ $filter){
 				$log.debug('cancelFilterItem');
 				$log.debug(scope.filterItemIndex);
 				//scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
-				scope.filterItem.setItemInUse({booleanValue:false});
+				scope.filterItem.setItemInUse(false);
 				console.log(scope.filterItem);
 				scope.filterItem.$$isClosed = true;
-				if(angular.isDefined(scope.filterItem.$$isNew)){
+				if(scope.filterItem.$$isNew === true){
 					scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
 				}
 			};
 			
-			scope.saveFilter = function(selectedFilterProperty,filterItem){
+			scope.saveFilter = function(selectedFilterProperty,filterItem,callback){
 				if(angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
 					//populate filterItem with selectedFilterProperty values
+					filterItem.$$isNew = false;
 					filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
 					filterItem.displayPropertyIdentifier = selectedFilterProperty.displayPropertyIdentifier; 
 					
@@ -161,11 +161,17 @@ $filter){
 					}
 					
 					filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
-					filterItem.$$isNew = false;
+					
+					//if the add to New group checkbox has been checked then we need to transplant the filter item into a filter group
+					if(filterItem.$$prepareForFilterGroup === true){
+						collectionService.transplantFilterItemIntoFilterGroup(filterGroupsController.getFilterGroupItem(),filterItem);
+					}
 					//persist Config and 
 					scope.saveCollection();
+					
 					$log.debug(selectedFilterProperty);
 					$log.debug(filterItem);
+					callback();
 				}
 			};
 		},

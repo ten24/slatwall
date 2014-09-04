@@ -346,10 +346,10 @@ Notes:
 			})();
 		</script>
 		
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/ui.bootstrap.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular-ui-bootstrap/ui.bootstrap.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
 		
@@ -417,7 +417,7 @@ Notes:
 			</div>
 		</div>
 		<!---displays alerts to the user --->
-		<div ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer"role="alert"
+		<div  ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer" role="alert"
 		ng-repeat="alert in alerts"
 		>
 			<!---only show a dismissable button if we are showing info or a warning --->
@@ -426,8 +426,5 @@ Notes:
 		  	<i class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
 	    </div>
 	</body>
-
-	<!-- Angular module that reyjay added  - needs to be changed -->
-	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/controllers.js"></script>
 </html>
 </cfoutput>

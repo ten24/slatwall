@@ -29,16 +29,6 @@
   .row .s-body-nav nav.navbar.navbar-default {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;}
   .actionbar-title{padding: 0px;margin: 0px;font-size: 16px;font-weight: 600;vertical-align: middle;margin-top: 18px;}
 
-  @media screen {
-  	.s-pannel-control a {color:#888;font-size:11px;}
-	  .s-pannel-control a:hover {text-decoration:none;}
-	  .panel-heading h4.panel-title {font-size:14px !important;}
-  }
-	.s-pannel-control a:hover {text-decoration:none;}
-	.panel-heading h4.panel-title span {font-size:14px !important;text-decoration:none !important;}
-	.panel-heading h4.panel-title:hover {font-size:14px !important;}
-  }
-
   a:-webkit-any-link {text-decoration:none !important;}
 
   .row .s-pannel-control {margin-top:10px;padding-bottom:2px;padding-right:2px;}
@@ -280,14 +270,14 @@
   .s-j-draggablePanelList .s-remove {background-color:#DA5757;color:#ffffff !important;}
   .s-j-draggablePanelList .s-remove:hover {background-color:#D66B6B !important;border:none !important;}
   .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
-  .s-j-draggablePanelList .s-sort-num {text-align:center;float:left;position:relative;background-color: #EEE;margin-right: 30px !important;font-size:12px;padding:0px;height:40px;width:40px;}
+  .s-j-draggablePanelList .s-sort-num {text-align:center;float:left;position:relative;background-color: #EEE;font-size:12px;padding:0px;height:40px;width:40px;}
   .s-j-draggablePanelList .s-sort-num a:first-child {padding: 12px;display:inline-block;cursor:pointer;}
   .s-j-draggablePanelList .s-sort-num a:hover {background:color:#eee;text-decoration:none;color:#000;}
   .s-j-draggablePanelList .s-sort-num a.active {box-shadow: none;-moz-box-shadow: none;-webkit-box-shadow: none;}
   .s-j-draggablePanelList .s-sort-num a.active:hover {background-color:#eee;text-decoration:none;color:#000;}
   .s-j-draggablePanelList .s-sort-num input {width: 38px;}
   .s-j-draggablePanelList .s-sort-num .s-title-edit-menu {padding: 5px 6px 4px 6px;display: inline-block;}
-  .s-j-draggablePanelList .s-sort-num .s-title-edit-menu .s-save-btn {margin-bottom:3px;}
+  .s-j-draggablePanelList .s-sort-num .s-title-edit-menu .s-save-btn {margin-bottom:3px;vertical-align: bottom;}
   .s-j-draggablePanelList .s-sort-num:hover {color:#000;}
   .s-j-draggablePanelList .s-sort.active {background-color:#ffffff !important;color:#767676 !important;box-shadow:none;}
   .s-j-draggablePanelList .s-sort:hover {background-color:#eeeeee !important;color:#767676 !important;box-shadow:none;}
@@ -303,7 +293,8 @@
   .s-j-draggablePanelList .s-pannel-name > span:first-child {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: #606060;box-shadow: inset -7px 0 2px -7px rgba(0, 0, 0, 0.8);color: #FFF;display: inline-block;padding-top: 11px;font-size: 12px;color: #DDD;}
   .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
   .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
-  .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 55px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
+  .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 53px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
+  .s-title-edit-menu .selectboxit-arrow-container {width:20px;}
 
   /*Reyjay added after david*/
   .s-define-filter-group .selectboxit-container {height:32px;margin-right:5px;margin-left:5px;}
@@ -380,5 +371,3 @@
   .s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;}
   .s-pannel-group .panel-default .panel-heading {background-color:#606060;color:#fff; border-color:#888;}
   .s-pannel-group .panel-default a {text-decoration:none;}
-
-  .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}

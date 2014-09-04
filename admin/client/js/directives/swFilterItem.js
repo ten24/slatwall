@@ -15,23 +15,16 @@ partialsPath,
 $log){
 	return {
 		restrict: 'A',
+		require:'^swFilterGroups',
 		scope:{
 			filterItem: "=",
 			siblingItems: "=",
-			setItemInUse: "&",
 			filterPropertiesList:"=",
-			saveCollection:"&",
-			removeFilterItem:"&",
-			filterItemIndex:"="
+			filterItemIndex:"=",
+			saveCollection:"&"
 		},
-		link: function(scope, element,attrs){
-			var Partial = partialsPath+"filterItem.html";
-			var templateLoader = $http.get(Partial,{cache:$templateCache});
-			var promise = templateLoader.success(function(html){
-				element.html(html);
-			}).then(function(response){
-				element.replaceWith($compile(element.html())(scope));
-			});
+		templateUrl:partialsPath+"filterItem.html",
+		link: function(scope, element,attrs,filterGroupsController){
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
@@ -42,17 +35,23 @@ $log){
 			if(angular.isUndefined(scope.filterItem.siblingItems)){
 				scope.filterItem.$$siblingItems = scope.siblingItems;
 			}
-			scope.filterItem.setItemInUse = scope.setItemInUse;
+			scope.filterItem.setItemInUse = filterGroupsController.setItemInUse;
 			
 			scope.selectFilterItem = function(filterItem){
 				collectionService.selectFilterItem(filterItem);
 			};
 			
+			scope.removeFilterItem = function(){
+				filterGroupsController.removeFilterItem(scope.filterItemIndex);
+			};
+			
+			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+			
 			scope.logicalOperatorChanged = function(logicalOperatorValue){
 				$log.debug('logicalOperatorChanged');
 				$log.debug(logicalOperatorValue);
 				scope.filterItem.logicalOperator = logicalOperatorValue;
-				scope.saveCollection();
+				filterGroupsController.saveCollection();
 			};
 		}
 	};
