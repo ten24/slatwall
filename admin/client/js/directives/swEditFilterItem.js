@@ -48,6 +48,10 @@ $filter){
 				}
 			}
 			
+			scope.togglePrepareForFilterGroup = function(){
+				scope.filterItem.$$prepareForFilterGroup = !scope.filterItem.$$prepareForFilterGroup;
+			};
+			
 			//public functions
 			scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				$log.debug('selectedFilterProperty');

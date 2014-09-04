@@ -44,7 +44,7 @@
 	          <button type="button" ng-click="saveFilter(selectedFilterProperty,filterItem,cancelFilterItem)" class="btn btn-sm s-btn-ten24">Save & Finish</button>
 	        </div>
 	        <div class="form-group">
-	          <div class="s-checkbox"><input type="checkbox" ng-model="filterItem.$$prepareForFilterGroup" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
+	          <div class="s-checkbox"><input type="checkbox" ng-model="filterItem.$$prepareForFilterGroup" id="j-checkbox21" ><label ng-click="togglePrepareForFilterGroup()" for="j-checkbox21"> Add To New Group</label></div>
 	        </div>
 	      </div>
 	    </div>
