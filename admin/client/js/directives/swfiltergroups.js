@@ -21,7 +21,7 @@ $log){
 			incrementFilterCount:"&",
 			saveCollection:"&"
 		},
-		templateUrl:partialsPath+"filterGroups.html",
+		templateUrl:partialsPath+"filtergroups.html",
 		controller: function($scope, $element,$attrs){
 			$scope.itemInUse = false;
 			

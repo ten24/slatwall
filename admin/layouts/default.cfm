@@ -354,30 +354,30 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
 		
 		<!---modules --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/js/slatwall.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/slatwalladmin.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
 	 	<!---services --->
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/slatwallService.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/alertService.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/services/collectionService.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallservice.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/collectionservice.js"></script>
 
 	 	<!---controllers --->
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collections.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/controllers/collectionsTabController.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collectionstabcontroller.js"></script>
 	 	<!---directives --->
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swHeaderWithTabs.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swDirective.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swheaderwithtabs.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdirective.js"></script>
 
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterGroups.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterItem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swAddFilterButtons.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swEditFilterItem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swFilterGroupItem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swCriteria.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swDisplayOptions.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swColumnItem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/pagination.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/js/directives/swPropertyDisplay.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroups.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfilteritem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swaddfilterbuttons.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/sweditfilteritem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroupitem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcriteria.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayoptions.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcolumnitem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/pagination.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
 
 		<div class="container-fluid">
 			<div class="row">

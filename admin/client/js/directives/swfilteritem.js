@@ -23,7 +23,7 @@ $log){
 			filterItemIndex:"=",
 			saveCollection:"&"
 		},
-		templateUrl:partialsPath+"filterItem.html",
+		templateUrl:partialsPath+"filteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
@@ -42,7 +42,7 @@ $log){
 			};
 			
 			scope.removeFilterItem = function(){
-				filterGroupsController.removeFilterItem(scope.filterItemIndex);
+				filterGroupsController.removeFilterItem(scope.filterItemIndex,filterGroupsController.getFilterGroupItem());
 			};
 			
 			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();

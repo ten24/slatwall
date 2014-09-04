@@ -4,7 +4,7 @@ angular.module('slatwalladmin')
 function(partialsPath){
 	return {
 		retrict:'A',
-		templateUrl: partialsPath+'paginationBar.html',
+		templateUrl: partialsPath+'paginationbar.html',
 		scope: {
 			collection: '='
 		}

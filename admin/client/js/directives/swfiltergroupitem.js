@@ -24,7 +24,7 @@ $log){
 			saveCollection:"&"
 		},
 		link: function(scope, element,attrs,filterGroupsController){
-			var Partial = partialsPath+"filterGroupItem.html";
+			var Partial = partialsPath+"filtergroupitem.html";
 			var templateLoader = $http.get(Partial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);

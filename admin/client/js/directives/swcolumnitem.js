@@ -22,7 +22,7 @@ $log){
 			columnIndex:"=",
 			saveCollection:"&"
 		},
-		templateUrl:partialsPath+"columnItem.html",
+		templateUrl:partialsPath+"columnitem.html",
 		link: function(scope, element,attrs,displayOptionsController){
 			$log.debug('displayOptionsController');
 			$log.debug(displayOptionsController);
