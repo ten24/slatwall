@@ -147,6 +147,13 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				columnStruct['isVisible'] = true;
 				columnStruct['isSearchable'] = true;
 				columnStruct['isExportable'] = true;
+				if(structKeyExists(defaultProperty,"ormtype")){
+					columnStruct['ormtype'] = defaultProperty.ormtype;
+				}
+				if(structKeyExists(defaultProperty,"fieldtype")){
+					columnStruct['ormtype'] = defaultProperty.fieldtype;
+				}
+				
 				arrayAppend(columnsArray,columnStruct);
 			}
 			var columnsJson = serializeJson(columnsArray);

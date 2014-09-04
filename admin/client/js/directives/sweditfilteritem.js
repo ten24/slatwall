@@ -48,6 +48,8 @@ $filter){
 				}
 			}
 			
+			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+			
 			scope.togglePrepareForFilterGroup = function(){
 				scope.filterItem.$$prepareForFilterGroup = !scope.filterItem.$$prepareForFilterGroup;
 			};
@@ -57,6 +59,10 @@ $filter){
 				$log.debug('selectedFilterProperty');
 				$log.debug(selectedFilterProperty);
 				//scope.selectedFilterProperty.breadCrumbs += 
+			};
+			
+			scope.addFilterItem = function(){
+				collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
 			};
 			
 			scope.cancelFilterItem = function(){

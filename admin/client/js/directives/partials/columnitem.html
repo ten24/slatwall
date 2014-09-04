@@ -20,7 +20,7 @@
         	<i class="fa fa-eye"></i>
         </a>
         <a 	class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search" 
-        	ng-class="{active:column.isSearchable}"
+        	ng-class="{active:column.isSearchable && column.ormtype !== 'boolean',disabled:column.ormtype === 'boolean'}"
         	ng-click="toggleSearchable(column)"	
         >
         	<i class="fa fa-search"></i>
