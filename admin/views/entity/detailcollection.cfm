@@ -105,6 +105,7 @@
 						data-column="column"
 						data-column-index="$index"
 						data-save-collection="saveCollection()"
+						data-properties-list="filterPropertiesList"
 						
 				></span>
 			</span >

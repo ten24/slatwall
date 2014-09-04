@@ -16,17 +16,15 @@ $log){
 	return {
 		restrict: 'A',
 		require:"^swDisplayOptions",
-		//transclude:true,
 		scope:{
 			column:"=",
 			columnIndex:"=",
-			saveCollection:"&"
+			saveCollection:"&",
+			propertiesList:"="
 		},
 		templateUrl:partialsPath+"columnitem.html",
 		link: function(scope, element,attrs,displayOptionsController){
 			$log.debug('displayOptionsController');
-			$log.debug(displayOptionsController);
-			
 			scope.toggleVisible = function(column){
 				$log.debug('toggle visible');
 				if(angular.isUndefined(column.isVisible)){

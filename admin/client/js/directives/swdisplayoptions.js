@@ -31,6 +31,10 @@ $log){
 				
 			};
 			
+			this.getPropertiesList = function(){
+				return $scope.propertiesList;
+			};
+			
 			$scope.addColumn = function(selectedProperty){
 				$log.debug('add column');
 				$log.debug(selectedProperty);
