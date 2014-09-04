@@ -24,28 +24,28 @@ $filter){
 		var criteriafieldtype = selectedFilterProperty.fieldtype;
         switch(criteriaormtype){
             case 'boolean':
-               templatePath = partialsPath+"criteriaBoolean.html";
+               templatePath = partialsPath+"criteriaboolean.html";
                 break;
             case 'string':
-                templatePath = partialsPath+"criteriaString.html";
+                templatePath = partialsPath+"criteriastring.html";
                 break;
             case 'timestamp':
-                templatePath = partialsPath+"criteriaDate.html";
+                templatePath = partialsPath+"criteriadate.html";
                 break;
             case 'big_decimal':
-            	templatePath = partialsPath+"criteriaBigDecimal.html";
+            	templatePath = partialsPath+"criteriabigdecimal.html";
             	break;
         }
         
         switch(criteriafieldtype){
 	        case "many-to-one":
-	        	templatePath = partialsPath+"criteriaManyToOne.html";
+	        	templatePath = partialsPath+"criteriamanytoone.html";
 				break;
 			case "many-to-many":
-				templatePath = partialsPath+"criteriaManyToMany.html";
+				templatePath = partialsPath+"criteriamanytomany.html";
 				break;
 			case "one-to-many":
-				templatePath = partialsPath+"criteriaOneToMany.html";
+				templatePath = partialsPath+"criteriaonetomany.html";
 				break;
 	    }
         

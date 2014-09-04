@@ -20,7 +20,7 @@ $log){
 			propertiesList:"=",
 			saveCollection:"&"
 		},
-		templateUrl:partialsPath+"displayOptions.html",
+		templateUrl:partialsPath+"displayoptions.html",
 		controller: function($scope,$element,$attrs){
 			this.removeColumn = function(columnIndex){
 				$log.debug('parent remove column');

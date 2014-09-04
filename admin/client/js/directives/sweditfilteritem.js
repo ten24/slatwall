@@ -28,7 +28,7 @@ $filter){
 			filterItemIndex:"="
 		
 		},
-		templateUrl:partialsPath+"editFilterItem.html",
+		templateUrl:partialsPath+"editfilteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){

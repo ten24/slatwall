@@ -15,7 +15,7 @@ partialsPath){
 	return {
 		require:'^swFilterGroups',
 		restrict: 'A',
-		templateUrl:partialsPath+"addFilterButtons.html",
+		templateUrl:partialsPath+"addfilterbuttons.html",
 		scope:{
 			itemInUse:"="
 		},

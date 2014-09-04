@@ -10,8 +10,8 @@ function(){
 			var jsonString = angular.toJson(jsonObject);
 			return jsonString;
 		},
-		removeFilterItem: function(filterItem){
-			delete filterItem;
+		removeFilterItem: function(filterItem,filterGroup){
+			filterGroup.pop(filterGroup.indexOf(filterItem));
 		},
 		selectFilterItem: function(filterItem){
 			if(filterItem.$$isClosed){
@@ -107,9 +107,11 @@ function(){
 			filterGroupItem.setItemInUse = filterItem.setItemInUse;
 			filterGroupItem.$$siblingItems = filterItem.$$siblingItems;
 			filterItem.$$siblingItems = [];
+			
+			
+			filterGroup.pop(filterGroup.indexOf(filterItem));
 			filterItem.$$prepareForFilterGroup = false;
 			filterGroupItem.filterGroup.push(filterItem);
-			filterGroup.pop(filterGroup.indexOf(filterItem));
 			filterGroup.push(filterGroupItem);
 		},
 		
