@@ -59,6 +59,10 @@ $filter){
 				//scope.selectedFilterProperty.breadCrumbs += 
 			};
 			
+			scope.addFilterItem = function(){
+				collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
+			};
+			
 			scope.cancelFilterItem = function(){
 				$log.debug('cancelFilterItem');
 				$log.debug(scope.filterItemIndex);
