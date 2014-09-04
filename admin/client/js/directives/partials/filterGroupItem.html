@@ -1,6 +1,6 @@
-<li class="s-filter-group" ng-class="{'s\-disabled':filterGroupItem.$$disabled}">
+<li class="s-filter-group" ng-class="{'s\-disabled':filterGroupItem.$$disabled}" >
   <!--- Filter display --->
-  <div class="s-filter-item">
+  <div ng-show="filterGroupItem.filterGroup.length > 0 && filterGroupItem.filterGroup[0].$$isNew !== true" class="s-filter-item">
   
    	<div ng-if="filterGroupItem.logicalOperator" class="btn-group-vertical btn-toggle">
       <button 	class="btn btn-xs btn-default" 
@@ -18,7 +18,7 @@
       <div class="panel-heading">Filter Group 
       	<a href="##" class="j-tool-tip-item"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
       		<i class="fa fa-times"
-      			ng-click="removeFilterGroupItem({filterGroupItemIndex:filterGroupItemIndex})"
+      			ng-click="removeFilterGroupItem()"
       		>
       		</i>
       	</a>
@@ -37,7 +37,6 @@
 		      data-filter-group-item="filterGroupItem.filterGroup"
 		      data-increment-filter-count="incrementFilterCount(number)" 
 		      data-filter-properties-list="filterPropertiesList"
-		      data-save-collection="saveCollection()"
       >
 
       </span>

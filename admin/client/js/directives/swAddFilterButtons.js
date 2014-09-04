@@ -13,27 +13,22 @@ $templateCache,
 collectionService,
 partialsPath){
 	return {
+		require:'^swFilterGroups',
 		restrict: 'A',
+		templateUrl:partialsPath+"addFilterButtons.html",
 		scope:{
-			filterGroupItem: "=",
-			itemInUse:"=",
-			setItemInUse:"&"
+			itemInUse:"="
 		},
-		link: function(scope, element,attrs){
-			var Partial = partialsPath+"addFilterButtons.html";
-			var templateLoader = $http.get(Partial,{cache:$templateCache});
-			var promise = templateLoader.success(function(html){
-				element.html(html);
-			}).then(function(response){
-				element.replaceWith($compile(element.html())(scope));
-			});
+		link: function(scope, element,attrs,filterGroupsController){
+			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 			
-			scope.addFilterItem = function(filterItemGroup){
-				collectionService.newFilterItem(filterItemGroup,scope.setItemInUse);
+			scope.addFilterItem = function(){
+				collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
 			};
 			
-			scope.addFilterGroupItem = function(filterItemGroup){
-				collectionService.newFilterGroupItem(filterItemGroup,scope.setItemInUse);
+			scope.addFilterGroupItem = function(){
+				collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse,true);
+				//collectionService.newFilterGroupItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
 			};
 		}
 	};

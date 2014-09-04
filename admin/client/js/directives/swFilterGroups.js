@@ -21,67 +21,77 @@ $log){
 			incrementFilterCount:"&",
 			saveCollection:"&"
 		},
-		link: function(scope, element,attrs){
-			var Partial = partialsPath+"filterGroups.html";
-			var templateLoader = $http.get(Partial,{cache:$templateCache});
-			var promise = templateLoader.success(function(html){
-				element.html(html);
-			}).then(function(response){
-				element.replaceWith($compile(element.html())(scope));
-			});
+		templateUrl:partialsPath+"filterGroups.html",
+		controller: function($scope, $element,$attrs){
+			$scope.itemInUse = false;
 			
-			scope.itemInUse = false;
-			scope.setItemInUse = function(booleanValue){
-				scope.itemInUse = booleanValue;
+			this.getFilterGroupItem = function(){
+				return $scope.filterGroupItem;
 			};
 			
-			scope.deselectItems = function(filterItem){
+			this.setItemInUse = function(booleanValue){
+				$scope.itemInUse = booleanValue;
+			};
+			
+			this.getItemInUse = function(){
+				return $scope.itemInUse;
+			};
+			
+			this.incrementFilterCount = function(number){
+				$scope.incrementFilterCount(number);
+			};
+			
+			this.saveCollection = function(){
+				$scope.saveCollection();
+			};
+			
+			$scope.deselectItems = function(filterItem){
 				for(i in filterItem.$$siblingItems){
 					filterItem.$$siblingItems[i].$$disabled = false;
 				}
-			}
+			};
 			
-			scope.removeFilterItem = function(filterItemIndex){
-				console.log('remove')
-				console.log(scope.filterGroupItem);
+			this.removeFilterItem = function(filterItemIndex){
+				console.log('remove');
+				console.log($scope.filterGroupItem);
 				if(angular.isDefined(filterItemIndex)){
 					
-					scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
-					scope.filterGroupItem[filterItemIndex].setItemInUse({booleanValue:false});
+					$scope.deselectItems($scope.filterGroupItem[filterItemIndex]);
+					$scope.filterGroupItem[filterItemIndex].setItemInUse(false);
 					//remove item
 					$log.debug('removeFilterItem');
 					$log.debug(filterItemIndex);
-					scope.incrementFilterCount({number:-1});
+					$scope.incrementFilterCount({number:-1});
 					
-					scope.filterGroupItem.splice(filterItemIndex,1);
+					$scope.filterGroupItem.splice(filterItemIndex,1);
 					//make sure first item has no logical operator if it exists
-					if(scope.filterGroupItem.length){
-						delete scope.filterGroupItem[0].logicalOperator;
+					if($scope.filterGroupItem.length){
+						delete $scope.filterGroupItem[0].logicalOperator;
 					}
 					
 					$log.debug('removeFilterItem');
 					$log.debug(filterItemIndex);
 					
-					scope.saveCollection();
+					$scope.saveCollection();
 				}
 			};
 			
-			//scope.
+			//$scope.
 			
-			scope.removeFilterGroupItem = function(filterGroupItemIndex){
+			this.removeFilterGroupItem = function(filterGroupItemIndex){
 				//remove Item
-				console.log(scope.filterGroupItem[filterGroupItemIndex]);
-				scope.deselectItems(scope.filterGroupItem[filterGroupItemIndex]);
-				scope.filterGroupItem[filterGroupItemIndex].setItemInUse({booleanValue:false});
+				console.log($scope.filterGroupItem[filterGroupItemIndex]);
+				$scope.deselectItems($scope.filterGroupItem[filterGroupItemIndex]);
+				$scope.filterGroupItem[filterGroupItemIndex].setItemInUse(false);
 				
-				scope.filterGroupItem.splice(filterGroupItemIndex,1);
+				$scope.filterGroupItem.splice(filterGroupItemIndex,1);
 				//make sure first item has no logical operator if it exists
-				if(scope.filterGroupItem.length){
-					delete scope.filterGroupItem[0].logicalOperator;
+				if($scope.filterGroupItem.length){
+					delete $scope.filterGroupItem[0].logicalOperator;
 				}
 				$log.debug('removeFilterGroupItem');
 				$log.debug(filterGroupItemIndex);
-				scope.saveCollection();
+				$scope.saveCollection();
 			};
 		}
 	};

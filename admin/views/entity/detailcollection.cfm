@@ -81,6 +81,7 @@
                 	<!---filterGroups gets taken apart here --->
                 	<ul class="col-xs-12 list-unstyled" 
                 		sw-filter-groups 
+                		ng-model="collectionConfig.filterGroups[0].filterGroup"
                 		data-increment-filter-count="incrementFilterCount(number)" 
                 		data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
                 		data-filter-properties-list="filterPropertiesList"
