@@ -26,7 +26,7 @@
 		"quantityUndelivered":		[{"contexts":"fulfillItems","minValue":0}],
 		"emailAddress":				[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmail","required":true}],
 		"pickupLocation":			[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],
-		"requiredShippingInfoExistsFlag":	[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","eq":true}],
+		"requiredShippingInfoExistsFlag":	[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","required":true}],
 		"shippingMethod":			[
 			{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","required":true},
 			{"contexts":"placeOrder","conditions":"fulfillmentTypeShippingWithoutRateOverride","method":"hasValidShippingMethodRate"}
