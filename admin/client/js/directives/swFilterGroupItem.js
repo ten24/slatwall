@@ -20,7 +20,8 @@ $log){
 			filterGroupItem: "=",
 			siblingItems:"=",
 			filterPropertiesList:"=",
-			filterGroupItemIndex:"="
+			filterGroupItemIndex:"=",
+			saveCollection:"&"
 		},
 		link: function(scope, element,attrs,filterGroupsController){
 			var Partial = partialsPath+"filterGroupItem.html";

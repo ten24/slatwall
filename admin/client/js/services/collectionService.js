@@ -107,6 +107,7 @@ function(){
 			filterGroupItem.setItemInUse = filterItem.setItemInUse;
 			filterGroupItem.$$siblingItems = filterItem.$$siblingItems;
 			filterItem.$$siblingItems = [];
+			filterItem.$$prepareForFilterGroup = false;
 			filterGroupItem.filterGroup.push(filterItem);
 			filterGroup.pop(filterGroup.indexOf(filterItem));
 			filterGroup.push(filterGroupItem);
