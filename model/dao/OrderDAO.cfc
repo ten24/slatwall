@@ -135,5 +135,26 @@ Notes:
 		
 		<cfreturn total />
 	</cffunction>
+	
+	<cffunction name="getOrderItemDBQuantity" access="public" returntype="numeric" output="false">
+		<cfargument name="orderItemID" type="string" required="true" />
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			SELECT
+				SwOrderItem.quantity
+			FROM
+				SwOrderItem
+			WHERE
+				SwOrderItem.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+		</cfquery>
+		
+		<cfif rs.recordCount>
+			<cfreturn rs.quantity />
+		</cfif>
+		
+		<cfreturn 0 />
+	</cffunction>
 </cfcomponent>
 

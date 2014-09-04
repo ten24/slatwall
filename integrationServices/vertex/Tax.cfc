@@ -69,78 +69,94 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				include "QuotationRequest.cfm";
 			}
 			
+			var httpURL = "#setting('webServicesURL')#/CalculateTax60?wsdl";
+			
 			// Setup Request to push to Vertex
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
-			httpRequest.setUrl("#setting('webServicesURL')#/CalculateTax60?wsdl");
+			httpRequest.setUrl( httpURL );
 			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
 	
 			// Parse response and set to struct
-			var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-
-			// Searches for the totalTax in xmlChild
-			for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
+			var htmlResponse = httpRequest.send().getPrefix();
+			if(structKeyExists(htmlResponse, "fileContent") && isXML(htmlResponse.fileContent)) {
 				
-				if(n1.xmlName == "QuotationResponse") {
-						
-					for(var n2 in n1.xmlChildren) {
-						
-						if(n2.xmlName == "LineItem") {
+				var xmlResponse = XmlParse(REReplace(htmlResponse.fileContent, "^[^<]*", "", "one"));
+
+				// Searches for the totalTax in xmlChild
+				for(var n1 in xmlResponse.xmlRoot.xmlChildren[1].xmlChildren[1].xmlChildren) {
+					
+					if(n1.xmlName == "QuotationResponse") {
 							
-							var orderItemID = n2.xmlAttributes.materialCode;
-
-							for(var n3 in n2.xmlChildren) {
+						for(var n2 in n1.xmlChildren) {
+							
+							if(n2.xmlName == "LineItem") {
 								
-								if(n3.xmlName == "Taxes") {
-
-									var taxAmount = 0;
-									var taxRate = 0;
-									var taxImpositionID = "";
-									var taxImpositionType = "";
-									var taxJurisdictionID = "";
-									var taxJurisdictionName = "";
-									var taxJurisdictionType = "";
+								var orderItemID = n2.xmlAttributes.materialCode;
+	
+								for(var n3 in n2.xmlChildren) {
 									
-									for(var n4 in n3.xmlChildren) {
+									if(n3.xmlName == "Taxes") {
+	
+										var taxAmount = 0;
+										var taxRate = 0;
+										var taxImpositionID = "";
+										var taxImpositionType = "";
+										var taxJurisdictionID = "";
+										var taxJurisdictionName = "";
+										var taxJurisdictionType = "";
 										
-										if(n4.xmlName == "Jurisdiction"){
-											taxJurisdictionName = n4.xmlText;
-											taxJurisdictionID = n4.xmlAttributes.jurisdictionId;
-											taxJurisdictionType = n4.xmlAttributes.jurisdictionLevel;
-										}
-										if(n4.xmlName == "CalculatedTax"){
-											taxAmount = n4.xmlText;
-										}
-										if(n4.xmlName == "EffectiveRate"){
-											taxRate = n4.xmlText;
-										}
-										if(n4.xmlName == "Imposition"){
-											taxImpositionName = n4.xmlText;
-											taxImpositionType = n4.xmlAttributes.impositionType;
+										for(var n4 in n3.xmlChildren) {
+											
+											if(n4.xmlName == "Jurisdiction"){
+												taxJurisdictionName = n4.xmlText;
+												taxJurisdictionID = n4.xmlAttributes.jurisdictionId;
+												taxJurisdictionType = n4.xmlAttributes.jurisdictionLevel;
+											}
+											if(n4.xmlName == "CalculatedTax"){
+												taxAmount = n4.xmlText;
+											}
+											if(n4.xmlName == "EffectiveRate"){
+												taxRate = n4.xmlText;
+											}
+											if(n4.xmlName == "Imposition"){
+												taxImpositionName = n4.xmlText;
+												taxImpositionType = n4.xmlAttributes.impositionType;
+											}
+											
 										}
 										
-									}
+										responseBean.addTaxRateItem(
+												orderItemID=orderItemID, 
+												taxAmount=taxAmount, 
+												taxRate=taxRate, 
+												taxJurisdictionName=taxJurisdictionName,
+												taxJurisdictionID=taxJurisdictionID,
+												taxJurisdictionType=taxJurisdictionType,
+												taxImpositionName=taxImpositionName,
+												taxImpositionType=taxImpositionType);
+										
+									}								
 									
-									responseBean.addTaxRateItem(
-											orderItemID=orderItemID, 
-											taxAmount=taxAmount, 
-											taxRate=taxRate, 
-											taxJurisdictionName=taxJurisdictionName,
-											taxJurisdictionID=taxJurisdictionID,
-											taxJurisdictionType=taxJurisdictionType,
-											taxImpositionName=taxImpositionName,
-											taxImpositionType=taxImpositionType);
-									
-								}								
-								
-							}							
+								}							
+							}
+							
 						}
 						
 					}
 					
 				}
 				
+			} else {
+				
+			 	logHibachi('Unable to connect to: #httpURL#', true);
+			 	
+				if(structKeyExists(htmlResponse, "fileContent")) {
+					logHibachi('Server response was: #htmlResponse.fileContent#', true);
+				}
+				
 			}
+			
 			
 		}
 			
