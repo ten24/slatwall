@@ -45,11 +45,6 @@
 
 Notes:
 
-	Valid Attribute Value Types
-	
-	product
-	orderItem
-	account
 */
 component displayname="Attribute Value" entityname="SlatwallAttributeValue" table="SwAttributeValue" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" {
 	
@@ -57,9 +52,9 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
 	property name="attributeValueEncrypted" ormtype="string";
-	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
 	
-	
+	// Calculated Properties
+
 	// Related Object Properties (many-to-one)
 	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID" notnull="true";
 	property name="attributeValueOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeValueOptionID";
@@ -85,11 +80,17 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
 	property name="vendorOrder" cfc="VendorOrder" fieldtype="many-to-one" fkcolumn="vendorOrderID";
 	
+	// Related Object Properties (one-to-many)
+	
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
+	
 	// Quick Lookup Properties
 	property name="attributeID" length="32" insert="false" update="false";
 	
-	// Remote properties
-	property name="remoteID" ormtype="string";
+	// Remote Properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -99,6 +100,13 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
+	
+	// Deprecated Properties
+
+
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -123,7 +131,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Attribute (many-to-one)
@@ -469,8 +477,16 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
-	// ============== START: Overridden Implicet Getters ===================
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
 	
 	public any function getAttributeValue() {
 		if(structKeyExists(variables, "attributeValue") && len(variables.attributeValue)) {
@@ -490,8 +506,12 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		variables.attributeValue = arguments.attributeValue;
 	}
 	
-	// ==============  END: Overridden Implicet Getters ====================
+	// ==============  END: Overridden Implicit Getters ====================
 	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
 	// ================== START: Overridden Methods ========================
 	
 	// This overrides the base validation method to dynamically add rules based on setting specific requirements
@@ -541,7 +561,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	public void function preInsert(){
@@ -563,5 +583,10 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
+	
 }
 
