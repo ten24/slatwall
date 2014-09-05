@@ -56,7 +56,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeCode" ormtype="string" index="PI_ATTRIBUTECODE";
 	property name="attributeDescription" ormtype="string" length="4000" ;
 	property name="attributeHint" ormtype="string";
-	property name="attributeType" ormtype="string" hb_formFieldType="select";
+	property name="attributeType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="defaultValue" ormtype="string";
 	property name="requiredFlag" ormtype="boolean" default="false" ;
 	property name="sortOrder" ormtype="integer" sortContext="attributeSet";
