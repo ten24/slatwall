@@ -969,7 +969,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public array function getAttributeSets(array attributeSetTypeCode=[]){
 		var smartList = getAssignedAttributeSetSmartList();
 		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
-			getAssignedAttributeSetSmartList().addFilter('attributeSetObject', 'OrderItem');
+			smartList.addFilter('attributeSetObject', 'OrderItem');
 		}
 		return smartList.getRecords();
 	}

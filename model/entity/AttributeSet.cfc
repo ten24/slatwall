@@ -159,7 +159,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 		if(!structKeyExists(variables, "globalFlag")) {
 			variables.globalFlag = 1;
 		}
-		if(!isNull(getAttributeSetType()) && !listFindNoCase("astProductType,astProduct,astSku,astOrderItem", getAttributeSetType().getSystemCode())) {
+		if(!isNull(getAttributeSetObject()) && !listFindNoCase("OrderItem,ProductType,Product,Sku", getAttributeSetObject())) {
 			variables.globalFlag = 1;
 		}
 		return variables.globalFlag;
