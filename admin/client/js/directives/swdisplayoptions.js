@@ -49,6 +49,43 @@ $log){
 				}
 				
 			};
+			
+			jQuery(function($) {
+				
+			      var panelList = angular.element($element).children('ul');
+			      panelList.sortable({
+			          // Only make the .panel-heading child elements support dragging.
+			          // Omit this to make then entire <li>...</li> draggable.
+			          handle: '.s-pannel-name',
+			          update: function() {
+			              $('.s-pannel-name', panelList).each(function(index, elem) {
+			            	  console.log('test');
+			                   var $listItem = $(elem),
+			                       newIndex = $listItem.index();
+
+			                   // Persist the new indices.
+			              });
+			          }
+			      });
+			  });
+			
+			/*$('.s-j-draggablePanelList .btn-group a').click(function(e){
+			    e.preventDefault();
+			    if($(this).hasClass('s-sort')){
+			      var currentSort = $(this).children('i:visible');
+			      if(currentSort.hasClass('s-not-active')){
+			        $(currentSort).removeAttr('class').addClass('fa fa-sort-amount-asc');
+			        $(currentSort).parent().siblings('.s-sort-num').show();
+			      }else if(currentSort.hasClass('fa-sort-amount-asc')){
+			        $(currentSort).removeAttr('class').addClass('fa fa-sort-amount-desc');
+			      }else if(currentSort.hasClass('fa-sort-amount-desc')){
+			        $(currentSort).addClass('s-not-active');
+			        $(currentSort).parent().siblings('.s-sort-num').hide();
+			      };
+			    }else{
+			      $(this).toggleClass('active');
+			    };
+			  });*/
 		}
 	};
 }]);

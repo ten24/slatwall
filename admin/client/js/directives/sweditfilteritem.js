@@ -88,6 +88,7 @@ $filter){
 						case 'boolean':
 		               		filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 		               		filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+		               		filterItem.displayValue = filterItem.value;
 		                break;
 			            case 'string':
 							filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
@@ -152,6 +153,7 @@ $filter){
 									filterItem.value = decimalValueString;
 								}
 							}
+							filterItem.displayValue = filterItem.value;
 							break;
 					}
 					
