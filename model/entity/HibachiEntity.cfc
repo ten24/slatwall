@@ -148,7 +148,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Attribute was not found, and we wanted an entity back
 		} else if(arguments.returnEntity) {
 			var newAttributeValue = getService("attributeService").newAttributeValue();
-			newAttributeValue.setAttributeValueType( lcase( replace(getEntityName(),'Slatwall','') ) );
+			newAttributeValue.setAttributeValueType( getClassName() );
 			var thisAttribute = getService("attributeService").getAttributeByAttributeCode( arguments.attribute );
 			if(isNull(thisAttribute) && len(arguments.attribute) eq 32) {
 				thisAttribute = getService("attributeService").getAttributeByAttributeID( arguments.attribute );
@@ -177,24 +177,20 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
 		attributeValueEntity.setAttributeValue( arguments.value );
+		
 		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
-		if(listFindNoCase("atCheckBoxGroup,atMultiSelect,atRadioGroup,atSelect", attributeValueEntity.getAttribute().getAttributeType())) {
+		if(listFindNoCase("checkboxGroup,multiselect,radioGroup,select", attributeValueEntity.getAttribute().getAttributeType())) {
 			var attributeOption = getService('attributeService').getAttributeOptionByAttributeAndAttributeOptionValue({attribute=attributeValueEntity.getAttribute(), attributeOptionValue='arguments.value'});
 			if(!isNull(attributeOption)) {
-				attributeValueEntity.setAttributeValueOption(attributeOption);
+				attributeValueEntity.setAttributeValueOption( attributeOption );
 			}
 		}
+		
 		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
-
-		// If this attribute value is new, then we can add it to the array
-		if(attributeValueEntity.isNew()) {
-			this.addAttributeValue( attributeValueEntity );
-		}
 
 		// Update the cache for this attribute value
 		getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
 		getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
-			
 	}
 
 	public any function getAssignedAttributeSetSmartList(){
