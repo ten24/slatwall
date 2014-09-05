@@ -179,6 +179,11 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		attributeValueEntity.setAttributeValue( arguments.value );
 		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 		
+		// If this attribute value is new, then we can add it to the array
+		if(attributeValueEntity.isNew()) {
+			this.addAttributeValue( attributeValueEntity );
+		}
+		
 		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
 		if(listFindNoCase("checkboxGroup,multiselect,radioGroup,select", attributeValueEntity.getAttribute().getAttributeType())) {
 			var attributeOption = getService('attributeService').getAttributeOptionByAttributeAndAttributeOptionValue({attribute=attributeValueEntity.getAttribute(), attributeOptionValue='arguments.value'});
