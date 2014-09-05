@@ -49,6 +49,28 @@ $log){
 				}
 				
 			};
+			
+			jQuery(function($) {
+				
+			      var panelList = angular.element($element).children('ul');
+			      panelList.sortable({
+			          // Only make the .panel-heading child elements support dragging.
+			          // Omit this to make then entire <li>...</li> draggable.
+			          handle: '.s-pannel-name',
+			          update: function(event,ui) {
+			        	  var tempColumnsArray = [];
+			              $('.s-pannel-name', panelList).each(function(index, elem) {
+			            	  var newIndex = $(elem).attr('j-column-index');
+			            	  var columnItem = $scope.columns[newIndex];
+			            	  tempColumnsArray.push(columnItem);
+			              });
+			              $scope.$apply(function () {
+			            	  $scope.columns = tempColumnsArray;
+			              });
+			              $scope.saveCollection();
+			          }
+			      });
+			  });
 		}
 	};
 }]);

@@ -95,19 +95,22 @@
           </div>
         </div><!--- //Tab Pane --->
         <div class="tab-pane s-display-options" id="j-display-options">
-			<span sw-display-options
+			<span  sw-display-options
 				data-columns="collectionConfig.columns"
 				data-properties-list="filterPropertiesList"
 				data-save-collection="saveCollection()"
+				data-callbacks="callbacks"
 			>
-				<span 	ng-repeat="column in collectionConfig.columns" 
+				<li class="list-group-item" 
+						ng-repeat="column in collectionConfig.columns" 
 						sw-column-item
 						data-column="column"
 						data-column-index="$index"
 						data-save-collection="saveCollection()"
 						data-properties-list="filterPropertiesList"
+						data-callbacks="callbacks"
 						
-				></span>
+				></li>
 			</span >
 		</div><!--- //Tab Pane --->
       </div>
@@ -482,7 +485,6 @@
   .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
   .s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 57px;top:0px;width: 230px;z-index: 3000;background-color: #EEE;height: 40px;padding-left: 10px;display:none;}
 
-
 </style>
 
 <script charset="utf-8">
@@ -537,7 +539,7 @@ $('form').submit(function(){
 });
 </script>
 
-<script charset="utf-8">
+<!---<script charset="utf-8">
   //Make panels dragable
   jQuery(function($) {
       var panelList = $('.s-j-draggablePanelList');
@@ -556,9 +558,9 @@ $('form').submit(function(){
           }
       });
   });
-</script>
+</script>--->
 
-<script charset="utf-8">
+<!---<script charset="utf-8">
   //Dragable pannel for filters
   $('.s-j-draggablePanelList .btn-group a').click(function(e){
     e.preventDefault();
@@ -568,7 +570,7 @@ $('form').submit(function(){
       $(this).toggleClass('active');
     };
   });
-</script>
+</script>--->
 
 <script charset="utf-8">
   //Remove sortable items and add message when none are left
