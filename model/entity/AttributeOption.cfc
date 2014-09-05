@@ -76,7 +76,6 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="attributeOptionLabel" persistent="false";
 	
 	// Deprecated Properties
 
