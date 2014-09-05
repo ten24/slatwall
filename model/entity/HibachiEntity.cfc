@@ -156,7 +156,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			if(!isNull(thisAttribute)) {
 				newAttributeValue.setAttribute( thisAttribute );
 			}
-			//newAttributeValue.invokeMethod("set#getClassName()#", {1=this});
 			return newAttributeValue;
 
 		}
@@ -178,6 +177,13 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
 		attributeValueEntity.setAttributeValue( arguments.value );
+		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
+		if(listFindNoCase("atCheckBoxGroup,atMultiSelect,atRadioGroup,atSelect", attributeValueEntity.getAttribute().getAttributeType())) {
+			var attributeOption = getService('attributeService').getAttributeOptionByAttributeAndAttributeOptionValue({attribute=attributeValueEntity.getAttribute(), attributeOptionValue='arguments.value'});
+			if(!isNull(attributeOption)) {
+				attributeValueEntity.setAttributeValueOption(attributeOption);
+			}
+		}
 		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 
 		// If this attribute value is new, then we can add it to the array
