@@ -71,7 +71,7 @@ Notes:
 		
 		<cfif !rc.attributeSet.isNew()>
 			<cf_HibachiPropertyList divclass="span6">
-				<cfset local.canEditGlobal = listFind( "Product,OrderItem", rc.attributeSet.getAttributeSetObject() ) && rc.edit />
+				<cfset local.canEditGlobal = listFindNoCase( "OrderItem,Product", rc.attributeSet.getAttributeSetObject() ) && rc.edit />
 				<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#local.canEditGlobal#">
 				<cfif listFind( "OrderItem", rc.attributeSet.getAttributeSetObject() )>
 					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="requiredFlag" edit="#rc.edit#">

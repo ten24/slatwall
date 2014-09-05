@@ -60,7 +60,7 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID";
 	
 	// Related Object Properties (one-to-many)
-	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="attributeOptionID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
