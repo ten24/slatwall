@@ -1,44 +1,11 @@
-<style media="screen">
-  .navbar-s-navbar-ten24 { background-color: #F58620;min-height:0px;}
-  .navbar-s-navbar-ten24 li.active {border-left: 2px solid #FFB671;}
-  .navbar-s-navbar-ten24 .navbar-nav { margin:0px;}
-  .navbar-s-navbar-ten24 .navbar-brand {height:38px;padding:8px;}
-  .navbar-s-navbar-ten24 .navbar-nav>.active>a:hover,.navbar-s-navbar-ten24 .navbar-nav>li>a:hover, .navbar-s-navbar-ten24 .navbar-nav>li>a:focus { background-color:#FF9A35}
-  .navbar-s-navbar-ten24 .navbar-nav>.active>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover, .navbar-s-navbar-ten24 .navbar-nav>.open>a:focus { background-color: #F58620}
-  .dropdown-menu { background-color: #FFFFFF}
-  .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #F58620}
-  .navbar-s-navbar-ten24 { background-image: none; }
-  .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-image: none; }
-  .navbar-s-navbar-ten24 { border-: #F58620}
-  .navbar-s-navbar-ten24 .navbar-brand { color: #FFFFFF}
-  .navbar-s-navbar-ten24 .navbar-brand:hover { color: #FFFFFF}
-  .navbar-s-navbar-ten24 .navbar-nav>li>a { color: #FFFFFF}
-  .navbar-s-navbar-ten24 .navbar-nav>li>a:hover, .navbar-s-navbar-ten24 .navbar-nav>li>a:focus { color: #FFFFFF}
-  .navbar-s-navbar-ten24 .navbar-nav>.active>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover, .navbar-s-navbar-ten24 .navbar-nav>.open>a:focus { color: #FFFFFF}
-  .navbar-s-navbar-ten24 .navbar-nav>.active>a:hover, .navbar-s-navbar-ten24 .navbar-nav>.active>a:focus { color: #FFFFFF}
-  .dropdown-menu>li>a { color: #000000}
-  .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #FFFFFF}
-  .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a .caret { border-top-color: #F58620}
-  .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-top-color: #F58620}
-  .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a .caret { border-bottom-color: #F58620}
-  .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #F58620}
-
-  .navbar-fixed-top {border:none;}
-  .navbar-fixed-bottom {border:none;}
-
-
-</style>
-
-
-
-<div class="s-create-window" style="display:none;margin-bottom: 38px;z-index: 3000;background: #FFF;position:absolute;left:0px;width:100%;margin-top:38px;">
+<div class="s-create-window">
   <header>
     <div class="navbar navbar-s-navbar-ten24 navbar-fixed-top">
       <div class="row">
         <div class="col-xs-12">
           <span class="navbar-brand" href="#">Create Bundle</span>
           <ul class="nav navbar-nav pull-right">
-            <li class="active"><a href="#" style="padding: 6px 12px;"><i class="fa fa-times" style="font-size:25px;"></i></a></li>
+            <li class="active"><a href="#"><i class="fa fa-times"></i></a></li>
           </ul>
         </div>
       </div>
@@ -186,7 +153,7 @@
                     <div class="tab-pane" id="j-selections-tab">
 
                       <!-- Selected filters -->
-                      <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                      <h2>Selected Items</h2>
                       <div class="s-bundle-group-items-list">
                         <ul class="list-unstyled" >
                           <li class="s-bundle-add-obj">
@@ -378,7 +345,7 @@
                     <div class="tab-pane" id="j-selections-tab">
 
                       <!-- Selected filters -->
-                      <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                      <h2>Selected Items</h2>
                       <div class="s-bundle-group-items-list">
                         <ul class="list-unstyled" >
                           <li class="s-bundle-add-obj">
@@ -570,7 +537,7 @@
                     <div class="tab-pane" id="j-selections-tab">
 
                       <!-- Selected filters -->
-                      <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                      <h2>Selected Items</h2>
                       <div class="s-bundle-group-items-list">
                         <ul class="list-unstyled" >
                           <li class="s-bundle-add-obj">
@@ -685,9 +652,9 @@
     <button class="btn btn-xs s-btn-grey s-create-bundle-btn" data-toggle="collapse" data-target="#j-edit-filter-1"><i class="fa fa-plus"></i> Bundle Group</button>
 
     <!--- Edit Filter Box --->
-    <div class="col-xs-12 collapse s-add-filter s-bundle-group-dropdown" id="j-edit-filter-1" style="margin-top:10px;background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;">
+    <div class="col-xs-12 collapse s-add-filter s-bundle-group-dropdown s-create-bundle-item" id="j-edit-filter-1">
       <div class="row">
-        <h4> Define Bundle Group<i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-1" style="float: right;color: #DDD;font-size:18px;cursor: pointer;margin-top: -1px;"></i></h4>
+        <h4> Define Bundle Group<i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-1"></i></h4>
 
 
 
@@ -717,10 +684,10 @@
                       <div class="btn-group s-search-filter">
                         <span class="s-search-input" ng-controller="TypeaheadCtrl">
                           <input type="text" ng-model="selected" placeholder="Search" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
-                          <div class="s-add-bundle-type" style="display:none;">
-                            <button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type" style="border-radius:0px;width:100%;vertical-align:top;text-align:left;padding: 8px 20px;line-height: 1.42857143;border:0px;border-right: 1px solid #DDD;border-left: 1px solid #DDD;"><i class="fa fa-plus"></i> Add "This should be the name"</button>
-                            <div id="j-toggle-add-bundle-type" class="collapse" style="background-color: #FFF;border: 1px solid #DDD;">
-                              <form id="form_id" action="index.html" style="padding:20px;" method="post">
+                          <div class="s-add-bundle-type">
+                            <button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button>
+                            <div id="j-toggle-add-bundle-type" class="collapse">
+                              <form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
                                 <div class="form-group has-error">
                                   <label for="">Group Name <i class="fa fa-asterisk"></i></label>
                                   <input type="text" class="form-control" id="" value="" placeholder="">
@@ -735,7 +702,7 @@
                                   <textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
                                 </div>
                                 <div class="form-group">
-                                  <button type="button" class="btn btn-sm s-btn-ten24" style="width:100%;"><i class="fa fa-plus"></i> Add Group Type</button>
+                                  <button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
                                 </div>
                               </form>
                             </div>
@@ -779,7 +746,7 @@
                 <div class="tab-pane" id="j-selections-tab-9">
 
                   <!-- Selected filters -->
-                  <h2 style="font-size: 16px;border-bottom: 1px solid #CCC;padding-bottom: 4px;margin-top:0px;">Selected Items</h2>
+                  <h2>Selected Items</h2>
                   <div class="s-bundle-group-items-list">
                     <ul class="list-unstyled" >
                       <li class="s-bundle-add-obj">
@@ -913,65 +880,6 @@
   CLICK ME
 </button>
 
-<style media="screen">
-  .s-search-filter{
-    display: block;
-    float: none;
-  }
-  .s-search-filter .s-add-new {
-    background-color: #EEE;
-  }
-  .s-search-filter .divider {
-    margin-top:0px;
-    margin-bottom:4px;
-  }
-  .s-search-filter .s-search-input > input {
-    padding-left:26px;
-  }
-  .s-search-filter > .s-search-input:before {
-      display: block;
-      width: 14px;
-      height: 14px;
-      content: "\f002";
-      font-family: 'fontawesome';
-      background-position: -48px 0;
-      position: absolute;
-      top:5px;
-      left:8px;
-      opacity: .5;
-      z-index: 1000;
-  }
-  .s-search-filter .dropdown-menu {
-    width: 100%;
-    border-radius: 0px;
-    margin-top: 0px;
-    padding-top:0px;
-    border-top: 0px;
-    box-shadow: none;
-    border-color:#dddddd;
-    -webkit-border-bottom-right-radius: 3px;
-    -webkit-border-bottom-left-radius: 3px;
-    -moz-border-radius-bottomright: 3px;
-    -moz-border-radius-bottomleft: 3px;
-    border-bottom-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    overflow: hidden;
-    margin-top:36px;
-  }
-  .s-search-filter .s-top-square {
-    -webkit-border-bottom-right-radius: 0px;
-    -webkit-border-bottom-left-radius: 0px;
-    -moz-border-radius-bottomright: 0px;
-    -moz-border-radius-bottomleft: 0px;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-  }
-  .s-search-filter input:focus {
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-  }
-</style>
 
 <script charset="utf-8">
   //search drop down effect
@@ -985,26 +893,6 @@
       }
     });
   });
-</script>
-
-<script charset="utf-8">
-  $(document).ready(function(e){
-    $('.search-panel .dropdown-menu').each(function(){
-      $(this).find('a').click(function(e) {
-
-        var param = $(this).attr("href").replace("#","");
-        var concept = $(this).text();
-
-        $(this).parent().parent().parent().find('#j-search-concept').text(concept);
-
-      });
-    });
-  });
-</script>
-
-<script charset="utf-8">
-  //activate tooltips
-    $('.j-tool-tip-item').tooltip();
 </script>
 
 <script charset="utf-8">
