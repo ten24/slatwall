@@ -8,7 +8,7 @@
 	<cfif thisTag.executionMode is "end">
 	
 		<cfparam name="thistag.tabs" default="#arrayNew(1)#" />
-		<cfparam name="activeTab" default="tabSystem" />
+		<cfparam name="activeTab" default="basic" />
 		
 		<cfloop array="#thistag.tabs#" index="tab">
 			<!--- Make sure there is a view --->
@@ -52,8 +52,6 @@
 		</cfif>
 		
 		<cfoutput>
-
-			
 			<div class="row s-pannel-control">
 				<div class="col-md-12">
 					<a href="##" class="j-openall">Open All</a>
@@ -84,8 +82,51 @@
 						</div><!--- panel-collapse collapse in --->
 					</div><!--- panel panel-default --->
 				</cfloop>
-			</div><!--- panel-group s-pannel-group --->
-				
+				<cfif isObject(attributes.object)>
+					<div class="j-panel panel panel-default">
+						<a data-toggle="collapse" href="##tabSystem">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span>#attributes.hibachiScope.rbKey('define.system')#</span>
+									<i class="fa fa-caret-left"></i>
+								</h4>
+							</div>
+						</a>
+						<div id="##tabSystem" class="panel-collapse collapse<cfif tab.open> in</cfif>">
+							<div class="panel-body">
+								<cfoutput>
+									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="tabSystem">
+										<div class="row" open="false">
+											<cf_HibachiPropertyList> 
+												<cf_HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
+												<cfif attributes.object.hasProperty('remoteID')>
+													<cf_HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
+												</cfif>
+												<cfif !attributes.object.getAuditSmartList().getRecordsCount()>
+													<cfif attributes.object.hasProperty('createdDateTime')>
+														<cf_HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
+													</cfif>
+													<cfif attributes.object.hasProperty('createdByAccount')>
+														<cf_HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
+													</cfif>
+													<cfif attributes.object.hasProperty('modifiedDateTime')>
+														<cf_HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
+													</cfif>
+													<cfif attributes.object.hasProperty('modifiedByAccount')>
+														<cf_HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
+													</cfif>
+												</cfif>
+											</cf_HibachiPropertyList>
+											
+											<cf_HibachiTimeline object="#attributes.object#" />
+										</div>
+									</div>
+								</cfoutput>
+							</div><!--- panel body --->
+						</div> <!--- panel-collapse collapse in --->
+					</div><!--- panel panel-default --->
+				</cfif>	
+			</div>	
 		</cfoutput>
 	</cfif>
-</cfif>					
+</cfif>			
