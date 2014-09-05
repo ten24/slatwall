@@ -52,6 +52,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
 	property name="attributeValueEncrypted" ormtype="string";
+	property name="attributeValueType" ormtype="string";
 	
 	// Calculated Properties
 
