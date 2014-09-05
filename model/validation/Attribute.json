@@ -1,7 +1,7 @@
 {
 	"conditions":{
 		"attributeTypeRequiresObject":{
-			"attributeType.systemCode":{"inList":"atRelatedObjectSelect,atRelatedObjectMultiselect"}
+			"attributeType":{"inList":"RelatedObjectSelect,RelatedObjectMultiselect"}
 		}  
 	},
 	"properties":{

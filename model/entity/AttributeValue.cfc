@@ -587,7 +587,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	public string function getAttributeValueFormatted() {
-		if(getAttribute().getAttributeType().getSystemCode() eq 'atRelatedObjectSelect') {
+		if(getAttribute().getAttributeType() eq 'RelatedObjectSelect') {
 			var thisEntityService = getService('hibachiService').getServiceByEntityName( getAttribute().getRelatedObject() );
 			var thisRelatedEntity = thisEntityService.invokeMethod("get#getAttribute().getRelatedObject()#", {1=getAttributeValue()});
 			if(!isNull(thisRelatedEntity)) {
@@ -602,7 +602,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	// =================== START: ORM Event Hooks  =========================
 	
 	public void function preInsert(){
-		if(getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attributeValue")) {
+		if(getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attributeValue")) {
 			variables.attributeValueEncrypted = encryptValue(variables.attributeValue);
 			structDelete(variables, "attributeValue");
 		}
@@ -611,7 +611,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	public void function preUpdate(struct oldData){
-		if(getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attrubuteValue")) {
+		if(getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attrubuteValue")) {
 			variables.attributeValueEncrypted = encryptValue(variables.attributeValue);
 			structDelete(variables, "attributeValue");
 		}

@@ -171,13 +171,13 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
 			variables.attributeOptionsOptions = [];
-			if(listFindNoCase('atCheckBoxGroup,atMultiSelect,atRadioGroup,atSelect', getAttributeType().getSystemCode())) {
+			if(listFindNoCase('checkBoxGroup,multiselect,radioGroup,select', getAttributeType())) {
 				var smartList = this.getAttributeOptionsSmartList();
 				smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
 				smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
 				smartList.addOrder("sortOrder|ASC");
 				variables.attributeOptionsOptions = smartList.getRecords();	
-			} else if(listFindNoCase('atRelatedObjectSelect', getAttributeType().getSystemCode()) && !isNull(getRelatedObject())) {
+			} else if(listFindNoCase('relatedObjectSelect', getAttributeType()) && !isNull(getRelatedObject())) {
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( getRelatedObject() );
 				var smartList = entityService.invokeMethod("get#getRelatedObject()#SmartList");
 				var exampleEntity = entityService.invokeMethod("new#getRelatedObject()#");
