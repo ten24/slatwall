@@ -11,10 +11,6 @@
 		<column name="remoteEmployeeID" />
 		<column name="remoteCustomerID" />
 		<column name="remoteContactID" />
-		<column name="createdDateTime" />
-		<column name="createdByAccountID" />
-		<column name="modifiedDateTime" />
-		<column name="modifiedByAccountID" />
 		<column name="primaryEmailAddressID" circular="true" />
 		<column name="primaryPhoneNumberID" circular="true" />
 		<column name="primaryAddressID" circular="true" />

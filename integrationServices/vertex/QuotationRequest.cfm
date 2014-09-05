@@ -51,14 +51,14 @@
 	   	<soapenv:Header/>
 	   	<soapenv:Body>
 	      	<urn:VertexEnvelope>
+	      		<urn:Login>
 	      		<cfif len(setting('webServicesTrustedID'))>
-	      			<urn:TrustedID>#setting('webServicesTrustedID')#</urn:TrustedID>
+	      			<urn:TrustedId>#setting('webServicesTrustedID')#</urn:TrustedId>
 	      		<cfelseif len(setting('webServicesUsername'))>
-		      		<urn:Login>
-		            	<urn:UserName>#setting('webServicesUsername')#</urn:UserName>
-		            	<urn:Password>#setting('webServicesPassword')#</urn:Password>
-		         	</urn:Login>
-	      		</cfif>
+	      			<urn:UserName>#setting('webServicesUsername')#</urn:UserName>
+	            	<urn:Password>#setting('webServicesPassword')#</urn:Password>
+	         	</cfif>
+	      		</urn:Login>
 	         	<urn:QuotationRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
 				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
 				  	<urn:Seller>
