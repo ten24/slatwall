@@ -147,11 +147,11 @@ Notes:
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Shipping Address</strong></td>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;">
-								<cfif len(orderDelivery.getShippingAdddress().getName())>#orderDelivery.getShippingAdddress().getName()#</cfif>
-								<cfif len(orderDelivery.getShippingAdddress().getStreetAddress())>#orderDelivery.getShippingAdddress().getStreetAddress()#</cfif>
-								<cfif len(orderDelivery.getShippingAdddress().getStreet2Address())>#orderDelivery.getShippingAdddress().getStreet2Address()#</cfif>
-								#orderDelivery.getShippingAdddress().getCity()#, #orderDelivery.getShippingAdddress().getStateCode()# #orderDelivery.getShippingAdddress().getPostalCode()#
-								#orderDelivery.getShippingAdddress().getCountryCode()#
+								<cfif len(orderDelivery.getShippingAddress().getName())>#orderDelivery.getShippingAddress().getName()#</cfif>
+								<cfif len(orderDelivery.getShippingAddress().getStreetAddress())>#orderDelivery.getShippingAddress().getStreetAddress()#</cfif>
+								<cfif len(orderDelivery.getShippingAddress().getStreet2Address())>#orderDelivery.getShippingAddress().getStreet2Address()#</cfif>
+								#orderDelivery.getShippingAddress().getCity()#, #orderDelivery.getShippingAddress().getStateCode()# #orderDelivery.getShippingAddress().getPostalCode()#
+								#orderDelivery.getShippingAddress().getCountryCode()#
 							</td>
 						</tr>
 			       	</cfif>
@@ -219,11 +219,11 @@ Notes:
 		</cfif>
 		Shipping Method : #orderDelivery.getShippingMethod().getShippingMethodName()#
         Ship-To Address:
-        <cfif len(orderDelivery.getShippingAdddress().getName())>#orderDelivery.getShippingAdddress().getName()#</cfif>
-		<cfif len(orderDelivery.getShippingAdddress().getStreetAddress())>#orderDelivery.getShippingAdddress().getStreetAddress()#</cfif>
-		<cfif len(orderDelivery.getShippingAdddress().getStreet2Address())>#orderDelivery.getShippingAdddress().getStreet2Address()#</cfif>
-		#orderDelivery.getShippingAdddress().getCity()#, #orderDelivery.getShippingAdddress().getStateCode()# #orderDelivery.getShippingAdddress().getPostalCode()#
-		#orderDelivery.getShippingAdddress().getCountryCode()#
+        <cfif len(orderDelivery.getShippingAddress().getName())>#orderDelivery.getShippingAddress().getName()#</cfif>
+		<cfif len(orderDelivery.getShippingAddress().getStreetAddress())>#orderDelivery.getShippingAddress().getStreetAddress()#</cfif>
+		<cfif len(orderDelivery.getShippingAddress().getStreet2Address())>#orderDelivery.getShippingAddress().getStreet2Address()#</cfif>
+		#orderDelivery.getShippingAddress().getCity()#, #orderDelivery.getShippingAddress().getStateCode()# #orderDelivery.getShippingAddress().getPostalCode()#
+		#orderDelivery.getShippingAddress().getCountryCode()#
 		</cfif>
 		
 		Items Delivered:

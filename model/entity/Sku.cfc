@@ -449,7 +449,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public boolean function getDefaultFlag() {
-    	if(getProduct().getDefaultSku().getSkuID() == getSkuID()) {
+    	if(!isNull(getProduct().getDefaultSku()) && getProduct().getDefaultSku().getSkuID() == getSkuID()) {
     		return true;
     	}
     	return false; 
