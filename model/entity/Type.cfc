@@ -62,6 +62,7 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	property name="parentType" cfc="Type" fieldtype="many-to-one" fkcolumn="parentTypeID";
 	
 	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="childTypes" singularname="childType" type="array" cfc="Type" fieldtype="one-to-many" fkcolumn="parentTypeID" cascade="all" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
@@ -91,6 +92,14 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Attribute Values (one-to-many)    
+	public void function addAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.setProductBundleGroup( this );    
+	}    
+	public void function removeAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.removeProductBundleGroup( this );    
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

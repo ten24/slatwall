@@ -459,6 +459,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "subscriptionBenefit");
 	}
 	
+	// Type (many-to-one)    
+	public void function setType(required any type) {    
+		variables.type = arguments.type;    
+		if(isNew() or !arguments.type.hasAttributeValue( this )) {    
+			arrayAppend(arguments.type.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeType(any type) {    
+		if(!structKeyExists(arguments, "type")) {    
+			arguments.type = variables.type;    
+		}    
+		var index = arrayFind(arguments.type.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.type.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "type");    
+	}
+	
 	// Vendor (many-to-one)
 	public void function setVendor(required any vendor) {
 		variables.vendor = arguments.vendor;
