@@ -40,6 +40,8 @@
   .panel-group .panel-heading {background-color:#606060;color:#fff;border-color:#888;}
 
   /*Bootstrap overwrite*/
+  .help-block {font-size:11px;}
+  .has-error .form-control {border-color: #A94442 !important;}
   .navbar-inverse .navbar-nav>li>a {color:#b0b0b0;}
   .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}
   .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {background-color:#F58620;border-color:#F58620;}
@@ -70,6 +72,7 @@
   .form-control {border-color: #DDD !important;color: #767676;height: 30px;box-shadow:none;box-shadow:none;}
 
   /*Custom CSS*/
+  .form-group label i.fa-asterisk {color: #A94442;font-size: 6px;position: relative;top: -7px;}
   .s-btn-ten24 {background-color: #F58620;border-color: #f1790b;color: #ffffff;}
   .s-btn-ten24:hover,.s-btn-ten24:focus,.s-btn-ten24:active,.s-btn-ten24.active {background-color: #f1790b;border-color: #f1790b;color:#ffffff;}
   .s-btn-ten24.disabled:hover,.s-btn-ten24.disabled:focus,.s-btn-ten24.disabled:active,.s-btn-ten24.disabled.active,.s-btn-ten24[disabled]:hover,.s-btn-ten24[disabled]:focus,.s-btn-ten24[disabled]:active,.s-btn-ten24[disabled].active,fieldset[disabled] .s-btn-ten24:hover,fieldset[disabled] .s-btn-ten24:focus,fieldset[disabled] .s-btn-ten24:active,fieldset[disabled] .s-btn-ten24.active {background-color: #F58620;}

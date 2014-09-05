@@ -31,7 +31,7 @@
 
 
 
-<div class="s-create-window" style="margin-bottom: 38px;z-index: 3000;background: #FFF;position:absolute;left:0px;width:100%;margin-top:38px;">
+<div class="s-create-window" style="display:none;margin-bottom: 38px;z-index: 3000;background: #FFF;position:absolute;left:0px;width:100%;margin-top:38px;">
   <header>
     <div class="navbar navbar-s-navbar-ten24 navbar-fixed-top">
       <div class="row">
@@ -717,17 +717,31 @@
                       <div class="btn-group s-search-filter">
                         <span class="s-search-input" ng-controller="TypeaheadCtrl">
                           <input type="text" ng-model="selected" placeholder="Search" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
-                          <i ng-show="loadingLocations" class="fa fa-refresh fa-spin" style="position: absolute;right: 8px;top: 9px;color: #AAA;"></i>
+                          <div class="s-add-bundle-type" style="display:none;">
+                            <button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type" style="border-radius:0px;width:100%;vertical-align:top;text-align:left;padding: 8px 20px;line-height: 1.42857143;border:0px;border-right: 1px solid #DDD;border-left: 1px solid #DDD;"><i class="fa fa-plus"></i> Add "This should be the name"</button>
+                            <div id="j-toggle-add-bundle-type" class="collapse" style="background-color: #FFF;border: 1px solid #DDD;">
+                              <form id="form_id" action="index.html" style="padding:20px;" method="post">
+                                <div class="form-group has-error">
+                                  <label for="">Group Name <i class="fa fa-asterisk"></i></label>
+                                  <input type="text" class="form-control" id="" value="" placeholder="">
+                                  <p class="help-block">Example Of Error</p>
+                                </div>
+                                <div class="form-group">
+                                  <label for="">Group Code</label>
+                                  <input type="text" class="form-control" id="" value="" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                  <label for="">Group Description</label>
+                                  <textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
+                                </div>
+                                <div class="form-group">
+                                  <button type="button" class="btn btn-sm s-btn-ten24" style="width:100%;"><i class="fa fa-plus"></i> Add Group Type</button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
                         </span>
                       </div>
-                    </div>
-                  </div>
-
-                  <div class="row form-group" id="j-bundle-name">
-                    <div class="col-xs-4">
-                      <label for="">Group Name:</label>
-                      <p class="form-control-static"></p>
-                      <input type="text" class="form-control" value="">
                     </div>
                   </div>
 
@@ -884,7 +898,8 @@
       <div class="row">
         <div class="col-xs-12">
           <ul class="nav navbar-nav pull-right">
-            <li class="active"><a href="#" style="padding: 9px 12px;font-size: 16px;"><i class="fa fa-floppy-o"></i> Save & Continue</a></li>
+            <li class="active"><a href="#" style="padding: 9px 12px;font-size: 16px;">Save & New</a></li>
+            <li class="active"><a href="#" style="padding: 9px 12px;font-size: 16px;">Save & Finish</a></li>
           </ul>
         </div>
       </div>
@@ -893,6 +908,10 @@
 
 </div><!--//wrapper end-->
 
+
+<button type="button" class="btn btn-default j-test-button" style="margin-top:80px;width:100%;">
+  CLICK ME
+</button>
 
 <style media="screen">
   .s-search-filter{
@@ -906,7 +925,7 @@
     margin-top:0px;
     margin-bottom:4px;
   }
-  .s-search-filter input {
+  .s-search-filter .s-search-input > input {
     padding-left:26px;
   }
   .s-search-filter > .s-search-input:before {
@@ -937,6 +956,7 @@
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
     overflow: hidden;
+    margin-top:36px;
   }
   .s-search-filter .s-top-square {
     -webkit-border-bottom-right-radius: 0px;
@@ -959,29 +979,10 @@
     $('.s-search-filter .s-search-input input').keyup(function(){
       var myLength = $(this).val().length;
       if (myLength > 0) {
-        $(this).addClass('s-top-square');
-        $(this).closest('.s-search-filter').find('.dropdown-menu').show();
+        $('.s-add-bundle-type').show();
       }else{
-        $(this).removeClass('s-top-square');
-        $(this).closest('.s-search-filter').find('.dropdown-menu').hide();
+        $('.s-add-bundle-type').hide();
       }
-    });
-
-    $('.s-search-filter .dropdown-menu li').click(function(e){
-      e.preventDefault();
-      if($(this).hasClass('s-add-new')){
-        var inputText = $(this).closest('.s-search-filter').find('input').val();
-        $('#j-bundle-name input').attr('value',inputText);
-        $('#j-bundle-name input').removeAttr('disabled');
-        $(this).parent('.dropdown-menu').hide();
-        $(this).closest('.s-search-filter').find('input').val('');
-
-      }else{
-        var inputText = $(this).children('a').text();
-        $('#j-bundle-name input').val(inputText);
-        $('#j-bundle-name input').attr('disabled','disabled');
-        $(this).parent('.dropdown-menu').hide();
-      };
     });
   });
 </script>
@@ -1099,6 +1100,14 @@
   });
 </script>
 
+<script charset="utf-8">
+  $('.j-test-button').click(function(){
+    $('.s-create-window').fadeIn();
+  });
+  $('.navbar-nav .fa-times').click(function(){
+    $('.s-create-window').fadeOut();
+  });
+</script>
 
 
 <script charset="utf-8">
@@ -1110,6 +1119,7 @@
 
   }
 </script>
+
 
 <!-- Add new default font -->
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
