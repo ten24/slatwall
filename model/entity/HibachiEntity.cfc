@@ -177,6 +177,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
 		attributeValueEntity.setAttributeValue( arguments.value );
+		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 		
 		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
 		if(listFindNoCase("checkboxGroup,multiselect,radioGroup,select", attributeValueEntity.getAttribute().getAttributeType())) {
@@ -186,8 +187,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			}
 		}
 		
-		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
-
 		// Update the cache for this attribute value
 		getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
 		getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
