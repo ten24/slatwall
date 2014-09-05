@@ -119,10 +119,10 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	
 	// Attribute Values (one-to-many)    
 	public void function addAttributeValue(required any attributeValue) {    
-		arguments.attributeValue.setAccount( this );    
+		arguments.attributeValue.setAttributeOption( this );    
 	}    
 	public void function removeAttributeValue(required any attributeValue) {    
-		arguments.attributeValue.removeAccount( this );    
+		arguments.attributeValue.removeAttributeOption( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

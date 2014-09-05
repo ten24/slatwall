@@ -95,10 +95,10 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	
 	// Attribute Values (one-to-many)    
 	public void function addAttributeValue(required any attributeValue) {    
-		arguments.attributeValue.setProductBundleGroup( this );    
+		arguments.attributeValue.setType( this );    
 	}    
 	public void function removeAttributeValue(required any attributeValue) {    
-		arguments.attributeValue.removeProductBundleGroup( this );    
+		arguments.attributeValue.removeType( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
