@@ -64,6 +64,7 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	property name="productBundleGroupType" cfc="Type" fieldtype="many-to-one" fkcolumn="productBundleGroupTypeID" hb_optionsSmartListData="f:parentType.systemCode=productBundleGroupType";
 	
 	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -145,7 +146,7 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 		}    
 	}    
 	public void function removeProductBundleSku(any productBundleSku) {    
-		if(!structKeyExists(arguments, "productBundleSku")) {    
+		if(!structKeyExists(arguments, "productBundleSku")) {
 			arguments.productBundleSku = variables.productBundleSku;    
 		}    
 		var index = arrayFind(arguments.productBundleSku.getProductBundleGroups(), this);    
@@ -153,6 +154,14 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 			arrayDeleteAt(arguments.productBundleSku.getProductBundleGroups(), index);    
 		}    
 		structDelete(variables, "productBundleSku");    
+	}
+	
+	// Attribute Values (one-to-many)    
+	public void function addAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.setProductBundleGroup( this );    
+	}    
+	public void function removeAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.removeProductBundleGroup( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

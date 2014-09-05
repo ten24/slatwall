@@ -369,6 +369,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "product");
 	}
 	
+	// Product Bundle Group (many-to-one)    
+	public void function setProductBundleGroup(required any productBundleGroup) {    
+		variables.productBundleGroup = arguments.productBundleGroup;    
+		if(isNew() or !arguments.productBundleGroup.hasAttributeValue( this )) {    
+			arrayAppend(arguments.productBundleGroup.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeProductBundleGroup(any productBundleGroup) {    
+		if(!structKeyExists(arguments, "productBundleGroup")) {    
+			arguments.productBundleGroup = variables.productBundleGroup;    
+		}    
+		var index = arrayFind(arguments.productBundleGroup.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.productBundleGroup.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "productBundleGroup");    
+	}
+	
 	// Product Type (many-to-one)
 	public void function setProductType(required any productType) {
 		variables.productType = arguments.productType;
