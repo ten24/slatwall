@@ -200,7 +200,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "attributes", "INNER", true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('globalFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', '#getClassName()#');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', getClassName());
 		}
 
 		return variables.assignedAttributeSetSmartList;

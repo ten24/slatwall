@@ -1,7 +1,7 @@
 {
 	"conditions":{
 		"attributeTypeRequiresObject":{
-			"attributeType":{"inList":"RelatedObjectSelect,RelatedObjectMultiselect"}
+			"attributeType":{"inList":"relatedObjectSelect,relatedObjectMultiselect"}
 		}  
 	},
 	"properties":{
