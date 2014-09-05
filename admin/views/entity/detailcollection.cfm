@@ -109,6 +109,7 @@
 						data-save-collection="saveCollection()"
 						data-properties-list="filterPropertiesList"
 						data-callbacks="callbacks"
+						
 				></li>
 			</span >
 		</div><!--- //Tab Pane --->
