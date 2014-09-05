@@ -53,20 +53,11 @@ Notes:
 	<cf_HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
 		
 		<cf_HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false" />
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" />
-				
-			</cf_HibachiPropertyList>
-			
-			
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.integration#">
-			<cf_HibachiTab view="admin:entity/integrationtabs/settings" />
-		</cf_HibachiTabGroup>
+
+		<cf_HibachiEntityDetailGroup object="#rc.integration#">
+			<cf_HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
