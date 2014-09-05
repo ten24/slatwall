@@ -421,9 +421,9 @@ Notes:
 		ng-repeat="alert in alerts"
 		>
 			<!---only show a dismissable button if we are showing info or a warning --->
-		  	<button ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		  	<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 		  	<!---show check mark only if success, always display message --->
-		  	<i class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
+		  	<i style="display:none;" class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
 	    </div>
 	</body>
 </html>

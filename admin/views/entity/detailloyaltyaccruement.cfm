@@ -55,23 +55,26 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="startDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="endDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="expirationTerm" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointQuantity" edit="#rc.edit#">				
+				<cfif rc.loyaltyAccruement.isNew()>
+					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="activeFlag" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="startDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="endDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="expirationTerm" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementType" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointType" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointQuantity" edit="#rc.edit#">
+				</cfif>				
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
 		<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>
-			<cf_HibachiTabGroup object="#rc.loyaltyAccruement#">
-				<cf_HibachiTab view="admin:entity/loyaltyAccruementtabs/producttypes" />
-				<cf_HibachiTab view="admin:entity/loyaltyAccruementtabs/products" />
-				<cf_HibachiTab view="admin:entity/loyaltyAccruementtabs/skus" />
-				<cf_HibachiTab view="admin:entity/loyaltyAccruementtabs/brands" />
-			</cf_HibachiTabGroup>
+			<cf_HibachiEntityDetailGroup object="#rc.loyaltyAccruement#">
+				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
+				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
+				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />
+				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/brands" />
+			</cf_HibachiEntityDetailGroup>
 		</cfif>
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
