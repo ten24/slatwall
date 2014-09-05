@@ -339,7 +339,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.assignedOrderItemAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 			variables.assignedOrderItemAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedOrderItemAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedOrderItemAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astOrderItem');
+			variables.assignedOrderItemAttributeSetSmartList.addFilter('attributeSetObject', 'OrderItem');
 			
 			variables.assignedOrderItemAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedOrderItemAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");
@@ -873,7 +873,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astSku');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'Sku');
 			
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");
