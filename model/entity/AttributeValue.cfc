@@ -135,7 +135,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	/*
 	// Attribute (many-to-one)
 	public void function setAttribute(required any attribute) {
 		variables.attribute = arguments.attribute;
@@ -513,8 +512,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "vendorOrder");
 	}
-	
-	*/
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

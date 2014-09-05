@@ -177,11 +177,10 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
 		attributeValueEntity.setAttributeValue( arguments.value );
-		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 		
 		// If this attribute value is new, then we can add it to the array
 		if(attributeValueEntity.isNew()) {
-			this.addAttributeValue( attributeValueEntity );
+			attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 		}
 		
 		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
