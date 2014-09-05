@@ -48,6 +48,7 @@ Notes:
 */
 component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttribute" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" hb_permission="attributeSet.attributes" {
 	
+	
 	// Persistent Properties
 	property name="attributeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default=1;
@@ -63,15 +64,23 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="validationRegex" ormtype="string";
 	property name="decryptValueInAdminFlag" ormtype="boolean";
 	property name="relatedObject" ormtype="string" hb_formFieldType="select";
-	
-	// Related Object Properties (Many-To-One)
-	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
-	//property name="attributeType" cfc="Type" fieldtype="many-to-one" fkcolumn="attributeTypeID" hb_optionsSmartListData="f:parentType.systemCode=attributeType" fetch="join";
-	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
 
-	// Related Object Properties (One-To-Many)
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
+	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
+	
+	// Related Object Properties (one-to-many)
 	property name="attributeOptions" singularname="attributeOption" cfc="AttributeOption" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="delete-orphan";
+	
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
+	
+	// Remote Properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -85,6 +94,15 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="relatedObjectOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
 	
+	// Deprecated Properties
+
+
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
+	
+	// ============ START: Non-Persistent Property Methods =================
+	
 	public array function getAttributeOptions(string orderby, string sortType="text", string direction="asc") {
 		if(!structKeyExists(arguments,"orderby")) {
 			return variables.AttributeOptions;
@@ -92,41 +110,33 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			return getService("hibachiUtilityService").sortObjectArray(variables.AttributeOptions,arguments.orderby,arguments.sortType,arguments.direction);
 		}
 	}
-
-    // ============ START: Non-Persistent Property Methods =================
-    
+	
 	public array function getAttributeTypeOptions() {
 		return [
-			{value="account", name=rbKey("entity.Account")},
-			{value="accountPayment", name=rbKey("entity.AccountPayment")},
-			{value="attributeOption", name=rbKey("entity.AttributeOption")},
-			{value="brand", name=rbKey("entity.Brand")},
-			{value="file", name=rbKey("entity.File")},
-			{value="image", name=rbKey("entity.Image")},
-			{value="order", name=rbKey("entity.Order")},
-			{value="orderItem", name=rbKey("entity.OrderItem")},
-			{value="orderPayment", name=rbKey("entity.OrderPayment")},
-			{value="orderFulfillment", name=rbKey("entity.OrderFulfillment")},
-			{value="orderDelivery", name=rbKey("entity.OrderDelivery")},
-			{value="product", name=rbKey("entity.Product")},
-			{value="productBundleGroup", name=rbKey("entity.ProductBundleGroup")},
-			{value="productType", name=rbKey("entity.ProductType")},
-			{value="productReview", name=rbKey("entity.ProductReview")},
-			{value="sku", name=rbKey("entity.Sku")},
-			{value="subscriptionBenefit", name=rbKey("entity.SubscriptionBenefit")},
-			{value="type", name=rbKey("entity.Type")},
-			{value="vendor", name=rbKey("entity.Vendor")},
-			{value="vendorOrder", name=rbKey("entity.VendorOrder")}
+			{value="checkbox", name=rbKey("entity.attribute.attributeType.checkbox")},
+			{value="checkboxGroup", name=rbKey("entity.attribute.attributeType.checkboxGroup")},
+			{value="date", name=rbKey("entity.attribute.attributeType.date")},
+			{value="dateTime", name=rbKey("entity.attribute.attributeType.dateTime")},
+			{value="multiselect", name=rbKey("entity.attribute.attributeType.multiselect")},
+			{value="password", name=rbKey("entity.attribute.attributeType.password")},
+			{value="radioGroup", name=rbKey("entity.attribute.attributeType.radioGroup")},
+			{value="relatedObjectSelect", name=rbKey("entity.attribute.attributeType.relatedObjectSelect")},
+			{value="relatedObjectMultiselect", name=rbKey("entity.attribute.attributeType.relatedObjectMultiselect")},
+			{value="select", name=rbKey("entity.attribute.attributeType.select")},
+			{value="text", name=rbKey("entity.attribute.attributeType.text")},
+			{value="textArea", name=rbKey("entity.attribute.attributeType.textArea")},
+			{value="time", name=rbKey("entity.attribute.attributeType.time")},
+			{value="wysiwyg", name=rbKey("entity.attribute.attributeType.wysiwyg")},
+			{value="yesNo", name=rbKey("entity.attribute.attributeType.yesNo")}
 		];
     }
     
 	public string function getFormFieldType() {
 		if(!structKeyExists(variables, "formFieldType")) {
-			var attributeTypeSystemCode = getAttributeType().getSystemCode();
-			variables.formFieldType = right(attributeTypeSystemCode, len(attributeTypeSystemCode)-2);
+			variables.formFieldType = getAttributeType();
 			if(variables.formFieldType eq 'relatedObjectSelect') {
 				variables.formFieldType = 'select';
-			} else if (variables.formFieldType eq 'releatedObjectMultiselect') {
+			} else if (variables.formFieldType eq 'relatedObjectMultiselect') {
 				variables.formFieldType = 'listingMultiselect';	
 			}
 		}
@@ -181,11 +191,11 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		}
 		return variables.attributeOptionsOptions;
     }
-   
-	// ============  END:  Non-Persistent Property Methods =================
 	
-    // ============= START: Bidirectional Helper Methods ===================
-    
+	// ============  END:  Non-Persistent Property Methods =================
+		
+	// ============= START: Bidirectional Helper Methods ===================
+	
 	// Attribute Set (many-to-one)    
 	public void function setAttributeSet(required any attributeSet) {    
 		variables.attributeSet = arguments.attributeSet;
@@ -221,17 +231,38 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
-	
-	// ================== START: Overridden Methods ========================
 
+	// =============== START: Custom Validation Methods ====================
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
+	// ================== START: Overridden Methods ========================
+	
 	public any function getAttributeOptionsSmartlist() {
 		return getPropertySmartList( "attributeOptions" );
 	}
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
+
 }
 

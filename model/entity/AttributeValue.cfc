@@ -162,6 +162,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "account");
 	}
 	
+	// Attribute Option (many-to-one)    
+	public void function setAttributeOption(required any attributeOption) {    
+		variables.attributeOption = arguments.attributeOption;    
+		if(isNew() or !arguments.attributeOption.hasAttributeValue( this )) {    
+			arrayAppend(arguments.attributeOption.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeAttributeOption(any attributeOption) {    
+		if(!structKeyExists(arguments, "attributeOption")) {    
+			arguments.attributeOption = variables.attributeOption;    
+		}    
+		var index = arrayFind(arguments.attributeOption.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.attributeOption.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "attributeOption");    
+	}
+	
 	// Account Payment (many-to-one)
 	public void function setAccountPayment(required any accountPayment) {
 		variables.accountPayment = arguments.accountPayment;
