@@ -18,7 +18,6 @@ $log){
 		scope:{
 			filterGroupItem: "=",
 			filterPropertiesList:"=",
-			incrementFilterCount:"&",
 			saveCollection:"&"
 		},
 		templateUrl:partialsPath+"filtergroups.html",
@@ -35,10 +34,6 @@ $log){
 			
 			this.getItemInUse = function(){
 				return $scope.itemInUse;
-			};
-			
-			this.incrementFilterCount = function(number){
-				$scope.incrementFilterCount(number);
 			};
 			
 			this.saveCollection = function(){
@@ -61,7 +56,7 @@ $log){
 					//remove item
 					$log.debug('removeFilterItem');
 					$log.debug(filterItemIndex);
-					$scope.incrementFilterCount({number:-1});
+					//$scope.incrementFilterCount({number:-1});
 					
 					$scope.filterGroupItem.splice(filterItemIndex,1);
 					//make sure first item has no logical operator if it exists
@@ -75,8 +70,6 @@ $log){
 					$scope.saveCollection();
 				}
 			};
-			
-			//$scope.
 			
 			this.removeFilterGroupItem = function(filterGroupItemIndex){
 				//remove Item

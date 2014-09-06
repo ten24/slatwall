@@ -26,13 +26,6 @@ $log
 	];
 	$scope.pageShowOptions.selected = $scope.pageShowOptions[1];
 	
-	$scope.filterCount = 0;
-	$scope.incrementFilterCount = function(number){
-		if(angular.isDefined(number)){
-			$scope.filterCount = $scope.filterCount + number;
-		}
-	};
-	
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 	
 	
@@ -43,27 +36,20 @@ $log
 	$scope.getCollection = function(){
 		var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
 		collectionListingPromise.then(function(value){
-			$scope.collection = value;
-			$scope.collectionInitial = angular.copy($scope.collection);
+			collectionService.setCollection(value);
+			$scope.collection = collectionService.getCollection();
+			$scope.collectionInitial = angular.copy(collectionService.getCollection());
 			if(angular.isUndefined($scope.collectionConfig)){
-				$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
+				$scope.collectionConfig = collectionService.getCollectionConfig();
 			}
-			
+			console.log($scope.collectionConfig);
 			//check if we have any filter Groups
-			//console.log($scope.collectionConfig.columns);
-			if(angular.isUndefined($scope.collectionConfig.filterGroups)){
-				$scope.collectionConfig.filterGroups = [
-					{
-						filterGroup:[
-							
-						]
-					}
-				];
-			}
+			$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
 			
 			var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
 			filterPropertiesPromise.then(function(value){
-				$scope.filterPropertiesList = value;
+				collectionService.setFilterPropertiesList(value);
+				$scope.filterPropertiesList = collectionService.getFilterPropertiesList();
 				collectionService.formatFilterPropertiesList($scope.filterPropertiesList);
 			}, function(reason){
 				
@@ -165,7 +151,7 @@ $log
 		slatwallService.getEntity('collection',$scope.collectionID);
 	};
 	
-	
+	$scope.filterCount = collectionService.getFilterCount;
 	//private Function
 	var isFormValid = function (angularForm){
 		var formValid = true;
