@@ -70,7 +70,6 @@ $filter){
 				$log.debug(scope.filterItemIndex);
 				//scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
 				scope.filterItem.setItemInUse(false);
-				console.log(scope.filterItem);
 				scope.filterItem.$$isClosed = true;
 				if(scope.filterItem.$$isNew === true){
 					scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});

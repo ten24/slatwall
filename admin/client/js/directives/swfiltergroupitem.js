@@ -36,11 +36,13 @@ $log){
 			
 			//for(item in filterGroupItem){}
 			scope.filterGroupItem.setItemInUse = filterGroupsController.setItemInUse;
-			
+			scope.filterGroupItem.$$index = scope.filterGroupItemIndex;
 			
 			scope.removeFilterGroupItem = function(){
 				filterGroupsController.removeFilterGroupItem(scope.filterGroupItemIndex);
 			};
+			
+			scope.filterGroupItem.removeFilterGroupItem = scope.removeFilterGroupItem;
 			
 			scope.filterGroupItem.$$disabled = false;
 			if(angular.isUndefined(scope.filterGroupItem.$$isClosed)){

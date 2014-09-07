@@ -42,7 +42,6 @@ $log
 			if(angular.isUndefined($scope.collectionConfig)){
 				$scope.collectionConfig = collectionService.getCollectionConfig();
 			}
-			console.log($scope.collectionConfig);
 			//check if we have any filter Groups
 			$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
 			
@@ -78,8 +77,6 @@ $log
 		var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
 		$log.debug(collectionConfigString);
 		collection.collectionConfig = collectionConfigString;
-		console.log(collection);
-		console.log($scope.collectionConfig);
 		var collectionForm = $scope.collectionFormScope;
 		if(isFormValid(collectionForm)){
 			var data = angular.copy(collection);

@@ -154,7 +154,7 @@ function($log){
 				filterGroup:[],
 				$$disabled:"false",
 				$$isClosed:"true",
-				$$isNew:"true",
+				$$isNew:"true"
 			};
 			if(angular.isDefined(filterItem.logicalOperator)){
 				filterGroupItem.logicalOperator = filterItem.logicalOperator;
