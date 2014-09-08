@@ -8,7 +8,7 @@
 	<cfif len(trim(thisTag.generatedContent)) gt 5>
 		<cfif attributes.type eq "button">
 			<cfoutput>
-				<div class="btn-group dropup">
+				<div class="btn-group">
 					<button class="btn #attributes.buttonClass#" data-toggle="dropdown"><i class="icon-#attributes.icon# icon-white"></i> #attributes.title# <span class="caret"></span></button>
 					<ul class="dropdown-menu #attributes.dropdownClass#">
 						#thisTag.generatedContent#
