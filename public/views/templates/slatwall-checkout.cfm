@@ -459,7 +459,7 @@ Notes:
 												
 												<cfif !isNull(orderFulfillment.getAccountAddress())>
 													<cfset accountAddressID = orderFulfillment.getAccountAddress().getAccountAddressID() />
-												<cfelseif isNull(orderFulfillment.getShippingAddress()) or orderFulfillment.getShippingAddress().getaddressID() eq "">
+												<cfelseif orderFulfillment.getShippingAddress().getNewFlag() && not orderFulfillment.getShippingAddress().hasErrors()>
 													<cfset accountAddressID = $.slatwall.cart().getAccount().getPrimaryAddress().getAccountAddressID() />
 												</cfif>							
 
