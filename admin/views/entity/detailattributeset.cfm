@@ -56,6 +56,23 @@ Notes:
 		<cf_HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
 	</cf_HibachiEntityActionBar>
 	
+	<cf_HibachiPropertyRow>
+		
+		<cf_HibachiPropertyList divclass="col-md-6">
+			<cfif rc.attributeSet.isNew()>
+				<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
+				<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
+			
+				<cf_HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
+					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
+				</cf_HibachiDisplayToggle>
+			</cfif>
+		</cf_HibachiPropertyList>
+
+	</cf_HibachiPropertyRow>
+	
 	<cf_HibachiEntityDetailGroup object="#rc.attributeSet#">
 		<cf_HibachiEntityDetailItem view="admin:entity/attributesettabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 		<cf_HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" />

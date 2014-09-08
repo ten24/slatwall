@@ -54,6 +54,19 @@ Notes:
 		<cf_HibachiActionCaller action="admin:entity.createvendoraddress" queryString="vendorID=#rc.vendor.getVendorID()#" type="list" modal=true />
 	</cf_HibachiEntityActionBar>
 
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cfif rc.vendor.isNew()>
+					<cf_HibachiPropertyDisplay object="#rc.vendor#" property="vendorName" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.vendor#" property="accountNumber" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.vendor#" property="vendorWebsite" edit="#rc.edit#">
+					
+					<input type="hidden" name="primaryEmailAddress.vendorEmailAddressID" value="#rc.Vendor.getPrimaryEmailAddress().getVendorEmailAddressID()#" />
+					<cf_HibachiPropertyDisplay object="#rc.Vendor.getPrimaryEmailAddress()#" property="emailAddress" fieldName="primaryEmailAddress.emailAddress" edit="#rc.edit#" valueLink="mailto:#rc.Vendor.getEmailAddress()#">
+				</cfif>	
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+
 	<cf_HibachiEntityDetailGroup object="#rc.vendor#">
 		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/vendoraddresses" />
