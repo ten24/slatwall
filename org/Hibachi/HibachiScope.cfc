@@ -7,22 +7,30 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
-	property name="auditsToCommitStruct" type="struct";
-	property name="calledActions" type="array";
-	property name="failureActions" type="array";
-	property name="successfulActions" type="array";
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
 	
+	property name="calledActions" type="array";
+	property name="failureActions" type="array";
+	property name="successfulActions" type="array";
+	
+	property name="auditsToCommitStruct" type="struct";
+	property name="modifiedEntities" type="array";
+	
 	public any function init() {
-		setCalledActions( [] );
-		setSuccessfulActions( [] );
-		setFailureActions( [] );
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
 		setPersistSessionFlag( true );
+		
+		setCalledActions( [] );
+		setSuccessfulActions( [] );
+		setFailureActions( [] );
+		
+		setAuditsToCommitStruct( {} );
+		setModifiedEntities( [] );
+		
 		
 		return super.init();
 	}
@@ -40,15 +48,18 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return returnHTML;
 	}
 	
-	public struct function getAuditsToCommitStruct() {
-		if(!structKeyExists(variables, "auditsToCommitStruct")) {
-			variables.auditsToCommitStruct = {};
+	public void function addModifiedEntity( required any entity ) {
+		if(!arrayFind(getModifiedEntities(), arguments.entity)) {
+			arrayAppend(getModifiedEntities(), arguments.entity);
 		}
-		return variables.auditsToCommitStruct;
+	}
+	
+	public void function clearModifiedEntities() {
+		setModifiedEntities([]);
 	}
 	
 	public void function clearAuditsToCommitStruct() {
-		variables.auditsToCommitStruct = {};
+		setAuditsToCommitStruct({});
 	}
 	
 	public boolean function getLoggedInFlag() {

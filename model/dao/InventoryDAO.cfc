@@ -98,6 +98,8 @@ Notes:
 							orderItem.order.orderStatusType.systemCode != 'ostNotPlaced'
 						  AND
 						    orderItem.order.orderStatusType.systemCode != 'ostClosed'
+						  AND 
+					  	    orderItem.order.orderStatusType.systemCode != 'ostCanceled'
 						  AND
 						  	orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
@@ -162,6 +164,8 @@ Notes:
 							orderItem.order.orderStatusType.systemCode != 'ostNotPlaced'
 						  AND
 						    orderItem.order.orderStatusType.systemCode != 'ostClosed'
+						  AND 
+					  		orderItem.order.orderStatusType.systemCode != 'ostCanceled'
 						  AND
 						  	orderItem.orderItemStatusType.systemCode = 'oitReturn'
 						  AND

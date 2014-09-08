@@ -34,28 +34,26 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return super.init();
 	}
 	
-	public any function updateCalculatedProperties() {
-		if(!structKeyExists(variables, "calculated")) {
+	public void function updateCalculatedProperties() {
+		if(!structKeyExists(variables, "calculatedUpdateRunFlag")) {
 			// Set calculated to true so that this only runs 1 time per request
-			variables.calculated = true;
+			variables.calculatedUpdateRunFlag = true;
 			
 			// Loop over all properties
-			for(var i=1; i<=arrayLen(getProperties()); i++) {
+			for(var property in getProperties()) {
 			
 				// Look for any that start with the calculatedXXX naming convention
-				if(left(getProperties()[i].name, 10) == "calculated") {
+				if(left(property.name, 10) == "calculated") {
 					
-					var value = this.invokeMethod("get#right(getProperties()[i].name, len(getProperties()[i].name)-10)#");
+					var value = this.invokeMethod("get#right(property.name, len(property.name)-10)#");
 					if(!isNull(value)) {
-						variables[ getProperties()[i].name ] = value;	
+						variables[ property.name ] = value;	
 					}
 
-				// Then also look for any that have the cascadeCalculate set to true and call updateCalculatedProperties() on that object
-				} else if (structKeyExists(getProperties()[i], "hb_cascadeCalculate") && getProperties()[i].hb_cascadeCalculate) {
-				
-					if( structKeyExists(variables, getProperties()[i].name) && isObject( variables[ getProperties()[i].name ] ) ) {
-						variables[ getProperties()[i].name ].updateCalculatedProperties();
-					}
+				} else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
+					
+					variables[ property.name ].updateCalculatedProperties();
+					
 				}
 			}
 		}
@@ -694,8 +692,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					logHibachi("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);	
 				}
 			}
-			writeDump(getErrors());
-			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors");
+			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors.  The specific errors will be shown in the Slatwall log.");
 		}
 		
 		var timestamp = now();
@@ -713,16 +710,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		// These are more complicated options that should not be called during application setup
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
 			
-			// Set createdByAccount
-			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );	
-			}
-			
-			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount( getHibachiScope().getAccount().getAccountID() );
-			}
-			
 			// Setup the first sortOrder
 			if(structKeyExists(this,"setSortOrder")) {
 				var metaData = getPropertyMetaData("sortOrder");
@@ -734,12 +721,26 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				}
 				setSortOrder( topSortOrder + 1 );
 			}
+			
+			// Set createdByAccount
+			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );	
+			}
+			
+			// Set modifiedByAccount
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount( getHibachiScope().getAccount().getAccountID() );
+			}
+			
+			// Log audit only if admin user
+			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+				getService("hibachiAuditService").logEntityModify(entity=this);
+			}
+			
+			// Add to the modifiedEntities
+			getHibachiScope().addModifiedEntity( this );
 		}
 		
-		// Log audit only if admin user
-		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
-			getService("hibachiAuditService").logEntityModify(entity=this);
-		}
 	}
 	
 	public void function preUpdate(struct oldData){
@@ -767,16 +768,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
+			
+			// Log audit only if admin user
+			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+			
+				// Manually populate primary ID in old data because it doesn't exist by default
+				arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
+			
+				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+			}
+			
+			// Add to the modifiedEntities
+			getHibachiScope().addModifiedEntity( this );
 		}
 		
-		// Log audit only if admin user
-		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
-		
-			// Manually populate primary ID in old data because it doesn't exist by default
-			arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
-		
-			getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
-		}
 	}
 	
 	/*
@@ -785,21 +790,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	public void function preLoad(any entity){
 	}
-	*/
+	
 	public void function postInsert(any entity){
-		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-		// Call the calculatedProperties update
-			updateCalculatedProperties();
-		}
 	}
 	
 	public void function postUpdate(any entity){
-		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-		// Call the calculatedProperties update
-			updateCalculatedProperties();
-		}
 	}
-	/*
+	
 	public void function postDelete(any entity){
 	}
 	

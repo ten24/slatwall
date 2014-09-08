@@ -319,7 +319,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 			
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astProductType');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'ProductType');
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			

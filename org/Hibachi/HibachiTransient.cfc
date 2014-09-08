@@ -157,11 +157,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	// ==========================  END: ERRORS / MESSAGES ===========================================
 	// ======================= START: POPULATION & VALIDATION =======================================
 	
-	public any function beforePopulate() {
+	public any function beforePopulate( required struct data={} ) {
 		// Left Blank to be overridden by objects
 	}
 	
-	public any function afterPopulate() {
+	public any function afterPopulate( required struct data={} ) {
 		// Left Blank to be overridden by objects
 	}
 
@@ -169,7 +169,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public any function populate( required struct data={} ) {
 
 		// Call beforePopulate
-		beforePopulate();
+		beforePopulate(data=arguments.data);
 
 		// Get an array of All the properties for this object
 		var properties = getProperties();
@@ -396,7 +396,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 		
 		// Call afterPopulate
-		afterPopulate();
+		afterPopulate(data=arguments.data);
 
 		// Return this object
 		return this;

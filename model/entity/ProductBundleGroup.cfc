@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Base Template</name>
-<help></help>
-<starttext><![CDATA[/*
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -50,16 +46,25 @@
 Notes:
 
 */
-component entityname="$${EntityName}" table="$${TableName}" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="$${serviceName}" {
+component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="productBundleSku.productBundleGroups" {
 	
 	// Persistent Properties
-	property name="$${idPropertyName}" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="productBundleGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
+	property name="minimumQuantity" ormtype="integer";
+	property name="maximumQuantity" ormtype="integer";
+	property name="amountType" ormtype="string";
+	property name="amount" ormtype="big_decimal";
+	property name="skuCollectionConfig" ormtype="string";
 
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="productBundleSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="productBundleSkuID";
+	property name="productBundleGroupType" cfc="Type" fieldtype="many-to-one" fkcolumn="productBundleGroupTypeID" hb_optionsSmartListData="f:parentType.systemCode=productBundleGroupType";
 	
 	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productBundleGroupID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -80,6 +85,50 @@ component entityname="$${EntityName}" table="$${TableName}" persistent="true" ac
 
 
 	// ==================== START: Logical Methods =========================
+	/*
+	public any function getSkuOptionsCollection() {
+		
+		var bgiCollection = var soCollection = getService('collectionService').newCollection();
+		bgiCollection.setBaseEntityName('ProductBundleGroupItem');
+		bgiCollection.addFilter('productBundleGroup.productBundleGroupID', this.getProductBundleGroupID());
+		
+		var soCollection = getService('collectionService').newCollection();
+		soCollection.setBaseEntityName('Sku');
+		
+		soCollection.addFilter('sku.skuID in bgiCollection.sku.skID');
+		// OR
+		soCollection.addFilter('sku.product.productID in bgiCollection.product.productID');
+		// OR
+		soCollection.addFilter('sku.product.brand.brandID in bgiCollection.brand.brandID');
+		// OR
+		
+		
+		SELECT
+			sku
+		FROM
+			Sku sku
+		WHERE
+			// BAKED IN
+			
+			sku.skuID in (SELECT skuID FROM ProductBundleGroupItem pbgi WHERE pbgi.productBundleGroup.productBundleGroupID = this.getProductBundleGroupID() )
+		  OR
+		  	sku.product.productID in (SELECT productID FROM ProductBundleGroupItem pbgi WHERE pbgi.productBundleGroup.productBundleGroupID = this.getProductBundleGroupID())
+		  OR
+		  	sku.product.productTypeID in (SELECT productID FROM ProductBundleGroupItem pbgi WHERE pbgi.productBundleGroup.productBundleGroupID = this.getProductBundleGroupID())
+		  OR
+		  	sku.skuID in ( {SKU COLLECTION QUERY HERE} )	
+		  	
+		  	// CUSTOM ADDED FILTERS BY USER
+		  AND
+		  	sku.brand.brandID 
+		
+	}
+	*/
+	public any function getSkuOptions() {
+		return getSkuOptionsCollection().getRecords(returnObjects=true);
+	}
+	
+	
 	
 	// ====================  END: Logical Methods ==========================
 	
@@ -88,6 +137,32 @@ component entityname="$${EntityName}" table="$${TableName}" persistent="true" ac
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Product Bundle Sku (many-to-one)    
+	public void function setProductBundleSku(required any productBundleSku) {    
+		variables.productBundleSku = arguments.productBundleSku;    
+		if(isNew() or !arguments.productBundleSku.hasProductBundleGroup( this )) {    
+			arrayAppend(arguments.productBundleSku.getProductBundleGroups(), this);    
+		}    
+	}    
+	public void function removeProductBundleSku(any productBundleSku) {    
+		if(!structKeyExists(arguments, "productBundleSku")) {
+			arguments.productBundleSku = variables.productBundleSku;    
+		}    
+		var index = arrayFind(arguments.productBundleSku.getProductBundleGroups(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.productBundleSku.getProductBundleGroups(), index);    
+		}    
+		structDelete(variables, "productBundleSku");    
+	}
+	
+	// Attribute Values (one-to-many)    
+	public void function addAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.setProductBundleGroup( this );    
+	}    
+	public void function removeAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.removeProductBundleGroup( this );    
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
@@ -119,6 +194,4 @@ component entityname="$${EntityName}" table="$${TableName}" persistent="true" ac
 	
 	// ==================  END:  Deprecated Methods ========================
 	
-}]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>
+}

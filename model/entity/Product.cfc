@@ -1020,7 +1020,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 			
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astProduct');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'Product');
 			
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");
@@ -1056,7 +1056,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public array function getAttributeSets(array attributeSetTypeCode=[]){
 		var smartList = getAssignedAttributeSetSmartList();
 		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
-			getAssignedAttributeSetSmartList().addFilter('attributeSetType.systemCode', 'astOrderItem');
+			smartList.addFilter('attributeSetObject', 'OrderItem');
 		}
 		return smartList.getRecords();
 	}
