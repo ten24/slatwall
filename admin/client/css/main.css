@@ -72,6 +72,7 @@
   .form-control {border-color: #DDD !important;color: #767676;height: 30px;box-shadow:none;box-shadow:none;}
 
   /*Custom CSS*/
+  .s-pannel-group .panel {overflow:visible;}
   .form-group label i.fa-asterisk {color: #A94442;font-size: 6px;position: relative;top: -7px;}
   .s-btn-ten24 {background-color: #F58620;border-color: #f1790b;color: #ffffff;}
   .s-btn-ten24:hover,.s-btn-ten24:focus,.s-btn-ten24:active,.s-btn-ten24.active {background-color: #f1790b;border-color: #f1790b;color:#ffffff;}
