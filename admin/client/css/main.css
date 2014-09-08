@@ -26,7 +26,7 @@
   table tr th .glyphicon {vertical-align:text-top;}
 
   .s-accordion-header {width:100%;margin-top:-10px;margin-bottom:-10px;padding-top:10px;padding-bottom:10px;cursor:pointer;}
-  .row .s-body-nav nav.navbar.navbar-default {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;margin-top:52px;}
+  .row .s-body-nav nav.navbar.navbar-default {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;}
   .actionbar-title{padding: 0px;margin: 0px;font-size: 16px;font-weight: 600;vertical-align: middle;margin-top: 18px;}
 
   a:-webkit-any-link {text-decoration:none !important;}
@@ -256,6 +256,9 @@
   .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor{background-color:#F58620;color:#ffffff;}
   .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor{color:#ccc}
 
+
+	/* Custom Slatwall Styles */
+	 .s-main-container {margin-top:52px;}
   .s-table-header-nav {margin-top:20px;margin-bottom:10px;}
   .s-table-header-nav ul {vertical-align:bottom;margin-bottom:0px;margin-top:0px;}
   .s-table-header-nav ul > li {vertical-align:bottom;}

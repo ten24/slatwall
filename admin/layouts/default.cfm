@@ -379,7 +379,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/pagination.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
 
-		<div class="container-fluid">
+		<div class="container-fluid s-main-container">
 			<div class="row">
 				<div class="col-md-12">
 
