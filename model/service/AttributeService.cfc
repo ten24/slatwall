@@ -53,9 +53,9 @@ component  extends="HibachiService" accessors="true" {
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public string function getAttributeCodesListByAttributeSetType( required string attributeSetType ) {
+	public string function getAttributeCodesListByAttributeSetObject( required string attributeSetObject ) {
 		var attributeCodeList = ""; 
-		var rs = getAttributeDAO().getAttributeCodesQueryByAttributeSetType( arguments.attributeSetType );
+		var rs = getAttributeDAO().getAttributeCodesQueryByAttributeSetObject( arguments.attributeSetObject );
 		
 		for(var i=1; i<=rs.recordCount; i++) {
 			attributeCodeList = listAppend(attributeCodeList, rs[ "attributeCode" ][i]);			
@@ -70,7 +70,7 @@ component  extends="HibachiService" accessors="true" {
 			return getHibachiCacheService().getCachedValue(key);
 		}
 		
-		var attribute = getHibachiCacheService().getOrCacheFunctionValue('attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#', this, 'getAttributeByAttributeCode', arguments);
+		var attribute = this.getAttributeByAttributeCode(arguments.attributeCode);
 		var atributeName = "";
 		if (!isNull(attribute)) {
 			atributeName = attribute.getAttributeName();
@@ -103,7 +103,7 @@ component  extends="HibachiService" accessors="true" {
 		if(!arguments.attribute.hasErrors() && !isNull(arguments.attribute.getAttributeSet())) {
 			getHibachiDAO().flushORMSession();
 			
-			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetType_#arguments.attribute.getAttributeSet().getAttributeSetType().getSystemCode()#");
+			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
 		}
 		
 		return arguments.attribute;
@@ -116,16 +116,16 @@ component  extends="HibachiService" accessors="true" {
 	public boolean function deleteAttribute(required any attribute) {
 		
 		if(!isNull(arguments.attribute.getAttributeSet())) {
-			var attributeSetCode = arguments.attribute.getAttributeSet().getAttributeSetType().getSystemCode();	
+			var attributeSetObject = arguments.attribute.getAttributeSet().getAttributeSetObject();	
 		}
 		
 		var deleteOK = super.delete(arguments.attribute);
 		  
 		// Clear the cached value of acceptable
-		if(deleteOK && len(attributeSetCode)) {
+		if(deleteOK && len(attributeSetObject)) {
 			getHibachiDAO().flushORMSession();
 			
-			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetType_#attributeSetCode#");
+			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#attributeSetObject#");
 		}
 
 		return deleteOK;

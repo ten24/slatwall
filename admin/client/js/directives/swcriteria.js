@@ -641,11 +641,9 @@ $filter){
 			    			scope.conditionOptions = getBigDecimalOptions();
 			    			scope.criteriaRangeChanged = function(selectedFilterProperty){
 							  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
-							  	console.log(selectedFilterProperty);
 			    			};
 			    			
 			    			scope.selectedConditionChanged = function(selectedFilterProperty){
-			    				console.log(selectedFilterProperty);
 			    				selectedFilterProperty.showCriteriaValue = true;
 			    				//check whether the type is a range
 			    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)){
@@ -661,7 +659,6 @@ $filter){
 			    			break;
 			    	}
 				}
-				console.log(scope.selectedFilterProperty);
 				if(angular.isDefined(scope.selectedFilterProperty.fieldtype)){
 					switch(scope.selectedFilterProperty.fieldtype){
 						case "many-to-one":
@@ -669,7 +666,6 @@ $filter){
 							var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){
 								scope.collectionOptions = value.data;
-								console.log(scope.collectionOptions);
 							},function(reason){
 								//display error message if getter fails
 								var messages = reason.MESSAGES;

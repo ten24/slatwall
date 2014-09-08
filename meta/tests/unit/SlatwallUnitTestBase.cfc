@@ -77,7 +77,10 @@ component extends="mxunit.framework.TestCase" output="false" {
 	
 	// AFTER BEACH TEST
 	public void function tearDown() {
-		debug(variables.debugArray);
+		if(!structKeyExists(variables.configuration.common, "outputdebug") || variables.configuration.common.outputdebug) {
+			debug(variables.debugArray);	
+		}
+		variables.debugArray = [];
 		
 		var flushRequired = false;
 		
@@ -92,7 +95,6 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 		}
 		
-		variables.debugArray = [];
 		variables.persistentEntities = [];
 		
 		structDelete(request, 'slatwallScope');

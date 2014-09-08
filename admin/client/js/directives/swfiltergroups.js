@@ -18,12 +18,16 @@ $log){
 		scope:{
 			filterGroupItem: "=",
 			filterPropertiesList:"=",
-			incrementFilterCount:"&",
-			saveCollection:"&"
+			saveCollection:"&",
+			filterGroup:"="
 		},
 		templateUrl:partialsPath+"filtergroups.html",
 		controller: function($scope, $element,$attrs){
 			$scope.itemInUse = false;
+			
+			this.getFilterGroup = function(){
+				return $scope.filterGroup;
+			};
 			
 			this.getFilterGroupItem = function(){
 				return $scope.filterGroupItem;
@@ -37,10 +41,6 @@ $log){
 				return $scope.itemInUse;
 			};
 			
-			this.incrementFilterCount = function(number){
-				$scope.incrementFilterCount(number);
-			};
-			
 			this.saveCollection = function(){
 				$scope.saveCollection();
 			};
@@ -52,8 +52,6 @@ $log){
 			};
 			
 			this.removeFilterItem = function(filterItemIndex){
-				console.log('remove');
-				console.log($scope.filterGroupItem);
 				if(angular.isDefined(filterItemIndex)){
 					
 					$scope.deselectItems($scope.filterGroupItem[filterItemIndex]);
@@ -61,7 +59,6 @@ $log){
 					//remove item
 					$log.debug('removeFilterItem');
 					$log.debug(filterItemIndex);
-					$scope.incrementFilterCount({number:-1});
 					
 					$scope.filterGroupItem.splice(filterItemIndex,1);
 					//make sure first item has no logical operator if it exists
@@ -76,11 +73,8 @@ $log){
 				}
 			};
 			
-			//$scope.
-			
 			this.removeFilterGroupItem = function(filterGroupItemIndex){
 				//remove Item
-				console.log($scope.filterGroupItem[filterGroupItemIndex]);
 				$scope.deselectItems($scope.filterGroupItem[filterGroupItemIndex]);
 				$scope.filterGroupItem[filterGroupItemIndex].setItemInUse(false);
 				
@@ -93,6 +87,8 @@ $log){
 				$log.debug(filterGroupItemIndex);
 				$scope.saveCollection();
 			};
+			
+			
 		}
 	};
 }]);

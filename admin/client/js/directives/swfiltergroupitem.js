@@ -32,16 +32,17 @@ $log){
 				element.replaceWith($compile(element.html())(scope));
 			});
 			
+			collectionService.incrementFilterCount(1);
+			
 			//for(item in filterGroupItem){}
 			scope.filterGroupItem.setItemInUse = filterGroupsController.setItemInUse;
-			
-			scope.incrementFilterCount = function(number){
-				filterGroupsController.incrementFilterCount(number);
-			};
+			scope.filterGroupItem.$$index = scope.filterGroupItemIndex;
 			
 			scope.removeFilterGroupItem = function(){
 				filterGroupsController.removeFilterGroupItem(scope.filterGroupItemIndex);
 			};
+			
+			scope.filterGroupItem.removeFilterGroupItem = scope.removeFilterGroupItem;
 			
 			scope.filterGroupItem.$$disabled = false;
 			if(angular.isUndefined(scope.filterGroupItem.$$isClosed)){
@@ -59,6 +60,14 @@ $log){
 				scope.filterGroupItem.logicalOperator = logicalOperatorValue;
 				filterGroupsController.saveCollection();
 			};
+			
+			scope.$on(
+                "$destroy",
+                function() {
+                	$log.debug('destroy filterGroupItem');
+                	collectionService.incrementFilterCount(-1);
+                }
+            );
 		}
 	};
 }]);

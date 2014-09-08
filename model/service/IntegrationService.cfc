@@ -237,10 +237,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var authInts = isl.getRecords();
 		for(var i=1; i<=arrayLen(authInts); i++) {
-			var intCFC = getIntegrationCFC(authInts[i]);
-			var adminNavbarHTML = intCFC.getAdminNavbarHTML();
-			if(len(trim(adminNavbarHTML))) {
-				arrayAppend(returnArr, adminNavbarHTML);
+			if(getHibachiScope().authenticateAction('#authInts[i].getIntegrationPackage()#:main.default')) {
+				var intCFC = getIntegrationCFC(authInts[i]);
+				var adminNavbarHTML = intCFC.getAdminNavbarHTML();
+				if(len(trim(adminNavbarHTML))) {
+					arrayAppend(returnArr, adminNavbarHTML);
+				}	
 			}
 		}
 		

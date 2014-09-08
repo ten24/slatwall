@@ -244,72 +244,11 @@ component output="false" accessors="true" extends="HibachiService" {
 			var allPermissions={};
 			
 			// Loop over each of the authentication subsytems
-			var aspArr = listToArray(getApplicationValue("hibachiConfig").authenticationSubsystems);
-			for(var s=1; s<=arrayLen(aspArr); s++) {
+			for(var subsystemName in getAuthenticationSubsystemNamesArray()) {
 				
-				// Figure out the correct directory for the subsytem
-				var ssDirectory = getApplicationValue('application').getSubsystemDirPrefix( aspArr[s] );
-				
-				// expand the path of the controllers sub-directory
-				var ssControllerPath = expandPath( "/#getApplicationValue('applicationKey')#" ) & "/#ssDirectory#/controllers";
-				
-				// Make sure the controllers sub-directory is actually there
-				if(directoryExists(ssControllerPath)) {
-					
-					// Setup subsytem structure
-					allPermissions[ aspArr[s] ] = {
-						hasSecureMethods = false,
-						sections = {}
-					};
-					
-					// Grab a list of all the files in the controllers directory
-					var ssDirectoryList = directoryList(ssControllerPath);
-					
-					// Loop over each file
-					for(var d=1; d<=arrayLen(ssDirectoryList); d++) {
-						
-						var section = listFirst(listLast(ssDirectoryList[d],"/\"),".");
-						var obj = createObject('component', '#getApplicationValue('applicationKey')#.#replace(ssDirectory, '/','.','all')#controllers.#section#');
-						
-						// Setup section structure
-						allPermissions[ aspArr[s] ].sections[ section ] = {
-							anyAdminMethods = "",
-							anyLoginMethods = "",
-							publicMethods = "",
-							secureMethods = "",
-							restController = false,
-							entityController = false
-						};
-						
-						// Check defined permissions
-						if(structKeyExists(obj, 'anyAdminMethods')){
-							allPermissions[ aspArr[s] ].sections[ section ].anyAdminMethods = obj.anyAdminMethods;
-						}
-						if(structKeyExists(obj, 'anyLoginMethods')){
-							allPermissions[ aspArr[s] ].sections[ section ].anyLoginMethods = obj.anyLoginMethods;
-						}
-						if(structKeyExists(obj, 'publicMethods')){
-							allPermissions[ aspArr[s] ].sections[ section ].publicMethods = obj.publicMethods;
-						}
-						if(structKeyExists(obj, 'secureMethods')){
-							allPermissions[ aspArr[s] ].sections[ section ].secureMethods = obj.secureMethods;
-						}
-						
-						// Check for Controller types
-						if(structKeyExists(obj, 'entityController') && isBoolean(obj.entityController) && obj.entityController) {
-							allPermissions[ aspArr[s] ].sections[ section ].entityController = true;
-						}
-						if(structKeyExists(obj, 'restController') && isBoolean(obj.restController) && obj.restController) {
-							allPermissions[ aspArr[s] ].sections[ section ].restController = true;
-						}
-						
-						// Setup the 'hasSecureMethods' value
-						if(len(allPermissions[ aspArr[s] ].sections[ section ].secureMethods)) {
-							allPermissions[ aspArr[s] ].hasSecureMethods = true;
-						}
-						
-					} // END Section Loop
-					
+				var subsystemPermissions = getSubsytemActionPermissionDetails( subsystemName );
+				if(!isNull(subsystemPermissions)) {
+					allPermissions[ subsystemName ] = subsystemPermissions;
 				}
 				
 			} // End Subsytem Loop
@@ -317,6 +256,79 @@ component output="false" accessors="true" extends="HibachiService" {
 			variables.actionPermissionDetails = allPermissions;
 		}
 		return variables.actionPermissionDetails;
+	}
+	
+	public any function getSubsytemActionPermissionDetails( required string subsystemName ) {
+		// Figure out the correct directory for the subsytem
+		var ssDirectory = getApplicationValue('application').getSubsystemDirPrefix( arguments.subsystemName );
+		
+		// expand the path of the controllers sub-directory
+		var ssControllerPath = expandPath( "/#getApplicationValue('applicationKey')#" ) & "/#ssDirectory#/controllers";
+		
+		// Make sure the controllers sub-directory is actually there
+		if(directoryExists(ssControllerPath)) {
+			
+			// Setup subsytem structure
+			var subsystemPermissions = {
+				hasSecureMethods = false,
+				sections = {}
+			};
+			
+			// Grab a list of all the files in the controllers directory
+			var ssDirectoryList = directoryList(ssControllerPath);
+			
+			// Loop over each file
+			for(var d=1; d<=arrayLen(ssDirectoryList); d++) {
+				
+				var section = listFirst(listLast(ssDirectoryList[d],"/\"),".");
+				var obj = createObject('component', '#getApplicationValue('applicationKey')#.#replace(ssDirectory, '/','.','all')#controllers.#section#');
+				
+				// Setup section structure
+				subsystemPermissions.sections[ section ] = {
+					anyAdminMethods = "",
+					anyLoginMethods = "",
+					publicMethods = "",
+					secureMethods = "",
+					restController = false,
+					entityController = false
+				};
+				
+				// Check defined permissions
+				if(structKeyExists(obj, 'anyAdminMethods')){
+					subsystemPermissions.sections[ section ].anyAdminMethods = obj.anyAdminMethods;
+				}
+				if(structKeyExists(obj, 'anyLoginMethods')){
+					subsystemPermissions.sections[ section ].anyLoginMethods = obj.anyLoginMethods;
+				}
+				if(structKeyExists(obj, 'publicMethods')){
+					subsystemPermissions.sections[ section ].publicMethods = obj.publicMethods;
+				}
+				if(structKeyExists(obj, 'secureMethods')){
+					subsystemPermissions.sections[ section ].secureMethods = obj.secureMethods;
+				}
+				
+				// Check for Controller types
+				if(structKeyExists(obj, 'entityController') && isBoolean(obj.entityController) && obj.entityController) {
+					subsystemPermissions.sections[ section ].entityController = true;
+				}
+				if(structKeyExists(obj, 'restController') && isBoolean(obj.restController) && obj.restController) {
+					subsystemPermissions.sections[ section ].restController = true;
+				}
+				
+				// Setup the 'hasSecureMethods' value
+				if(len(subsystemPermissions.sections[ section ].secureMethods)) {
+					subsystemPermissions.hasSecureMethods = true;
+				}
+				
+			} // END Section Loop
+		
+			return subsystemPermissions;
+			
+		}
+	}
+	
+	public array function getAuthenticationSubsystemNamesArray() {
+		return listToArray(getApplicationValue("hibachiConfig").authenticationSubsystems);
 	}
 	
 	public void function clearEntityPermissionDetails(){

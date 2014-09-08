@@ -1,11 +1,67 @@
 //collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
-.factory('collectionService',[
-function(){
+.factory('collectionService',['$log',
+function($log){
+	//properties
+	var _collection = null;
+	var _collectionConfig = null;
+	var _filterPropertiesList = null;
+	var _filterCount = 0;
 	
 	return collectionService = {
-		//properties
+		incrementFilterCount: function(number){
+			$log.debug('incrementFilterCount');
+			_filterCount += number;
+		},
+		getFilterCount: function(){
+			return _filterCount;
+		},
+			
+		getCollection: function(){
+			return _collection;
+		},
+		setCollection: function(collection){
+			_collection = collection;
+		},
+		getCollectionConfigJson: function(){
+			return _collection.collectionConfig;
+		},
+		getCollectionConfig: function(){
+			if(!angular.isObject(_collectionConfig)){
+				_collectionConfig = angular.fromJson(_collection.collectionConfig);
+			}
+			return _collectionConfig;
+		},
+		setCollectionConfig: function(collectionConfig){
+			_collection.collectionConfig = collectionConfig;
+		},
+		
+		getRootFilterGroup: function(){
+			var collectionConfig = this.getCollectionConfig();
+			if(angular.isUndefined(collectionConfig.filterGroups)){
+				collectionConfig.filterGroups = [
+					{
+						filterGroup:[
+							
+						]
+					}
+				];
+			}
+			return collectionConfig.filterGroups;
+		},
+		
+		getColumns:function(){
+			return _collection.collectionConfig.columns;
+		},
+		
+		getFilterPropertiesList: function(){
+			return _filterPropertiesList;
+		},
+		setFilterPropertiesList: function(filterPropertiesList){
+			_filterPropertiesList = filterPropertiesList;
+		},
+			
 		stringifyJSON: function(jsonObject){
 			var jsonString = angular.toJson(jsonObject);
 			return jsonString;
@@ -98,7 +154,7 @@ function(){
 				filterGroup:[],
 				$$disabled:"false",
 				$$isClosed:"true",
-				$$isNew:"true",
+				$$isNew:"true"
 			};
 			if(angular.isDefined(filterItem.logicalOperator)){
 				filterGroupItem.logicalOperator = filterItem.logicalOperator;
