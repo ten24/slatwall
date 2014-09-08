@@ -55,6 +55,16 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createoption" queryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#&renderItem=detailOptionGroup" type="list" modal=true />
 		</cf_HibachiEntityActionBar>
 		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cfif rc.optiongroup.isNew()>
+					<cf_HibachiPropertyDisplay object="#rc.optiongroup#" property="optionGroupName" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.optiongroup#" property="optionGroupCode" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.optiongroup#" property="imageGroupFlag" edit="#rc.edit#">
+				</cfif>
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
 		<cf_HibachiEntityDetailGroup object="#rc.optiongroup#">
 			<cf_HibachiEntityDetailItem view="admin:entity/optiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cf_HibachiEntityDetailItem view="admin:entity/optiongrouptabs/options" />

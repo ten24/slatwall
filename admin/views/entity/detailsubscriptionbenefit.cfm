@@ -53,7 +53,15 @@ Notes:
 	<cf_HibachiEntityDetailForm object="#rc.subscriptionBenefit#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.subscriptionBenefit#" edit="#rc.edit#" />
 		
-		
+		<cf_HibachiPropertyRow>
+			<cfif rc.subscriptionBenefit.isNew()>
+				<cf_HibachiPropertyList>
+					<cf_HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="subscriptionBenefitName" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="accessType" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="maxUseCount" edit="#rc.edit#">
+				</cf_HibachiPropertyList>
+			</cfif>
+		</cf_HibachiPropertyRow>
 		
 		<cf_HibachiEntityDetailGroup object="#rc.subscriptionBenefit#">
 			<cf_HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />

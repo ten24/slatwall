@@ -53,6 +53,14 @@ Notes:
 	<cf_HibachiEntityDetailForm object="#rc.site#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.site#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
 		
+		<cf_HibachiPropertyRow>
+			<cfif rc.site.isNew()>
+				<cf_HibachiPropertyList>
+					<cf_HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
+				</cf_HibachiPropertyList>
+			</cfif>
+		</cf_HibachiPropertyRow>
+		
 		<cf_HibachiEntityDetailGroup object="#rc.site#">
 			<cf_HibachiEntityDetailItem view="admin:entity/sitetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cf_HibachiEntityDetailItem view="admin:entity/sitetabs/sitesettings" />
