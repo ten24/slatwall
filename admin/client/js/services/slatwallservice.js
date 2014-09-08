@@ -36,11 +36,9 @@ function($http,$q,baseURL,$log){
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		})
 		.success(function(data){
-			console.log('httpsuccess');
 			deferred.resolve(data);
 			
 		}).error(function(reason){
-			console.log('httpfaile');
 			deferred.reject(reason);
 		});
 		return deferred.promise;

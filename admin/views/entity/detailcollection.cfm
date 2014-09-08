@@ -18,7 +18,7 @@
       <div class="col-md-5 s-header-nav">
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
-          <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount"></span>)</span></a></li>
+          <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
           <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
         </ul>
       </div>
@@ -81,7 +81,7 @@
                 	<!---filterGroups gets taken apart here --->
                 	<ul class="col-xs-12 list-unstyled" 
                 		sw-filter-groups 
-                		data-increment-filter-count="incrementFilterCount(number)" 
+                		data-filter-group="collectionConfig.filterGroups[0]"
                 		data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
                 		data-filter-properties-list="filterPropertiesList"
                 		data-save-collection="saveCollection()"

@@ -70,7 +70,6 @@ $filter){
 				$log.debug(scope.filterItemIndex);
 				//scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
 				scope.filterItem.setItemInUse(false);
-				console.log(scope.filterItem);
 				scope.filterItem.$$isClosed = true;
 				if(scope.filterItem.$$isNew === true){
 					scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
@@ -78,6 +77,7 @@ $filter){
 			};
 			
 			scope.saveFilter = function(selectedFilterProperty,filterItem,callback){
+				$log.debug('saveFilter begin');
 				if(angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
 					//populate filterItem with selectedFilterProperty values
 					filterItem.$$isNew = false;
@@ -180,6 +180,7 @@ $filter){
 					$log.debug(selectedFilterProperty);
 					$log.debug(filterItem);
 					callback();
+					$log.debug('saveFilter end');
 				}
 			};
 		},

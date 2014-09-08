@@ -25,6 +25,7 @@ $log){
 		},
 		templateUrl:partialsPath+"filteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
+			collectionService.incrementFilterCount(1);
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
@@ -42,7 +43,12 @@ $log){
 			};
 			
 			scope.removeFilterItem = function(){
-				filterGroupsController.removeFilterItem(scope.filterItemIndex,filterGroupsController.getFilterGroupItem());
+				if(filterGroupsController.getFilterGroupItem().length === 1){
+					filterGroupsController.getFilterGroup().removeFilterGroupItem();
+				}else{
+					filterGroupsController.removeFilterItem(scope.filterItemIndex,filterGroupsController.getFilterGroupItem());
+				}
+				
 			};
 			
 			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
@@ -53,6 +59,16 @@ $log){
 				scope.filterItem.logicalOperator = logicalOperatorValue;
 				filterGroupsController.saveCollection();
 			};
+			
+			
+			scope.$on(
+                "$destroy",
+                function() {
+                	$log.debug('destroy filterItem');
+                	collectionService.incrementFilterCount(-1);
+                }
+            );
+			
 		}
 	};
 }]);

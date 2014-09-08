@@ -987,7 +987,11 @@
                     <span class="s-sort-num">
                       <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">1</a>
                       <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
-                        <input type="text" class="form-control" value="1">
+                        <select class="form-control">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                        </select>
                         <button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
                       </span>
                     </span>
@@ -1019,7 +1023,7 @@
                         <select class="form-control">
                           <option value="1">1</option>
                           <option value="2">2</option>
-                          <option value="2">3</option>
+                          <option value="3">3</option>
                         </select>
                         <button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
                       </span>
@@ -1049,7 +1053,11 @@
                     <span class="s-sort-num">
                       <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">2</a>
                       <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
-                        <input type="text" class="form-control" value="2">
+                        <select class="form-control">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                        </select>
                         <button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
                       </span>
                     </span>
@@ -1096,56 +1104,94 @@
       </div>
 
     </div><!--- //Row --->
+
     <!--- //Tab panes for menu options end--->
-    <div class="s-table-options">
-      <form class="navbar-form navbar-left form-horizontal" role="search">
-        <div class="form-group">
-          <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
-          <select size="1" name="" aria-controls="" class="form-control">
-            <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
-            <option value="20">Last Changed</option>
-            <option value="20">Delete</option>
-            <option value="20">Examples</option>
-            <option value="20">Examples</option>
-            <option value="-1">Examples</option>
-          </select>
-        </div>
-      </form>
-      <form class="navbar-form navbar-left s-table-header-search">
-        <div class="input-group">
-          <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
-          <div class="input-group-btn">
-            <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
-          </div>
-        </div>
-      </form>
-      <div class="s-table-header-right">
-        <form class="navbar-form form-horizontal navbar-left">
-          <div class="form-group">
-            <label for="inputPassword" class="control-label">View</label>
-            <select size="1" name="" aria-controls="" class="form-control">
-              <option value="5" selected="selected">5</option>
-              <option value="15">10</option>
-              <option value="20">25</option>
-              <option value="20">50</option>
-              <option value="20">100</option>
-              <option value="20">250</option>
-              <option value="-1">Auto</option>
-            </select>
-          </div>
-        </form>
-        <ul class="pagination pagination-sm navbar-left">
-          <li><a href="#">&laquo;</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">&raquo;</a></li>
+    <div class="row s-table-header-nav">
+      <div class="col-xs-6">
+        <ul class="list-inline list-unstyled">
+          <li>
+            <form role="search">
+
+                <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
+                <select size="1" name="" aria-controls="" class="form-control">
+                  <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
+                  <option value="20">Last Changed</option>
+                  <option value="20">Delete</option>
+                  <option value="20">Examples</option>
+                  <option value="20">Examples</option>
+                  <option value="-1">Examples</option>
+                </select>
+
+            </form>
+          </li>
+          <li style="width:200px;">
+            <form class="s-table-header-search">
+              <div class="input-group">
+                <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
+                <div class="input-group-btn">
+                  <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
+                </div>
+              </div>
+            </form>
+          </li>
         </ul>
-        <div class="btn-group" class="navbar-left">
-          <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
-        </div>
+      </div>
+      <div class="col-xs-6" style="text-align:right;">
+        <ul class="list-inline list-unstyled">
+          <li>
+            <form class="form-horizontal">
+              <label for="inputPassword" class="control-label">View</label>
+              <select size="1" name="" aria-controls="" class="form-control">
+                <option value="5" selected="selected">5</option>
+                <option value="15">10</option>
+                <option value="20">25</option>
+                <option value="20">50</option>
+                <option value="20">100</option>
+                <option value="20">250</option>
+                <option value="-1">Auto</option>
+              </select>
+            </form>
+          </li>
+          <li>
+            <ul class="pagination pagination-sm">
+              <li><a href="#">&laquo;</a></li>
+              <li class="active"><a href="#">1</a></li>
+              <li><a href="#">2</a></li>
+              <li><a href="#">3</a></li>
+              <li><a href="#">4</a></li>
+              <li><a href="#">5</a></li>
+              <li class="disabled"><a href="#">&raquo;</a></li>
+            </ul>
+          </li>
+          <li>
+            <div class="btn-group" class="navbar-left">
+              <button type="button" class="btn btn-sm s-btn-grey" data-toggle="collapse" data-target="#j-download-link"><i class="fa fa-download"></i></button>
+            </div>
+          </li>
+          <li>
+            <div class="btn-group" class="navbar-left">
+              <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
+            </div>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+    <div id="j-download-link" class="row collapse" style="background-color: #EEE;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;">
+      <div class="col-md-12">
+        <ul>
+
+          <li>this is tex</li>
+          <li>this is tex</li>
+          <li>this is tex</li>
+          <li>this is tex</li>
+          <li>this is tex</li>
+          <li>this is tex</li>
+          <li>this is tex</li>
+          <li>this is tex</li>
+          <li>this is tex</li>
+        </ul>
       </div>
     </div>
 
