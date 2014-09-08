@@ -56,12 +56,15 @@ Notes:
 	
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.addressZone#" property="addressZoneName" edit="#rc.edit#">
+			<cfif rc.addressZone.isNew()>
+				<cf_HibachiPropertyDisplay object="#rc.addressZone#" property="addressZoneName" edit="#rc.edit#">
+			</cfif>
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 	
-	<cf_HibachiTabGroup object="#rc.addressZone#">
-		<cf_HibachiTab view="admin:entity/addresszonetabs/locations" />
-	</cf_HibachiTabGroup>
+	<cf_HibachiEntityDetailGroup object="#rc.addressZone#">
+		<cf_HibachiEntityDetailItem view="admin:entity/addresszonetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<cf_HibachiEntityDetailItem view="admin:entity/addresszonetabs/locations" />
+	</cf_HibachiEntityDetailGroup>
 	
 </cf_HibachiEntityDetailForm>

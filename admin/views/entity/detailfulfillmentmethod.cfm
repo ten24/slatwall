@@ -56,19 +56,12 @@ Notes:
 		</cfif>
 	</cf_HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="activeFlag" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodType" edit="#rc.fulfillmentMethod.isNew()#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-	
-	<cf_HibachiTabGroup object="#rc.fulfillmentMethod#">
+	<cf_HibachiEntityDetailGroup object="#rc.fulfillmentMethod#">
+		<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
-			<cf_HibachiTab view="admin:entity/fulfillmentmethodtabs/shippingmethods">	
+			<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/shippingmethods">	
 		</cfif>
-		<cf_HibachiTab view="admin:entity/fulfillmentmethodtabs/fulfillmentsettings">
-	</cf_HibachiTabGroup>
+		<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/fulfillmentsettings">
+	</cf_HibachiEntityDetailGroup>
 
 </cf_HibachiEntityDetailForm>
