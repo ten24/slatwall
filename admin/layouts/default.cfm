@@ -382,9 +382,14 @@ Notes:
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
-
-					#body#
-
+					<cfset currentURL = request.context.slatAction >
+					<cfif findNoCase("entity.list", currentURL)>
+						<div class="s-nav-spacer">
+							#body#
+						</div>	
+					<cfelse>
+						#body#
+					</cfif>
 				</div>
 			</div>
 
