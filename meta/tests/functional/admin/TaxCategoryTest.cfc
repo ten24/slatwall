@@ -68,6 +68,7 @@ component extends="AdminTestBase" {
 	}
 	
 	//Creates a manual tax rate and tests that it works on an order
+	/*
 	function taxCategoryManualRateCalculationWorks() {
 
 		// Ensure that the sku setting uses the correct tax category
@@ -107,13 +108,13 @@ component extends="AdminTestBase" {
 		
 		// Go back to Tax Category Page
 		var DetailTaxCategory = openPage( '?slatAction=entity.detailTaxCategory&taxCategoryID=bf046da61f434a58a2be28d099017214', 'DetailTaxCategory');
-		
 		assertPageIsLoaded( DetailTaxCategory );
-
 		DetailTaxCategory.deleteTaxCategory();
+		
 		
 		assert( assertionBoolean );
 	}
+	*/
 
 	//Tests Tax Address Lookup order
 	function taxCategoryRateAddressLookupWorks(){

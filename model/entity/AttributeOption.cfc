@@ -53,9 +53,21 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	property name="attributeOptionValue" ormtype="string";
 	property name="attributeOptionLabel" ormtype="string";
 	property name="sortOrder" ormtype="integer" sortContext="attribute";
+
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID";
 	
-	// Related Object Properties (Many-To-One)
-	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID";	
+	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="attributeOptionID" cascade="all-delete-orphan" inverse="true";
+	
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
+	
+	// Remote Properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -63,6 +75,16 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
+	// Non-Persistent Properties
+	
+	// Deprecated Properties
+
+
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
+	
+	// ============ START: Non-Persistent Property Methods =================
 	
 	public string function getAttributeOptionLabel() {
 		if(structkeyExists(variables,"attributeOptionLabel")) {
@@ -72,10 +94,8 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 		}
 	}
 	
-	// ============ START: Non-Persistent Property Methods =================
-	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Attribute (many-to-one)    
@@ -96,18 +116,47 @@ component displayname="Attribute Option" entityname="SlatwallAttributeOption" ta
 		structDelete(variables, "attribute");    
 	}
 	
-	// =============  END:  Bidirectional Helper Methods ===================
+	// Attribute Values (one-to-many)    
+	public void function addAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.setAttributeOption( this );    
+	}    
+	public void function removeAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.removeAttributeOption( this );    
+	}
 	
-	// ================== START: Overridden Methods ========================
+	// =============  END:  Bidirectional Helper Methods ===================
 
+	// =============== START: Custom Validation Methods ====================
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
+	// ================== START: Overridden Methods ========================
+	
 	public string function getSimpleRepresentationPropertyName() {
 		return "attributeOptionLabel";
 	}
-
+	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
+
 }
 

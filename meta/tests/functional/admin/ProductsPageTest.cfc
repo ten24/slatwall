@@ -64,7 +64,8 @@ component extends="AdminTestBase" {
 
 	}
 	
-	//Tests creating a merchandise product works
+	
+	// Tests creating a merchandise product works
 	public function createMerchProduct(){
 		// Load Listing Page
 		var ListProducts = variables.dashboardPage.clickMenuLink("Products", "Products");
@@ -75,7 +76,7 @@ component extends="AdminTestBase" {
 		
 		var formData = {};
 		formData['productName'] = 'TestRunner Temporary Product Creation';
-		formData['productCode'] = 'TRTP';
+		formData['productCode'] = 'TRTP-#rand()#';
 		formData['price'] = '100';
 		
 		var DetailProduct = CreateProduct.submitCreateForm( formData );
@@ -85,5 +86,4 @@ component extends="AdminTestBase" {
 		assertPageIsLoaded( ListProducts );	
 		
 	}
-
 }

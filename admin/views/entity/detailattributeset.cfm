@@ -56,20 +56,19 @@ Notes:
 		<cf_HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
 	</cf_HibachiEntityActionBar>
 	
-	
 	<cf_HibachiEntityDetailGroup object="#rc.attributeSet#">
 		<cf_HibachiEntityDetailItem view="admin:entity/attributesettabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 		<cf_HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" />
 		<cf_HibachiEntityDetailItem view="admin:entity/attributesettabs/description" />
 		<cfif not rc.attributeSet.getGlobalFlag()>
-			<cfif listFindNoCase("astProductType,astProduct,astSku,astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode()) and not rc.attributeSet.getGlobalFlag()>
+			<cfif listFindNoCase("OrderItem,ProductType,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
 				<cf_HibachiEntityDetailItem property="producttypes" />
 			</cfif>
-			<cfif listFindNoCase("astProduct,astSku,astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode()) and not rc.attributeSet.getGlobalFlag()>
+			<cfif listFindNoCase("OrderItem,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
 				<cf_HibachiEntityDetailItem property="products" />
 				<cf_HibachiEntityDetailItem property="brands" />
 			</cfif>
-			<cfif listFindNoCase("astSku,astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode()) and not rc.attributeSet.getGlobalFlag()>
+			<cfif listFindNoCase("OrderItem,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
 				<cf_HibachiEntityDetailItem property="skus" />
 			</cfif>
 		</cfif>

@@ -50,16 +50,16 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cfif rc.attribute.getAttributeType().getSystemCode() eq "atText">
+	<cfif rc.attribute.getAttributeType() eq "text">
 		<cf_HibachiPropertyList>
 			<cf_HibachiPropertyDisplay object="#rc.attribute#" property="validationMessage" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.attribute#" property="validationRegex" edit="#rc.edit#">	
 		</cf_HibachiPropertyList>
-	<cfelseif rc.attribute.getAttributeType().getSystemCode() eq "atPassword">
+	<cfelseif rc.attribute.getAttributeType() eq "password">
 		<cf_HibachiPropertyList>
 			<cf_HibachiPropertyDisplay object="#rc.attribute#" property="decryptValueInAdminFlag" edit="#rc.edit#">
 		</cf_HibachiPropertyList>
-	<cfelseif listFindNoCase( "atCheckBoxGroup,atMultiSelect,atRadioGroup,atSelect",rc.attribute.getAttributeType().getSystemCode() )>
+	<cfelseif listFindNoCase( "checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeType() )>
 		
 		<cf_HibachiListingDisplay smartList="#rc.attribute.getAttributeOptionsSmartList()#"
 								   recordEditAction="admin:entity.editattributeoption" 

@@ -62,18 +62,18 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	
 	public struct function getSettings() {
 		var settings = {
-			password = {fieldType="password", encryptValue=true},
-			testingFlag = {fieldType="yesno", defaultValue="1"},
-			sendInvoiceFlag = {fieldType="yesno", defaultValue="1"},
 			company = {fieldType="text"},
 			division = {fieldType="text"},
 			department = {fieldType="text"},
-			city = {fieldType="text"},
-			mainDivision = {fieldType="text"},
-			postalCode = {fieldType="text"},
-			country = {fieldType="text"},
+			originCity = {fieldType="text"},
+			originMainDivision = {fieldType="text"},
+			originPostalCode = {fieldType="text"},
+			originCountry = {fieldType="text"},
+			sendInvoiceFlag = {fieldType="yesno", defaultValue="1"},
 			webServicesURL = {fieldType="text"},
-			username = {fieldType="text"}
+			webServicesPassword = {fieldType="password", encryptValue=true},
+			webServicesTrustedID = {fieldType="text"},
+			webServicesUsername = {fieldType="text"}
 		};
 		
 		return settings;

@@ -67,24 +67,24 @@ component extends="HibachiService" accessors="true" {
 	
 	public void function logAccountActivity(string auditType, struct data) {
 		if (listFindNoCase('login,loginInvalid,logout', arguments.auditType)) {
+			
 			var audit = this.newAudit();
 			audit.setAuditType(arguments.auditType);
 			
-			if (arguments.auditType == 'loginInvalid') {
-				// Known account
-				if (structKeyExists(arguments.data, 'account')) {
-					audit.setSessionAccountEmailAddress(arguments.data.account.getEmailAddress());
-					audit.setSessionAccountFullName(arguments.data.account.getFullName());
-					audit.setSessionAccountID(arguments.data.account.getAccountID());
-				// Unknown account
-				} else {
-					audit.setSessionAccountEmailAddress(arguments.data.emailAddress);
-					audit.setSessionAccountFullName(rbKey("define.unknown"));
-				}
+			// Known account
+			if (structKeyExists(arguments.data, 'account')) {
+				audit.setSessionAccountEmailAddress(arguments.data.account.getEmailAddress());
+				audit.setSessionAccountFullName(arguments.data.account.getFullName());
+				audit.setSessionAccountID(arguments.data.account.getAccountID());
+			// Unknown account
+			} else if (structKeyExists(arguments.data, 'emailAddress')) {
+				audit.setSessionAccountEmailAddress(arguments.data.emailAddress);
+				audit.setSessionAccountFullName(rbKey("define.unknown"));
 			}
 			
 			// Immediately commit audit, no need to defer commit
 			this.saveAudit(audit);
+			
 		} else {
 			throw(message="Only supported audit types are 'login', 'loginInvalid', 'logout'. You will need to update #getClassName()# and add '#arguments.auditType#'");
 		}

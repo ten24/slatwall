@@ -14,7 +14,7 @@ component extends="AdminTestBase" {
 		var page = variables.dashboardPage.clickMenuLink(arguments.menuItem.menu, arguments.menuItem.menuLinkTitle);	
 		assertPageIsLoaded( page, "Unable to navigate to: #arguments.menuItem.menu# > #arguments.menuItem.menuLinkTitle#" );
 	}
-	
+
 	// ================ Private Helpers ======================
 	
 	private function flattenMenuItems( menuItems ){
