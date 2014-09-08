@@ -1,3 +1,8 @@
+<style media="screen">
+  .s-add-filter label {font-size:12px;font-weight:normal;padding-left:0px;}
+  .s-filter-group-item h4 {font-size:16px;font-wieght:normal;}
+</style>
+
   <div class="col-xs-12 s-filter-content">
 
     <!--- Header nav with title starts --->
@@ -1179,19 +1184,79 @@
     </div>
 
     <div id="j-download-link" class="row collapse" style="background-color: #EEE;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;">
-      <div class="col-md-12">
-        <ul>
+      <div class="col-md-12 s-add-filter" margin-right:15px; margin-left:15px;>
 
-          <li>this is tex</li>
-          <li>this is tex</li>
-          <li>this is tex</li>
-          <li>this is tex</li>
-          <li>this is tex</li>
-          <li>this is tex</li>
-          <li>this is tex</li>
-          <li>this is tex</li>
-          <li>this is tex</li>
-        </ul>
+        <!--- Edit Filter Box --->
+
+          <h4 style="border-bottom: 1px solid #DDD;padding-bottom: 6px;font-size: 14px;margin-bottom: 20px;"> Download:<i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-1" style="float:right;cursor:pointer;"></i></h4>
+          <div class="col-xs-12">
+
+            <div class="row">
+              <div class="col-xs-2">
+                <div class="form-group form-group-sm">
+                  <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders:</label>
+                  <div class="col-sm-12 s-no-paddings">
+                    <select class="form-control input-sm">
+                      <option>Export All</option>
+                      <option>Export Visible</option>
+                    </select>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+              <div class="col-xs-7 s-criteria">
+
+                <!--- Filter Criteria Start --->
+                <form action="index.html" method="post">
+                  <div class="s-filter-group-item">
+
+                    <div class="s-options-group">
+
+                      <div class="form-group">
+                        <label class="col-xs-12">Export Format:</label>
+                        <select class="form-control input-sm">
+                          <option>PDF</option>
+                          <option selected="selected">Excel</option>
+                          <option>Text</option>
+                        </select>
+                      </div>
+
+                      <div class="radio">
+                        <input type="radio" name="radio1" id="radio7" value="option2">
+                        <label for="radio7">
+                            Tab Delimited
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <input type="radio" name="radio1" id="radio9" value="option2">
+                        <label for="radio9">
+                            Comma Delimited
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <input type="radio" name="radio1" id="radio6" value="option3" checked>
+                        <label for="radio6">
+                            Custom Delimiter
+                        </label>
+                        <input style="display:block;" type="text" name="some_name" value="">
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+                <!--- //Filter Criteria End --->
+
+              </div>
+              <div class="col-xs-2">
+                <div class="s-button-select-group">
+                  <button type="button" class="btn btn-sm s-btn-ten24" style="width:100%;">Export</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        <!--- //Edit Filter Box --->
       </div>
     </div>
 
