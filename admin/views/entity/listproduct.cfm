@@ -77,4 +77,7 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</cf_HibachiListingDisplay>
 	
+	<button type="button" class="btn btn-default j-test-button" style="margin-top:80px;width:100%;">
+	  Create Bundle
+	</button>
 </cfoutput>
