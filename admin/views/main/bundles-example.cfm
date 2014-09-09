@@ -153,7 +153,6 @@
                     <div class="tab-pane" id="j-selections-tab">
 
                       <!-- Selected filters -->
-                      <h2>Selected Items</h2>
                       <div class="s-bundle-group-items-list">
                         <ul class="list-unstyled" >
                           <li class="s-bundle-add-obj">
@@ -345,7 +344,6 @@
                     <div class="tab-pane" id="j-selections-tab">
 
                       <!-- Selected filters -->
-                      <h2>Selected Items</h2>
                       <div class="s-bundle-group-items-list">
                         <ul class="list-unstyled" >
                           <li class="s-bundle-add-obj">
@@ -537,7 +535,6 @@
                     <div class="tab-pane" id="j-selections-tab">
 
                       <!-- Selected filters -->
-                      <h2>Selected Items</h2>
                       <div class="s-bundle-group-items-list">
                         <ul class="list-unstyled" >
                           <li class="s-bundle-add-obj">
@@ -746,7 +743,6 @@
                 <div class="tab-pane" id="j-selections-tab-9">
 
                   <!-- Selected filters -->
-                  <h2>Selected Items</h2>
                   <div class="s-bundle-group-items-list">
                     <ul class="list-unstyled" >
                       <li class="s-bundle-add-obj">
