@@ -49,20 +49,20 @@ Notes:
 
 <cfset local.scriptHasErrors = false />
 
-<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Tables" name="local.infoTables" pattern="Sw%" />
+<cfdbinfo type="Columns" name="local.accountPaymentColumns" table="SwAccountPayment"  datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" />
 
 <!--- Update accountPayment and move amount into the AccountPaymentApplied table --->
 <cftry>
-	<cfquery name="local.hasTable" dbtype="query">
+	<cfquery name="local.hasColumn" dbtype="query">
 		SELECT
 			* 
 		FROM
-			infoTables
+			accountPaymentColumns
 		WHERE
-			LOWER(TABLE_NAME) = 'swaccountpaymentapplied'
+			LOWER(COLUMN_NAME) = 'amount'
 	</cfquery>
 	
-	<cfif local.hasTable.recordCount>
+	<cfif local.hasColumn.recordCount>
 		<cfquery name="local.updateData">
 			SELECT
 				accountPaymentID,
