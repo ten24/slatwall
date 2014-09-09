@@ -26,9 +26,6 @@
 <br/>
 <br/> --->
 
-<style media="screen">
-  .s-accordion-header {width:100%;margin-top:-10px;margin-bottom:-10px;padding-top:10px;padding-bottom:10px;cursor:pointer;}
-</style>
   <div class="row s-body-nav">
     <nav class="navbar navbar-default" role="navigation" style="background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;">
       <div class="col-md-4">
@@ -36,7 +33,7 @@
       </div>
       <div class="col-md-8">
         <div class="btn-toolbar" style="margin-top: 10px;">
-          
+
           <div class="btn-group btn-group-sm">
             <button type="button" class="btn s-btn-grey"><i class="fa fa-reply"></i> Products</button>
 
