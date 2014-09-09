@@ -34,7 +34,7 @@
           <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection()" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
           <form class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
             <input style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
-            
+            	
            <!-- <span 	sw-property-display
             		object="collection"
             		property="collectionName",
@@ -139,7 +139,16 @@
           </div>
         </div>
       </form>
-      <div class="s-table-header-right">
+      <span sw-pagination-bar
+      		data-collection="collection"
+      		data-current-page="currentPage"
+      		data-page-show="pageShow"
+      		data-page-start="pageStart"
+      		data-page-end="pageEnd"
+      		data-records-count="recordsCount"
+      >
+      </span>
+      <!---<div class="s-table-header-right">
         <form class="navbar-form form-horizontal navbar-left">
           <div class="form-group">
             <label for="inputPassword" class="control-label">View</label>
@@ -166,7 +175,7 @@
         <div class="btn-group" class="navbar-left">
           <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
         </div>
-      </div>
+      </div>--->
     </div>
     <!---tab view end --->
    <!--- <div class="row s-table-content-nav">
@@ -239,7 +248,7 @@
 	<!---list view end --->
     <div class="row">
       <div class="col-md-12">
-        <div class="dataTables_info" id="example3_info">Showing <b><span ng-bind="collection.pageRecordsStart"><!--- record start ---></span> to <span ng-bind="collection.pageRecordsEnd"><!---records end ---><span></b> of <span ng-bind="collection.recordsCount"><!--- records Count ---></span> entries</div>
+        <div class="dataTables_info" id="example3_info">Showing <b><span ng-bind="pageStart()"><!--- record start ---></span> to <span ng-bind="pageEnd()"><!---records end ---><span></b> of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries</div>
       </div>
     </div>
   </div>

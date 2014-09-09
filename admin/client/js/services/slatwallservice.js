@@ -7,10 +7,17 @@ function($http,$q,baseURL,$log){
 	var factory = {};
 	
 	//basic entity getter where id is optional, returns a promise
-	factory.getEntity = function(entityName,id){
+	factory.getEntity = function(entityName,id,currentPage,pageShow){
+		
+		if(angular.isUndefined(currentPage)){
+			currentPage = 1;
+		}
+		if(angular.isUndefined(pageShow)){
+			pageShow = 10;
+		}
 		
 		var deferred = $q.defer();
-		var urlString = baseURL+'index.cfm/?slatAction=api:main.get&entityName='+entityName;
+		var urlString = baseURL+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+currentPage+'&P:Show='+pageShow;
 		if(angular.isDefined(id)) {
 			urlString += '&entityId='+id;	
 		}
