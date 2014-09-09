@@ -2,7 +2,7 @@
 .s-pannel-group .pannel {overflow: visible;}
 
   /*Basic style overwrite*/
-  body {background-color:#ffffff;font-family: 'Open Sans', sans-serif;color:#666666;padding-top:61px;}
+  body {background-color:#ffffff;font-family: 'Open Sans', sans-serif;color:#666666;padding-top:51px;}
   hr {border-right:1px solid #cccccc;}
   th {font-weight:600;}
   a {color:#666666;}

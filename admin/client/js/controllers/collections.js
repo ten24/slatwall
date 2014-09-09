@@ -7,34 +7,48 @@ angular.module('slatwalladmin')
 'slatwallService',
 'alertService',
 'collectionService', 
+'paginationService',
 '$log',
 function($scope,
 $location,
 slatwallService,
 alertService,
 collectionService,
+paginationService,
 $log
 ){
 	
 	//init values
-	
-	$scope.pageShowOptions = [
-		{display:5,value:5},
-		{display:10,value:10},
-		{display:20,value:20},
-		{display:"All",value:"All"}
-	];
-	$scope.pageShowOptions.selected = $scope.pageShowOptions[1];
-	
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
-	
 	
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionID;
+	$scope.currentPage= paginationService.getCurrentPage();
+	$scope.pageShow = paginationService.getPageShow();
+	$scope.pageStart = paginationService.getPageStart;
+	$scope.pageEnd = paginationService.getPageEnd;
+	$scope.recordsCount = paginationService.getRecordsCount;
+	
+	$scope.$watch('pageShow',function(newValue,oldValue){
+		if(newValue !== oldValue){
+			$log.debug('pageShowChanged');
+			$scope.currentPage = 1;
+			paginationService.setCurrentPage(1);
+			$scope.getCollection();
+		}
+	});
+	
+	$scope.$watch('currentPage',function(newValue,oldValue){
+		if(newValue !== oldValue){
+			$log.debug('currentPageChanged');
+			$scope.getCollection();
+		}
+	});
 	
 	
 	$scope.getCollection = function(){
-		var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID);
+		
+		var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID,$scope.currentPage,$scope.pageShow);
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();
@@ -144,9 +158,7 @@ $log
 		}
 	};
 	
-	$scope.pageShowOptionChanged = function(pageShowOption){
-		slatwallService.getEntity('collection',$scope.collectionID);
-	};
+	
 	
 	$scope.filterCount = collectionService.getFilterCount;
 	//private Function
