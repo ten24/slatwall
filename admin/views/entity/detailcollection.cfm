@@ -222,8 +222,9 @@
     </div>--->
 	<!---TODO: make this list view section a directive that we pass a collection into --->
     <!---list view begin --->
-    <div class="table-responsive">
-	    <table class="table table-bordered table-striped">
+    <div 	class="table-responsive" 
+    >
+	    <table class="table table-bordered table-striped" > 
 	        <thead>
 	            <tr>
 	                <th>Row</span></th>
@@ -231,7 +232,10 @@
 	                <th></th>
 	            </tr>
 	        </thead>
-	        <tbody>
+	        <tbody sw-scroll-trigger 
+    		infinite-scroll="appendToCollection()"		
+    		infinite-scroll-disabled="autoScrollDisabled"
+    		infinite-scroll-distance="1">
 				<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
 		            <td> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
 		            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
@@ -246,9 +250,11 @@
 	    </table>
 	 </div>
 	<!---list view end --->
-    <div class="row">
-      <div class="col-md-12">
-        <div class="dataTables_info" id="example3_info">Showing <b><span ng-bind="pageStart()"><!--- record start ---></span> to <span ng-bind="pageEnd()"><!---records end ---><span></b> of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries</div>
+    <div 	class="row" 
+    		
+    >
+      <div class="col-md-12" span ng-show="pageShow !== 'Auto'">>
+        <div class="dataTables_info" id="example3_info" >Showing <b><span ng-bind="pageStart()"><!--- record start ---></span> to <span ng-bind="pageEnd()"><!---records end ---><span></b> of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries</div>
       </div>
     </div>
   </div>

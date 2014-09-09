@@ -22,7 +22,9 @@
       </select>
     </div>
   </form>
-  <ul class="pagination pagination-sm navbar-left">
+  <ul 	class="pagination pagination-sm navbar-left"
+  		ng-show="pageShowOptions.selectedPageShowOption.value !== 'Auto'"
+  >
     <li
     	ng-click="previousPage()"
     	ng-class="{disabled:hasPrevious()}"

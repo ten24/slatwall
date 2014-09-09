@@ -16,7 +16,8 @@ $log){
 			pageStart:"&",
 			pageEnd:"&",
 			recordsCount:"&",
-			collection:"="
+			collection:"=",
+			autoScroll:"="
 		},
 		link:function(scope,element,attrs){
 			$log.debug('pagination init');
@@ -31,7 +32,7 @@ $log){
           	scope.pageShowOptionChanged = function(pageShowOption){
           		$log.debug('pageShowOptionChanged');
           		$log.debug(pageShowOption);
-        		paginationService.setPageShow(pageShowOption.value);
+      			paginationService.setPageShow(pageShowOption.value);
         		scope.pageShow = paginationService.getPageShow();
         	};
         	
@@ -39,7 +40,7 @@ $log){
         		$log.debug('setCurrentPage');
         		paginationService.setCurrentPage(number);
         		scope.currentPage = number;
-        	}
+        	};
         	
         	var setPageRecordsInfo = function(recordsCount,pageStart,pageEnd,totalPages){
     			paginationService.setRecordsCount(recordsCount);
@@ -99,7 +100,6 @@ $log){
         		
         		if(scope.currentPage <= 3){
         			if(number < 6){
-        				console.log('show' + 1);
         				return true;
         			};
         		}else{

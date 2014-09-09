@@ -28,6 +28,8 @@ $log
 	$scope.pageStart = paginationService.getPageStart;
 	$scope.pageEnd = paginationService.getPageEnd;
 	$scope.recordsCount = paginationService.getRecordsCount;
+	$scope.autoScrollPage = 1;
+	$scope.autoScrollDisabled = false;
 	
 	$scope.$watch('pageShow',function(newValue,oldValue){
 		if(newValue !== oldValue){
@@ -41,14 +43,44 @@ $log
 	$scope.$watch('currentPage',function(newValue,oldValue){
 		if(newValue !== oldValue){
 			$log.debug('currentPageChanged');
-			$scope.getCollection();
+			if($scope.pageShow === 'Auto'){
+				$scope.autoScrollPage = 1;
+				$scope.appendToCollection();
+			}else{
+				$scope.getCollection();
+			}
 		}
 	});
 	
+	$scope.appendToCollection = function(){
+		if($scope.pageShow === 'Auto'){
+			$log.debug('AppendToCollection');
+			if($scope.autoScrollPage < $scope.collection.totalPages){
+				$scope.autoScrollDisabled = true
+				$scope.autoScrollPage++;
+				
+				var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID,$scope.autoScrollPage,50);
+				collectionListingPromise.then(function(value){
+					
+					$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords)
+					collectionService.setCollection($scope.collection);
+					$scope.autoScrollDisabled = false;
+				},function(reason){
+					//display error message if getter fails
+					var messages = reason.MESSAGES;
+					var alerts = alertService.formatMessagesToAlerts(messages);
+					alertService.addAlerts(alerts);
+				});
+			}
+		}
+	};
 	
 	$scope.getCollection = function(){
-		
-		var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID,$scope.currentPage,$scope.pageShow);
+		var pageShow = 50;
+		if($scope.pageShow !== 'Auto'){
+			pageShow = $scope.pageShow;
+		}
+		var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID,$scope.currentPage,pageShow);
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();
