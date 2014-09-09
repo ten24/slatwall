@@ -379,8 +379,15 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/pagination.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
 
-		<div class="s-main-container">
-			#body#
+		<div class="container-fluid s-main-container">
+			<div class="row">
+				<div class="col-md-12">
+
+					#body#
+
+				</div>
+			</div>
+
 		</div>
 
 		<div id="adminModal" class="modal fade">
