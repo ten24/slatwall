@@ -117,109 +117,45 @@
 
     </div><!--- //Row --->
     <!--- //Tab panes for menu options end--->
-    <div class="s-table-options">
-      <form class="navbar-form navbar-left form-horizontal" role="search">
-        <div class="form-group">
-          <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
-          <select size="1" name="" aria-controls="" class="form-control">
-            <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
-            <option value="20">Last Changed</option>
-            <option value="20">Delete</option>
-            <option value="20">Examples</option>
-            <option value="20">Examples</option>
-            <option value="-1">Examples</option>
-          </select>
-        </div>
-      </form>
-      <form class="navbar-form navbar-left s-table-header-search">
-        <div class="input-group">
-          <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
-          <div class="input-group-btn">
-            <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
-          </div>
-        </div>
-      </form>
-      <span sw-pagination-bar
-      		data-collection="collection"
-      		data-current-page="currentPage"
-      		data-page-show="pageShow"
-      		data-page-start="pageStart"
-      		data-page-end="pageEnd"
-      		data-records-count="recordsCount"
-      >
-      </span>
-      <!---<div class="s-table-header-right">
-        <form class="navbar-form form-horizontal navbar-left">
-          <div class="form-group">
-            <label for="inputPassword" class="control-label">View</label>
-            <select size="1" name="" aria-controls="" class="form-control">
-              <option value="5" selected="selected">5</option>
-              <option value="15">10</option>
-              <option value="20">25</option>
-              <option value="20">50</option>
-              <option value="20">100</option>
-              <option value="20">250</option>
-              <option value="-1">Auto</option>
-            </select>
-          </div>
-        </form>
-        <ul class="pagination pagination-sm navbar-left">
-          <li><a href="#">&laquo;</a></li>
-          <li class="active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li class="disabled"><a href="#">&raquo;</a></li>
-        </ul>
-        <div class="btn-group" class="navbar-left">
-          <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
-        </div>
-      </div>--->
-    </div>
-    <!---tab view end --->
-   <!--- <div class="row s-table-content-nav">
-      <div class="col-xs-12 s-align-left">
-
-        <form class="navbar-form s-search-bar s-no-horiz-paddings" role="search">
-          <div class="input-group">
-            <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
-            <div class="input-group-btn">
-              <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
-            </div>
-          </div>
-        </form>
-        <ul class="list-inline list-unstyled s-pagination-content">
-          <li>
-
-            <form class="form-horizontal" role="form">
-              <div class="form-group">
-                <label for="inputPassword" class="col-xs-8 control-label">View</label>
-                <div class="col-xs-4 styleSelect">
-                  <select 	ng-model="pageShowOptions.selected" 
-                  			ng-change="pageShowOptionChanged(pageShowOptions.selected)"
-                  			ng-options="pageShowOption.display for pageShowOption in pageShowOptions track by pageShowOption.value" 
-                  			size="1" name="" aria-controls="" class="form-control" >
-                  </select>
-                </div>
-              </div>
-            </form>
-
-          </li>
-          <li class="s-table-pagination">
-            <ul class="pagination pagination-sm s-align-right">
-              <li><a href="#">&laquo;</a></li>
-              <li class="active"><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li class="disabled"><a href="#">&raquo;</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>--->
+    <div class="row s-table-header-nav">
+      <div class="col-xs-6">
+	      <ul class="list-inline list-unstyled">
+		      <li>
+		        <form role="search">
+		
+		            <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
+		            <select size="1" name="" aria-controls="" class="form-control accordion-dropdown">
+		              <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
+		              <option value="j-export-link" data-toggle="collapse">Export</option>
+		              <option value="j-delete-link" data-toggle="collapse">Delete</option>
+		            </select>
+		
+		        </form>
+		      </li>
+		      <li style="width:200px;">
+		        <form class="s-table-header-search">
+		          <div class="input-group">
+		            <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
+		            <div class="input-group-btn">
+		              <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
+		            </div>
+		          </div>
+		        </form>
+		      </li>
+		    </ul>
+	  	</div>
+        <span   sw-pagination-bar
+	      		data-collection="collection"
+	      		data-current-page="currentPage"
+	      		data-page-show="pageShow"
+	      		data-page-start="pageStart"
+	      		data-page-end="pageEnd"
+	      		data-records-count="recordsCount"
+        >
+        </span>
+        
+ 	</div>
+     
 	<!---TODO: make this list view section a directive that we pass a collection into --->
     <!---list view begin --->
     <div 	class="table-responsive" 
