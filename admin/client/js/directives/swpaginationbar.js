@@ -105,7 +105,7 @@ $log){
         		}else{
         			var bottomRange = scope.currentPage - 2;
         			var topRange = scope.currentPage + 2;
-        			if(number >= bottomRange && number <= topRange ){
+        			if(number > bottomRange && number < topRange ){
         				return true;
         			};
         		}
