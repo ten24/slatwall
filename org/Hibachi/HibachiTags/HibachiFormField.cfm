@@ -126,7 +126,7 @@
 						<cfbreak />
 					</cfif>
 				</cfloop>
-				<cfif !valueExists>
+				<cfif !valueExists and arrayLen(attributes.valueOptions)>
 					<cfset attributes.value = attributes.valueOptions[1]['value'] />
 				</cfif>
 				<cfloop array="#attributes.valueOptions#" index="option">
