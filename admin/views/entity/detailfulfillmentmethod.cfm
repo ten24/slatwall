@@ -56,18 +56,8 @@ Notes:
 		</cfif>
 	</cf_HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cfif rc.fulfillmentMethod.isNew()>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodType" edit="#rc.fulfillmentMethod.isNew()#">
-			</cf_HibachiPropertyList>
-		</cfif>
-	</cf_HibachiPropertyRow>
-	
 	<cf_HibachiEntityDetailGroup object="#rc.fulfillmentMethod#">
-		<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
 			<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/shippingmethods">	
 		</cfif>
