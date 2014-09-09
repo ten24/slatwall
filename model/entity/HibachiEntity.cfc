@@ -185,7 +185,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		
 		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
 		if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeType())) {
-			var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue='arguments.value'});
+			var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue=arguments.value});
 			if(!isNull(attributeOption)) {
 				attributeValueEntity.setAttributeValueOption( attributeOption );
 			}
