@@ -77,7 +77,7 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 	}
 	
 	public void function prepareEditData(required struct rc) {
-		rc.attributeSets = rc.account.getAttributeSets(["astAccount"]);
+		rc.attributeSets = rc.account.getAttributeSets(["Account"]);
 	}
 	
 	public void function save(required struct rc) {

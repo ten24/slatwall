@@ -65,7 +65,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="paymentDueDate" hb_populateEnabled="public" ormtype="timestamp";
 	property name="providerToken" ormType="string";
-	property name="purchaseOrderNumber" ormType="string";
+	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
 	
 	
 	// Related Object Properties (many-to-one)
@@ -699,19 +699,35 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function setBillingAccountAddress( required any accountAddress ) {
-		
-		// If the shippingAddress is a new shippingAddress
-		if( isNull(getBillingAddress()) ) {
-			setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
-		
-		// Else if there was no accountAddress before, or the accountAddress has changed
-		} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
-			getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+		if(isNull(arguments.accountAddress)) {
+			structDelete(variables, "billingAccountAddress");
+		} else {
+			// If the shippingAddress is a new shippingAddress
+			if( isNull(getBillingAddress()) ) {
+				setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
 			
+			// Else if there was no accountAddress before, or the accountAddress has changed
+			} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+				getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+				
+			}
+			
+			// Set the actual accountAddress
+			variables.billingAccountAddress = arguments.accountAddress;	
+		}
+	}
+	
+	public any function populate( required struct data={} ) {
+		// Before we populate we need to cleanse the billingAddress data if the shippingAccountAddress is being changed in any way
+		if(structKeyExists(arguments.data, "billingAccountAddress")
+			&& structKeyExists(arguments.data.billingAccountAddress, "accountAddressID")
+			&& len(arguments.data.billingAccountAddress.accountAddressID)
+			&& (isNull(getBillingAccountAddress()) || getBillingAccountAddress().getAccountAddressID() != arguments.data.billingAccountAddress.accountAddressID)) {
+				
+			structDelete(arguments.data, "billingAddress");
 		}
 		
-		// Set the actual accountAddress
-		variables.billingAccountAddress = arguments.accountAddress;
+		super.populate(argumentCollection=arguments);
 	}
 	
 	// ==================  END:  Overridden Methods ========================

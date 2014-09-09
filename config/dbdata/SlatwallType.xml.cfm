@@ -33,41 +33,6 @@
 		<Record typeID="444df2ccfcee48604ee3e315b722dea2" typeIDPath="444df2c9cddaf8cafd6660ff320aac19,444df2ccfcee48604ee3e315b722dea2" parentTypeID="444df2c9cddaf8cafd6660ff320aac19" type="UPC" systemCode="asctUPC" />
 		<Record typeID="444df2cd0aae29785269084d31e5922e" typeIDPath="444df2c9cddaf8cafd6660ff320aac19,444df2cd0aae29785269084d31e5922e" parentTypeID="444df2c9cddaf8cafd6660ff320aac19" type="EAN" systemCode="asctEAN" />
 		
-		<Record typeID="444df2919d15d8ef5c9bc67857f19228" typeIDPath="444df2919d15d8ef5c9bc67857f19228" parentTypeID="NULL" type="Attribute Set Types" systemCode="attributeSetType" />
-		<Record typeID="444df2a3ebb07d6280c339a09c0d90d3" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df2a3ebb07d6280c339a09c0d90d3" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account" systemCode="astAccount" />
-		<Record typeID="444df32b9730e4a50af0c0ecb9d77f3b" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32b9730e4a50af0c0ecb9d77f3b" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Account Payment" systemCode="astAccountPayment" />
-		<Record typeID="444df325adea07a73014e74b449eb315" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df325adea07a73014e74b449eb315" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Brand" systemCode="astBrand" />
-		<Record typeID="c546d8f4f4a7cecacce568e94f04a30f" typeIDPath="444df2919d15d8ef5c9bc67857f19228,c546d8f4f4a7cecacce568e94f04a30f" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Image" systemCode="astImage" />
-		<Record typeID="2de85a7daab45eaa8ccd31a2c32ac370" typeIDPath="444df2919d15d8ef5c9bc67857f19228,2de85a7daab45eaa8ccd31a2c32ac370" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="File" systemCode="astFile" />
-		<Record typeID="444df327c72a5bd51bb2f691aac17008" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df327c72a5bd51bb2f691aac17008" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order" systemCode="astOrder" />
-		<Record typeID="444df292eea355ddad72f5614726bc75" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df292eea355ddad72f5614726bc75" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Item" systemCode="astOrderItem" />
-		<Record typeID="444df32ac631b198a0f0319dd64e0e00" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df32ac631b198a0f0319dd64e0e00" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Payment" systemCode="astOrderPayment" />
-		<Record typeID="e7387e124cc04bf9bb93fdb27000b4c2" typeIDPath="444df2919d15d8ef5c9bc67857f19228,e7387e124cc04bf9bb93fdb27000b4c2" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Fulfillment" systemCode="astOrderFulfillment" />
-		<Record typeID="ccee02635c2e443d8ff4f3f33702e4a3" typeIDPath="444df2919d15d8ef5c9bc67857f19228,ccee02635c2e443d8ff4f3f33702e4a3" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Order Delivery" systemCode="astOrderDelivery" />
-		<Record typeID="444df293fcc530434949d63e408cac2b" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df293fcc530434949d63e408cac2b" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Product" systemCode="astProduct" />
-		<Record typeID="5accbf52063a5b4e2a73f19f4151cc40" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf52063a5b4e2a73f19f4151cc40" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Product Type" systemCode="astProductType" />
-		<Record typeID="444df328fa718364a389a4495f386a27" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df328fa718364a389a4495f386a27" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="SKU" systemCode="astSku" />
-		<Record typeID="5accbf5a08b1fc0f12fa654ea0c0b683" typeIDPath="444df2919d15d8ef5c9bc67857f19228,5accbf5a08b1fc0f12fa654ea0c0b683" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Subscription Benefit" systemCode="astSubscriptionBenefit" />
-		<Record typeID="444df326c87e098e420297b5a1691e69" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df326c87e098e420297b5a1691e69" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Vendor" systemCode="astVendor" />
-		<Record typeID="444df329d293eeec641b805b68cca95f" typeIDPath="444df2919d15d8ef5c9bc67857f19228,444df329d293eeec641b805b68cca95f" parentTypeID="444df2919d15d8ef5c9bc67857f19228" type="Vendor Order" systemCode="astVendorOrder" />
-				
-		<Record typeID="444df2a4e7c799436c29759e09b6e2c5" typeIDPath="444df2a4e7c799436c29759e09b6e2c5" parentTypeID="NULL" type="Attribute Types" systemCode="attributeType" />
-		<Record typeID="444df2aaed92cb33d16a83d2bde93e72" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2aaed92cb33d16a83d2bde93e72" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Check Box" systemCode="atCheckbox" />
-		<Record typeID="444df2d2bd86e1f290c2cce99d5ca2d8" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d2bd86e1f290c2cce99d5ca2d8" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Check Box Group" systemCode="atCheckBoxGroup" />
-		<Record typeID="444df2d3c0420d6b13d2baf2a0c7e1f2" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d3c0420d6b13d2baf2a0c7e1f2" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Date" systemCode="atDate" />
-		<Record typeID="444df2d4cad3af5f4465a21f7d1b5f6c" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d4cad3af5f4465a21f7d1b5f6c" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Date Time" systemCode="atDateTime" />
-		<Record typeID="444df2d5973447a85033d6c6735e002a" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d5973447a85033d6c6735e002a" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Multiselect" systemCode="atMultiselect" />
-		<Record typeID="444df2d6ff67aedc177f35d1e672dd82" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d6ff67aedc177f35d1e672dd82" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Encrypted Value" systemCode="atPassword" />
-		<Record typeID="444df2a9fe732d3ec9d8b495ab1dddf7" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2a9fe732d3ec9d8b495ab1dddf7" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Radio Group" systemCode="atRadioGroup" />
-		<Record typeID="8fac11726ecc439f99e41452a12813f9" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,8fac11726ecc439f99e41452a12813f9" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Related Object Select" systemCode="atRelatedObjectSelect" />
-		<Record typeID="3abffdd9710f4643bf9f527807851c45" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,3abffdd9710f4643bf9f527807851c45" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Related Object Multiselect" systemCode="atReleatedObjectMultiselect" />
-		<Record typeID="444df2a8bfb73ecb3a777c8599950d5f" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2a8bfb73ecb3a777c8599950d5f" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Select Box" systemCode="atSelect" />
-		<Record typeID="444df2a5a9088e72342c0b5eaf731c64" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2a5a9088e72342c0b5eaf731c64" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Text" systemCode="atText" />
-		<Record typeID="444df2a60dbf45cfad1b1b96baa44c47" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2a60dbf45cfad1b1b96baa44c47" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Text Area" systemCode="atTextArea" />
-		<Record typeID="444df2d7dddd6c7549632a58d2887bd0" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d7dddd6c7549632a58d2887bd0" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Time" systemCode="atTime" />
-		<Record typeID="444df2a7a2c39796d2b15516840344ea" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2a7a2c39796d2b15516840344ea" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Rich Text Editor" systemCode="atWysiwyg" />
-		<Record typeID="444df2d8eb236c42dbbef7ea66200f1b" typeIDPath="444df2a4e7c799436c29759e09b6e2c5,444df2d8eb236c42dbbef7ea66200f1b" parentTypeID="444df2a4e7c799436c29759e09b6e2c5" type="Yes / No" systemCode="atYesNo" />
-		
 		<Record typeID="444df32f9fb5d68f03f1af307b3d0644" typeIDPath="444df32f9fb5d68f03f1af307b3d0644" parentTypeID="NULL" type="Content Template Types" systemCode="contentTemplateType" />
 		<Record typeID="5accbf4aaecf23ab7e2dc384d04c3943" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,5accbf4aaecf23ab7e2dc384d04c3943" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Barrier Page" systemCode="cttBarrierPage" />
 		<Record typeID="444df332f3988ad0c802b83361f99a01" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df332f3988ad0c802b83361f99a01" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" type="Brand" systemCode="cttBrand" />
@@ -119,6 +84,8 @@
 		<Record typeID="5accbf4bc2f3ffcf702d75529a6692b6" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6" parentTypeID="NULL" type="Physical Status Types" systemCode="physicalStatusType" />
 		<Record typeID="5accbf4cb81693960a8cf9c6ada9d220" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4cb81693960a8cf9c6ada9d220" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" type="Open" systemCode="pstOpen" />
 		<Record typeID="5accbf4db8ff07fa9b37d3285919ecc3" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4db8ff07fa9b37d3285919ecc3" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" type="Closed" systemCode="pstClosed" />
+
+		<Record typeID="154dcdd2f3fd4b5ab5498e93470957b8" typeIDPath="154dcdd2f3fd4b5ab5498e93470957b8" parentTypeID="NULL" type="Product Bundle Group Types" systemCode="productBundleGroupType" />
 
 		<Record typeID="444df2e4e0ec725f718318de5bd3b973" typeIDPath="444df2e4e0ec725f718318de5bd3b973" parentTypeID="NULL" type="Stock Adjustment Types" systemCode="stockAdjustmentType" />
 		<Record typeID="444df2e5cb27169f418279f3f859a4f7" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e5cb27169f418279f3f859a4f7" parentTypeID="444df2e4e0ec725f718318de5bd3b973" type="Location Transfer" systemCode="satLocationTransfer" />

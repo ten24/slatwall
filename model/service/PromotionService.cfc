@@ -411,7 +411,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						processOrderFulfillmentRewards(arguments.order, promotionPeriodQualifications, Reward);
 					// ================== Order Reward =========================
 					} else if (orderRewards and reward.getRewardType() eq "order" ) {
-						processOrderRewards(arguments.order);
+						processOrderRewards(arguments.order, reward);
 					} // ============= END ALL REWARD TYPES
 					// This forces the loop to repeat looking for "order" discounts
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {

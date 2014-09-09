@@ -73,7 +73,8 @@
 		<echo file="tests/config/${computer.hostname}.ini">
 # Parameters needed by all tests
 [common]
-login=testrunner@ten24web.com
+outputdebug=false
+login=testrunnersuperuser@mailinator.com
 password=testrunner
 
 # Parameters for UI tests
@@ -106,7 +107,7 @@ browserCommand=${slatwall.test.functional.browser}
 		<attribute name="directoryName"/>
 		<attribute name="excludes" default=""/>
 		<sequential>
-			<mxunittask server="${slatwall.test.server}" port="${slatwall.test.serverport}" defaultrunner="${slatwall.test.runner}" outputdir="${slatwall.test.output.xml}/@{directoryName}" verbose="true" failureproperty="tests.bombed" errorproperty="tests.bombed">
+			<mxunittask server="${slatwall.test.server}" port="${slatwall.test.serverport}" defaultrunner="${slatwall.test.runner}" outputdir="${slatwall.test.output.xml}/@{directoryName}" verbose="false" failureproperty="tests.bombed" errorproperty="tests.bombed">
 				<directory path="${slatwall.test.dir.location}/@{directoryName}" recurse="true" packageName="${slatwall.test.cfcpath}.@{directoryName}" componentPath="${slatwall.test.cfcpath}.@{directoryName}" excludes="@{excludes}" />
 			</mxunittask>
 		</sequential>

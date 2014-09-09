@@ -91,23 +91,59 @@
 				</Address>
 			</ShipFrom>
 			<ShipmentWeight>
-				<Weight>#arguments.requestBean.getTotalValue()#</Weight>
+				<Weight>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</Weight>
 			</ShipmentWeight>
-			<Package>
-				<PackagingType>
-					<Code>02</Code>
-				</PackagingType>
-				<PackageWeight>
-					<cfset weightlbs = arguments.requestBean.getTotalWeight( unitCode='lb' ) />
-					<cfif weightlbs lt 1>
-						<cfset weightlbs = 1 />
-					</cfif>
-					<Weight>#weightlbs#</Weight>
-					<UnitOfMeasurement>
-						<Code>LBS</Code>
-					</UnitOfMeasurement>
-				</PackageWeight>
-			</Package>
+			<!--- Set the total weight to a variable --->
+			<cfset local.totalWeight = arguments.requestBean.getTotalWeight( unitCode='lb' )>
+			<cfif local.totalWeight gt 150>
+				<cfset local.finalWeight = local.totalWeight MOD 150>
+				<cfloop index="count" from="1" to="#round(abs(local.totalWeight / 150))#">
+					<Package>
+						<PackagingType>
+							<Code>02</Code>
+						</PackagingType>
+						<PackageWeight>
+							<Weight>150</Weight>
+							<UnitOfMeasurement>
+								<Code>LBS</Code>
+							</UnitOfMeasurement>
+						</PackageWeight>
+					</Package>			
+				</cfloop>
+				<cfif local.finalWeight gt 0>
+					<Package>
+						<PackagingType>
+							<Code>02</Code>
+						</PackagingType>
+						<PackageWeight>
+							<cfif local.finalWeight lt 1>
+								<Weight>1</Weight>
+							<cfelse>
+								<Weight>#local.finalWeight#</Weight>
+							</cfif>
+							<UnitOfMeasurement>
+								<Code>LBS</Code>
+							</UnitOfMeasurement>
+						</PackageWeight>
+					</Package>				
+				</cfif>
+			<cfelse>
+				<Package>
+					<PackagingType>
+						<Code>02</Code>
+					</PackagingType>
+					<PackageWeight>
+						<cfif arguments.requestBean.getTotalWeight( unitCode='lb' ) lt 1>
+							<Weight>1</Weight>
+						<cfelse>
+							<Weight>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</Weight>	
+						</cfif>
+						<UnitOfMeasurement>
+							<Code>LBS</Code>
+						</UnitOfMeasurement>
+					</PackageWeight>
+				</Package>
+			</cfif>
 		</Shipment>
 	</RatingServiceSelectionRequest>
 </cfoutput>

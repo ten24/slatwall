@@ -85,6 +85,40 @@ Notes:
 	</cfcatch>
 </cftry>
 
+<!--- Update integration to set activeFlag --->
+<cftry>
+	
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" name="local.integrationColumns" table="SwIntegration" />
+	
+	<cfset local.lookupColumns = [] />
+	<cfloop query="integrationColumns">
+		<cfif listFindNoCase('authenticationActiveFlag,customActiveFlag,fw1ActiveFlag,paymentActiveFlag,shippingActiveFlag', integrationColumns.COLUMN_NAME)>
+			<cfset arrayAppend(local.lookupColumns, integrationColumns.COLUMN_NAME) />
+		</cfif>
+	</cfloop>
+	
+	<cfif arrayLen(local.lookupColumns)>
+		<cfquery name="local.updateData">
+			UPDATE
+				SwIntegration
+			SET
+				activeFlag = 1
+			WHERE
+				<cfloop array="#local.lookupColumns#" index="local.columnName">
+					#local.columnName# = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> 
+					<cfif local.lookupColumns[ arrayLen(local.lookupColumns) ] neq local.columnName>
+						OR
+					</cfif>
+				</cfloop>
+		</cfquery>
+	</cfif>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update activeFlag for integrations had an error">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+	
+</cftry>
+
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v3_4 had errors when running">
 	<cfthrow detail="Part of Script v3_4 had errors when running">

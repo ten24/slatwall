@@ -106,8 +106,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') < maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
+					if(!getNewFlag()) {
+						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
+					}
 				} else if(getSKU().getQuantity('QATS') < maxQTY) {
 					maxQTY = getSku().getQuantity('QATS');
+					if(!getNewFlag()) {
+						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
+					}
 				}
 			}	
 		}
@@ -452,7 +458,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astOrderItem');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'OrderItem');
 
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");

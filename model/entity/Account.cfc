@@ -623,7 +623,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 	// ================== START: Deprecated Methods ========================
 	
-	public array function getAttributeSets(array attributeSetTypeCode){
+	public array function getAttributeSets(){
 		return getAssignedAttributeSetSmartList().getRecords();
 	}
 	

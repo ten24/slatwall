@@ -49,27 +49,6 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
-		public array function getAttributeSets(required array attributeSetTypeCode,required array productTypeIDs){
-			var hql = " FROM SlatwallAttributeSet sas
-						WHERE (exists(FROM sas.attributes sa WHERE sa.activeFlag = 1)
-							AND sas.attributeSetType.systemCode IN (:attributeSetTypeCode)) ";
-			if(arrayLen(arguments.productTypeIDs)){
-				hql &= " AND (sas.globalFlag = 1
-							OR exists(FROM sas.attributeSetAssignments asa WHERE asa.productTypeID IN (:productTypeIDs)))";
-			} else {
-				hql &= " AND sas.globalFlag = 1";
-			}			 
-			hql &= " ORDER BY sas.attributeSetType.systemCode ASC, sas.sortOrder ASC";
-			
-			// TODO: Remove this conditional when railo and ACF match how they handle arrays for 'IN' clause
-			if(arrayLen(arguments.productTypeIDs)){
-				var returnQuery = ormExecuteQuery(hql, {productTypeIDs=arguments.productTypeIDs, attributeSetTypeCode=arrayToList(arguments.attributeSetTypeCode)});
-			} else {
-				var returnQuery = ormExecuteQuery(hql, {attributeSetTypeCode=arguments.attributeSetTypeCode});
-			}
-			return returnQuery;
-		}
-		
 		public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 			var fileType = listLast(arguments.fileURL,".");
 			var delimiter = "";
