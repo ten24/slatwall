@@ -54,18 +54,8 @@ Notes:
 		<cf_HibachiActionCaller action="admin:entity.createtaxcategoryrate" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" type="list" modal=true />
 	</cf_HibachiEntityActionBar>
 
-	<cf_HibachiPropertyRow>
-		<cfif rc.taxCategory.isNew()>	
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.taxCategory#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategory#" property="taxCategoryName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategory#" property="taxCategoryCode" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cfif>
-	</cf_HibachiPropertyRow>
-
 	<cf_HibachiEntityDetailGroup object="#rc.taxCategory#">
-		<cf_HibachiEntityDetailItem view="admin:entity/taxcategorytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<cf_HibachiEntityDetailItem view="admin:entity/taxcategorytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<cf_HibachiEntityDetailItem view="admin:entity/taxcategorytabs/rates" />
 	</cf_HibachiEntityDetailGroup>
 	
