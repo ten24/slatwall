@@ -1,8 +1,3 @@
-<style media="screen">
-  .s-add-filter label {font-size:12px;font-weight:normal;padding-left:0px;}
-  .s-filter-group-item h4 {font-size:16px;font-wieght:normal;}
-</style>
-
   <div class="col-xs-12 s-filter-content">
 
     <!--- Header nav with title starts --->
@@ -23,7 +18,10 @@
       <div class="tab-content" id="j-property-box">
 
         <div class="tab-pane active" id="j-properties">
-          <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
+          <!--- <span class="s-edit-btn-group">
+            <button class="btn btn-xs s-btn-ten24" id="j-save-btn" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button>
+            <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button>
+          </span> --->
           <form class="row form-horizontal s-properties" role="form">
             <div class="col-sm-6">
               <div class="form-group">
@@ -233,20 +231,6 @@
                                         </label>
                                       </div>
                                     </div>
-
-                                    <script charset="utf-8">
-                                      $('.s-options-group input:radio').change(function(){
-                                        if($(this).hasClass('s-account-field-radio')){
-                                          $(this).siblings('.s-account-field-select').removeClass("s-disabled");
-                                        }else{
-                                          $(this).parent().siblings().find('.s-account-field-select').addClass("s-disabled");
-                                        };
-                                      });
-                                    </script>
-                                    <style media="screen">
-                                      .s-disabled {opacity: .5;pointer-events: none;}
-                                    </style>
-
 
                                   </div>
                                 </form>
@@ -494,20 +478,6 @@
                                       </li>
                                       <!-- //Filter item -->
                                     </ul>
-
-                                    <script charset="utf-8">
-                                      $('.s-define-filter-item .s-define-filter-title a').click(function(e){
-                                        e.preventDefault();
-                                        $(this).siblings('.s-define-filter-title-edit').css('display','inline-block');
-                                      });
-                                      $('.s-define-filter-group .s-save-btn').click(function(){
-                                        $(this).parent().hide();
-                                      });
-                                      $('.s-define-filter-item .s-define-filter-compare a').click(function(e){
-                                        e.preventDefault();
-                                        $(this).siblings('.s-define-filter-compare-edit').css('display','inline-block');
-                                      });
-                                    </script>
 
                                     <!--- Message if no items --->
                                     <div class="s-none-selected" style="display:none;">There are no fields selected</div>
@@ -1118,13 +1088,10 @@
             <form role="search">
 
                 <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
-                <select size="1" name="" aria-controls="" class="form-control">
+                <select size="1" name="" aria-controls="" class="form-control accordion-dropdown">
                   <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
-                  <option value="20">Last Changed</option>
-                  <option value="20">Delete</option>
-                  <option value="20">Examples</option>
-                  <option value="20">Examples</option>
-                  <option value="-1">Examples</option>
+                  <option value="j-export-link" data-toggle="collapse">Export</option>
+                  <option value="j-delete-link" data-toggle="collapse">Delete</option>
                 </select>
 
             </form>
@@ -1168,11 +1135,11 @@
               <li class="disabled"><a href="#">&raquo;</a></li>
             </ul>
           </li>
-          <li>
+          <!--- <li>
             <div class="btn-group" class="navbar-left">
               <button type="button" class="btn btn-sm s-btn-grey" data-toggle="collapse" data-target="#j-download-link"><i class="fa fa-download"></i></button>
             </div>
-          </li>
+          </li> --->
           <li>
             <div class="btn-group" class="navbar-left">
               <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
@@ -1183,23 +1150,39 @@
       </div>
     </div>
 
-    <div id="j-download-link" class="row collapse" style="background-color: #EEE;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;">
-      <div class="col-md-12 s-add-filter" margin-right:15px; margin-left:15px;>
+    <!--//export batch action-->
+    <div id="j-export-link" class="row collapse s-batch-options">
+      <div class="col-md-12 s-add-filter">
 
         <!--- Edit Filter Box --->
 
-          <h4 style="border-bottom: 1px solid #DDD;padding-bottom: 6px;font-size: 14px;margin-bottom: 20px;"> Download:<i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-1" style="float:right;cursor:pointer;"></i></h4>
+          <h4> Export:<i class="fa fa-times" data-toggle="collapse" data-target="#j-export-link"></i></h4>
           <div class="col-xs-12">
 
             <div class="row">
               <div class="col-xs-2">
                 <div class="form-group form-group-sm">
-                  <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders:</label>
+                  <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Items To Export:</label>
                   <div class="col-sm-12 s-no-paddings">
-                    <select class="form-control input-sm">
-                      <option>Export All</option>
-                      <option>Export Visible</option>
-                    </select>
+
+                    <div class="radio">
+                      <input type="radio" name="radio1" id="radio7" value="option2" checked="checked">
+                      <label for="radio7">
+                          All
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <input type="radio" name="radio1" id="radio7" value="option2">
+                      <label for="radio7">
+                          Visable
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <input type="radio" name="radio1" id="radio7" value="option2">
+                      <label for="radio7">
+                          Selected
+                      </label>
+                    </div>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -1215,11 +1198,17 @@
                       <div class="form-group">
                         <label class="col-xs-12">Export Format:</label>
                         <select class="form-control input-sm">
-                          <option>PDF</option>
                           <option selected="selected">Excel</option>
-                          <option>Text</option>
+                          <option>Text (CSV,Tab,...)</option>
                         </select>
                       </div>
+
+                      <!--- <div class="radio">
+                        <input type="radio" name="radio1" id="radio7" value="option2">
+                        <label for="radio7">
+                            Excel
+                        </label>
+                      </div> --->
 
                       <div class="radio">
                         <input type="radio" name="radio1" id="radio7" value="option2">
@@ -1259,6 +1248,68 @@
         <!--- //Edit Filter Box --->
       </div>
     </div>
+    <!--//export batch action-->
+
+    <!--delete batch action-->
+    <div id="j-delete-link" class="row collapse s-batch-options">
+      <div class="col-md-12 s-add-filter">
+
+        <!--- Edit Filter Box --->
+
+          <h4> Delete:<i class="fa fa-times" data-toggle="collapse" data-target="#j-delete-link"></i></h4>
+          <div class="col-xs-12">
+
+            <div class="row">
+              <div class="col-xs-2">
+                <div class="form-group form-group-sm">
+                  <label class="col-sm-12 control-label s-no-padding" for="formGroupInputSmall">Items To Delete:</label>
+                  <div class="col-sm-12 s-no-paddings">
+
+                    <div class="radio">
+                      <input type="radio" name="radio1" id="radio7" value="option2" checked="checked">
+                      <label for="radio7">
+                          All
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <input type="radio" name="radio1" id="radio7" value="option2">
+                      <label for="radio7">
+                          Visable
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <input type="radio" name="radio1" id="radio7" value="option2">
+                      <label for="radio7">
+                          Selected
+                      </label>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+              <div class="col-xs-7 s-criteria">
+
+                <div class="alert alert-danger" role="alert">
+                  <div class="input-group">
+                    <label>Confirm action by typing "DELETE" below.</label>
+                    <input type="text" class="form-control j-delete-text" placeholder="">
+
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-xs-2">
+                <div class="s-button-select-group">
+                  <button type="button" class="btn btn-sm s-btn-ten24 j-delete-btn" disabled="disabled" style="width:100%;">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <!--- //Edit Filter Box --->
+      </div>
+    </div>
+    <!--//delete batch action-->
 
     <div class="table-responsive s-filter-table-box">
       <table class="table table-bordered table-striped">
@@ -1550,5 +1601,55 @@
   });
   $('.list-group-item .s-save-btn').click(function(){
     $(this).parent().toggle('fast');
+  });
+</script>
+
+<script charset="utf-8">
+  // Trigger select option to open collapes
+  $('document').ready(function(){
+    $('.accordion-dropdown').on('change', function(e){
+      var collapseOptions = $(this).val();
+      $('.s-batch-options.in').collapse('hide');
+      $('#' + collapseOptions).collapse('show');
+      $('.s-filter-table-box input[type="checkbox"]').prop('checked', true);
+    });
+  });
+</script>
+
+<script charset="utf-8">
+  $('.s-options-group input:radio').change(function(){
+    if($(this).hasClass('s-account-field-radio')){
+      $(this).siblings('.s-account-field-select').removeClass("s-disabled");
+    }else{
+      $(this).parent().siblings().find('.s-account-field-select').addClass("s-disabled");
+    };
+  });
+</script>
+
+<script charset="utf-8">
+  $('.s-define-filter-item .s-define-filter-title a').click(function(e){
+    e.preventDefault();
+    $(this).siblings('.s-define-filter-title-edit').css('display','inline-block');
+  });
+  $('.s-define-filter-group .s-save-btn').click(function(){
+    $(this).parent().hide();
+  });
+  $('.s-define-filter-item .s-define-filter-compare a').click(function(e){
+    e.preventDefault();
+    $(this).siblings('.s-define-filter-compare-edit').css('display','inline-block');
+  });
+</script>
+
+<script charset="utf-8">
+  //Force user to add DELETE to delete items
+  $(document).ready(function () {
+   $('.j-delete-text').keyup(function () {
+      var inputVal = $(this).val();
+      if(inputVal === "DELETE"){
+        $('.j-delete-btn').removeAttr('disabled');
+      }else{
+        $('.j-delete-btn').attr('disabled','disabled');
+      };
+    });
   });
 </script>
