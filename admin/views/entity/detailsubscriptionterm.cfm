@@ -53,28 +53,10 @@ Notes:
 	<cf_HibachiEntityDetailForm object="#rc.subscriptionTerm#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.subscriptionTerm#" edit="#rc.edit#" />
 		
-		<cf_HibachiPropertyRow>
-			<cfif rc.subscriptionTerm.isNew()>
-				<cf_HibachiPropertyList divClass="col-md-6">
-					<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="subscriptionTermName" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="initialTerm" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="renewalTerm" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="gracePeriodTerm" edit="#rc.edit#">
-				</cf_HibachiPropertyList>
-				<cf_HibachiPropertyList divClass="col-md-6">
-					<!---<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="allowProrateFlag" edit="#rc.edit#">--->
-					<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="autoRenewFlag" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="autoPayFlag" edit="#rc.edit#">
-				</cf_HibachiPropertyList>
-			</cfif>
-		</cf_HibachiPropertyRow>
-		
 		<cf_HibachiEntityDetailGroup object="#rc.subscriptionTerm#">
-			<cf_HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/subscriptionusagesettings" />
 		</cf_HibachiEntityDetailGroup>
 
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
-
-
