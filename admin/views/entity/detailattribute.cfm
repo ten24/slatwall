@@ -51,8 +51,9 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#" 
-									saveActionQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#">
+	<cf_HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#"
+								saveActionQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#">
+									
 		<cf_HibachiEntityActionBar type="detail" object="#rc.attribute#" edit="#rc.edit#"
 								   backAction="admin:entity.detailAttributeSet"
 								   backQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"

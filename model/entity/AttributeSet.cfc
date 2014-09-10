@@ -102,6 +102,8 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 			{value="Brand", name=rbKey("entity.Brand")},
 			{value="File", name=rbKey("entity.File")},
 			{value="Image", name=rbKey("entity.Image")},
+			{value="Location", name=rbKey("entity.Location")},
+			{value="LocationConfiguration", name=rbKey("entity.LocationConfiguration")},
 			{value="Order", name=rbKey("entity.Order")},
 			{value="OrderItem", name=rbKey("entity.OrderItem")},
 			{value="OrderPayment", name=rbKey("entity.OrderPayment")},

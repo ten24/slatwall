@@ -73,7 +73,7 @@ Notes:
 				</cf_HibachiDisplayToggle>
 			</cf_HibachiDisplayToggle>
 			<cf_HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="true">
+				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,primaryAddress.simpleRepresentation" edit="true">
 			</cf_HibachiDisplayToggle>
 			<hr />
 			<cfelse>

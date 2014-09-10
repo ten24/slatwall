@@ -66,14 +66,15 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="../../client/lib/font-awesome/css/font-awesome.min.css">
-		
+
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js"></script>
-		
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/selectBoxIt/selectBoxIt.min.js"></script>
+
 		#request.slatwallScope.renderJSObject()#
 		<script type="text/javascript">
 			var hibachiConfig = $.slatwall.getConfig();
@@ -133,6 +134,7 @@ Notes:
 							<cf_HibachiDividerHider>
 								<cf_HibachiActionCaller action="admin:entity.listorder" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listcartandquote" type="list">
+								<cf_HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderitem" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listorderpayment" type="list">
@@ -345,14 +347,14 @@ Notes:
 			  };
 			})();
 		</script>
-		
+
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular-ui-bootstrap/ui.bootstrap.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
-		
+
 		<!---modules --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
@@ -360,6 +362,7 @@ Notes:
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallservice.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/collectionservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/paginationservice.js"></script>
 
 	 	<!---controllers --->
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
@@ -376,7 +379,9 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcriteria.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayoptions.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcolumnitem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/pagination.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpaginationbar.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swscrolltrigger.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swexportaction.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
 
 		<div class="container-fluid s-main-container">
@@ -391,7 +396,7 @@ Notes:
 		</div>
 
 		<div id="adminModal" class="modal fade">
-			
+
 		</div>
 		<div id="adminDisabled" class="modal">
 			<div class="modal-dialog">
@@ -417,9 +422,7 @@ Notes:
 			</div>
 		</div>
 		<!---displays alerts to the user --->
-		<div  ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer" role="alert"
-		ng-repeat="alert in alerts"
-		>
+		<div  ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer" role="alert" ng-repeat="alert in alerts">
 			<!---only show a dismissable button if we are showing info or a warning --->
 		  	<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 		  	<!---show check mark only if success, always display message --->

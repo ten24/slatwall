@@ -711,12 +711,6 @@ $filter){
 					}
 				});
 				
-				//scope.selectedFilterProperty.selectedCriteriaType = scope.filterItem;
-				/*
-				 * preselect options
-				 if(angular.isDefined(selectedFilterProperty.comparisonOperator)){
-					for()
-				}*/
 				
 				$log.debug('templateLoader');
 				$log.debug(selectedFilterProperty);

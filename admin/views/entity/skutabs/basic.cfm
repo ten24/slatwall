@@ -8,6 +8,17 @@
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuName" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
+				<cfif rc.product.getBaseProductType() EQ "event">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="purchaseStartDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="purchaseEndDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventCapacity" edit="false">
+					<cf_HibachiPropertyDisplay object="#rc.sku#" property="attendedquantity" edit="#rc.edit#">
+				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
 				<cfif rc.product.getBaseProductType() EQ "subscription">

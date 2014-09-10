@@ -56,16 +56,8 @@ Notes:
 			<cf_HibachiProcessCaller action="admin:entity.processphysical" entity="#rc.physical#" processContext="commit" type="list" />
 		</cf_HibachiEntityActionBar>
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cfif rc.physical.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.physical#" property="physicalStatusType" edit="false">
-				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
 		<cf_HibachiEntityDetailGroup object="#rc.physical#">
-			<cf_HibachiEntityDetailItem view="admin:entity/physicaltabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/physicaltabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem property="productTypes" />
 			<cf_HibachiEntityDetailItem property="brands" />
 			<cf_HibachiEntityDetailItem property="products" />

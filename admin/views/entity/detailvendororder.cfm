@@ -69,7 +69,7 @@ Notes:
 		</cf_HibachiPropertyRow>
 
 		<cf_HibachiEntityDetailGroup object="#rc.vendorOrder#">
-			<cf_HibachiEntityDetailItem view="admin:entity/vendorordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/vendorordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem property="vendorOrderItems" />
 			<cf_HibachiEntityDetailItem view="admin:entity/vendorordertabs/stockreceivers" />
 			

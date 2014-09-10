@@ -55,7 +55,7 @@ Notes:
 	</cf_HibachiEntityDetailForm>
 	
 	<cf_HibachiEntityDetailGroup object="#rc.country#">
-		<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<cf_HibachiEntityDetailItem property="states" />
 	</cf_HibachiEntityDetailGroup>
 	

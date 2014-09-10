@@ -51,14 +51,28 @@ Notes:
 
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.location#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.location#" />
+		<cf_HibachiEntityActionBar type="detail" object="#rc.location#">
+			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" modal="true" />
+			<cf_HibachiActionCaller action="admin:entity.createlocationconfiguration" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" />
+		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.location#" property="activeFlag" edit="#rc.edit#" >
 				<cf_HibachiPropertyDisplay object="#rc.location#" property="locationName" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.edit#" valueOptions="#$.slatwall.getService('locationService').getLocationParentOptions()#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
+		
+		<cf_HibachiTabGroup object="#rc.location#">
+			<cf_HibachiTab property="locationAddresses" />
+			<cf_HibachiTab property="locationConfigurations" />
+			<cf_HibachiTab view="admin:entity/locationtabs/locationconfigurationsettings" />
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.location.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.location#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</cf_HibachiTabGroup>
 
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
-

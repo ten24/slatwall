@@ -54,11 +54,9 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.subscriptionTerm#" edit="#rc.edit#" />
 		
 		<cf_HibachiEntityDetailGroup object="#rc.subscriptionTerm#">
-			<cf_HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/subscriptionusagesettings" />
 		</cf_HibachiEntityDetailGroup>
 
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
-
-
