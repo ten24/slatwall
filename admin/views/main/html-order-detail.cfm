@@ -99,6 +99,7 @@
 <style media="screen">
   .s-bundle-box > li {height:40px;width:100%;border: 1px solid #ddd;}
   .s-bundle-box > li .s-right {text-align:right;padding-right:0px;}
+  .s-bundle-box > li > .s-bundle-box-head {display: inline-block;width: 100%;}
   .s-bundle-box > li > .s-bundle-box-head > div:first-child {padding: 9px;font-weight: 600;}
   .s-bundle-box > li > .s-bundle-box-head > div:first-child span {background-color: #cccccc;color:#999;border-radius: 3px;;padding: 2px 6px 2px 6px;font-size: 10px;display: inline-block;height: 17px;position: relative;margin-left: 7px;text-align: center;bottom: 0px;}
   .s-bundle-box > li button {border-radius: 0px;padding: 8px;width:40px;border-color:#ffffff;}
