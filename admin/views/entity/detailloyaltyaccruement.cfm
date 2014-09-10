@@ -53,23 +53,10 @@ Notes:
 		
 		<input type="hidden" name="loyalty.loyaltyID" value="#rc.loyalty.getLoyaltyID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cfif rc.loyaltyAccruement.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="activeFlag" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="startDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="endDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="expirationTerm" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="accruementType" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointType" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="pointQuantity" edit="#rc.edit#">
-				</cfif>				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
 		
 		<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>
 			<cf_HibachiEntityDetailGroup object="#rc.loyaltyAccruement#">
-				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
 				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
 				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />

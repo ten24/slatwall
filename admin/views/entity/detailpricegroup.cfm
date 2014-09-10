@@ -56,7 +56,7 @@ Notes:
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiEntityDetailGroup object="#rc.priceGroup#">
-			<cf_HibachiEntityDetailItem view="admin:entity/pricegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/pricegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem property="pricegrouprates" />
 			<cf_HibachiEntityDetailItem view="admin:entity/pricegrouptabs/assignedaccounts" />
 		</cf_HibachiEntityDetailGroup>

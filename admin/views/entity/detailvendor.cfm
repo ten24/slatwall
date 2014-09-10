@@ -55,7 +55,7 @@ Notes:
 	</cf_HibachiEntityActionBar>
 
 	<cf_HibachiEntityDetailGroup object="#rc.vendor#">
-		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/vendoraddresses" />
 		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/vendorbrands" />
 		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/vendororders" />

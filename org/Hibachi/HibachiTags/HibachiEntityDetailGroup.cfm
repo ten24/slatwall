@@ -5,7 +5,7 @@
 <cfparam name="attributes.tabLocation" type="string" default="left" />
 <cfparam name="attributes.createOrModalFlag" type="boolean" default="false" />
 
-<cfif attributes.object.isNew() || (structKeyExists(request.context, "modal") and request.context.modal)>
+<cfif (isObject(attributes.object) && attributes.object.isNew())|| (structKeyExists(request.context, "modal") and request.context.modal)>
 	<cfset attributes.createOrModalFlag = true />
 </cfif>
 
