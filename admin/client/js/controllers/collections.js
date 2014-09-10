@@ -56,13 +56,13 @@ $log
 		if($scope.pageShow === 'Auto'){
 			$log.debug('AppendToCollection');
 			if($scope.autoScrollPage < $scope.collection.totalPages){
-				$scope.autoScrollDisabled = true
+				$scope.autoScrollDisabled = true;
 				$scope.autoScrollPage++;
 				
 				var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID,$scope.autoScrollPage,50);
 				collectionListingPromise.then(function(value){
 					
-					$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords)
+					$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords);
 					collectionService.setCollection($scope.collection);
 					$scope.autoScrollDisabled = false;
 				},function(reason){
@@ -114,9 +114,22 @@ $log
 	   $scope.collectionForm = form;
 	};
 	
+	
+	$scope.collectionDetails = {
+		isOpen:false,
+		openCollectionDetails:function(){
+			$scope.collectionDetails.isOpen = true;
+		}
+	};
+	
+	$scope.errorMessage = {
+			
+	};
+	
 	//public functions
 	$scope.saveCollection = function(){
 		$log.debug('saving Collection');
+		
 		var entityName = 'collection';
 		var collection = $scope.collection;
 		$log.debug($scope.collectionConfig);
@@ -134,11 +147,19 @@ $log
 				var messages = value.MESSAGES;
 				var alerts = alertService.formatMessagesToAlerts(messages);
 				alertService.addAlerts(alerts);
-				
+				$scope.errorMessage = {};
+				$scope.collectionForm.$setPristine();
 				$scope.getCollection();
+				$scope.collectionDetails.isOpen = false;
 				//$scope.collectionConfig = $scope.collectionConfigCopy;
 			}, function(reason){
 				//revert to original
+				console.log($scope.collectionForm);
+				console.log(reason);
+				angular.forEach(reason.errors,function(value,key){
+					$scope.collectionForm[key].$invalid = true;
+					$scope.errorMessage[key] = value[0];
+				});
 				$scope.collection = angular.copy($scope.collectionInitial);
 				var messages = reason.MESSAGES;
 				var alerts = alertService.formatMessagesToAlerts(messages);

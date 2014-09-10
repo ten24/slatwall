@@ -380,6 +380,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcolumnitem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpaginationbar.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swscrolltrigger.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swexportaction.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
 
 		<div class="container-fluid s-main-container">
