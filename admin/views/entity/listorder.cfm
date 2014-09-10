@@ -58,7 +58,7 @@ Notes:
 			showCreate="true">
 			
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiListingDisplayButtonGroup>
 			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</cf_HibachiListingDisplayButtonGroup>
 			
