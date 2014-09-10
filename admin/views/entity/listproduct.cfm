@@ -77,8 +77,23 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</cf_HibachiListingDisplay>
+
 	
-	<button type="button" class="btn btn-default j-test-button" style="margin-top:80px;width:100%;">
-	  Create Bundle
-	</button>
+	<button type="button" class="btn btn-default j-test-button" style="margin-top:80px;width:100%;">Create Bundle</button>
+	
+	<div ng-controller="rolloverdialogs">
+		<div ng-repeat="dialog in dialogs">
+			<div ng-include="dialog.path">
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		angular.module('slatwalladmin').controller('rolloverdialogs', [ '$scope', function($scope){
+			//$scope.dialogs = [];
+			$scope.dialogs = [{'path':'admin/client/partials/createproductbundle.html'},{'path':'admin/client/partials/createproductmerchandise.html'}];
+		}]);
+	</script>
+	
+	
+	
 </cfoutput>
