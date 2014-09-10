@@ -55,7 +55,7 @@ Notes:
 	<cf_HibachiEntityActionBar type="static"></cf_HibachiEntityActionBar>
 	
 	<cf_HibachiEntityDetailGroup>
-		<cf_HibachiEntityDetailItem open="true" view="admin:entity/settingstabs/global" />
+		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/global" />
 		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/globaladvanced" />
 		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/account" />
 		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/brand" />

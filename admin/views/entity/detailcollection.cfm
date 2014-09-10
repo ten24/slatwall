@@ -31,9 +31,18 @@
       <div class="tab-content" id="j-property-box">
 
         <div class="tab-pane active" id="j-properties">
-          <span class="s-edit-btn-group"><button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection()" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button></span>
-          <form class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
-            <input style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
+          <span class="s-edit-btn-group">
+          	  <button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection()" ng-show="collectionDetails.isOpen">
+          		<i class="fa fa-floppy-o"></i> 
+          		Save
+	          </button> 
+	          <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn" ng-click="collectionDetails.openCollectionDetails()" ng-show="!collectionDetails.isOpen">
+	          	<i class="fa fa-pencil"></i> 
+	          	Edit
+	          </button>
+         </span>
+          <form  class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
+            <input  style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
             	
            <!-- <span 	sw-property-display
             		object="collection"
@@ -43,29 +52,42 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input style="display:none" ng-model="collection.collectionName" name="collectionName" type="text" class="form-control" id="inputPassword" value="" required>
-                <p class="form-control-static" ng-bind="collection.collectionName"><!---collection Name ---></p>
+                <input ng-show="collectionDetails.isOpen"  ng-model="collection.collectionName" name="collectionName" type="text" class="form-control" id="inputPassword" value="" required>
+               	<span style="color:red"
+			      ng-show="collectionForm.collectionName.$invalid && collectionForm.collectionName.$dirty">
+			      {{errorMessage.collectionName}}
+			    </span>
+                <p ng-show="!collectionDetails.isOpen" class="form-control-static" ng-bind="collection.collectionName"><!---collection Name ---></p>
               </div>
             </div>
             <div class="form-group">
               <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input ng-model="collection.collectionCode" style="display:none" name="collectionCode" type="text" class="form-control" id="inputPassword" value="" required>
-                <p class="form-control-static" ng-bind="collection.collectionCode"><!---collection Code ---></p>
+                <input ng-show="collectionDetails.isOpen" ng-model="collection.collectionCode"  name="collectionCode" type="text" class="form-control" id="inputPassword" value="" required>
+                <p ng-show="!collectionDetails.isOpen" class="form-control-static" ng-bind="collection.collectionCode"><!---collection Code ---></p>
+              	<span  style="color:red"
+			      ng-show="collectionForm.collectionCode.$invalid && collectionForm.collectionCode.$dirty">
+			      {{errorMessage.collectionCode}}
+			    </span>
               </div>
             </div>
             <div class="form-group">
               <label for="inputPassword" class="col-sm-2 control-label">Description: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection description"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input style="display:none" ng-model="collection.description" name="description" type="text" class="form-control" id="inputPassword" value="" >
-                <p ng-bind="collection.description" class="form-control-static"><!---collection description ---></p>
+                <input ng-show="collectionDetails.isOpen"  ng-model="collection.description" name="description" type="text" class="form-control" id="inputPassword" value="" >
+                <p ng-show="!collectionDetails.isOpen" ng-bind="collection.description" class="form-control-static"><!---collection description ---></p>
+              	<span  style="color:red"
+			      ng-show="collectionForm.description.$invalid && collectionForm.description.$dirty">
+			      {{errorMessage.description}}
+			    </span>
               </div>
             </div>
             <div class="form-group">
               <label for="inputPassword" class="col-sm-2 control-label">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
               <div class="col-sm-10">
-                <input disabled="disabled" style="display:none" ng-model="collectionConfig.baseEntityAlias" type="text" class="form-control" value="" >
-                <p ng-bind="collectionConfig.baseEntityAlias" class="form-control-static"><!---collection base entity alias ---></p>
+                <input ng-show="collectionDetails.isOpen" disabled="disabled"  ng-model="collectionConfig.baseEntityAlias" type="text" class="form-control" value="" >
+                <p ng-show="!collectionDetails.isOpen" ng-bind="collectionConfig.baseEntityAlias" class="form-control-static"><!---collection base entity alias ---></p>
+              	
               </div>
             </div>
           </form>
@@ -156,105 +178,10 @@
         
  	</div>
  	
- 	<!--//export batch action-->
-    <div id="j-export-link" class="row collapse s-batch-options">
-      <div class="col-md-12 s-add-filter">
-
-        <!--- Edit Filter Box --->
-
-          <h4> Export:<i class="fa fa-times" data-toggle="collapse" data-target="#j-export-link"></i></h4>
-          <div class="col-xs-12">
-
-            <div class="row">
-              <div class="col-xs-2">
-                <div class="form-group form-group-sm">
-                  <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Items To Export:</label>
-                  <div class="col-sm-12 s-no-paddings">
-
-                    <div class="radio">
-                      <input type="radio" name="radio1" id="radio7" value="option2" checked="checked">
-                      <label for="radio7">
-                          All
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <input type="radio" name="radio1" id="radio7" value="option2">
-                      <label for="radio7">
-                          Visable
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <input type="radio" name="radio1" id="radio7" value="option2">
-                      <label for="radio7">
-                          Selected
-                      </label>
-                    </div>
-                  </div>
-                  <div class="clearfix"></div>
-                </div>
-              </div>
-              <div class="col-xs-7 s-criteria">
-
-                <!--- Filter Criteria Start --->
-                <form action="index.html" method="post">
-                  <div class="s-filter-group-item">
-
-                    <div class="s-options-group">
-
-                      <div class="form-group">
-                        <label class="col-xs-12">Export Format:</label>
-                        <select class="form-control input-sm">
-                          <option selected="selected">Excel</option>
-                          <option>Text (CSV,Tab,...)</option>
-                        </select>
-                      </div>
-
-                      <!--- <div class="radio">
-                        <input type="radio" name="radio1" id="radio7" value="option2">
-                        <label for="radio7">
-                            Excel
-                        </label>
-                      </div> --->
-
-                      <div class="radio">
-                        <input type="radio" name="radio1" id="radio7" value="option2">
-                        <label for="radio7">
-                            Tab Delimited
-                        </label>
-                      </div>
-                      <div class="radio">
-                        <input type="radio" name="radio1" id="radio9" value="option2">
-                        <label for="radio9">
-                            Comma Delimited
-                        </label>
-                      </div>
-                      <div class="radio">
-                        <input type="radio" name="radio1" id="radio6" value="option3" checked>
-                        <label for="radio6">
-                            Custom Delimiter
-                        </label>
-                        <input style="display:block;" type="text" name="some_name" value="">
-                      </div>
-                    </div>
-
-                  </div>
-                </form>
-                <!--- //Filter Criteria End --->
-
-              </div>
-              <div class="col-xs-2">
-                <div class="s-button-select-group">
-                  <button type="button" class="btn btn-sm s-btn-ten24" style="width:100%;">Export</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-        <!--- //Edit Filter Box --->
-      </div>
-    </div>
-    <!--//export batch action-->
+ 	<span 	sw-export-action
+ 			
+ 	>
+ 	</span>
 
     <!--delete batch action-->
     <div id="j-delete-link" class="row collapse s-batch-options">
@@ -606,7 +533,7 @@
   });
 </script>
 
-<script charset="utf-8">
+<!---<script charset="utf-8">
   //This was created for example only to toggle the edit save icons
   $(function(){
     $('#j-edit-btn').click(function(){
@@ -622,7 +549,7 @@
       $('.s-properties input').toggle();
     });
   });
-</script>
+</script>--->
 
 
 

@@ -102,6 +102,11 @@ $log){
         	};
         	
         	scope.showPageNumber = function(number){
+        		/*if(scope.currentPage >= scope.totalPages() - 3){
+        			if(number > scope.totalPages() - 6){
+        				return true;
+        			}
+        		}*/
         		
         		if(scope.currentPage <= 3){
         			if(number < 6){
