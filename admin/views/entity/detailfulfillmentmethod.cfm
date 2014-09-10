@@ -57,7 +57,7 @@ Notes:
 	</cf_HibachiEntityActionBar>
 	
 	<cf_HibachiEntityDetailGroup object="#rc.fulfillmentMethod#">
-		<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
 			<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/shippingmethods">	
 		</cfif>

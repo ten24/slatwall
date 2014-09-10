@@ -56,7 +56,7 @@ Notes:
 		</cf_HibachiEntityActionBar>
 		
 		<cf_HibachiEntityDetailGroup object="#rc.optiongroup#">
-			<cf_HibachiEntityDetailItem view="admin:entity/optiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/optiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem view="admin:entity/optiongrouptabs/options" />
 			<cf_HibachiEntityDetailItem view="admin:entity/optiongrouptabs/description" />
 		</cf_HibachiEntityDetailGroup>

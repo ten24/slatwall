@@ -54,16 +54,8 @@ Notes:
 		<cf_HibachiActionCaller action="admin:entity.createaddresszonelocation" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" type="list" modal=true />
 	</cf_HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cfif rc.addressZone.isNew()>
-				<cf_HibachiPropertyDisplay object="#rc.addressZone#" property="addressZoneName" edit="#rc.edit#">
-			</cfif>
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-	
 	<cf_HibachiEntityDetailGroup object="#rc.addressZone#">
-		<cf_HibachiEntityDetailItem view="admin:entity/addresszonetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<cf_HibachiEntityDetailItem view="admin:entity/addresszonetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<cf_HibachiEntityDetailItem view="admin:entity/addresszonetabs/locations" />
 	</cf_HibachiEntityDetailGroup>
 	

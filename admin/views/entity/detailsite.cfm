@@ -54,7 +54,7 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.site#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
 		
 		<cf_HibachiEntityDetailGroup object="#rc.site#">
-			<cf_HibachiEntityDetailItem view="admin:entity/sitetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/sitetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem view="admin:entity/sitetabs/sitesettings" />
 		</cf_HibachiEntityDetailGroup>
 		
