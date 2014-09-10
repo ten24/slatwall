@@ -80,10 +80,10 @@ Notes:
 			
 			<!--- Event Registrations --->
 			<cfif rc.product.getBaseProductType() EQ "event">
-				<cf_HibachiTab property="productSchedules" />
-				<cf_HibachiTab property="eventregistrations" />
+				<cf_HibachiEntityDetailItem property="productSchedules" />
+				<cf_HibachiEntityDetailItem property="eventregistrations" />
 			</cfif>
-			<cf_HibachiTab view="admin:entity/producttabs/saleshistory" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/saleshistory" />
 			
 			<!--- Images --->
 			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/images" />

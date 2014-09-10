@@ -1141,7 +1141,7 @@
             </div>
           </li> --->
           <li>
-            <div class="btn-group" class="navbar-left">
+            <div class="btn-group navbar-left">
               <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
             </div>
           </li>
