@@ -100,7 +100,7 @@
   .s-bundle-box > li {height:40px;width:100%;border: 1px solid #ddd;}
   .s-bundle-box > li .s-right {text-align:right;padding-right:0px;}
   .s-bundle-box > li > .s-bundle-box-head > div:first-child {padding: 9px;font-weight: 600;}
-  .s-bundle-box > li > .s-bundle-box-head > div:first-child span {background-color: #cccccc;color:#999;border-radius: 3px;;padding: 2px 6px 2px 6px;font-size: 10px;display: inline-block;height: 17px;position: relative;margin-left: 7px;text-align: center;bottom: 0px;}
+  .s-bundle-box > li > .s-bundle-box-head > div:first-child span {background-color: #cccccc;color:#999;border-radius: 3px;padding: 2px 6px 2px 6px;font-size: 10px;display: inline-block;height: 17px;position: relative;margin-left: 7px;text-align: center;bottom: 0px;}
   .s-bundle-box > li button {border-radius: 0px;padding: 8px;width:40px;border-color:#ffffff;}
   .s-bundle-box > li button:first-child {right: -4px;position: relative;}
   .s-bundle-box > li button:hover {border-color:#eeeeee;background-color:#eeeeee;color:#606060;}
@@ -1377,7 +1377,7 @@
                   </div>
                 </li> --->
                 <li>
-                  <div class="btn-group" class="navbar-left">
+                  <div class="btn-group navbar-left">
                     <button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
                   </div>
                 </li>
