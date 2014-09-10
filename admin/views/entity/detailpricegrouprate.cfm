@@ -65,7 +65,7 @@ Notes:
 		</cfif>
 		
 		<cf_HibachiEntityDetailGroup object="#rc.pricegrouprate#">
-			<cf_HibachiEntityDetailItem view="admin:entity/pricegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/pricegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/producttypes" />
 			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/products" />
 			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/skus" />
