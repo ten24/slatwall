@@ -112,7 +112,7 @@
 		</cfcase>
 		<cfcase value="password">
 			<cfoutput>
-				<input type="password" name="#attributes.fieldName#" class="#attributes.fieldClass#" autocomplete="off" #attributes.fieldAttributes# />
+				<input type="password" name="#attributes.fieldName#" class="form-control #attributes.fieldClass#" autocomplete="off" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="radiogroup">
@@ -138,7 +138,7 @@
 		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
-				<select name="#attributes.fieldName#" class="#attributes.fieldClass#" #attributes.fieldAttributes#>
+				<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes#>
 					<cfloop array="#attributes.valueOptions#" index="option">
 						<cfset thisOptionName = "" />
 						<cfset thisOptionValue = "" />
@@ -164,7 +164,7 @@
 		</cfcase>
 		<cfcase value="text">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" class="#attributes.fieldClass#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textautocomplete">
@@ -217,8 +217,8 @@
 		</cfcase>
 		<cfcase value="yesno">
 			<cfoutput>
-				<label class="radio inline"><input type="radio" name="#attributes.fieldName#" class="#attributes.fieldClass# yes" value="1" <cfif isBoolean(attributes.value) && attributes.value>checked="checked"</cfif> #attributes.fieldAttributes# />#yesNoFormat(1)#</label>
-				<label class="radio inline"><input type="radio" name="#attributes.fieldName#" class="#attributes.fieldClass# yes" value="0" <cfif (isboolean(attributes.value) && not attributes.value) || not isBoolean(attributes.value)>checked="checked"</cfif> #attributes.fieldAttributes# />#yesNoFormat(0)#</label>
+				<label class="radio-inline"><input type="radio" name="#attributes.fieldName#" class="#attributes.fieldClass# yes" value="1" <cfif isBoolean(attributes.value) && attributes.value>checked="checked"</cfif> #attributes.fieldAttributes# />#yesNoFormat(1)#</label>
+				<label class="radio-inline"><input type="radio" name="#attributes.fieldName#" class="#attributes.fieldClass# yes" value="0" <cfif (isboolean(attributes.value) && not attributes.value) || not isBoolean(attributes.value)>checked="checked"</cfif> #attributes.fieldAttributes# />#yesNoFormat(0)#</label>
 			</cfoutput>
 		</cfcase>
 	</cfswitch>

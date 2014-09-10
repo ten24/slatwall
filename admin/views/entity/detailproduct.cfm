@@ -69,30 +69,14 @@ Notes:
 				There are event time and location conflicts with one of this product's events. Review the Skus tab for details.
 			</div>
 		</cfif>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="publishedFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="urlTitle" edit="#rc.edit#" valueLink="#rc.product.getProductURL()#">
-				<cfif rc.product.getBaseProductType() EQ "event">
-					<cf_HibachiPropertyDisplay object="#rc.product#" property="purchaseStartDateTime" hb_rbKey="entity.product.purchaseStartDateTime" edit="#rc.edit#"/>
-					<cf_HibachiPropertyDisplay object="#rc.product#" property="purchaseEndDateTime" hb_rbKey="entity.product.purchaseEndDateTime" edit="#rc.edit#"/>
-				</cfif>
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productType" edit="#rc.edit#">
-				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qats.full')#" value="#rc.product.getQuantity('QATS')#">
-				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qiats.full')#" value="#rc.product.getQuantity('QIATS')#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.product#">
+				
+		<cf_HibachiEntityDetailGroup object="#rc.product#">
+			
+			<!--- Basic --->
+			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
+			
 			<!--- Skus --->
-			<cf_HibachiTab property="skus" />
+			<cf_HibachiEntityDetailItem property="skus" />
 			
 			<!--- Event Registrations --->
 			<cfif rc.product.getBaseProductType() EQ "event">
@@ -102,35 +86,35 @@ Notes:
 			<cf_HibachiTab view="admin:entity/producttabs/saleshistory" />
 			
 			<!--- Images --->
-			<cf_HibachiTab view="admin:entity/producttabs/images" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/images" />
 			
 			<!--- Files --->
 			<cf_SlatwallAdminTabFiles object="#rc.product#" />
 			
 			<!--- Description --->
-			<cf_HibachiTab property="productDescription" />
+			<cf_HibachiEntityDetailItem property="productDescription" />
 			
 			<!--- Relating --->
-			<cf_HibachiTab property="listingPages" />
-			<cf_HibachiTab property="categories" />
-			<cf_HibachiTab property="relatedProducts" />
+			<cf_HibachiEntityDetailItem property="listingPages" />
+			<cf_HibachiEntityDetailItem property="categories" />
+			<cf_HibachiEntityDetailItem property="relatedProducts" />
 			
 			<!--- Reference --->
-			<cf_HibachiTab property="productReviews" />
-			<cf_HibachiTab property="vendors" />
+			<cf_HibachiEntityDetailItem property="productReviews" />
+			<cf_HibachiEntityDetailItem property="vendors" />
 			
 			<!--- Settings --->
-			<cf_HibachiTab view="admin:entity/producttabs/productsettings" />
-			<cf_HibachiTab view="admin:entity/producttabs/skusettings" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/productsettings" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/skusettings" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.product.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.product#" attributeSet="#attributeSet#" />
+				<cf_HibachiEntityDetailItem object="#rc.product#" attributeSet="#attributeSet#" />
 			</cfloop>
 			
 			<!--- Comments --->
 			<cf_SlatwallAdminTabComments object="#rc.product#" />
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 

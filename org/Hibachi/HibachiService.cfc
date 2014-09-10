@@ -1,4 +1,4 @@
-<cfcomponent accessors="true" extends="HibachiObject">
+<cfcomponent accessors="true" output="false" extends="HibachiObject">
 	
 	<!--- Import all of the Hibachi services and DAO's --->
 	<cfproperty name="hibachiDAO" type="any">
@@ -805,7 +805,7 @@
 			getHibachiDAO().updateRecordSortOrder(argumentcollection=arguments);
 		}
 		
-		 // @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
+		// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 			return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, "._") );
 		}

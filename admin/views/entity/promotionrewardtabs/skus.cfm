@@ -52,11 +52,11 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<div class="span6">
+	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.promotionreward.skus')#</h5>
 		<cf_HibachiPropertyDisplay object="#rc.promotionreward#" property="skus" edit="#rc.edit#" displayType="plain" />
 	</div>
-	<div class="span6">
+	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.promotionreward.excludedskus')#</h5>
 		<cf_HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedSkus" edit="#rc.edit#" displayType="plain" />
 	</div>

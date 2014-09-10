@@ -67,7 +67,7 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createattribute" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailattributeset&attributesetid=#rc.attributeset.getAttributeSetID()#" modal=true />
+	<cf_HibachiActionCaller action="admin:entity.createattribute" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailattributeset&attributesetid=#rc.attributeset.getAttributeSetID()#" modal=true />
 	
 </cfoutput>
 

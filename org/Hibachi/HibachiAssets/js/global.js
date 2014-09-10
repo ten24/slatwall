@@ -26,9 +26,6 @@ jQuery(document).ready(function() {
 	
 	initUIElements( 'body' );
 
-	// Looks for a tab to show
-	$(window).hashchange();
-	
 	// Focus on the first tab index
 	if(jQuery('.firstfocus').length) {
 		jQuery('.firstfocus').focus();	
@@ -259,19 +256,9 @@ function setupEventHandlers() {
 		jQuery('#global-search').keyup();
 	});
 	
-	// Bind Hash Change Event
-	jQuery(window).hashchange( function(e){
-		jQuery('a[href=' + location.hash + ']').tab('show');
-	});
-	
 	// Hints
 	jQuery('body').on('click', '.hint', function(e){
 		e.preventDefault();
-	});
-	
-	// Tab Selecting
-	jQuery('body').on('shown', 'a[data-toggle="tab"]', function(e){
-		window.location.hash = jQuery(this).attr('href');
 	});
 	
 	// Empty Value
@@ -291,13 +278,13 @@ function setupEventHandlers() {
 	// Alerts
 	jQuery('body').on('click', '.alert-confirm', function(e){
 		e.preventDefault();
-		jQuery('#adminConfirm > .modal-body').html( jQuery(this).data('confirm') );
+		jQuery('#adminConfirm .modal-body').html( jQuery(this).data('confirm') );
 		jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
 		jQuery('#adminConfirm').modal();
 	});
 	jQuery('body').on('click', '.alert-disabled', function(e){
 		e.preventDefault();
-		jQuery('#adminDisabled > .modal-body').html( jQuery(this).data('disabled') );
+		jQuery('#adminDisabled .modal-body').html( jQuery(this).data('disabled') );
 		jQuery('#adminDisabled').modal();
 	});
 	
@@ -316,12 +303,14 @@ function setupEventHandlers() {
 
 			initUIElements('#adminModal');
 			
+			/*
 			jQuery('#adminModal').css({
 				'width': 'auto',
 				'margin-left': function () {
 		            return -(jQuery('#adminModal').width() / 2);
 		        }
 			});
+			*/
 		});
 		
 	});
@@ -332,7 +321,9 @@ function setupEventHandlers() {
 		
 		jQuery('#adminModal').load( modalLink, function(){
 
-			initUIElements('#adminModal');			
+			initUIElements('#adminModal');
+			
+			/*
 			angularCompileModal();
 			
 			// make width 90% of screen, 80% height
@@ -356,7 +347,8 @@ function setupEventHandlers() {
 				'max-height': function(){
 					return(bodyHeight+'px');
 				}
-				})
+				});
+			*/
 		});	
 		
 	});
@@ -812,6 +804,30 @@ function setupEventHandlers() {
 		updateReport( jQuery(this).data('page') );
 	});
 	
+	
+	//Accordion Binding
+	jQuery('body').on('click','.j-closeall', function(e){
+		e.preventDefault();
+		jQuery('.panel-collapse.in').collapse('hide');
+	});
+	
+	jQuery('body').on('click','.j-openall', function(e){
+		e.preventDefault();
+		jQuery('.panel-collapse:not(".in")').collapse('show');
+	});
+	
+	//[TODO]: Change Up JS
+	jQuery('.panel-collapse.in').parent().find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+
+	jQuery('body').on('shown.bs.collapse', '.j-panel', function(e){
+		e.preventDefault();
+		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+	});
+	
+	jQuery('body').on('hidden.bs.collapse', '.j-panel', function(e){
+		e.preventDefault();
+		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
+	});
 	
 }
 

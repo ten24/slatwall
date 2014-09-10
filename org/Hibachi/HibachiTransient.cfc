@@ -796,6 +796,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public array function getProperties() {
 		if( !getHibachiScope().hasApplicationValue("classPropertyCache_#getClassFullname()#") ) {
 			var metaData = getMetaData(this);
+			
 			var hasExtends = structKeyExists(metaData, "extends");
 			var metaProperties = [];
 			do {
@@ -807,11 +808,40 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					metaData = metaData.extends;
 				}
 			} while( hasExtends );
-
+			
+			var metaPropertiesArrayCount = arraylen(metaProperties);
+			for(var i=1; i < metaPropertiesArrayCount;i++){
+				metaProperties[i] = convertStructToLowerCase(metaProperties[i]);
+			}
 			setApplicationValue("classPropertyCache_#getClassFullname()#", metaProperties);
 		}
 
 		return getApplicationValue("classPropertyCache_#getClassFullname()#");
+	}
+	
+	private struct function convertStructToLowerCase(struct st){
+		var aKeys = structKeyArray(st);
+        var stN = structNew();
+        var i= 0;
+        var ai= 0;
+        for(i in aKeys){
+        	 if (isStruct(st[i])){
+        		stN['#lCase(i)#'] = convertStructToLower(st[i]);
+        	}else if (isArray(st[i])){
+        		for(var ai = 1; ai < arraylen(st[i]); ai++){
+        			if (isStruct(st[i][ai])){
+        				st[i][ai] = convertStructToLower(st[i][ai]);
+        			}else{
+        				st[i][ai] = st[i][ai];
+        			}
+        		}
+                stN['#lcase(i)#'] = st[i];
+        	}else{
+        		stN['#lcase(i)#'] = st[i];
+        	}
+        }
+       
+        return stn;
 	}
 
 	public struct function getPropertiesStruct() {

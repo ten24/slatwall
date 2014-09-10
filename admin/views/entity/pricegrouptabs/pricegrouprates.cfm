@@ -56,5 +56,5 @@ Notes:
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="appliesTo" />
 </cf_HibachiListingDisplay>
 
-<cf_HibachiActionCaller action="admin:entity.createpricegrouprate" class="btn" icon="plus" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
+<cf_HibachiActionCaller action="admin:entity.createpricegrouprate" class="btn btn-default" icon="plus" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
 	

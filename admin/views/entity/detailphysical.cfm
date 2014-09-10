@@ -56,26 +56,21 @@ Notes:
 			<cf_HibachiProcessCaller action="admin:entity.processphysical" entity="#rc.physical#" processContext="commit" type="list" />
 		</cf_HibachiEntityActionBar>
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.physical#" property="physicalStatusType" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.physical#">
-			<cf_HibachiTab property="productTypes" />
-			<cf_HibachiTab property="brands" />
-			<cf_HibachiTab property="products" />
-			<cf_HibachiTab property="skus" />
-			<cf_HibachiTab property="locations" />
-			<cf_HibachiTab property="physicalcounts" />
+		<cf_HibachiEntityDetailGroup object="#rc.physical#">
+			<cf_HibachiEntityDetailItem view="admin:entity/physicaltabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem property="productTypes" />
+			<cf_HibachiEntityDetailItem property="brands" />
+			<cf_HibachiEntityDetailItem property="products" />
+			<cf_HibachiEntityDetailItem property="skus" />
+			<cf_HibachiEntityDetailItem property="locations" />
+			<cf_HibachiEntityDetailItem property="physicalcounts" />
 			<cfif rc.physical.getPhysicalStatusType().getSystemCode() eq "pstClosed">
-				<cf_HibachiTab property="stockadjustments" />
+				<cf_HibachiEntityDetailItem property="stockadjustments" />
 			<cfelse>
-				<cf_HibachiTab view="admin:entity/physicaltabs/discrepancies" />
+				<cf_HibachiEntityDetailItem view="admin:entity/physicaltabs/discrepancies" />
 			</cfif>
 			<cf_SlatwallAdminTabComments object="#rc.physical#" />
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

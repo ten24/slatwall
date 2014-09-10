@@ -52,22 +52,13 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateFile" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
 
-		<cf_HibachiTabGroup object="#rc.emailTemplate#">
-			<cf_HibachiTab view="admin:entity/emailtemplatetabs/htmlbody">
-			<cf_HibachiTab view="admin:entity/emailtemplatetabs/textbody">
-			<cf_HibachiTab view="admin:entity/emailtemplatetabs/emailsettings">
-		</cf_HibachiTabGroup>
+		<cf_HibachiEntityDetailGroup object="#rc.emailTemplate#">
+			<cf_HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/htmlbody">
+			<cf_HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/textbody">
+			<cf_HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/emailsettings">
+		</cf_HibachiEntityDetailGroup>
 
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

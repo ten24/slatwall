@@ -60,6 +60,6 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="currentFlag" />
 	</cf_HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createpromotionperiod" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true"  />
+	<cf_HibachiActionCaller action="admin:entity.createpromotionperiod" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true"  />
 </cfoutput>
 

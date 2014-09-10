@@ -71,8 +71,6 @@ Notes:
 					<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="logattendance" type="list" modal="true" />
 				</cfif>
 			</cfif>
-			
-			
 		</cf_HibachiEntityActionBar>
 		
 		<cfif skuHasEventConflict>
@@ -81,69 +79,41 @@ Notes:
 			</div>
 		</cfif>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="#rc.edit#">
-				<cfif rc.product.getBaseProductType() EQ "event">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="publishedFlag" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="false">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="false">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="false">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="false">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="purchaseStartDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="purchaseEndDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventCapacity" edit="false">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="attendedquantity" edit="#rc.edit#">
-				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
-				<cfif rc.product.getBaseProductType() EQ "subscription">
-					<cf_HibachiPropertyDisplay object="#rc.sku#" property="renewalPrice" edit="#rc.edit#">
-				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.sku#">
-			<cfif rc.product.getBaseProductType() eq "contentAccess">
-				<cf_HibachiTab view="admin:entity/skutabs/subscription" />
+		<cf_HibachiEntityDetailGroup object="#rc.sku#">
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cfif rc.product.getBaseProductType() EQ "subscription">
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/subscription" />
 			<cfelseif rc.product.getBaseProductType() eq "event">
-				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
-				<cf_HibachiTab view="admin:entity/skutabs/locationconfigurations" />
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/inventory" />
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/locationconfigurations" />
 				<cfset conflictLabel = $.slatwall.rbKey('admin.entity.skutabs.eventconflicts') />
 				<cfif skuHasEventConflict>
 					<cfset conflictLabel = conflictLabel & '*'>
 				</cfif>
-				<cf_HibachiTab view="admin:entity/skutabs/eventconflicts" text="#conflictLabel#" />
-				<cf_HibachiTab view="admin:entity/skutabs/eventregistrations" />
-			<cfelseif rc.product.getBaseProductType() eq "subscription">
-				<cf_HibachiTab property="accessContents" />
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/eventconflicts" text="#conflictLabel#" />
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/eventregistrations" />
+			<cfelseif rc.product.getBaseProductType() EQ "contentaccess">
+				<cf_HibachiEntityDetailItem property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">
-				<cf_HibachiTab view="admin:entity/skutabs/inventory" />
+				<cf_HibachiEntityDetailItem view="admin:entity/skutabs/inventory" />
 				<cfif rc.sku.getBundleFlag() eq true>
-					<cf_HibachiTab view="admin:entity/skutabs/bundledskus" />
+					<cf_HibachiEntityDetailItem view="admin:entity/skutabs/bundledskus" />
 				<cfelse>	
-					<cf_HibachiTab view="admin:entity/skutabs/options" />
+					<cf_HibachiEntityDetailItem view="admin:entity/skutabs/options" />
 				</cfif>
 			</cfif>
-			<cfif (rc.sku.getBundleFlag() eq true) and (rc.product.getBaseProductType() neq "merchandise")>
-				<cf_HibachiTab view="admin:entity/skutabs/bundledskus" />
-			</cfif>
-			<cf_HibachiTab property="skuDescription" />
-			<cf_HibachiTab view="admin:entity/skutabs/saleshistory" />
-			<cf_HibachiTab view="admin:entity/skutabs/currencies" />
-			<cf_HibachiTab view="admin:entity/skutabs/alternateskucodes" />
-			<cf_HibachiTab view="admin:entity/skutabs/skusettings" />
+			<cf_HibachiEntityDetailItem property="skuDescription" />
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/saleshistory" />
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/currencies" />
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/alternateskucodes" />
+			<cf_HibachiEntityDetailItem view="admin:entity/skutabs/skusettings" />
+			<!---<cf_HibachiTab view="admin:entity/skutabs/pricegroups" />--->
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.sku.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.sku#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 
 	</cf_HibachiEntityDetailForm>
-	
 </cfoutput>
-

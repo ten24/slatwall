@@ -147,7 +147,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					var attributes = {
 						action=admin.detailAction,
 						queryString="#listPrepend(admin.detailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-xs",
 						icon="eye-open",
 						iconOnly="true",
 						modal=admin.detailModal
@@ -158,7 +158,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					var attributes = {
 						action=admin.editAction,
 						queryString="#listPrepend(admin.editQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-xs",
 						icon="pencil",
 						iconOnly="true",
 						modal=admin.editModal,
@@ -171,7 +171,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					var attributes = {
 						action=admin.deleteAction,
 						queryString="#listPrepend(admin.deleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-xs",
 						icon="trash",
 						iconOnly="true",
 						disabled=deleteErrors.hasErrors(),
@@ -186,7 +186,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						entity=processEntity,
 						processContext=admin.processContext,
 						queryString="#listPrepend(admin.processQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn hibachi-ajax-submit"
+						class="btn btn-default hibachi-ajax-submit"
 					};
 					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiProcessCaller", attributeCollection=attributes);
 				}
@@ -241,8 +241,52 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		}
 	}
 	
-	public function updateSortOrder(required struct rc) {
+	public void function updateSortOrder(required struct rc) {
 		getHibachiService().updateRecordSortOrder(argumentCollection=rc);
+	}
+	
+	public void function swCollectionDisplay(required struct rc) {
+		param name="rc.collectionID" type="string" default="";
+		param name="rc.propertyIdentifiers" type="string" default="";
+		
+		var collection = rc.$.slatwall.getEntity('Collection', rc.collectionID);
+		var smartList = rc.$.slatwall.getSmartList( collection.getCollectionObject(), arguments.rc );
+		var piArray = ['skuCode', 'product.productName', 'price'];
+		
+		
+		var smartListPageRecords = smartList.getPageRecords();
+		
+		rc.ajaxResponse[ "recordsCount" ] = smartList.getRecordsCount();
+		rc.ajaxResponse[ "pageRecords" ] = [];
+		rc.ajaxResponse[ "pageRecordsCount" ] = arrayLen( smartListPageRecords );
+		rc.ajaxResponse[ "pageRecordsShow"] = smartList.getPageRecordsShow();
+		rc.ajaxResponse[ "pageRecordsStart" ] = smartList.getPageRecordsStart();
+		rc.ajaxResponse[ "pageRecordsEnd" ] = smartList.getPageRecordsEnd();
+		rc.ajaxResponse[ "currentPage" ] = smartList.getCurrentPage();
+		rc.ajaxResponse[ "totalPages" ] = smartList.getTotalPages();
+		rc.ajaxResponse[ "savedStateID" ] = smartList.getSavedStateID();
+		rc.ajaxResponse[ "propertyIdentifiers" ] = piArray;
+		
+		for(var i=1; i<=arrayLen(smartListPageRecords); i++) {
+			
+			var record = smartListPageRecords[i];
+			
+			// Create a record JSON container
+			var thisRecord = {};
+			
+			// Add the simple values from property identifiers
+			for(var p=1; p<=arrayLen(piArray); p++) {
+				var value = record.getValueByPropertyIdentifier( propertyIdentifier=piArray[p] );
+				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+					thisRecord[ piArray[p] ] = value & " ";
+				} else {
+					thisRecord[ piArray[p] ] = value;
+				}
+			}
+			
+			arrayAppend(rc.ajaxResponse[ "pageRecords" ], thisRecord);
+		}
+		
 	}
 	
 	// Called from Sku Inventory to assist in building hierarchical location inventory table  

@@ -27,7 +27,7 @@
 	--->
 	
 	<cfif attributes.icon neq "">
-		<cfset attributes.icon = '<i class="icon-#attributes.icon#"></i> ' />
+		<cfset attributes.icon = '<i class="glyphicon glyphicon-#attributes.icon#"></i> ' />
 	</cfif>
 	
 	<cfset actionItem = listLast(attributes.action, ".") />

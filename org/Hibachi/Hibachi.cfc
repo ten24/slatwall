@@ -49,9 +49,10 @@ component extends="FW1.framework" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
-		{ "$GET/api/:entityName/:entityID" = "/admin:api/get/entityName/:entityName/entityID/:entityID"},
-		{ "$GET/api/:entityName/" = "/admin:api/get/entityName/:entityName/"}
+		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"},
+		{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
 	];
 	
 	// Hibachi Setup
@@ -181,6 +182,14 @@ component extends="FW1.framework" {
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setPropperSession();
 			
+			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
+			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
+				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
+				if(!isNull(authTokenAccount)) {
+					getHibachiScope().getSession().setAccount( authTokenAccount );
+				}
+			}
+			
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
@@ -191,7 +200,7 @@ component extends="FW1.framework" {
 		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		
-		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
 		
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {
@@ -462,12 +471,38 @@ component extends="FW1.framework" {
 	public void function setupResponse() {
 		param name="request.context.ajaxRequest" default="false";
 		param name="request.context.ajaxResponse" default="#structNew()#";
+		param name="request.context.apiRequest" default="false";
+		param name="request.context.apiResponse.content" default="#structNew()#";
 		
 		endHibachiLifecycle();
-		
-		// Announce the applicatoinRequestStart event
+		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
+		
+		// Check for an API Response
+		if(request.context.apiRequest) {
+				
+			param name="request.context.headers.contentType" default="application/json"; 
+    		//need response header for api
+    		var context = getPageContext();
+    		context.getOut().clearBuffer();
+    		var response = context.getResponse();
+    		for(header in request.context.headers){
+    			response.setHeader(header,request.context.headers[header]);
+    		}
+    		
+    		var responseString = '';
+    		//leaving a note here in case we ever wish to support XML for api responses
+    		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/json'){
+    			responseString = serializeJSON(request.context.apiResponse.content);
+    		}
+    		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
+    			//response String to xml placeholder
+    		}
+    		
+			writeOutput( responseString );
+		}		
+		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			if(isStruct(request.context.ajaxResponse)){
 				if(structKeyExists(request.context, "messages")) {
@@ -659,6 +694,14 @@ component extends="FW1.framework" {
 		var appKey = hash(filePath);
 		
 		return appKey;
+	}
+	
+	public void function onError(any exception, string event){
+		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
+		var context = getPageContext();
+		var response = context.getResponse();
+		response.setStatus(500);
+		super.onError(arguments.exception,arguments.event);
 	}
 	
 	// THESE METHODS ARE INTENTIONALLY LEFT BLANK
