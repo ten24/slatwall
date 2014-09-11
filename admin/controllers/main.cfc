@@ -269,5 +269,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		getFW().redirect(action="admin:main.default", preserve="messages");
 	}
+
 }
 

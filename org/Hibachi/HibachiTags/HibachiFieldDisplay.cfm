@@ -34,9 +34,9 @@
 		<cfcase value="dl">
 			<cfif attributes.edit>
 				<cfoutput>
-					<div class="control-group">
-						<label for="#attributes.fieldName#" class="control-label">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
-						<div class="controls">
+					<div class="form-group">
+						<label for="#attributes.fieldName#" class="control-label col-md-4">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
+						<div class="col-sm-8">
 							<cf_HibachiFormField attributecollection="#attributes#" />
 							<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 						</div>

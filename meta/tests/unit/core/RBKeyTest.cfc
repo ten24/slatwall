@@ -71,12 +71,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 			
 			// Check for the entity property keys
+			var exampleEntity = request.slatwallScope.newEntity( thisEntityName );
 			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if(!structKeyExists(property, "persistent") || property.persistent) {
-					var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#.#property.name#');
-					if(right(keyValue,8) == '_missing') {
-						addToDebug(keyValue);
+					//var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#.#property.name#');
+					var keyValue = exampleEntity.getPropertyTitle( property.name );
+					if(right(keyValue,8) == '_missing' && thisEntityName != 'setting' && property.name != 'settingValue') {
+						addToDebug( "#thisEntityName# | #property.name# | #keyValue#" );
 						allFound = false;
 					}	
 				}
@@ -87,5 +89,4 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 }
-
 

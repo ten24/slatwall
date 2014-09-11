@@ -1,0 +1,61 @@
+<div class="col-xs-12 s-add-filter"  ng-class="{collapse:filterItem.$$isClosed}">
+	<div class="row">
+	  <h4> Define Filter: <!-- <span ng-bind="filterPropertiesList.entityName"></span> -->
+		  <span swRelationshipBreadCrumb
+		  		
+		  ></span>
+		  <i class="fa fa-times" ng-click="cancelFilterItem()" ></i>
+	  </h4>
+	  <div class="col-xs-12">
+	
+	    <div class="row">
+	      <div class="col-xs-2">
+	        <div class="form-group form-group-sm">
+	          <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList.entityName"></span>:</label>
+	          <div class="col-sm-12 s-no-paddings">
+	            <select ng-model="selectedFilterProperty" 
+	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
+	            		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
+	            					group by filterProperty.fieldtype 
+	            					for filterProperty in filterPropertiesList.data 
+	            					track by filterProperty.propertyIdentifier
+	            					| orderBy:filterProperty.name" 
+	            		class="form-control input-sm">
+	              <option value="">Select From {{filterPropertiesList.entityName}}:</option>
+	            </select>
+	          </div>
+	          <div class="clearfix"></div>
+	        </div>
+	      </div>
+	      
+	      <div class="col-xs-6 s-criteria" ng-if="selectedFilterProperty.ormType !== 'undefined'">
+	        <h4>Criteria</h4>
+	       	<span	sw-criteria
+	       			data-filter-item="filterItem"
+	       			data-selected-filter-property="selectedFilterProperty"
+	       	></span>
+	        <!--- //Filter Criteria End --->
+	
+	      </div>
+	      <div class="col-xs-3">
+	        <div class="s-button-select-group">
+	          <button 	type="button" 
+	         			ng-click="saveFilter(selectedFilterProperty,filterItem,addFilterItem)"
+	          			class="btn btn-sm s-btn-ten24" >
+	          		Save & Add Another Button
+	          </button>
+	          <div class="s-or-box">-OR-</div>
+	          <button 	type="button" 
+	          			ng-click="saveFilter(selectedFilterProperty,filterItem,cancelFilterItem)" 
+	          			class="btn btn-sm s-btn-ten24">
+	          		Save & Finish
+	          </button>
+	        </div>
+	        <div class="form-group" ng-show="filterGroupItem.length > 1" >
+	          <div class="s-checkbox"><input type="checkbox" ng-model="filterItem.$$prepareForFilterGroup" id="j-checkbox21" ><label ng-click="togglePrepareForFilterGroup()" for="j-checkbox21"> Add To New Group</label></div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</div>

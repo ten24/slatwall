@@ -55,29 +55,15 @@ Notes:
 			<cf_HibachiProcessCaller entity="#rc.stockAdjustment#" action="admin:entity.processStockAdjustment" processContext="processAdjustment" queryString="redirectAction=admin:entity.detailStockAdjustment" type="list" />
 			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</cf_HibachiEntityActionBar>
-					
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cfif rc.edit>
-					<input type="hidden" name="stockAdjustmentType.typeID" value="#rc.stockadjustment.getStockAdjustmentType().getTypeID()#" />
-				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentType" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentStatusType" edit="false">
-				<cfif listFindNoCase("satLocationTransfer,satManualOut", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-					<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="fromLocation" edit="#rc.stockAdjustment.isNew()#">
-				</cfif>
-				<cfif listFindNoCase("satLocationTransfer,satManualIn", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-					<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="toLocation" edit="#rc.stockAdjustment.isNew()#">
-				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.stockAdjustment#" allowComments="true">
-			<cf_HibachiTab property="stockadjustmentitems" />
-			<cf_HibachiTab property="stockreceivers" />
+
+
+		<cf_HibachiEntityDetailGroup object="#rc.stockAdjustment#" allowComments="true">
+			<cf_HibachiEntityDetailItem view="admin:entity/stockadjustmenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem property="stockadjustmentitems" />
+			<cf_HibachiEntityDetailItem property="stockreceivers" />
+
 			<cf_SlatwallAdminTabComments object="#rc.stockAdjustment#" />
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
-

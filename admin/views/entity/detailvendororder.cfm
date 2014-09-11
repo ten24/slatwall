@@ -55,22 +55,23 @@ Notes:
 			<cf_HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="receive" type="list" />
 			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</cf_HibachiEntityActionBar>
-		
+
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cfif rc.vendorOrder.isNew()>
 					<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="currencyCode" edit="true">
+					<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendor" autocompletePropertyIdentifiers="vendorName,vendorWebsite,accountNumber,primaryEmailAddress.emailAddress" fieldtype="textautocomplete" edit="#rc.vendorOrder.isNew()#">
+					<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendorOrderNumber" edit="#rc.vendorOrder.isNew()#">
+					<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="estimatedReceivalDateTime" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendor" autocompletePropertyIdentifiers="vendorName,vendorWebsite,accountNumber,primaryEmailAddress.emailAddress" fieldtype="textautocomplete" edit="#rc.vendorOrder.isNew()#">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendorOrderNumber" edit="#rc.vendorOrder.isNew()#">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="estimatedReceivalDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.vendorOrder#">
-			<cf_HibachiTab property="vendorOrderItems" />
-			<cf_HibachiTab view="admin:entity/vendorordertabs/stockreceivers" />
+
+		<cf_HibachiEntityDetailGroup object="#rc.vendorOrder#">
+			<cf_HibachiEntityDetailItem view="admin:entity/vendorordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem property="vendorOrderItems" />
+			<cf_HibachiEntityDetailItem view="admin:entity/vendorordertabs/stockreceivers" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.vendorOrder.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
@@ -79,7 +80,7 @@ Notes:
 			
 			<!--- Comments --->
 			<cf_SlatwallAdminTabComments object="#rc.vendorOrder#" />
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

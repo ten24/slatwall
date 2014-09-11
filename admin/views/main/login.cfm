@@ -85,13 +85,13 @@ Notes:
 					<cfif structKeyExists(rc, "sRedirectURL")>
 						<input type="hidden" name="sRedirectURL" value="#rc.sRedirectURL#" />
 					</cfif>
-					<fieldset class="dl-horizontal">
-						<fieldset class="dl-horizontal">
-							<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
-							<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" />
-						</fieldset>
-						<button type="submit" class="btn btn-primary pull-right">#$.slatwall.rbKey('define.login')#</button>
-					</fieldset>
+					
+				
+					<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
+					<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" />
+					
+					<button type="submit" class="btn btn-primary pull-right">#$.slatwall.rbKey('define.login')#</button>
+					
 				</form>
 				<hr />
 				<h5>#$.slatwall.rbKey('admin.main.forgotPassword')#</h5>

@@ -35,18 +35,23 @@
 <cfelse>
 	<cfif not structKeyExists(request.context, "modal") or not request.context.modal>
 		<cfoutput>
-			<div class="actionnav well well-small">
-				<div class="row-fluid">
-					<div class="span4">
+			
+			<div class="row s-body-nav">
+			    <nav class="navbar navbar-default" role="navigation">
+			      <div class="col-md-4">
+					<!---<div class="actionnav well well-sm">
+						<div class="row">
+							<div class="col-md-4">--->
 						<!--- Page Title --->
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h1>#attributes.pageTitle#</h1>
+						<h1 class="actionbar-title">#attributes.pageTitle#</h1>
 					</div>
-					<div class="span8">
+					<div class="col-md-8">
 						<div class="btn-toolbar">
 							
+							<div class="btn-group btn-group-sm">
 							<!--- ================ Listing =================== --->
 							<cfif attributes.type eq "listing" >
 								<cfparam name="request.context.keywords" default="" />
@@ -92,13 +97,13 @@
 								
 								<!--- Detail: Back Button --->
 								<div class="btn-group">
-									<cf_HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn" icon="arrow-left">
+									<cf_HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-sm" icon="arrow-left">
 								</div>
 								
 								<!--- Detail: Actions --->
 								<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
 									<div class="btn-group">
-										<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+										<button class="btn dropdown-toggle btn-sm" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
 											<cf_HibachiDividerHider>
 												#thistag.generatedcontent#
@@ -169,7 +174,7 @@
 										<!--- Delete --->
 										<cfif not attributes.object.isNew() and attributes.showdelete>
 											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
-											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-inverse" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-inverse btn-sm" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
 										</cfif>
 										
 										<!--- Cancel --->
@@ -177,20 +182,20 @@
 											<!--- Setup default cancel query string --->
 											<cfset attributes.cancelQueryString = "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" />			
 										</cfif>
-										<cf_HibachiActionCaller action="#attributes.cancelAction#" querystring="#attributes.cancelQueryString#" text="#attributes.hibachiScope.rbKey('define.cancel')#" class="btn btn-inverse" icon="remove icon-white">
+										<cf_HibachiActionCaller action="#attributes.cancelAction#" querystring="#attributes.cancelQueryString#" text="#attributes.hibachiScope.rbKey('define.cancel')#" class="btn btn-inverse btn-sm" icon="remove icon-white">
 										
 										<!--- Save --->
-										<cf_HibachiActionCaller action="#request.context.entityActionDetails.saveAction#" text="#attributes.hibachiScope.rbKey('define.save')#" class="btn btn-success" type="button" submit="true" icon="ok icon-white">
+										<cf_HibachiActionCaller action="#request.context.entityActionDetails.saveAction#" text="#attributes.hibachiScope.rbKey('define.save')#" class="btn btn-success btn-sm" type="button" submit="true" icon="ok icon-white">
 									<cfelse>
 										<!--- Delete --->
 										<cfif attributes.showdelete>
 											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
-											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-inverse" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn btn-primary btn-sm" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
 										</cfif>
 										
 										<!--- Edit --->
 										<cfif attributes.showedit>
-											<cf_HibachiActionCaller action="#request.context.entityActionDetails.editAction#" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" text="#attributes.hibachiScope.rbKey('define.edit')#" class="btn btn-primary" icon="pencil icon-white" submit="true" disabled="#attributes.object.isNotEditable()#">
+											<cf_HibachiActionCaller action="#request.context.entityActionDetails.editAction#" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" text="#attributes.hibachiScope.rbKey('define.edit')#" class="btn btn-primary btn-sm" icon="pencil icon-white" submit="true" disabled="#attributes.object.isNotEditable()#">
 										</cfif>
 									</cfif>
 								</div>
@@ -209,12 +214,13 @@
 									<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
 								</div>
 							</cfif>
+							</div>
 							
 							<!--- Clear the generated content so that it isn't rendered --->
 							<cfset thistag.generatedcontent = "" />
 						</div>
 					</div>
-				</div>
+				</nav>
 			</div>
 		</cfoutput>
 		

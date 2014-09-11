@@ -60,7 +60,7 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiPropertyList divClass="span12">
+	<cf_HibachiPropertyList divClass="col-md-12">
 		<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentVersion')#" value="#rc.currentVersion#" />
 		<cfif rc.currentBranch eq 'master'>
 			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.stable')#" />

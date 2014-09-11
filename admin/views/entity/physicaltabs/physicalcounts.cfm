@@ -58,6 +58,6 @@ Notes:
 	</cf_HibachiListingDisplay>
 	
 	<cfif physicalStatus neq "pstClosed">
-		<cf_HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" class="btn" icon="plus" modal="true" />
+		<cf_HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" class="btn btn-default" icon="plus" modal="true" />
 	</cfif>
 </cfoutput>

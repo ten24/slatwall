@@ -40,7 +40,7 @@
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" /> 		<!--- hint: This is the single name property that shows once an option is selected --->
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
 	
-	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is uesd to pass specific additional fieldAttributes when in edit mode --->
+	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
 	
 	<!---
 		attributes.fieldType have the following options:

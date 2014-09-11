@@ -64,22 +64,12 @@ Notes:
 			<input type="hidden" name="priceGroup.priceGroupID" value="#rc.priceGroup.getPricegroupID()#" />
 		</cfif>
 		
-		<cf_HibachiPropertyRow>	
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.priceGroupRate#" property="amountType" fieldType="select" edit="#rc.edit#" />
-				<cf_HibachiPropertyDisplay object="#rc.priceGroupRate#" property="amount" edit="#rc.edit#" />
-				<cf_HibachiDisplayToggle selector="select[name=amountType]" showValues="percentageOff" loadVisable="#rc.priceGroupRate.getNewFlag() or rc.priceGroupRate.getValueByPropertyIdentifier('amountType') eq 'percentageOff'#">
-					<cf_HibachiPropertyDisplay object="#rc.priceGroupRate#" property="roundingRule" edit="#rc.edit#" displayVisible="amountType:percentageOff" />
-				</cf_HibachiDisplayToggle>
-				<!---<cf_HibachiPropertyDisplay object="#rc.pricegrouprate#" property="globalFlag" edit="#rc.edit#" />--->
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.pricegrouprate#">
-			<cf_HibachiTab view="admin:entity/pricegroupratetabs/producttypes" />
-			<cf_HibachiTab view="admin:entity/pricegroupratetabs/products" />
-			<cf_HibachiTab view="admin:entity/pricegroupratetabs/skus" />
-		</cf_HibachiTabGroup>
+		<cf_HibachiEntityDetailGroup object="#rc.pricegrouprate#">
+			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/producttypes" />
+			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/products" />
+			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/skus" />
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

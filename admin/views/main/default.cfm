@@ -52,9 +52,8 @@ Notes:
 <cfoutput>
 	<cf_HibachiMessageDisplay />
 	
-	<div class="row-fluid">
-		<div class="span6">
-
+	<div class="row">
+		<div class="col-md-6">
 			<cf_HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" smartList="#rc.orderSmartList#" 
 					recordDetailAction="admin:entity.detailorder">
 				<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
@@ -70,9 +69,8 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="reviewerName" />
 				<cf_HibachiListingColumn propertyIdentifier="reviewTitle" />
 			</cf_HibachiListingDisplay>
-
 		</div>
-		<div class="span6">
+		<div class="col-md-6">
 			<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
 			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
 		</div>
