@@ -47,6 +47,7 @@ $log){
         		scope.currentPage = number;
         	};
         	
+        	
         	var setPageRecordsInfo = function(recordsCount,pageStart,pageEnd,totalPages){
     			paginationService.setRecordsCount(recordsCount);
     			paginationService.setPageStart(pageStart);
