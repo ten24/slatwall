@@ -276,7 +276,7 @@
     <div 	class="row" 
     		
     >
-      <div class="col-md-12" span ng-show="pageShow !== 'Auto'">>
+      <div class="col-md-12" span ng-show="pageShow !== 'Auto'">
         <div class="dataTables_info" id="example3_info" >Showing <b><span ng-bind="pageStart()"><!--- record start ---></span> to <span ng-bind="pageEnd()"><!---records end ---><span></b> of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries</div>
       </div>
     </div>
