@@ -43,12 +43,7 @@ $log){
 			};
 			
 			scope.removeFilterItem = function(){
-				if(filterGroupsController.getFilterGroupItem().length === 1){
-					filterGroupsController.getFilterGroup().removeFilterGroupItem();
-				}else{
-					filterGroupsController.removeFilterItem(scope.filterItemIndex,filterGroupsController.getFilterGroupItem());
-				}
-				
+				filterGroupsController.removeFilterItem(scope.filterItemIndex,filterGroupsController.getFilterGroupItem());
 			};
 			
 			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
