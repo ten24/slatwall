@@ -587,6 +587,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			predicate = filter.value;
 		}else{
 			var paramID = getParamID();
+			if(!structKeyExists(filter,"value")){
+				filter.value = "";
+			}
 			addHQLParam(paramID,arguments.filter.value);
 			predicate = ":#paramID#";
 		}
@@ -668,10 +671,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
 					HQL &= getOrderByHQL(collectionConfig.orderBy);
 				}
-				
 			}
-			
-			
 		}
 		return HQL;
 	}

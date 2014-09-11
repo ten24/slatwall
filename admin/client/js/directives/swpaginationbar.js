@@ -84,7 +84,7 @@ $log){
         	};
         	
         	scope.showNextJump = function(){
-        		if(angular.isDefined(scope.currentPage) && scope.currentPage > 3 && paginationService.getTotalPages() - scope.currentPage >= 3){
+        		if(paginationService.getTotalPages() - scope.currentPage > 3){
         			return true;
         		}else{
         			return false;
@@ -107,6 +107,12 @@ $log){
         				return true;
         			}
         		}*/
+        		
+        		if(scope.currentPage >=scope.totalPages() - 3){
+        			if(number > scope.totalPages() - 6){
+        				return true;
+        			}
+        		}
         		
         		if(scope.currentPage <= 3){
         			if(number < 6){

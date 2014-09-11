@@ -126,7 +126,6 @@ $log
 			
 	};
 	
-	//public functions
 	$scope.saveCollection = function(){
 		$log.debug('saving Collection');
 		
@@ -136,8 +135,7 @@ $log
 		var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
 		$log.debug(collectionConfigString);
 		collection.collectionConfig = collectionConfigString;
-		var collectionForm = $scope.collectionFormScope;
-		if(isFormValid(collectionForm)){
+		if(isFormValid($scope.collectionForm)){
 			var data = angular.copy(collection);
 			//has to be removed in order to save transient correctly
 			delete data.pageRecords;
@@ -154,18 +152,47 @@ $log
 				//$scope.collectionConfig = $scope.collectionConfigCopy;
 			}, function(reason){
 				//revert to original
-				console.log($scope.collectionForm);
-				console.log(reason);
 				angular.forEach(reason.errors,function(value,key){
 					$scope.collectionForm[key].$invalid = true;
 					$scope.errorMessage[key] = value[0];
 				});
-				$scope.collection = angular.copy($scope.collectionInitial);
+				//$scope.collection = angular.copy($scope.collectionInitial);
 				var messages = reason.MESSAGES;
 				var alerts = alertService.formatMessagesToAlerts(messages);
 				alertService.addAlerts(alerts);
 			});
 		}
+	};
+	
+	var isFormValid = function (angularForm){
+		$log.debug('validateForm');
+		var formValid = true;
+	     for (var field in angularForm) {
+	         // look at each form input with a name attribute set
+	         // checking if it is pristine and not a '$' special field
+	         if (field[0] != '$') {
+			 	// need to use formValid variable instead of formController.$valid because checkbox dropdown is not an input
+				// and somehow formController didn't invalid if checkbox dropdown is invalid
+			 	if (angularForm[field].$invalid) {
+					formValid = false;
+					for(var error in angularForm[field].$error){
+						if(error == 'required'){
+							$scope.errorMessage[field] = 'This field is required';
+						}
+					}
+					
+				}
+				if (angularForm[field].$pristine) {
+					if (angular.isUndefined(angularForm[field].$viewValue)) { 
+						angularForm[field].$setViewValue("");
+					}
+					else {
+						angularForm[field].$setViewValue(angularForm[field].$viewValue);
+					}
+				}
+	         }
+	     }
+		 return formValid;   
 	};
 	
 	$scope.copyExistingCollection = function(){
@@ -214,28 +241,5 @@ $log
 	
 	
 	$scope.filterCount = collectionService.getFilterCount;
-	//private Function
-	var isFormValid = function (angularForm){
-		var formValid = true;
-	     for (field in angularForm) {
-	         // look at each form input with a name attribute set
-	         // checking if it is pristine and not a '$' special field
-	         if (field[0] != '$') {
-			 	// need to use formValid variable instead of formController.$valid because checkbox dropdown is not an input
-				// and somehow formController didn't invalid if checkbox dropdown is invalid
-			 	if (angularForm[field].$invalid) {
-					formValid = false;
-				}
-				if (angularForm[field].$pristine) {
-					if (angular.isUndefined(angularForm[field].$viewValue)) { 
-						angularForm[field].$setViewValue("");
-					}
-					else {
-						angularForm[field].$setViewValue(angularForm[field].$viewValue);
-					}
-				}
-	         }
-	     }
-		 return formValid;   
-	};
+	
 }]);
