@@ -1,6 +1,6 @@
 <div class="s-create-window">
   <header>
-    <div class="navbar navbar-s-navbar-ten24 navbar-fixed-top s-absolute-top-nav">
+    <div class="navbar navbar-s-navbar-ten24 navbar-fixed-top">
       <span class="navbar-brand" href="#">Create Bundle</span>
       <ul class="nav navbar-nav pull-right">
         <li class="active"><a href="#"><i class="fa fa-times"></i></a></li>
@@ -851,7 +851,7 @@
   </section>
 
   <footer>
-    <div class="navbar navbar-s-navbar-ten24 navbar-fixed-bottom s-absolute-bottom-nav">
+    <div class="navbar navbar-s-navbar-ten24 navbar-fixed-bottom">
       <ul class="nav navbar-nav pull-right">
         <li class="active"><a href="#" style="padding: 9px 12px;font-size: 16px;">Save & New</a></li>
         <li class="active"><a href="#" style="padding: 9px 12px;font-size: 16px;">Save & Finish</a></li>
@@ -967,19 +967,11 @@
 </script>
 
 <script charset="utf-8">
-  //Show and hide the create bundle window
   $('.j-test-button').click(function(){
-    var contentHeight = $('.s-create-window').height();
-    $('.s-create-window').css('top',contentHeight * -1 - 50);
-    $('.s-create-window').show().animate({top:0},500,function () {
-      $('.s-create-window .navbar-fixed-top').removeClass('s-absolute-top-nav');
-      $('.s-create-window .navbar-fixed-bottom').fadeIn();
-    });
+    $('.s-create-window').show();
   });
   $('.navbar-nav .fa-times').click(function(){
-    $('.s-create-window').fadeOut();
-    $('.s-create-window .navbar-fixed-bottom').hide();
-    $('.s-create-window .navbar-fixed-top').addClass('s-absolute-top-nav');
+    $('.s-create-window').hide();
   });
 </script>
 
