@@ -27,6 +27,12 @@ function($log){
 		getCollectionConfigJson: function(){
 			return _collection.collectionConfig;
 		},
+		getBaseEntityName: function(){
+			return this.getCollectionConfig().baseEntityName;
+		},
+		getBaseEntityAlias: function(){
+			return this.getCollectionConfig().baseEntityAlias;
+		},
 		getCollectionConfig: function(){
 			if(!angular.isObject(_collectionConfig)){
 				_collectionConfig = angular.fromJson(_collection.collectionConfig);
@@ -55,11 +61,14 @@ function($log){
 			return _collection.collectionConfig.columns;
 		},
 		
-		getFilterPropertiesList: function(){
-			return _filterPropertiesList;
+		getFilterPropertiesList: function(key){
+			return _filterPropertiesList[key];
 		},
-		setFilterPropertiesList: function(filterPropertiesList){
-			_filterPropertiesList = filterPropertiesList;
+		setFilterPropertiesList: function(value,key){
+			if(_filterPropertiesList === null){
+				_filterPropertiesList = {};
+			}
+			_filterPropertiesList[key] = value;
 		},
 			
 		stringifyJSON: function(jsonObject){

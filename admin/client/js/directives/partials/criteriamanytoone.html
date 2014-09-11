@@ -1,0 +1,53 @@
+<h4>Options</h4>
+
+<!--- Filter Criteria Start --->
+<form action="index.html" method="post">
+  <div class="s-filter-group-item">
+
+    <div class="s-options-group">
+      <div class="radio" style="border-bottom: 3px dotted #DDD;padding-bottom: 15px;margin-bottom: 20px;">
+        <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" value="option1" checked>
+        <label for="radio1">
+            Use  {{selectedFilterProperty.displayPropertyIdentifier}} field:
+        </label>
+        <div class="col-sm-12 s-no-paddings s-account-field-select" style="padding-left:5px !important;">
+          <select ng-model="selectedFilterProperty" 
+          		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
+          		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
+          					group by filterProperty.fieldtype 
+          					for filterProperty in filterPropertiesList[selectedFilterProperty.cfc].data 
+          					track by filterProperty.propertyIdentifier
+          					| orderBy:filterProperty.name" 
+          		class="form-control input-sm">
+            <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>
+          </select>
+          <!-- <select class="form-control input-sm">
+            <option disabled="disabled" selected="selected"> Select From Account </option>
+            <option>First Name</option>
+            <option>Last Name</option>
+            <option>Company</option>
+            <option disabled="disabled">----</option>
+            <option>Primary E-Mail Address</option>
+            <option disabled="disabled">----</option>
+            <option>Addresses</option>
+          </select>-->
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="radio">
+        <input type="radio" name="radio1" id="radio2" value="option2">
+        <label for="radio2">
+            Has {{selectedFilterProperty.displayPropertyIdentifier}}
+        </label>
+      </div>
+      <div class="radio">
+        <input type="radio" name="radio1" id="radio3" value="option3">
+        <label for="radio3">
+            Doesn't Have  {{selectedFilterProperty.displayPropertyIdentifier}}
+        </label>
+      </div>
+    </div>
+
+  </div>
+</form>
+<!--- //Filter Criteria End --->

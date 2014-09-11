@@ -7,6 +7,7 @@ angular.module('slatwalladmin')
 'partialsPath',
 '$log',
 'slatwallService',
+'collectionService',
 '$filter',
 function($http,
 $compile,
@@ -14,6 +15,7 @@ $templateCache,
 partialsPath,
 $log,
 slatwallService,
+collectionService,
 $filter){
 	//private functions
 	
@@ -663,6 +665,20 @@ $filter){
 					switch(scope.selectedFilterProperty.fieldtype){
 						case "many-to-one":
 							scope.manyToOneOptions = getManyToOneOptions();
+							$log.debug('many-to-one');
+							$log.debug(scope.selectedFilterProperty);
+							$log.debug(scope.filterPropertiesList);
+							var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+							filterPropertiesPromise.then(function(value){
+								scope.filterPropertiesList[scope.selectedFilterProperty.cfc] = value;
+								collectionService.formatFilterPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.cfc]);
+							}, function(reason){
+								
+							});
+							
+							break;
+						case "many-to-many":
+							scope.manyToManyOptions = getManyToManyOptions();
 							var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){
 								scope.collectionOptions = value.data;
@@ -672,14 +688,18 @@ $filter){
 								var alerts = alertService.formatMessagesToAlerts(messages);
 								alertService.addAlerts(alerts);
 							});
-							
-							
-							break;
-						case "many-to-many":
-							scope.manyToManyOptions = getManyToManyOptions();
 							break;
 						case "one-to-many":
 							scope.oneToManyOptions = getOneToManyOptions();
+							var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+							existingCollectionsPromise.then(function(value){
+								scope.collectionOptions = value.data;
+							},function(reason){
+								//display error message if getter fails
+								var messages = reason.MESSAGES;
+								var alerts = alertService.formatMessagesToAlerts(messages);
+								alertService.addAlerts(alerts);
+							});
 							break;
 					}
 				}
@@ -728,7 +748,8 @@ $filter){
 		restrict: 'A',
 		scope:{
 			filterItem:"=",
-	        selectedFilterProperty:"="
+	        selectedFilterProperty:"=",
+	        filterPropertiesList:"="
 		},
 		link: linker
 	};

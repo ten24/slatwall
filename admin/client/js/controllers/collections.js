@@ -91,15 +91,17 @@ $log
 			//check if we have any filter Groups
 			$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
 			
-			var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
-			filterPropertiesPromise.then(function(value){
-				collectionService.setFilterPropertiesList(value);
-				$scope.filterPropertiesList = collectionService.getFilterPropertiesList();
-				collectionService.formatFilterPropertiesList($scope.filterPropertiesList);
-			}, function(reason){
-				
-			});
-			
+			if(angular.isUndefined($scope.filterPropertiesList)){
+				$scope.filterPropertiesList = {};
+				var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+				filterPropertiesPromise.then(function(value){
+					collectionService.setFilterPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
+					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = collectionService.getFilterPropertiesList($scope.collectionConfig.baseEntityAlias);
+					collectionService.formatFilterPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias]);
+				}, function(reason){
+					
+				});
+			}
 		},function(reason){
 			//display error message if getter fails
 			var messages = reason.MESSAGES;

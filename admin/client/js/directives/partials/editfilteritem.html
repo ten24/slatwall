@@ -1,6 +1,6 @@
 <div class="col-xs-12 s-add-filter"  ng-class="{collapse:filterItem.$$isClosed}">
 	<div class="row">
-	  <h4> Define Filter: <!-- <span ng-bind="filterPropertiesList.entityName"></span> -->
+	  <h4> Define Filter: <!-- <span ng-bind="filterPropertiesList[baseEntityAlias].entityName"></span> -->
 		  <span swRelationshipBreadCrumb
 		  		
 		  ></span>
@@ -11,17 +11,17 @@
 	    <div class="row">
 	      <div class="col-xs-2">
 	        <div class="form-group form-group-sm">
-	          <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList.entityName"></span>:</label>
+	          <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList[entityAliasArray[entityAliasArray.length-1]].entityName"></span>:</label>
 	          <div class="col-sm-12 s-no-paddings">
 	            <select ng-model="selectedFilterProperty" 
 	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
 	            		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
 	            					group by filterProperty.fieldtype 
-	            					for filterProperty in filterPropertiesList.data 
+	            					for filterProperty in filterPropertiesList[entityAliasArray[entityAliasArray.length-1]].data 
 	            					track by filterProperty.propertyIdentifier
 	            					| orderBy:filterProperty.name" 
 	            		class="form-control input-sm">
-	              <option value="">Select From {{filterPropertiesList.entityName}}:</option>
+	              <option value="">Select From {{filterPropertiesList[entityAliasArray[entityAliasArray.length-1]].entityName}}:</option>
 	            </select>
 	          </div>
 	          <div class="clearfix"></div>
@@ -33,6 +33,7 @@
 	       	<span	sw-criteria
 	       			data-filter-item="filterItem"
 	       			data-selected-filter-property="selectedFilterProperty"
+	       			data-filter-properties-list="filterPropertiesList"
 	       	></span>
 	        <!--- //Filter Criteria End --->
 	

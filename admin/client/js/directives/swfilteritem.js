@@ -25,6 +25,9 @@ $log){
 		},
 		templateUrl:partialsPath+"filteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
+			console.log(scope.filterPropertiesList);
+			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
+			console.log(scope.baseEntityName);
 			collectionService.incrementFilterCount(1);
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){

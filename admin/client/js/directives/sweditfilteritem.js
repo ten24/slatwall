@@ -31,14 +31,20 @@ $filter){
 		templateUrl:partialsPath+"editfilteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
 			
+			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
+			
+			scope.entityAliasArray= [scope.baseEntityAlias];
+			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
 			}
 			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
 				scope.filterItem.$$breadCrumbs = "";
 			}
-			for(i in scope.filterPropertiesList.data){
-				var filterProperty = scope.filterPropertiesList.data[i];
+			
+			
+			for(i in scope.filterPropertiesList[scope.baseEntityAlias].data){
+				var filterProperty = scope.filterPropertiesList[scope.baseEntityAlias].data[i];
 				if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
 					//selectItem from drop down
 					scope.selectedFilterProperty = filterProperty;
