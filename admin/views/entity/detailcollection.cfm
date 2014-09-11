@@ -91,7 +91,6 @@
               </div>
             </div>
           </form>
-
         </div>
         <div class="tab-pane" id="j-filters">
           <div class="s-setting-options">
