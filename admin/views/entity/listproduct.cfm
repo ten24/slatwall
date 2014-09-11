@@ -78,8 +78,8 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</cf_HibachiListingDisplay>
 	
-	<div ng-controller="clickController">
-		<button type="button" class="btn btn-default j-test-button" style="margin-top:80px;width:100%;" ng-click="openCreateDialog()">Create Bundle</button>	
-	</div>
+	
+	<button type="button" class="btn btn-default j-test-button" style="margin-top:80px;width:100%;" ng-click="openPageDialog( 'createproductbundle' )">Create Bundle</button>	
+	
 	
 </cfoutput>

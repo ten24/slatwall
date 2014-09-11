@@ -18,7 +18,13 @@ function(
 	
 }]);
 
-angular.module('slatwalladmin').controller('clickController', [
+
+
+
+
+
+
+angular.module('slatwalladmin').controller('mainController', [
 	'$scope',
 	'$location',
 	'slatwallService',
@@ -32,8 +38,8 @@ function(
 	$log
 ){
 	
-	$scope.openCreateDialog = function() {
-		dialogService.addCreatePageDialog('createproductbundle');	
+	$scope.openCreateDialog = function( createPartial ) {
+		dialogService.addCreatePageDialog( createPartial );	
 	}
 	
 }]);
