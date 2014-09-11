@@ -67,26 +67,16 @@ Notes:
 			<!--- Hidden field to attach this to the attributeSet --->
 			<input type="hidden" name="location.locationID" value="#rc.location.getLocationID()#" />
 		</cfif>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="locationConfigurationName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.locationConfiguration#" property="locationConfigurationCapacity" edit="#rc.edit#">
-				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		
-		<cf_HibachiTabGroup object="#rc.locationConfiguration#">
-			<cf_HibachiTab view="admin:entity/locationconfigurationtabs/locationconfigurationsettings" />
+	
+		<cf_HibachiEntityDetailGroup object="#rc.locationConfiguration#">
+			<cf_HibachiEntityDetailItem view="admin:entity/locationconfigurationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/locationconfigurationtabs/locationconfigurationsettings" />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.locationConfiguration.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.locationConfiguration#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
-
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
 
