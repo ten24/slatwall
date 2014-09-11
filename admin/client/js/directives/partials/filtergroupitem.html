@@ -24,7 +24,8 @@
       	</a>
       </div>
       <div ng-click="selectFilterGroupItem(filterGroupItem)" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-        (<span ng-bind="filterGroupItem.filterGroup.length"></span>) Filters <a href="##" ><i class="fa fa-inbox"></i></a>
+        <span ng-show="filterGroupItem.$$isClosed">(<span ng-bind="filterGroupItem.filterGroup.length"></span>) Filters <a href="##" ><i class="fa fa-inbox"></i></a></span>
+        <span ng-show="!filterGroupItem.$$isClosed">Close Group</span>
       </div>
     </div>
   </div>
