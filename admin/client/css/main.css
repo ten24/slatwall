@@ -408,3 +408,36 @@
   .s-batch-options {background-color: #EEE;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;}
   .s-batch-options h4 {border-bottom: 1px solid #DDD;padding-bottom: 6px;font-size: 14px;margin-bottom: 20px;}
   .s-batch-options h4 i {float:right;cursor:pointer;}
+  
+  
+  
+  
+  [class^="hibachi-ui-"], [class*=" hibachi-ui-"]{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	line-height:16px;
+	vertical-align:text-top;
+	background-image:url("../../../org/Hibachi/HibachiAssets/images/ui-sprite.png");
+	background-repeat:no-repeat;
+	margin-right:.3em;
+	}
+[class^="hibachi-ui-"]:last-child,[class*=" hibachi-ui-"]:last-child{margin-left:0;}
+
+a:hover.disabled {cursor: default;}
+
+i.hibachi-ui-checkbox {background-position:0px 0px;}
+a.disabled > i.hibachi-ui-checkbox {background-position:-16px 0px !important; cursor:pointer;}
+
+i.hibachi-ui-checkbox-partial {background-position:0px -16px;}
+a.disabled > i.hibachi-ui-checkbox-partial {background-position:-16px -16px !important; cursor:pointer;}
+
+i.hibachi-ui-checkbox-checked {background-position:0px -32px;}
+a.disabled > i.hibachi-ui-checkbox-checked {background-position:-16px -32px !important; cursor:pointer;}
+
+i.hibachi-ui-radio {background-position:0px -48px;}
+a.disabled > i.hibachi-ui-radio {background-position:-16px -48px !important; cursor:pointer;}
+
+i.hibachi-ui-radio-checked {background-position:0px -64px;}
+a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !important; cursor:pointer;}
+
