@@ -206,8 +206,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 		
 		// Company PaymentMethod Flag
-		if(!isNull(arguments.accountPaymentMethod.getCompanyPaymentMethodFlag())) {
-			setCompanyPaymentMethodFlag( arguments.accountPaymentMethod.getCompanyPaymentMethodFlag() );
+		if(!isNull(arguments.orderPayment.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.orderPayment.getCompanyPaymentMethodFlag() );
 		}
 		
 		// Credit Card
