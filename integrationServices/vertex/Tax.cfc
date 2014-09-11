@@ -101,6 +101,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 										var taxAmount = 0;
 										var taxRate = 0;
 										var taxImpositionID = "";
+										var taxImpositionName = "";
 										var taxImpositionType = "";
 										var taxJurisdictionID = "";
 										var taxJurisdictionName = "";
