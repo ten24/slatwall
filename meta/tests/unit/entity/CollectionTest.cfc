@@ -593,9 +593,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getHQLTest(){
-		var collectionBestAcountEmailAddressesData = {
+		/*var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
+			collectionCode = 'TestAccountEmailAddresses',
 			baseEntityName="AccountEmailAddress",
 			collectionConfig = '
 				{
@@ -619,10 +619,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
-		
+		*/
 		
 		var collectionEntityData = {
-			collectionid = '',
+			collectionid = '12',
 			collectionCode = 'BestAccounts',
 			baseEntityName = 'Account',
 			collectionConfig = '
@@ -667,16 +667,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"true"
 								}
 							]
-						},
-						{
-							"logicalOperator":"AND",
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.accountEmailAddresses",
-									"collectionCode":"BestAccountEmailAddresses",
-									"criteria":"None"
-								}
-							]
 						}
 					]
 					
@@ -684,7 +674,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 
-		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		/*
+		,
+		{
+			"logicalOperator":"AND",
+			"filterGroup":[
+				{
+					"propertyIdentifier":"Account.accountEmailAddresses",
+					"collectionCode":"BestAccountEmailAddresses",
+					"criteria":"None"
+				}
+			]
+		}*/
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		request.debug(collectionEntity.getPageRecords());
 		 
 	}
