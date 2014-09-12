@@ -33,13 +33,40 @@ $filter){
 			
 			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
 			
-			scope.entityAliasArray= [scope.baseEntityAlias];
+			console.log('filterItem');
+			console.log(scope.filterItem);
+			if(scope.filterItem.propertyIdentifier === ""){
+				scope.entityAliasArray= [scope.baseEntityAlias];
+			}else{
+				var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+				entityAliasArrayFromString.pop();
+				scope.entityAliasArray = entityAliasArrayFromString;
+			}
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
 			}
 			
-			for(i in scope.filterPropertiesList[scope.baseEntityAlias].data){
+			console.log('swedit');
+			console.log(scope.filterPropertiesList);
+			
+			console.log(scope.filterItem);
+			
+			/*for(var i in scope.entityAliasArray){
+				var entityAlias = scope.entityAliasArray[i];
+				if(angular.isUndefined(scope.filterPropertiesList[entityAlias])){
+					var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(entityAlias);
+					filterPropertiesPromise.then(function(value){
+						collectionService.setFilterPropertiesList(value,entityAlias);
+						scope.filterPropertiesList[entityAlias] = collectionService.getFilterPropertiesListByBaseEntityAlias(entityAlias);
+						collectionService.formatFilterPropertiesList(scope.filterPropertiesList[entityAlias],entityAlias);
+					}, function(reason){
+						
+					});
+				}
+			}*/
+			
+			for(var i in scope.filterPropertiesList[scope.baseEntityAlias].data){
 				var filterProperty = scope.filterPropertiesList[scope.baseEntityAlias].data[i];
 				if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
 					//selectItem from drop down
@@ -49,10 +76,6 @@ $filter){
 					scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
 				}
 			}
-			
-			/*scope.triggerFilterPropertiesDrillDown(nextLevelFilterProperties,key){
-				
-			}*/
 			
 			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 			
@@ -66,6 +89,7 @@ $filter){
 				//splice out array items above index
 				var removeCount = scope.entityAliasArray.length - 1 - breadCrumbIndex;
 				scope.entityAliasArray.splice(breadCrumbIndex + 1,removeCount);
+				
 			};
 			
 			scope.selectedFilterPropertyChanged = function(selectedFilterProperty){

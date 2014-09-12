@@ -1,12 +1,12 @@
 //collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
-.factory('collectionService',['$log',
-function($log){
+.factory('collectionService',['slatwallService','$log',
+function(slatwallService,$log){
 	//properties
 	var _collection = null;
 	var _collectionConfig = null;
-	var _filterPropertiesList = null;
+	var _filterPropertiesList = {};
 	var _filterCount = 0;
 	
 	return collectionService = {
@@ -60,15 +60,16 @@ function($log){
 		getColumns:function(){
 			return _collection.collectionConfig.columns;
 		},
-		
-		getFilterPropertiesList: function(key){
-			return _filterPropertiesList[key];
+		getFilterPropertiesList:function(){
+			return _filterPropertiesList;
+		},
+		getFilterPropertiesListByBaseEntityAlias: function(baseEntityAlias){
+			return _filterPropertiesList[baseEntityAlias];
 		},
 		setFilterPropertiesList: function(value,key){
-			if(_filterPropertiesList === null){
-				_filterPropertiesList = {};
+			if(angular.isUndefined(_filterPropertiesList[key])){
+				_filterPropertiesList[key] = value;
 			}
-			_filterPropertiesList[key] = value;
 		},
 			
 		stringifyJSON: function(jsonObject){

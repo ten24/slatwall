@@ -22,34 +22,39 @@ $filter){
 	var getTemplate = function(selectedFilterProperty){
         var template = '';
 		var templatePath = '';
-		var criteriaormtype = selectedFilterProperty.ormtype;
-		var criteriafieldtype = selectedFilterProperty.fieldtype;
-        switch(criteriaormtype){
-            case 'boolean':
-               templatePath = partialsPath+"criteriaboolean.html";
-                break;
-            case 'string':
-                templatePath = partialsPath+"criteriastring.html";
-                break;
-            case 'timestamp':
-                templatePath = partialsPath+"criteriadate.html";
-                break;
-            case 'big_decimal':
-            	templatePath = partialsPath+"criteriabigdecimal.html";
-            	break;
-        }
-        
-        switch(criteriafieldtype){
-	        case "many-to-one":
-	        	templatePath = partialsPath+"criteriamanytoone.html";
-				break;
-			case "many-to-many":
-				templatePath = partialsPath+"criteriamanytomany.html";
-				break;
-			case "one-to-many":
-				templatePath = partialsPath+"criteriaonetomany.html";
-				break;
-	    }
+		
+		if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
+			templatePath = partialsPath+"criteria.html";
+		}else{
+			var criteriaormtype = selectedFilterProperty.ormtype;
+			var criteriafieldtype = selectedFilterProperty.fieldtype;
+	        switch(criteriaormtype){
+	            case 'boolean':
+	               templatePath = partialsPath+"criteriaboolean.html";
+	                break;
+	            case 'string':
+	                templatePath = partialsPath+"criteriastring.html";
+	                break;
+	            case 'timestamp':
+	                templatePath = partialsPath+"criteriadate.html";
+	                break;
+	            case 'big_decimal':
+	            	templatePath = partialsPath+"criteriabigdecimal.html";
+	            	break;
+	        }
+	        
+	        switch(criteriafieldtype){
+		        case "many-to-one":
+		        	templatePath = partialsPath+"criteriamanytoone.html";
+					break;
+				case "many-to-many":
+					templatePath = partialsPath+"criteriamanytomany.html";
+					break;
+				case "one-to-many":
+					templatePath = partialsPath+"criteriaonetomany.html";
+					break;
+		    }
+		}
         
         var templateLoader = $http.get(templatePath,{cache:$templateCache});
 		
@@ -433,6 +438,9 @@ $filter){
 				$log.debug('watchSelectedFilterProperty');
 				$log.debug(scope.selectedFilterProperty);
 				//prepopulate if we have a comparison operator and value
+				if(selectedFilterProperty === null){
+					return;
+				}
 				
 				if(angular.isDefined(selectedFilterProperty.ormtype)){
 					switch(scope.selectedFilterProperty.ormtype){
@@ -757,12 +765,6 @@ $filter){
 			$log.debug(scope.entityAliasArray);
 			//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
 			scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
-			//var selectedCriteriaIndex = scope.filterPropertiesList[scope.selectedFilterProperty.cfc].data.indexOf(scope.selectedFilterProperty.selectedCriteriaType);
-			//$log.debug(selectedCriteriaIndex);
-			
-			//scope.selectedFilterProperty = scope.filterPropertiesList[selectedCriteriaIndex];
-			
-			
 			//update criteria to display the condition of the new critera we have selected
 			
 		};

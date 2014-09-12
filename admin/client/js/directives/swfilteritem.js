@@ -58,7 +58,6 @@ $log){
 				filterGroupsController.saveCollection();
 			};
 			
-			
 			scope.$on(
                 "$destroy",
                 function() {

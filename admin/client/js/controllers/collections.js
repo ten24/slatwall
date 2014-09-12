@@ -22,6 +22,7 @@ $log
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 	
 	//get url param to retrieve collection listing
+	
 	$scope.collectionID = $location.search().collectionID;
 	$scope.currentPage= paginationService.getCurrentPage();
 	$scope.pageShow = paginationService.getPageShow();
@@ -90,18 +91,6 @@ $log
 			}
 			//check if we have any filter Groups
 			$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
-			
-			if(angular.isUndefined($scope.filterPropertiesList)){
-				$scope.filterPropertiesList = {};
-				var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
-				filterPropertiesPromise.then(function(value){
-					collectionService.setFilterPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
-					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = collectionService.getFilterPropertiesList($scope.collectionConfig.baseEntityAlias);
-					collectionService.formatFilterPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
-				}, function(reason){
-					
-				});
-			}
 		},function(reason){
 			//display error message if getter fails
 			var messages = reason.MESSAGES;
@@ -111,6 +100,23 @@ $log
 	};
 	
 	$scope.getCollection();
+	
+	var unbindCollectionObserver = $scope.$watch('collection',function(newValue,oldValue){
+		if(newValue !== oldValue){
+			if(angular.isUndefined($scope.filterPropertiesList)){
+				$scope.filterPropertiesList = {};
+				var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+				filterPropertiesPromise.then(function(value){
+					collectionService.setFilterPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
+					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = collectionService.getFilterPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
+					collectionService.formatFilterPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
+				}, function(reason){
+					
+				});
+			}
+			unbindCollectionObserver();
+		}
+	});
 	
 	$scope.setCollectionForm= function(form){
 	   $scope.collectionForm = form;
