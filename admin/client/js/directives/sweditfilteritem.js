@@ -38,10 +38,6 @@ $filter){
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
 			}
-			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
-				scope.filterItem.$$breadCrumbs = "";
-			}
-			
 			
 			for(i in scope.filterPropertiesList[scope.baseEntityAlias].data){
 				var filterProperty = scope.filterPropertiesList[scope.baseEntityAlias].data[i];
@@ -54,6 +50,10 @@ $filter){
 				}
 			}
 			
+			/*scope.triggerFilterPropertiesDrillDown(nextLevelFilterProperties,key){
+				
+			}*/
+			
 			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 			
 			scope.togglePrepareForFilterGroup = function(){
@@ -61,10 +61,18 @@ $filter){
 			};
 			
 			//public functions
+			
+			scope.selectBreadCrumb = function(breadCrumbIndex){
+				//splice out array items above index
+				var removeCount = scope.entityAliasArray.length - 1 - breadCrumbIndex;
+				scope.entityAliasArray.splice(breadCrumbIndex + 1,removeCount);
+			};
+			
 			scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				$log.debug('selectedFilterProperty');
 				$log.debug(selectedFilterProperty);
-				//scope.selectedFilterProperty.breadCrumbs += 
+				
+				scope.selectedFilterProperty = selectedFilterProperty;
 			};
 			
 			scope.addFilterItem = function(){

@@ -18,7 +18,7 @@ slatwallService,
 collectionService,
 $filter){
 	//private functions
-	
+/* Template info begin*/
 	var getTemplate = function(selectedFilterProperty){
         var template = '';
 		var templatePath = '';
@@ -55,6 +55,10 @@ $filter){
 		
         return templateLoader;
     }; 
+    
+/* Template info end*/
+    
+/* Options info begin */
     
     var getStringOptions = function(){
     	var stringOptions = [
@@ -414,6 +418,8 @@ $filter){
     	return manyToOneOptions;
     };
     
+/* Options info end */
+    
     var linker = function(scope, element, attrs){
     	//show the user the value without % symbols as these are reserved
     	scope.$watch('selectedFilterProperty.criteriaValue',function(criteriaValue){
@@ -668,10 +674,11 @@ $filter){
 							$log.debug('many-to-one');
 							$log.debug(scope.selectedFilterProperty);
 							$log.debug(scope.filterPropertiesList);
+							
 							var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
 							filterPropertiesPromise.then(function(value){
 								scope.filterPropertiesList[scope.selectedFilterProperty.cfc] = value;
-								collectionService.formatFilterPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.cfc]);
+								collectionService.formatFilterPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.cfc],scope.selectedFilterProperty.propertyIdentifier);
 							}, function(reason){
 								
 							});
@@ -741,6 +748,24 @@ $filter){
 				});
 			}
     	}); 
+		
+		scope.selectedCriteriaChanged = function(selectedCriteria){
+			$log.debug(selectedCriteria);
+			//update breadcrumbs as array of filterpropertylist keys
+			scope.entityAliasArray.push(scope.selectedFilterProperty.cfc);
+			$log.debug(scope.selectedFilterProperty);
+			$log.debug(scope.entityAliasArray);
+			//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+			scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
+			//var selectedCriteriaIndex = scope.filterPropertiesList[scope.selectedFilterProperty.cfc].data.indexOf(scope.selectedFilterProperty.selectedCriteriaType);
+			//$log.debug(selectedCriteriaIndex);
+			
+			//scope.selectedFilterProperty = scope.filterPropertiesList[selectedCriteriaIndex];
+			
+			
+			//update criteria to display the condition of the new critera we have selected
+			
+		};
     	
     };
     
@@ -749,7 +774,9 @@ $filter){
 		scope:{
 			filterItem:"=",
 	        selectedFilterProperty:"=",
-	        filterPropertiesList:"="
+	        filterPropertiesList:"=",
+	        entityAliasArray:"=",
+	        selectedFilterPropertyChanged:"&"
 		},
 		link: linker
 	};

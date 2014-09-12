@@ -180,9 +180,9 @@ function($log){
 			filterGroup.push(filterGroupItem);
 		},
 		
-		formatFilterPropertiesList: function(filterPropertiesList){
+		formatFilterPropertiesList: function(filterPropertiesList,propertyIdentifier){
 			for(i in filterPropertiesList.data){
-				filterPropertiesList.data[i].propertyIdentifier = filterPropertiesList.entityName + '.' +filterPropertiesList.data[i].name;
+				filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' +filterPropertiesList.data[i].name;
 			}
 		}
 		

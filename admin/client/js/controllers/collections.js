@@ -97,7 +97,7 @@ $log
 				filterPropertiesPromise.then(function(value){
 					collectionService.setFilterPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
 					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = collectionService.getFilterPropertiesList($scope.collectionConfig.baseEntityAlias);
-					collectionService.formatFilterPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias]);
+					collectionService.formatFilterPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
 				}, function(reason){
 					
 				});
