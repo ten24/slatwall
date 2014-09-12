@@ -325,6 +325,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
 		setCreditCardLastFour(Right(arguments.creditCardNumber, 4));
 		setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber));
+		setupEncryptedProperties();
 	}
 	
 	public string function getCreditCardNumber() {

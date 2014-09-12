@@ -96,7 +96,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOptions" persistent="false";
 	
 	public void function setupEncryptedProperties() {
-		if(getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attributeValue")) {
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeType()) && !isNull(getAttribute().getAttributeType().getSystemCode()) && getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attributeValue")) {
 			encryptProperty('attributeValue', getAttributeID());
 		}
 	}
@@ -471,6 +471,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	public void function setAttributeValue( any attributeValue ) {
 		variables.attributeValue = arguments.attributeValue;
+		setupEncryptedProperties();
 	}
 	
 	// ==============  END: Overridden Implicet Getters ====================

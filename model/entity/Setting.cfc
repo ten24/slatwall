@@ -80,6 +80,9 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	// Non-Persistent Properties
+	property name="settingValueEncryptionProcessedFlag" type="boolean" persistent="false";
 
 	public struct function getSettingMetaData() {
 		return getService("settingService").getSettingMetaData(settingName=getSettingName());
@@ -89,12 +92,27 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 		var settingMetaData = getSettingMetaData();
 		
 		// Determine if we need to encrypt value
-		if(structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue == true) {
+		if(structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue == true && !getSettingValueEncryptionProcessedFlag() && !isNull(getSettingID())) {
 			encryptProperty('settingValue', getSettingID());
 		}
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public void function setSettingValue(required string settingValue) {
+		//logHibachi("****** Setting.setSettingValue('#arguments.settingValue#')");
+		variables.settingValue = arguments.settingValue;
+		// TODO Does this interfere with validation? If so when can we post pone
+		setupEncryptedProperties();
+		setSettingValueEncryptionProcessedFlag(true);
+	}
+	
+	public boolean function getSettingValueEncryptionProcessedFlag() {
+		if(isNull(variables.settingValueEncryptionProcessedFlag) || !isBoolean(variables.settingValueEncryptionProcessedFlag)) {
+			variables.settingValueEncryptionProcessedFlag = false;
+		}
+		return variables.settingValueEncryptionProcessedFlag;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
@@ -132,7 +150,7 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	
 	// This overrides the base validation method to dynamically add rules based on setting specific requirements
 	public any function validate( string context="" ) {
-		
+		logHibachi("****** Setting.validate(context='#arguments.context#') called.");
 		// Call the base method validate with any additional arguments passed in
 		super.validate(argumentCollection=arguments);
 		

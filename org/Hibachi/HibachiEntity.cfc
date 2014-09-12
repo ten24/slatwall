@@ -535,6 +535,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public void function encryptProperty(required string propertyName) {
 		var encryptedPropertyValue = encryptValue(this.invokeMethod('get#arguments.propertyName#'), getPrimaryIDValue());
 		
+		//logHibachi("****** EncryptProperty start: 'get#arguments.propertyName#()': " & this.invokeMethod('get#arguments.propertyName#') & ", encrypted: #encryptedPropertyValue#, decrypted: #decryptValue(encryptedPropertyValue, getPrimaryIDValue())#");
+		
 		if(this.hasProperty('#arguments.propertyName#Encrypted')) {
 			// Set corresponding property that should store the newly encrypted value and remove the unencrypted value from the corresponding unencrypted property (necessary if persistent)
 			this.invokeMethod("set#arguments.propertyName#Encrypted", {'1'=encryptedPropertyValue});
@@ -547,7 +549,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		} else {
 			// Overwrite property's unencrypted value with the newly encrypted value
-			this.invokeMethod('set#arguments.propertyName#', {'1'=encryptedPropertyValue});
+			variables['#arguments.propertyName#'] = encryptedPropertyValue;
+			
+			// Commented code below would result in a recursive call unless condition should be flagged to use the setter
+			// this.invokeMethod('set#arguments.propertyName#', {'1'=encryptedPropertyValue});
 		}
 		
 		// Set encrypted datetime stamp
@@ -711,6 +716,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	// ================== START: Overridden Methods ========================
 	
+	public void function afterPopulate() {
+		// Handle encrypted properties
+		if (structKeyExists(this, 'setupEncryptedProperties')) {
+			this.invokeMethod('setupEncryptedProperties');
+		}
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================
@@ -764,11 +776,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		
-		// Handle encrypted properties
-		if (structKeyExists(this, 'setupEncryptedProperties')) {
-			this.invokeMethod('setupEncryptedProperties');
-		}
-		
 		// Log audit only if admin user
 		if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
 			getService("hibachiAuditService").logEntityModify(entity=this);
@@ -800,11 +807,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
-		}
-		
-		// Handle encrypted properties
-		if (structKeyExists(this, 'setupEncryptedProperties')) {
-			this.invokeMethod('setupEncryptedProperties');
 		}
 		
 		// Log audit only if admin user

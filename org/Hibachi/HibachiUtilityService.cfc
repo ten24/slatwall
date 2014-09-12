@@ -291,6 +291,7 @@
 		
 		public string function encryptValue(required string value, string salt="") {
 			var passwords = getEncryptionPasswordArray();
+			//logHibachi("****** encrypting using value:'#arguments.value#', salt:'#arguments.salt#'), iterationCount:#passwords[1].iterationCount#, password:'#passwords[1].password#', key:'#generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount)#'");
 			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
 		}
 	
@@ -353,8 +354,29 @@
 			return key;
 		}
 		
-		public any function createDefaultPasswordData() {
-			return {'iterationCount'= randRange(500, 2500), 'password'=createHibachiUUID(), 'createdDateTime'=dateFormat(now(),"yyyy-mm-dd")};
+		public any function createDefaultEncryptionPasswordData() {
+			return {'iterationCount'= randRange(500, 2500), 'password'=createHibachiUUID(), 'createdDateTime'=dateFormat(now(),"yyyy-mm-dd") & " " & timeFormat(now(), "HH:MM:SS")};
+		}
+		
+		public any function addEncryptionPasswordData(required struct data) {
+			if (!isNumeric(arguments.data.iterationCount)) {
+				arguments.data.iterationCount = randRange(500, 2500);
+			}
+			
+			var passwordData = {'iterationCount'= arguments.data.iterationCount, 'password'=arguments.data.password, 'createdDateTime'=dateFormat(now(),"yyyy-mm-dd") & " " & timeFormat(now(), "HH:MM:SS")};
+			
+			var passwords = [passwordData];
+			
+			// NOTE: Do not want to call getEncryptionPasswordArray() if no password file existed prior, otherwise a unnecessary password will be also generated automatically in addition
+			if (encryptionPasswordFileExists()) {
+				passwords = getEncryptionPasswordArray();
+				
+				// Prepend new password data to existing passwords so it becomes the newest password used
+				arrayInsertAt(passwords, 1, passwordData);
+			}
+			
+			// Write new contents to the encryption password file
+			writeEncryptionPasswordFile(passwords);
 		}
 		
 		public any function getEncryptionPasswordArray() {
@@ -362,7 +384,7 @@
 			
 			// Generate default password if necessary
 			if (!encryptionPasswordFileExists()) {
-				arrayAppend(passwords, createDefaultPasswordData());
+				arrayAppend(passwords, createDefaultEncryptionPasswordData());
 				writeEncryptionPasswordFile(passwords);
 			}
 			

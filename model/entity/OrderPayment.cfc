@@ -680,6 +680,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');	
 			setCreditCardLastFour( right(variables.creditCardNumber, 4) );
 			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(variables.creditCardNumber) );
+			setupEncryptedProperties();
 		} else {
 			structDelete(variables, "creditCardNumber");
 			setCreditCardLastFour(javaCast("null", ""));
