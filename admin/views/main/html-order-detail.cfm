@@ -94,26 +94,57 @@
       </div>
     </a>
     <div id="collapseTwo" class="panel-collapse collapse in">
-      <div class="panel-body">
+      <div class="panel-body s-bundles">
 
 <style media="screen">
-  .s-bundle-box > li {height:40px;width:100%;border: 1px solid #ddd;}
-  .s-bundle-box > li .s-right {text-align:right;padding-right:0px;}
-  .s-bundle-box > li > .s-bundle-box-head {display: inline-block;width: 100%;}
-  .s-bundle-box > li > .s-bundle-box-head > div:first-child {padding: 9px;font-weight: 600;}
-  .s-bundle-box > li > .s-bundle-box-head > div:first-child span {background-color: #cccccc;color:#999;border-radius: 3px;padding: 2px 6px 2px 6px;font-size: 10px;display: inline-block;height: 17px;position: relative;margin-left: 7px;text-align: center;bottom: 0px;}
-  .s-bundle-box > li button {border-radius: 0px;padding: 8px;width:40px;border-color:#ffffff;}
-  .s-bundle-box > li button:first-child {right: -4px;position: relative;}
-  .s-bundle-box > li button:hover {border-color:#eeeeee;background-color:#eeeeee;color:#606060;}
-  .s-bundle-box > li button.s-remove {background-color: #606060;color: #FFF;border-color:#606060;}
+  .panel-body.s-bundles {padding:0px;}
+  .s-bundle-box {margin:0px;}
+  .s-bundle-box .s-disabled {opacity:0.4;pointer-events:none;}
+  .s-bundle-box > li {margin-bottom: 3px;}
+  .s-bundle-box > li:first-child {margin-top: 3px;}
+  .s-bundle-box > li:last-child {margin-bottom: 0px;}
+  .s-bundle-box > li > .s-bundle-box-head {vertical-align:bottom;display: inline-block;width: 100%;height:30px;width:100%;border-top: 1px solid #ddd;border-bottom: 1px solid #ddd;background-color: #eee;}
+  .s-bundle-box > li > .s-bundle-box-head.s-active {background-color: #F58620;}
+  .s-bundle-box > li > .s-bundle-box-head.s-active > div:first-child span {background-color:#F7A153;color:#fff;}
+  .s-bundle-box > li > .s-bundle-box-head.s-active > div:first-child span.s-title {background:none;}
+  .s-bundle-box > li > .s-bundle-box-head .s-right {text-align:right;padding-right:0px;}
+  .s-bundle-box > li > .s-bundle-box-head > div:first-child {padding: 0px 3px 0px 0px;font-weight: 600;color:#666;}
+  .s-bundle-box > li > .s-bundle-box-head > div:first-child .s-count {min-width:30px;background-color: #949494;color: #fff;border-radius: 0px;padding: 2px 8px 0px 8px;margin-right:10px;font-size: 10px;display: inline-block;height: 28px;position: relative;text-align: center;bottom: 0px;line-height: 24px;}
+  .s-bundle-box > li > .s-bundle-box-head > div:first-child .s-title {position: relative;bottom: -2px;}
+  .s-bundle-box > li > .s-bundle-box-head.s-active button {background-color:#F7A153;border-color:#F7A153;}
+  .s-bundle-box > li > .s-bundle-box-head.s-active button:hover {background-color:#fff;border-color:#fff;}
+  .s-bundle-box > li .s-right button {border-radius: 0px;padding: 3px;width:30px;border-color:#949494;background-color:#949494;color:#fff;}
+  .s-bundle-box > li .s-right button:first-child {right: -4px;position: relative;}
+  .s-bundle-box > li .s-right button:hover {border-color:#fff;background-color:#ffffff;color:#606060;}
+  .s-bundle-box > li .s-right button.s-remove {}
+  .s-bundle-box .tab-content {background-color:#ffffff;box-shadow:none;border-top:1px solid #eee}
+  .s-bundle-box .s-filter-content {background-color: #ffffff;}
+  .s-bundle-box .nav-tabs > li > a {padding: 4px 13px 0px 13px;}
+  .s-bundle-box .s-options .tab-pane {padding-top:15px;}
+  .s-bundle-box .s-options {display:inline-block;width:100%;vertical-align:bottom;}
+
+
+  .s-bundle-box .s-bundle-group-items .s-search-input {height:30px;marin-top:2px;}
+  .s-bundle-box .s-bundle-group-items .s-right button {background-color: #F58620;border-color: #F58620;}
+  .s-bundle-box .s-bundle-group-items .s-right button:hover {background-color: #F7A153;border-color: #F7A153; color:#fff;}
+
+
+  .s-bundle-box .s-bundle-group-items .s-bundle-box-head {background-color:#ffffff;border-left: 1px solid #DDD;border-right: 1px solid #DDD;}
+  .s-bundle-box .s-add-bundle-item {padding: 15px;margin-top: -4px;background-color: #EEE;border: 1px solid #CCC;}
+  .s-bundle-box .s-bundle-group-items .s-bundle-box-head button {margin:0px;}
+  .s-bundle-box .s-bundle-group-items .s-bundle-box-head > div {color:#666 !important;}
+  .s-bundle-box .tab-content .selectboxit-btn, .s-bundle-box .tab-content .selectboxit-container, .s-bundle-box .tab-content select, .s-bundle-box .tab-content .selectboxit-options {width:100% !important;}
+  .s-bundle-box .s-add-bundle-item .s-bundle-box-head > div:first-child .s-title {bottom: -5px;margin-left: 10px;}
 </style>
+
+
 
           <ul class="list-unstyled s-bundle-box">
             <li>
               <div class="s-bundle-box-head">
-                <div class="col-xs-6">Skateboard Bundle <span>42</span></div>
+                <div class="col-xs-6"><span class="s-count">3</span><span class="s-title">Skateboard Bundle</span></div>
                 <div class="col-xs-6 s-right">
-                  <button class="btn btn-default"><i class="fa fa-eye"></i></button>
+                  <button class="btn btn-default s-toggle-btn" data-toggle="collapse" data-target="#j-display-details"><i class="fa fa-eye"></i></button>
                   <button class="btn btn-default s-remove"><i class="fa fa-times"></i></button>
                 </div>
               </div>
@@ -121,7 +152,274 @@
 
               <!--- Edit Filter Box --->
 
-              <div class="s-bundle-group-dropdown-content">
+              <div class="s-bundle-group-dropdown-content collapse" id="j-display-details">
+                <div class="s-filter-content">
+
+                  <!--- Header nav with title starts --->
+                  <div class="row s-header-bar">
+                    <div class="col-xs-12 s-header-nav">
+                      <ul class="nav nav-tabs" role="tablist">
+                        <li class="active"><a href="#j-basic-skatebundle" role="tab" data-toggle="tab">Basic</a></li>
+                        <li><a href="#j-selections-skatebundle" role="tab" data-toggle="tab">Bundle Items</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <!--- //Header nav with title end --->
+
+                  <!--- Tab panes for menu options start--->
+                  <div class="s-options">
+                    <div class="col-xs-12 tab-content">
+
+                      <div class="tab-pane active" id="j-basic-skatebundle">
+
+                        <form class="form-horizontal" role="form">
+                          <div class="col-xs-6">
+                            <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Title: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The bundle name"> <i class="fa fa-question-circle"></i></span></label>
+                              <div class="col-sm-9">
+                                <input type="text" class="form-control" value="Skateboard Bundle" placeholder="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Sku: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The bundle code"> <i class="fa fa-question-circle"></i></span></label>
+                              <div class="col-sm-9">
+                                <input type="text" class="form-control" value="283746" placeholder="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Available: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The starting price of the bundle"> <i class="fa fa-question-circle"></i></span></label>
+                              <div class="col-sm-9">
+                                <input type="text" class="form-control"value="35" placeholder="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Qty: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The bundle name"> <i class="fa fa-question-circle"></i></span></label>
+                              <div class="col-sm-9">
+                                <input type="text" class="form-control" value="2" placeholder="">
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-xs-6">
+                            <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Price: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The bundle code"> <i class="fa fa-question-circle"></i></span></label>
+                              <div class="col-sm-9">
+                                <input type="text" class="form-control" value="$99.99" placeholder="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Discount: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The starting price of the bundle"> <i class="fa fa-question-circle"></i></span></label>
+                              <div class="col-sm-9">
+                                <input type="text" class="form-control"value="$10.00" placeholder="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Total: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The bundle name"> <i class="fa fa-question-circle"></i></span></label>
+                              <div class="col-sm-9">
+                                <input type="text" class="form-control" value="$89.99" placeholder="">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="" class="col-sm-3 control-label">Shipping: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Select a type"> <i class="fa fa-question-circle"></i></span></label>
+                              <div class="col-sm-9">
+                                <select class="form-control">
+                                  <option value="one">Option 1</option>
+                                  <option value="two">Option 2</option>
+                                  <option value="three">Option 3</option>
+                                  <option value="four">Option 4</option>
+                                  <option value="five">Option 5</option>
+                                </select>
+                              </div>
+                            </div>
+
+                          </div>
+                        </form>
+
+                      </div>
+
+                      <div class="row tab-pane" id="j-selections-skatebundle">
+
+
+                        <ul class="list-unstyled s-bundle-box s-dotted-border-bottom">
+                          <li>
+                            <div class="s-bundle-box-head">
+                              <div class="col-xs-6"><span class="s-count">42</span><span class="s-title">Trucks</span></div>
+                              <div class="col-xs-6 s-right">
+                                <button class="btn btn-default s-toggle-btn" data-toggle="collapse" data-target="#j-display-details-trucks"><i class="fa fa-eye"></i></button>
+                                <button class="btn btn-default s-remove"><i class="fa fa-times"></i></button>
+                              </div>
+                            </div>
+
+                            <!--- Edit Filter Box --->
+                            <div class="s-bundle-group-dropdown-content collapse" id="j-display-details-trucks">
+                              <div class="s-filter-content">
+
+                                <!--- Header nav with title starts --->
+                                <div class="row s-header-bar">
+                                  <div class="col-xs-12 s-header-nav">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                      <li class="active"><a href="#j-basic-trucks" role="tab" data-toggle="tab">Basic</a></li>
+                                      <li><a href="#j-selections-trucks" role="tab" data-toggle="tab">Selections</a></li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <!--- //Header nav with title end --->
+
+                                <!--- Tab panes for menu options start--->
+                                <div class="s-options">
+                                  <div class="col-xs-12 tab-content" id="j-property-box">
+                                    <div class="tab-pane active" id="j-basic-trucks">
+
+                                      <p>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue.
+                                        <br/><br/><br/>
+                                      </p>
+
+                                    </div>
+                                    <div class="tab-pane" id="j-selections-trucks">
+
+                                      <p>
+                                        Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue.
+                                      </p>
+
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!--- //Edit Filter Box --->
+                          </li>
+
+                          <li>
+                            <div class="s-bundle-box-head">
+                              <div class="col-xs-6"><span class="s-count">42</span><span class="s-title">Grip Tape</span></div>
+                              <div class="col-xs-6 s-right">
+                                <button class="btn btn-default s-toggle-btn" data-toggle="collapse" data-target="#j-display-details-griptape"><i class="fa fa-eye"></i></button>
+                                <button class="btn btn-default s-remove"><i class="fa fa-times"></i></button>
+                              </div>
+                            </div>
+
+                            <!--- Edit Filter Box --->
+                            <div class="s-bundle-group-dropdown-content collapse" id="j-display-details-griptape">
+                              <div class="s-filter-content">
+
+                                <!--- Header nav with title starts --->
+                                <div class="row s-header-bar">
+                                  <div class="col-xs-12 s-header-nav">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                      <li class="active"><a href="#j-basic-griptape" role="tab" data-toggle="tab">Basic</a></li>
+                                      <li><a href="#j-selections-griptape" role="tab" data-toggle="tab">Selections</a></li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <!--- //Header nav with title end --->
+
+                                <!--- Tab panes for menu options start--->
+                                <div class="s-options">
+                                  <div class="col-xs-12 tab-content" id="j-property-box">
+                                    <div class="tab-pane" id="j-basic-griptape">
+
+                                      <p>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue.
+                                        <br/><br/><br/>
+                                      </p>
+
+                                    </div>
+                                    <div class="tab-pane" id="j-selections-griptape">
+
+                                      <p>
+                                        Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue.
+                                      </p>
+
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!--- //Edit Filter Box --->
+                          </li>
+
+                        </ul>
+
+                        <!-- Search for bundle -->
+                        <div class="s-bundle-group-items">
+                          <div class="col-xs-12">
+                            <div class="input-group">
+                              <div class="dropdown input-group-btn search-panel">
+                                <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                                  <span id="j-search-concept">Any</span>
+                                  <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                  <li><a href="#greather_than">Any</a></li>
+                                  <li><a href="#contains">Product</a></li>
+                                  <li><a href="#its_equal">Skus</a></li>
+                                </ul>
+                              </div>
+                              <input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search term...">
+                              <span class="input-group-btn">
+                                <button class="btn btn-sm btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                              </span>
+                            </div>
+
+                            <!-- Add bundle items -->
+                            <div class="s-add-bundle-item">
+                              <ul class="list-unstyled s-bundle-box">
+                                <li>
+                                  <div class="s-bundle-box-head">
+                                    <div class="col-xs-6"><span class="s-title">SkateBoard Wheels</span></div>
+                                    <div class="col-xs-6 s-right">
+                                      <button class="btn btn-default"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="s-bundle-box-head">
+                                    <div class="col-xs-6"><span class="s-title">SkateBoard Bearings</span></div>
+                                    <div class="col-xs-6 s-right">
+                                      <button class="btn btn-default"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                            <!-- //Add bundle items -->
+
+                          </div>
+                        </div>
+                        <!--// search for bundle -->
+
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <!--- //Edit Filter Box --->
+
+            </li>
+
+            <li>
+              <div class="s-bundle-box-head">
+                <div class="col-xs-6"><span class="s-count">42</span><span class="s-title">Skate Shoes</span></div>
+                <div class="col-xs-6 s-right">
+                  <button class="btn btn-default s-toggle-btn" data-toggle="collapse" data-target="#j-display-details"><i class="fa fa-eye"></i></button>
+                  <button class="btn btn-default s-remove"><i class="fa fa-times"></i></button>
+                </div>
+              </div>
+
+
+              <!--- Edit Filter Box --->
+
+              <div class="s-bundle-group-dropdown-content collapse" id="j-display-details">
                 <div class="s-filter-content">
 
                   <!--- Header nav with title starts --->
@@ -136,18 +434,22 @@
                   <!--- //Header nav with title end --->
 
                   <!--- Tab panes for menu options start--->
-                  <div class="row s-options">
+                  <div class="s-options">
                     <div class="col-xs-12 tab-content" id="j-property-box">
 
                       <div class="tab-pane active" id="j-default-tab-9">
 
-                        Hold
+                        <p>
+                          Some Content
+                        </p>
 
                       </div>
 
-                      <div class="tab-pane active" id="j-selections-tab-9">
+                      <div class="tab-pane" id="j-selections-tab-9">
 
-                        Hold2
+                        <p>
+                          some other content
+                        </p>
 
                       </div>
 
@@ -1874,5 +2176,27 @@ $('form').submit(function(){
   $('.list-group-item .s-pannel-name .s-save-btn').click(function(){
     $(this).parent().siblings('.s-pannel-title').fadeToggle();
     $(this).parent().toggle('slide', { direction: 'left' }, 300);
+  });
+</script>
+
+// <script charset="utf-8">
+//   $('.s-bundle-box .s-bundle-box-head .fa-eye').click(function(){
+//     var hasActive = $(this).closest('.s-bundle-box-head');
+//     if(hasActive.hasClass('s-active')){
+//       hasActive.removeClass('s-active');
+//     }else{
+//       hasActive.addClass('s-active');
+//     };
+//     if(hasActive.closest('li').siblings().hasClass('s-disabled')){
+//       hasActive.closest('li').siblings().removeClass('s-disabled');
+//     }else{
+//       hasActive.closest('li').siblings().addClass('s-disabled');
+//     };
+//   });
+// </script>
+
+<script charset="utf-8">
+  jQuery('body').on('click', '.s-bundle-box .s-bundle-box-head .s-toggle-btn', function(e){
+    $(this).parent().parent().toggleClass('s-active');
   });
 </script>

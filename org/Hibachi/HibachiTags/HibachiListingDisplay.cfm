@@ -377,12 +377,13 @@
 						<th class="#class#">
 							<cfif not thistag.expandable and len(attributes.multiselectPropertyIdentifier)>
 								<div class="dropdown">
-									<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="icon-check"></i> </a>
+									<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
 									<ul class="dropdown-menu nav">
 										<li><a href="##" class="multiselect-checked-filter"><i class="hibachi-ui-checkbox#IIF(attributes.edit, DE(''), DE('-checked'))#"></i> Show Selected</a></li>
 									</ul>				
 								</div>
 							<cfelse>
+								#thisTag.expandable#|#attributes.multiselectPropertyIdentifier#
 								&nbsp;
 							</cfif>
 						</th>

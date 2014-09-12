@@ -14,6 +14,7 @@
   label {font-weight:600;}
   .s-not-active {color:#bbbbbb;}
   .s-disabled {opacity: .5;pointer-events: none;}
+  .s-dotted-border-bottom {border-bottom: 3px dotted #EEE;padding-bottom: 20px !important;margin-bottom: 20px !important;}
 
   /* Detail Views */
   .dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;position:relative;text-align:left;left:15px;}
@@ -351,13 +352,15 @@
   .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details:first-child {font-weight:700;}
   .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details {font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;}
   .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove {display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;}
-  .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove a {border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 7px;background-color: #DA5757;color: #FFF !important;}
+  .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove a {border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 7px;background-color: #666666;border-color:#666666;color: #FFF !important;}
 
-  .s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;}
+
+  .s-remove:hover {background-color:#DA5757 !important;border-color:#DA5757 !important;color:#ffffff !important;}
   .s-pannel-group .panel-default .panel-heading {background-color:#606060;color:#fff; border-color:#888;}
   .s-pannel-group .panel-default a {text-decoration:none;}
 
   .navbar-s-navbar-ten24 { background-color: #F58620;min-height:0px;}
+  .navbar-s-navbar-ten24 li {float:left !important;}
   .navbar-s-navbar-ten24 li.active {border-left: 2px solid #FFB671;}
   .navbar-s-navbar-ten24 .navbar-nav { margin:0px;}
   .navbar-s-navbar-ten24 .navbar-brand {height:38px;padding:8px;}
@@ -381,8 +384,8 @@
   .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a .caret { border-bottom-color: #F58620}
   .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #F58620}
 
-  .s-create-window {display:none;margin-bottom: 38px;z-index: 3000;background: #FFF;position:absolute;left:0px;width:100%;margin-top:-23px;}
-  .s-create-window .s-absolute-top-nav {position:absolute;top:-38px;}
+  .s-create-window {margin-top:40px;margin-bottom: 40px;display: inline-block;width: 100%;background-color: #FFF;}
+  .s-create-window .s-absolute-top-nav {}
   .s-create-window .s-absolute-bottom-nav {display:none;}
   .s-create-window .s-create-bundle-item {margin-top:10px;background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;}
   .s-create-window .navbar .navbar-nav li a {padding: 6px 12px;}
@@ -407,3 +410,118 @@
   .s-batch-options {background-color: #EEE;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;}
   .s-batch-options h4 {border-bottom: 1px solid #DDD;padding-bottom: 6px;font-size: 14px;margin-bottom: 20px;}
   .s-batch-options h4 i {float:right;cursor:pointer;}
+
+
+
+
+  [class^="hibachi-ui-"], [class*=" hibachi-ui-"]{
+	display:inline-block;
+	width:16px;
+	height:16px;
+	line-height:16px;
+	vertical-align:text-top;
+	background-image:url("../../../org/Hibachi/HibachiAssets/images/ui-sprite.png");
+	background-repeat:no-repeat;
+	margin-right:.3em;
+	}
+[class^="hibachi-ui-"]:last-child,[class*=" hibachi-ui-"]:last-child{margin-left:0;}
+
+a:hover.disabled {cursor: default;}
+
+i.hibachi-ui-checkbox {background-position:0px 0px;}
+a.disabled > i.hibachi-ui-checkbox {background-position:-16px 0px !important; cursor:pointer;}
+
+i.hibachi-ui-checkbox-partial {background-position:0px -16px;}
+a.disabled > i.hibachi-ui-checkbox-partial {background-position:-16px -16px !important; cursor:pointer;}
+
+i.hibachi-ui-checkbox-checked {background-position:0px -32px;}
+a.disabled > i.hibachi-ui-checkbox-checked {background-position:-16px -32px !important; cursor:pointer;}
+
+i.hibachi-ui-radio {background-position:0px -48px;}
+a.disabled > i.hibachi-ui-radio {background-position:-16px -48px !important; cursor:pointer;}
+
+i.hibachi-ui-radio-checked {background-position:0px -64px;}
+a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !important; cursor:pointer;}
+
+
+.s-dialog-container {position:absolute;top:0px;height:100%;width:100%;z-index:10001;background-color:#fff !important;}
+.s-dialog-container .s-dialog-content {position:absolute;top:40px;}
+.s-dialog-container .s-dialog-header {position:fixed;top:0px;height:40px;width:100%;z-index:3000;border-radius:0px;}
+.s-dialog-container .s-dialog-footer {position:fixed;bottom:0px;height:40px;width:100%;margin-bottom:0px;border-radius:0px;}
+
+
+.s-dialog-container.ng-enter,
+.s-dialog-container.ng-leave {
+	-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  	transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	display:block;
+}
+
+.s-dialog-container.ng-enter {
+  top:-100%;
+}
+.s-dialog-container.ng-enter.ng-enter-active {
+  top:0;
+}
+.s-dialog-container.ng-leave {
+  top:0;
+}
+.s-dialog-container.ng-leave.ng-leave-active {
+  top:-100%;
+}
+
+.s-dialog-container.ng-enter .s-dialog-header,
+.s-dialog-container.ng-enter.ng-enter-active .s-dialog-header,
+.s-dialog-container.ng-enter .s-dialog-footer,
+.s-dialog-container.ng-enter.ng-enter-active .s-dialog-footer,
+.s-dialog-container.ng-leave .s-dialog-header,
+.s-dialog-container.ng-leave.ng-leave-active .s-dialog-header,
+.s-dialog-container.ng-leave .s-dialog-footer,
+.s-dialog-container.ng-leave.ng-leave-active .s-dialog-footer {
+	position:absolute;
+}
+
+.s-dialog-container.ng-enter,
+.s-dialog-container.ng-enter.ng-enter-active,
+.s-dialog-container.ng-leave,
+.s-dialog-container.ng-leave.ng-leave-active {
+	overflow:hidden;
+}
+
+/*
+.s-slide-in-page-dialog {
+  padding:10px;
+}
+.s-slide-in-page-dialog.ng-enter, .s-slide-in-page-dialog.ng-leave {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display:block;
+  padding:10px;
+}
+.s-slide-in-page-dialog.ng-enter .header {
+  top:-50px;
+
+}
+.s-slide-in-page-dialog.ng-enter.ng-enter-active {
+  top:0;
+}
+
+.s-slide-in-page-dialog.ng-leave {
+  top:0;
+}
+.s-slide-in-page-dialog.ng-leave.ng-leave-active {
+  top:50px;
+}
+*/
