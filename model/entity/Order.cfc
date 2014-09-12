@@ -1009,6 +1009,29 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 	}
 	
+	public any function populate( required struct data={} ) {
+		// Before we populate we need to cleanse the shippingAddress data if the shippingAccountAddress is being changed in any way
+		if(structKeyExists(arguments.data, "shippingAccountAddress")
+			&& structKeyExists(arguments.data.shippingAccountAddress, "accountAddressID")
+			&& len(arguments.data.shippingAccountAddress.accountAddressID)
+			&& (isNull(getShippingAccountAddress()) || getShippingAccountAddress().getAccountAddressID() != arguments.data.shippingAccountAddress.accountAddressID)) {
+				
+			structDelete(arguments.data, "shippingAddress");
+		}
+		
+		// Before we populate we need to cleanse the billingAddress data if the shippingAccountAddress is being changed in any way
+		if(structKeyExists(arguments.data, "billingAccountAddress")
+			&& structKeyExists(arguments.data.billingAccountAddress, "accountAddressID")
+			&& len(arguments.data.billingAccountAddress.accountAddressID)
+			&& (isNull(getBillingAccountAddress()) || getBillingAccountAddress().getAccountAddressID() != arguments.data.billingAccountAddress.accountAddressID)) {
+				
+			structDelete(arguments.data, "billingAddress");
+		}
+		
+		
+		super.populate(argumentCollection=arguments);
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================

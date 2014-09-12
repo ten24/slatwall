@@ -483,10 +483,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		if(isNull(arguments.accountAddress)) {
 			structDelete(variables, "accountAddress");
 		} else {
+			
 			// If the shippingAddress is a new shippingAddress
 			if(getShippingAddress().getNewFlag()) {
 				setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
-			
+				
 			// Else if there was no accountAddress before, or the accountAddress has changed
 			} else if (!structKeyExists(variables, "accountAddress") || (structKeyExists(variables, "accountAddress") && variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
 				getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
@@ -496,6 +497,19 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			// Set the actual accountAddress
 			variables.accountAddress = arguments.accountAddress;	
 		}
+	}
+	
+	public any function populate( required struct data={} ) {
+		// Before we populate we need to cleanse the shippingAddress data if the shippingAccountAddress is being changed in any way
+		if(structKeyExists(arguments.data, "accountAddress")
+			&& structKeyExists(arguments.data.accountAddress, "accountAddressID")
+			&& len(arguments.data.accountAddress.accountAddressID)
+			&& (isNull(getAccountAddress()) || getAccountAddress().getAccountAddressID() != arguments.data.accountAddress.accountAddressID)) {
+				
+			structDelete(arguments.data, "shippingAddress");
+		}
+		
+		super.populate(argumentCollection=arguments);
 	}
 	
 	// ==================  END:  Overridden Methods ========================

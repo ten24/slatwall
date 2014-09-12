@@ -148,7 +148,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Attribute was not found, and we wanted an entity back
 		} else if(arguments.returnEntity) {
 			var newAttributeValue = getService("attributeService").newAttributeValue();
-			newAttributeValue.setAttributeValueType( lcase( replace(getEntityName(),'Slatwall','') ) );
+			newAttributeValue.setAttributeValueType( getClassName() );
 			var thisAttribute = getService("attributeService").getAttributeByAttributeCode( arguments.attribute );
 			if(isNull(thisAttribute) && len(arguments.attribute) eq 32) {
 				thisAttribute = getService("attributeService").getAttributeByAttributeID( arguments.attribute );
@@ -156,7 +156,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			if(!isNull(thisAttribute)) {
 				newAttributeValue.setAttribute( thisAttribute );
 			}
-			//newAttributeValue.invokeMethod("set#getClassName()#", {1=this});
 			return newAttributeValue;
 
 		}
@@ -177,6 +176,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
+		
 		// Value is already encrypted, if attributeValueEntity.setAttributeValue called instead of attributeValueEntity.setAttributeValueEncrypted the encrypted value would be encrypted again
 		if (arguments.valueHasBeenEncryptedFlag) {
 			attributeValueEntity.setAttributeValueEncrypted( arguments.value );
@@ -184,16 +184,23 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			attributeValueEntity.setAttributeValue( arguments.value );
 		}
 		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
-
+		
 		// If this attribute value is new, then we can add it to the array
 		if(attributeValueEntity.isNew()) {
-			this.addAttributeValue( attributeValueEntity );
+			attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 		}
-
+		
+		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
+		if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeType())) {
+			var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue=arguments.value});
+			if(!isNull(attributeOption)) {
+				attributeValueEntity.setAttributeValueOption( attributeOption );
+			}
+		}
+		
 		// Update the cache for this attribute value
 		getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
 		getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
-			
 	}
 
 	public any function getAssignedAttributeSetSmartList(){
@@ -203,7 +210,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "attributes", "INNER", true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('globalFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'ast#replace(getEntityName(),'Slatwall','')#');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', getClassName());
 		}
 
 		return variables.assignedAttributeSetSmartList;

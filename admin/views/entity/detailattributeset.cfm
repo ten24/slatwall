@@ -58,12 +58,12 @@ Notes:
 	
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList divclass="span6">
-			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetType" edit="#rc.attributeSet.isNew()#">
+			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
 			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
 			<cfif rc.attributeSet.isNew()>
-				<cf_HibachiDisplayToggle selector="select[name='attributeSetType.typeID']" showValues="444df292eea355ddad72f5614726bc75,444df293fcc530434949d63e408cac2b,444df328fa718364a389a4495f386a27,5accbf52063a5b4e2a73f19f4151cc40" loadVisable="#rc.attributeSet.getNewFlag() or listFindNoCase('444df292eea355ddad72f5614726bc75,444df293fcc530434949d63e408cac2b,444df328fa718364a389a4495f386a27,5accbf52063a5b4e2a73f19f4151cc40', rc.attributeSet.getAttributeSetType().getTypeID())#">
+				<cf_HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
 					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
 				</cf_HibachiDisplayToggle>
 			</cfif>
@@ -71,9 +71,9 @@ Notes:
 		
 		<cfif !rc.attributeSet.isNew()>
 			<cf_HibachiPropertyList divclass="span6">
-				<cfset local.canEditGlobal = listFind( "astProduct,astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode() ) && rc.edit />
+				<cfset local.canEditGlobal = listFindNoCase( "OrderItem,Product", rc.attributeSet.getAttributeSetObject() ) && rc.edit />
 				<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#local.canEditGlobal#">
-				<cfif listFind( "astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode() )>
+				<cfif listFind( "OrderItem", rc.attributeSet.getAttributeSetObject() )>
 					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="requiredFlag" edit="#rc.edit#">
 					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="accountSaveFlag" edit="#rc.edit#">
 					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="additionalCharge" edit="#rc.edit#">
@@ -86,14 +86,14 @@ Notes:
 		<cf_HibachiTab view="admin:entity/attributesettabs/attributes" />
 		<cf_HibachiTab view="admin:entity/attributesettabs/description" />
 		<cfif not rc.attributeSet.getGlobalFlag()>
-			<cfif listFindNoCase("astProductType,astProduct,astSku,astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode()) and not rc.attributeSet.getGlobalFlag()>
+			<cfif listFindNoCase("OrderItem,ProductType,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
 				<cf_HibachiTab property="producttypes" />
 			</cfif>
-			<cfif listFindNoCase("astProduct,astSku,astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode()) and not rc.attributeSet.getGlobalFlag()>
+			<cfif listFindNoCase("OrderItem,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
 				<cf_HibachiTab property="products" />
 				<cf_HibachiTab property="brands" />
 			</cfif>
-			<cfif listFindNoCase("astSku,astOrderItem", rc.attributeSet.getAttributeSetType().getSystemCode()) and not rc.attributeSet.getGlobalFlag()>
+			<cfif listFindNoCase("OrderItem,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
 				<cf_HibachiTab property="skus" />
 			</cfif>
 		</cfif>

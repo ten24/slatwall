@@ -148,11 +148,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// copy order item customization
 			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
-				var av = this.newAttributeValue();
-				av.setAttributeValueType(attributeValue.getAttributeValueType());
-				av.setAttribute(attributeValue.getAttribute());
-				av.setAttributeValue(attributeValue.getAttributeValue());
-				av.setOrderItem(newOrderItem);
+				newOrderItem.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
 			}
 			
 			var orderFulfillmentFound = false;
@@ -1812,6 +1808,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Recalculate the order amounts
 			this.processOrder( order, {}, 'updateOrderAmounts' );
+			order.updateCalculatedProperties();
 			
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderItem );
@@ -1819,7 +1816,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return true;
 		}
 		
-		return delete( arguments.orderItem );
+		return false;
 	}
 	
 	// =====================  END: Delete Overrides ===========================

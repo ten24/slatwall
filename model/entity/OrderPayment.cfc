@@ -207,8 +207,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 		
 		// Company PaymentMethod Flag
-		if(!isNull(arguments.accountPaymentMethod.getCompanyPaymentMethodFlag())) {
-			setCompanyPaymentMethodFlag( arguments.accountPaymentMethod.getCompanyPaymentMethodFlag() );
+		if(!isNull(arguments.orderPayment.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.orderPayment.getCompanyPaymentMethodFlag() );
 		}
 		
 		// Credit Card
@@ -718,6 +718,19 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			// Set the actual accountAddress
 			variables.billingAccountAddress = arguments.accountAddress;	
 		}
+	}
+	
+	public any function populate( required struct data={} ) {
+		// Before we populate we need to cleanse the billingAddress data if the shippingAccountAddress is being changed in any way
+		if(structKeyExists(arguments.data, "billingAccountAddress")
+			&& structKeyExists(arguments.data.billingAccountAddress, "accountAddressID")
+			&& len(arguments.data.billingAccountAddress.accountAddressID)
+			&& (isNull(getBillingAccountAddress()) || getBillingAccountAddress().getAccountAddressID() != arguments.data.billingAccountAddress.accountAddressID)) {
+				
+			structDelete(arguments.data, "billingAddress");
+		}
+		
+		super.populate(argumentCollection=arguments);
 	}
 	
 	// ==================  END:  Overridden Methods ========================
