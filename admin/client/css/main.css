@@ -382,7 +382,7 @@
   .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a .caret { border-bottom-color: #F58620}
   .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #F58620}
 
-  .s-create-window {display:none;margin-bottom: 38px;z-index: 3000;background: #FFF;position:absolute;left:0px;width:100%;margin-top:-23px;}
+  .s-create-window {margin-bottom: 38px;z-index: 3000;background-color: #FFF;position:absolute;left:0px;width:100%;margin-top:-23px;}
   .s-create-window .s-absolute-top-nav {position:absolute;top:-38px;}
   .s-create-window .s-absolute-bottom-nav {display:none;}
   .s-create-window .s-create-bundle-item {margin-top:10px;background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;}
@@ -441,3 +441,85 @@ a.disabled > i.hibachi-ui-radio {background-position:-16px -48px !important; cur
 i.hibachi-ui-radio-checked {background-position:0px -64px;}
 a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !important; cursor:pointer;}
 
+
+.s-dialog-container {position:absolute;top:0px;height:100%;width:100%;z-index:10001;background-color:#fff !important;}
+.s-dialog-container .s-dialog-content {position:absolute;top:40px;}
+.s-dialog-container .s-dialog-header {position:fixed;top:0px;height:40px;width:100%;background-color:#efefef;}
+.s-dialog-container .s-dialog-footer {position:fixed;bottom:0px;height:40px;width:100%;background-color:#efefef;}
+
+
+.s-dialog-container.ng-enter,
+.s-dialog-container.ng-leave {
+	-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  	transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  	
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	display:block;
+}
+
+.s-dialog-container.ng-enter {
+  top:-100%;
+}
+.s-dialog-container.ng-enter.ng-enter-active {
+  top:0;
+}
+.s-dialog-container.ng-leave {
+  top:0;
+}
+.s-dialog-container.ng-leave.ng-leave-active {
+  top:-100%;
+}
+
+.s-dialog-container.ng-enter .s-dialog-header,
+.s-dialog-container.ng-enter.ng-enter-active .s-dialog-header,
+.s-dialog-container.ng-enter .s-dialog-footer,
+.s-dialog-container.ng-enter.ng-enter-active .s-dialog-footer,
+.s-dialog-container.ng-leave .s-dialog-header,
+.s-dialog-container.ng-leave.ng-leave-active .s-dialog-header,
+.s-dialog-container.ng-leave .s-dialog-footer,
+.s-dialog-container.ng-leave.ng-leave-active .s-dialog-footer {
+	position:absolute;
+}
+
+.s-dialog-container.ng-enter,
+.s-dialog-container.ng-enter.ng-enter-active,
+.s-dialog-container.ng-leave,
+.s-dialog-container.ng-leave.ng-leave-active {
+	overflow:hidden;
+}
+
+/*
+.s-slide-in-page-dialog {
+  padding:10px;
+}
+.s-slide-in-page-dialog.ng-enter, .s-slide-in-page-dialog.ng-leave {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display:block;
+  padding:10px;
+}
+.s-slide-in-page-dialog.ng-enter .header {
+  top:-50px;
+  
+}
+.s-slide-in-page-dialog.ng-enter.ng-enter-active {
+  top:0;
+}
+
+.s-slide-in-page-dialog.ng-leave {
+  top:0;
+}
+.s-slide-in-page-dialog.ng-leave.ng-leave-active {
+  top:50px;
+}
+*/
