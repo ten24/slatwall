@@ -85,8 +85,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			for(var i=1; i<= arrayLen(dirList); i++) {
 				if(len(dirList[i]) gt 7 && right(dirList[i],7) == "xml.cfm"){
 					var xmlRaw = FileRead(dirList[i]);
-					runPopulation = loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted);
-					/*try{
+					
+					try{
 						runPopulation = loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted);
 					} catch (any e) {
 						// If we haven't retried 3 times, then incriment the retry counter and re-run the population
@@ -96,7 +96,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						} else {
 							rethrow;
 						}
-					}*/
+					}
 										
 				}
 			}	
