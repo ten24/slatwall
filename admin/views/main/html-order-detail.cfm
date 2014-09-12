@@ -103,12 +103,14 @@
   .s-bundle-box > li {margin-bottom: 3px;}
   .s-bundle-box > li:first-child {margin-top: 3px;}
   .s-bundle-box > li:last-child {margin-bottom: 0px;}
-  .s-bundle-box > li > .s-bundle-box-head {vertical-align:bottom;display: inline-block;width: 100%;height:30px;width:100%;border-top: 1px solid #ddd;border-bottom: 1px solid #ddd;background-color: #aaa;}
+  .s-bundle-box > li > .s-bundle-box-head {vertical-align:bottom;display: inline-block;width: 100%;height:30px;width:100%;border-top: 1px solid #ddd;border-bottom: 1px solid #ddd;background-color: #eee;}
   .s-bundle-box > li > .s-bundle-box-head.s-active {background-color: #F58620;}
   .s-bundle-box > li > .s-bundle-box-head.s-active > div:first-child span {background-color:#F7A153;color:#fff;}
+  .s-bundle-box > li > .s-bundle-box-head.s-active > div:first-child span.s-title {background:none;}
   .s-bundle-box > li > .s-bundle-box-head .s-right {text-align:right;padding-right:0px;}
-  .s-bundle-box > li > .s-bundle-box-head > div:first-child {padding: 4px 3px 2px 16px;font-weight: 600;color:#fff;}
-  .s-bundle-box > li > .s-bundle-box-head > div:first-child span {background-color: #cccccc;color:#eeeeee;border-radius: 3px;padding: 2px 6px 2px 6px;font-size: 10px;display: inline-block;height: 17px;position: relative;margin-left: 7px;text-align: center;bottom: 0px;}
+  .s-bundle-box > li > .s-bundle-box-head > div:first-child {padding: 0px 3px 0px 0px;font-weight: 600;color:#666;}
+  .s-bundle-box > li > .s-bundle-box-head > div:first-child .s-count {min-width:30px;background-color: #949494;color: #fff;border-radius: 0px;padding: 2px 8px 0px 8px;margin-right:10px;font-size: 10px;display: inline-block;height: 28px;position: relative;text-align: center;bottom: 0px;line-height: 24px;}
+  .s-bundle-box > li > .s-bundle-box-head > div:first-child .s-title {position: relative;bottom: -2px;}
   .s-bundle-box > li > .s-bundle-box-head.s-active button {background-color:#F7A153;border-color:#F7A153;}
   .s-bundle-box > li > .s-bundle-box-head.s-active button:hover {background-color:#fff;border-color:#fff;}
   .s-bundle-box > li .s-right button {border-radius: 0px;padding: 3px;width:30px;border-color:#949494;background-color:#949494;color:#fff;}
@@ -132,6 +134,7 @@
   .s-bundle-box .s-bundle-group-items .s-bundle-box-head button {margin:0px;}
   .s-bundle-box .s-bundle-group-items .s-bundle-box-head > div {color:#666 !important;}
   .s-bundle-box .tab-content .selectboxit-btn, .s-bundle-box .tab-content .selectboxit-container, .s-bundle-box .tab-content select, .s-bundle-box .tab-content .selectboxit-options {width:100% !important;}
+  .s-bundle-box .s-add-bundle-item .s-bundle-box-head > div:first-child .s-title {bottom: -5px;margin-left: 10px;}
 </style>
 
 
@@ -139,9 +142,9 @@
           <ul class="list-unstyled s-bundle-box">
             <li>
               <div class="s-bundle-box-head">
-                <div class="col-xs-6">Skateboard Bundle <span>42</span></div>
+                <div class="col-xs-6"><span class="s-count">3</span><span class="s-title">Skateboard Bundle</span></div>
                 <div class="col-xs-6 s-right">
-                  <button class="btn btn-default" data-toggle="collapse" data-target="#j-display-details"><i class="fa fa-eye"></i></button>
+                  <button class="btn btn-default s-toggle-btn" data-toggle="collapse" data-target="#j-display-details"><i class="fa fa-eye"></i></button>
                   <button class="btn btn-default s-remove"><i class="fa fa-times"></i></button>
                 </div>
               </div>
@@ -156,8 +159,8 @@
                   <div class="row s-header-bar">
                     <div class="col-xs-12 s-header-nav">
                       <ul class="nav nav-tabs" role="tablist">
-                        <li class="active"><a href="#j-default-tab-9" role="tab" data-toggle="tab">Basic</a></li>
-                        <li><a href="#j-selections-tab-9" role="tab" data-toggle="tab">Bundle Items</a></li>
+                        <li class="active"><a href="#j-basic-skatebundle" role="tab" data-toggle="tab">Basic</a></li>
+                        <li><a href="#j-selections-skatebundle" role="tab" data-toggle="tab">Bundle Items</a></li>
                       </ul>
                     </div>
                   </div>
@@ -165,9 +168,9 @@
 
                   <!--- Tab panes for menu options start--->
                   <div class="s-options">
-                    <div class="col-xs-12 tab-content" id="j-property-box">
+                    <div class="col-xs-12 tab-content">
 
-                      <div class="tab-pane active" id="j-default-tab-9">
+                      <div class="tab-pane active" id="j-basic-skatebundle">
 
                         <form class="form-horizontal" role="form">
                           <div class="col-xs-6">
@@ -234,29 +237,29 @@
 
                       </div>
 
-                      <div class="row tab-pane" id="j-selections-tab-9">
+                      <div class="row tab-pane" id="j-selections-skatebundle">
 
 
                         <ul class="list-unstyled s-bundle-box s-dotted-border-bottom">
                           <li>
                             <div class="s-bundle-box-head">
-                              <div class="col-xs-6">Trucks <span>42</span></div>
+                              <div class="col-xs-6"><span class="s-count">42</span><span class="s-title">Trucks</span></div>
                               <div class="col-xs-6 s-right">
-                                <button class="btn btn-default" data-toggle="collapse" data-target="#j-display-details-wheels"><i class="fa fa-eye"></i></button>
+                                <button class="btn btn-default s-toggle-btn" data-toggle="collapse" data-target="#j-display-details-trucks"><i class="fa fa-eye"></i></button>
                                 <button class="btn btn-default s-remove"><i class="fa fa-times"></i></button>
                               </div>
                             </div>
 
                             <!--- Edit Filter Box --->
-                            <div class="s-bundle-group-dropdown-content collapse" id="j-display-details-wheel">
+                            <div class="s-bundle-group-dropdown-content collapse" id="j-display-details-trucks">
                               <div class="s-filter-content">
 
                                 <!--- Header nav with title starts --->
                                 <div class="row s-header-bar">
                                   <div class="col-xs-12 s-header-nav">
                                     <ul class="nav nav-tabs" role="tablist">
-                                      <li class="active"><a href="#j-default-tab-9" role="tab" data-toggle="tab">Basic</a></li>
-                                      <li><a href="#j-selections-tab-9" role="tab" data-toggle="tab">Selections</a></li>
+                                      <li class="active"><a href="#j-basic-trucks" role="tab" data-toggle="tab">Basic</a></li>
+                                      <li><a href="#j-selections-trucks" role="tab" data-toggle="tab">Selections</a></li>
                                     </ul>
                                   </div>
                                 </div>
@@ -265,7 +268,7 @@
                                 <!--- Tab panes for menu options start--->
                                 <div class="s-options">
                                   <div class="col-xs-12 tab-content" id="j-property-box">
-                                    <div class="tab-pane active" id="j-default-tab-9">
+                                    <div class="tab-pane active" id="j-basic-trucks">
 
                                       <p>
                                         <br/>
@@ -276,7 +279,7 @@
                                       </p>
 
                                     </div>
-                                    <div class="tab-pane" id="j-selections-tab-9">
+                                    <div class="tab-pane" id="j-selections-trucks">
 
                                       <p>
                                         Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue.
@@ -289,6 +292,59 @@
                             </div>
                             <!--- //Edit Filter Box --->
                           </li>
+
+                          <li>
+                            <div class="s-bundle-box-head">
+                              <div class="col-xs-6"><span class="s-count">42</span><span class="s-title">Grip Tape</span></div>
+                              <div class="col-xs-6 s-right">
+                                <button class="btn btn-default s-toggle-btn" data-toggle="collapse" data-target="#j-display-details-griptape"><i class="fa fa-eye"></i></button>
+                                <button class="btn btn-default s-remove"><i class="fa fa-times"></i></button>
+                              </div>
+                            </div>
+
+                            <!--- Edit Filter Box --->
+                            <div class="s-bundle-group-dropdown-content collapse" id="j-display-details-griptape">
+                              <div class="s-filter-content">
+
+                                <!--- Header nav with title starts --->
+                                <div class="row s-header-bar">
+                                  <div class="col-xs-12 s-header-nav">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                      <li class="active"><a href="#j-basic-griptape" role="tab" data-toggle="tab">Basic</a></li>
+                                      <li><a href="#j-selections-griptape" role="tab" data-toggle="tab">Selections</a></li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <!--- //Header nav with title end --->
+
+                                <!--- Tab panes for menu options start--->
+                                <div class="s-options">
+                                  <div class="col-xs-12 tab-content" id="j-property-box">
+                                    <div class="tab-pane" id="j-basic-griptape">
+
+                                      <p>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue.
+                                        <br/><br/><br/>
+                                      </p>
+
+                                    </div>
+                                    <div class="tab-pane" id="j-selections-griptape">
+
+                                      <p>
+                                        Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nulla vitae elit libero, a pharetra augue.
+                                      </p>
+
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!--- //Edit Filter Box --->
+                          </li>
+
                         </ul>
 
                         <!-- Search for bundle -->
@@ -317,7 +373,7 @@
                               <ul class="list-unstyled s-bundle-box">
                                 <li>
                                   <div class="s-bundle-box-head">
-                                    <div class="col-xs-6">SkateBoard Wheels</div>
+                                    <div class="col-xs-6"><span class="s-title">SkateBoard Wheels</span></div>
                                     <div class="col-xs-6 s-right">
                                       <button class="btn btn-default"><i class="fa fa-plus"></i></button>
                                     </div>
@@ -325,7 +381,7 @@
                                 </li>
                                 <li>
                                   <div class="s-bundle-box-head">
-                                    <div class="col-xs-6">SkateBoard Bearings</div>
+                                    <div class="col-xs-6"><span class="s-title">SkateBoard Bearings</span></div>
                                     <div class="col-xs-6 s-right">
                                       <button class="btn btn-default"><i class="fa fa-plus"></i></button>
                                     </div>
@@ -353,9 +409,9 @@
 
             <li>
               <div class="s-bundle-box-head">
-                <div class="col-xs-6">Skate Shoes <span>42</span></div>
+                <div class="col-xs-6"><span class="s-count">42</span><span class="s-title">Skate Shoes</span></div>
                 <div class="col-xs-6 s-right">
-                  <button class="btn btn-default" data-toggle="collapse" data-target="#j-display-details"><i class="fa fa-eye"></i></button>
+                  <button class="btn btn-default s-toggle-btn" data-toggle="collapse" data-target="#j-display-details"><i class="fa fa-eye"></i></button>
                   <button class="btn btn-default s-remove"><i class="fa fa-times"></i></button>
                 </div>
               </div>
@@ -2123,19 +2179,24 @@ $('form').submit(function(){
   });
 </script>
 
-<script charset="utf-8">
-  $('.s-bundle-box .s-bundle-box-head .fa-eye').click(function(){
-    var hasActive = $(this).closest('.s-bundle-box-head');
-    if(hasActive.hasClass('s-active')){
-      hasActive.removeClass('s-active');
-    }else{
-      hasActive.addClass('s-active');
-    };
-    if(hasActive.closest('li').siblings().hasClass('s-disabled')){
-      hasActive.closest('li').siblings().removeClass('s-disabled');
-    }else{
-      hasActive.closest('li').siblings().addClass('s-disabled');
-    };
+// <script charset="utf-8">
+//   $('.s-bundle-box .s-bundle-box-head .fa-eye').click(function(){
+//     var hasActive = $(this).closest('.s-bundle-box-head');
+//     if(hasActive.hasClass('s-active')){
+//       hasActive.removeClass('s-active');
+//     }else{
+//       hasActive.addClass('s-active');
+//     };
+//     if(hasActive.closest('li').siblings().hasClass('s-disabled')){
+//       hasActive.closest('li').siblings().removeClass('s-disabled');
+//     }else{
+//       hasActive.closest('li').siblings().addClass('s-disabled');
+//     };
+//   });
+// </script>
 
+<script charset="utf-8">
+  jQuery('body').on('click', '.s-bundle-box .s-bundle-box-head .s-toggle-btn', function(e){
+    $(this).parent().parent().toggleClass('s-active');
   });
 </script>
