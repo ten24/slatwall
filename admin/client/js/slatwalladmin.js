@@ -1,5 +1,5 @@
 'use strict';
-angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap',function($locationProvider){
+angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAnimate', function($locationProvider){
 	$locationProvider.html5Mode(true);
 }]).config(["$provide",'$logProvider','$filterProvider', function ($provide, $logProvider,$filterProvider) {
 	$provide.constant("partialsPath", '/admin/client/js/directives/partials/');
