@@ -371,6 +371,7 @@ Notes:
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collectionstabcontroller.js"></script>
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
+	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
 	 	
 	 	<!---directives --->
 	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swheaderwithtabs.js"></script>
@@ -427,7 +428,6 @@ Notes:
 			</div>
 		</div>
 		
-		
 		<!---
 		<div style="position:absolute;top:0px;height:100%;width:100%;z-index:10001;overflow:hidden;background-color:##fff;">
 			<div style="position:absolute;top:40px;overflow:hidden;">
@@ -440,7 +440,9 @@ Notes:
 		
 		<!--- Page Dialog Controller --->
 		<div ng-controller="pageDialog">
-			<span class="s-dialog-container" ng-repeat="dialog in pageDialogs" ng-include="dialog.path"></span>
+			<span class="s-dialog-container" ng-repeat="pageDialog in pageDialogs">
+				<span ng-include="pageDialog.path"></span>
+			</span>
 		</div>
 		
 		<!---displays alerts to the user --->
