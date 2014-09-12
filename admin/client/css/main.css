@@ -352,13 +352,15 @@
   .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details:first-child {font-weight:700;}
   .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details {font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;}
   .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove {display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;}
-  .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove a {border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 7px;background-color: #DA5757;color: #FFF !important;}
+  .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove a {border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 7px;background-color: #666666;border-color:#666666;color: #FFF !important;}
 
-  .s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;}
+
+  .s-remove:hover {background-color:#DA5757 !important;border-color:#DA5757 !important;color:#ffffff !important;}
   .s-pannel-group .panel-default .panel-heading {background-color:#606060;color:#fff; border-color:#888;}
   .s-pannel-group .panel-default a {text-decoration:none;}
 
   .navbar-s-navbar-ten24 { background-color: #F58620;min-height:0px;}
+  .navbar-s-navbar-ten24 li {float:left !important;}
   .navbar-s-navbar-ten24 li.active {border-left: 2px solid #FFB671;}
   .navbar-s-navbar-ten24 .navbar-nav { margin:0px;}
   .navbar-s-navbar-ten24 .navbar-brand {height:38px;padding:8px;}
@@ -382,8 +384,8 @@
   .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a .caret { border-bottom-color: #F58620}
   .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #F58620}
 
-  .s-create-window {margin-bottom: 38px;z-index: 3000;background-color: #FFF;position:absolute;left:0px;width:100%;margin-top:-23px;}
-  .s-create-window .s-absolute-top-nav {position:absolute;top:-38px;}
+  .s-create-window {margin-top:40px;margin-bottom: 40px;display: inline-block;width: 100%;background-color: #FFF;}
+  .s-create-window .s-absolute-top-nav {}
   .s-create-window .s-absolute-bottom-nav {display:none;}
   .s-create-window .s-create-bundle-item {margin-top:10px;background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;}
   .s-create-window .navbar .navbar-nav li a {padding: 6px 12px;}
@@ -408,10 +410,10 @@
   .s-batch-options {background-color: #EEE;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;}
   .s-batch-options h4 {border-bottom: 1px solid #DDD;padding-bottom: 6px;font-size: 14px;margin-bottom: 20px;}
   .s-batch-options h4 i {float:right;cursor:pointer;}
-  
-  
-  
-  
+
+
+
+
   [class^="hibachi-ui-"], [class*=" hibachi-ui-"]{
 	display:inline-block;
 	width:16px;
@@ -444,15 +446,15 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 
 .s-dialog-container {position:absolute;top:0px;height:100%;width:100%;z-index:10001;background-color:#fff !important;}
 .s-dialog-container .s-dialog-content {position:absolute;top:40px;}
-.s-dialog-container .s-dialog-header {position:fixed;top:0px;height:40px;width:100%;background-color:#efefef;}
-.s-dialog-container .s-dialog-footer {position:fixed;bottom:0px;height:40px;width:100%;background-color:#efefef;}
+.s-dialog-container .s-dialog-header {position:fixed;top:0px;height:40px;width:100%;z-index:3000;border-radius:0px;}
+.s-dialog-container .s-dialog-footer {position:fixed;bottom:0px;height:40px;width:100%;margin-bottom:0px;border-radius:0px;}
 
 
 .s-dialog-container.ng-enter,
 .s-dialog-container.ng-leave {
 	-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
   	transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-  	
+
 	position:absolute;
 	top:0;
 	left:0;
@@ -510,7 +512,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 }
 .s-slide-in-page-dialog.ng-enter .header {
   top:-50px;
-  
+
 }
 .s-slide-in-page-dialog.ng-enter.ng-enter-active {
   top:0;
