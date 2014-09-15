@@ -83,7 +83,8 @@ Notes:
 		<cfquery name="rs" >
 			SELECT
 				settingID,
-				settingValue
+				settingValue,
+				settingValueEncryptedGenerator
 			FROM
 				SwSetting
 			WHERE

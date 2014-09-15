@@ -531,10 +531,26 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	// @hint handles encrypting a property based on conventions
 	public void function encryptProperty(required string propertyName) {
-		var encryptedPropertyValue = encryptValue(this.invokeMethod('get#arguments.propertyName#'), getPrimaryIDValue());
+		var generatorValue = createHibachiUUID();
+		var encryptedPropertyValue = encryptValue(this.invokeMethod('get#arguments.propertyName#'), generatorValue);
 		
-		//logHibachi("****** EncryptProperty start: 'get#arguments.propertyName#()': " & this.invokeMethod('get#arguments.propertyName#') & ", encrypted: #encryptedPropertyValue#, decrypted: #decryptValue(encryptedPropertyValue, getPrimaryIDValue())#");
+		// Set encrypted generator
+		if(this.hasProperty('#arguments.propertyName#EncryptedGenerator')) {
+			this.invokeMethod("set#arguments.propertyName#EncryptedGenerator", {'1'=generatorValue});
+		// Enforce that every encrypted property has a corresponding generator when the encryption takes place
+		} else {
+			throw("Entity '#getClassName()#' is missing the '#arguments.propertyName#EncryptedGenerator' property. Encrypting '#arguments.propertyName#' property value without a corresponding '#arguments.propertyName#EncryptedGenerator' property is not allowed.");	
+		}
 		
+		// Set encrypted datetime stamp
+		if(this.hasProperty('#arguments.propertyName#EncryptedDateTime')) {
+			this.invokeMethod("set#arguments.propertyName#EncryptedDateTime", {'1'=now()});
+		// Enforce that every encrypted property has the timestamp when the encryption takes place
+		} else {
+			throw("Entity '#getClassName()#' is missing the '#arguments.propertyName#EncryptedDateTime' property. Encrypting '#arguments.propertyName#' property value without a corresponding '#arguments.propertyName#EncryptedDateTime' property is not allowed.");	
+		}
+		
+		// Determine the appropiate property of the entity where to set the encrypted value
 		if(this.hasProperty('#arguments.propertyName#Encrypted')) {
 			// Set corresponding property that should store the newly encrypted value and remove the unencrypted value from the corresponding unencrypted property (necessary if persistent)
 			this.invokeMethod("set#arguments.propertyName#Encrypted", {'1'=encryptedPropertyValue});
@@ -546,20 +562,25 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				structDelete(variables, arguments.propertyName);
 			}
 		} else {
-			// Overwrite property's unencrypted value with the newly encrypted value
+			// Overwrite property's unencrypted value directly with the newly encrypted value, bypass the setter because could trigger a recursive loop on this method
 			variables['#arguments.propertyName#'] = encryptedPropertyValue;
-			
-			// Commented code below would result in a recursive call unless condition should be flagged to use the setter
-			// this.invokeMethod('set#arguments.propertyName#', {'1'=encryptedPropertyValue});
+		}
+	}
+	
+	// @hint handles decrypting a property based on conventions
+	public string function decryptProperty(required string propertyName) {
+		var encryptedPropertyValue = "";
+		var generatorValue = this.invokeMethod("get#arguments.propertyName#EncryptedGenerator");
+		param name="generatorValue" default=""; 
+		
+		// Determine the appropriate property to retrieve the encrytped value from
+		if (this.hasProperty("#arguments.propertyName#Encrypted")) {
+			encryptedPropertyValue = this.invokeMethod("get#arguments.propertyName#Encrypted");
+		} else {
+			encryptedPropertyValue = variables['#arguments.propertyName#'];
 		}
 		
-		// Set encrypted datetime stamp
-		if(this.hasProperty('#arguments.propertyName#EncryptedDateTime')) {
-			this.invokeMethod("set#arguments.propertyName#EncryptedDateTime", {'1'=now()});
-		// Enforce that every encrypted property has the timestamp when the encryption takes place
-		} else {
-			throw("Entity '#getClassName()#' is missing the '#arguments.propertyName#EncryptedDateTime' property. Encrypting '#arguments.propertyName#' property value without a corresponding '#arguments.propertyName#EncryptedDateTime' property is not allowed.");	
-		}
+		return decryptValue(encryptedPropertyValue, generatorValue);
 	}
 	
 	public string function getAuditablePropertyExclusionList() {

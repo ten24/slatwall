@@ -291,7 +291,6 @@
 		
 		public string function encryptValue(required string value, string salt="") {
 			var passwords = getEncryptionPasswordArray();
-			//logHibachi("****** encrypting using value:'#arguments.value#', salt:'#arguments.salt#'), iterationCount:#passwords[1].iterationCount#, password:'#passwords[1].password#', key:'#generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount)#'");
 			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
 		}
 	
@@ -315,7 +314,6 @@
 				// Attempt to decrypt
 				try {
 					var decryptedResult = decrypt(arguments.value, key, algorithm, encoding);
-					
 					// Necessary due to a possible edge case when no error occurs during a 
 					// decryption attempt with an incorrect key
 					if (!len(decryptedResult)) {

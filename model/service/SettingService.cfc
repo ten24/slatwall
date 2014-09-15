@@ -449,7 +449,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		if(rs.recordCount) {
 			var metaData = getSettingMetaData( arguments.settingName );
 			if(structKeyExists(metaData, "encryptValue") && metaData.encryptValue) {
-				rs.settingValue = decryptValue( rs.settingValue, rs.settingID );
+				rs.settingValue = decryptValue( rs.settingValue, rs.settingValueEncryptedGenerator );
 			}
 		}
 		

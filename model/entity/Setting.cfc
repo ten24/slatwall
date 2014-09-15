@@ -53,6 +53,7 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingName" ormtype="string";
 	property name="settingValue" ormtype="string" length="4000";
 	property name="settingValueEncryptedDateTime" ormType="timestamp";
+	property name="settingValueEncryptedGenerator" ormType="string";
 
 	// Non-Constrained related entity
 	property name="cmsContentID" ormtype="string";
@@ -93,16 +94,14 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 		
 		// Determine if we need to encrypt value
 		if(structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue == true && !getSettingValueEncryptionProcessedFlag() && !isNull(getSettingID())) {
-			encryptProperty('settingValue', getSettingID());
+			encryptProperty('settingValue');
 		}
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public void function setSettingValue(required string settingValue) {
-		//logHibachi("****** Setting.setSettingValue('#arguments.settingValue#')");
 		variables.settingValue = arguments.settingValue;
-		// TODO Does this interfere with validation? If so when can we post pone
 		setupEncryptedProperties();
 		setSettingValueEncryptionProcessedFlag(true);
 	}
@@ -150,7 +149,6 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	
 	// This overrides the base validation method to dynamically add rules based on setting specific requirements
 	public any function validate( string context="" ) {
-		logHibachi("****** Setting.validate(context='#arguments.context#') called.");
 		// Call the base method validate with any additional arguments passed in
 		super.validate(argumentCollection=arguments);
 		

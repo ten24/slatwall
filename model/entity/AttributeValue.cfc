@@ -52,12 +52,9 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
 	property name="attributeValueEncrypted" ormtype="string";
-<<<<<<< HEAD
 	property name="attributeValueEncryptedDateTime" ormType="timestamp";
+	property name="attributeValueEncryptedGenerator" ormType="string";
 	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
-=======
-	property name="attributeValueType" ormtype="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
->>>>>>> 49648506d592fd3c56b10b32796d7160952f37aa
 	
 	// Calculated Properties
 
@@ -106,21 +103,12 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
-	
-<<<<<<< HEAD
+
 	public void function setupEncryptedProperties() {
-		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeType()) && !isNull(getAttribute().getAttributeType().getSystemCode()) && getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attributeValue")) {
-			encryptProperty('attributeValue', getAttributeID());
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeType()) && getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attributeValue")) {
+			encryptProperty('attributeValue');
 		}
 	}
-=======
-	// Deprecated Properties
-
-
-	// ==================== START: Logical Methods =========================
-	
-	// ====================  END: Logical Methods ==========================
->>>>>>> 49648506d592fd3c56b10b32796d7160952f37aa
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -543,8 +531,8 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			return variables.attributeValue;
 		}
 		if(structKeyExists(variables, "attributeValueEncrypted") && len(variables.attributeValueEncrypted)) {
-			if(!isNull(getAttribute().getDecryptValueInAdminFlag()) && getAttribute().getDecryptValueInAdminFlag()) {
-				return decryptValue(variables.attributeValueEncrypted, getAttributeValueID());	
+			if(!isNull(getAttribute().getDecryptValueInAdminFlag()) && getAttribute().getDecryptValueInAdminFlag()) {	
+				return decryptProperty("attributeValue");
 			}
 			return "********";
 		}

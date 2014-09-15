@@ -57,6 +57,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardNumberEncryptedDateTime" ormType="timestamp";
+	property name="creditCardNumberEncryptedGenerator" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
 	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
@@ -331,7 +332,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	public string function getCreditCardNumber() {
 		if(!structKeyExists(variables,"creditCardNumber")) {
 			if(nullReplace(getCreditCardNumberEncrypted(), "") NEQ "") {
-				variables.creditCardNumber = decryptValue(getCreditCardNumberEncrypted(), getPrimaryIDValue());
+				variables.creditCardNumber = decryptProperty("creditCardNumber");
 			} else {	
 				variables.creditCardNumber = "";
 			}
