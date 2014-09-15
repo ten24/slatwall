@@ -394,7 +394,7 @@ $filter){
         	
 			{
 				display:"Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is not",
 				value:"null"
 			},
 			{
@@ -407,19 +407,19 @@ $filter){
     };
     
     var getManyToOneOptions = function(){
-    	var manyToOneOptions = [
-            
-			{
+    	var manyToOneOptions = {
+            drillEntity:{},
+			hasEntity:{
 				display:"Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is not",
 				value:"null"
 			},
-			{
+			notHasEntity:{
 				display:"Not Defined",
 				comparisonOperator:"is",
 				value:"null"
 			}
-        ];
+    	};
     	return manyToOneOptions;
     };
     
@@ -678,11 +678,11 @@ $filter){
 				if(angular.isDefined(scope.selectedFilterProperty.fieldtype)){
 					switch(scope.selectedFilterProperty.fieldtype){
 						case "many-to-one":
-							scope.manyToOneOptions = getManyToOneOptions();
+							scope.conditionOptions = getManyToOneOptions();
 							$log.debug('many-to-one');
 							$log.debug(scope.selectedFilterProperty);
 							$log.debug(scope.filterPropertiesList);
-							
+								
 							if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
 								var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
 								filterPropertiesPromise.then(function(value){
@@ -692,14 +692,6 @@ $filter){
 									
 								});
 							}
-							
-							/*var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
-							filterPropertiesPromise.then(function(value){
-								scope.filterPropertiesList[scope.selectedFilterProperty.cfc] = value;
-								collectionService.formatFilterPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.cfc],scope.selectedFilterProperty.propertyIdentifier);
-							}, function(reason){
-								
-							});*/
 							
 							break;
 						case "many-to-many":

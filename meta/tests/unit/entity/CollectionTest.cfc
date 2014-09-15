@@ -626,51 +626,122 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionCode = 'BestAccounts',
 			baseEntityName = 'Account',
 			collectionConfig = '
-				{
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
-					"columns":[
-						{
-							"propertyIdentifier":"Account.firstName"
-						}
-					],
-					"joins":[
-						{
-							"associationName":"primaryEmailAddress",
-							"alias":"Account_primaryEmailAddress"
-						}
-					],
-					"orderBy":[
-						{
-							"propertyIdentifier":"Account.firstName",
-							"direction":"DESC"
-						}
-					],
-					
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								}
-							]
-							
-						},
-						{
-							"logicalOperator":"OR",
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								}
-							]
-						}
-					]
-					
-				}
+				{  
+   "baseEntityName":"SlatwallAccount",
+   "baseEntityAlias":"Account",
+   "columns":[  
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.accountID",
+         "ormtype":"id",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"accountID"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.superUserFlag",
+         "ormtype":"boolean",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"Super User"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.firstName",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"First Name"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.lastName",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"Last Name"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.company",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"Company"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.cmsAccountID",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"CMS Account ID"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.remoteEmployeeID",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"Remote Employee ID"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.remoteCustomerID",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"Remote Customer ID"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.remoteContactID",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"Remote Contact ID"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.createdByAccountID",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"Created By AccountID"
+      },
+      {  
+         "isExportable":true,
+         "propertyIdentifier":"Account.modifiedByAccountID",
+         "ormtype":"string",
+         "isVisible":true,
+         "isSearchable":true,
+         "title":"Modified By AccountID"
+      }
+   ],
+   "filterGroups":[  
+      {  
+         "filterGroup":[  
+            {  
+               "displayPropertyIdentifier":"Account Primary Email Address",
+               "propertyIdentifier":"Account.primaryEmailAddress",
+               "comparisonOperator":"not is",
+               "value":"null",
+               "breadCrumbs":[  
+                  {  
+                     "entityAlias":"Account",
+                     "cfc":"Account",
+                     "propertyIdentifier":"Account"
+                  }
+               ],
+               "displayValue":"null",
+               "fieldtype":"many-to-one",
+               "conditionDisplay":"Defined"
+            }
+         ]
+      }
+   ]
+}
 			'
 		};
 

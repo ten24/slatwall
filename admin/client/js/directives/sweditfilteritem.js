@@ -150,6 +150,10 @@ $filter){
 			
 			scope.saveFilter = function(selectedFilterProperty,filterItem,callback){
 				$log.debug('saveFilter begin');
+				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType && selectedFilterProperty.selectedCriteriaType === {})){
+					return;
+				}
+				
 				if(angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
 					//populate filterItem with selectedFilterProperty values
 					filterItem.$$isNew = false;
@@ -227,6 +231,18 @@ $filter){
 							}
 							filterItem.displayValue = filterItem.value;
 							break;
+			            
+					}
+					
+					switch(selectedFilterProperty.fieldtype){
+						case 'many-to-one':
+			            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+							//is null, is not null
+							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+							}
+							filterItem.displayValue = filterItem.value;
+			            	break;
 					}
 					
 					if(angular.isUndefined(filterItem.displayValue)){

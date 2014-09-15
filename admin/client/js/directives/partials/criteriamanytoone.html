@@ -5,7 +5,7 @@
 
     <div class="s-options-group">
       <div class="radio" style="border-bottom: 3px dotted #DDD;padding-bottom: 15px;margin-bottom: 20px;">
-        <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" value="option1" checked>
+        <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" ng-model="selectedFilterProperty.selectedCriteriaType"  ng-value="conditionOptions.drillEntity" checked>
         <label for="radio1">
             Use  {{selectedFilterProperty.displayPropertyIdentifier}} field:
         </label>
@@ -20,27 +20,17 @@
           		class="form-control input-sm">
             <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>
           </select>
-          <!-- <select class="form-control input-sm">
-            <option disabled="disabled" selected="selected"> Select From Account </option>
-            <option>First Name</option>
-            <option>Last Name</option>
-            <option>Company</option>
-            <option disabled="disabled">----</option>
-            <option>Primary E-Mail Address</option>
-            <option disabled="disabled">----</option>
-            <option>Addresses</option>
-          </select>-->
         </div>
         <div class="clearfix"></div>
       </div>
       <div class="radio">
-        <input type="radio" name="radio1" id="radio2" value="option2">
+        <input type="radio" name="radio1" id="radio2" ng-value="conditionOptions.hasEntity" ng-model="selectedFilterProperty.selectedCriteriaType" >
         <label for="radio2">
             Has {{selectedFilterProperty.displayPropertyIdentifier}}
         </label>
       </div>
       <div class="radio">
-        <input type="radio" name="radio1" id="radio3" value="option3">
+        <input type="radio" name="radio1" id="radio3" ng-value="conditionOptions.notHasEntity" ng-model="selectedFilterProperty.selectedCriteriaType" >
         <label for="radio3">
             Doesn't Have  {{selectedFilterProperty.displayPropertyIdentifier}}
         </label>
