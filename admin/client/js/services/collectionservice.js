@@ -182,6 +182,9 @@ function(slatwallService,$log){
 		},
 		
 		formatFilterPropertiesList: function(filterPropertiesList,propertyIdentifier){
+			$log.debug('format Filter Properties List arguments 2');
+			$log.debug(filterPropertiesList);
+			$log.debug(propertyIdentifier);
 			for(i in filterPropertiesList.data){
 				filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' +filterPropertiesList.data[i].name;
 			}

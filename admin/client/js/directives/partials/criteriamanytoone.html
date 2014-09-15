@@ -14,7 +14,7 @@
           		ng-change="selectedCriteriaChanged(selectedFilterProperty.selectedCriteriaType)" 
           		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
           					group by filterProperty.fieldtype 
-          					for filterProperty in filterPropertiesList[selectedFilterProperty.cfc].data 
+          					for filterProperty in filterPropertiesList[selectedFilterProperty.propertyIdentifier].data 
           					track by filterProperty.propertyIdentifier
           					| orderBy:filterProperty.name" 
           		class="form-control input-sm">

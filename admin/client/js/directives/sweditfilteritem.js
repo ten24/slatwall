@@ -33,49 +33,82 @@ $filter){
 			
 			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
 			
-			console.log('filterItem');
-			console.log(scope.filterItem);
-			if(scope.filterItem.propertyIdentifier === ""){
-				scope.entityAliasArray= [scope.baseEntityAlias];
+			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
+				scope.filterItem.breadCrumbs = [];
+				if(scope.filterItem.propertyIdentifier === ""){
+					
+					scope.filterItem.breadCrumbs = [
+					                     	{
+					                     		entityAlias:scope.baseEntityAlias,
+					                     		cfc:scope.baseEntityAlias,
+					                     		propertyIdentifier:scope.baseEntityAlias
+					                     	}
+					                    ];
+				}else{
+					var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+					entityAliasArrayFromString.pop();
+					for(var i in entityAliasArrayFromString){
+						var breadCrumb = {
+								entityAlias:entityAliasArrayFromString[i],
+								cfc:entityAliasArrayFromString[i],
+								propertyIdentifier:entityAliasArrayFromString[i]
+						};
+						scope.filterItem.breadCrumbs.push(breadCrumb);
+					}
+				}
 			}else{
-				var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
-				entityAliasArrayFromString.pop();
-				scope.entityAliasArray = entityAliasArrayFromString;
+				angular.forEach(scope.filterItem.breadCrumbs,function(breadCrumb,key){
+					if(angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])){
+						var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+						filterPropertiesPromise.then(function(value){
+							collectionService.setFilterPropertiesList(value,breadCrumb.propertyIdentifier);
+							scope.filterPropertiesList[breadCrumb.propertyIdentifier] = collectionService.getFilterPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+							collectionService.formatFilterPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier],breadCrumb.propertyIdentifier);
+							var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+							entityAliasArrayFromString.pop();
+							
+							entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+								for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
+									var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+									if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
+										//selectItem from drop down
+										scope.selectedFilterProperty = filterProperty;
+										//decorate with value and comparison Operator so we can use it in the Condition section
+										scope.selectedFilterProperty.value = scope.filterItem.value;
+										scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+									}
+								}
+								
+							//scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
+						}, function(reason){
+							
+						});
+					}else{
+						var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+						entityAliasArrayFromString.pop();
+						
+						entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+						if(angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])){
+							for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
+								var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+								if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
+									//selectItem from drop down
+									scope.selectedFilterProperty = filterProperty;
+									//decorate with value and comparison Operator so we can use it in the Condition section
+									scope.selectedFilterProperty.value = scope.filterItem.value;
+									scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+								}
+							}
+						}
+						
+					}
+				});
 			}
 			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
 			}
 			
-			console.log('swedit');
-			console.log(scope.filterPropertiesList);
-			
-			console.log(scope.filterItem);
-			
-			/*for(var i in scope.entityAliasArray){
-				var entityAlias = scope.entityAliasArray[i];
-				if(angular.isUndefined(scope.filterPropertiesList[entityAlias])){
-					var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(entityAlias);
-					filterPropertiesPromise.then(function(value){
-						collectionService.setFilterPropertiesList(value,entityAlias);
-						scope.filterPropertiesList[entityAlias] = collectionService.getFilterPropertiesListByBaseEntityAlias(entityAlias);
-						collectionService.formatFilterPropertiesList(scope.filterPropertiesList[entityAlias],entityAlias);
-					}, function(reason){
-						
-					});
-				}
-			}*/
-			
-			for(var i in scope.filterPropertiesList[scope.baseEntityAlias].data){
-				var filterProperty = scope.filterPropertiesList[scope.baseEntityAlias].data[i];
-				if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
-					//selectItem from drop down
-					scope.selectedFilterProperty = filterProperty;
-					//decorate with value and comparison Operator so we can use it in the Condition section
-					scope.selectedFilterProperty.value = scope.filterItem.value;
-					scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
-				}
-			}
 			
 			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 			
@@ -87,8 +120,9 @@ $filter){
 			
 			scope.selectBreadCrumb = function(breadCrumbIndex){
 				//splice out array items above index
-				var removeCount = scope.entityAliasArray.length - 1 - breadCrumbIndex;
-				scope.entityAliasArray.splice(breadCrumbIndex + 1,removeCount);
+				var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+				scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
+				scope.selectedFilterPropertyChanged(null);
 				
 			};
 			

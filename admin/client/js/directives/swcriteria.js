@@ -683,13 +683,23 @@ $filter){
 							$log.debug(scope.selectedFilterProperty);
 							$log.debug(scope.filterPropertiesList);
 							
-							var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+							if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
+								var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+								filterPropertiesPromise.then(function(value){
+									scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+									collectionService.formatFilterPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
+								}, function(reason){
+									
+								});
+							}
+							
+							/*var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
 							filterPropertiesPromise.then(function(value){
 								scope.filterPropertiesList[scope.selectedFilterProperty.cfc] = value;
 								collectionService.formatFilterPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.cfc],scope.selectedFilterProperty.propertyIdentifier);
 							}, function(reason){
 								
-							});
+							});*/
 							
 							break;
 						case "many-to-many":
@@ -760,9 +770,15 @@ $filter){
 		scope.selectedCriteriaChanged = function(selectedCriteria){
 			$log.debug(selectedCriteria);
 			//update breadcrumbs as array of filterpropertylist keys
-			scope.entityAliasArray.push(scope.selectedFilterProperty.cfc);
 			$log.debug(scope.selectedFilterProperty);
-			$log.debug(scope.entityAliasArray);
+			
+			var breadCrumb = {
+					entityAlias:scope.selectedFilterProperty.name,
+					cfc:scope.selectedFilterProperty.cfc,
+					propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier
+			};
+			scope.filterItem.breadCrumbs.push(breadCrumb);
+			
 			//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
 			scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
 			//update criteria to display the condition of the new critera we have selected
@@ -777,7 +793,6 @@ $filter){
 			filterItem:"=",
 	        selectedFilterProperty:"=",
 	        filterPropertiesList:"=",
-	        entityAliasArray:"=",
 	        selectedFilterPropertyChanged:"&"
 		},
 		link: linker
