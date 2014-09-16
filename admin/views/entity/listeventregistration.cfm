@@ -49,16 +49,16 @@ Notes:
 <cfparam name="rc.eventregistrationsmartlist" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.eventregistrationsmartlist#" showCreate="false">
+	<cf_HibachiListingDisplay type="listing" object="#rc.eventregistrationsmartlist#" 
+							  smartList="#rc.eventregistrationsmartlist#" 
+							  showCreate="false"
+							  recordEditAction="admin:entity.editeventregistration"
+							  recorddetailaction="admin:entity.detaileventregistration">
 		<!--- Create --->
-		<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiListingDisplayButtonGroup>
 			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		</cf_HibachiListingDisplayButtonGroup>
 	
-	<cf_HibachiListingDisplay smartList="#rc.eventregistrationsmartlist#"
-			recordEditAction="admin:entity.editeventregistration"
-			recorddetailaction="admin:entity.detaileventregistration">
 		<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
 		<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
 		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.product.productName" />
