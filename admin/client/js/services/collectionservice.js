@@ -1,13 +1,14 @@
 //collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
-.factory('collectionService',['slatwallService','$log',
-function(slatwallService,$log){
+.factory('collectionService',['slatwallService','$filter','$log',
+function(slatwallService,$filter,$log){
 	//properties
 	var _collection = null;
 	var _collectionConfig = null;
 	var _filterPropertiesList = {};
 	var _filterCount = 0;
+	var _orderBy = $filter('orderBy');
 	
 	return collectionService = {
 		incrementFilterCount: function(number){
@@ -185,11 +186,50 @@ function(slatwallService,$log){
 			$log.debug('format Filter Properties List arguments 2');
 			$log.debug(filterPropertiesList);
 			$log.debug(propertyIdentifier);
+			var simpleGroup = {
+					$$group:'simple',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			filterPropertiesList.data.push(simpleGroup);
+			var drillDownGroup = {
+					$$group:'drilldown',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			filterPropertiesList.data.push(drillDownGroup);
+			
+			var compareCollections = {
+					$$group:'compareCollections',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			filterPropertiesList.data.push(compareCollections);
+			
 			for(i in filterPropertiesList.data){
+				if(angular.isDefined(filterPropertiesList.data[i].ormtype)){
+					filterPropertiesList.data[i].$$group = 'simple';
+				}
+				if(angular.isDefined(filterPropertiesList.data[i].fieldtype)){
+					if(filterPropertiesList.data[i].fieldtype === 'id'){
+						filterPropertiesList.data[i].$$group = 'simple';
+					}
+					if(filterPropertiesList.data[i].fieldtype === 'many-to-one'){
+						filterPropertiesList.data[i].$$group = 'drilldown';
+					}
+					if(filterPropertiesList.data[i].fieldtype === 'many-to-many' || filterPropertiesList.data[i].fieldtype === 'one-to-many'){
+						filterPropertiesList.data[i].$$group = 'compareCollections';
+					}
+				}
+				
 				filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' +filterPropertiesList.data[i].name;
 			}
-		}
+			filterPropertiesList.data = _orderBy(filterPropertiesList.data,['-$$group','propertyIdentifier'],false);
+		},
 		
+		orderBy: function(propertiesList,predicate,reverse){
+			return _orderBy(propertiesList,predicate,reverse);
+		}
 		//private functions
 		
 	};

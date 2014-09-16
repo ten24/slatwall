@@ -16,12 +16,14 @@
 	            <select ng-model="selectedFilterProperty" 
 	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
 	            		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
-	            					group by filterProperty.fieldtype 
 	            					for filterProperty in filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].data 
-	            					track by filterProperty.propertyIdentifier
-	            					| orderBy:filterProperty.name" 
+	            					
+	            					" 
 	            		class="form-control input-sm">
-	              <option value="">Select From {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName}}:</option>
+	              	<option value="">Select From {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName}}:</option>
+	            	 <optgroup ng-repeat='group in theList' label="{{group.group}}">
+				        <option ng-repeat='veh in group.items'>{{veh}}</option>
+				      </optgroup>
 	            </select>
 	          </div>
 	          <div class="clearfix"></div>
