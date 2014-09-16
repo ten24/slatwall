@@ -585,6 +585,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 						
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
 			predicate = filter.value;
+		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
+			predicate = '(' & filter.value & ')';
 		}else{
 			var paramID = getParamID();
 			if(!structKeyExists(filter,"value")){
