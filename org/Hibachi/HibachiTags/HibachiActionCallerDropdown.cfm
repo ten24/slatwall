@@ -10,7 +10,7 @@
 			<cfoutput>
 				<div class="btn-group">
 					<button class="btn #attributes.buttonClass#" data-toggle="dropdown"><i class="icon-#attributes.icon# icon-white"></i> #attributes.title# <span class="caret"></span></button>
-					<ul class="dropdown-menu #attributes.dropdownClass#">
+					<ul class="dropdown-menu pull-right #attributes.dropdownClass#">
 						#thisTag.generatedContent#
 						<cfset thisTag.generatedContent = "" />
 					</ul>
