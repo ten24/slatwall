@@ -54,12 +54,12 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 	public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, "._") );
+		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, ".") );
 	}
 	
 	// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
 	public boolean function getEntityHasAttributeByEntityName( required string entityName, required string attributeCode ) {
-		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.entityName)#"});
+		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetObject_#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetObject", {1=getProperlyCasedShortEntityName(arguments.entityName)});
 		if(listFindNoCase(attributeCodesList, arguments.attributeCode)) {
 			return true;
 		}
@@ -102,5 +102,26 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 		return arguments.entity;
 	}
-
+	
+	//used by the rest api to return default property values
+	public any function getDefaultPropertiesByEntityName(required string entityName){
+		// First Check the application cache
+		if( hasApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+		return getEntityObject( arguments.entityName ).getDefaultProperties();
+	}
+	
+	public any function getFilterPropertiesByEntityName(required string entityName){
+		// First Check the application cache
+		if( hasApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+		return getEntityObject( arguments.entityName ).getFilterProperties();
+	}
+	
 }

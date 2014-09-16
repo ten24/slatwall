@@ -65,5 +65,5 @@ Notes:
 	<cf_HibachiListingColumn propertyIdentifier="address.countryCode" />
 </cf_HibachiListingDisplay>
 
-<cf_HibachiActionCaller action="admin:entity.createvendoraddress" class="btn" icon="plus" queryString="vendorID=#rc.vendor.getVendorID()#" modal=true />
+<cf_HibachiActionCaller action="admin:entity.createvendoraddress" class="btn btn-default" icon="plus" queryString="vendorID=#rc.vendor.getVendorID()#" modal=true />
 

@@ -210,7 +210,7 @@ Notes:
 						</ul>
 					</div>
 					<cfif len(attributes.modalCreateAction)>
-						<cf_HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
+						<cf_HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn btn-default modal-fieldupdate-textautocomplete" icononly="true">
 					</cfif>
 				</div>
 			</cfoutput>

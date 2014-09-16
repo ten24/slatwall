@@ -168,11 +168,11 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	}
 	
 	// Child Product Types (one-to-many)
-	public void function addchildProductType(required any ChildProductType) {
-		arguments.ChildProductType.setParentProductType( this );
+	public void function addchildProductType(required any childProductType) {
+		arguments.childProductType.setParentProductType( this );
 	}
-	public void function removechildProductType(required any ChildProductType) {
-		arguments.ChildProductType.removeParentProductType( this );
+	public void function removechildProductType(required any childProductType) {
+		arguments.childProductType.removeParentProductType( this );
 	}
 	
 	// Promotion Rewards (many-to-many - inverse)
@@ -319,7 +319,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 			
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astProductType');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'ProductType');
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			

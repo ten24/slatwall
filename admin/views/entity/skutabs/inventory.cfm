@@ -47,31 +47,28 @@ Notes:
 
 --->
 <cfparam name="rc.sku" type="any" />
-
 <cfparam name="rc.product" type="any">
 
-<cfset rc.locations = $.slatwall.getService("locationService").listLocation() />
-
 <cfoutput>
-	<table class="table table-striped table-bordered table-condensed">
+	<table id="inventory-table" class="table table-striped table-bordered table-condensed">
 		<tr>
 			<th>Location</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qoh.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qosh.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qndoo.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qndorvo.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qndosa.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qnroro.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qnrovo.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qnrosa.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qc.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qe.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qnc.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qats.full')#</th>
-			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey('define.qiats.full')#</th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qoh.full')#">#$.slatwall.rbKey('define.qoh')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qosh.full')#">#$.slatwall.rbKey('define.qosh')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qndoo.full')#">#$.slatwall.rbKey('define.qndoo')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qndorvo.full')#">#$.slatwall.rbKey('define.qndorvo')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qndosa.full')#">#$.slatwall.rbKey('define.qndosa')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnroro.full')#">#$.slatwall.rbKey('define.qnroro')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnrovo.full')#">#$.slatwall.rbKey('define.qnrovo')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnrosa.full')#">#$.slatwall.rbKey('define.qnrosa')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qc.full')#">#$.slatwall.rbKey('define.qc')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qe.full')#">#$.slatwall.rbKey('define.qe')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnc.full')#">#$.slatwall.rbKey('define.qnc')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qats.full')#">#$.slatwall.rbKey('define.qats')#</div></th>
+			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qiats.full')#">#$.slatwall.rbKey('define.qiats')#</div></th>
 		</tr>
 		<tr class="sku">
-			<td><strong>All Locations</strong></td>
+			<td><a href="##" class="update-inventory-plus depth0" data-depth="0" data-locationid="" data-skuid="#rc.sku.getskuID()#"><i class="icon-plus"></i></a> <strong>All Locations</strong></td>
 			<td>#rc.sku.getQuantity('QOH')#</td>
 			<td>#rc.sku.getQuantity('QOSH')#</td>
 			<td>#rc.sku.getQuantity('QNDOO')#</td>
@@ -86,25 +83,7 @@ Notes:
 			<td>#rc.sku.getQuantity('QATS')#</td>
 			<td>#rc.sku.getQuantity('QIATS')#</td>
 		</tr>
-		<cfif arrayLen(rc.locations) gt 1>
-			<cfloop array="#rc.locations#" index="local.location">
-				<tr class="stock">
-					<td>#local.location.getLocationName()#</td>
-					<td>#rc.sku.getQuantity('QOH', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QOSH', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QNDOO', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QNDORVO', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QNDOSA', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QNRORO', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QNROVO', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QNROSA', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QC', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QE', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QNC', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QATS', local.location.getLocationID())#</td>
-					<td>#rc.sku.getQuantity('QIATS', local.location.getLocationID())#</td>
-				</tr>
-			</cfloop>
-		</cfif>
 	</table>
+	
+	
 </cfoutput>

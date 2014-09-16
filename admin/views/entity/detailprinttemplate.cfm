@@ -52,20 +52,11 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.printTemplate#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.printTemplate#" />
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateFile" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateObject" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
 
-		<cf_HibachiTabGroup object="#rc.printTemplate#">
-			<cf_HibachiTab property="printContent" />
-		</cf_HibachiTabGroup>
+		<cf_HibachiEntityDetailGroup object="#rc.printTemplate#">
+			<cf_HibachiEntityDetailItem view="admin:entity/printtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem property="printContent" />
+		</cf_HibachiEntityDetailGroup>
 
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

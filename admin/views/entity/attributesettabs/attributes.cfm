@@ -62,12 +62,12 @@ Notes:
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />					      
 		<cf_HibachiListingColumn propertyIdentifier="attributeCode" />
-		<cf_HibachiListingColumn propertyIdentifier="attributeType.type" />
+		<cf_HibachiListingColumn propertyIdentifier="attributeType" />
 		<cf_HibachiListingColumn propertyIdentifier="relatedObject" />
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createattribute" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailattributeset&attributesetid=#rc.attributeset.getAttributeSetID()#" modal=true />
+	<cf_HibachiActionCaller action="admin:entity.createattribute" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailattributeset&attributesetid=#rc.attributeset.getAttributeSetID()#" modal=true />
 	
 </cfoutput>
 

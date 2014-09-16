@@ -67,22 +67,14 @@ Notes:
 							deleteQueryString="promotionID=#rc.promotion.getPromotionID()#&redirectAction=admin:entity.detailpromotion"   />
 							    			  	  
 		<input type="hidden" name="promotion.promotionID" value="#rc.promotion.getPromotionID()#" />
-
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.promotionperiod#" property="startdatetime" edit="#rc.edit#" fieldclass="noautofocus">
-				<cf_HibachiPropertyDisplay object="#rc.promotionperiod#" property="enddatetime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumusecount" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumaccountusecount" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-
+		
 	</cf_HibachiEntityDetailForm>
 	
-	<cf_HibachiTabGroup object="#rc.promotionperiod#">
-			<cf_HibachiTab view="admin:entity/promotionperiodtabs/promotionrewards" />
-			<cf_HibachiTab view="admin:entity/promotionperiodtabs/promotionqualifiers" />
-	</cf_HibachiTabGroup>
+	<cf_HibachiEntityDetailGroup object="#rc.promotionperiod#">
+			<cf_HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/promotionrewards" />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/promotionqualifiers" />
+	</cf_HibachiEntityDetailGroup>
 	
 </cfoutput>
 

@@ -54,7 +54,7 @@ Notes:
 	<cf_HibachiPropertyRow>
 		
 		<!--- Left Side --->
-		<cf_HibachiPropertyList divClass="span4">
+		<cf_HibachiPropertyList divClass="col-md-4">
 			
 			<!--- Email Addresses --->
 			<h5>#$.slatwall.rbKey('entity.accountEmailAddress_plural')#</h5>
@@ -94,7 +94,7 @@ Notes:
 		</cf_HibachiPropertyList>
 		
 		<!--- Right Side --->
-		<cf_HibachiPropertyList divClass="span8">
+		<cf_HibachiPropertyList divClass="col-md-8">
 			
 			<!--- Payment Methods --->
 			<h5>#$.slatwall.rbKey('entity.accountPaymentMethod_plural')#</h5>

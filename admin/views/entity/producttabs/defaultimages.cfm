@@ -51,7 +51,7 @@ Notes:
 <cfoutput>
 	<ul class="thumbnails">
 		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
-			<li class="span3">
+			<li class="col-md-4">
 				<div class="thumbnail"<cfif imageFile eq rc.product.getDefaultSku().getImageFile()> style="border-color:##08C;"</cfif>>
 					<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
 					<div class="img-container">
@@ -61,9 +61,9 @@ Notes:
 					</div>
 					<hr />
 					<div class="small em image-caption">#imageFile#</div>
-					<cf_HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn" iconOnly="true" icon="upload" modal="true" />
+					<cf_HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="upload" modal="true" />
 					<cfif fileExists(expandPath(thisImagePath))>
-						<cf_HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn" iconOnly="true" icon="trash" />
+						<cf_HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="trash" />
 					</cfif>
 				</div>
 			</li>

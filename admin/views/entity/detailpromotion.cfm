@@ -65,28 +65,13 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createpromotionperiod" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 		</cf_HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.Promotion#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.Promotion#" property="promotionName" edit="#rc.edit#">
-				<cfif rc.promotion.isNew()>
-					<hr />
-					<h5>#$.slatwall.rbKey('admin.pricing.detailpromotion.initialperiod')#</h5><br />
-					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].startDateTime" property="startDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].endDateTime" property="endDateTime" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].maximumUseCount" property="maximumUseCount" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.promotionPeriod#" fieldName="promotionPeriods[1].maximumAccountUseCount" property="maximumAccountUseCount" edit="#rc.edit#">
-					<input type="hidden" name="promotionPeriods[1].promotionPeriodID" value="#rc.promotionPeriod.getPromotionPeriodID()#" />
-				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.promotion#">
-			<cf_HibachiTab view="admin:entity/promotiontabs/promotionperiods" />
-			<cf_HibachiTab view="admin:entity/promotiontabs/promotioncodes" />
-			<cf_HibachiTab view="admin:entity/promotiontabs/promotionsummary" />
-			<cf_HibachiTab view="admin:entity/promotiontabs/promotiondescription" />
-		</cf_HibachiTabGroup>
+		<cf_HibachiEntityDetailGroup object="#rc.promotion#">
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionsummary" />
+			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotiondescription" />
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

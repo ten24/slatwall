@@ -65,6 +65,6 @@ Notes:
 	</cf_HibachiListingDisplay>	
 	
 	<cfif rc.physicalCount.getPhysical().getPhysicalStatusType().getSystemCode() eq "pstOpen">
-		<cf_HibachiActionCaller entity="#rc.physicalCount#" action="admin:entity.createphysicalcountitem" class="btn" icon="plus" queryString="physicalCountID=#rc.physicalCount.getPhysicalCountID()#&redirectAction=admin:entity.detailphysicalcount" modal="true" />
+		<cf_HibachiActionCaller entity="#rc.physicalCount#" action="admin:entity.createphysicalcountitem" class="btn btn-default" icon="plus" queryString="physicalCountID=#rc.physicalCount.getPhysicalCountID()#&redirectAction=admin:entity.detailphysicalcount" modal="true" />
 	</cfif>
 </cfoutput>

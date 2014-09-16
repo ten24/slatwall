@@ -109,7 +109,7 @@ Notes:
 	
 	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#rc.disableProcess#" disableProcessText="#rc.disableProcessText#">		
 		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divclass="span12">
+			<cf_HibachiPropertyList divclass="col-md-12">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
 				<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountFullName">

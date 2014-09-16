@@ -88,7 +88,7 @@ Notes:
 <!--- Update integration to set activeFlag --->
 <cftry>
 	
-	<cfdbinfo type="Columns" name="local.integrationColumns" table="SwIntegration" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="Columns" name="local.integrationColumns" table="SwIntegration" />
 	
 	<cfset local.lookupColumns = [] />
 	<cfloop query="integrationColumns">

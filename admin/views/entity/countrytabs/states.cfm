@@ -60,6 +60,6 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="stateName" />
 	</cf_HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createstate" class="btn" icon="plus" querystring="countryCode=#rc.country.getCountryCode()#" modal=true />
+	<cf_HibachiActionCaller action="admin:entity.createstate" class="btn btn-default" icon="plus" querystring="countryCode=#rc.country.getCountryCode()#" modal=true />
 </cfoutput>
 
