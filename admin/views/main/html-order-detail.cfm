@@ -98,17 +98,28 @@
       .s-order-item-box table {margin-bottom:0px;border:1px solid #ccc;width:100%;}
       .s-order-item-box .s-image img {width:100%;}
       .s-order-item-box tr th {background-color:#eeeeee;}
-      .s-order-item-box .s-title ul li .fa-pencil {font-size: 12px;color: #AAA;}
-      .s-order-item-box .s-title ul li .fa-pencil:hover {color: #F58620;}
+      .s-order-item-box .fa-pencil {font-size: 12px;color: #AAA;}
+      .s-order-item-box .fa-pencil:hover {color: #F58620;}
       .s-order-item-box .s-sku,
       .s-order-item-box .s-total,
       .s-order-item-box .s-discount,
       .s-order-item-box .s-title > ul > li:first-child,
       .s-order-item-box .s-price > ul > li:first-child,
       .s-order-item-box .s-qty > ul > li:first-child {font-weight:600;}
+
+
+      .s-order-item-box .s-shipping > ul > li:first-child,
+      .s-order-item-box .s-total > ul > li:first-child,
+      .s-order-item-box .s-discount > ul > li:first-child,
+      .s-order-item-box .s-title > ul > li:first-child,
+      .s-order-item-box .s-price > ul > li:first-child,
+      .s-order-item-box .s-qty > ul > li:first-child {border-bottom: 2px dotted #EEE;padding-bottom: 4px;margin-bottom: 5px;}
+
       .s-order-item-box .s-remove-btn {padding:0px;}
       .s-order-item-box .s-remove-btn button {height: 100%;width: 100%;background: none;border: 0px;}
       .s-order-item-box .s-remove-btn button:hover {color:#DA5757;}
+      .s-order-item-box .s-shipping ul li:first-child {font-weight:600;}
+      .s-order-item-box ul > li > ul {font-size: 12px;color: #AAA;list-style:none;padding-left:10px;}
     </style>
 
     <div id="collapseTwo" class="panel-collapse collapse in">
@@ -122,7 +133,7 @@
         		<th>Qty</th>
         		<th>Discount</th>
         		<th>Total</th>
-        		<th>Shipping</th>
+        		<th>Fullfilment</th>
         		<th></th>
         	</tr>
         	<tr class="s-item">
@@ -134,8 +145,8 @@
                 <li>
                   <span>Base Price <a href="#"><i class="fa fa-pencil"></i></a></span>
                   <ul style="font-size: 12px;color: #AAA;list-style:none;padding-left:10px;">
-                    <li>- Custom Grip Tape</li>
-                    <li>- Hardware Kit</li>
+                    <li> Custom Grip Tape</li>
+                    <li> Hardware Kit</li>
                   </ul>
                 </li>
                 <li>Indi Trucks <a href="#"><i class="fa fa-pencil"></i></a></li>
@@ -146,9 +157,9 @@
                 <li>$99.00</li>
                 <li>
                   <span>$89.99</span>
-                  <ul style="font-size: 12px;color: #AAA;list-style:none;padding-left:10px;">
+                  <ul>
                     <li></li>
-                    <li>-$5.00</li>
+                    <li>$5.00</li>
                   </ul>
                 </li>
                 <li></li>
@@ -159,9 +170,9 @@
                 <li>3</li>
                 <li>
                   <span>2 (6 total)</span>
-                  <ul style="font-size: 12px;color: #AAA;list-style:none;padding-left:10px;">
-                    <li>- 3 (5 total)</li>
-                    <li>- 1 (3 total)</li>
+                  <ul>
+                    <li> 3 (5 total)</li>
+                    <li> 1 (3 total)</li>
                   </ul>
                 </li>
                 <li>1 (8 total)</li>
@@ -171,6 +182,7 @@
         		<td class="s-total">$297.00</td>
         		<td class="s-shipping">
               <ul class="list-unstyled">
+                <li>Ship To: <a href="#"><i class="fa fa-pencil"></i></a></li>
                 <li>123 Main St. </li>
                 <li>Northboro, MA 01532</li>
               </ul>
@@ -465,9 +477,9 @@
                                                   <option>First Name</option>
                                                   <option>Last Name</option>
                                                   <option>Company</option>
-                                                  <option disabled="disabled">----</option>
+                                                  <option disabled="disabled">---</option>
                                                   <option>Primary E-Mail Address</option>
-                                                  <option disabled="disabled">----</option>
+                                                  <option disabled="disabled">---</option>
                                                   <option>Addresses</option>
                                                 </select>
                                               </div>
@@ -513,7 +525,7 @@
                                             <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
                                             <div class="col-sm-12 s-no-paddings">
                                               <select class="form-control input-sm">
-                                                <option value="-- Condition">-- Condition --</option>
+                                                <option value="-- Condition">- Condition --</option>
                                                 <option value="Equals">Equals</option>
                                                 <option value="Does Not Equal">Does Not Equal</option>
                                                 <option selected="selected" value="Contains">Contains</option>
@@ -557,7 +569,7 @@
                                             <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
                                             <div class="col-sm-12 s-no-paddings">
                                               <select class="form-control input-sm">
-                                                <option value="-- Condition">-- Condition --</option>
+                                                <option value="-- Condition">- Condition --</option>
                                                 <option selected="selected" value="Equals">Equals</option>
                                                 <option value="Does Not Equal">Does Not Equal</option>
                                                 <option value="Contains">Contains</option>
@@ -595,7 +607,7 @@
                                               <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
                                               <div class="col-sm-12 s-no-paddings">
                                                 <select class="form-control input-sm">
-                                                  <option value="-- Condition">-- Condition --</option>
+                                                  <option value="-- Condition">- Condition --</option>
                                                   <option value="Equals">Equals</option>
                                                   <option value="Does Not Equal">Does Not Equal</option>
                                                   <option selected="selected" value="Contains">Contains</option>
@@ -647,7 +659,7 @@
                                               <span>
                                                 <select class="form-control input-sm">
 
-                                                  <option value="-- Condition">-- Condition --</option>
+                                                  <option value="-- Condition">- Condition --</option>
                                                   <option value="Equals">Equals</option>
                                                   <option value="Does Not Equal">Does Not Equal</option>
                                                   <option selected="selected" value="Contains">Contains</option>
@@ -680,7 +692,7 @@
                                               <span>
                                                 <select class="form-control input-sm">
 
-                                                  <option value="-- Condition">-- Condition --</option>
+                                                  <option value="-- Condition">- Condition --</option>
                                                   <option value="Equals">Equals</option>
                                                   <option value="Does Not Equal">Does Not Equal</option>
                                                   <option value="Contains">Contains</option>
@@ -712,7 +724,7 @@
                                               </span>
                                               <span>
                                                 <select class="form-control input-sm">
-                                                  <option value="-- Condition">-- Condition --</option>
+                                                  <option value="-- Condition">- Condition --</option>
                                                   <option selected="selected" value="Equals">Equals</option>
                                                   <option value="Does Not Equal">Does Not Equal</option>
                                                   <option value="Contains">Contains</option>
@@ -751,7 +763,7 @@
                                                 <div class="form-group">
                                                   <label for="" style="width:100%;">Criteria</label>
                                                   <select class="form-control input-sm">
-                                                    <option value="-- Condition">-- Condition --</option>
+                                                    <option value="-- Condition">- Condition --</option>
                                                     <option selected="selected" value="Equals">Equals</option>
                                                     <option value="Does Not Equal">Does Not Equal</option>
                                                     <option value="Contains">Contains</option>
@@ -781,7 +793,7 @@
                                     <div class="col-xs-3">
                                       <div class="s-button-select-group">
                                         <button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
-                                        <div class="s-or-box">-OR-</div>
+                                        <div class="s-or-box">OR-</div>
                                         <button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
                                       </div>
                                       <div class="form-group">
@@ -1308,27 +1320,52 @@
                 <div class="s-none-selected" style="display:none;">There are no fields selected</div>
 
                 <!--- Button to show create option --->
-                <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
+                <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-display-field">Add Display Field</button>
 
                 <!--- Create option dropdown --->
-                <div class="row s-add-display-field collapse" id="j-add-row">
-                  <div class="col-xs-12">
-                    <i class="fa fa-plus"></i>
-                    <select class="form-control">
-                      <option value="Select from Orders" disabled="disabled" selected="selected">Order Items</option>
-                      <option value="Order Total">Order Total</option>
-                      <option value="Order Item Total">Order Item Total</option>
-                    </select>
+                <div class="col-xs-12 collapse s-add-filter" id="j-add-display-field">
+                  <div class="row">
+                    <h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-display-field"></i></h4>
+                    <div class="col-xs-12">
 
-                    <select class="form-control">
-                      <option value="Select from Orders" disabled="disabled" selected="selected">Select From Account</option>
-                      <option value="Order Total">First Name</option>
-                      <option value="Order Item Total">Last Name</option>
-                    </select>
-                    <button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
-                    <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+                      <div class="row">
+                        <div class="col-xs-2">
+                          <div class="form-group form-group-sm">
+                            <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders</label>
+                            <div class="col-sm-12 s-no-paddings">
+                              <select class="form-control input-sm">
+                                <option disabled="disabled" selected="selected">Select From Orders</option>
+                                <option value="one">One</option>
+                                <option value="two">Two</option>
+                                <option value="three">Three</option>
+                                <option value="four">Four</option>
+                                <option value="five">Five</option>
+                              </select>
+                            </div>
+                            <div class="clearfix"></div>
+                          </div>
+                        </div>
+                        <div class="col-xs-6 s-criteria">
+
+                          Middle
+
+                        </div>
+                        <div class="col-xs-3">
+                          <div class="s-button-select-group">
+                            <button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
+                            <div class="s-or-box">OR-</div>
+                            <button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
+                          </div>
+                          <div class="form-group">
+                            <div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
+                <!--- //Create option dropdown --->
 
               </div><!--- //Tab Pane --->
             </div>
@@ -1894,22 +1931,6 @@ $('form').submit(function(){
     $(this).parent().toggle('slide', { direction: 'left' }, 300);
   });
 </script>
-
-// <script charset="utf-8">
-//   $('.s-bundle-box .s-bundle-box-head .fa-eye').click(function(){
-//     var hasActive = $(this).closest('.s-bundle-box-head');
-//     if(hasActive.hasClass('s-active')){
-//       hasActive.removeClass('s-active');
-//     }else{
-//       hasActive.addClass('s-active');
-//     };
-//     if(hasActive.closest('li').siblings().hasClass('s-disabled')){
-//       hasActive.closest('li').siblings().removeClass('s-disabled');
-//     }else{
-//       hasActive.closest('li').siblings().addClass('s-disabled');
-//     };
-//   });
-// </script>
 
 <script charset="utf-8">
   jQuery('body').on('click', '.s-bundle-box .s-bundle-box-head .s-toggle-btn', function(e){
