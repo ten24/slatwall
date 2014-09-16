@@ -135,60 +135,60 @@ Notes:
 	
 	<cfif local.hasColumn.recordCount>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'Account' WHERE attributeSetTypeID = '444df2a3ebb07d6280c339a09c0d90d3'
+			UPDATE SwAttributeSet SET attributeSetObject = 'Account' WHERE attributeSetTypeID = '444df2a3ebb07d6280c339a09c0d90d3'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'AccountPayment' WHERE attributeSetTypeID = '444df32b9730e4a50af0c0ecb9d77f3b'
+			UPDATE SwAttributeSet SET attributeSetObject = 'AccountPayment' WHERE attributeSetTypeID = '444df32b9730e4a50af0c0ecb9d77f3b'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'Brand' WHERE attributeSetTypeID = '444df325adea07a73014e74b449eb315'
+			UPDATE SwAttributeSet SET attributeSetObject = 'Brand' WHERE attributeSetTypeID = '444df325adea07a73014e74b449eb315'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'Image' WHERE attributeSetTypeID = 'c546d8f4f4a7cecacce568e94f04a30f'
+			UPDATE SwAttributeSet SET attributeSetObject = 'Image' WHERE attributeSetTypeID = 'c546d8f4f4a7cecacce568e94f04a30f'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'File' WHERE attributeSetTypeID = '2de85a7daab45eaa8ccd31a2c32ac370'
+			UPDATE SwAttributeSet SET attributeSetObject = 'File' WHERE attributeSetTypeID = '2de85a7daab45eaa8ccd31a2c32ac370'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'Order' WHERE attributeSetTypeID = '444df327c72a5bd51bb2f691aac17008'
+			UPDATE SwAttributeSet SET attributeSetObject = 'Order' WHERE attributeSetTypeID = '444df327c72a5bd51bb2f691aac17008'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'OrderItem' WHERE attributeSetTypeID = '444df292eea355ddad72f5614726bc75'
+			UPDATE SwAttributeSet SET attributeSetObject = 'OrderItem' WHERE attributeSetTypeID = '444df292eea355ddad72f5614726bc75'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'OrderPayment' WHERE attributeSetTypeID = '444df32ac631b198a0f0319dd64e0e00'
+			UPDATE SwAttributeSet SET attributeSetObject = 'OrderPayment' WHERE attributeSetTypeID = '444df32ac631b198a0f0319dd64e0e00'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'OrderFulfillment' WHERE attributeSetTypeID = 'e7387e124cc04bf9bb93fdb27000b4c2'
+			UPDATE SwAttributeSet SET attributeSetObject = 'OrderFulfillment' WHERE attributeSetTypeID = 'e7387e124cc04bf9bb93fdb27000b4c2'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'OrderDelivery' WHERE attributeSetTypeID = 'ccee02635c2e443d8ff4f3f33702e4a3'
+			UPDATE SwAttributeSet SET attributeSetObject = 'OrderDelivery' WHERE attributeSetTypeID = 'ccee02635c2e443d8ff4f3f33702e4a3'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'Product' WHERE attributeSetTypeID = '444df293fcc530434949d63e408cac2b'
+			UPDATE SwAttributeSet SET attributeSetObject = 'Product' WHERE attributeSetTypeID = '444df293fcc530434949d63e408cac2b'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'ProductType' WHERE attributeSetTypeID = '5accbf52063a5b4e2a73f19f4151cc40'
+			UPDATE SwAttributeSet SET attributeSetObject = 'ProductType' WHERE attributeSetTypeID = '5accbf52063a5b4e2a73f19f4151cc40'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'ProductReview' WHERE attributeSetTypeID = '8787a242042db3b43f08144fa3100668'
+			UPDATE SwAttributeSet SET attributeSetObject = 'ProductReview' WHERE attributeSetTypeID = '8787a242042db3b43f08144fa3100668'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'Sku' WHERE attributeSetTypeID = '444df328fa718364a389a4495f386a27'
+			UPDATE SwAttributeSet SET attributeSetObject = 'Sku' WHERE attributeSetTypeID = '444df328fa718364a389a4495f386a27'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'SubscriptionBenefit' WHERE attributeSetTypeID = '5accbf5a08b1fc0f12fa654ea0c0b683'
+			UPDATE SwAttributeSet SET attributeSetObject = 'SubscriptionBenefit' WHERE attributeSetTypeID = '5accbf5a08b1fc0f12fa654ea0c0b683'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'Vendor' WHERE attributeSetTypeID = '444df326c87e098e420297b5a1691e69'
+			UPDATE SwAttributeSet SET attributeSetObject = 'Vendor' WHERE attributeSetTypeID = '444df326c87e098e420297b5a1691e69'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeSetType = 'VendorOrder' WHERE attributeSetTypeID = '444df329d293eeec641b805b68cca95f'
+			UPDATE SwAttributeSet SET attributeSetObject = 'VendorOrder' WHERE attributeSetTypeID = '444df329d293eeec641b805b68cca95f'
 		</cfquery>
 	</cfif>
 	
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update attribute to move attributeTypeID to attributeType">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update attributeSet to move attributeSetTypeID to attributeSetObject">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 	
