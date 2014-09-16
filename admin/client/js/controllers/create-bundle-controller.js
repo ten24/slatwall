@@ -13,4 +13,15 @@ function(
 	$log
 ){
 	
+	$scope.processObject = {};
+	$scope.processObject.bundleGroups = [
+		{
+			'minimumQuantity': 1,
+			'maximumQuantity': 1,
+			'bundleGroupType': {
+				'typeName': 'Deck'
+			}
+		}
+	];
+	
 }]);
