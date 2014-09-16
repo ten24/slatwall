@@ -107,7 +107,7 @@ Notes:
 					<cfif not len(homeLink)>
 						<cfset homeLink = "/" />
 					</cfif>
-					<a href="#homeLink#" class="navbar-brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;heigh:16px;" title="Slatwall" /></a>
+					<a href="#homeLink#" target="_self" class="navbar-brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;heigh:16px;" title="Slatwall" /></a>
 				</div><!-- .navbar-header -->
 
 				<div class="collapse navbar-collapse" id="slatwall-primary-nav">
