@@ -18,10 +18,13 @@ $log){
 		scope:{
 			columns:'=',
 			propertiesList:"=",
-			saveCollection:"&"
+			saveCollection:"&",
+			baseEntityAlias:"="
 		},
 		templateUrl:partialsPath+"displayoptions.html",
 		controller: function($scope,$element,$attrs){
+			$log.debug('display options initialize');
+			
 			this.removeColumn = function(columnIndex){
 				$log.debug('parent remove column');
 				$log.debug($scope.columns);
@@ -47,7 +50,6 @@ $log){
 					$scope.columns.push(column);
 					$scope.saveCollection();
 				}
-				
 			};
 			
 			jQuery(function($) {
@@ -71,6 +73,11 @@ $log){
 			          }
 			      });
 			  });
+			
+			/*var unbindBaseEntityAlaisWatchListener = scope.$watch('baseEntityAlias',function(){
+	       		 $("select").selectBoxIt();
+	       		 unbindBaseEntityAlaisWatchListener();
+	       	});*/
 		}
 	};
 }]);

@@ -25,11 +25,11 @@
       		ng-change="selectedPropertyChanged(selectedProperty)" 
       		ng-options="property as property.displayPropertyIdentifier
       					group by property.fieldtype 
-      					for property in propertiesList.data 
+      					for property in propertiesList[baseEntityAlias].data 
       					track by property.propertyIdentifier
       					| orderBy:property.name" 
       		class="form-control">
-        <option value="">Select From {{propertiesList.entityName}}:</option>
+        <option value="">Select From <span ng-bind="propertiesList[baseEntityAlias].entityName"></span>{{propertiesList[baseEntityAlias].entityName}}:</option>
       </select>
       
       <button name="button" class="btn s-btn-ten24 btn-xs" ng-click="addColumn(selectedProperty)">

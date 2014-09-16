@@ -36,10 +36,10 @@ $log){
         		scope.pageShow = paginationService.getPageShow();
         	};
         	
-        	var unbindPageOptionsWatchListener = scope.$watch('pageOptions',function(){
-        		 $("select").selectBoxIt();
+        	/*var unbindPageOptionsWatchListener = scope.$watch('pageOptions',function(newValue,oldValue){
+    			 $("select").selectBoxIt();
         		 unbindPageOptionsWatchListener();
-        	});
+        	});*/
         	
         	scope.setCurrentPage = function(number){
         		$log.debug('setCurrentPage');
