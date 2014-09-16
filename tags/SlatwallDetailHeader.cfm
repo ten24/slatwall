@@ -51,7 +51,7 @@ Notes:
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
 		<cfif attributes.fluidDisplay>
-			<div class="row-fluid">
+			<div class="row">
 		<cfelse>
 			<div class="row">
 		</cfif>

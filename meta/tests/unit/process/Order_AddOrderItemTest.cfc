@@ -93,19 +93,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var foundMatch = processOrderItem.matchesOrderItem(orderItem);
 		assertFalse(foundMatch);
 		
-		//attributes tests
-		/*var attributeValue = request.slatwallScope.newEntity( 'AttributeValue' );
-		
-		orderitem.addAttributeValue(attributeValue);
-		processOrderItem = order.getProcessObject( 'AddOrderItem' );
-		
-		
-		processOrderItem.setattributeValuesByCodeStruct();
-		processOrderItem.setSku(sku);
-		processOrderItem.setPrice(11);
-		processOrderItem.setStock(stock);
-		var foundMatch = variables.service.CompareOrderItemToProcessOrderItem(orderItem,processOrderItem);
-		assertFalse(foundMatch);*/
 	}
 	
 	private any function getTestSku(string testsku){

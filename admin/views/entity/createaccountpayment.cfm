@@ -86,10 +86,10 @@ Notes:
 			</cf_HibachiPropertyRow>
 			
 			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList divClass="span6">
+				<cf_HibachiPropertyList divClass="col-md-6">
 					<cf_SlatwallAddressDisplay address="#$.slatwall.getService("addressService").newAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#" />
 				</cf_HibachiPropertyList>
-				<cf_HibachiPropertyList divClass="span6">
+				<cf_HibachiPropertyList divClass="col-md-6">
 					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
 					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardNumber" edit="#rc.edit#" />
 					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />

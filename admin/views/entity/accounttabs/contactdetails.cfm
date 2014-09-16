@@ -51,7 +51,7 @@ Notes:
 <cfoutput>
 	<cf_HibachiPropertyRow>
 		<!--- Email Addresses --->
-		<cf_HibachiPropertyList divClass="span6">
+		<cf_HibachiPropertyList divClass="col-md-6">
 			<h5>#$.slatwall.rbKey('entity.accountEmailAddress_plural')#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.account.getAccountEmailAddressesSmartList()#"
 									  recordEditAction="admin:entity.editaccountemailaddress"
@@ -69,11 +69,11 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="verifiedFlag" />
 			</cf_HibachiListingDisplay>
 			
-			<cf_HibachiActionCaller action="admin:entity.createaccountemailaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+			<cf_HibachiActionCaller action="admin:entity.createaccountemailaddress" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
 		</cf_HibachiPropertyList>
 		
 		<!--- Phone Numbers --->
-		<cf_HibachiPropertyList divClass="span6">
+		<cf_HibachiPropertyList divClass="col-md-6">
 			<h5>#$.slatwall.rbKey('entity.accountPhoneNumber_plural')#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.account.getAccountPhoneNumbersSmartList()#"
 									  recordEditAction="admin:entity.editaccountphonenumber"
@@ -91,13 +91,13 @@ Notes:
 				
 			</cf_HibachiListingDisplay>
 			
-			<cf_HibachiActionCaller action="admin:entity.createaccountphonenumber" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+			<cf_HibachiActionCaller action="admin:entity.createaccountphonenumber" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 	<hr />
 	<cf_HibachiPropertyRow>
 		<!--- Addresses --->
-		<cf_HibachiPropertyList divClass="span12">
+		<cf_HibachiPropertyList divClass="col-md-12">
 			<h5>#$.slatwall.rbKey('entity.accountAddress_plural')#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.account.getAccountAddressesSmartList()#"
 									  recordEditAction="admin:entity.editaccountaddress"
@@ -120,7 +120,7 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="address.countryCode" />
 			</cf_HibachiListingDisplay>
 			
-			<cf_HibachiActionCaller action="admin:entity.createaccountaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+			<cf_HibachiActionCaller action="admin:entity.createaccountaddress" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 </cfoutput>

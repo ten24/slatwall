@@ -67,6 +67,6 @@ Notes:
 
 	</cf_HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createpromotioncode" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true" />
+	<cf_HibachiActionCaller action="admin:entity.createpromotioncode" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true" />
 </cfoutput>
 

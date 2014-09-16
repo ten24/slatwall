@@ -1,0 +1,42 @@
+
+
+  <!-- Dragable List group -->
+  <ul id="displayOptionsContainer" sortable="callbacks" ng-model="collectionConfig.columns" class="list-group s-j-draggablePanelList" ng-transclude>
+    
+  </ul>
+
+  <!--- Message if no items --->
+  <div class="s-none-selected" style="display:none;">There are no fields selected</div>
+
+  <!--- Button to show create option --->
+  <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
+
+  <!--- Create option dropdown --->
+  <div class="row s-add-display-field collapse" id="j-add-row">
+    <div class="col-xs-12">
+      <i class="fa fa-plus"></i>
+      <!--<select class="form-control">
+        <option value="Select from Orders" disabled="disabled" selected="selected">Order Items</option>
+        <option value="Order Total">Order Total</option>
+        <option value="Order Item Total">Order Item Total</option>
+      </select>-->
+      
+      <select ng-model="selectedProperty" 
+      		ng-change="selectedPropertyChanged(selectedProperty)" 
+      		ng-options="property as property.displayPropertyIdentifier
+      					group by property.fieldtype 
+      					for property in propertiesList.data 
+      					track by property.propertyIdentifier
+      					| orderBy:property.name" 
+      		class="form-control">
+        <option value="">Select From {{propertiesList.entityName}}:</option>
+      </select>
+      
+      <button name="button" class="btn s-btn-ten24 btn-xs" ng-click="addColumn(selectedProperty)">
+      	<i class="fa fa-plus"></i> Column
+      </button>
+      <!-- <button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button> -->
+    </div>
+  </div>
+  
+

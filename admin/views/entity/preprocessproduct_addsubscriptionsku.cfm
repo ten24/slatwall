@@ -64,8 +64,8 @@ Notes:
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
-		<div class="row-fluid">
-			<div class="span6">
+		<div class="row">
+			<div class="col-md-6">
 				<h5>#$.slatwall.rbKey('admin.entity.sku.subscriptionBenefits')#</h5>
 				<br />
 				<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
@@ -73,7 +73,7 @@ Notes:
 					<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 				</cf_HibachiListingDisplay>
 			</div>
-			<div class="span6">
+			<div class="col-md-6">
 				<h5>#$.slatwall.rbKey('admin.entity.sku.renewalSubscriptionBenefits')#</h5>
 				<br />
 				<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />

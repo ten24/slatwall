@@ -51,6 +51,7 @@ Notes:
 <cf_SlatwallSettingTable>
 	<cf_SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.product#" />
 	<cf_SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.product#" />
+	<cf_SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.product#" />
 	<cf_SlatwallSetting settingName="skuCurrency" settingObject="#rc.product#" />
 	<cf_SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.product#" />
 	<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.product#" />

@@ -72,7 +72,7 @@ Notes:
 		</cf_HibachiPropertyRow>
 		<hr />
 		<cfif rc.baseProductType eq "merchandise">
-			<div class="row-fluid">
+			<div class="row">
 				<cfset optionsSmartList = $.slatwall.getService("optionService").getOptionSmartList() />
 				<cfset optionsSmartList.addOrder("optionGroup.sortOrder|ASC") />
 				<cfif optionsSmartList.getRecordsCount()>
@@ -83,8 +83,8 @@ Notes:
 				</cfif>
 			</div>
 		<cfelseif rc.baseProductType eq "subscription">
-			<div class="row-fluid">
-				<div class="span6">
+			<div class="row">
+				<div class="col-md-6">
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#</h5>
 					<br />
 					<cf_SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
@@ -98,7 +98,7 @@ Notes:
 						<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 					</cf_HibachiListingDisplay>
 				</div>
-				<div class="span6">
+				<div class="col-md-6">
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#</h5>
 					<br />
 					<cf_SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />

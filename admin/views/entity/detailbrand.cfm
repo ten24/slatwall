@@ -53,27 +53,17 @@ Notes:
 	<cf_HibachiEntityDetailForm object="#rc.brand#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.brand#" edit="#rc.edit#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.Brand#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.Brand#" property="brandName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.Brand#" property="brandWebsite" edit="#rc.edit#">
-				<cfif not rc.brand.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.Brand#" property="urlTitle" edit="#rc.edit#">
-				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.brand#">
-			<cf_HibachiTab property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
-			<cf_HibachiTab property="vendors" />
-			<cf_HibachiTab view="admin:entity/brandtabs/brandsettings" />
+		<cf_HibachiEntityDetailGroup object="#rc.brand#">
+			<cf_HibachiEntityDetailItem view="admin:entity/brandtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
+			<cf_HibachiEntityDetailItem property="vendors" />
+			<cf_HibachiEntityDetailItem view="admin:entity/brandtabs/brandsettings" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.brand.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.brand#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

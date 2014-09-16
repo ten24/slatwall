@@ -44,11 +44,13 @@
 			
 			<!--- Additional Model Header --->
 			<cfif structKeyExists(request.context, "modal") and request.context.modal>
-				<div class="modal-header">
-					<a class="close" data-dismiss="modal">&times;</a>
-					<h3>#request.context.pageTitle#</h3>
-				</div>
-				<div class="modal-body">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<a class="close" data-dismiss="modal">&times;</a>
+							<h3>#request.context.pageTitle#</h3>
+						</div>
+						<div class="modal-body">
 			</cfif>
 			<!--- END: Additional Model Header --->
 				
@@ -58,15 +60,17 @@
 		
 			<!--- Additional Model Footer --->
 			<cfif structKeyExists(request.context, "modal") and request.context.modal>
+					</div>
+					<div class="modal-footer">
+						<cfif attributes.edit>
+							<div class="btn-group">
+								<a href="##" class="btn btn-inverse" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</a>
+								<cf_HibachiActionCaller type="button" action="##" class="btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
+							</div>
+						</cfif>
+					</div>
 				</div>
-				<div class="modal-footer">
-					<cfif attributes.edit>
-						<div class="btn-group">
-							<a href="##" class="btn btn-inverse" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</a>
-							<cf_HibachiActionCaller type="button" action="##" class="btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
-						</div>
-					</cfif>
-				</div>
+			</div>
 			</cfif>
 			<!--- END: Additional Model Footer --->
 				
