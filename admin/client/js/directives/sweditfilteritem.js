@@ -31,22 +31,84 @@ $filter){
 		templateUrl:partialsPath+"editfilteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
 			
+			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
+			
+			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
+				scope.filterItem.breadCrumbs = [];
+				if(scope.filterItem.propertyIdentifier === ""){
+					
+					scope.filterItem.breadCrumbs = [
+					                     	{
+					                     		entityAlias:scope.baseEntityAlias,
+					                     		cfc:scope.baseEntityAlias,
+					                     		propertyIdentifier:scope.baseEntityAlias
+					                     	}
+					                    ];
+				}else{
+					var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+					entityAliasArrayFromString.pop();
+					for(var i in entityAliasArrayFromString){
+						var breadCrumb = {
+								entityAlias:entityAliasArrayFromString[i],
+								cfc:entityAliasArrayFromString[i],
+								propertyIdentifier:entityAliasArrayFromString[i]
+						};
+						scope.filterItem.breadCrumbs.push(breadCrumb);
+					}
+				}
+			}else{
+				angular.forEach(scope.filterItem.breadCrumbs,function(breadCrumb,key){
+					if(angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])){
+						var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+						filterPropertiesPromise.then(function(value){
+							collectionService.setFilterPropertiesList(value,breadCrumb.propertyIdentifier);
+							scope.filterPropertiesList[breadCrumb.propertyIdentifier] = collectionService.getFilterPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+							collectionService.formatFilterPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier],breadCrumb.propertyIdentifier);
+							var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+							entityAliasArrayFromString.pop();
+							
+							entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+								for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
+									var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+									if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
+										//selectItem from drop down
+										scope.selectedFilterProperty = filterProperty;
+										//decorate with value and comparison Operator so we can use it in the Condition section
+										scope.selectedFilterProperty.value = scope.filterItem.value;
+										scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+									}
+								}
+								
+							//scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
+						}, function(reason){
+							
+						});
+					}else{
+						var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+						entityAliasArrayFromString.pop();
+						
+						entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+						if(angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])){
+							for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
+								var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+								if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
+									//selectItem from drop down
+									scope.selectedFilterProperty = filterProperty;
+									//decorate with value and comparison Operator so we can use it in the Condition section
+									scope.selectedFilterProperty.value = scope.filterItem.value;
+									scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+								}
+							}
+						}
+						
+					}
+				});
+			}
+			
 			if(angular.isUndefined(scope.filterItem.$$isClosed)){
 				scope.filterItem.$$isClosed = true;
 			}
-			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
-				scope.filterItem.$$breadCrumbs = "";
-			}
-			for(i in scope.filterPropertiesList.data){
-				var filterProperty = scope.filterPropertiesList.data[i];
-				if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
-					//selectItem from drop down
-					scope.selectedFilterProperty = filterProperty;
-					//decorate with value and comparison Operator so we can use it in the Condition section
-					scope.selectedFilterProperty.value = scope.filterItem.value;
-					scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
-				}
-			}
+			
 			
 			scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 			
@@ -55,10 +117,20 @@ $filter){
 			};
 			
 			//public functions
+			
+			scope.selectBreadCrumb = function(breadCrumbIndex){
+				//splice out array items above index
+				var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+				scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
+				scope.selectedFilterPropertyChanged(null);
+				
+			};
+			
 			scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				$log.debug('selectedFilterProperty');
 				$log.debug(selectedFilterProperty);
-				//scope.selectedFilterProperty.breadCrumbs += 
+				
+				scope.selectedFilterProperty = selectedFilterProperty;
 			};
 			
 			scope.addFilterItem = function(){
@@ -78,6 +150,11 @@ $filter){
 			
 			scope.saveFilter = function(selectedFilterProperty,filterItem,callback){
 				$log.debug('saveFilter begin');
+				console.log(selectedFilterProperty.selectedCriteriaType);
+				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType) && angular.equals({}, selectedFilterProperty.selectedCriteriaType)){
+					return;
+				}
+				
 				if(angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
 					//populate filterItem with selectedFilterProperty values
 					filterItem.$$isNew = false;
@@ -155,6 +232,18 @@ $filter){
 							}
 							filterItem.displayValue = filterItem.value;
 							break;
+			            
+					}
+					
+					switch(selectedFilterProperty.fieldtype){
+						case 'many-to-one':
+			            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+							//is null, is not null
+							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+							}
+							filterItem.displayValue = filterItem.value;
+			            	break;
 					}
 					
 					if(angular.isUndefined(filterItem.displayValue)){

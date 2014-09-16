@@ -593,9 +593,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getHQLTest(){
-		var collectionBestAcountEmailAddressesData = {
+		/*var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
+			collectionCode = 'TestAccountEmailAddresses',
 			baseEntityName="AccountEmailAddress",
 			collectionConfig = '
 				{
@@ -619,72 +619,45 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
-		
+		*/
 		
 		var collectionEntityData = {
-			collectionid = '',
+			collectionid = '12',
 			collectionCode = 'BestAccounts',
-			baseEntityName = 'Account',
+			baseEntityName = 'Sku',
 			collectionConfig = '
 				{
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
-					"columns":[
-						{
-							"propertyIdentifier":"Account.firstName"
-						}
-					],
-					"joins":[
-						{
-							"associationName":"primaryEmailAddress",
-							"alias":"Account_primaryEmailAddress"
-						}
-					],
-					"orderBy":[
-						{
-							"propertyIdentifier":"Account.firstName",
-							"direction":"DESC"
-						}
-					],
-					
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								}
-							]
-							
-						},
-						{
-							"logicalOperator":"OR",
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								}
-							]
-						},
-						{
-							"logicalOperator":"AND",
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.accountEmailAddresses",
-									"collectionCode":"BestAccountEmailAddresses",
-									"criteria":"None"
-								}
-							]
-						}
-					]
-					
-				}
+  "baseEntityName": "SlatwallSku",
+  "baseEntityAlias": "Sku",
+  "filterGroups": [
+    { 
+      "filterGroup": [
+        {
+          "propertyIdentifier": "Sku.remoteID",
+          "comparisonOperator": "in",
+          "value": "1,2",
+          "displayPropertyIdentifier": "skuID"
+        }
+      ]
+    }
+  ]
+}
 			'
 		};
 
-		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		/*
+		,
+		{
+			"logicalOperator":"AND",
+			"filterGroup":[
+				{
+					"propertyIdentifier":"Account.accountEmailAddresses",
+					"collectionCode":"BestAccountEmailAddresses",
+					"criteria":"None"
+				}
+			]
+		}*/
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		request.debug(collectionEntity.getPageRecords());
 		 
 	}
