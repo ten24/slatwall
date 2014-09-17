@@ -525,3 +525,75 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
   top:50px;
 }
 */
+.autocomplete-options {
+	position:absolute;
+	top:28px;
+	left:-130px;
+	margin:3px 0px 0px 0px;
+	width:350px;
+	max-height:300px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding:0px;
+	z-index: 1000;
+	border: 1px solid #eee;
+	-moz-box-shadow: 3px 3px 4px #eee;
+	-webkit-box-shadow: 3px 3px 4px #eee;
+	box-shadow: 3px 3px 4px #eee;
+	background-color:#fff;
+	ul {
+		list-style:none;
+		margin:0px;
+		li {
+			list-style:none;
+			background-color: #ffffff;
+			a {
+				display:block;
+				color:#333;
+				text-decoration:none;
+				height:55px;
+				width:334px;
+				padding: 7px;
+				border: 1px solid #efefef;
+				margin:0px;
+				font-size:11px;
+				line-height:14px;
+				overflow:hidden;
+				span {
+					display:block;
+					float:left;
+					width:265px;
+					margin-right:5px;
+				}
+				.adminIcon {
+					width:55px;
+				}
+				.first {
+					font-size:12px;
+					font-weight:bold;
+				}
+				
+			}
+			a:hover {
+				background-color: rgba(85, 170, 239, 0.04);
+				border: 1px solid rgba(85, 170, 239, 0.50);
+			}
+		}
+	}
+	ul.accountid {
+		.fullName {
+			width:auto;
+		}
+		.company {
+			width:auto;
+		}
+	}
+	ul.skuid {
+		.productName {
+			width:auto;
+		}
+		.productTypeName {
+			width:auto;
+		}
+	}
+}
