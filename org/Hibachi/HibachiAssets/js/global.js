@@ -849,6 +849,11 @@ function setupEventHandlers() {
 
 	//Initiate SelectBoxIt on select boxes
 	$("select").selectBoxIt();
+	 
+	//Prevent Default hash naving of the panels
+	jQuery('body').on('click', '.panel a', function(e){
+		e.preventDefault();
+	});
 	
 }
 
