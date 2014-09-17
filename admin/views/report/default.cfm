@@ -49,7 +49,7 @@ Notes:
 
 <cfoutput>
 	<div class="row">
-		<div class="span2">
+		<div class="col-md-2">
 			<ul class="nav">
 				<cf_HibachiDividerHider>
 					<cfif arrayLen(rc.savedReports)>
@@ -79,7 +79,7 @@ Notes:
 				</cf_HibachiDividerHider>
 			</ul>
 		</div>
-		<div class="span10">
+		<div class="col-md-10">
 			<cf_HibachiMessageDisplay />
 			<cf_HibachiReportViewer report="#rc.report#" />
 		</div>

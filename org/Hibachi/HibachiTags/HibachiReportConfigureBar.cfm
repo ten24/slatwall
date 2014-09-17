@@ -13,7 +13,7 @@
 			</cfif>
 
 			<div class="row">
-				<div class="span7">
+				<div class="col-md-7">
 					<dl class="dl-horizontal">
 						
 						<!--- Metrics --->
@@ -28,7 +28,7 @@
 										<cfif attributes.report.getReportCompareFlag()>
 											<span style="color:#attributes.report.getMetricColorDetails()[m].compareColor#; font-size:26px; float:left; margin-right:2px;">&bull;</span>
 										</cfif>
-										<cfoutput>| #attributes.report.getMetricTitle(metric)#</cfoutput>
+										<cfoutput> | #attributes.report.getMetricTitle(metric)#</cfoutput>
 										<cfif listLen(attributes.report.getMetrics()) gt 1>
 											<a href="" class="hibachi-report-remove-metric" style="color:##000000; margin:0px 5px 0px 10px;" data-metric="#metric#">x</a>
 										</cfif>
@@ -81,7 +81,7 @@
 						</dd>
 					</dl>
 				</div>
-				<div class="span5">
+				<div class="col-md-5">
 					
 					<!--- Report DateTime GroupBy ---> 
 					<div class="btn-group-vertical pull-right" style="vertical-align:top; margin-bottom:5px;">
@@ -94,7 +94,7 @@
 					
 					<!--- DateTime Selector --->
 					<div class="pull-right" style="margin-right:10px;">
-						<div style="margin-bottom:-5px;">
+						<div style="margin-bottom:5px;">
 							<select name="reportDateTime" class="hibachi-report-date" style="width:192px;">
 								<cfloop array="#attributes.report.getReportDateTimeDefinitions()#" index="dateTimeAlias">
 									<option value="#dateTimeAlias['alias']#" <cfif dateTimeAlias['alias'] eq attributes.report.getReportDateTime()>selected="selected"</cfif>>#attributes.report.getReportDateTimeTitle(dateTimeAlias['alias'])#</option>
