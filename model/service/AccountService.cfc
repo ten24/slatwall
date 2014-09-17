@@ -1136,10 +1136,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Check delete validation
 		if(arguments.accountPaymentMethod.isDeletable()) {
-
+			
 			// If the primary payment method is this payment method then set the primary to null
 			if(arguments.accountPaymentMethod.getAccount().getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
 				arguments.accountPaymentMethod.getAccount().setPrimaryPaymentMethod(javaCast("null",""));
+				arguments.accountPaymentMethod.removeAccount();
 			}
 			
 		}
