@@ -54,6 +54,13 @@ $log){
 				}
 			};
 			
+			$scope.selectBreadCrumb = function(breadCrumbIndex){
+				//splice out array items above index
+				var removeCount = $scope.breadCrumbs.length - 1 - breadCrumbIndex;
+				$scope.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
+				$scope.selectedPropertyChanged(null);
+				
+			};
 
 			var unbindBaseEntityAlias = $scope.$watch('baseEntityAlias',function(newValue,oldValue){
 				if(newValue !== oldValue){
