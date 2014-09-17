@@ -8,6 +8,7 @@ angular.module('slatwalladmin')
 '$log',
 'slatwallService',
 'collectionService',
+'metadataService',
 '$filter',
 function($http,
 $compile,
@@ -16,6 +17,7 @@ partialsPath,
 $log,
 slatwallService,
 collectionService,
+metadataService,
 $filter){
 	//private functions
 /* Template info begin*/
@@ -687,7 +689,7 @@ $filter){
 								var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
 								filterPropertiesPromise.then(function(value){
 									scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
-									collectionService.formatFilterPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
+									metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
 								}, function(reason){
 									
 								});

@@ -2,7 +2,6 @@
 <!--- Filter Criteria Start --->
 <form action="index.html" method="post">
   <div class="s-filter-group-item">
-
     <div class="s-options-group">
       <div class="radio" style="border-bottom: 3px dotted #DDD;padding-bottom: 15px;margin-bottom: 20px;">
         <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" ng-model="selectedFilterProperty.selectedCriteriaType"  ng-value="conditionOptions.drillEntity" checked>
@@ -13,10 +12,9 @@
           <select ng-model="selectedFilterProperty.selectedCriteriaType" 
           		ng-change="selectedCriteriaChanged(selectedFilterProperty.selectedCriteriaType)" 
           		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
-          					group by filterProperty.fieldtype 
           					for filterProperty in filterPropertiesList[selectedFilterProperty.propertyIdentifier].data 
           					track by filterProperty.propertyIdentifier
-          					| orderBy:filterProperty.name" 
+          					" 
           		class="form-control input-sm">
             <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>
           </select>

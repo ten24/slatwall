@@ -139,7 +139,7 @@ function(slatwallService,$filter,$log){
 			filterItemGroup.push(filterItem);
 			
 			
-			collectionService.selectFilterItem(filterItem);
+			this.selectFilterItem(filterItem);
 			
 			
 		},

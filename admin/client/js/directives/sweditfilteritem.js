@@ -8,6 +8,7 @@ angular.module('slatwalladmin')
 '$log',
 'slatwallService',
 'collectionService',
+'metadataService',
 '$filter',
 function($http,
 $compile,
@@ -16,6 +17,7 @@ partialsPath,
 $log,
 slatwallService,
 collectionService,
+metadataService,
 $filter){
 	return {
 		require:'^swFilterGroups',
@@ -61,23 +63,23 @@ $filter){
 					if(angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])){
 						var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
 						filterPropertiesPromise.then(function(value){
-							collectionService.setFilterPropertiesList(value,breadCrumb.propertyIdentifier);
-							scope.filterPropertiesList[breadCrumb.propertyIdentifier] = collectionService.getFilterPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
-							collectionService.formatFilterPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier],breadCrumb.propertyIdentifier);
+							metadataService.setPropertiesList(value,breadCrumb.propertyIdentifier);
+							scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+							metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier],breadCrumb.propertyIdentifier);
 							var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
 							entityAliasArrayFromString.pop();
 							
 							entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
-								for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
-									var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
-									if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
-										//selectItem from drop down
-										scope.selectedFilterProperty = filterProperty;
-										//decorate with value and comparison Operator so we can use it in the Condition section
-										scope.selectedFilterProperty.value = scope.filterItem.value;
-										scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
-									}
+							for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
+								var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+								if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
+									//selectItem from drop down
+									scope.selectedFilterProperty = filterProperty;
+									//decorate with value and comparison Operator so we can use it in the Condition section
+									scope.selectedFilterProperty.value = scope.filterItem.value;
+									scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
 								}
+							}
 								
 							//scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
 						}, function(reason){

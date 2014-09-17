@@ -626,22 +626,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionCode = 'BestAccounts',
 			baseEntityName = 'Sku',
 			collectionConfig = '
-				{
-  "baseEntityName": "SlatwallSku",
-  "baseEntityAlias": "Sku",
-  "filterGroups": [
-    { 
-      "filterGroup": [
-        {
-          "propertyIdentifier": "Sku.remoteID",
-          "comparisonOperator": "in",
-          "value": "1,2",
-          "displayPropertyIdentifier": "skuID"
-        }
-      ]
-    }
-  ]
-}
+				{"baseEntityName":"SlatwallAccount","baseEntityAlias":"Account","columns":[{"title":"First Name","propertyIdentifier":"Account.firstName","isVisible":true},{"title":"Last Name","propertyIdentifier":"Account.lastName","isVisible":true},{"title":"Email Address","propertyIdentifier":"Account.primaryEmailAddress.emailAddress","isVisible":true}],"filterGroups":[{"filterGroup":[]}]}
 			'
 		};
 
@@ -659,7 +644,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		}*/
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		request.debug(collectionEntity.getPageRecords());
-		 
+		
 	}
 	
 	public void function getHQLTest_emptyFilterGroup(){
