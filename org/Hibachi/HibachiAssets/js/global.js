@@ -849,6 +849,11 @@ function setupEventHandlers() {
 
 	//Initiate SelectBoxIt on select boxes
 	$("select").selectBoxIt();
+	 
+	//Prevent default panel href from appending to the url
+	jQuery('body').on('click', '.panel a', function(e){
+		e.preventDefault();
+	});
 	
 }
 
