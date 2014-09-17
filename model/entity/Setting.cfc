@@ -52,8 +52,8 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="settingName" ormtype="string";
 	property name="settingValue" ormtype="string" length="4000";
-	property name="settingValueEncryptedDateTime" ormType="timestamp";
-	property name="settingValueEncryptedGenerator" ormType="string";
+	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false";
+	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false";
 
 	// Non-Constrained related entity
 	property name="cmsContentID" ormtype="string";
@@ -120,6 +120,15 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public array function getAuditableProperties() {
+		var auditableProperties = super.getAuditableProperties();
+		if (structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue) {
+			structDelete(auditableProperties, "settingValue", false);
+		}
+		
+		return auditableProperties;
+	}
 	
 	public string function getSimpleRepresentation() {
 		return getHibachiScope().rbKey('setting.#getSettingName()#');
