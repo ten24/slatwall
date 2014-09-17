@@ -67,7 +67,7 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.comment#" />
 		
 		<!--- Only Runs if new --->
-		<Cfif rc.comment.isNew()>#local.hiddenKeyFields#</cfif>
+		<cfif rc.comment.isNew()>#local.hiddenKeyFields#</cfif>
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
@@ -77,7 +77,7 @@ Notes:
 					<cf_HibachiPropertyDisplay object="#rc.comment#" property="createdByAccount">
 				</cfif>
 				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" edit="#rc.comment.isNew()#">
+				<cf_HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" fieldClass="col-md-12" edit="#rc.comment.isNew()#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
