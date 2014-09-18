@@ -60,6 +60,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="updateService" type="any";
 	
 	property name="hibachiSessionService" type="any";
+	property name="hibachiUtilityService" type="any";
 	
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'login');
@@ -135,6 +136,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		super.genericSaveMethod('Image',rc);
 		
+	}
+	
+	public void function encryptionUpdatePassword(required struct rc) {
+		param name="rc.process" default="0";
+		param name="rc.password" default="";
+		param name="rc.iterationCount" default="#randRange(500, 2500)#";
+		
+		if (rc.process) {
+			getHibachiUtilityService().addEncryptionPasswordData(data=rc);
+			rc.$.slatwall.showMessageKey("admin.main.encryption.updatePassword_success");
+			getFW().redirect(action="admin:main.default", preserve="messages");
+		}
+		
+		rc.edit = true;
 	}
 	
 	public void function update(required struct rc) {

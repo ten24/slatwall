@@ -5,13 +5,15 @@
 	<cfset request.propertyTableCount++ />
 	
 	<cfoutput>
-		<table class="table table-striped table-bordered table-condensed" id="hibachiPropertyTable#request.propertyTableCount#">
-			<tbody>
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered table-condensed" id="hibachiPropertyTable#request.propertyTableCount#">
+				<tbody>
 	</cfoutput>
 	
 <cfelse>
 	<cfoutput>
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		</div>
 	</cfoutput>
 </cfif>
