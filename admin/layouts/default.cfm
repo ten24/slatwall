@@ -200,6 +200,8 @@ Notes:
 								<cf_HibachiActionCaller action="admin:entity.listaudit" type="list">
 								<cf_HibachiActionCaller action="admin:main.update" type="list">
 								<cfif $.slatwall.getAccount().getSuperUserFlag()>
+									<cf_HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
+									<cf_HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
 									<cf_HibachiActionCaller action="admin:main.default" querystring="reload=true" type="list" text="Reload Slatwall">
 								</cfif>
 							</cf_HibachiDividerHider>

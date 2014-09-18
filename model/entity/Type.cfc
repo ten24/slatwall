@@ -52,31 +52,66 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	property name="typeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="typeIDPath" ormtype="string" length="4000";
 	property name="type" ormtype="string";
+	property name="typeCode" ormtype="string";
+	property name="typeDescription" ormtype="string" length="4000";
 	property name="systemCode" ormtype="string" index="PI_SYSTEMCODE";
-	
-	// Related Object Properties
+
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
 	property name="parentType" cfc="Type" fieldtype="many-to-one" fkcolumn="parentTypeID";
+	
+	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="typeID" cascade="all-delete-orphan" inverse="true";
 	property name="childTypes" singularname="childType" type="array" cfc="Type" fieldtype="one-to-many" fkcolumn="parentTypeID" cascade="all" inverse="true";
+	
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
+	
+	// Remote Properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	public any function getChildTypes() {
-		if(!isDefined('variables.childTypes')) {
-			variables.childTypes = arraynew(1);
-		}
-		return variables.childTypes;
+	// Non-Persistent Properties
+	
+	// Deprecated Properties
+
+
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
+	
+	// ============ START: Non-Persistent Property Methods =================
+	
+	// ============  END:  Non-Persistent Property Methods =================
+		
+	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Attribute Values (one-to-many)    
+	public void function addAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.setType( this );    
+	}    
+	public void function removeAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.removeType( this );    
 	}
 	
-	public any function getType() {
-		if(!structKeyExists(variables, "type")) {
-			variables.type = "";
-		}
-		return variables.type;
-	}
+	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
 	
 	// This overrides the build in system code getter to look up to the parent if a system code doesn't exist for this type.
 	public string function getSystemCode() {
@@ -86,16 +121,6 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 		return variables.systemCode;
 	}
 	
-	// ============ START: Non-Persistent Property Methods =================
-	
-	// ============  END:  Non-Persistent Property Methods =================
-		
-	// ============= START: Bidirectional Helper Methods ===================
-	
-	// =============  END:  Bidirectional Helper Methods ===================
-	
-	// ============== START: Overridden Implicet Getters ===================
-	
 	public string function getTypeIDPath() {
 		if(isNull(variables.typeIDPath)) {
 			variables.typeIDPath = buildIDPathList( "parentType" );
@@ -103,8 +128,12 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 		return variables.typeIDPath;
 	}
 	
-	// ==============  END: Overridden Implicet Getters ====================
-		
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentationPropertyName() {
@@ -126,5 +155,10 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
+
 }
 

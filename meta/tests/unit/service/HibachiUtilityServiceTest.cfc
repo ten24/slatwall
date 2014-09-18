@@ -119,6 +119,69 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(2, structCount(data));
 	}
 	
+	public void function createPasswordBasedEncryptionKey_runs_with_defaults() {
+		var password = "this is my custom seed name";
+		var entityID = "30E69FFF9067343922F6FF15BD9434A139AEEAB5";
+		
+		// Password-based encryption method
+		var expectedValue = "testing_string";
+		var key = variables.service.createPasswordBasedEncryptionKey(password, entityID);
+		var resultEncrypt = encrypt(expectedValue, key, "AES/CBC/PKCS5Padding" );
+		var resultDecrypt = decrypt(resultEncrypt, key, "AES/CBC/PKCS5Padding" );
+		
+		assertEquals(expectedValue, resultDecrypt, "Expected the decrypted value to match the initial value.");
+	}
+	
+	public void function decryptValue_using_password_derived_and_legacy_keys() {
+		var plaintext = "my secret key";
+		
+		// Encrypt using legacy method
+		var encryptedResultLegacy = variables.service.encryptValue(value=plaintext, legacyModeFlag=true);
+		
+		// Decrypt using legacy method
+		var decryptedResultLegacy = variables.service.decryptValue(value=encryptedResultLegacy, legacyModeFlag=true);
+		
+		// Decrypt using mix mode of password derived keys and legacy key
+		var decryptedResultMixed = variables.service.decryptValue(value=encryptedResultLegacy);
+	}
+	
+	public void function decryptValue_using_password_derived_keys() {
+		var plaintext = "my secret key";
+		var entityID = "30E69FFF9067343922F6FF15BD9434A139AEEAB5";
+		
+		// Encrypt using password
+		var actualEncryptedResult = variables.service.encryptValue(value=plaintext, salt=entityID);
+		
+		// Decrypt using password
+		var actualDecryptedResult = variables.service.decryptValue(value=actualEncryptedResult, salt=entityID);
+		
+		assertEquals(plaintext, actualDecryptedResult);
+	}
+	
+	public void function decryption_behavior_does_not_error_with_incorrect_key() {
+		var plaintext = "my secret key";
+		var correctEncoding = 'Base64';
+		var correctKey = '7odDSyHMPSEthzLgHjNVWg==';
+		var correctAlgorithm = 'AES';
+		var incorrectKey = 'o9YcQotq1r9KNm0ftFRaRQ==';
+		var incorrectAlgorithm = 'AES/CBC/PKCS5Padding';
+		var expectedEncryptedResult = 'VMZ5/OofSPF55zlpeZxoQw==';
+		
+		var actualEncryptedResult = encrypt(plaintext, correctKey, correctAlgorithm, correctEncoding);
+		assertEquals(expectedEncryptedResult, actualEncryptedResult);
+		
+		// Expected behavior
+		var correctDecryptedResult = decrypt(actualEncryptedResult, correctKey, correctAlgorithm, correctEncoding);
+		assertEquals(plaintext, correctDecryptedResult);
+		
+		// Incorrect behavior, demonstration of no error occurring when we would expect such instead returns an empty string
+		var incorrectDecryptedResult = decrypt(actualEncryptedResult, incorrectKey, incorrectAlgorithm, correctEncoding);
+		assertEquals('', incorrectDecryptedResult);
+		
+		// Alternative example inputs
+		// Correct
+		//decrypt('2Tef82tq+TUV3XPJCaBANQ==', 'op7tfNyTCfK0TwQRi3PVxA==', 'AES/CBC/PKCS5Padding', 'Base64');
+		// Incorrect
+		//decrypt('2Tef82tq+TUV3XPJCaBANQ==', 'PRE8ihKSRr8vOczQgCo2fw==', 'AES/CBC/PKCS5Padding', 'Base64');
+	}
 }
-
-

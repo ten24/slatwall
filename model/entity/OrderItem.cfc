@@ -458,7 +458,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astOrderItem');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'OrderItem');
 
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");

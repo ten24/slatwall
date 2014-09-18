@@ -57,6 +57,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="checkNumberEncrypted" ormType="string";
 	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
+	property name="creditCardNumberEncryptedDateTime" ormType="timestamp";
+	property name="creditCardNumberEncryptedGenerator" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
 	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
@@ -247,6 +249,13 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			}
 		}
 		
+	}
+	
+	public void function setupEncryptedProperties() {
+		// Determine if we need to encrypt credit card
+		if(!isNull(getCreditCardNumber()) && len(getCreditCardNumber()) && getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveOrderPaymentEncryptFlag()) && getPaymentMethod().getSaveOrderPaymentEncryptFlag()) {
+			encryptProperty('creditCardNumber');
+		}
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
@@ -470,7 +479,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	public string function getCreditCardNumber() {
 		if(!structKeyExists(variables,"creditCardNumber")) {
 			if(nullReplace(getCreditCardNumberEncrypted(), "") NEQ "") {
-				return decryptValue(getCreditCardNumberEncrypted());
+				return decryptProperty("creditCardNumber");
 			}
 			return ;
 		}
@@ -667,17 +676,12 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 	// ================== START: Overridden Methods ========================
 	
-	public any function afterPopulate() {
-		if(!isNull(getCreditCardNumber()) && len(getCreditCardNumber()) && getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveOrderPaymentEncryptFlag()) && getPaymentMethod().getSaveOrderPaymentEncryptFlag()) {
-			setCreditCardNumberEncrypted(encryptValue(getCreditCardNumber()));
-		}
-	}
-	
 	public void function setCreditCardNumber(required string creditCardNumber) {
 		if(len(arguments.creditCardNumber)) {
 			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');	
 			setCreditCardLastFour( right(variables.creditCardNumber, 4) );
 			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(variables.creditCardNumber) );
+			setupEncryptedProperties();
 		} else {
 			structDelete(variables, "creditCardNumber");
 			setCreditCardLastFour(javaCast("null", ""));
@@ -735,11 +739,11 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	// =================== START: ORM Event Hooks  =========================
 	
 	public void function preInsert(){
-		super.preInsert();
-		
 		// Verify Defaults are Set
 		getOrderPaymentType();
 		getOrderPaymentStatusType();
+		
+		super.preInsert();
 	}
 	
 	// ===================  END:  ORM Event Hooks  =========================

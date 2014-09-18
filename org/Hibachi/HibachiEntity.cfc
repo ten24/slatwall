@@ -529,6 +529,60 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	// @hint handles encrypting a property based on conventions
+	public void function encryptProperty(required string propertyName) {
+		var generatorValue = createHibachiUUID();
+		var encryptedPropertyValue = encryptValue(this.invokeMethod('get#arguments.propertyName#'), generatorValue);
+		
+		// Set encrypted generator
+		if(this.hasProperty('#arguments.propertyName#EncryptedGenerator')) {
+			this.invokeMethod("set#arguments.propertyName#EncryptedGenerator", {'1'=generatorValue});
+		// Enforce that every encrypted property has a corresponding generator when the encryption takes place
+		} else {
+			throw("Entity '#getClassName()#' is missing the '#arguments.propertyName#EncryptedGenerator' property. Encrypting '#arguments.propertyName#' property value without a corresponding '#arguments.propertyName#EncryptedGenerator' property is not allowed.");	
+		}
+		
+		// Set encrypted datetime stamp
+		if(this.hasProperty('#arguments.propertyName#EncryptedDateTime')) {
+			this.invokeMethod("set#arguments.propertyName#EncryptedDateTime", {'1'=now()});
+		// Enforce that every encrypted property has the timestamp when the encryption takes place
+		} else {
+			throw("Entity '#getClassName()#' is missing the '#arguments.propertyName#EncryptedDateTime' property. Encrypting '#arguments.propertyName#' property value without a corresponding '#arguments.propertyName#EncryptedDateTime' property is not allowed.");	
+		}
+		
+		// Determine the appropiate property of the entity where to set the encrypted value
+		if(this.hasProperty('#arguments.propertyName#Encrypted')) {
+			// Set corresponding property that should store the newly encrypted value and remove the unencrypted value from the corresponding unencrypted property (necessary if persistent)
+			this.invokeMethod("set#arguments.propertyName#Encrypted", {'1'=encryptedPropertyValue});
+			
+			var unencryptedProperty = this.getPropertiesStruct()['#arguments.propertyName#'];
+			
+			// Unencrypted property is persistent, remove the value from variables scope so it is not persisted as plaintext
+			if (!structKeyExists(unencryptedProperty, "persistent") || (structKeyExists(unencryptedProperty, "persistent") && unencryptedProperty.persistent)) {
+				structDelete(variables, arguments.propertyName);
+			}
+		} else {
+			// Overwrite property's unencrypted value directly with the newly encrypted value, bypass the setter because could trigger a recursive loop on this method
+			variables['#arguments.propertyName#'] = encryptedPropertyValue;
+		}
+	}
+	
+	// @hint handles decrypting a property based on conventions
+	public string function decryptProperty(required string propertyName) {
+		var encryptedPropertyValue = "";
+		var generatorValue = this.invokeMethod("get#arguments.propertyName#EncryptedGenerator");
+		param name="generatorValue" default=""; 
+		
+		// Determine the appropriate property to retrieve the encrytped value from
+		if (this.hasProperty("#arguments.propertyName#Encrypted")) {
+			encryptedPropertyValue = this.invokeMethod("get#arguments.propertyName#Encrypted");
+		} else {
+			encryptedPropertyValue = variables['#arguments.propertyName#'];
+		}
+		
+		return decryptValue(encryptedPropertyValue, generatorValue);
+	}
+	
 	public string function getAuditablePropertyExclusionList() {
 		return "createdByAccount,createdByAccountID,createdDateTime,modifiedByAccount,modifiedByAccountID,modifiedDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID";
 	}
@@ -680,6 +734,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public void function afterPopulate() {
+		// Handle encrypted properties
+		if (structKeyExists(this, 'setupEncryptedProperties')) {
+			this.invokeMethod('setupEncryptedProperties');
+		}
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 		
