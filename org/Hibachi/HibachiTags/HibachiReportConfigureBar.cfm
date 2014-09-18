@@ -23,10 +23,10 @@
 							<span id="hibachi-report-metric-sort">
 								<cfloop from="1" to="#listLen(attributes.report.getMetrics())#" step="1" index="m">
 									<cfset metric = listGetAt(attributes.report.getMetrics(), m) />
-									<span class="label" style="background-color: ##f5f5f5; border:1px solid ##cccccc; color:##333333; margin-bottom:5px; padding-left:10px; cursor:pointer;" data-metric="#trim(metric)#">
-										<span style="color:#attributes.report.getMetricColorDetails()[m].color#; font-size:26px; float:left; margin-right:2px;">&bull;</span>
+									<span class="label s-metric-bullet-icon" style="background-color: ##f5f5f5;color:##333333; border:1px solid ##cccccc; margin-bottom:5px; padding-left:10px; cursor:pointer;" data-metric="#trim(metric)#">
+										<span style="color:#attributes.report.getMetricColorDetails()[m].color#;"></span>
 										<cfif attributes.report.getReportCompareFlag()>
-											<span style="color:#attributes.report.getMetricColorDetails()[m].compareColor#; font-size:26px; float:left; margin-right:2px;">&bull;</span>
+											<span style="color:#attributes.report.getMetricColorDetails()[m].color#;"></span>
 										</cfif>
 										<cfoutput> | #attributes.report.getMetricTitle(metric)#</cfoutput>
 										<cfif listLen(attributes.report.getMetrics()) gt 1>
