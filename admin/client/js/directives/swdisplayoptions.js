@@ -39,15 +39,20 @@ $log){
 			};
 			
 			$scope.addColumn = function(selectedProperty){
-				if(selectedProperty.$$group === 'simple'){
-					$log.debug('add column');
-					$log.debug(selectedProperty);
+				$log.debug('add Column');
+				$log.debug(selectedProperty);
+				if(selectedProperty.$$group === 'simple' || 'attribute'){
 					$log.debug($scope.columns);
 					if(angular.isDefined(selectedProperty)){
 						var column = {};
 						column.title = selectedProperty.displayPropertyIdentifier;
 						column.propertyIdentifier = selectedProperty.propertyIdentifier;
 						column.isVisible = true;
+						//only add attributeid if the selectedProperty is attributeid
+						if(angular.isDefined(selectedProperty.attributeID)){
+							column.attributeID = selectedProperty.attributeID;
+						}
+						
 						$scope.columns.push(column);
 						$scope.saveCollection();
 					}

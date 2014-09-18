@@ -6,7 +6,7 @@ angular.module('slatwalladmin')
 '$templateCache',
 'partialsPath',
 '$log',
-'slatwallService',
+'$slatwall',
 'collectionService',
 'metadataService',
 '$filter',
@@ -15,7 +15,7 @@ $compile,
 $templateCache,
 partialsPath,
 $log,
-slatwallService,
+$slatwall,
 collectionService,
 metadataService,
 $filter){
@@ -61,7 +61,7 @@ $filter){
 			}else{
 				angular.forEach(scope.filterItem.breadCrumbs,function(breadCrumb,key){
 					if(angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])){
-						var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+						var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
 						filterPropertiesPromise.then(function(value){
 							metadataService.setPropertiesList(value,breadCrumb.propertyIdentifier);
 							scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
@@ -170,6 +170,11 @@ $filter){
 		               		filterItem.displayValue = filterItem.value;
 		                break;
 			            case 'string':
+			            	
+			            	if(angular.isDefined(selectedFilterProperty.attributeID)){
+			            		filterItem.attributeID = selectedFilterProperty.attributeID;
+			            	}
+			            	
 							filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 							
 							//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
