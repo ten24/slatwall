@@ -113,6 +113,21 @@ Notes:
 
 	</cffunction>
 	
+	<cffunction name="removeAccountPaymentMethodFromOrderPayments">
+		<cfargument name="accountPaymentMethodID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			UPDATE
+				SwOrderPayment
+			SET
+				accountPaymentMethodID = null 
+			WHERE
+				accountPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" /> 
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="getInternalAccountAuthenticationsByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		

@@ -52,6 +52,11 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="settingName" ormtype="string";
 	property name="settingValue" ormtype="string" length="4000";
+	property name="settingValueEncryptedDateTime" ormType="timestamp";
+	property name="settingValueEncryptedGenerator" ormType="string";
+
+	// Non-Constrained related entity
+	property name="cmsContentID" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -78,12 +83,37 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	// Non-Persistent Properties
+	property name="settingValueEncryptionProcessedFlag" type="boolean" persistent="false";
 
 	public struct function getSettingMetaData() {
 		return getService("settingService").getSettingMetaData(settingName=getSettingName());
 	}
+	
+	public void function setupEncryptedProperties() {
+		var settingMetaData = getSettingMetaData();
+		
+		// Determine if we need to encrypt value
+		if(structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue == true && !getSettingValueEncryptionProcessedFlag() && !isNull(getSettingID())) {
+			encryptProperty('settingValue');
+		}
+	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public void function setSettingValue(required string settingValue) {
+		variables.settingValue = arguments.settingValue;
+		setupEncryptedProperties();
+		setSettingValueEncryptionProcessedFlag(true);
+	}
+	
+	public boolean function getSettingValueEncryptionProcessedFlag() {
+		if(isNull(variables.settingValueEncryptionProcessedFlag) || !isBoolean(variables.settingValueEncryptionProcessedFlag)) {
+			variables.settingValueEncryptionProcessedFlag = false;
+		}
+		return variables.settingValueEncryptionProcessedFlag;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
@@ -121,7 +151,6 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	
 	// This overrides the base validation method to dynamically add rules based on setting specific requirements
 	public any function validate( string context="" ) {
-		
 		// Call the base method validate with any additional arguments passed in
 		super.validate(argumentCollection=arguments);
 		

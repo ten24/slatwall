@@ -299,253 +299,254 @@
 	</cfsilent>
 
 	<cfoutput>
-		<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
-			<thead>
-				
-				<cfif attributes.showheader>
-					<tr>
-						<th class="listing-display-header" colspan='#thistag.columnCount#'>
-							<div class="row">
-								<div class="col-md-8">
-									<cfif not thistag.expandable>
-										<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
-									</cfif>
-									<cfif not thistag.expandable and len(attributes.title)>
-										<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
-									</cfif>
-									<cfif len(attributes.title)>
-										<span style="font-size:14px;color:##666666;">#attributes.title#</span>
-									</cfif>
-								</div>
-								<div class="col-md-4">
-									<div class="groups">
-										<div class="btn-group">
-											<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
-											<ul class="dropdown-menu pull-right" role="menu">
-												<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-											</ul>
-										</div>
-											
-										<!--- Listing: Button Groups --->
-										<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
-											<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
-												<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-													<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
-															#buttonGroup.generatedContent#
-													<cfelse>
-														<div class="btn-group">
-															#buttonGroup.generatedContent#
-														</div>
-													</cfif>
-												</cfif>
-											</cfloop>
+		<div class="table-responsive">	
+			<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
+				<thead>
+					
+					<cfif attributes.showheader>
+						<tr>
+							<th class="listing-display-header" colspan='#thistag.columnCount#'>
+								<div class="row">
+									<div class="col-md-8">
+										<cfif not thistag.expandable>
+											<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
 										</cfif>
-										
-										<!--- Listing: Create --->
-										<cfif len(attributes.createAction)>
-											<div class="btn-group">
-												<cfif attributes.createModal>
-													<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
-												<cfelse>
-													<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
-												</cfif>
-											</div>
-										</cfif>		
+										<cfif not thistag.expandable and len(attributes.title)>
+											<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
+										</cfif>
+										<cfif len(attributes.title)>
+											<span style="font-size:14px;color:##666666;">#attributes.title#</span>
+										</cfif>
 									</div>
-								</div>
-							</div>
-						</th>
-					</tr>
-				</cfif>
-				<tr>
-					<!--- Selectable --->
-					<cfif thistag.selectable>
-						<cfset class="select">
-						<cfif not attributes.edit>
-							<cfset class &= " disabled" />
-						</cfif>
-						<input type="hidden" name="#attributes.selectFieldName#" value="#attributes.selectValue#" />
-						<th class="#class#">#attributes.selectTitle#</th>
-					</cfif>
-					<!--- Multiselectable --->
-					<cfif thistag.multiselectable>
-						<cfset class="multiselect">
-						<cfif not attributes.edit>
-							<cfset class &= " disabled" />
-						</cfif>
-						<input type="hidden" name="#attributes.multiselectFieldName#" value="#attributes.multiselectValues#" />
-						<th class="#class#">
-							<cfif not thistag.expandable and len(attributes.multiselectPropertyIdentifier)>
-								<div class="dropdown">
-									<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
-									<ul class="dropdown-menu nav">
-										<li><a href="##" class="multiselect-checked-filter"><i class="hibachi-ui-checkbox#IIF(attributes.edit, DE(''), DE('-checked'))#"></i> Show Selected</a></li>
-									</ul>				
-								</div>
-							<cfelse>
-								#thisTag.expandable#|#attributes.multiselectPropertyIdentifier#
-								&nbsp;
-							</cfif>
-						</th>
-					</cfif>
-					<!--- Sortable --->
-					<cfif thistag.sortable>
-						<th class="sort">&nbsp;</th>
-					</cfif>
-					<!--- Columns --->
-					<cfloop array="#thistag.columns#" index="column">
-						<cfsilent>
-							<cfif not len(column.title) and len(column.propertyIdentifier)>
-								<cfset column.title = thistag.exampleEntity.getTitleByPropertyIdentifier(column.propertyIdentifier) />
-							</cfif>
-						</cfsilent>
-						<th class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif>>
-							<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
-								#column.title#
-							<cfelse>
-								<div class="dropdown">
-									<a href="##" class="dropdown-toggle" data-toggle="dropdown">#column.title#</a>
-									<ul class="dropdown-menu nav scrollable">
-										<cf_HibachiDividerHider>
-											<cfif column.sort and not thistag.expandable>
-												<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.sort')#</li>
-												<li><a href="##" class="listing-sort" data-sortdirection="ASC"><i class="icon-arrow-down"></i> Sort Ascending</a></li>
-												<li><a href="##" class="listing-sort" data-sortdirection="DESC"><i class="icon-arrow-up"></i> Sort Descending</a></li>
-												<li class="divider"></li>
-											</cfif>
-											<cfif column.search and not thistag.expandable>
-												<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.search')#</li>
-												<li class="search-filter"><input type="text" class="listing-search" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
-												<li class="divider"></li>
-											</cfif>
-											<cfif column.range and not thistag.expandable>
-												<cfsilent>
-													<cfset local.rangeClass = "text" />
-													<cfset local.fieldType = thistag.exampleEntity.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) />
-													<cfif local.fieldType eq "dateTime">
-														<cfset local.rangeClass = "datetimepicker" />	
+									<div class="col-md-4">
+										<div class="groups">
+											<div class="btn-group">
+												<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+												<ul class="dropdown-menu pull-right" role="menu">
+													<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+												</ul>
+											</div>
+												
+											<!--- Listing: Button Groups --->
+											<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
+												<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
+													<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+														<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
+																#buttonGroup.generatedContent#
+														<cfelse>
+															<div class="btn-group">
+																#buttonGroup.generatedContent#
+															</div>
+														</cfif>
 													</cfif>
-												</cfsilent>
-												<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.range')#</li>
-												<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# range-filter-lower" name="R:#column.propertyIdentifier#" value="" /></li>
-												<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# range-filter-upper" name="R:#column.propertyIdentifier#" value="" /></li>
-												<li class="divider"></li>
-											</cfif>
-											<cfif column.filter and not thistag.expandable>
-												<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.filter')#</li>
-												<cfset filterOptions = attributes.smartList.getFilterOptions(valuePropertyIdentifier=column.propertyIdentifier, namePropertyIdentifier=column.propertyIdentifier) />
-												<input type="hidden" name="F:#column.propertyIdentifier#" value="#attributes.smartList.getFilters(column.propertyIdentifier)#" />
-												<cfloop array="#filterOptions#" index="filter">
-													<li><a href="##" class="listing-filter" data-filtervalue="#filter['value']#"><i class="hibachi-ui-checkbox"></i> #filter['name']#</a></li>
 												</cfloop>
 											</cfif>
-										</cf_HibachiDividerHider>
-									</ul>
+											
+											<!--- Listing: Create --->
+											<cfif len(attributes.createAction)>
+												<div class="btn-group">
+													<cfif attributes.createModal>
+														<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+													<cfelse>
+														<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+													</cfif>
+												</div>
+											</cfif>		
+										</div>
+									</div>
 								</div>
-							</cfif>
-						</th>
-					</cfloop>
-					<!--- Admin --->
-					<cfif attributes.administativeCount>
-						<th class="admin admin#attributes.administativeCount#" #attributes.adminattributes#>&nbsp;</th>
+							</th>
+						</tr>
 					</cfif>
-				</tr>
-			</thead>
-			<tbody <cfif thistag.sortable>class="sortable"</cfif>>
-				<cfset thistag.loopIndex = 0 />
-				<cfif not attributes.edit and thistag.multiselectable and not len(attributes.parentPropertyName) and len(attributes.multiselectPropertyIdentifier)>
-					<cfif len(attributes.multiselectValues)>
-						<cfset attributes.smartList.addInFilter(attributes.multiselectPropertyIdentifier, attributes.multiselectValues) />
-					<cfelse>
-						<cfset attributes.smartList.addInFilter(attributes.multiselectPropertyIdentifier, '_') />
-					</cfif>
-				</cfif>
-				<cfloop array="#attributes.smartList.getPageRecords()#" index="record">
-					<cfset thistag.loopIndex++ />
-					<!--- If there is a recordProcessEntity then find the processObject and inject the necessary values --->
-					<cfif isObject(attributes.recordProcessEntity)>
-						<cfset injectValues = structNew() />
-						<cfset injectValues[ "#record.getClassName()#" ] = record />
-						<cfset injectValues[ "#record.getPrimaryIDPropertyName()#" ] = record.getPrimaryIDValue() />
-						<cfset attributes.recordProcessEntity.clearProcessObject( attributes.recordProcessContext ) />
-						<cfset thisRecordProcessObject = attributes.recordProcessEntity.getProcessObject( attributes.recordProcessContext, injectValues ) />
-					</cfif>
-					<tr id="#record.getPrimaryIDValue()#" <cfif thistag.expandable>idPath="#record.getValueByPropertyIdentifier( propertyIdentifier="#thistag.exampleEntity.getPrimaryIDPropertyName()#Path" )#"</cfif>>
+					<tr>
 						<!--- Selectable --->
 						<cfif thistag.selectable>
-							<td><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
+							<cfset class="select">
+							<cfif not attributes.edit>
+								<cfset class &= " disabled" />
+							</cfif>
+							<input type="hidden" name="#attributes.selectFieldName#" value="#attributes.selectValue#" />
+							<th class="#class#">#attributes.selectTitle#</th>
 						</cfif>
 						<!--- Multiselectable --->
 						<cfif thistag.multiselectable>
-							<td><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
+							<cfset class="multiselect">
+							<cfif not attributes.edit>
+								<cfset class &= " disabled" />
+							</cfif>
+							<input type="hidden" name="#attributes.multiselectFieldName#" value="#attributes.multiselectValues#" />
+							<th class="#class#">
+								<cfif not thistag.expandable and len(attributes.multiselectPropertyIdentifier)>
+									<div class="dropdown">
+										<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
+										<ul class="dropdown-menu nav">
+											<li><a href="##" class="multiselect-checked-filter"><i class="hibachi-ui-checkbox#IIF(attributes.edit, DE(''), DE('-checked'))#"></i> Show Selected</a></li>
+										</ul>				
+									</div>
+								<cfelse>
+									#thisTag.expandable#|#attributes.multiselectPropertyIdentifier#
+									&nbsp;
+								</cfif>
+							</th>
 						</cfif>
 						<!--- Sortable --->
 						<cfif thistag.sortable>
-							<td><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="icon-move"></i></a></td>
+							<th class="sort">&nbsp;</th>
 						</cfif>
+						<!--- Columns --->
 						<cfloop array="#thistag.columns#" index="column">
-							<!--- Expandable Check --->
-							<cfif column.tdclass eq "primary" and thistag.expandable>
-								<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="icon-plus"></i></a> #record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#</td>
-							<cfelse>
-								<td class="#column.tdclass#">
-									<cfif len(column.propertyIdentifier)>
-										#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
-									<cfelseif len(column.processObjectProperty)>
-										<cfset attData = duplicate(column) />
-										<cfset attData.object = thisRecordProcessObject />
-										<cfset attData.property = column.processObjectProperty />
-										<cfset attData.edit = attributes.edit />
-										<cfset attData.displayType = "plain" />
-										<cfif structKeyExists(attData, "recordFieldNamePrefix") and len(attData.recordFieldNamePrefix)>
-											<cfset attData.fieldName = "#attData.recordFieldNamePrefix#[#thistag.loopIndex#].#attData.fieldName#" />
+							<cfsilent>
+								<cfif not len(column.title) and len(column.propertyIdentifier)>
+									<cfset column.title = thistag.exampleEntity.getTitleByPropertyIdentifier(column.propertyIdentifier) />
+								</cfif>
+							</cfsilent>
+							<th class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif>>
+								<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
+									#column.title#
+								<cfelse>
+									<div class="dropdown">
+										<a href="##" class="dropdown-toggle" data-toggle="dropdown">#column.title#</a>
+										<ul class="dropdown-menu nav scrollable">
+											<cf_HibachiDividerHider>
+												<cfif column.sort and not thistag.expandable>
+													<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.sort')#</li>
+													<li><a href="##" class="listing-sort" data-sortdirection="ASC"><i class="icon-arrow-down"></i> Sort Ascending</a></li>
+													<li><a href="##" class="listing-sort" data-sortdirection="DESC"><i class="icon-arrow-up"></i> Sort Descending</a></li>
+													<li class="divider"></li>
+												</cfif>
+												<cfif column.search and not thistag.expandable>
+													<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.search')#</li>
+													<li class="search-filter"><input type="text" class="listing-search" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
+													<li class="divider"></li>
+												</cfif>
+												<cfif column.range and not thistag.expandable>
+													<cfsilent>
+														<cfset local.rangeClass = "text" />
+														<cfset local.fieldType = thistag.exampleEntity.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) />
+														<cfif local.fieldType eq "dateTime">
+															<cfset local.rangeClass = "datetimepicker" />	
+														</cfif>
+													</cfsilent>
+													<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.range')#</li>
+													<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# range-filter-lower" name="R:#column.propertyIdentifier#" value="" /></li>
+													<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# range-filter-upper" name="R:#column.propertyIdentifier#" value="" /></li>
+													<li class="divider"></li>
+												</cfif>
+												<cfif column.filter and not thistag.expandable>
+													<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.filter')#</li>
+													<cfset filterOptions = attributes.smartList.getFilterOptions(valuePropertyIdentifier=column.propertyIdentifier, namePropertyIdentifier=column.propertyIdentifier) />
+													<input type="hidden" name="F:#column.propertyIdentifier#" value="#attributes.smartList.getFilters(column.propertyIdentifier)#" />
+													<cfloop array="#filterOptions#" index="filter">
+														<li><a href="##" class="listing-filter" data-filtervalue="#filter['value']#"><i class="hibachi-ui-checkbox"></i> #filter['name']#</a></li>
+													</cfloop>
+												</cfif>
+											</cf_HibachiDividerHider>
+										</ul>
+									</div>
+								</cfif>
+							</th>
+						</cfloop>
+						<!--- Admin --->
+						<cfif attributes.administativeCount>
+							<th class="admin admin#attributes.administativeCount#" #attributes.adminattributes#>&nbsp;</th>
+						</cfif>
+					</tr>
+				</thead>
+				<tbody <cfif thistag.sortable>class="sortable"</cfif>>
+					<cfset thistag.loopIndex = 0 />
+					<cfif not attributes.edit and thistag.multiselectable and not len(attributes.parentPropertyName) and len(attributes.multiselectPropertyIdentifier)>
+						<cfif len(attributes.multiselectValues)>
+							<cfset attributes.smartList.addInFilter(attributes.multiselectPropertyIdentifier, attributes.multiselectValues) />
+						<cfelse>
+							<cfset attributes.smartList.addInFilter(attributes.multiselectPropertyIdentifier, '_') />
+						</cfif>
+					</cfif>
+					<cfloop array="#attributes.smartList.getPageRecords()#" index="record">
+						<cfset thistag.loopIndex++ />
+						<!--- If there is a recordProcessEntity then find the processObject and inject the necessary values --->
+						<cfif isObject(attributes.recordProcessEntity)>
+							<cfset injectValues = structNew() />
+							<cfset injectValues[ "#record.getClassName()#" ] = record />
+							<cfset injectValues[ "#record.getPrimaryIDPropertyName()#" ] = record.getPrimaryIDValue() />
+							<cfset attributes.recordProcessEntity.clearProcessObject( attributes.recordProcessContext ) />
+							<cfset thisRecordProcessObject = attributes.recordProcessEntity.getProcessObject( attributes.recordProcessContext, injectValues ) />
+						</cfif>
+						<tr id="#record.getPrimaryIDValue()#" <cfif thistag.expandable>idPath="#record.getValueByPropertyIdentifier( propertyIdentifier="#thistag.exampleEntity.getPrimaryIDPropertyName()#Path" )#"</cfif>>
+							<!--- Selectable --->
+							<cfif thistag.selectable>
+								<td><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
+							</cfif>
+							<!--- Multiselectable --->
+							<cfif thistag.multiselectable>
+								<td><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
+							</cfif>
+							<!--- Sortable --->
+							<cfif thistag.sortable>
+								<td><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="icon-move"></i></a></td>
+							</cfif>
+							<cfloop array="#thistag.columns#" index="column">
+								<!--- Expandable Check --->
+								<cfif column.tdclass eq "primary" and thistag.expandable>
+									<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="icon-plus"></i></a> #record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#</td>
+								<cfelse>
+									<td class="#column.tdclass#">
+										<cfif len(column.propertyIdentifier)>
+											#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
+										<cfelseif len(column.processObjectProperty)>
+											<cfset attData = duplicate(column) />
+											<cfset attData.object = thisRecordProcessObject />
+											<cfset attData.property = column.processObjectProperty />
+											<cfset attData.edit = attributes.edit />
+											<cfset attData.displayType = "plain" />
+											<cfif structKeyExists(attData, "recordFieldNamePrefix") and len(attData.recordFieldNamePrefix)>
+												<cfset attData.fieldName = "#attData.recordFieldNamePrefix#[#thistag.loopIndex#].#attData.fieldName#" />
+											</cfif>
+											<cf_HibachiPropertyDisplay attributeCollection="#attData#" />
 										</cfif>
-										<cf_HibachiPropertyDisplay attributeCollection="#attData#" />
+									</td>
+								</cfif>
+							</cfloop>
+							<cfif attributes.administativeCount>
+								<td class="admin admin#attributes.administativeCount#">
+									<!--- Detail --->
+									<cfif len(attributes.recordDetailAction)>
+										<cfset thisID = "#replace(replace(lcase(attributes.recordDetailAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
+										<cf_HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
+									</cfif>
+									
+									<!--- Edit --->
+									<cfif len(attributes.recordEditAction)>
+										<cfset thisID = "#replace(replace(lcase(attributes.recordEditAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
+										<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
+										<cfset local.disabled = local.editErrors.hasErrors() />
+										<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
+										<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
+									</cfif>
+									
+									<!--- Delete --->
+									<cfif len(attributes.recordDeleteAction)>
+										<cfset thisID = "#replace(replace(lcase(attributes.recordDeleteAction), ':', ''), '.', '')#" />
+										<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="delete", setErrors=false) />
+										<cfset local.disabled = local.deleteErrors.hasErrors() />
+										<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />
+										<cf_HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
+									</cfif>
+									
+									<!--- Process --->
+									<cfif len(attributes.recordProcessAction)>
+										<cfset thisID = "#replace(replace(lcase(attributes.recordProcessAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
+										<cf_HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />
 									</cfif>
 								</td>
 							</cfif>
-						</cfloop>
-						<cfif attributes.administativeCount>
-							<td class="admin admin#attributes.administativeCount#">
-								<!--- Detail --->
-								<cfif len(attributes.recordDetailAction)>
-									<cfset thisID = "#replace(replace(lcase(attributes.recordDetailAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-									<cf_HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
-								</cfif>
-								
-								<!--- Edit --->
-								<cfif len(attributes.recordEditAction)>
-									<cfset thisID = "#replace(replace(lcase(attributes.recordEditAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-									<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
-									<cfset local.disabled = local.editErrors.hasErrors() />
-									<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
-									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
-								</cfif>
-								
-								<!--- Delete --->
-								<cfif len(attributes.recordDeleteAction)>
-									<cfset thisID = "#replace(replace(lcase(attributes.recordDeleteAction), ':', ''), '.', '')#" />
-									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="delete", setErrors=false) />
-									<cfset local.disabled = local.deleteErrors.hasErrors() />
-									<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />
-									<cf_HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
-								</cfif>
-								
-								<!--- Process --->
-								<cfif len(attributes.recordProcessAction)>
-									<cfset thisID = "#replace(replace(lcase(attributes.recordProcessAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-									<cf_HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />
-								</cfif>
-							</td>
-						</cfif>
-					</tr>
-				</cfloop>
-				<cfif !arrayLen(attributes.smartList.getPageRecords())>
-					<tr><td colspan="#thistag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#</em></td></tr>
-				</cfif>
-			</tbody>
-		</table>
-		
+						</tr>
+					</cfloop>
+					<cfif !arrayLen(attributes.smartList.getPageRecords())>
+						<tr><td colspan="#thistag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#</em></td></tr>
+					</cfif>
+				</tbody>
+			</table>
+		</div><!--- table-responsive --->
 		<!--- Pager --->
 		<cfsilent>
 			<cfset local.pageStart = 1 />

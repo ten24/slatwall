@@ -64,7 +64,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			// Loop over attributes
 			for(var attribute in attributeSet.getAttributes()) {
 				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], "") );
+					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], ""), this.getRollbackProcessedFlag() && attribute.getAttributeType().getSystemCode() == "atPassword");
 				}
 			}
 			
@@ -173,10 +173,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return "";
 	}
 	
-	public any function setAttributeValue(required string attribute, required any value){
+	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
-		attributeValueEntity.setAttributeValue( arguments.value );
+		
+		// Value is already encrypted, if attributeValueEntity.setAttributeValue called instead of attributeValueEntity.setAttributeValueEncrypted the encrypted value would be encrypted again
+		if (arguments.valueHasBeenEncryptedFlag) {
+			attributeValueEntity.setAttributeValueEncrypted( arguments.value );
+		} else {
+			attributeValueEntity.setAttributeValue( arguments.value );
+		}
+		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 		
 		// If this attribute value is new, then we can add it to the array
 		if(attributeValueEntity.isNew()) {

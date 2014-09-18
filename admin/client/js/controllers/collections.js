@@ -7,6 +7,7 @@ angular.module('slatwalladmin')
 'slatwallService',
 'alertService',
 'collectionService', 
+'metadataService',
 'paginationService',
 '$log',
 function($scope,
@@ -14,6 +15,7 @@ $location,
 slatwallService,
 alertService,
 collectionService,
+metadataService,
 paginationService,
 $log
 ){
@@ -107,9 +109,9 @@ $log
 				$scope.filterPropertiesList = {};
 				var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
 				filterPropertiesPromise.then(function(value){
-					collectionService.setFilterPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
-					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = collectionService.getFilterPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
-					collectionService.formatFilterPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
+					metadataService.setPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
+					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
+					metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
 				}, function(reason){
 					
 				});

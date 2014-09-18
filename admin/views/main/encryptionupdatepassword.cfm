@@ -1,4 +1,4 @@
-<!---
+﻿<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -46,40 +46,20 @@
 Notes:
 
 --->
-<cfparam name="rc.comment" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfset local.returnActionQueryString = "" />
-<cfset local.hiddenKeyFields = "" />
-<cfset local.lastIndex = 0 />
-
-<cfloop collection="#rc#" item="local.key" >
-	<cfif local.key neq "settingID" and right(local.key, 2) eq "ID" and isSimpleValue(rc[local.key]) and len(rc[local.key]) gt 30>
-		<cfset local.lastIndex++ />
-		<cfset local.returnActionQueryString = listAppend(local.returnActionQueryString, '#local.key#=#rc[local.key]#', '&') />
-		<cfset local.hiddenKeyFields = listAppend(local.hiddenKeyFields, '<input type="hidden" name="commentRelationships[#local.lastIndex#].commentRelationshipID" value="" />', chr(13)) />
-		<cfset local.hiddenKeyFields = listAppend(local.hiddenKeyFields, '<input type="hidden" name="commentRelationships[#local.lastIndex#].#left(local.key, len(local.key)-2)#.#local.key#" value="#rc[local.key]#" />', chr(13)) />	
-	</cfif>
-</cfloop>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.comment#" edit="#rc.edit#" saveActionQueryString="#local.returnActionQueryString#" saveActionHash="tabComments">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.comment#" />
-		
-		<!--- Only Runs if new --->
-		<cfif rc.comment.isNew()>#local.hiddenKeyFields#</cfif>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.comment#" property="publicFlag" edit="#rc.edit#">
-				<cfif !rc.comment.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.comment#" property="createdDateTime">
-					<cf_HibachiPropertyDisplay object="#rc.comment#" property="createdByAccount">
-				</cfif>
-				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" fieldClass="col-md-12" edit="#rc.comment.isNew()#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-	</cf_HibachiEntityDetailForm>
+	<cf_HibachiPropertyList divClass="span12">
+		<form method="post" action="?s=1" class="form-horizontal">
+			<input type="hidden" name="slatAction" value="admin:main.encryptionupdatepassword" />
+			<input type="hidden" name="process" value="1" />
+			<cfset passwordFieldAttributes = '' />
+			<cfif rc.process>
+				<cfset passwordFieldAttributes = 'placeholder="********"' />
+			</cfif>
+			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.encryption.password')#" value="#rc.password#-123434" fieldType="password" fieldName="password" fieldAttributes="#passwordFieldAttributes#" edit="#rc.edit#" />
+			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.encryption.iterationCount')#" value="#rc.iterationCount#" fieldType="text" fieldName="iterationCount" edit="#rc.edit#" />
+			
+			<button class="btn btn-primary" title="#$.slatwall.rbKey('admin.main.encryption.updatePassword_title')#" type="submit">#$.slatwall.rbKey('admin.main.encryption.updatePassword_title')#</button>
+		</form>
+	</cf_HibachiPropertyList>
 </cfoutput>

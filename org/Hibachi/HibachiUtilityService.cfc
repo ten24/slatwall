@@ -291,32 +291,163 @@
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
 		
-		public string function encryptValue(required string value) {
-			return encrypt(arguments.value, getEncryptionKey(), "AES", "Base64");
+		public string function encryptValue(required string value, string salt="") {
+			var passwords = getEncryptionPasswordArray();
+			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
 		}
 	
-		public string function decryptValue(required string value) {
-			try {
-				return decrypt(arguments.value, getEncryptionKey(), "AES", "Base64");	
-			} catch (any e) {
-				logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot find the Encryption key used to encrypt the data.  Verify that you have a key file in the location specified in the advanced settings of the admin.", true);
-				return "";
+		public string function decryptValue(required string value, string salt="") {
+			for (var passwordData in getEncryptionPasswordArray()) {
+				var key = "";
+				var algorithm = getEncryptionAlgorithm();
+				var encoding = getEncryptionEncoding();
+				// Using key with password based derivation method
+				if (structKeyExists(passwordData, 'password')) {
+					key = generatePasswordBasedEncryptionKey(password=passwordData.password, salt=arguments.salt, iterationCount=passwordData.iterationCount);
+				// Using legacy key (absolute)
+				} else if (structKeyExists(passwordData, 'legacyKey')) {
+					key = passwordData.legacyKey;
+					
+					// Override decrypt arguments to work with legacy encrypt/decrypt
+					algorithm = passwordData.legacyEncryptionAlgorithm;
+					encoding = passwordData.legacyEncryptionEncoding;
+				}
+				
+				// Attempt to decrypt
+				try {
+					var decryptedResult = decrypt(arguments.value, key, algorithm, encoding);
+					// Necessary due to a possible edge case when no error occurs during a 
+					// decryption attempt with an incorrect key
+					if (!len(decryptedResult)) {
+						continue;
+					}
+					
+					return decryptedResult;
+						
+				// Graceful handling of decrypt failure
+				} catch (any e) {}
 			}
+			
+			logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin.", true);
+			return "";
 		}
 		
-		public string function createEncryptionKey() {
-			var	theKey = generateSecretKey("Base64", "128");
-			storeEncryptionKey(theKey);
-			return theKey;
+		public function generatePasswordBasedEncryptionKey(required string password, string salt="", numeric iterationCount=1000) {
+			// Notes: Another possible implementation using Java 'PBKDF2WithHmacSHA1'
+			// https://gist.github.com/scotttam/874426
+			
+			var hashResult = "";
+			var key = "";
+			var iterationIndex = 1;
+			
+			// Derive key using password, salt, and current iteration index
+			// Use current iteration generated key output as salt input for the next iteration
+			do {
+				hashResult = hash("#arguments.password##arguments.salt##iterationIndex#", "MD5" );
+				key = binaryEncode(binaryDecode(hashResult, "hex"), "base64");
+				
+				// Update salt for next iteration
+				arguments.salt = key;
+				iterationIndex++;
+			} while (iterationIndex <= arguments.iterationCount);
+			
+			return key;
 		}
 		
-		public string function getEncryptionKey() {
-			if(!encryptionKeyExists()){
-				createEncryptionKey();
+		public any function createDefaultEncryptionPasswordData() {
+			return {'iterationCount'= randRange(500, 2500), 'password'=createHibachiUUID(), 'createdDateTime'=dateFormat(now(),"yyyy-mm-dd") & " " & timeFormat(now(), "HH:MM:SS")};
+		}
+		
+		public any function addEncryptionPasswordData(required struct data) {
+			if (!isNumeric(arguments.data.iterationCount)) {
+				arguments.data.iterationCount = randRange(500, 2500);
 			}
-			var encryptionFileData = fileRead(getEncryptionKeyFilePath());
-			var encryptionInfoXML = xmlParse(encryptionFileData);
-			return encryptionInfoXML.crypt.key.xmlText;
+			
+			var passwordData = {'iterationCount'= arguments.data.iterationCount, 'password'=arguments.data.password, 'createdDateTime'=dateFormat(now(),"yyyy-mm-dd") & " " & timeFormat(now(), "HH:MM:SS")};
+			
+			var passwords = [passwordData];
+			
+			// NOTE: Do not want to call getEncryptionPasswordArray() if no password file existed prior, otherwise a unnecessary password will be also generated automatically in addition
+			if (encryptionPasswordFileExists()) {
+				passwords = getEncryptionPasswordArray();
+				
+				// Prepend new password data to existing passwords so it becomes the newest password used
+				arrayInsertAt(passwords, 1, passwordData);
+			}
+			
+			// Write new contents to the encryption password file
+			writeEncryptionPasswordFile(passwords);
+		}
+		
+		public any function getEncryptionPasswordArray() {
+			var passwords = [];
+			
+			// Generate default password if necessary
+			if (!encryptionPasswordFileExists()) {
+				arrayAppend(passwords, createDefaultEncryptionPasswordData());
+				writeEncryptionPasswordFile(passwords);
+			}
+			
+			// Read password file
+			passwords = readEncryptionPasswordFile().passwords;
+			
+			// Migrate legacy key to encryption password file
+			if (encryptionKeyExists()) {
+				var migrateLegacyKeyFlag = true;
+				var legacyKey = getLegacyEncryptionKey();
+				
+				// Make sure key does not already exist in passwords
+				// eg. file could have been restored by version control, etc.
+				for (var passwordData in passwords) {
+					if (structKeyExists(passwordData, "legacyKey") && passwordData.legacyKey == legacyKey) {
+						migrateLegacyKeyFlag = false;
+						break;
+					}
+				}
+				
+				// Update passwords file
+				if (migrateLegacyKeyFlag) {
+					arrayAppend(passwords, {'legacyKey'=legacyKey, 'legacyEncryptionAlgorithm'=getLegacyEncryptionAlgorithm(), 'legacyEncryptionEncoding'=getLegacyEncryptionEncoding(), 'legacyEncryptionKeySize'=getLegacyEncryptionKeySize()});
+					writeEncryptionPasswordFile(passwords);
+				}
+				
+				// Remove legacy key file from file system
+				removeLegacyEncryptionKeyFile();
+			}
+			
+			var legacyPasswords = [];
+			var sortedPasswords = [];
+			
+			//  Sort passwords array from newest to oldest
+			if (arraylen(passwords) > 1) {
+				var sortValues = [];
+				
+				// Build array of sortValues using createdDateTime
+				for (var i=1; i<=arraylen(passwords); i++) {
+					if (structKeyExists(passwords[i], 'createdDateTime')) {
+						 arrayAppend(sortValues, dateFormat(passwords[i].createdDateTime, "YYYYMMDD") & timeFormat(passwords[i].createdDateTime, "HHMMSS") & "-" & i);
+					} else {
+						arrayAppend(legacyPasswords, passwords[i]);
+					}
+				}
+				
+				// Perform sort on createdDateTime
+				arraySort(sortValues, "numeric", "desc");
+				
+				// Build array of sorted passwords
+				for (var sv in sortValues) {
+					arrayAppend(sortedPasswords, passwords[listLast(sv, "-")]);
+				}
+				
+				// Append legacy keys
+				for (var lp in legacyPasswords) {
+					arrayAppend(sortedPasswords, lp);
+				}
+				
+				passwords = sortedPasswords;
+			}
+			
+			return passwords;
 		}
 		
 		private string function getEncryptionKeyFilePath() {
@@ -331,13 +462,74 @@
 			return "key.xml.cfm";
 		}
 		
-		private boolean function encryptionKeyExists() {
+		public boolean function encryptionKeyExists() {
 			return fileExists(getEncryptionKeyFilePath());
 		}
 		
-		private void function storeEncryptionKey(required string key) {
-			var theKey = "<crypt><key>#arguments.key#</key></crypt>";
-			fileWrite(getEncryptionKeyFilePath(),theKey);
+		private string function getEncryptionPasswordFilePath() {
+			return getEncryptionKeyLocation() & getEncryptionPasswordFileName();
+		}
+		
+		private string function getEncryptionPasswordFileName() {
+			return "password.txt.cfm";
+		}
+		
+		private boolean function encryptionPasswordFileExists() {
+			return fileExists(getEncryptionPasswordFilePath());
+		}
+		
+		public string function getEncryptionAlgorithm() {
+			//return "AES";
+			return "AES/CBC/PKCS5Padding";
+		}
+		
+		public string function getEncryptionEncoding() {
+			return "Base64";
+		}
+		
+		public string function getLegacyEncryptionKey() {
+			var encryptionFileData = fileRead(getEncryptionKeyFilePath());
+			var encryptionInfoXML = xmlParse(encryptionFileData);
+			return encryptionInfoXML.crypt.key.xmlText;
+		}
+		
+		public string function getLegacyEncryptionAlgorithm() {
+			return "AES";
+		}
+		
+		public string function getLegacyEncryptionEncoding() {
+			return "Base64";
+		}
+		
+		public string function getLegacyEncryptionKeySize() {
+			return "128";
+		}
+		
+		public void function removeLegacyEncryptionKeyFile(string method) {
+			if (fileExists(getEncryptionKeyFilePath())) {
+				if (!isNull(arguments.method) && arguments.method == "rename") {
+					// Filename without extension
+					var filename = listDeleteAt(getEncryptionKeyFileName(),listLen(getEncryptionKeyFileName(), "."),".");
+					fileMove(getEncryptionKeyFilePath(), '#getEncryptionKeyLocation()##filename#.#hash(getTickCount(), "SHA", "utf-8")#.cfm');
+				} else {
+					fileDelete(getEncryptionKeyFilePath());
+				}	
+			}
+		}
+		
+		private void function writeEncryptionPasswordFile(array encryptionPasswordArray) {
+			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
+			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
+			
+			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
+			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+		}
+		
+		private any function readEncryptionPasswordFile() {
+			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
+			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
+			
+			return deserializeJSON(decrypt(fileRead(getEncryptionPasswordFilePath()), hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
 		}
 	</cfscript>
 	
