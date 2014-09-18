@@ -241,6 +241,8 @@
   .s-table-header-nav ul > li {padding-right:0px;}
   .s-table-header-nav .fa-level-down {transform: scaleX(-1);-moz-transform: scaleX(-1);-webkit-transform: scaleX(-1);-ms-transform: scaleX(-1);display:inline-block;position: relative;top: 6px;margin-left:20px;}
   .s-table-header-nav .s-table-header-search button {color:#5E5E5E;background-color:#eeeeee;}
+  .s-table-header-nav .s-table-view-options {text-align:right;}
+  .s-table-header-nav .s-table-header-search {max-width: 200px;}
 
   .s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
   .s-j-draggable-panel-list a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
@@ -333,6 +335,7 @@
   .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-active > label {width:100%;height:20px;}
   .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-active radio {float:left;margin-right:10px;}
   .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items {margin-bottom:20px;margin-bottom:10px;}
+
   .s-bundle-group-items .dropdown-menu {border-radius: 0px;margin-top: -1px;}
   .s-bundle-group-items .search-panel button {color:#555;border-radius: 0px;background-color: #EEE;min-width:130px;text-align: right;}
   .s-bundle-group-items .search-panel button:hover, .s-bundle-group-items .search-panel button:active, .s-bundle-group-items .search-panel button:focus {color:#333 !important;border-color:#cccccc!important;background-color:#ccc;}
@@ -340,7 +343,7 @@
   .s-bundle-group-items .s-search-button {border-radius: 0px;background-color: #EEE;}
   .s-bundle-group-items .s-search-button:hover, .s-bundle-group-items .s-search-button:active, .s-bundle-group-items .s-search-button:focus {color:#333!important;border-color:#cccccc!important;background-color:#ccc;}
 
-  .s-bundle-group-items .s-bundle-add-items .s-bundle-add-items-inner {padding: 15px;background: #eeeeee;border: 1px solid #CCC;border-top:0px;margin-bottom:20px;}
+  .s-bundle-group-items .s-bundle-add-items .s-bundle-add-items-inner {padding: 15px;background: #eeeeee;border: 1px solid #CCC;border-top:0px;margin-bottom:0px;}
   .s-bundle-group-items .s-bundle-add-items h4 {width:100%;text-align:center;display:none;}
   .s-bundle-group-items .s-bundle-add-items .list-unstyled .s-bundle-add-obj {background: #eeeeee;margin-bottom:4px;height: 35px;border: 1px solid #DDD;}
   .s-bundle-group-items .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details {font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;}
@@ -353,6 +356,33 @@
   .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details {border:none;}
   .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details span {color:#aaaaaa;margin-left:10px;font-weight:normal;}
   .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj {background-color:#ffffff;}
+
+  .s-order-item-box {margin-left: 15px;margin-right: 15px;margin-top: 15px;}
+  .s-order-item-box table {margin-bottom:0px;border:1px solid #ccc;width:100%;}
+  .s-order-item-box .s-image img {width:100%;}
+  .s-order-item-box tr th {background-color:#eeeeee;}
+  .s-order-item-box .fa-pencil {font-size: 12px;color: #AAA;}
+  .s-order-item-box .fa-pencil:hover {color: #F58620;}
+  .s-order-item-box .s-sku,
+  .s-order-item-box .s-total > ul > li:first-child,
+  .s-order-item-box .s-discount > ul > li:first-child,
+  .s-order-item-box .s-title > ul > li:first-child,
+  .s-order-item-box .s-price > ul > li:first-child,
+  .s-order-item-box .s-qty > ul > li:first-child {font-weight:600;}
+
+
+  .s-order-item-box .s-shipping > ul > li:first-child,
+  .s-order-item-box .s-total > ul > li:first-child,
+  .s-order-item-box .s-discount > ul > li:first-child,
+  .s-order-item-box .s-title > ul > li:first-child,
+  .s-order-item-box .s-price > ul > li:first-child,
+  .s-order-item-box .s-qty > ul > li:first-child {border-bottom: 2px dotted #EEE;padding-bottom: 4px;margin-bottom: 5px;}
+
+  .s-order-item-box .s-remove-btn {padding:0px;}
+  .s-order-item-box .s-remove-btn button {height: 100%;width: 100%;background: none;border: 0px;}
+  .s-order-item-box .s-remove-btn button:hover {color:#DA5757;}
+  .s-order-item-box .s-shipping ul li:first-child {font-weight:600;}
+  .s-order-item-box ul > li > ul {font-size: 12px;color: #AAA;list-style:none;padding-left:10px;}
 
   .s-bundle-group-items-list {border-bottom: 3px dotted #CCC;margin-bottom: 20px;padding-bottom: 10px;}
   .s-bundle-group-items-list > .list-unstyled {height: 35px;border: 1px solid #DDD;margin-bottom:10px;}
@@ -399,6 +429,15 @@
   .s-create-window .navbar .navbar-nav li a {padding: 6px 12px;}
   .s-create-window .navbar .navbar-nav li a i {font-size:25px;}
 
+  /*Add breadcrumbs to the create-window*/
+  .s-create-window .s-title {top: -2px;position: relative;margin-right: 25px;}
+  .s-create-window .s-bread-crumb ul {font-size:12px;}
+  .s-create-window .s-bread-crumb ul li a {color:#ffffff;opacity:0.8;}
+  .s-create-window .s-bread-crumb ul li a:hover {color:#ffffff;opacity:1;}
+  .s-create-window .s-bread-crumb ul li:after {font-family: fontAwesome;content:"\f105";opacity: 0.4;margin-left:11px;}
+  .s-create-window .s-bread-crumb ul li:last-child:after {content:"";}
+  .s-create-window .navbar-brand span {display: inline-block;vertical-align: middle;}
+
   .navbar-fixed-top {border:none;}
   .navbar-fixed-bottom {border:none;}
 
@@ -418,9 +457,11 @@
   .s-batch-options {background-color: #EEE;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;}
   .s-batch-options h4 {border-bottom: 1px solid #DDD;padding-bottom: 6px;font-size: 14px;margin-bottom: 20px;}
   .s-batch-options h4 i {float:right;cursor:pointer;}
+  .s-batch-options .s-add-filter {border:none; background:none;box-shadow:none;}
 
-
-
+  .s-panel-header-info .dl-horizontal {margin-bottom:0px;}
+  .s-panel-header-info .dl-horizontal dt {font-weight:600;}
+  .s-panel-header-info .dl-horizontal dt i {color:#ccc;cursor:pointer;}
 
   [class^="hibachi-ui-"], [class*=" hibachi-ui-"]{
 	display:inline-block;

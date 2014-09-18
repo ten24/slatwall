@@ -3,12 +3,12 @@
   .s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;border:1px solid #DA5757 !important;}
 </style>
 <div class="row s-body-nav">
-  <nav class="navbar navbar-default" role="navigation" style="background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;">
+  <nav class="navbar navbar-default" role="navigation">
     <div class="col-md-4">
-      <h1 style="padding: 0px;margin: 0px;font-size: 16px;font-weight: 600;vertical-align: middle;margin-top: 18px;">ProgelTM Pleural Air Leak Sealant</h1>
+      <h1>ProgelTM Pleural Air Leak Sealant</h1>
     </div>
     <div class="col-md-8">
-      <div class="btn-toolbar" style="margin-top: 10px;">
+      <div class="btn-toolbar">
 
         <div class="btn-group btn-group-sm">
           <button type="button" class="btn s-btn-grey"><i class="fa fa-reply"></i> Products</button>
@@ -37,8 +37,8 @@
   </nav>
 </div>
 
-<div class="row s-pannel-control" style="margin-top:10px;padding-bottom:2px;padding-right:2px;">
-  <div class="col-md-12" style="text-align:right;"><a href="#" class="openall" style="border-right:1px solid #999;padding-right:4px;">Open All</a> <a href="#" class="closeall">Close All</a></div>
+<div class="row s-pannel-control">
+  <div class="col-md-12"><a href="#" class="openall">Open All</a> / <a href="#" class="closeall">Close All</a></div>
 </div>
 
 <div class="panel-group s-pannel-group" id="accordion">
@@ -47,34 +47,35 @@
       <div class="panel-heading">
         <h4 class="panel-title">
             <span>Basic</span>
-            <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            <i class="fa fa-caret-left"></i>
         </h4>
       </div>
     </a>
+
     <div id="collapseOne" class="panel-collapse collapse">
-      <div class="panel-body">
+      <div class="panel-body s-panel-header-info">
 
     		<div class="col-md-6">
-    			<dl class="dl-horizontal" style="margin-bottom:0px;">
-    				<dt class="title" style="font-weight:600;">Active <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
-    						<dd class="value">Yes</dd>
-    				<dt class="title" style="font-weight:600;">Published <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
-    						<dd class="value">Yes</dd>
-    				<dt class="title" style="font-weight:600;">Product Name <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
-    						<dd class="value">ProgelTM Pleural Air Leak Sealant</dd>
-    				<dt class="title" style="font-weight:600;">Product Code <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
-    						<dd class="value">PGPS002</dd>
-    				<dt class="title" style="font-weight:600;">URL Title <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
-    						<dd class="value">progeltm-pleural-air-leak-sealant</dd>
+    			<dl class="dl-horizontal">
+    				<dt class="title">Active <i class="fa fa-question-circle" ></i></dt>
+    					<dd class="value">Yes</dd>
+    				<dt class="title" >Published <i class="fa fa-question-circle" ></i></dt>
+    					<dd class="value">Yes</dd>
+    				<dt class="title" >Product Name <i class="fa fa-question-circle" ></i></dt>
+    					<dd class="value">ProgelTM Pleural Air Leak Sealant</dd>
+    				<dt class="title" >Product Code <i class="fa fa-question-circle" ></i></dt>
+    					<dd class="value">PGPS002</dd>
+    				<dt class="title" >URL Title <i class="fa fa-question-circle" ></i></dt>
+    					<dd class="value">progeltm-pleural-air-leak-sealant</dd>
     			</dl>
     		</div>
-    		<div class="col-md-6" style="margin-bottom:0px;">
+    		<div class="col-md-6">
     			<dl class="dl-horizontal">
-    				<dt class="title" style="font-weight:600;">Brand <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
+    				<dt class="title" >Brand <i class="fa fa-question-circle" ></i></dt>
     						<dd class="value">Mozys</dd>
-    				<dt class="title" style="font-weight:600;">Product Type <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
+    				<dt class="title" >Product Type <i class="fa fa-question-circle" ></i></dt>
     						<dd class="value">Main Product</dd>
-    				<dt class="title" style="font-weight:600;">Available To Sell <i class="fa fa-question-circle" style="color:#ccc;"></i></dt>
+    				<dt class="title" >Available To Sell <i class="fa fa-question-circle" ></i></dt>
     						<dd class="value">1000</dd>
     			</dl>
     		</div>
@@ -87,42 +88,14 @@
     <a data-toggle="collapse"  href="#collapseTwo">
       <div class="panel-heading">
         <h4 class="panel-title">
-            <span>Order Items <span style="background-color: #858585;border-radius: 20%;padding: 3px;font-size: 10px;width: 18px;display: inline-block;height: 15px;position: relative;margin-left: 7px;color: #CCC;text-align:center;">2</span></span>
-            <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            <span>Order Items <span>2</span></span>
+            <i class="fa fa-caret-left"></i>
         </h4>
       </div>
     </a>
 
-    <style media="screen">
-      .s-order-item-box table {margin-bottom:0px;border:1px solid #ccc;width:100%;}
-      .s-order-item-box .s-image img {width:100%;}
-      .s-order-item-box tr th {background-color:#eeeeee;}
-      .s-order-item-box .fa-pencil {font-size: 12px;color: #AAA;}
-      .s-order-item-box .fa-pencil:hover {color: #F58620;}
-      .s-order-item-box .s-sku,
-      .s-order-item-box .s-total,
-      .s-order-item-box .s-discount,
-      .s-order-item-box .s-title > ul > li:first-child,
-      .s-order-item-box .s-price > ul > li:first-child,
-      .s-order-item-box .s-qty > ul > li:first-child {font-weight:600;}
-
-
-      .s-order-item-box .s-shipping > ul > li:first-child,
-      .s-order-item-box .s-total > ul > li:first-child,
-      .s-order-item-box .s-discount > ul > li:first-child,
-      .s-order-item-box .s-title > ul > li:first-child,
-      .s-order-item-box .s-price > ul > li:first-child,
-      .s-order-item-box .s-qty > ul > li:first-child {border-bottom: 2px dotted #EEE;padding-bottom: 4px;margin-bottom: 5px;}
-
-      .s-order-item-box .s-remove-btn {padding:0px;}
-      .s-order-item-box .s-remove-btn button {height: 100%;width: 100%;background: none;border: 0px;}
-      .s-order-item-box .s-remove-btn button:hover {color:#DA5757;}
-      .s-order-item-box .s-shipping ul li:first-child {font-weight:600;}
-      .s-order-item-box ul > li > ul {font-size: 12px;color: #AAA;list-style:none;padding-left:10px;}
-    </style>
-
     <div id="collapseTwo" class="panel-collapse collapse in">
-      <div class="table-responsive s-order-item-box" style="margin-left:15px;margin-right:15px;margin-top:15px;">
+      <div class="table-responsive s-order-item-box">
         <table class="table" border="1" cellpadding="0" cellspacing="0">
         	<tr>
         		<th></th>
@@ -140,74 +113,74 @@
         		<td class="s-sku">bundle-01</td>
         		<td class="s-title">
               <ul class="list-unstyled">
-                <li>Skateboard Bundle <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+                <li><span>Skateboard Bundle</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
                 <li>
-                  <span>Base Price <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></span>
-                  <ul style="font-size: 12px;color: #AAA;list-style:none;padding-left:10px;">
-                    <li> Custom Grip Tape</li>
-                    <li> Hardware Kit</li>
+                  <span><span>Base Price</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></span>
+                  <ul>
+                    <li><span>Custom Grip Tape</span></li>
+                    <li><span>Hardware Kit</span></li>
                   </ul>
                 </li>
-                <li>Indi Trucks <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+                <li><span>Indi Trucks</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
               </ul>
             </td>
         		<td class="s-price">
               <ul class="list-unstyled">
-                <li>$99.00</li>
+                <li><span>$99.00</span></li>
                 <li>
                   <span>$10.00</span>
                   <ul>
-                    <li>$5.00</li>
-                    <li>$5.00</li>
+                    <li><span>$5.00</span></li>
+                    <li><span>$5.00</span></li>
                   </ul>
                 </li>
-                <li>$0.00</li>
+                <li><span>$0.00</span></li>
               </ul>
             </td>
         		<td class="s-qty">
               <ul class="list-unstyled">
-                <li>3</li>
+                <li><span>3</span></li>
                 <li>
                   <span>1 (3 total)</span>
                   <ul>
-                    <li> 2 (12 total)</li>
-                    <li> 1 (6 total)</li>
+                    <li><span>2 (12 total)</span></li>
+                    <li><span>1 (6 total)</span></li>
                   </ul>
                 </li>
-                <li>1 (3 total)</li>
+                <li><span>1 (3 total)</span></li>
               </ul>
             </td>
         		<td class="s-discount">
               <ul class="list-unstyled">
-                <li>$0.00</li>
+                <li><span>$0.00</span></li>
                 <li>
                   <span>$0.00</span>
                   <ul>
-                    <li>$0.00</li>
-                    <li>$0.00</li>
+                    <li><span>$0.00</span></li>
+                    <li><span>$0.00</span></li>
                   </ul>
                 </li>
-                <li>$0.00</li>
+                <li><span>$0.00</span></li>
               </ul>
             </td>
         		<td class="s-total">
               <ul class="list-unstyled">
-                <li>$297.00</li>
+                <li><span>$297.00</span></li>
                 <li>
                   <span>$10.00</span>
                   <ul>
-                    <li>$5.00</li>
-                    <li>$5.00</li>
+                    <li><span>$5.00</span></li>
+                    <li><span>$5.00</span></li>
                   </ul>
                 </li>
-                <li>$0.00</li>
+                <li><span>$0.00</span></li>
               </ul>
             </td>
         		<td class="s-shipping">
               <ul class="list-unstyled">
-                <li>Ship To: <a href="#"><i class="fa fa-pencil"></i></a></li>
-                <li>123 Main St. </li>
-                <li>Northboro, MA 01532</li>
+                <li><span>Ship To: </span><a href="#"><i class="fa fa-pencil"></i></a></li>
+                <li><span>123 Main St.</span> </li>
+                <li><span>Northboro, MA 01532</span></li>
               </ul>
             </td>
         		<td class="s-remove-btn"><button><i class="fa fa-times"></i></button></td>
@@ -215,37 +188,37 @@
 
           <tr class="s-item">
             <td class="s-image"><img src="http://placehold.it/50x50"></td>
-            <td class="s-sku">bundle-02</td>
+            <td class="s-sku"><span>bundle-02</span></td>
             <td class="s-title">
               <ul class="list-unstyled">
-                <li>Skate Shoe <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+                <li><span>Skate Shoe</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
               </ul>
             </td>
             <td class="s-price">
               <ul class="list-unstyled">
-                <li>$59.00</li>
+                <li><span>$59.00</span></li>
               </ul>
             </td>
             <td class="s-qty">
               <ul class="list-unstyled">
-                <li>1</li>
+                <li><span>1</span></li>
               </ul>
             </td>
             <td class="s-discount">
               <ul class="list-unstyled">
-                <li>$0.00</li>
+                <li><span>$0.00</span></li>
               </ul>
             </td>
             <td class="s-total">
               <ul class="list-unstyled">
-                <li>$59.00</li>
+                <li><span>$59.00</span></li>
               </ul>
             </td>
             <td class="s-shipping">
               <ul class="list-unstyled">
-                <li>Ship To: <a href="#"><i class="fa fa-pencil"></i></a></li>
-                <li>123 Main St. </li>
-                <li>Northboro, MA 01532</li>
+                <li><span>Ship To:</span> <a href="#"><i class="fa fa-pencil"></i></a></li>
+                <li><span>123 Main St. </span></li>
+                <li><span>Northboro, MA 01532</span></li>
               </ul>
             </td>
             <td class="s-remove-btn"><button><i class="fa fa-times"></i></button></td>
@@ -257,7 +230,7 @@
       <hr/class="s-dotted">
 
       <!-- Search for product -->
-      <div class="row s-bundle-group-items" style="margin:0px;">
+      <div class="row s-bundle-group-items">
         <div class="col-xs-12">
           <div class="input-group">
             <div class="dropdown input-group-btn search-panel">
@@ -334,7 +307,7 @@
           <!--- Header nav with title starts --->
           <div class="row s-header-bar">
             <div class="col-md-12 s-header-nav">
-              <ul class="nav nav-tabs" style="padding-right:0px;" role="tablist">
+              <ul class="nav nav-tabs" role="tablist">
                 <li class="active"><a href="##j-default-images" role="tab" data-toggle="tab">Default Images</a></li>
                 <li><a href="##j-alternative" role="tab" data-toggle="tab">Alternative Images</a></li>
               </ul>
@@ -365,7 +338,7 @@
       <div class="panel-heading">
         <h4 class="panel-title">
             <span>Venders</span>
-            <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            <i class="fa fa-caret-left"></i>
         </h4>
       </div>
     </a>
@@ -379,8 +352,8 @@
     <a data-toggle="collapse"  href="#collapseBest">
       <div class="panel-heading">
         <h4 class="panel-title">
-            <span>Best Selling Mens T-Shirts <span style="background-color: #858585;border-radius: 20%;padding: 3px;font-size: 10px;width: 18px;display: inline-block;height: 15px;position: relative;margin-left: 7px;color: #CCC;text-align:center;">4</span></span>
-            <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            <span>Best Selling Mens T-Shirts <span>4</span></span>
+            <i class="fa fa-caret-left"></i>
         </h4>
       </div>
     </a>
@@ -393,7 +366,7 @@
           <!--- Header nav with title starts --->
           <div class="row s-header-bar">
             <div class="col-md-12 s-header-nav">
-              <ul class="nav nav-tabs" style="padding-right:0px;" role="tablist">
+              <ul class="nav nav-tabs" role="tablist">
                 <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
                 <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(6)</span></a></li>
                 <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
@@ -520,8 +493,8 @@
 
                                       <!--- Filter Criteria Start --->
                                       <form action="index.html" method="post">
-                                        <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
-                                          <span style="right: 52px;z-index:1000;position: absolute;margin-top: -9px;">
+                                        <div class="s-filter-group-item">
+                                          <span>
                                             <button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
                                           </span>
                                           <div class="form-group form-group-sm">
@@ -545,14 +518,14 @@
                                             <div class="clearfix"></div>
                                           </div>
                                         </div>
-                                        <div style="border-bottom: 3px dotted #DDD;text-align:center;margin-bottom: 29px;margin-top: 10px;">
-                                          <div class="btn-group btn-toggle" style="background-color:#EAEAEA;float:none;margin-bottom:-18px;">
+                                        <div>
+                                          <div class="btn-group btn-toggle">
                                             <button class="btn btn-xs btn-default">AND</button>
                                             <button class="btn btn-xs btn-defualt active">OR</button>
                                           </div>
                                         </div>
-                                        <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
-                                          <span style="right: 52px;z-index:1000;position: absolute;margin-top: -9px;">
+                                        <div class="s-filter-group-item">
+                                          <span>
                                             <button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
                                           </span>
                                           <div class="form-group form-group-sm">
@@ -588,12 +561,12 @@
                                         <div class="s-filter-group-item">
 
                                           <div class="s-options-group">
-                                            <div class="radio" style="border-bottom: 3px dotted #DDD;padding-bottom: 15px;margin-bottom: 20px;">
+                                            <div class="radio">
                                               <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" value="option1" checked>
                                               <label for="radio1">
                                                   Use account field:
                                               </label>
-                                              <div class="col-sm-12 s-no-paddings s-account-field-select" style="padding-left:5px !important;">
+                                              <div class="col-sm-12 s-no-paddings s-account-field-select">
                                                 <select class="form-control input-sm">
                                                   <option disabled="disabled" selected="selected"> Select From Account </option>
                                                   <option>First Name</option>
@@ -632,9 +605,9 @@
 
                                       <!--- Filter Criteria Start --->
                                       <form action="index.html" method="post">
-                                        <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
-                                          <span style="right: 52px;z-index:1000;position: absolute;margin-top: -9px;">
-                                            <button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+                                        <div class="s-filter-group-item">
+                                          <span>
+                                            <button class="btn btn-xs s-btn-ten24"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
                                           </span>
                                           <div class="form-group form-group-sm">
                                             <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
@@ -670,14 +643,14 @@
                                             <div class="clearfix"></div>
                                           </div>
                                         </div>
-                                        <div style="border-bottom: 3px dotted #DDD;text-align:center;margin-bottom: 29px;margin-top: 10px;">
-                                          <div class="btn-group btn-toggle" style="background-color:#EAEAEA;float:none;margin-bottom:-18px;">
+                                        <div>
+                                          <div>
                                             <button class="btn btn-xs btn-default">AND</button>
                                             <button class="btn btn-xs btn-defualt active">OR</button>
                                           </div>
                                         </div>
-                                        <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
-                                          <span style="right: 52px;z-index:1000;position: absolute;margin-top: -9px;">
+                                        <div>
+                                          <span>
                                             <button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
                                           </span>
                                           <div class="form-group form-group-sm">
@@ -715,9 +688,9 @@
                                           </div>
                                         </div>
 
-                                        <button class="btn btn-xs s-btn-ten24" style="margin-bottom:10px; margin-top:10px;" data-toggle="collapse" data-target="#j-add-row-6">Add Display Field</button>
+                                        <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row-6">Add Display Field</button>
                                         <div class="collapse" id="j-add-row-6">
-                                          <div class="s-filter-group-item" style="background: #F1F1F1;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCC;box-shadow: inset 0 0 2px #CCC;border-radius: 8px;padding: 20px 20px 10px 20px;">
+                                          <div class="s-filter-group-item">
                                             <div class="form-group form-group-sm">
                                               <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
                                               <div class="col-sm-12 s-no-paddings">
@@ -883,7 +856,7 @@
                                                   <input type="text" class="form-control">
                                                 </div>
                                                 <div class="form-group">
-                                                  <label for="" style="width:100%;">Criteria</label>
+                                                  <label for="">Criteria</label>
                                                   <select class="form-control input-sm">
                                                     <option value="-- Condition">- Condition --</option>
                                                     <option selected="selected" value="Equals">Equals</option>
@@ -1350,7 +1323,7 @@
                         <div class="btn-group">
                           <span class="s-sort-num">
                             <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">1</a>
-                            <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
+                            <span class="s-title-edit-menu">
                               <select class="form-control">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -1383,7 +1356,7 @@
                         <div class="btn-group">
                           <span class="s-sort-num" style="display:none;">
                             <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">3</a>
-                            <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
+                            <span class="s-title-edit-menu">
                               <select class="form-control">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -1416,7 +1389,7 @@
                         <div class="btn-group">
                           <span class="s-sort-num">
                             <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">2</a>
-                            <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
+                            <span class="s-title-edit-menu">
                               <select class="form-control">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -1508,7 +1481,7 @@
                     </select>
                   </form>
                 </li>
-                <li style="width:200px;">
+                <li>
                   <form class="s-table-header-search">
                     <div class="input-group">
                       <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
@@ -1520,7 +1493,7 @@
                 </li>
               </ul>
             </div>
-            <div class="col-xs-6" style="text-align:right;">
+            <div class="col-xs-6 s-table-view-options">
               <ul class="list-inline list-unstyled">
                 <li>
                   <form class="form-horizontal">
@@ -1650,7 +1623,7 @@
                     </div>
                     <div class="col-xs-2">
                       <div class="s-button-select-group">
-                        <button type="button" class="btn btn-sm s-btn-ten24" style="width:100%;">Export</button>
+                        <button type="button" class="btn btn-sm s-btn-ten24">Export</button>
                       </div>
                     </div>
                   </div>
@@ -1712,7 +1685,7 @@
                     </div>
                     <div class="col-xs-2">
                       <div class="s-button-select-group">
-                        <button type="button" class="btn btn-sm s-btn-ten24 j-delete-btn" disabled="disabled" style="width:100%;">Delete</button>
+                        <button type="button" class="btn btn-sm s-btn-ten24 j-delete-btn" disabled="disabled">Delete</button>
                       </div>
                     </div>
                   </div>
@@ -1912,7 +1885,7 @@
       <div class="panel-heading">
         <h4 class="panel-title">
             <span>Product Description</span>
-            <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            <i class="fa fa-caret-left"></i>
         </h4>
       </div>
     </a>
@@ -1927,7 +1900,7 @@
       <div class="panel-heading">
         <h4 class="panel-title">
             <span>Listing Pages</span>
-            <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            <i class="fa fa-caret-left"></i>
         </h4>
       </div>
     </a>

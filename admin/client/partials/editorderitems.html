@@ -1,7 +1,17 @@
 <div class="s-create-window">
   <header>
+
     <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
-      <span class="navbar-brand" href="#">Edit Order Item</span>
+      <div class="navbar-brand" href="#">
+        <span class="s-title">Edit Order Item</span>
+        <span class="s-bread-crumb">
+          <ul class="list-unstyled list-inline">
+            <li><a href="#">Skateboard Bundle</a></li>
+            <li><a href="#">Base Price</a></li>
+            <li><a href="#">Custom Grip Tape</a></li>
+          </ul>
+        </span>
+      </div>
       <ul class="nav navbar-nav pull-right">
         <li class="active"><a ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
       </ul>
@@ -82,77 +92,47 @@
           </tr>
           <tr class="s-item">
             <td class="s-image"><img src="http://placehold.it/50x50"></td>
-            <td class="s-sku">bundle-01</td>
+            <td class="s-sku"><span>bundle-06</span></td>
             <td class="s-title">
               <ul class="list-unstyled">
-                <li>Skateboard Bundle <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
-                <li>
-                  <span>Base Price <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></span>
-                  <ul style="font-size: 12px;color: #AAA;list-style:none;padding-left:10px;">
-                    <li> Custom Grip Tape</li>
-                    <li> Hardware Kit</li>
-                  </ul>
-                </li>
-                <li>Indi Trucks <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+                <li><span>Base Price </span><a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+                <li><span>Custom Grip Tape</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+                <li><span>Hardware Kit</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
               </ul>
             </td>
             <td class="s-price">
               <ul class="list-unstyled">
-                <li>$99.00</li>
-                <li>
-                  <span>$10.00</span>
-                  <ul>
-                    <li>$5.00</li>
-                    <li>$5.00</li>
-                  </ul>
-                </li>
-                <li>$0.00</li>
+                <li><span>$99.00</span></li>
+                <li><span>$10.00</span></li>
+                <li><span>$0.00</span></li>
               </ul>
             </td>
             <td class="s-qty">
               <ul class="list-unstyled">
-                <li>3</li>
-                <li>
-                  <span>1 (3 total)</span>
-                  <ul>
-                    <li> 2 (12 total)</li>
-                    <li> 1 (6 total)</li>
-                  </ul>
-                </li>
-                <li>1 (3 total)</li>
+                <li><span>3</span></li>
+                <li><span>1 (3 total)</span></li>
+                <li><span>1 (3 total)</span></li>
               </ul>
             </td>
             <td class="s-discount">
               <ul class="list-unstyled">
-                <li>$0.00</li>
-                <li>
-                  <span>$0.00</span>
-                  <ul>
-                    <li>$0.00</li>
-                    <li>$0.00</li>
-                  </ul>
-                </li>
-                <li>$0.00</li>
+                <li><span>$0.00</span></li>
+                <li><span>$0.00</span></li>
+                <li><span>$0.00</span></li>
               </ul>
             </td>
             <td class="s-total">
               <ul class="list-unstyled">
-                <li>$297.00</li>
-                <li>
-                  <span>$10.00</span>
-                  <ul>
-                    <li>$5.00</li>
-                    <li>$5.00</li>
-                  </ul>
-                </li>
-                <li>$0.00</li>
+                <li><span>$297.00</span></li>
+                <li><span>$10.00</span></li>
+                <li><span>$0.00</span></li>
               </ul>
             </td>
             <td class="s-shipping">
               <ul class="list-unstyled">
-                <li>Ship To: <a href="#"><i class="fa fa-pencil"></i></a></li>
-                <li>123 Main St. </li>
-                <li>Northboro, MA 01532</li>
+                <li><span>Ship To: </span><a href="#"><i class="fa fa-pencil"></i></a></li>
+                <li><span>123 Main St. </span></li>
+                <li><span>Northboro, MA 01532</span></li>
               </ul>
             </td>
             <td class="s-remove-btn"><button><i class="fa fa-times"></i></button></td>
@@ -160,37 +140,37 @@
 
           <tr class="s-item">
             <td class="s-image"><img src="http://placehold.it/50x50"></td>
-            <td class="s-sku">bundle-02</td>
+            <td class="s-sku">bundle-09</td>
             <td class="s-title">
               <ul class="list-unstyled">
-                <li>Skate Shoe <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+                <li><span>Indi Trucks</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
               </ul>
             </td>
             <td class="s-price">
               <ul class="list-unstyled">
-                <li>$59.00</li>
+                <li><span>$59.00</span></li>
               </ul>
             </td>
             <td class="s-qty">
               <ul class="list-unstyled">
-                <li>1</li>
+                <li><span>1</span></li>
               </ul>
             </td>
             <td class="s-discount">
               <ul class="list-unstyled">
-                <li>$0.00</li>
+                <li><span>$0.00</span></li>
               </ul>
             </td>
             <td class="s-total">
               <ul class="list-unstyled">
-                <li>$59.00</li>
+                <li><span>$59.00</span></li>
               </ul>
             </td>
             <td class="s-shipping">
               <ul class="list-unstyled">
-                <li>Ship To: <a href="#"><i class="fa fa-pencil"></i></a></li>
-                <li>123 Main St. </li>
-                <li>Northboro, MA 01532</li>
+                <li><span>Ship To:</span> <a href="#"><i class="fa fa-pencil"></i></a></li>
+                <li><span>123 Main St.</span> </li>
+                <li><span>Northboro, MA 01532</span></li>
               </ul>
             </td>
             <td class="s-remove-btn"><button><i class="fa fa-times"></i></button></td>
