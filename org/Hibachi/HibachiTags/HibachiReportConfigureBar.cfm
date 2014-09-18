@@ -95,7 +95,7 @@
 					<!--- DateTime Selector --->
 					<div class="pull-right" style="margin-right:10px;">
 						<div style="margin-bottom:5px;">
-							<select name="reportDateTime" class="hibachi-report-date" style="width:192px;">
+							<select name="reportDateTime" class="hibachi-report-date form-control" style="width:192px;">
 								<cfloop array="#attributes.report.getReportDateTimeDefinitions()#" index="dateTimeAlias">
 									<option value="#dateTimeAlias['alias']#" <cfif dateTimeAlias['alias'] eq attributes.report.getReportDateTime()>selected="selected"</cfif>>#attributes.report.getReportDateTimeTitle(dateTimeAlias['alias'])#</option>
 								</cfloop>
@@ -103,12 +103,12 @@
 						</div>
 						<div style="margin-bottom:-5px;">
 							<span style="display:block;font-size:11px;font-weight:bold;">Start - End: <a href="##" id="hibachi-report-enable-compare" class="pull-right<cfif attributes.report.getReportCompareFlag()> hide</cfif>">+Compare</a></span>
-							<input type="text" name="reportStartDateTime" class="datepicker hibachi-report-date" style="width:80px;" value="#attributes.report.getFormattedValue('reportStartDateTime')#" /> - <input type="text" name="reportEndDateTime" class="datepicker hibachi-report-date" style="width:80px;" value="#attributes.report.getFormattedValue('reportEndDateTime')#" />
+							<input type="text" name="reportStartDateTime" class="datepicker hibachi-report-date" style="width:80px;margin-right:10px;" value="#attributes.report.getFormattedValue('reportStartDateTime')#" /> - <input type="text" name="reportEndDateTime" class="datepicker hibachi-report-date" style="width:80px;margin-left:10px;" value="#attributes.report.getFormattedValue('reportEndDateTime')#" />
 							<input type="hidden" name="reportCompareFlag" value="#attributes.report.getReportCompareFlag()#" />
 						</div>
 						<div id="hibachi-report-compare-date" <cfif not attributes.report.getReportCompareFlag()>class="hide"</cfif>>
-							<span style="display:block;font-size:11px;font-weight:bold;">Compare Start - End:<a href="" id="hibachi-report-disable-compare" class="pull-right">-Remove</a></span>
-							<input type="text" name="reportCompareStartDateTime" class="datepicker hibachi-report-date" style="width:80px;" value="#attributes.report.getFormattedValue('reportCompareStartDateTime')#" /> - <input type="text" name="reportCompareEndDateTime" class="datepicker hibachi-report-date" style="width:80px;" value="#attributes.report.getFormattedValue('reportCompareEndDateTime')#" />
+							<span style="display:block;font-size:11px;font-weight:bold;margin-top:5px;">Compare Start - End:<a href="" id="hibachi-report-disable-compare" class="pull-right">-Remove</a></span>
+							<input type="text" name="reportCompareStartDateTime" class="datepicker hibachi-report-date" style="width:80px;margin-right:10px;" value="#attributes.report.getFormattedValue('reportCompareStartDateTime')#" /> - <input type="text" name="reportCompareEndDateTime" class="datepicker hibachi-report-date" style="width:80px;margin-left:10px;" value="#attributes.report.getFormattedValue('reportCompareEndDateTime')#" />
 						</div>
 					</div>
 					
