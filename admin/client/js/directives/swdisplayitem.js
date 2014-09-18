@@ -6,7 +6,7 @@ angular.module('slatwalladmin')
 '$templateCache',
 'partialsPath',
 '$log',
-'slatwallService',
+'$slatwall',
 'collectionService',
 'metadataService',
 '$filter',
@@ -15,7 +15,7 @@ $compile,
 $templateCache,
 partialsPath,
 $log,
-slatwallService,
+$slatwall,
 collectionService,
 metadataService,
 $filter){
@@ -58,7 +58,7 @@ $filter){
 					
 					if(selectedProperty.$$group === 'drilldown'){
 						if(angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])){
-							var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
+							var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
 							filterPropertiesPromise.then(function(value){
 								metadataService.setPropertiesList(value,selectedProperty.propertyIdentifier);
 								scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);
