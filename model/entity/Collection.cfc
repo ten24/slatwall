@@ -359,13 +359,24 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				
 					var predicate = getPredicate(filter);
 					
-					filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
+					if(isnull(filter.attributeID)){
+						filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
+					}else{
+						var attributeHQL = getFilterAttributeHQL(filter);
+						filterGroupHQL &= " #logicalOperator# #attributeHQL# #comparisonOperator# #predicate# ";
+					}
 				}
 				
 			}
 		}
 		
 		return filterGroupHQL;
+	}
+	
+	private string function getFilterAttributeHQL(required any filter){
+		var objectname = listFirst(filter.propertyIdentifier,'.'); 
+		var HQL = "(SELECT attributeValue FROM SlatwallAttributeValue WHERE attributeID = '#filter.attributeID#' AND #lcase(objectname)#ID = #objectname#.#lcase(objectname)#ID)";
+		return HQL;
 	}
 	
 	private string function getFilterGroupsHQL(required array filterGroups){
@@ -394,8 +405,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			filterHQL &= ' where ';
 			filterHQL &= filterGroupsHQL;
 		}
-		
-		
 		return filterHQL;
 	}
 	
@@ -598,6 +607,18 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return predicate;
 	}
 	
+	private any function getColumnAttributeHQL(required struct column){
+		var objectname = listFirst(column.propertyIdentifier,'.'); 
+		
+		var HQL	=  "(SELECT attributeValue 
+					FROM SlatwallAttributeValue
+					WHERE attribute.attributeID = '"
+					& column.attributeID & 
+					"' AND #lcase(objectname)#ID = #objectname#.#lcase(objectname)#ID) as #listLast(column.propertyIdentifier,'.')#";
+		
+		return HQL;	
+	}
+	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false){
 		var isDistinctValue = '';
 		if(arguments.isDistinct){
@@ -610,15 +631,22 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
 			
-			//check if we have an aggregate
-			if(!isnull(column.aggregate))
-			{
-				//if we have an aggregate then put wrap the identifier
-				HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+			if(structKeyExists(column,'attributeID')){
+				HQL &= getColumnAttributeHQL(column);
 				
 			}else{
-				HQL &= ' #column.propertyIdentifier# as #listLast(column.propertyIdentifier,'.')#';
+				//check if we have an aggregate
+				if(!isnull(column.aggregate))
+				{
+					//if we have an aggregate then put wrap the identifier
+					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+					
+				}else{
+					HQL &= ' #column.propertyIdentifier# as #listLast(column.propertyIdentifier,'.')#';
+				}
 			}
+			
+			
 			
 			//check whether a comma is needed
 			if(i != columnCount){

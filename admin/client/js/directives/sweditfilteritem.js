@@ -170,6 +170,11 @@ $filter){
 		               		filterItem.displayValue = filterItem.value;
 		                break;
 			            case 'string':
+			            	
+			            	if(angular.isDefined(selectedFilterProperty.attributeID)){
+			            		filterItem.attributeID = selectedFilterProperty.attributeID;
+			            	}
+			            	
 							filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 							
 							//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
