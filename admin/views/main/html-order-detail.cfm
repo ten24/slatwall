@@ -2,7 +2,6 @@
   body {background-color:#eee;}
   .s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;border:1px solid #DA5757 !important;}
 </style>
-
 <div class="row s-body-nav">
   <nav class="navbar navbar-default" role="navigation" style="background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;">
     <div class="col-md-4">
@@ -88,7 +87,7 @@
     <a data-toggle="collapse"  href="#collapseTwo">
       <div class="panel-heading">
         <h4 class="panel-title">
-            <span>Bundles <span style="background-color: #858585;border-radius: 20%;padding: 3px;font-size: 10px;width: 18px;display: inline-block;height: 15px;position: relative;margin-left: 7px;color: #CCC;text-align:center;">2</span></span>
+            <span>Order Items <span style="background-color: #858585;border-radius: 20%;padding: 3px;font-size: 10px;width: 18px;display: inline-block;height: 15px;position: relative;margin-left: 7px;color: #CCC;text-align:center;">2</span></span>
             <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
         </h4>
       </div>
@@ -123,7 +122,7 @@
     </style>
 
     <div id="collapseTwo" class="panel-collapse collapse in">
-      <div class="table-responsive s-order-item-box">
+      <div class="table-responsive s-order-item-box" style="margin-left:15px;margin-right:15px;margin-top:15px;">
         <table class="table" border="1" cellpadding="0" cellspacing="0">
         	<tr>
         		<th></th>
@@ -141,45 +140,69 @@
         		<td class="s-sku">bundle-01</td>
         		<td class="s-title">
               <ul class="list-unstyled">
-                <li>Skateboard Bundle <a href="#"><i class="fa fa-pencil"></i></a></li>
+                <li>Skateboard Bundle <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
                 <li>
-                  <span>Base Price <a href="#"><i class="fa fa-pencil"></i></a></span>
+                  <span>Base Price <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></span>
                   <ul style="font-size: 12px;color: #AAA;list-style:none;padding-left:10px;">
                     <li> Custom Grip Tape</li>
                     <li> Hardware Kit</li>
                   </ul>
                 </li>
-                <li>Indi Trucks <a href="#"><i class="fa fa-pencil"></i></a></li>
+                <li>Indi Trucks <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
               </ul>
             </td>
         		<td class="s-price">
               <ul class="list-unstyled">
                 <li>$99.00</li>
                 <li>
-                  <span>$89.99</span>
+                  <span>$10.00</span>
                   <ul>
-                    <li></li>
+                    <li>$5.00</li>
                     <li>$5.00</li>
                   </ul>
                 </li>
-                <li></li>
+                <li>$0.00</li>
               </ul>
             </td>
         		<td class="s-qty">
               <ul class="list-unstyled">
                 <li>3</li>
                 <li>
-                  <span>2 (6 total)</span>
+                  <span>1 (3 total)</span>
                   <ul>
-                    <li> 3 (5 total)</li>
-                    <li> 1 (3 total)</li>
+                    <li> 2 (12 total)</li>
+                    <li> 1 (6 total)</li>
                   </ul>
                 </li>
-                <li>1 (8 total)</li>
+                <li>1 (3 total)</li>
               </ul>
             </td>
-        		<td class="s-discount">$0.00</td>
-        		<td class="s-total">$297.00</td>
+        		<td class="s-discount">
+              <ul class="list-unstyled">
+                <li>$0.00</li>
+                <li>
+                  <span>$0.00</span>
+                  <ul>
+                    <li>$0.00</li>
+                    <li>$0.00</li>
+                  </ul>
+                </li>
+                <li>$0.00</li>
+              </ul>
+            </td>
+        		<td class="s-total">
+              <ul class="list-unstyled">
+                <li>$297.00</li>
+                <li>
+                  <span>$10.00</span>
+                  <ul>
+                    <li>$5.00</li>
+                    <li>$5.00</li>
+                  </ul>
+                </li>
+                <li>$0.00</li>
+              </ul>
+            </td>
         		<td class="s-shipping">
               <ul class="list-unstyled">
                 <li>Ship To: <a href="#"><i class="fa fa-pencil"></i></a></li>
@@ -189,9 +212,108 @@
             </td>
         		<td class="s-remove-btn"><button><i class="fa fa-times"></i></button></td>
         	</tr>
+
+          <tr class="s-item">
+            <td class="s-image"><img src="http://placehold.it/50x50"></td>
+            <td class="s-sku">bundle-02</td>
+            <td class="s-title">
+              <ul class="list-unstyled">
+                <li>Skate Shoe <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+              </ul>
+            </td>
+            <td class="s-price">
+              <ul class="list-unstyled">
+                <li>$59.00</li>
+              </ul>
+            </td>
+            <td class="s-qty">
+              <ul class="list-unstyled">
+                <li>1</li>
+              </ul>
+            </td>
+            <td class="s-discount">
+              <ul class="list-unstyled">
+                <li>$0.00</li>
+              </ul>
+            </td>
+            <td class="s-total">
+              <ul class="list-unstyled">
+                <li>$59.00</li>
+              </ul>
+            </td>
+            <td class="s-shipping">
+              <ul class="list-unstyled">
+                <li>Ship To: <a href="#"><i class="fa fa-pencil"></i></a></li>
+                <li>123 Main St. </li>
+                <li>Northboro, MA 01532</li>
+              </ul>
+            </td>
+            <td class="s-remove-btn"><button><i class="fa fa-times"></i></button></td>
+          </tr>
+
         </table>
       </div>
 
+      <hr/class="s-dotted">
+
+      <!-- Search for product -->
+      <div class="row s-bundle-group-items" style="margin:0px;">
+        <div class="col-xs-12">
+          <div class="input-group">
+            <div class="dropdown input-group-btn search-panel">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                <span id="j-search-concept">Product</span>
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li><a href="#less_than">Product</a></li>
+                <li><a href="#all">Skus</a></li>
+              </ul>
+            </div>
+            <input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku">
+            <span class="input-group-btn">
+              <button class="btn btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+          </div>
+        </div>
+
+        <div class="col-xs-12 s-bundle-add-items">
+          <div class="col-xs-12 s-bundle-add-items-inner">
+            <h4 id="j-temp-class">There are no items selected</h4>
+            <ul class="list-unstyled s-order-item-options">
+
+              <li class="s-bundle-add-obj">
+                <ul class="list-unstyled list-inline">
+                  <li class="s-item-type">Product</li>
+                  <li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
+                  <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </li>
+
+              <li class="s-bundle-add-obj">
+                <ul class="list-unstyled list-inline">
+                  <li class="s-item-type">Sku</li>
+                  <li class="j-tool-tip-item s-bundle-details">Mano Mano T-Shirt Large <span>02/T3r5</span></li>
+                  <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </li>
+
+              <li class="s-bundle-add-obj">
+                <ul class="list-unstyled list-inline">
+                  <li class="s-item-type">Product</li>
+                  <li class="j-tool-tip-item s-bundle-details">Cool Guy T-Shirt <span>WOLF-07</span></li>
+                  <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- //Search for product -->
 
     </div>
   </div>
@@ -201,7 +323,7 @@
       <div class="panel-heading">
         <h4 class="panel-title">
             <span>Images</span>
-            <i class="fa fa-caret-left" style="float:right;margin-top: 3px;"></i>
+            <i class="fa fa-caret-left"></i>
         </h4>
       </div>
     </a>
@@ -1378,14 +1500,12 @@
               <ul class="list-inline list-unstyled">
                 <li>
                   <form role="search">
-
-                      <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
-                      <select size="1" name="" aria-controls="" class="form-control accordion-dropdown">
-                        <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
-                        <option value="j-export-link" data-toggle="collapse">Export</option>
-                        <option value="j-delete-link" data-toggle="collapse">Delete</option>
-                      </select>
-
+                    <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
+                    <select size="1" name="" aria-controls="" class="form-control accordion-dropdown">
+                      <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
+                      <option value="j-export-link" data-toggle="collapse">Export</option>
+                      <option value="j-delete-link" data-toggle="collapse">Delete</option>
+                    </select>
                   </form>
                 </li>
                 <li style="width:200px;">

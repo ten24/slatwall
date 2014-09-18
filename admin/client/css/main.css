@@ -5,6 +5,7 @@
   /*Basic style overwrite*/
   body {background-color:#ffffff;font-family: 'Open Sans', sans-serif;color:#666666;padding-top:51px;}
   hr {border-right:1px solid #cccccc;}
+  hr.s-dotted {border:none;border-bottom:3px dotted #eee;margin-top:20px;margin-bottom:20px;margin-right:15px;margin-left:15px;}
   th {font-weight:600;}
   a {color:#666666;}
   a:hover, a:focus {color: #F9AC68; }
@@ -12,6 +13,7 @@
   input::-moz-focus-inner { border: 0; }
   a, a:active, a:focus {outline: none;}
   label {font-weight:600;}
+  .tooltip {z-index:3500;}
   .s-not-active {color:#bbbbbb;}
   .s-disabled {opacity: .5;pointer-events: none;}
   .s-dotted-border-bottom {border-bottom: 3px dotted #EEE;padding-bottom: 20px !important;margin-bottom: 20px !important;}
@@ -332,19 +334,25 @@
   .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-active radio {float:left;margin-right:10px;}
   .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items {margin-bottom:20px;margin-bottom:10px;}
   .s-bundle-group-items .dropdown-menu {border-radius: 0px;margin-top: -1px;}
-  .s-bundle-group-items .search-panel button {color:#555;border-bottom-left-radius: 0px;background-color: #EEE;min-width:130px;text-align: right;}
+  .s-bundle-group-items .search-panel button {color:#555;border-radius: 0px;background-color: #EEE;min-width:130px;text-align: right;}
   .s-bundle-group-items .search-panel button:hover, .s-bundle-group-items .search-panel button:active, .s-bundle-group-items .search-panel button:focus {color:#333 !important;border-color:#cccccc!important;background-color:#ccc;}
   .s-bundle-group-items .s-search-input {height: 34px;outline: none;-webkit-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);-moz-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);}
-  .s-bundle-group-items .s-search-button {border-bottom-right-radius: 0px;background-color: #EEE;}
+  .s-bundle-group-items .s-search-button {border-radius: 0px;background-color: #EEE;}
   .s-bundle-group-items .s-search-button:hover, .s-bundle-group-items .s-search-button:active, .s-bundle-group-items .s-search-button:focus {color:#333!important;border-color:#cccccc!important;background-color:#ccc;}
 
-  .s-bundle-group-items .s-bundle-add-items .s-bundle-add-items-inner {padding: 15px;background: #ffffff;border: 1px solid #CCC;border-top:0px;border-bottom-left-radius:4px;border-bottom-right-radius:4px;margin-bottom:20px;}
+  .s-bundle-group-items .s-bundle-add-items .s-bundle-add-items-inner {padding: 15px;background: #eeeeee;border: 1px solid #CCC;border-top:0px;margin-bottom:20px;}
   .s-bundle-group-items .s-bundle-add-items h4 {width:100%;text-align:center;display:none;}
-  .s-bundle-group-items .s-bundle-add-items .list-unstyled .s-bundle-add-obj {background: #FFF;margin-bottom:4px;height: 35px;border: 1px solid #DDD;}
+  .s-bundle-group-items .s-bundle-add-items .list-unstyled .s-bundle-add-obj {background: #eeeeee;margin-bottom:4px;height: 35px;border: 1px solid #DDD;}
   .s-bundle-group-items .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details {font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;}
   .s-bundle-group-items .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details:first-child {font-weight:700;}
   .s-bundle-group-items .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details-add {display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;}
   .s-bundle-group-items .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a {border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 8px;}
+
+  .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj > ul > li:nth-child(2) {font-weight:600;}
+  .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {padding: 0px;top: -12px;margin: 0px;position: relative;left: 4px;line-height: 35px;width: 75px;text-align: center;background-color: #666;color: #EEE;font-size: 11px;}
+  .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details {border:none;}
+  .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details span {color:#aaaaaa;margin-left:10px;font-weight:normal;}
+  .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj {background-color:#ffffff;}
 
   .s-bundle-group-items-list {border-bottom: 3px dotted #CCC;margin-bottom: 20px;padding-bottom: 10px;}
   .s-bundle-group-items-list > .list-unstyled {height: 35px;border: 1px solid #DDD;margin-bottom:10px;}
@@ -384,7 +392,7 @@
   .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a .caret { border-bottom-color: #F58620}
   .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #F58620}
 
-  .s-create-window {margin-top:40px;margin-bottom: 40px;display: inline-block;width: 100%;background-color: #FFF;}
+  .s-create-window {margin-top:40px;margin-bottom: 36px;display: inline-block;width: 100%;background-color: #FFF;height:100vw;}
   .s-create-window .s-absolute-top-nav {}
   .s-create-window .s-absolute-bottom-nav {display:none;}
   .s-create-window .s-create-bundle-item {margin-top:10px;background-color: #EEE;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;}
@@ -447,7 +455,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-dialog-container {position:absolute;top:0px;height:100%;width:100%;z-index:10001;background-color:#fff !important;}
 .s-dialog-container .s-dialog-content {position:absolute;top:40px;}
 .s-dialog-container .s-dialog-header {position:fixed;top:0px;height:40px;width:100%;z-index:3000;border-radius:0px;}
-.s-dialog-container .s-dialog-footer {position:fixed;bottom:0px;height:40px;width:100%;margin-bottom:0px;border-radius:0px;}
+.s-dialog-container .s-dialog-footer {position:fixed;bottom:0px;height:40px;width:100%;margin-bottom:0px;border-radius:0px;z-index:3000;}
 
 
 .s-dialog-container.ng-enter,
