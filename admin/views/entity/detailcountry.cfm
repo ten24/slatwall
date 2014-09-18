@@ -52,12 +52,14 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.country#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.country#" edit="#rc.edit#" />
-	</cf_HibachiEntityDetailForm>
 	
-	<cf_HibachiEntityDetailGroup object="#rc.country#">
-		<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<cf_HibachiEntityDetailItem property="states" />
-	</cf_HibachiEntityDetailGroup>
+	
+		<cf_HibachiEntityDetailGroup object="#rc.country#">
+			<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/addressRequirements" text="Address Requirements" />
+			<cf_HibachiEntityDetailItem property="states" />
+		</cf_HibachiEntityDetailGroup>
+	</cf_HibachiEntityDetailForm>
 	
 </cfoutput>
 
