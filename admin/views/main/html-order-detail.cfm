@@ -38,7 +38,7 @@
 </div>
 
 <div class="row s-pannel-control">
-  <div class="col-md-12"><a href="#" class="openall">Open All</a> / <a href="#" class="closeall">Close All</a></div>
+  <div class="col-md-12"><a href="#" class="openall">Open All</a> | <a href="#" class="closeall">Close All</a></div>
 </div>
 
 <div class="panel-group s-pannel-group" id="accordion">
@@ -230,7 +230,7 @@
       <hr/class="s-dotted">
 
       <!-- Search for product -->
-      <div class="row s-bundle-group-items">
+      <div class="s-bundle-group-items">
         <div class="col-xs-12">
           <div class="input-group">
             <div class="dropdown input-group-btn search-panel">

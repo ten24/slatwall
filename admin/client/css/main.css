@@ -336,6 +336,7 @@
   .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-active radio {float:left;margin-right:10px;}
   .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items {margin-bottom:20px;margin-bottom:10px;}
 
+  .s-bundle-group-items {display:inline-block;}
   .s-bundle-group-items .dropdown-menu {border-radius: 0px;margin-top: -1px;}
   .s-bundle-group-items .search-panel button {color:#555;border-radius: 0px;background-color: #EEE;min-width:130px;text-align: right;}
   .s-bundle-group-items .search-panel button:hover, .s-bundle-group-items .search-panel button:active, .s-bundle-group-items .search-panel button:focus {color:#333 !important;border-color:#cccccc!important;background-color:#ccc;}
