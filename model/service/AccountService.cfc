@@ -222,16 +222,35 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processAccount_changePassword(required any account, required any processObject) {
 		
-		var authArray = arguments.account.getAccountAuthentications();
-		for(var i=1; i<=arrayLen(authArray); i++) {
+		if(arguments.account.getAdminAccountFlag() == true){
 			
-			// Find the non-integration authentication
-			if(isNull(authArray[i].getIntegration()) && !isNull(authArray[i].getPassword())) {
-				// Set the password
-				authArray[i].setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), authArray[i].getAccountAuthenticationID()) );		
+			//Check to see if the password is a duplicate
+			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), arguments.account.getAccountAuthentications());
+			
+			if(duplicatePasswordCount > 0){
+				arguments.account.addError('changePassword', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
+				return arguments.account;
 			}
 		}
 		
+		//Because we only want to store 5 passwords, this gets old passwords that put the lenth of the limit.
+		if (arrayLen(arguments.account.getAccountAuthentications()) >= 5){
+			deleteAccountAuthentications(arguments, 5);
+		}
+		
+		//Before creating the new password, make sure that all other passwords have an activeFlag of false
+		markOldPasswordsInactive(arguments.account.getAccountAuthentications());
+		
+		//Save the new password
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+		
+		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
+		getHibachiDAO().save(accountAuthentication);
+	
+		// Set the password
+		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+				
 		return arguments.account;
 	}
 	
@@ -281,9 +300,23 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function processAccount_createPassword(required any account, required any processObject) {
+		
+		if(arguments.account.getAdminAccountFlag() == true){
+			//Check to see if the password is a duplicate
+			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), arguments.account.getAccountAuthentications());
+			
+			if(duplicatePasswordCount > 0){
+				arguments.account.addError('createPassword', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
+				return arguments.account;
+			}
+		}
+		
+		//Before creating the new password, make sure that all other passwords have an activeFlag of false
+		markOldPasswordsInactive(arguments.account.getAccountAuthentications());
+		
 		var accountAuthentication = this.newAccountAuthentication();
 		accountAuthentication.setAccount( arguments.account );
-	
+		
 		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
 		getHibachiDAO().save(accountAuthentication);
 	
@@ -380,6 +413,34 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		return arguments.account;
+	}
+	
+	private any function checkForDuplicatePasswords(required any newPassword, required array authArray){
+		
+		//Initilize variable to store the number of duplicate passwords
+		var duplicatePasswordCount = 0;
+		
+		//Loop over the existing authentications for this account
+		for(var i=1; i<=arrayLen(arguments.authArray); i++) {
+			if(isNull(arguments.authArray[i].getIntegration()) && !isNull(arguments.authArray[i].getPassword())) {
+				//Check to see if the password for this authentication is the same as the one being created
+				if(arguments.authArray[i].getPassword() == getHashedAndSaltedPassword(arguments.newPassword, authArray[i].getAccountAuthenticationID())){
+					//Because they are the same add 1 to the duplicatePasswordCount
+					duplicatePasswordCount++;
+					
+				}
+			}
+		}
+		
+		return duplicatePasswordCount;
+	}
+	
+	private void function markOldPasswordsInactive(required array authArray){
+		for(var i=1; i<=arrayLen(arguments.authArray); i++) {
+			if(isNull(arguments.authArray[i].getIntegration()) && !isNull(arguments.authArray[i].getPassword()) && arguments.authArray[i].getActiveFlag() == true) {
+				arguments.authArray[i].setActiveFlag(false);
+			}
+		}
 	}
 	
 	public any function processAccount_setupInitialAdmin(required any account, required struct data={}, required any processObject) {
@@ -1035,6 +1096,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		return smartList;
 	}
 	
+	public any function getAccountAuthenticationSmartList(struct data={}){
+		arguments.entityName = "SlatwallAccountAuthentication";
+		
+		var smartList = this.getSmartList(argumentCollection=arguments);
+		
+		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "account", "left" );
+		
+		smartList.addKeywordProperty(propertyIdentifier="account.accountID", weight=1 );
+		
+		return smartList;
+	}
+	
 	public any function getAccountEmailAddressSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountEmailAddress";
 		
@@ -1150,6 +1223,28 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		return delete(arguments.accountPaymentMethod);
+	}
+	
+	public void function deleteAccountAuthentications(required struct data, required any maxAuthenticationsCount ){
+		
+		//First need to get an array of all the accountAuthentications for this account ordered by creationDateTime ASC
+		var accountAuthentications = getAccountAuthenticationSmartList(data=data);
+		accountAuthentications.addFilter("account.accountID", arguments.data.Account.getAccountID());
+		accountAuthentications.addOrder("createdDateTime|ASC");
+		
+		//Get the actual records from the SmartList and store in an array
+		accountAuthenticationsArray = accountAuthentications.getPageRecords();
+		
+		//Create a variable to hold the length of the new array
+		var arrayLength = arrayLen(accountAuthenticationsArray);
+		var i = 1;
+		
+		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
+		while (arrayLength >= arguments.maxAuthenticationsCount){
+			getAccountDAO().deleteAccountAuthentication(accountAuthenticationsArray[i].getAccountAuthenticationID()); 
+			i++;
+			arrayLength--;
+		}
 	}
 	
 	// =====================  END: Delete Overrides ===========================
