@@ -197,6 +197,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return joinHQL;
 	}
 	
+	
 	//the post functions are most likely to be called after a user posts to the server in order to update the base query with user chosen filters from the UI list view
 	public void function addPostFilterGroup(required any postFilterGroup){
 		arrayAppend(variables.postFilterGroups, arguments.postFilterGroup);
@@ -373,9 +374,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return filterGroupHQL;
 	}
 	
+	
 	private string function getFilterAttributeHQL(required any filter){
-		var objectname = listFirst(filter.propertyIdentifier,'.'); 
-		var HQL = "(SELECT attributeValue FROM SlatwallAttributeValue WHERE attributeID = '#filter.attributeID#' AND #lcase(objectname)#ID = #objectname#.#lcase(objectname)#ID)";
+		var attributeIdentifier = listDeleteAt(filter.propertyIdentifier,ListLen(filter.propertyIdentifier,'.'),'.');
+		
+		var HQL = "(SELECT attributeValue 
+					FROM SlatwallAttributeValue 
+					WHERE attributeID = '#filter.attributeID#' 
+					AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID)";
 		return HQL;
 	}
 	
@@ -608,13 +614,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	private any function getColumnAttributeHQL(required struct column){
-		var objectname = listFirst(column.propertyIdentifier,'.'); 
+		
+		var attributeIdentifier = listDeleteAt(column.propertyIdentifier,ListLen(column.propertyIdentifier,'.'),'.');
 		
 		var HQL	=  "(SELECT attributeValue 
 					FROM SlatwallAttributeValue
 					WHERE attribute.attributeID = '"
 					& column.attributeID & 
-					"' AND #lcase(objectname)#ID = #objectname#.#lcase(objectname)#ID) as #listLast(column.propertyIdentifier,'.')#";
+					"' AND #column.attributeSetObject#.#column.attributeSetObject#ID = #attributeIdentifier#.#column.attributeSetObject#ID) as #listLast(column.propertyIdentifier,'.')#";
 		
 		return HQL;	
 	}
@@ -664,6 +671,11 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 		
 		if(!isNull(collectionConfig.baseEntityName)){
+			var selectHQL = "";
+			var fromHQL = "";
+			var filterHQL = "";
+			var postFilterHQL = "";
+			var orderByHQL = "";
 			
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelect eq false){
@@ -671,37 +683,40 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				if(!isNull(collectionConfig.isDistinct)){
 					isDistinct = collectionConfig.isDistinct;
 				}
-				HQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+				selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
 			}
-			//build FROM
-			var joins = [];
-			if(!isnull(collectionConfig.joins)){
-				joins = collectionConfig.joins;
-			}
-			
-			HQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias, joins);
 			
 			//where clauses are actually the collection of all parent/child where clauses
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
 			
 			if(arraylen(filterGroupArray)){
-				HQL &= getFilterHQL(filterGroupArray);
+				filterHQL &= getFilterHQL(filterGroupArray);
 			}
 			
 			//check if the user has applied any filters from the ui list view
 			if(arraylen(getPostFilterGroups())){
-				HQL &= getFilterGroupsHQL(postFilterGroups);
+				postFilterHQL &= getFilterGroupsHQL(postFilterGroups);
 			}
 			
 			//override defaultconfig if we have postOrderBys
 			if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
-				HQL &= getOrderByHQL(getPostOrderBys());
+				orderByHQL &= getOrderByHQL(getPostOrderBys());
 			}else{
 				//build Order By
 				if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
-					HQL &= getOrderByHQL(collectionConfig.orderBy);
+					orderByHQL &= getOrderByHQL(collectionConfig.orderBy);
 				}
 			}
+			
+			//build FROM last because we have aquired joins implicitly
+			var joins = [];
+			if(!isnull(collectionConfig.joins)){
+				joins = collectionConfig.joins;
+			}
+			
+			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias, joins);
+			
+			HQL = SelectHQL & FromHQL & filterHQL & postFilterHQL & orderByHQL;
 		}
 		return HQL;
 	}

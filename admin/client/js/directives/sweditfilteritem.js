@@ -173,6 +173,7 @@ $filter){
 			            	
 			            	if(angular.isDefined(selectedFilterProperty.attributeID)){
 			            		filterItem.attributeID = selectedFilterProperty.attributeID;
+			            		filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
 			            	}
 			            	
 							filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;

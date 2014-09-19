@@ -17,8 +17,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
-		
-		
 	}
 	
 	public any function getObjectOptions(required struct rc){
