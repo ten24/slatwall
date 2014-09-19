@@ -501,7 +501,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		//var query = collectionEntity.executeHQL();
 		//var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
-		request.debug(collectionEntity.getPageRecords());
 		
 	}
 	
@@ -637,6 +636,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		request.debug(collectionEntity.getPageRecords());
+		
+		
 		
 	}
 	
@@ -900,6 +901,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(orderByHQL); 
 	}
 	
+	
+	
 	public void function addJoinHQLTest(){
 		makePublic(variables.entity,'addJoinHQL');
 		var joinJSON = '
@@ -915,7 +918,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							}
 						';
 		var join = deserializeJSON(joinJSON);
-		
 		var joinHQL = variables.entity.addJoinHQL('Account',join);
 		assertFalse(Compare(" left join Account.primaryEmailAddress as Account_primaryEmailAddress  left join Account_primaryEmailAddress.accountEmailType as Account_primaryEmailAddress_AccountEmailType ",joinHQL));
 	}

@@ -51,6 +51,7 @@ $log){
 						//only add attributeid if the selectedProperty is attributeid
 						if(angular.isDefined(selectedProperty.attributeID)){
 							column.attributeID = selectedProperty.attributeID;
+							column.attributeSetObject = selectedProperty.attributeSetObject;
 						}
 						
 						$scope.columns.push(column);
