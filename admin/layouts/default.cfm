@@ -58,14 +58,13 @@ Notes:
 		<link rel="shortcut icon" href="#request.slatwallScope.getBaseURL()#/assets/images/favicon.png" type="image/png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-
 		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="../../client/lib/font-awesome/css/font-awesome.min.css">
+		<link href="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.css" rel="stylesheet">
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
@@ -86,6 +85,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
 
+
 		<!--- Trigger Print Window --->
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
@@ -96,13 +96,8 @@ Notes:
 	<body>
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
+
 				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="##slatwall-primary-nav">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
 					<cfset homeLink = request.slatwallScope.getBaseURL() />
 					<cfif not len(homeLink)>
 						<cfset homeLink = "/" />
@@ -110,115 +105,20 @@ Notes:
 					<a href="#homeLink#" class="navbar-brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;heigh:16px;" title="Slatwall" /></a>
 				</div><!-- .navbar-header -->
 
-				<div class="collapse navbar-collapse" id="slatwall-primary-nav">
-					<ul class="nav navbar-nav">
-						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="nav">
-							<cf_HibachiDividerHider>
-								<cf_HibachiActionCaller action="admin:entity.listproduct" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listproducttype" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listbrand" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listsku" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listproductreview" type="list">
-								<li class="divider"></li>
-								<cf_HibachiActionCaller action="admin:entity.listoptiongroup" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listcategory" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listcontent" type="list">
-								<li class="divider"></li>
-								<cf_HibachiActionCaller action="admin:entity.listpromotion" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listpricegroup" type="list">
-							</cf_HibachiDividerHider>
-						</cf_HibachiActionCallerDropdown>
-						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" icon="inbox icon-white" type="nav">
-							<cf_HibachiDividerHider>
-								<cf_HibachiActionCaller action="admin:entity.listorder" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listcartandquote" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listeventregistration" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listorderitem" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listorderpayment" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
-								<li class="divider"></li>
-								<cf_HibachiActionCaller action="admin:entity.listvendororder" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
-							</cf_HibachiDividerHider>
-						</cf_HibachiActionCallerDropdown>
-						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.accounts_nav')#" icon="user icon-white" type="nav">
-							<cf_HibachiDividerHider>
-								<cf_HibachiActionCaller action="admin:entity.listaccount" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listsubscriptionusage" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listpermissiongroup" type="list">
-								<li class="divider"></li>
-								<cf_HibachiActionCaller action="admin:entity.listloyalty" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
-								<li class="divider"></li>
-								<cf_HibachiActionCaller action="admin:entity.listvendor" type="list">
-							</cf_HibachiDividerHider>
-						</cf_HibachiActionCallerDropdown>
-						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.warehouse_nav')#" icon="barcode icon-white" type="nav">
-							<cf_HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
-							<cf_HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
-							<cf_HibachiActionCaller action="admin:entity.listphysical" type="list">
-						</cf_HibachiActionCallerDropdown>
-						<cfset local.integrationSubsystems = $.slatwall.getService('integrationService').getActiveFW1Subsystems() />
-						<cfif arrayLen(local.integrationSubsystems)>
-							<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.integrations_nav')#" icon="random icon-white" type="nav">
-								<cfloop array="#local.integrationSubsystems#" index="local.intsys">
-									<cf_HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['name']#" type="list">
-								</cfloop>
-							</cf_HibachiActionCallerDropdown>
-						</cfif>
-						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.configure_nav')#" icon="cog icon-white" type="nav">
-							<cf_HibachiDividerHider>
-								<cf_HibachiActionCaller action="admin:entity.settings" title="#$.slatwall.rbKey('admin.setting_nav')#" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listattributeset" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listintegration" type="list">
-								<li class="divider"></li>
-								<cf_HibachiActionCaller action="admin:entity.listaddresszone" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listcollection" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listcountry" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listcurrency" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listfulfillmentmethod" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listlocation" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listmeasurementunit" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listorderorigin" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listpaymentmethod" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listroundingrule" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listsite" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listterm" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listtype" type="list">
-							</cf_HibachiDividerHider>
-						</cf_HibachiActionCallerDropdown>
-						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
-							<cf_HibachiDividerHider>
-								<cf_HibachiActionCaller action="admin:report" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listeventtrigger" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listschedule" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listsession" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listtask" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
-								<cf_HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true" />
-								<cf_HibachiActionCaller action="admin:main.log" type="list">
-								<cf_HibachiActionCaller action="admin:entity.listaudit" type="list">
-								<cf_HibachiActionCaller action="admin:main.update" type="list">
-								<cfif $.slatwall.getAccount().getSuperUserFlag()>
-									<cf_HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
-									<cf_HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
-									<cf_HibachiActionCaller action="admin:main.default" querystring="reload=true" type="list" text="Reload Slatwall">
-								</cfif>
-							</cf_HibachiDividerHider>
-						</cf_HibachiActionCallerDropdown>
-					</ul>
+				<div id="slatwall-primary-nav">
+
+					<span class="s-toggle-full-screen" id="j-toggle-sidebar">
+						<a href="##" title="Toggle Full Screen">
+							<i class="fa fa-bars"></i>
+						</a>
+					</span>
+
+					<a href="#homeLink#" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
 
 					<cfif $.slatwall.getLoggedInAsAdminFlag()>
 						<form name="search" class="navbar-form navbar-right" action="/" onSubmit="return false;">
 							<div class="form-group">
-								<input id="global-search" type="text" name="serach" class="form-control search-query span2" placeholder="Search">
+								<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search">
 							</div>
 						</form>
 					</cfif>
@@ -247,165 +147,122 @@ Notes:
 			</div><!-- /.container-fluid -->
 		</nav><!-- /.navbar -->
 
-		<!---
-		<div id="search-results" class="search-results">
-			<div class="container-fluid">
-				<div class="row">
 
-					<div class="col-md-3 result-bucket">
-						<h5>#$.slatwall.rbKey('entity.product_plural')#</h5>
-						<ul class="nav" id="golbalsr-product">
-							<cfif not $.slatwall.authenticateEntity("Read", "Product")>
-								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
+
+	  <aside class="sidebar">
+	    <nav class="sidebar-nav">
+				<ul id="menu" >
+					<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
+						<cf_HibachiDividerHider>
+							<cf_HibachiActionCaller action="admin:entity.listproduct" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listproducttype" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listbrand" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listsku" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listproductreview" type="list">
+
+							<cf_HibachiActionCaller action="admin:entity.listoptiongroup" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listcategory" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listcontent" type="list">
+
+							<cf_HibachiActionCaller action="admin:entity.listpromotion" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listpricegroup" type="list">
+						</cf_HibachiDividerHider>
+					</cf_HibachiActionCallerDropdown>
+					<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" icon="inbox icon-white" type="sidenav">
+						<cf_HibachiDividerHider>
+							<cf_HibachiActionCaller action="admin:entity.listorder" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listcartandquote" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listorderitem" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listorderpayment" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
+
+							<cf_HibachiActionCaller action="admin:entity.listvendororder" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
+						</cf_HibachiDividerHider>
+					</cf_HibachiActionCallerDropdown>
+					<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.accounts_nav')#" icon="user icon-white" type="sidenav">
+						<cf_HibachiDividerHider>
+							<cf_HibachiActionCaller action="admin:entity.listaccount" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listsubscriptionusage" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listpermissiongroup" type="list">
+
+							<cf_HibachiActionCaller action="admin:entity.listloyalty" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
+
+							<cf_HibachiActionCaller action="admin:entity.listvendor" type="list">
+						</cf_HibachiDividerHider>
+					</cf_HibachiActionCallerDropdown>
+					<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.warehouse_nav')#" icon="barcode icon-white" type="sidenav">
+						<cf_HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
+						<cf_HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
+						<cf_HibachiActionCaller action="admin:entity.listphysical" type="list">
+					</cf_HibachiActionCallerDropdown>
+					<cfset local.integrationSubsystems = $.slatwall.getService('integrationService').getActiveFW1Subsystems() />
+					<cfif arrayLen(local.integrationSubsystems)>
+						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.integrations_nav')#" icon="random icon-white" type="sidenav">
+							<cfloop array="#local.integrationSubsystems#" index="local.intsys">
+								<cf_HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['name']#" type="list">
+							</cfloop>
+						</cf_HibachiActionCallerDropdown>
+					</cfif>
+					<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.configure_nav')#" icon="cog icon-white" type="sidenav">
+						<cf_HibachiDividerHider>
+							<cf_HibachiActionCaller action="admin:entity.settings" title="#$.slatwall.rbKey('admin.setting_nav')#" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listattributeset" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listintegration" type="list">
+
+							<cf_HibachiActionCaller action="admin:entity.listaddresszone" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listcollection" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listcountry" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listcurrency" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listfulfillmentmethod" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listlocation" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listmeasurementunit" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listorderorigin" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listpaymentmethod" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listroundingrule" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listsite" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listterm" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listtype" type="list">
+						</cf_HibachiDividerHider>
+					</cf_HibachiActionCallerDropdown>
+					<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="sidenav">
+						<cf_HibachiDividerHider>
+							<cf_HibachiActionCaller action="admin:report" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listeventtrigger" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listschedule" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listsession" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listtask" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
+							<cf_HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true" />
+							<cf_HibachiActionCaller action="admin:main.log" type="list">
+							<cf_HibachiActionCaller action="admin:entity.listaudit" type="list">
+							<cf_HibachiActionCaller action="admin:main.update" type="list">
+							<cfif $.slatwall.getAccount().getSuperUserFlag()>
+								<cf_HibachiActionCaller action="admin:main.default" querystring="reload=true" type="list" text="Reload Slatwall">
 							</cfif>
-						</ul>
-					</div>
+						</cf_HibachiDividerHider>
+					</cf_HibachiActionCallerDropdown>
+				</ul>
+	     </nav>
+	  </aside>
 
-					<div class="col-md-3 result-bucket">
-						<h5>#$.slatwall.rbKey('entity.productType_plural')#</h5>
-						<ul class="nav" id="golbalsr-productType">
-							<cfif not $.slatwall.authenticateEntity("Read", "ProductType")>
-								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
-							</cfif>
-						</ul>
-					</div>
+		<section class="content s-body-margin" id="j-main-content">
 
-					<div class="col-md-3  result-bucket">
-						<h5>#$.slatwall.rbKey('entity.brand_plural')#</h5>
-						<ul class="nav" id="golbalsr-brand">
-							<cfif not $.slatwall.authenticateEntity("Read", "Brand")>
-								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
-							</cfif>
-						</ul>
-					</div>
-
-					<div class="col-md-3 result-bucket">
-						<h5>#$.slatwall.rbKey('entity.promotion_plural')#</h5>
-						<ul class="nav" id="golbalsr-promotion">
-							<cfif not $.slatwall.authenticateEntity("Read", "Promotion")>
-								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
-							</cfif>
-						</ul>
-					</div>
-
-				</div>
-				<div class="row">
-
-					<div class="col-md-3 result-bucket">
-						<h5>#$.slatwall.rbKey('entity.order_plural')#</h5>
-						<ul class="nav" id="golbalsr-order">
-							<cfif not $.slatwall.authenticateEntity("Read", "Order")>
-								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
-							</cfif>
-						</ul>
-					</div>
-
-					<div class="col-md-3 result-bucket">
-						<h5>#$.slatwall.rbKey('entity.account_plural')#</h5>
-						<ul class="nav nav-navbar" id="golbalsr-account">
-							<cfif not $.slatwall.authenticateEntity("Read", "Account")>
-								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
-							</cfif>
-						</ul>
-					</div>
-
-					<div class="col-md-3 result-bucket">
-						<h5>#$.slatwall.rbKey('entity.vendorOrder_plural')#</h5>
-						<ul class="nav" id="golbalsr-vendorOrder">
-							<cfif not $.slatwall.authenticateEntity("Read", "VendorOrder")>
-								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
-							</cfif>
-						</ul>
-					</div>
-
-					<div class="col-md-3 result-bucket">
-						<h5>#$.slatwall.rbKey('entity.vendor_plural')#</h5>
-						<ul class="nav" id="golbalsr-vendor">
-							<cfif not $.slatwall.authenticateEntity("Read", "Vendor")>
-								<li><em>#$.slatwall.rbKey('define.noAccess')#</em></li>
-							</cfif>
-						</ul>
-					</div>
-
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<a class="close search-close"><span class="text">Close</span> &times;</a>
-					</div>
-				</div>
-			</div>
-		</div>
-		--->
-		<script type="text/javascript">
-			var guid = (function() {
-			  function s4() {
-			    return Math.floor((1 + Math.random()) * 0x10000)
-			               .toString(16)
-			               .substring(1);
-			  }
-			  return function() {
-			    return s4() + s4() + s4() + s4() +
-			           s4() + s4() + s4() + s4();
-			  };
-			})();
-		</script>
-
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
-
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular-ui-bootstrap/ui.bootstrap.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
-
-		<!---modules --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
-	 	
-	 	<!---services --->
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallservice.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwall.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/collectionservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/paginationservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/dialogservice.js"></script>
-
-	 	<!---controllers --->
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collectionstabcontroller.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
-	 	
-	 	<!---directives --->
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swheaderwithtabs.js"></script>
-	 	<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdirective.js"></script>
-
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroups.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfilteritem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swaddfilterbuttons.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/sweditfilteritem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroupitem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcriteria.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayoptions.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayitem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcolumnitem.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpaginationbar.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swscrolltrigger.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swexportaction.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
-
-		<div class="container-fluid s-main-container">
-			<div class="row">
-				<div class="col-md-12">
-
-					#body#
-
-				</div>
+			<div class="col-md-12">
+				#body#
 			</div>
 
-		</div>
+	  </section>
 
+		<!-- Admin Modals -->
 		<div id="adminModal" class="modal fade">
 
 		</div>
@@ -432,31 +289,95 @@ Notes:
 				</div>
 			</div>
 		</div>
-		
-		<!---
-		<div style="position:absolute;top:0px;height:100%;width:100%;z-index:10001;overflow:hidden;background-color:##fff;">
-			<div style="position:absolute;top:40px;overflow:hidden;">
-				missing terminating [##] for expression at railo.transformer.cfml.tag.CFMLTransformer.literal(CFMLTransformer.java:420):420 at railo.transformer.cfml.tag.CFMLTransformer.body(CFMLTransformer.java:317):317 at railo.transformer.cfml.tag.CFMLTransformer.body(CFMLTransformer.java:321):321 at railo.transformer.cfml.tag.CFMLTransformer.body(CFMLTransformer.java:321):321 at railo.transformer.cfml.tag.CFMLTransformer.body(CFMLTransformer.java:321):321 at railo.transformer.cfml.tag.CFMLTransformer.tag(CFMLTransformer.java:633):633 at railo.transformer.cfml.tag.CFMLTransformer.body(CFMLTransformer.java:313):313 at railo.transformer.cfml.tag.CFMLTransformer.body(CFMLTransformer.java:321):321 at railo.transformer.cfml.tag.CFMLTransformer.transform(CFMLTransformer.java:253):253 at railo.transformer.cfml.tag.CFMLTransformer.transform(CFMLTransformer.java:124):124 at railo.runtime.compiler.CFMLCompilerImpl.compile(CFMLCompilerImpl.java:55):55 at railo.runtime.PageSourceImpl._compile(PageSourceImpl.java:309):309 at railo.runtime.PageSourceImpl.compile(PageSourceImpl.java:283):283 at railo.runtime.PageSourceImpl.loadPhysical(PageSourceImpl.java:227):227 at railo.runtime.PageSourceImpl.loadPage(PageSourceImpl.java:166):166 at railo.runtime.PageSourceImpl.loadPage(PageSourceImpl.java:869):869 at railo.runtime.PageContextImpl.doInclude(PageContextImpl.java:909):909 at railo.runtime.PageContextImpl.doInclude(PageContextImpl.java:817):817 at org.hibachi.fw1.framework_cfc$cf.udfCall8(/org/Hibachi/FW1/framework.cfc:1517):1517 at org.hibachi.fw1.framework_cfc$cf.udfCall(/org/Hibachi/FW1/framework.cfc):-1 at railo.runtime.type.UDFImpl.implementation(UDFImpl.java:92):92 at railo.runtime.type.UDFImpl._call(UDFImpl.java:306):306 at railo.runtime.type.UDFImpl.call(UDFImpl.java:207):207 at railo.runtime.type.scope.UndefinedImpl.call(UndefinedImpl.java:748):748 at railo.runtime.util.VariableUtilImpl.callFunctionWithoutNamedValues(VariableUtilImpl.java:724):724 at railo.runtime.PageContextImpl.getFunction(PageContextImpl.java:1554):1554 at org.hibachi.fw1.framework_cfc$cf.udfCall4(/org/Hibachi/FW1/framework.cfc:732):732 at org.hibachi.fw1.framework_cfc$cf.udfCall(/org/Hibachi/FW1/framework.cfc):-1 at railo.runtime.type.UDFImpl.implementation(UDFImpl.java:92):92 at railo.runtime.type.UDFImpl._call(UDFImpl.java:306):306 at railo.runtime.type.UDFImpl.call(UDFImpl.java:207):207 at railo.runtime.ComponentImpl._call(ComponentImpl.java:623):623 at railo.runtime.ComponentImpl._call(ComponentImpl.java:506):506 at railo.runtime.ComponentImpl.call(ComponentImpl.java:1738):1738 at railo.runtime.listener.ModernAppListener.call(ModernAppListener.java:388):388 at railo.runtime.listener.ModernAppListener._onRequest(ModernAppListener.java:204):204 at railo.runtime.listener.MixedAppListener.onRequest(MixedAppListener.java:18):18 at railo.runtime.PageContextImpl.execute(PageContextImpl.java:2218):2218 at railo.runtime.PageContextImpl.execute(PageContextImpl.java:2185):2185 at railo.runtime.engine.CFMLEngineImpl.serviceCFML(CFMLEngineImpl.java:332):332 at railo.loader.servlet.CFMLServlet.service(CFMLServlet.java:29):29 at javax.servlet.http.HttpServlet.service(HttpServlet.java:728):728 at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:305):305 at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210):210 at sun.reflect.GeneratedMethodAccessor271.invoke(Unknown Source):-1 at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25):25 at java.lang.reflect.Method.invoke(Method.java:597):597 at com.intergral.fusionreactor.j2ee.filterchain.WrappedFilterChain.doFilter(WrappedFilterChain.java:96):96 at com.intergral.fusionreactor.j2ee.filter.FusionReactorRequestHandler.doNext(FusionReactorRequestHandler.java:350):350 at com.intergral.fusionreactor.j2ee.filter.FusionReactorRequestHandler.doHttpServletRequest(FusionReactorRequestHandler.java:224):224 at com.intergral.fusionreactor.j2ee.filter.FusionReactorRequestHandler.doFusionRequest(FusionReactorRequestHandler.java:153):153 at com.intergral.fusionreactor.j2ee.filter.FusionReactorRequestHandler.handle(FusionReactorRequestHandler.java:385):385 at com.intergral.fusionreactor.j2ee.filter.FusionReactorCoreFilter.doFilter(FusionReactorCoreFilter.java:36):36 at sun.reflect.GeneratedMethodAccessor270.invoke(Unknown Source):-1 at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25):25 at java.lang.reflect.Method.invoke(Method.java:597):597 at com.intergral.fusionreactor.j2ee.filterchain.WrappedFilterChain.doFilter(WrappedFilterChain.java:78):78 at sun.reflect.GeneratedMethodAccessor269.invoke(Unknown Source):-1 at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25):25 at java.lang.reflect.Method.invoke(Method.java:597):597 at com.intergral.fusionreactor.agent.filter.FusionReactorStaticFilter.doFilter(FusionReactorStaticFilter.java:53):53 at com.intergral.fusionreactor.agent.pointcuts.NewFilterChainPointCut$1.invoke(NewFilterChainPointCut.java:41):41 at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java):-1 at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:222):222 at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:123):123 at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472):472 at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:171):171 at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:99):99 at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118):118 at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:407):407 at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1004):1004 at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:589):589 at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:310):310 at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895):895 at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918):918 at java.lang.Thread.run(Thread.java:695):695	
-			</div>
-			<div style="position:absolute;top:0px;height:40px;width:100%;background-color:##efefef;">Header</div>
-			<div style="position:absolute;bottom:0px;height:40px;width:100%;background-color:green;">Footer</div>
-		</div>
-		--->
-		
+
 		<!--- Page Dialog Controller --->
 		<div ng-controller="pageDialog">
 			<span class="s-dialog-container" ng-repeat="pageDialog in pageDialogs">
 				<span ng-include="pageDialog.path"></span>
 			</span>
 		</div>
-		
+
 		<!---displays alerts to the user --->
 		<div ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer" role="alert" ng-repeat="alert in alerts">
 			<!---only show a dismissable button if we are showing info or a warning --->
-		  	<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-		  	<!---show check mark only if success, always display message --->
-		  	<i style="display:none;" class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
-	    </div>
+	  	<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	  	<!---show check mark only if success, always display message --->
+	  	<i style="display:none;" class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
+    </div>
+
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular-ui-bootstrap/ui.bootstrap.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
+
+		<!---modules --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
+
+		<!---services --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/collectionservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/paginationservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/dialogservice.js"></script>
+
+		<!---controllers --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collectionstabcontroller.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
+
+		<!---directives --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swheaderwithtabs.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdirective.js"></script>
+
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroups.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfilteritem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swaddfilterbuttons.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/sweditfilteritem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroupitem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcriteria.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayoptions.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayitem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcolumnitem.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpaginationbar.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swscrolltrigger.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swexportaction.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
+
 	</body>
 </html>
 </cfoutput>
+
+<script type="text/javascript">
+	var guid = (function() {
+		function s4() {
+			return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+		}
+		return function() {
+			return s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
+		};
+	})();
+</script>
+
+<script>
+$(function() {
+	$('#menu').metisMenu();
+});
+
+</script>
+
+<script charset="utf-8">
+
+	$('body').on('click','#j-toggle-sidebar',function() {
+		$('.navbar-header').toggle();
+		$('.sidebar').toggle();
+		$('.s-centered-logo').toggle();
+		$('#j-main-content').toggleClass('s-body-margin');
+	});
+
+</script>
