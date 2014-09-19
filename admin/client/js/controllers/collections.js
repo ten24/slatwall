@@ -4,16 +4,18 @@ angular.module('slatwalladmin')
 .controller('collections', 
 [ '$scope',
 '$location',
-'slatwallService',
+'$slatwall',
 'alertService',
 'collectionService', 
+'metadataService',
 'paginationService',
 '$log',
 function($scope,
 $location,
-slatwallService,
+$slatwall,
 alertService,
 collectionService,
+metadataService,
 paginationService,
 $log
 ){
@@ -22,6 +24,8 @@ $log
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 	
 	//get url param to retrieve collection listing
+	console.log('$slatwall');
+	console.log($slatwall);
 	$scope.collectionID = $location.search().collectionID;
 	$scope.currentPage= paginationService.getCurrentPage();
 	$scope.pageShow = paginationService.getPageShow();
@@ -59,7 +63,7 @@ $log
 				$scope.autoScrollDisabled = true;
 				$scope.autoScrollPage++;
 				
-				var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID,$scope.autoScrollPage,50);
+				var collectionListingPromise = $slatwall.getEntity('collection',$scope.collectionID,$scope.autoScrollPage,50);
 				collectionListingPromise.then(function(value){
 					
 					$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords);
@@ -80,7 +84,7 @@ $log
 		if($scope.pageShow !== 'Auto'){
 			pageShow = $scope.pageShow;
 		}
-		var collectionListingPromise = slatwallService.getEntity('collection',$scope.collectionID,$scope.currentPage,pageShow);
+		var collectionListingPromise = $slatwall.getEntity('collection',$scope.collectionID,$scope.currentPage,pageShow);
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();
@@ -90,16 +94,6 @@ $log
 			}
 			//check if we have any filter Groups
 			$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
-			
-			var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
-			filterPropertiesPromise.then(function(value){
-				collectionService.setFilterPropertiesList(value);
-				$scope.filterPropertiesList = collectionService.getFilterPropertiesList();
-				collectionService.formatFilterPropertiesList($scope.filterPropertiesList);
-			}, function(reason){
-				
-			});
-			
 		},function(reason){
 			//display error message if getter fails
 			var messages = reason.MESSAGES;
@@ -109,6 +103,23 @@ $log
 	};
 	
 	$scope.getCollection();
+	
+	var unbindCollectionObserver = $scope.$watch('collection',function(newValue,oldValue){
+		if(newValue !== oldValue){
+			if(angular.isUndefined($scope.filterPropertiesList)){
+				$scope.filterPropertiesList = {};
+				var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+				filterPropertiesPromise.then(function(value){
+					metadataService.setPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
+					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
+					metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
+				}, function(reason){
+					
+				});
+			}
+			unbindCollectionObserver();
+		}
+	});
 	
 	$scope.setCollectionForm= function(form){
 	   $scope.collectionForm = form;
@@ -140,7 +151,7 @@ $log
 			//has to be removed in order to save transient correctly
 			delete data.pageRecords;
 			
-			var saveCollectionPromise = slatwallService.saveEntity(entityName,collection.collectionID,data);
+			var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
 			saveCollectionPromise.then(function(value){
 				var messages = value.MESSAGES;
 				var alerts = alertService.formatMessagesToAlerts(messages);

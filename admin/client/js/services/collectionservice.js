@@ -1,13 +1,14 @@
 //collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
-.factory('collectionService',['$log',
-function($log){
+.factory('collectionService',['slatwallService','$filter','$log',
+function(slatwallService,$filter,$log){
 	//properties
 	var _collection = null;
 	var _collectionConfig = null;
-	var _filterPropertiesList = null;
+	var _filterPropertiesList = {};
 	var _filterCount = 0;
+	var _orderBy = $filter('orderBy');
 	
 	return collectionService = {
 		incrementFilterCount: function(number){
@@ -26,6 +27,12 @@ function($log){
 		},
 		getCollectionConfigJson: function(){
 			return _collection.collectionConfig;
+		},
+		getBaseEntityName: function(){
+			return this.getCollectionConfig().baseEntityName;
+		},
+		getBaseEntityAlias: function(){
+			return this.getCollectionConfig().baseEntityAlias;
 		},
 		getCollectionConfig: function(){
 			if(!angular.isObject(_collectionConfig)){
@@ -54,12 +61,16 @@ function($log){
 		getColumns:function(){
 			return _collection.collectionConfig.columns;
 		},
-		
-		getFilterPropertiesList: function(){
+		getFilterPropertiesList:function(){
 			return _filterPropertiesList;
 		},
-		setFilterPropertiesList: function(filterPropertiesList){
-			_filterPropertiesList = filterPropertiesList;
+		getFilterPropertiesListByBaseEntityAlias: function(baseEntityAlias){
+			return _filterPropertiesList[baseEntityAlias];
+		},
+		setFilterPropertiesList: function(value,key){
+			if(angular.isUndefined(_filterPropertiesList[key])){
+				_filterPropertiesList[key] = value;
+			}
 		},
 			
 		stringifyJSON: function(jsonObject){
@@ -128,7 +139,7 @@ function($log){
 			filterItemGroup.push(filterItem);
 			
 			
-			collectionService.selectFilterItem(filterItem);
+			this.selectFilterItem(filterItem);
 			
 			
 		},
@@ -171,12 +182,65 @@ function($log){
 			filterGroup.push(filterGroupItem);
 		},
 		
-		formatFilterPropertiesList: function(filterPropertiesList){
+		formatFilterPropertiesList: function(filterPropertiesList,propertyIdentifier){
+			$log.debug('format Filter Properties List arguments 2');
+			$log.debug(filterPropertiesList);
+			$log.debug(propertyIdentifier);
+			var simpleGroup = {
+					$$group:'simple',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			filterPropertiesList.data.push(simpleGroup);
+			var drillDownGroup = {
+					$$group:'drilldown',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			filterPropertiesList.data.push(drillDownGroup);
+			
+			var compareCollections = {
+					$$group:'compareCollections',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			filterPropertiesList.data.push(compareCollections);
+			
+			var attributeCollections = {
+					$$group:'attribute',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			filterPropertiesList.data.push(attributeCollections);
+			
 			for(i in filterPropertiesList.data){
-				filterPropertiesList.data[i].propertyIdentifier = filterPropertiesList.entityName + '.' +filterPropertiesList.data[i].name;
+				if(angular.isDefined(filterPropertiesList.data[i].ormtype)){
+					if(angular.isDefined(filterPropertiesList.data[i].attributeID)){
+						filterPropertiesList.data[i].$$group = 'attribute';
+					}else{
+						filterPropertiesList.data[i].$$group = 'simple';
+					}
+				}
+				if(angular.isDefined(filterPropertiesList.data[i].fieldtype)){
+					if(filterPropertiesList.data[i].fieldtype === 'id'){
+						filterPropertiesList.data[i].$$group = 'simple';
+					}
+					if(filterPropertiesList.data[i].fieldtype === 'many-to-one'){
+						filterPropertiesList.data[i].$$group = 'drilldown';
+					}
+					if(filterPropertiesList.data[i].fieldtype === 'many-to-many' || filterPropertiesList.data[i].fieldtype === 'one-to-many'){
+						filterPropertiesList.data[i].$$group = 'compareCollections';
+					}
+				}
+				
+				filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' +filterPropertiesList.data[i].name;
 			}
-		}
+			filterPropertiesList.data = _orderBy(filterPropertiesList.data,['-$$group','propertyIdentifier'],false);
+		},
 		
+		orderBy: function(propertiesList,predicate,reverse){
+			return _orderBy(propertiesList,predicate,reverse);
+		}
 		//private functions
 		
 	};

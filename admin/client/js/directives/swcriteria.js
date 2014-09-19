@@ -6,53 +6,66 @@ angular.module('slatwalladmin')
 '$templateCache',
 'partialsPath',
 '$log',
-'slatwallService',
+'$slatwall',
+'collectionService',
+'metadataService',
 '$filter',
 function($http,
 $compile,
 $templateCache,
 partialsPath,
 $log,
-slatwallService,
+$slatwall,
+collectionService,
+metadataService,
 $filter){
 	//private functions
-	
+/* Template info begin*/
 	var getTemplate = function(selectedFilterProperty){
         var template = '';
 		var templatePath = '';
-		var criteriaormtype = selectedFilterProperty.ormtype;
-		var criteriafieldtype = selectedFilterProperty.fieldtype;
-        switch(criteriaormtype){
-            case 'boolean':
-               templatePath = partialsPath+"criteriaboolean.html";
-                break;
-            case 'string':
-                templatePath = partialsPath+"criteriastring.html";
-                break;
-            case 'timestamp':
-                templatePath = partialsPath+"criteriadate.html";
-                break;
-            case 'big_decimal':
-            	templatePath = partialsPath+"criteriabigdecimal.html";
-            	break;
-        }
-        
-        switch(criteriafieldtype){
-	        case "many-to-one":
-	        	templatePath = partialsPath+"criteriamanytoone.html";
-				break;
-			case "many-to-many":
-				templatePath = partialsPath+"criteriamanytomany.html";
-				break;
-			case "one-to-many":
-				templatePath = partialsPath+"criteriaonetomany.html";
-				break;
-	    }
+		
+		if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
+			templatePath = partialsPath+"criteria.html";
+		}else{
+			var criteriaormtype = selectedFilterProperty.ormtype;
+			var criteriafieldtype = selectedFilterProperty.fieldtype;
+	        switch(criteriaormtype){
+	            case 'boolean':
+	               templatePath = partialsPath+"criteriaboolean.html";
+	                break;
+	            case 'string':
+	                templatePath = partialsPath+"criteriastring.html";
+	                break;
+	            case 'timestamp':
+	                templatePath = partialsPath+"criteriadate.html";
+	                break;
+	            case 'big_decimal':
+	            	templatePath = partialsPath+"criteriabigdecimal.html";
+	            	break;
+	        }
+	        
+	        switch(criteriafieldtype){
+		        case "many-to-one":
+		        	templatePath = partialsPath+"criteriamanytoone.html";
+					break;
+				case "many-to-many":
+					templatePath = partialsPath+"criteriamanytomany.html";
+					break;
+				case "one-to-many":
+					templatePath = partialsPath+"criteriaonetomany.html";
+					break;
+		    }
+		}
         
         var templateLoader = $http.get(templatePath,{cache:$templateCache});
 		
         return templateLoader;
     }; 
+    
+/* Template info end*/
+    
+/* Options info begin */
     
     var getStringOptions = function(){
     	var stringOptions = [
@@ -383,7 +396,7 @@ $filter){
         	
 			{
 				display:"Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is not",
 				value:"null"
 			},
 			{
@@ -396,21 +409,23 @@ $filter){
     };
     
     var getManyToOneOptions = function(){
-    	var manyToOneOptions = [
-            
-			{
+    	var manyToOneOptions = {
+            drillEntity:{},
+			hasEntity:{
 				display:"Defined",
-				comparisonOperator:"not is",
+				comparisonOperator:"is not",
 				value:"null"
 			},
-			{
+			notHasEntity:{
 				display:"Not Defined",
 				comparisonOperator:"is",
 				value:"null"
 			}
-        ];
+    	};
     	return manyToOneOptions;
     };
+    
+/* Options info end */
     
     var linker = function(scope, element, attrs){
     	//show the user the value without % symbols as these are reserved
@@ -425,6 +440,9 @@ $filter){
 				$log.debug('watchSelectedFilterProperty');
 				$log.debug(scope.selectedFilterProperty);
 				//prepopulate if we have a comparison operator and value
+				if(selectedFilterProperty === null){
+					return;
+				}
 				
 				if(angular.isDefined(selectedFilterProperty.ormtype)){
 					switch(scope.selectedFilterProperty.ormtype){
@@ -662,8 +680,25 @@ $filter){
 				if(angular.isDefined(scope.selectedFilterProperty.fieldtype)){
 					switch(scope.selectedFilterProperty.fieldtype){
 						case "many-to-one":
-							scope.manyToOneOptions = getManyToOneOptions();
-							var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+							scope.conditionOptions = getManyToOneOptions();
+							$log.debug('many-to-one');
+							$log.debug(scope.selectedFilterProperty);
+							$log.debug(scope.filterPropertiesList);
+								
+							if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
+								var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+								filterPropertiesPromise.then(function(value){
+									scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+									metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
+								}, function(reason){
+									
+								});
+							}
+							
+							break;
+						case "many-to-many":
+							scope.manyToManyOptions = getManyToManyOptions();
+							var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){
 								scope.collectionOptions = value.data;
 							},function(reason){
@@ -672,14 +707,18 @@ $filter){
 								var alerts = alertService.formatMessagesToAlerts(messages);
 								alertService.addAlerts(alerts);
 							});
-							
-							
-							break;
-						case "many-to-many":
-							scope.manyToManyOptions = getManyToManyOptions();
 							break;
 						case "one-to-many":
 							scope.oneToManyOptions = getOneToManyOptions();
+							var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+							existingCollectionsPromise.then(function(value){
+								scope.collectionOptions = value.data;
+							},function(reason){
+								//display error message if getter fails
+								var messages = reason.MESSAGES;
+								var alerts = alertService.formatMessagesToAlerts(messages);
+								alertService.addAlerts(alerts);
+							});
 							break;
 					}
 				}
@@ -721,6 +760,24 @@ $filter){
 				});
 			}
     	}); 
+		
+		scope.selectedCriteriaChanged = function(selectedCriteria){
+			$log.debug(selectedCriteria);
+			//update breadcrumbs as array of filterpropertylist keys
+			$log.debug(scope.selectedFilterProperty);
+			
+			var breadCrumb = {
+					entityAlias:scope.selectedFilterProperty.name,
+					cfc:scope.selectedFilterProperty.cfc,
+					propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier
+			};
+			scope.filterItem.breadCrumbs.push(breadCrumb);
+			
+			//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+			scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
+			//update criteria to display the condition of the new critera we have selected
+			
+		};
     	
     };
     
@@ -728,7 +785,9 @@ $filter){
 		restrict: 'A',
 		scope:{
 			filterItem:"=",
-	        selectedFilterProperty:"="
+	        selectedFilterProperty:"=",
+	        filterPropertiesList:"=",
+	        selectedFilterPropertyChanged:"&"
 		},
 		link: linker
 	};

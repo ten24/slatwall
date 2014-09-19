@@ -64,7 +64,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			// Loop over attributes
 			for(var attribute in attributeSet.getAttributes()) {
 				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], "") );
+					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], ""), this.getRollbackProcessedFlag() && attribute.getAttributeType().getSystemCode() == "atPassword");
 				}
 			}
 			
@@ -173,10 +173,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return "";
 	}
 	
-	public any function setAttributeValue(required string attribute, required any value){
+	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
-		attributeValueEntity.setAttributeValue( arguments.value );
+		
+		// Value is already encrypted, if attributeValueEntity.setAttributeValue called instead of attributeValueEntity.setAttributeValueEncrypted the encrypted value would be encrypted again
+		if (arguments.valueHasBeenEncryptedFlag) {
+			attributeValueEntity.setAttributeValueEncrypted( arguments.value );
+		} else {
+			attributeValueEntity.setAttributeValue( arguments.value );
+		}
+		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 		
 		// If this attribute value is new, then we can add it to the array
 		if(attributeValueEntity.isNew()) {
@@ -333,6 +340,40 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return defaultPropertyIdentifiersList;
 	}
 	
+	public string function getAttributesCodeList(){
+		var attributeCodesList = getService("HibachiCacheService").getOrCacheFunctionValue(
+			"attributeService_getAttributeCodesListByAttributeSetObject_#getService("hibachiService").getProperlyCasedShortEntityName(getClassName())#", 
+			"attributeService", "getAttributeCodesListByAttributeSetObject", 
+			{1=getService("hibachiService").getProperlyCasedShortEntityName(getClassName())}
+			
+		);
+		return attributeCodesList;
+	}
+	
+	public array function getAttributesArray(){
+		var attributes = [];
+		for(var attributesCode in getAttributesCodeList()){
+			var attribute = getService('attributeService').getAttributeByAttributeCode(attributesCode);
+			
+			ArrayAppend(attributes,attribute);
+		}
+		return attributes;
+	}
+	
+	public any function getAttributesProperties(){
+		var attributesProperties = [];
+		for(var attribute in getAttributesArray()){
+			var attributeProperty = {};
+			attributeProperty['displayPropertyIdentifier'] = attribute.getAttributeName();
+			attributeProperty['name'] = attribute.getAttributeCode();
+			attributeProperty['attributeID'] = attribute.getAttributeID();
+			//TODO: normalize attribute types to separate table
+			attributeProperty['ormtype'] = 'string';
+			ArrayAppend(attributesProperties,attributeProperty);
+		}
+		return attributesProperties;
+	}
+	
 	public any function getFilterProperties(string includesList = "", string excludesList = ""){
 		var properties = getProperties();
 		var defaultProperties = [];
@@ -345,5 +386,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return defaultProperties;
 	}
+	
 
 }

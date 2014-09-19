@@ -121,6 +121,7 @@
 				data-properties-list="filterPropertiesList"
 				data-save-collection="saveCollection()"
 				data-callbacks="callbacks"
+				data-base-entity-alias="collectionConfig.baseEntityAlias"
 			>
 				<li class="list-group-item" 
 						ng-repeat="column in collectionConfig.columns" 

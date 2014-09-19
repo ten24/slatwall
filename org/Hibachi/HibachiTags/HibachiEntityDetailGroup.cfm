@@ -50,11 +50,7 @@
 			</cfif>
 		</cfif>
 	</cfloop>
-				
-	<cfif arrayLen(thistag.tabs)>
-		<cfset activeTab = thistag.tabs[1].tabid />
-	</cfif>
-	
+
 	<cfoutput>
 		<cfif not attributes.createOrModalFlag>
 			<div class="row s-pannel-control">

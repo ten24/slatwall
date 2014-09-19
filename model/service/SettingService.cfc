@@ -462,7 +462,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		if(rs.recordCount) {
 			var metaData = getSettingMetaData( arguments.settingName );
 			if(structKeyExists(metaData, "encryptValue") && metaData.encryptValue) {
-				rs.settingValue = decryptValue( rs.settingValue );
+				rs.settingValue = decryptValue( rs.settingValue, rs.settingValueEncryptedGenerator );
 			}
 		}
 		
@@ -802,15 +802,6 @@ component extends="HibachiService" output="false" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 		
 	public any function saveSetting(required any entity, struct data={}) {
-		
-		// Check for values that need to be encrypted
-		if(structKeyExists(arguments.data, "settingName") && structKeyExists(arguments.data, "settingValue")) {
-			var metaData = getSettingMetaData(arguments.data.settingName);
-			if(structKeyExists(metaData, "encryptValue") && metaData.encryptValue == true) {
-				arguments.data.settingValue = encryptValue(arguments.data.settingValue);
-			}
-		}
-		
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
 		

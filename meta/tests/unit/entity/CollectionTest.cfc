@@ -400,18 +400,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						}
 						
 					],
-					"joins":[
-						{
-							"associationName":"accountEmailAddresses",
-							"alias":"Account_accountEmailAddresses",
-							"joins":[
-								{
-									"associationName":"accountEmailType",
-									"alias":"Account_accountEmailAddresses_accountEmailType"
-								}
-							]
-						}
-					],
+					
 					"orderBy":[
 						{
 							"propertyIdentifier":"Account.firstName",
@@ -496,23 +485,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		
-		collectionEntity.addPostOrderBy(postOrderBy);
-		request.debug(collectionEntity.getPostOrderBys());
+		//collectionEntity.addPostOrderBy(postOrderBy);
+		//request.debug(collectionEntity.getPostOrderBys());
 		
-		collectionEntity.addPostFilterGroup(postFilterGroup);
+		//collectionEntity.addPostFilterGroup(postFilterGroup);
 		
-		request.debug(collectionEntity.getPostFilterGroups());
+		//request.debug(collectionEntity.getPostFilterGroups());
 		
-		var collectionEntityHQL = collectionEntity.getHQL();
+		//var collectionEntityHQL = collectionEntity.getHQL();
 		
-		request.debug(collectionEntityHQL);
-		request.debug(collectionEntity);
-		request.debug(collectionEntity.gethqlParams());
+		//request.debug(collectionEntityHQL);
+		//request.debug(collectionEntity);
+		//request.debug(collectionEntity.gethqlParams());
 		//ORMExecuteQuery('FROM SlatwallAccount where accountID = :p1',{p1='2'});
 		
 		//var query = collectionEntity.executeHQL();
-		var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
-		request.debug(query);
+		//var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
+		request.debug(collectionEntity.getPageRecords());
 		
 	}
 	
@@ -593,9 +582,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getHQLTest(){
-		var collectionBestAcountEmailAddressesData = {
+		/*var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
+			collectionCode = 'TestAccountEmailAddresses',
 			baseEntityName="AccountEmailAddress",
 			collectionConfig = '
 				{
@@ -619,74 +608,36 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
-		
+		*/
 		
 		var collectionEntityData = {
-			collectionid = '',
+			collectionid = '12',
 			collectionCode = 'BestAccounts',
-			baseEntityName = 'Account',
+			baseEntityName = 'Sku',
 			collectionConfig = '
-				{
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
-					"columns":[
-						{
-							"propertyIdentifier":"Account.firstName"
-						}
-					],
-					"joins":[
-						{
-							"associationName":"primaryEmailAddress",
-							"alias":"Account_primaryEmailAddress"
-						}
-					],
-					"orderBy":[
-						{
-							"propertyIdentifier":"Account.firstName",
-							"direction":"DESC"
-						}
-					],
-					
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								}
-							]
-							
-						},
-						{
-							"logicalOperator":"OR",
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								}
-							]
-						},
-						{
-							"logicalOperator":"AND",
-							"filterGroup":[
-								{
-									"propertyIdentifier":"Account.accountEmailAddresses",
-									"collectionCode":"BestAccountEmailAddresses",
-									"criteria":"None"
-								}
-							]
-						}
-					]
-					
-				}
+				{"baseEntityName":"SlatwallAccount","baseEntityAlias":"Account","columns":[{"title":"First Name","propertyIdentifier":"Account.firstName","isVisible":true},{"title":"Last Name","propertyIdentifier":"Account.lastName","isVisible":true},{"title":"Email Address","propertyIdentifier":"Account.primaryEmailAddress.emailAddress","isVisible":true}],"filterGroups":[{"filterGroup":[]}]}
 			'
 		};
 
-		var collectionEntity = createTestEntity('collection',collectionEntityData);
+		/*
+		,
+		{
+			"logicalOperator":"AND",
+			"filterGroup":[
+				{
+					"propertyIdentifier":"Account.accountEmailAddresses",
+					"collectionCode":"BestAccountEmailAddresses",
+					"criteria":"None"
+				}
+			]
+		}*/
+		/*request.debug(ORMExecuteQuery("SELECT attributeValue 
+					FROM SlatwallAttributeValue
+					WHERE attribute.attributeID = '2c909fea47fa423b014884fd8eea0919'"));*/
+		
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		request.debug(collectionEntity.getPageRecords());
-		 
+		
 	}
 	
 	public void function getHQLTest_emptyFilterGroup(){
@@ -734,6 +685,38 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//ormexecutequery('FROM SlatwallAccount as Account where   (  (  Account.superUserFlag = "true"  OR Account.firstName = "true" ) )');
 		//request.debug(collectionEntity.getHQL());
 		 
+	}
+	
+	public void function getHQLTest_joins(){
+		
+		var collectionEntityData = {
+			collectionid = '12',
+			collectionCode = 'BestAccounts',
+			baseEntityName = 'Sku',
+			collectionConfig = '
+				{"baseEntityName":"SlatwallAccount","baseEntityAlias":"Account","columns":[{"title":"First Name","propertyIdentifier":"Account.firstName","isVisible":true},{"title":"Last Name","propertyIdentifier":"Account.lastName","isVisible":true},{"title":"Email Address","propertyIdentifier":"Account.primaryEmailAddress.emailAddress","isVisible":true}],"filterGroups":[{"filterGroup":[]}]}
+			'
+		};
+
+		/*
+		,
+		{
+			"logicalOperator":"AND",
+			"filterGroup":[
+				{
+					"propertyIdentifier":"Account.accountEmailAddresses",
+					"collectionCode":"BestAccountEmailAddresses",
+					"criteria":"None"
+				}
+			]
+		}*/
+		/*request.debug(ORMExecuteQuery("SELECT attributeValue 
+					FROM SlatwallAttributeValue
+					WHERE attribute.attributeID = '2c909fea47fa423b014884fd8eea0919'"));*/
+		
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		request.debug(collectionEntity.getPageRecords());
+		
 	}
 	
 	public void function getSelectionsHQLTest(){
@@ -1231,6 +1214,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var parentOfParentCollectionEntity = createTestEntity('collection',parentOfParentCollectionEntityData);
 		parentOfParentCollectionEntity.setCollectionObject(parentCollectionEntity);
+		
 		
 		var result = ORMExecuteQuery(collectionEntity.getHQL(),collectionEntity.getHQLParams());
 		request.debug(result);

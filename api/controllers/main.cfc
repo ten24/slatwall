@@ -61,7 +61,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
-		arguments.rc.apiResponse.content['data'] = getHibachiService().getFilterPropertiesByEntityName(rc.entityName);
+		arguments.rc.apiResponse.content['data'] = getHibachiService().getPropertiesWithAttributesByEntityName(rc.entityName);
 		arguments.rc.apiResponse.content['entityName'] = rc.entityName;
 	}
 	
@@ -87,16 +87,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			if(structKeyExists(rc,'P:Show')){
 				var pageShow = rc['P:Show'];
 			}
-			
 			//considering using all url variables to create a transient collectionConfig for api response
 			var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
-			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
 																			arguments.rc.propertyIdentifiers,
 																			currentPage,
 																			pageShow);
+				
 				structAppend(arguments.rc.apiResponse.content,result);
 			}else{
 				//figure out if we have a collection or a basic entity

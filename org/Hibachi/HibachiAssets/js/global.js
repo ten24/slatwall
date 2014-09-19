@@ -849,6 +849,11 @@ function setupEventHandlers() {
 
 	//Initiate SelectBoxIt on select boxes
 	$("select").selectBoxIt();
+	 
+	//Prevent default panel href from appending to the url
+	jQuery('body').on('click', '.panel a', function(e){
+		e.preventDefault();
+	});
 	
 }
 
@@ -1396,9 +1401,9 @@ function tableMultiselectClick( toggleLink ) {
 }
 
 function updateSelectTableUI( selectField ) {
-	var inputValue = jQuery('input[name="' + selectField + '"]').val();
+	var inputValue = jQuery('input[name="' + selectField + '"]').val().trim();
 
-	if(inputValue !== undefined) {
+	if(inputValue !== undefined && inputValue.length > 0) {
 		jQuery('table[data-selectfield="' + selectField  + '"]').find('tr[id=' + inputValue + '] .hibachi-ui-radio').addClass('hibachi-ui-radio-checked').removeClass('hibachi-ui-radio');
 	}
 }

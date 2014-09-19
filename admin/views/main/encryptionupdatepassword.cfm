@@ -1,4 +1,4 @@
-<!---
+﻿<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -46,20 +46,20 @@
 Notes:
 
 --->
-<cfparam name="rc.country" type="any">
-<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.country#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.country#" edit="#rc.edit#" />
-	
-	
-		<cf_HibachiEntityDetailGroup object="#rc.country#">
-			<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/addressRequirements" text="#$.slatwall.rbKey('admin.entity.detailcountry.addressrequirements')#" />
-			<cf_HibachiEntityDetailItem property="states" />
-		</cf_HibachiEntityDetailGroup>
-	</cf_HibachiEntityDetailForm>
-	
+	<cf_HibachiPropertyList divClass="span12">
+		<form method="post" action="?s=1" class="form-horizontal">
+			<input type="hidden" name="slatAction" value="admin:main.encryptionupdatepassword" />
+			<input type="hidden" name="process" value="1" />
+			<cfset passwordFieldAttributes = '' />
+			<cfif rc.process>
+				<cfset passwordFieldAttributes = 'placeholder="********"' />
+			</cfif>
+			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.encryption.password')#" value="#rc.password#-123434" fieldType="password" fieldName="password" fieldAttributes="#passwordFieldAttributes#" edit="#rc.edit#" />
+			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.encryption.iterationCount')#" value="#rc.iterationCount#" fieldType="text" fieldName="iterationCount" edit="#rc.edit#" />
+			
+			<button class="btn btn-primary" title="#$.slatwall.rbKey('admin.main.encryption.updatePassword_title')#" type="submit">#$.slatwall.rbKey('admin.main.encryption.updatePassword_title')#</button>
+		</form>
+	</cf_HibachiPropertyList>
 </cfoutput>
-
