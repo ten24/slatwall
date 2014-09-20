@@ -123,11 +123,25 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	
 	public array function getAuditableProperties() {
 		var auditableProperties = super.getAuditableProperties();
+		var settingMetaData = getSettingMetaData();
+		
 		if (structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue) {
-			structDelete(auditableProperties, "settingValue", false);
+			for (var i = 1; i <= arraylen(auditableProperties); i++) {
+				var auditableProperty = auditableProperties[i];
+				if (auditableProperty.name == "settingValue") {
+					arrayDeleteAt(auditableProperties, i);
+					break;
+				}
+			}
 		}
 		
 		return auditableProperties;
+	}
+	
+	public struct function getAuditablePropertiesStruct() {
+		// Clears cached auditablePropertiesStruct because 'settingValue' inclusion/exclusion changes based on instance
+		setApplicationValue('classAuditablePropertyStructCache_#getClassFullname()#', javacast("null", ""));
+		return super.getAuditablePropertiesStruct();
 	}
 	
 	public string function getSimpleRepresentation() {
