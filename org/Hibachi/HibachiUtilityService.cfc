@@ -436,7 +436,7 @@
 					arrayAppend(sortedPasswords, unsortedPasswordsStruct[spk]);
 				}
 				
-				// Append legacy passwords
+				// Append legacy keys to end
 				for (var lp in legacyPasswords) {
 					arrayAppend(sortedPasswords, lp);
 				}
