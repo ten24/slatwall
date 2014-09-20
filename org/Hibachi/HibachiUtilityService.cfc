@@ -418,26 +418,25 @@
 			
 			//  Sort passwords array from newest to oldest
 			if (arraylen(passwords) > 1) {
-				var sortValues = [];
-				
-				// Build array of sortValues using createdDateTime
-				for (var i=1; i<=arraylen(passwords); i++) {
-					if (structKeyExists(passwords[i], 'createdDateTime')) {
-						 arrayAppend(sortValues, dateFormat(passwords[i].createdDateTime, "YYYYMMDD") & timeFormat(passwords[i].createdDateTime, "HHMMSS") & "-" & i);
+				var unsortedPasswordsStruct = {};
+				for (var p in passwords) {
+					if (structKeyExists(p, 'createdDateTime')) {
+						p.uniqueID = createHibachiUUID();
+						structInsert(unsortedPasswordsStruct, p.uniqueID, p);
 					} else {
-						arrayAppend(legacyPasswords, passwords[i]);
+						arrayAppend(legacyPasswords, p);
 					}
 				}
 				
 				// Perform sort on createdDateTime
-				arraySort(sortValues, "numeric", "desc");
+				sortedPasswordKeys = structSort(unsortedPasswordsStruct, "textnocase", "desc", "createdDateTime");
 				
 				// Build array of sorted passwords
-				for (var sv in sortValues) {
-					arrayAppend(sortedPasswords, passwords[listLast(sv, "-")]);
+				for (var spk in sortedPasswordKeys) {
+					arrayAppend(sortedPasswords, unsortedPasswordsStruct[spk]);
 				}
 				
-				// Append legacy keys
+				// Append legacy passwords
 				for (var lp in legacyPasswords) {
 					arrayAppend(sortedPasswords, lp);
 				}
