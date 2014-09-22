@@ -52,8 +52,8 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="settingName" ormtype="string";
 	property name="settingValue" ormtype="string" length="4000";
-	property name="settingValueEncryptedDateTime" ormType="timestamp";
-	property name="settingValueEncryptedGenerator" ormType="string";
+	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false";
+	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false";
 
 	// Non-Constrained related entity
 	property name="cmsContentID" ormtype="string";
@@ -122,6 +122,29 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public array function getAuditableProperties() {
+		var auditableProperties = super.getAuditableProperties();
+		var settingMetaData = getSettingMetaData();
+		
+		if (structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue) {
+			for (var i = 1; i <= arraylen(auditableProperties); i++) {
+				var auditableProperty = auditableProperties[i];
+				if (auditableProperty.name == "settingValue") {
+					arrayDeleteAt(auditableProperties, i);
+					break;
+				}
+			}
+		}
+		
+		return auditableProperties;
+	}
+	
+	public struct function getAuditablePropertiesStruct() {
+		// Clears cached auditablePropertiesStruct because 'settingValue' inclusion/exclusion changes based on instance
+		setApplicationValue('classAuditablePropertyStructCache_#getClassFullname()#', javacast("null", ""));
+		return super.getAuditablePropertiesStruct();
+	}
 	
 	public string function getSimpleRepresentation() {
 		return getHibachiScope().rbKey('setting.#getSettingName()#');
