@@ -235,10 +235,11 @@
 					<div class="input-group">
 						<div class="dropdown input-group-btn search-panel">
 							<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-								<span id="j-search-concept">Product</span>
+								<span id="j-search-concept">Any</span>
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+								<li><a href="#all">Any</a></li>
 								<li><a href="#less_than">Product</a></li>
 								<li><a href="#all">Skus</a></li>
 							</ul>
