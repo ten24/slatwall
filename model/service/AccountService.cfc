@@ -221,36 +221,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_changePassword(required any account, required any processObject) {
+		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
+		//For now they are just calling this function that handles the actual work. 
+		arguments.account = createNewAccountAuthentication(arguments.account, arguments.processObject);
 		
-		if(arguments.account.getAdminAccountFlag() == true){
-			
-			//Check to see if the password is a duplicate
-			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), arguments.account.getAccountAuthentications());
-			
-			if(duplicatePasswordCount > 0){
-				arguments.account.addError('changePassword', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
-				return arguments.account;
-			}
-		}
-		
-		//Because we only want to store 5 passwords, this gets old passwords that put the lenth of the limit.
-		if (arrayLen(arguments.account.getAccountAuthentications()) >= 5){
-			deleteAccountAuthentications(arguments, 5);
-		}
-		
-		//Before creating the new password, make sure that all other passwords have an activeFlag of false
-		markOldPasswordsInactive(arguments.account.getAccountAuthentications());
-		
-		//Save the new password
-		var accountAuthentication = this.newAccountAuthentication();
-		accountAuthentication.setAccount( arguments.account );
-		
-		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
-		getHibachiDAO().save(accountAuthentication);
-	
-		// Set the password
-		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
-				
 		return arguments.account;
 	}
 	
@@ -300,28 +274,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function processAccount_createPassword(required any account, required any processObject) {
-		
-		if(arguments.account.getAdminAccountFlag() == true){
-			//Check to see if the password is a duplicate
-			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), arguments.account.getAccountAuthentications());
-			
-			if(duplicatePasswordCount > 0){
-				arguments.account.addError('createPassword', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
-				return arguments.account;
-			}
-		}
-		
-		//Before creating the new password, make sure that all other passwords have an activeFlag of false
-		markOldPasswordsInactive(arguments.account.getAccountAuthentications());
-		
-		var accountAuthentication = this.newAccountAuthentication();
-		accountAuthentication.setAccount( arguments.account );
-		
-		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
-		getHibachiDAO().save(accountAuthentication);
-	
-		// Set the password
-		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
+		//For now they are just calling this function that handles the actual work. 
+		arguments.account = createNewAccountAuthentication(arguments.account, arguments.processObject);
 		
 		return account;	
 	}
@@ -441,6 +396,40 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.authArray[i].setActiveFlag(false);
 			}
 		}
+	}
+	
+	private any function createNewAccountAuthentication (required any account, required any processObject ){
+		
+		if(arguments.account.getAdminAccountFlag() == true){
+			
+			//Check to see if the password is a duplicate
+			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), arguments.account.getAccountAuthentications());
+			
+			if(duplicatePasswordCount > 0){
+				arguments.account.addError('changePassword', rbKey('validate.newPassword.duplicatePassword'));
+				return arguments.account;
+			}
+		}
+		
+		//Because we only want to store 5 passwords, this gets old passwords that put the lenth of the limit.
+		if (arrayLen(arguments.account.getAccountAuthentications()) >= 5){
+			deleteAccountAuthentications(arguments, 5);
+		}
+		
+		//Before creating the new password, make sure that all other passwords have an activeFlag of false
+		markOldPasswordsInactive(arguments.account.getAccountAuthentications());
+		
+		//Save the new password
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+		
+		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
+		getHibachiDAO().save(accountAuthentication);
+	
+		// Set the password
+		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+				
+		return arguments.account;
 	}
 	
 	public any function processAccount_setupInitialAdmin(required any account, required struct data={}, required any processObject) {
