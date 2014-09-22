@@ -318,6 +318,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
 
 		<!---services --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwall.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>
