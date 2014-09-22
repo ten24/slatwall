@@ -421,7 +421,8 @@
 				var unsortedPasswordsStruct = {};
 				for (var p in passwords) {
 					if (structKeyExists(p, 'createdDateTime')) {
-						p.uniqueID = createHibachiUUID();
+						// Create temporary uniqueID used for identification purposes during sorting
+						p['uniqueID'] = createHibachiUUID();
 						structInsert(unsortedPasswordsStruct, p.uniqueID, p);
 					} else {
 						arrayAppend(legacyPasswords, p);
@@ -429,10 +430,12 @@
 				}
 				
 				// Perform sort on createdDateTime
-				sortedPasswordKeys = structSort(unsortedPasswordsStruct, "textnocase", "desc", "createdDateTime");
+				sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
 				
 				// Build array of sorted passwords
 				for (var spk in sortedPasswordKeys) {
+					// Delete temporary uniqueID used for identification purposes during sorting
+					structDelete(unsortedPasswordsStruct[spk], 'uniqueID');
 					arrayAppend(sortedPasswords, unsortedPasswordsStruct[spk]);
 				}
 				
