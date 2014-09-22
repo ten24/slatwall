@@ -206,9 +206,20 @@ function(slatwallService,$filter,$log){
 			
 			filterPropertiesList.data.push(compareCollections);
 			
+			var attributeCollections = {
+					$$group:'attribute',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			filterPropertiesList.data.push(attributeCollections);
+			
 			for(i in filterPropertiesList.data){
 				if(angular.isDefined(filterPropertiesList.data[i].ormtype)){
-					filterPropertiesList.data[i].$$group = 'simple';
+					if(angular.isDefined(filterPropertiesList.data[i].attributeID)){
+						filterPropertiesList.data[i].$$group = 'attribute';
+					}else{
+						filterPropertiesList.data[i].$$group = 'simple';
+					}
 				}
 				if(angular.isDefined(filterPropertiesList.data[i].fieldtype)){
 					if(filterPropertiesList.data[i].fieldtype === 'id'){

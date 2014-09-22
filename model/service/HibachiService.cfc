@@ -114,6 +114,42 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return getEntityObject( arguments.entityName ).getDefaultProperties();
 	}
 	
+	public string function getAttributeCodeListByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesCodeList();
+	}
+	
+	public array function getAttributesArrayByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributesArrayByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributesArrayByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesArray();
+	}
+	
+	public any function getAttributesPropertiesByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributesPropertiesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributesPropertiesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesProperties();
+	}
+	
+	public any function getPropertiesWithAttributesByEntityName(required string entityName){
+		if( hasApplicationValue("classPropertiesWithAttributesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classPropertiesWithAttributesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		var entityObject = getEntityObject( arguments.entityName );
+		var attributes = entityObject.getAttributesProperties();
+		var properties = entityObject.getFilterProperties();
+		arrayAppend(properties,attributes,true);
+		
+		return properties;
+	}
+	
 	public any function getFilterPropertiesByEntityName(required string entityName){
 		// First Check the application cache
 		if( hasApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {

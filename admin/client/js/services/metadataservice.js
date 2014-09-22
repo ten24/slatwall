@@ -38,9 +38,21 @@ function($filter,$log){
 			
 			propertiesList.data.push(compareCollections);
 			
+			var attributeCollections = {
+					$$group:'attribute',
+					displayPropertyIdentifier:'-----------------'
+			};
+			
+			propertiesList.data.push(attributeCollections);
+			
+			
 			for(i in propertiesList.data){
 				if(angular.isDefined(propertiesList.data[i].ormtype)){
-					propertiesList.data[i].$$group = 'simple';
+					if(angular.isDefined(propertiesList.data[i].attributeID)){
+						propertiesList.data[i].$$group = 'attribute';
+					}else{
+						propertiesList.data[i].$$group = 'simple';
+					}
 				}
 				if(angular.isDefined(propertiesList.data[i].fieldtype)){
 					if(propertiesList.data[i].fieldtype === 'id'){

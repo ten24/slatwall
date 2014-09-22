@@ -6,7 +6,7 @@ angular.module('slatwalladmin')
 '$templateCache',
 'partialsPath',
 '$log',
-'slatwallService',
+'$slatwall',
 'collectionService',
 'metadataService',
 '$filter',
@@ -15,7 +15,7 @@ $compile,
 $templateCache,
 partialsPath,
 $log,
-slatwallService,
+$slatwall,
 collectionService,
 metadataService,
 $filter){
@@ -686,7 +686,7 @@ $filter){
 							$log.debug(scope.filterPropertiesList);
 								
 							if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
-								var filterPropertiesPromise = slatwallService.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+								var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
 								filterPropertiesPromise.then(function(value){
 									scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
 									metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
@@ -698,7 +698,7 @@ $filter){
 							break;
 						case "many-to-many":
 							scope.manyToManyOptions = getManyToManyOptions();
-							var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+							var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){
 								scope.collectionOptions = value.data;
 							},function(reason){
@@ -710,7 +710,7 @@ $filter){
 							break;
 						case "one-to-many":
 							scope.oneToManyOptions = getOneToManyOptions();
-							var existingCollectionsPromise = slatwallService.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+							var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){
 								scope.collectionOptions = value.data;
 							},function(reason){
