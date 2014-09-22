@@ -51,9 +51,9 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	// Persistent Properties
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
-	property name="attributeValueEncrypted" ormtype="string";
-	property name="attributeValueEncryptedDateTime" ormType="timestamp";
-	property name="attributeValueEncryptedGenerator" ormType="string";
+	property name="attributeValueEncrypted" ormtype="string" hb_auditable="false";
+	property name="attributeValueEncryptedDateTime" ormType="timestamp" hb_auditable="false";
+	property name="attributeValueEncryptedGenerator" ormType="string" hb_auditable="false";
 	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
 	
 	// Calculated Properties

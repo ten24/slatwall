@@ -55,9 +55,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
-	property name="creditCardNumberEncrypted" ormType="string";
-	property name="creditCardNumberEncryptedDateTime" ormType="timestamp";
-	property name="creditCardNumberEncryptedGenerator" ormType="string";
+	property name="creditCardNumberEncrypted" ormType="string" hb_auditable="false";
+	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false";
+	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
 	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
