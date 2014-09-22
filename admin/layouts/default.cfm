@@ -101,7 +101,6 @@ Notes:
 					<cfset homeLink = "/" />
 				</cfif>
 				<!--- <div class="navbar-header">
-
 					<a href="#homeLink#" class="navbar-brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;heigh:16px;" title="Slatwall" /></a>
 				</div><!-- .navbar-header --> --->
 
@@ -285,8 +284,8 @@ Notes:
 					<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.confirm')#</h3></div>
 					<div class="modal-body"></div>
 					<div class="modal-footer">
-						<a href="##" class="btn btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
-						<a href="##" class="btn btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
+						<a href="##" target="_self" class="btn btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
+						<a href="##" target="_self" class="btn btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
 					</div>
 				</div>
 			</div>
@@ -320,6 +319,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
 
 		<!---services --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwall.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>

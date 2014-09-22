@@ -367,6 +367,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			attributeProperty['displayPropertyIdentifier'] = attribute.getAttributeName();
 			attributeProperty['name'] = attribute.getAttributeCode();
 			attributeProperty['attributeID'] = attribute.getAttributeID();
+			attributeProperty['attributeSetObject'] = ReReplace(attribute.getAttributeSet().getAttributeSetObject(),"\b(\w)","\L\1","ALL");
 			//TODO: normalize attribute types to separate table
 			attributeProperty['ormtype'] = 'string';
 			ArrayAppend(attributesProperties,attributeProperty);

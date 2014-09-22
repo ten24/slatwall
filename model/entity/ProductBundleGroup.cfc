@@ -55,7 +55,7 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	property name="maximumQuantity" ormtype="integer";
 	property name="amountType" ormtype="string";
 	property name="amount" ormtype="big_decimal";
-	property name="skuCollectionConfig" ormtype="string";
+	property name="skuCollectionConfig" ormtype="string" length="4000";
 
 	// Calculated Properties
 

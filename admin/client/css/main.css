@@ -692,8 +692,5 @@ top:50px;
 	}
 }
 
-@media (max-width: 940px) {
-  .form-group {
-    display:none;
-  }
-}
+.s-metric-bullet-icon span:before {font-family:FontAwesome;content:"\f111";font-size: 8px;}
+.s-report-title-padder {padding-left: 15px !important;}
