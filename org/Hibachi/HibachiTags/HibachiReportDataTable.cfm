@@ -18,10 +18,10 @@
 					</cfloop>
 					<cfloop from="1" to="#listLen(thisTag.metricDefinitions)#" step="1" index="m">
 						<cfset metricDefinition = attributes.report.getMetricDefinition( listGetAt(thisTag.metricDefinitions, m) ) />
-						<th style="background-color:##e3e3e3;" <cfif attributes.report.getReportCompareFlag()>colspan="2"</cfif>>
-							<span style="color:#attributes.report.getMetricColorDetails()[m].color#; font-size:26px; float:left; margin-right:3px;">&bull;</span>
+						<th class="s-metric-bullet-icon" style="background-color:##e3e3e3;" <cfif attributes.report.getReportCompareFlag()>colspan="2"</cfif>>
+							<span style="color:#attributes.report.getMetricColorDetails()[m].color#;"></span>
 							<cfif attributes.report.getReportCompareFlag()>
-								<span style="color:#attributes.report.getMetricColorDetails()[m].compareColor#; font-size:26px; float:left; margin-right:3px;">&bull;</span>	
+								<span style="color:#attributes.report.getMetricColorDetails()[m].compareColor#;"></span>	
 							</cfif>
 							| #attributes.report.getMetricTitle( metricDefinition.alias )#
 						</th>

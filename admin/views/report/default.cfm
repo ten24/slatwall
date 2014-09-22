@@ -49,29 +49,29 @@ Notes:
 
 <cfoutput>
 	<div class="row">
-		<div class="span2">
+		<div class="col-md-2">
 			<ul class="nav">
 				<cf_HibachiDividerHider>
-					<cfif arrayLen(rc.savedReports)>
-						<li><h5>#$.slatwall.rbKey('entity.report_plural')#</h5></li>
-						<cfloop array="#rc.savedReports#" index="report">
-							<cf_HibachiActionCaller action="admin:report.default" queryString="reportID=#report.getReportID()#" text="#report.getReportTitle()#" type="list" />
-						</cfloop>
-					</cfif>
 					<cfif listLen(rc.builtInReportsList)>
-						<li><h5>#$.slatwall.rbKey('admin.report.default.builtInReports')#</h5></li>
+						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('admin.report.default.builtInReports')#</strong></h5></li>
 						<cfloop list="#rc.builtInReportsList#" index="reportName">
 							<cf_HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
 						</cfloop> 
 					</cfif>
+					<cfif arrayLen(rc.savedReports)>
+						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('entity.report_plural')#</strong></h5></li>
+						<cfloop array="#rc.savedReports#" index="report">
+							<cf_HibachiActionCaller action="admin:report.default" queryString="reportID=#report.getReportID()#" text="#report.getReportTitle()#" type="list" />
+						</cfloop>
+					</cfif>
 					<cfif listLen(rc.customReportsList)>
-						<li><h5>#$.slatwall.rbKey('admin.report.default.customReports')#</h5></li>
+						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('admin.report.default.customReports')#</strong></h5></li>
 						<cfloop list="#rc.customReportsList#" index="reportName">
 							<cf_HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
 						</cfloop> 
 					</cfif>
 					<cfif listLen(rc.integrationReportsList)>
-						<li><h5>#$.slatwall.rbKey('admin.report.default.integrationReports')#</h5></li>
+						<li class="s-report-title-padder"><h5><strong>#$.slatwall.rbKey('admin.report.default.integrationReports')#</strong></h5></li>
 						<cfloop list="#rc.integrationReportsList#" index="reportName">
 							<cf_HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
 						</cfloop> 
@@ -79,10 +79,10 @@ Notes:
 				</cf_HibachiDividerHider>
 			</ul>
 		</div>
-		<div class="span10">
+		<div class="col-md-10">
 			<cf_HibachiMessageDisplay />
 			<cf_HibachiReportViewer report="#rc.report#" />
 		</div>
 	</div>
-	
+
 </cfoutput>
