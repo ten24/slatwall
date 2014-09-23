@@ -142,8 +142,8 @@
     <div class="row s-table-header-nav">
       <div class="col-xs-6">
       	<!---TODO: implement keyword searching and bulk actions --->
-	      <!--<ul class="list-inline list-unstyled">
-		      <li>
+	      <ul class="list-inline list-unstyled">
+		      <!--<li>
 	            <form role="search">
 	
 	                <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
@@ -154,18 +154,20 @@
 	                </select>
 	
 	            </form>
-	          </li>
+	          </li>-->
 		      <li style="width:200px;">
-		        <form class="s-table-header-search">
+		        <form   class="s-table-header-search"
+		        		ng-model="keywords"
+		        >
 		          <div class="input-group">
-		            <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
+		            <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term">
 		            <div class="input-group-btn">
 		              <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
 		            </div>
 		          </div>
 		        </form>
 		      </li>
-		    </ul>-->
+		    </ul>
 	  	</div>
         <span   sw-pagination-bar
 	      		data-collection="collection"
