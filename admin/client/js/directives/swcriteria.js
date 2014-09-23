@@ -393,17 +393,28 @@ $filter){
     
     var getManyToManyOptions = function(){
     	var manyToManyOptions = [
-        	
-			{
-				display:"Defined",
-				comparisonOperator:"is not",
-				value:"null"
-			},
-			{
-				display:"Not Defined",
-				comparisonOperator:"is",
-				value:"null"
-			}
+         	{
+        		display:"All Exist In Collection",
+        		comparisonOperator:"All"
+        	},
+        	{
+        		display:"None Exist In Collection",
+        		comparisonOperator:"None"
+        	},
+        	{
+        		display:"Some Exist In Collection",
+        		comparisonOperator:"One"
+        	},
+        	{
+        		display:"Empty",
+        		comparisonOperator:"is",
+        		value:"null"
+        	},
+        	{
+        		display:"Not Empty",
+        		comparisonOperator:"is not",
+        		value:"null"
+        	}
         ];
     	return manyToManyOptions;
     };
@@ -697,18 +708,8 @@ $filter){
 							
 							break;
 						case "many-to-many":
-							scope.manyToManyOptions = getManyToManyOptions();
-							var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
-							existingCollectionsPromise.then(function(value){
-								scope.collectionOptions = value.data;
-							},function(reason){
-								//display error message if getter fails
-								var messages = reason.MESSAGES;
-								var alerts = alertService.formatMessagesToAlerts(messages);
-								alertService.addAlerts(alerts);
-							});
-							break;
 						case "one-to-many":
+							scope.manyToManyOptions = getManyToManyOptions();
 							scope.oneToManyOptions = getOneToManyOptions();
 							var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){

@@ -252,6 +252,16 @@ $filter){
 							}
 							filterItem.displayValue = filterItem.value;
 			            	break;
+			            case 'one-to-many':
+			            case 'many-to-many':
+			            	console.log('savemanytomany');
+			            	console.log(selectedFilterProperty);
+			            	filterItem.collectionCode = selectedFilterProperty.selectedCollection.collectionCode;
+			            	filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
+			            	filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+			            	
+			            	break;
+			            	//filterItem.displayValue = filterItem.collectionCode;
 					}
 					
 					if(angular.isUndefined(filterItem.displayValue)){
