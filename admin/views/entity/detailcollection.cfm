@@ -141,7 +141,8 @@
     <!--- //Tab panes for menu options end--->
     <div class="row s-table-header-nav">
       <div class="col-xs-6">
-	      <ul class="list-inline list-unstyled">
+      	<!---TODO: implement keyword searching and bulk actions --->
+	      <!--<ul class="list-inline list-unstyled">
 		      <li>
 	            <form role="search">
 	
@@ -164,7 +165,7 @@
 		          </div>
 		        </form>
 		      </li>
-		    </ul>
+		    </ul>-->
 	  	</div>
         <span   sw-pagination-bar
 	      		data-collection="collection"

@@ -465,7 +465,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				ArrayAppend(collectionPropertyIdentifiers,piAlias);
 			}
 		}
-		
 		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
 		var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
 		structAppend(response,collectionPaginationStruct);

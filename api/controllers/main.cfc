@@ -32,6 +32,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				propertyIdentifier="Collection.collectionName"	
 			},
 			{
+				propertyIdentifier="Collection.collectionCode"	
+			},
+			{
 				propertyIdentifier="Collection.collectionConfig"	
 			}
 		];

@@ -374,7 +374,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return filterGroupHQL;
 	}
 	
-	
 	private string function getFilterAttributeHQL(required any filter){
 		var attributeIdentifier = listDeleteAt(filter.propertyIdentifier,ListLen(filter.propertyIdentifier,'.'),'.');
 		
