@@ -4,7 +4,7 @@
 		"lastName":				[{"required":true}],
 		"emailAddress":			[{"required":true,"dataType":"email","eqProperty":"emailAddressConfirm"}],
 		"emailAddressConfirm":	[{"required":true,"dataType":"email"}],
-		"password":				[{"required":true,"minLength":6,"eqProperty":"passwordConfirm"}],
+		"password":				[{"required":true,"eqProperty":"passwordConfirm","regex":"^.*(?=.{7,})(?=.*[0-9])(?=.*[a-zA-Z]).*$"}],
 		"passwordConfirm":		[{"required":true}]
 	}
 }
