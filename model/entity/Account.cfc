@@ -54,6 +54,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
 	property name="company" hb_populateEnabled="public" ormtype="string";
+	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" dbdefault="0" ; 
 	
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
@@ -120,6 +122,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
+	
+	public void function init(){
+		super.init();
+		variables.failedLoginAttemptCount = 0;
+	}
 	
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);	
