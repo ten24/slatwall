@@ -9,19 +9,28 @@
   <div class="s-none-selected" style="display:none;">There are no fields selected</div>
 
   <!--- Button to show create option --->
-  <button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
+  <button   class="btn btn-xs s-btn-ten24" 
+  			ng-click="addDisplayDialog.toggleDisplayDialog()"
+  			>
+  			Add Display Field
+  </button>
 
   <!--- Create option dropdown --->
-  <div class="row s-add-display-field collapse" id="j-add-row">
+  <div  class="row s-add-display-field "
+  		ng-show="addDisplayDialog.isOpen"
+  >
     <div class="col-xs-12">
     <!--- Edit Filter Box --->
-       <div class="col-xs-12  s-add-filter" id="j-edit-filter-1">
+       <div class="col-xs-12  s-add-filter" 
+       >
          <div class="row">
-           <h4> Define Filters: 
+           <h4> Define Display Option: 
            	<span ng-repeat="breadCrumb in breadCrumbs"> 
 	        	<span ng-show="breadCrumbs.length - 1 !== $index" ng-click="selectBreadCrumb($index)">{{breadCrumb.entityAlias}}<span ng-if="$index !== breadCrumbs.length - 2"> > </span></span>
 	        </span>
-				<i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-1"></i>
+				<i  class="fa fa-times" 
+					ng-click="addDisplayDialog.toggleDisplayDialog()">
+				</i>
 			</h4>
            <div class="col-xs-12">
 
@@ -64,7 +73,7 @@
                    <button 
                    		type="button" 
                    		class="btn btn-sm s-btn-ten24"
-                   		ng-click="addColumn(selectedProperty)">
+                   		ng-click="addColumn(selectedProperty,true)">
                    		Save & Finish
                    	</button>
                  </div>
