@@ -40,7 +40,7 @@
 			<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />	
 		</cfif>
 		
-		<cfif not len(tab.tabcontent)>
+		<cfif not len(tab.tabcontent) and (not attributes.createOrModalFlag or tab.showOnCreateFlag)>
 			<cfif fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))>
 				<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
 			<cfelseif len(tab.property)>
