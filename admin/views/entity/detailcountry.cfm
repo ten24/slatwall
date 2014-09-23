@@ -57,7 +57,9 @@ Notes:
 		<cf_HibachiEntityDetailGroup object="#rc.country#">
 			<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/addressRequirements" text="#$.slatwall.rbKey('admin.entity.detailcountry.addressrequirements')#" />
-			<cf_HibachiEntityDetailItem property="states" />
+			<cfif not rc.country.isNew()>	
+				<cf_HibachiEntityDetailItem property="states" />
+			</cfif>
 		</cf_HibachiEntityDetailGroup>
 	</cf_HibachiEntityDetailForm>
 	
