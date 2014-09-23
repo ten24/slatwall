@@ -1014,7 +1014,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		if(structKeyExists(arguments.data, "shippingAccountAddress")
 			&& structKeyExists(arguments.data.shippingAccountAddress, "accountAddressID")
 			&& len(arguments.data.shippingAccountAddress.accountAddressID)
-			&& (isNull(getShippingAccountAddress()) || getShippingAccountAddress().getAccountAddressID() != arguments.data.shippingAccountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "shippingAddress") || !structKeyExists(arguments.data.shippingAddress, "addressID") || !len(arguments.data.shippingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "shippingAddress");
 		}
@@ -1023,7 +1023,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		if(structKeyExists(arguments.data, "billingAccountAddress")
 			&& structKeyExists(arguments.data.billingAccountAddress, "accountAddressID")
 			&& len(arguments.data.billingAccountAddress.accountAddressID)
-			&& (isNull(getBillingAccountAddress()) || getBillingAccountAddress().getAccountAddressID() != arguments.data.billingAccountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "billingAddress") || !structKeyExists(arguments.data.billingAddress, "addressID") || !len(arguments.data.billingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "billingAddress");
 		}
