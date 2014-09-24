@@ -346,20 +346,13 @@
 							<li class="s-bundle-add-obj">
 								<ul class="list-unstyled list-inline">
 									<li class="s-item-type">Product</li>
+								</ul>
+								<ul class="list-unstyled list-inline s-middle">
 									<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
 									<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
 									<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
-									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
 								</ul>
-								<div class="clearfix"></div>
-							</li>
-
-							<li class="s-bundle-add-obj">
-								<ul class="list-unstyled list-inline">
-									<li class="s-item-type">Sku</li>
-									<li class="j-tool-tip-item s-bundle-details">Mano Mano T-Shirt Large <span>02/T3r5</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+								<ul class="list-unstyled list-inline s-last">
 									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
 								</ul>
 								<div class="clearfix"></div>
@@ -368,9 +361,13 @@
 							<li class="s-bundle-add-obj">
 								<ul class="list-unstyled list-inline">
 									<li class="s-item-type">Product</li>
-									<li class="j-tool-tip-item s-bundle-details">Cool Guy T-Shirt <span>WOLF-07</span></li>
+								</ul>
+								<ul class="list-unstyled list-inline s-middle">
+									<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
 									<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
 									<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+								</ul>
+								<ul class="list-unstyled list-inline s-last">
 									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
 								</ul>
 								<div class="clearfix"></div>
