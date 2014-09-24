@@ -78,6 +78,13 @@ table tr th .glyphicon {vertical-align:text-top;}
 .row .s-body-nav nav.navbar.navbar-default {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;}
 .actionbar-title{padding: 0px;margin: 0px;font-size: 16px;font-weight: 600;vertical-align: middle;margin-top: 18px;}
 
+.s-body-nav .s-header-info ul {font-size:10px;margin-bottom:0px;margin-top:5px;}
+.s-body-nav .s-header-info ul li a {color:#aaaaaa;}
+.s-body-nav .s-header-info ul li a:hover {color:#444444;}
+.s-body-nav .s-header-info h1 {margin-top:0px;}
+.s-body-nav .s-header-info li:after {font-family: fontAwesome;content:'\f105';padding-right:0px !important;padding-left:0px !important;margin-left:12px;color:#aaaaaa;}
+.s-body-nav .s-header-info li:last-child:after {content:'';}
+
 a:-webkit-any-link {text-decoration:none !important;}
 
 .row .s-pannel-control {margin-top:10px;padding-bottom:2px;padding-right:2px;}
@@ -164,7 +171,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 .s-filters-selected .s-filter-item .panel .panel-header a i{float:right;color:#AAA;margin-top:3px;}
 .s-setting-options-body .panel-heading a{color:#aaa;float:right;}
 .s-setting-options li {display:inline;}
-.s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;}
+.s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;border:1px solid #dddddd;}
 .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:#ccc;}
 .s-filters-selected .s-filter-item .btn-group-vertical{float:right;margin-top:20px;margin-right:21px;}
 .s-filters-selected .s-filter-item .btn-group-vertical .btn {font-size:10px;}
@@ -448,10 +455,9 @@ span.j-tool-tip-item i {color:#ccc;cursor:pointer;}
 .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove {display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;}
 .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove a {border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 7px;background-color: #666666;border-color:#666666;color: #FFF !important;}
 
-
-.s-remove:hover {background-color:#DA5757 !important;border-color:#DA5757 !important;color:#ffffff !important;}
+.s-remove:hover {background-color:#DA5757 !important;border:1px solid #DA5757 !important;color:#ffffff !important;}
 .s-pannel-group .panel-default .panel-heading {background-color:#606060;color:#fff; border-color:#888;}
-.s-pannel-group .panel-default a {text-decoration:none;}
+.s-pannel-group .panel-default a {text-decoration:none;padding-top:0px;}
 .s-pannel-group .s-panel-header-info {display:inline-block;width:100%;}
 .s-panel-header-info .s-header-left {padding:0px;}
 .s-panel-header-info .s-header-right {padding:0px;}
