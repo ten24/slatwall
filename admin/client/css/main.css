@@ -53,7 +53,7 @@ label {font-weight:600;}
 .s-body-margin {margin-left: 174px;}
 
 .s-toggle-full-screen {float:left;font-size: 22px;margin: 9px 8px 0px 19px;}
-.s-toggle-full-screen a {color:#555;}
+.s-toggle-full-screen a {color:#999999;}
 #slatwall-primary-nav ul {text-align:left;}
 
 .s-centered-logo {position: absolute;margin-left: -110px !important;}
@@ -94,7 +94,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 /*Bootstrap overwrite*/
 .help-block {font-size:11px;}
 .has-error .form-control {border-color: #A94442 !important;}
-.navbar-inverse .navbar-nav>li>a {color:#b0b0b0;}
+.navbar-inverse .navbar-nav>li>a {color: #999999;padding: 13px;font-size: 22px;}
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {background-color:#F58620;border-color:#F58620;}
 .pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {color: #CCC;}
