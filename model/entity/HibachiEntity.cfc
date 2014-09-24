@@ -353,8 +353,8 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public array function getAttributesArray(){
 		var attributes = [];
 		var attributesListArray = listToArray(getAttributesCodeList());
-		for(var attributesCode in attributesListArray){
-			var attribute = getService('attributeService').getAttributeByAttributeCode(attributesCode);
+		for(var attributeCode in attributesListArray){
+			var attribute = getService('attributeService').getAttributeByAttributeCode(attributeCode);
 			
 			ArrayAppend(attributes,attribute);
 		}
