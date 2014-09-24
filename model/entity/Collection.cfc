@@ -724,7 +724,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				filterHQL &= getFilterHQL(filterGroupArray);
 			}
 			
-			addPostFiltersFromKeywords(collectionConfig.columns,len(filterHQL));
+			addPostFiltersFromKeywords(collectionConfig,len(filterHQL));
 			
 			//check if the user has applied any filters from the ui list view
 			if(arraylen(getPostFilterGroups())){
@@ -757,33 +757,61 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return HQL;
 	}
 	
-	public void function addPostFiltersFromKeywords(required array columns, hasFilterHQL){
+	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
 		
-		for(column in arguments.columns){
-			if(structKeyExists(column,'isSearchable') && column.isSearchable && column.ormtype neq 'boolean' ){
-				//use keywords to create some post filters
-				
-				for(keyword in getKeywordArray()){
+		if(structKeyExists(arguments.collectionConfig,'columns')){
+			for(column in arguments.collectionConfig.columns){
+				if(structKeyExists(column,'isSearchable') && column.isSearchable && column.ormtype neq 'boolean' ){
+					//use keywords to create some post filters
 					
-					var postFilterGroup = {
-						filterGroup = [
-							{
-								propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
-								comparisonOperator = "like",
-								value="%#keyword#%"
-							}
-						]
-					};
-					if(arguments.hasFilterHQL){
-						postFilterGroup.logicalOperator = "OR";
-					}else{
-						arguments.hasFilterHQL = 1;
+					for(keyword in getKeywordArray()){
+						
+						var postFilterGroup = {
+							filterGroup = [
+								{
+									propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
+									comparisonOperator = "like",
+									value="%#keyword#%"
+								}
+							]
+						};
+						if(arguments.hasFilterHQL){
+							postFilterGroup.logicalOperator = "OR";
+						}else{
+							arguments.hasFilterHQL = 1;
+						}
+						//add post filter per column that is searchable
+						addPostFilterGroup(postFilterGroup);
 					}
-					//add post filter per column that is searchable
-					addPostFilterGroup(postFilterGroup);
+				}
+			}
+		}else{
+			//if we don't have columns then we need default properties searching
+			var collectionEntity = getService('hibachiService').invokeMethod('new#arguments.collectionConfig.baseEntityAlias#');
+			for(propertyItem in collectionEntity.getDefaultProperties()){
+				if(propertyItem.ormtype neq 'boolean' ){
+					for(keyword in getKeywordArray()){
+						var postFilterGroup = {
+							filterGroup = [
+								{
+									propertyIdentifier = 'LOWER(#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#)',
+									comparisonOperator = "like",
+									value="%#keyword#%"
+								}
+							]
+						};
+						if(arguments.hasFilterHQL){
+							postFilterGroup.logicalOperator = "OR";
+						}else{
+							arguments.hasFilterHQL = 1;
+						}
+						//add post filter per column that is searchable
+						addPostFilterGroup(postFilterGroup);
+					}
 				}
 			}
 		}
+		
 	}
 	
 	//TODO:write an export/import service so we can share json files of the collectionConfig
