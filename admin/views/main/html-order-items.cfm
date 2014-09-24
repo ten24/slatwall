@@ -65,8 +65,8 @@
 			</div>
 		</a>
 
-		<div id="collapseOne" class="panel-collapse collapse">
-			<div class="panel-body s-panel-header-info">
+		<div id="collapseOne" class="panel-collapse collapse in">
+			<content class="s-body-box s-panel-header-info">
 
 				<div class="col-md-6 s-header-left">
 					<div class="s-header-detail">
@@ -121,15 +121,7 @@
 					</div>
 				</div>
 
-<style media="screen">
-	.s-panel-header-info .s-header-detail img {padding:4px;background-color:#eee;border-radius:4px;max-width:300px;margin-bottom:10px;}
-	.s-panel-header-info .s-header-detail h2 {font-size: 14px;background-color: #EEE;padding: 6px 15px;}
-	.s-panel-header-info .s-header-detail .s-total {border-top:2px solid #eeeeee;font-weight:bold;padding-top:5px;}
-	.s-panel-header-info .s-header-right .s-header-detail:first-child h2 {margin-top:0px;}
-	body {font-size:12px;}
-</style>
-
-			</div>
+			</content>
 		</div>
 	</div>
 
@@ -143,241 +135,243 @@
 			</div>
 		</a>
 
-		<div id="collapseTwo" class="panel-collapse collapse in">
-			<div class="table-responsive s-order-item-box">
-				<table class="table" border="1" cellpadding="0" cellspacing="0">
-					<tr>
-						<th></th>
-						<th>SKU</th>
-						<th>Title</th>
-						<th>Price</th>
-						<th>Qty</th>
-						<th>Discount</th>
-						<th>Total</th>
-						<th>Fullfilment</th>
-						<th></th>
-					</tr>
-					<tr class="s-item">
-						<td class="s-image"><img src="http://placehold.it/50x50"></td>
-						<td class="s-sku">bundle-01</td>
-						<td class="s-title">
-							<ul class="list-unstyled">
-								<li><span>Skateboard Bundle</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
-								<li>
-									<span><span>Base Price</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></span>
-									<ul>
-										<li><span>Custom Grip Tape</span></li>
-										<li><span>Hardware Kit</span></li>
-									</ul>
-								</li>
-								<li><span>Indi Trucks</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
-							</ul>
-						</td>
-						<td class="s-price">
-							<ul class="list-unstyled">
-								<li><span>$99.00</span></li>
-								<li>
-									<span>$10.00</span>
-									<ul>
-										<li><span>$5.00</span></li>
-										<li><span>$5.00</span></li>
-									</ul>
-								</li>
-								<li><span>$0.00</span></li>
-							</ul>
-						</td>
-						<td class="s-qty">
-							<ul class="list-unstyled">
-								<li><span>3</span></li>
-								<li>
-									<span>1 (3 total)</span>
-									<ul>
-										<li><span>2 (12 total)</span></li>
-										<li><span>1 (6 total)</span></li>
-									</ul>
-								</li>
-								<li><span>1 (3 total)</span></li>
-							</ul>
-						</td>
-						<td class="s-discount">
-							<ul class="list-unstyled">
-								<li><span>$0.00</span></li>
-								<li>
-									<span>$0.00</span>
-									<ul>
-										<li><span>$0.00</span></li>
-										<li><span>$0.00</span></li>
-									</ul>
-								</li>
-								<li><span>$0.00</span></li>
-							</ul>
-						</td>
-						<td class="s-total">
-							<ul class="list-unstyled">
-								<li><span>$297.00</span></li>
-								<li>
-									<span>$10.00</span>
-									<ul>
-										<li><span>$5.00</span></li>
-										<li><span>$5.00</span></li>
-									</ul>
-								</li>
-								<li><span>$0.00</span></li>
-							</ul>
-						</td>
-						<td class="s-shipping">
-							<ul class="list-unstyled">
-								<li><span>Ship To: </span><a href="#"><i class="fa fa-pencil"></i></a></li>
-								<li><span>123 Main St.</span> </li>
-								<li><span>Northboro, MA 01532</span></li>
-							</ul>
-						</td>
-						<td class="s-order-edit-group">
-							<ul class="list-unstyled">
-								<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-								<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-							</ul>
-						</td>
-					</tr>
+		<div id="collapseTwo" class="panel-collapse collapse">
+			<content class="s-body-box">
+				<div class="table-responsive s-order-item-box">
+					<table class="table" border="1" cellpadding="0" cellspacing="0">
+						<tr>
+							<th></th>
+							<th>SKU</th>
+							<th>Title</th>
+							<th>Price</th>
+							<th>Qty</th>
+							<th>Discount</th>
+							<th>Total</th>
+							<th>Fullfilment</th>
+							<th></th>
+						</tr>
+						<tr class="s-item">
+							<td class="s-image"><img src="http://placehold.it/50x50"></td>
+							<td class="s-sku">bundle-01</td>
+							<td class="s-title">
+								<ul class="list-unstyled">
+									<li><span>Skateboard Bundle</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+									<li>
+										<span><span>Base Price</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></span>
+										<ul>
+											<li><span>Custom Grip Tape</span></li>
+											<li><span>Hardware Kit</span></li>
+										</ul>
+									</li>
+									<li><span>Indi Trucks</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+								</ul>
+							</td>
+							<td class="s-price">
+								<ul class="list-unstyled">
+									<li><span>$99.00</span></li>
+									<li>
+										<span>$10.00</span>
+										<ul>
+											<li><span>$5.00</span></li>
+											<li><span>$5.00</span></li>
+										</ul>
+									</li>
+									<li><span>$0.00</span></li>
+								</ul>
+							</td>
+							<td class="s-qty">
+								<ul class="list-unstyled">
+									<li><span>3</span></li>
+									<li>
+										<span>1 (3 total)</span>
+										<ul>
+											<li><span>2 (12 total)</span></li>
+											<li><span>1 (6 total)</span></li>
+										</ul>
+									</li>
+									<li><span>1 (3 total)</span></li>
+								</ul>
+							</td>
+							<td class="s-discount">
+								<ul class="list-unstyled">
+									<li><span>$0.00</span></li>
+									<li>
+										<span>$0.00</span>
+										<ul>
+											<li><span>$0.00</span></li>
+											<li><span>$0.00</span></li>
+										</ul>
+									</li>
+									<li><span>$0.00</span></li>
+								</ul>
+							</td>
+							<td class="s-total">
+								<ul class="list-unstyled">
+									<li><span>$297.00</span></li>
+									<li>
+										<span>$10.00</span>
+										<ul>
+											<li><span>$5.00</span></li>
+											<li><span>$5.00</span></li>
+										</ul>
+									</li>
+									<li><span>$0.00</span></li>
+								</ul>
+							</td>
+							<td class="s-shipping">
+								<ul class="list-unstyled">
+									<li><span>Ship To: </span><a href="#"><i class="fa fa-pencil"></i></a></li>
+									<li><span>123 Main St.</span> </li>
+									<li><span>Northboro, MA 01532</span></li>
+								</ul>
+							</td>
+							<td class="s-order-edit-group">
+								<ul class="list-unstyled">
+									<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+									<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+								</ul>
+							</td>
+						</tr>
 
-					<tr class="s-item">
-						<td class="s-image"><img src="http://placehold.it/50x50"></td>
-						<td class="s-sku"><span>bundle-02</span></td>
-						<td class="s-title">
-							<ul class="list-unstyled">
-								<li><span>Skate Shoe</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
-							</ul>
-						</td>
-						<td class="s-price">
-							<ul class="list-unstyled">
-								<li><span>$59.00</span></li>
-							</ul>
-						</td>
-						<td class="s-qty">
-							<ul class="list-unstyled">
-								<li><span>1</span></li>
-							</ul>
-						</td>
-						<td class="s-discount">
-							<ul class="list-unstyled">
-								<li><span>$0.00</span></li>
-							</ul>
-						</td>
-						<td class="s-total">
-							<ul class="list-unstyled">
-								<li><span>$59.00</span></li>
-							</ul>
-						</td>
-						<td class="s-shipping">
-							<ul class="list-unstyled">
-								<li><span>Ship To:</span> <a href="#"><i class="fa fa-pencil"></i></a></li>
-								<li><span>123 Main St. </span></li>
-								<li><span>Northboro, MA 01532</span></li>
-							</ul>
-						</td>
-						<td class="s-order-edit-group">
-							<ul class="list-unstyled">
-								<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-								<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-							</ul>
-						</td>
-					</tr>
+						<tr class="s-item">
+							<td class="s-image"><img src="http://placehold.it/50x50"></td>
+							<td class="s-sku"><span>bundle-02</span></td>
+							<td class="s-title">
+								<ul class="list-unstyled">
+									<li><span>Skate Shoe</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+								</ul>
+							</td>
+							<td class="s-price">
+								<ul class="list-unstyled">
+									<li><span>$59.00</span></li>
+								</ul>
+							</td>
+							<td class="s-qty">
+								<ul class="list-unstyled">
+									<li><span>1</span></li>
+								</ul>
+							</td>
+							<td class="s-discount">
+								<ul class="list-unstyled">
+									<li><span>$0.00</span></li>
+								</ul>
+							</td>
+							<td class="s-total">
+								<ul class="list-unstyled">
+									<li><span>$59.00</span></li>
+								</ul>
+							</td>
+							<td class="s-shipping">
+								<ul class="list-unstyled">
+									<li><span>Ship To:</span> <a href="#"><i class="fa fa-pencil"></i></a></li>
+									<li><span>123 Main St. </span></li>
+									<li><span>Northboro, MA 01532</span></li>
+								</ul>
+							</td>
+							<td class="s-order-edit-group">
+								<ul class="list-unstyled">
+									<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+									<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+								</ul>
+							</td>
+						</tr>
 
-				</table>
-			</div>
-
-			<hr/class="s-dotted">
-
-			<!-- Search for product -->
-			<div class="s-bundle-group-items">
-				<div class="col-xs-12">
-					<div class="input-group">
-						<div class="dropdown input-group-btn search-panel">
-							<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-								<span id="j-search-concept">Any</span>
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-								<li><a href="#all">Any</a></li>
-								<li><a href="#less_than">Product</a></li>
-								<li><a href="#all">Skus</a></li>
-							</ul>
-						</div>
-						<input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku">
-						<span class="input-group-btn">
-							<button class="btn btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
-						</span>
-					</div>
+					</table>
 				</div>
 
-				<div class="col-md-12 s-search-options">
-					<div class="s-search-box">
-						<ul class="list-unstyled">
-							<li class="row">
-								<div class="col-md-12">
-									<div class="form-group" >
-										<label for="">Location:</label>
-										<select class="form-control">
-											<option>All Locations</option>
-											<option>San Diego</option>
-											<option>France</option>
-											<option>Neptune</option>
-										</select>
-									</div>
-									<div class="form-group">
-										<label for=""></label>
+				<hr/class="s-dotted">
+
+				<!-- Search for product -->
+				<div class="row s-bundle-group-items">
+					<div class="col-xs-12">
+						<div class="input-group">
+							<div class="dropdown input-group-btn search-panel">
+								<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+									<span id="j-search-concept">Any</span>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+									<li><a href="#all">Any</a></li>
+									<li><a href="#less_than">Product</a></li>
+									<li><a href="#all">Skus</a></li>
+								</ul>
+							</div>
+							<input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku">
+							<span class="input-group-btn">
+								<button class="btn btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
+							</span>
+						</div>
+					</div>
+
+					<div class="col-md-12 s-search-options">
+						<div class="s-search-box">
+							<ul class="list-unstyled">
+								<li class="row">
+									<div class="col-md-12">
+										<div class="form-group" >
+											<label for="">Location:</label>
+											<select class="form-control">
+												<option>All Locations</option>
+												<option>San Diego</option>
+												<option>France</option>
+												<option>Neptune</option>
+											</select>
+										</div>
 										<div class="form-group">
-											<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> Only items in stock</label></div>
+											<label for=""></label>
+											<div class="form-group">
+												<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> Only items in stock</label></div>
+											</div>
 										</div>
 									</div>
-								</div>
-							</li>
-						</ul>
+								</li>
+							</ul>
 
+						</div>
+					</div>
+
+
+					<div class="col-xs-12 s-bundle-add-items">
+						<div class="col-xs-12 s-bundle-add-items-inner">
+							<h4 id="j-temp-class">There are no items selected</h4>
+							<ul class="list-unstyled s-order-item-options">
+
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline">
+										<li class="s-item-type">Product</li>
+									</ul>
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+									</ul>
+									<ul class="list-unstyled list-inline s-last">
+										<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
+
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline">
+										<li class="s-item-type">Product</li>
+									</ul>
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+									</ul>
+									<ul class="list-unstyled list-inline s-last">
+										<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
+
+							</ul>
+						</div>
 					</div>
 				</div>
-
-
-				<div class="col-xs-12 s-bundle-add-items">
-					<div class="col-xs-12 s-bundle-add-items-inner">
-						<h4 id="j-temp-class">There are no items selected</h4>
-						<ul class="list-unstyled s-order-item-options">
-
-							<li class="s-bundle-add-obj">
-								<ul class="list-unstyled list-inline">
-									<li class="s-item-type">Product</li>
-								</ul>
-								<ul class="list-unstyled list-inline s-middle">
-									<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
-								</ul>
-								<ul class="list-unstyled list-inline s-last">
-									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
-								</ul>
-								<div class="clearfix"></div>
-							</li>
-
-							<li class="s-bundle-add-obj">
-								<ul class="list-unstyled list-inline">
-									<li class="s-item-type">Product</li>
-								</ul>
-								<ul class="list-unstyled list-inline s-middle">
-									<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
-								</ul>
-								<ul class="list-unstyled list-inline s-last">
-									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
-								</ul>
-								<div class="clearfix"></div>
-							</li>
-
-						</ul>
-					</div>
-				</div>
-			</div>
-			<!-- //Search for product -->
+				<!-- //Search for product -->
+			</content>
 
 		</div>
 	</div>
@@ -392,7 +386,7 @@
 			</div>
 		</a>
 		<div id="collapseImages" class="panel-collapse collapse">
-			<div class="panel-body">
+			<content class="s-body-box">
 				<div class="col-xs-12 s-filter-content">
 
 					<div class="form-group">
@@ -406,7 +400,7 @@
 					</div>
 
 				</div>
-			</div>
+			</content>
 		</div>
 	</div>
 
@@ -420,81 +414,83 @@
 			</div>
 		</a>
 		<div id="collapseComments" class="panel-collapse collapse">
-			<div class="table-responsive s-order-item-box">
-				<table class="table" border="1" cellpadding="0" cellspacing="0">
-					<tr>
-						<th>Comment</th>
-						<th>Public</th>
-						<th>Created By</th>
-						<th>Created Date Time</th>
-						<th></th>
-					</tr>
-					<tr class="s-item">
-						<td>
-							<ul class="list-unstyled">
-								<li>
-									<p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec id elit non mi porta gravida at eget metus. Curabitur blandit tempus porttitor. Curabitur blandit tempus porttitor. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
-									<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Sed posuere consectetur est at lobortis. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper.</p>
-									<p>Nullam quis risus eget urna mollis ornare vel eu leo. Nulla vitae elit libero, a pharetra augue. Donec ullamcorper nulla non metus auctor fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras mattis consectetur purus sit amet fermentum. Donec id elit non mi porta gravida at eget metus.</p>
-								</li>
-							</ul>
-						</td>
-						<td>
-							<ul class="list-unstyled">
-								<li>No</li>
-							</ul>
-						</td>
-						<td>
-							<ul class="list-unstyled">
-								<li>Reyjay Solares</li>
-							</ul>
-						</td>
-						<td>
-							<ul class="list-unstyled">
-								<li>Sep 23, 2014 10:46 PM</li>
-							</ul>
-						</td>
-						<td class="s-order-edit-group">
-							<ul class="list-unstyled">
-								<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-								<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-							</ul>
-						</td>
-					</tr>
+			<content class="s-body-box">
+				<div class="table-responsive s-order-item-box">
+					<table class="table" border="1" cellpadding="0" cellspacing="0">
+						<tr>
+							<th>Comment</th>
+							<th>Public</th>
+							<th>Created By</th>
+							<th>Created Date Time</th>
+							<th></th>
+						</tr>
+						<tr class="s-item">
+							<td>
+								<ul class="list-unstyled">
+									<li>
+										<p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec id elit non mi porta gravida at eget metus. Curabitur blandit tempus porttitor. Curabitur blandit tempus porttitor. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+										<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Sed posuere consectetur est at lobortis. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper.</p>
+										<p>Nullam quis risus eget urna mollis ornare vel eu leo. Nulla vitae elit libero, a pharetra augue. Donec ullamcorper nulla non metus auctor fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras mattis consectetur purus sit amet fermentum. Donec id elit non mi porta gravida at eget metus.</p>
+									</li>
+								</ul>
+							</td>
+							<td>
+								<ul class="list-unstyled">
+									<li>No</li>
+								</ul>
+							</td>
+							<td>
+								<ul class="list-unstyled">
+									<li>Reyjay Solares</li>
+								</ul>
+							</td>
+							<td>
+								<ul class="list-unstyled">
+									<li>Sep 23, 2014 10:46 PM</li>
+								</ul>
+							</td>
+							<td class="s-order-edit-group">
+								<ul class="list-unstyled">
+									<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+									<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+								</ul>
+							</td>
+						</tr>
 
-					<tr class="s-item">
-						<td>
-							<ul class="list-unstyled">
-								<li>
-									<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Sed posuere consectetur est at lobortis. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper.</p>
-								</li>
-							</ul>
-						</td>
-						<td>
-							<ul class="list-unstyled">
-								<li>Yes</li>
-							</ul>
-						</td>
-						<td>
-							<ul class="list-unstyled">
-								<li>Pablo Sangla</li>
-							</ul>
-						</td>
-						<td>
-							<ul class="list-unstyled">
-								<li>Dec 2, 2013 4:34 AM</li>
-							</ul>
-						</td>
-						<td class="s-order-edit-group">
-							<ul class="list-unstyled">
-								<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-								<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-							</ul>
-						</td>
-					</tr>
+						<tr class="s-item">
+							<td>
+								<ul class="list-unstyled">
+									<li>
+										<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Sed posuere consectetur est at lobortis. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper.</p>
+									</li>
+								</ul>
+							</td>
+							<td>
+								<ul class="list-unstyled">
+									<li>Yes</li>
+								</ul>
+							</td>
+							<td>
+								<ul class="list-unstyled">
+									<li>Pablo Sangla</li>
+								</ul>
+							</td>
+							<td>
+								<ul class="list-unstyled">
+									<li>Dec 2, 2013 4:34 AM</li>
+								</ul>
+							</td>
+							<td class="s-order-edit-group">
+								<ul class="list-unstyled">
+									<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+									<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+								</ul>
+							</td>
+						</tr>
 
-				</table>
-			</div>
+					</table>
+				</div>
+			</content>
 		</div>
 	</div>
 
@@ -508,7 +504,8 @@
 			</div>
 		</a>
 		<div id="collapseSystem" class="panel-collapse collapse">
-			<div class="panel-body">
+			<content class="s-body-box">
+
 				<div class="col-md-6 s-header-left">
 					<div class="s-header-detail">
 						<dl class="dl-horizontal">
@@ -550,7 +547,8 @@
 
 					</table>
 				</div>
-			</div>
+			</content>
+
 		</div>
 	</div>
 

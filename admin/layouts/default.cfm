@@ -125,7 +125,7 @@ Notes:
 								<li><a title="User Docs" href="http://docs.getslatwall.com/##users" target="_blank">User Docs</a></li>
 								<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">Developer Docs</a></li>
 								<cf_HibachiActionCaller action="admin:main.about" type="list">
-								<li class="divider"></li>		
+								<li class="divider"></li>
 								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" type="list">
 								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" type="list">
 								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" type="list">
@@ -374,10 +374,19 @@ Notes:
 <script charset="utf-8">
 
 	$('body').on('click','#j-toggle-sidebar',function() {
+		mobileNav();
+	});
+
+	function mobileNav() {
 		$('.navbar-header').toggle();
 		$('.sidebar').toggle();
-		// $('.s-centered-logo').toggle();
-		$('#j-main-content').toggleClass('s-body-margin');
-	});
+		if($('#j-main-content').hasClass('s-body-margin')){
+			$('#j-main-content').removeClass('s-body-margin').css('margin-left','0px !important');
+
+		}else{
+			$('#j-main-content').addClass('s-body-margin').css('margin-left','174px !important');;
+		};
+	};
+
 
 </script>
