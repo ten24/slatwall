@@ -157,12 +157,22 @@
 	          </li>-->
 		      <li style="width:200px;">
 		        <form   class="s-table-header-search"
-		        		ng-model="keywords"
+		        		
 		        >
 		          <div class="input-group">
-		            <input type="text" class="form-control input-sm" placeholder="Search" name="srch-term">
+		            <input  type="text" 
+		            		class="form-control input-sm" 
+		            		placeholder="Search" 
+		            		name="srch-term" 
+		            		ng-model="keywords"
+		            />
 		            <div class="input-group-btn">
-		              <button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
+		              <button   class="btn btn-default btn-sm" 
+		              			type="submit"
+		              			ng-click="searchCollection()"
+		              >
+		              	<i class="fa fa-search"></i>
+		              </button>
 		            </div>
 		          </div>
 		        </form>
@@ -570,13 +580,13 @@
 </script>
 
 
-<script charset="utf-8">
+<!---<script charset="utf-8">
 
 $('form').submit(function(){
 	alert($(this["options"]).val());
     return false;
 });
-</script>
+</script>--->
 
 <!---<script charset="utf-8">
   //Make panels dragable

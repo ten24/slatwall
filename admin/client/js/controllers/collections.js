@@ -78,12 +78,18 @@ $log
 	};
 	
 	$scope.keywords = "";
+	$scope.searchCollection = function(){
+		$log.debug('search with keywords');
+		$log.debug($scope.keywords);
+		$scope.getCollection();
+	};
 	
 	$scope.getCollection = function(){
 		var pageShow = 50;
 		if($scope.pageShow !== 'Auto'){
 			pageShow = $scope.pageShow;
 		}
+		
 		var collectionListingPromise = $slatwall.getEntity('collection',$scope.collectionID,$scope.currentPage,pageShow,$scope.keywords);
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
