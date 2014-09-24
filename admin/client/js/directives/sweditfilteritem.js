@@ -70,14 +70,16 @@ $filter){
 							entityAliasArrayFromString.pop();
 							
 							entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
-							for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
-								var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
-								if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
-									//selectItem from drop down
-									scope.selectedFilterProperty = filterProperty;
-									//decorate with value and comparison Operator so we can use it in the Condition section
-									scope.selectedFilterProperty.value = scope.filterItem.value;
-									scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+							if(angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])){
+								for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
+									var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+									if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
+										//selectItem from drop down
+										scope.selectedFilterProperty = filterProperty;
+										//decorate with value and comparison Operator so we can use it in the Condition section
+										scope.selectedFilterProperty.value = scope.filterItem.value;
+										scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+									}
 								}
 							}
 								
@@ -252,6 +254,16 @@ $filter){
 							}
 							filterItem.displayValue = filterItem.value;
 			            	break;
+			            case 'one-to-many':
+			            case 'many-to-many':
+			            	console.log('savemanytomany');
+			            	console.log(selectedFilterProperty);
+			            	filterItem.collectionCode = selectedFilterProperty.selectedCollection.collectionCode;
+			            	filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
+			            	filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+			            	
+			            	break;
+			            	//filterItem.displayValue = filterItem.collectionCode;
 					}
 					
 					if(angular.isUndefined(filterItem.displayValue)){

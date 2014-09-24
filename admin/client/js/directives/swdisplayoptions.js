@@ -38,7 +38,14 @@ $log){
 				return $scope.propertiesList;
 			};
 			
-			$scope.addColumn = function(selectedProperty){
+			$scope.addDisplayDialog = {
+				isOpen:false,
+				toggleDisplayDialog:function(){
+					$scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen; 
+				}
+			};
+			
+			$scope.addColumn = function(selectedProperty, closeDialog){
 				$log.debug('add Column');
 				$log.debug(selectedProperty);
 				if(selectedProperty.$$group === 'simple' || 'attribute'){
@@ -56,6 +63,10 @@ $log){
 						
 						$scope.columns.push(column);
 						$scope.saveCollection();
+						if(angular.isDefined(closeDialog) && closeDialog === true){
+							$scope.addDisplayDialog.toggleDisplayDialog();
+						}
+						
 					}
 				}
 			};
