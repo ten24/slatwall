@@ -10,19 +10,18 @@
 
   <!--- Button to show create option --->
   <button   class="btn btn-xs s-btn-ten24" 
+  			data-target="#j-add-display-field"
+			data-toggle="collapse"
   			ng-click="addDisplayDialog.toggleDisplayDialog()"
   			>
   			Add Display Field
   </button>
 
   <!--- Create option dropdown --->
-  <div  class="row s-add-display-field "
-  		ng-show="addDisplayDialog.isOpen"
-  >
-    <div class="col-xs-12">
+  
+   <div ng-show="addDisplayDialog.isOpen" >
     <!--- Edit Filter Box --->
-       <div class="col-xs-12  s-add-filter" 
-       >
+       <div class="col-xs-12  s-add-filter" >
          <div class="row">
            <h4> Define Display Option: 
            	<span ng-repeat="breadCrumb in breadCrumbs"> 
@@ -60,7 +59,9 @@
               		data-selected-property-changed="selectedPropertyChanged(selectedProperty)"
               >
               </span>
+			<div class="col-xs-6 s-criteria">
 
+                          Middle
                </div>
                <div class="col-xs-3">
                  <div class="s-button-select-group">
@@ -80,10 +81,9 @@
                </div>
              </div>
            </div>
-         </div>
-       </div>
+ 
        <!--- //Edit Filter Box --->
-    </div>
+    
   </div>
   
 
