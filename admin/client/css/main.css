@@ -344,7 +344,7 @@ span.j-tool-tip-item i {color:#ccc;cursor:pointer;}
 .s-define-filter-group .s-define-filter-remove a {border: none;border-radius: 0px;background-color: #DA5757;color: #FFF !important;}
 
 .s-body-nav {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;border:none;}
-.s-body-nav .navbar {margin-bottom:0px;border-bottom:0px;}
+.s-body-nav .navbar {margin-bottom:0px;border-bottom:0px;border-radius: 0px;background-color: #FFF;border: 0px;}
 .s-body-nav .navbar h1 {padding: 0px;margin: 0px;font-size: 16px;font-weight: 600;vertical-align: middle;margin-top: 18px;}
 .s-body-nav .navbar .btn-toolbar {margin-top: 10px;}
 .row.s-pannel-control {text-align: right; margin: 10px 0px 2px 0px;}

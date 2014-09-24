@@ -137,7 +137,7 @@
 		<a data-toggle="collapse"  href="#collapseTwo">
 			<div class="panel-heading">
 				<h4 class="panel-title">
-					<span>Configuration</span>
+					<span>Configuration<span>2</span></span>
 					<i class="fa fa-caret-left"></i>
 				</h4>
 			</div>
