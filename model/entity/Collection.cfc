@@ -528,13 +528,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	public array function getPageRecords(boolean refresh=false) {
 		if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 			saveState();
-			/*var test = ORMExecuteQUery("
-			SELECT new Map( Account.accountID as accountID, Account.superUserFlag as superUserFlag, Account.firstName as firstName, Account.lastName as lastName, Account.company as company, Account.cmsAccountID as cmsAccountID, Account.remoteEmployeeID as remoteEmployeeID, Account.remoteCustomerID as remoteCustomerID, Account.remoteContactID as remoteContactID, Account.createdByAccountID as createdByAccountID, Account.modifiedByAccountID as modifiedByAccountID, Account.accountID as accountID, Account.accountID as accountID, Account.accountID as accountID) 
-			FROM SlatwallAccount as Account 
-			where ( LOWER(Account.accountID) LIKE '%test%' ) 
-			OR ( LOWER(Account.accountID) LIKE '%test%' )");
-			writedump(var=test,top=2);*/
-			//writedump(getHQL());abort;
 			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 			
 		}
@@ -763,7 +756,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			for(column in arguments.collectionConfig.columns){
 				if(structKeyExists(column,'isSearchable') && column.isSearchable && column.ormtype neq 'boolean' ){
 					//use keywords to create some post filters
-					
 					for(keyword in getKeywordArray()){
 						
 						var postFilterGroup = {
@@ -811,7 +803,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				}
 			}
 		}
-		
 	}
 	
 	//TODO:write an export/import service so we can share json files of the collectionConfig
