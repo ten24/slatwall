@@ -751,37 +751,61 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
-		
 		if(structKeyExists(arguments.collectionConfig,'columns')){
 			for(column in arguments.collectionConfig.columns){
-				if(structKeyExists(column,'isSearchable') && column.isSearchable && column.ormtype neq 'boolean' ){
+				if(structKeyExists(column,'isSearchable') && column.isSearchable){
 					//use keywords to create some post filters
-					for(keyword in getKeywordArray()){
-						
-						var postFilterGroup = {
-							filterGroup = [
-								{
-									propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
-									comparisonOperator = "like",
-									value="%#keyword#%"
-								}
-							]
-						};
-						if(arguments.hasFilterHQL){
-							postFilterGroup.logicalOperator = "OR";
-						}else{
-							arguments.hasFilterHQL = 1;
+					if(structKeyExists(column,'ormtype') && column.ormtype neq 'boolean' && column.ormtype neq 'timestamp'){
+						for(keyword in getKeywordArray()){
+							
+							var postFilterGroup = {
+								filterGroup = [
+									{
+										propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
+										comparisonOperator = "like",
+										value="%#keyword#%"
+									}
+								]
+							};
+							if(arguments.hasFilterHQL){
+								postFilterGroup.logicalOperator = "OR";
+							}else{
+								arguments.hasFilterHQL = 1;
+							}
+							//add post filter per column that is searchable
+							addPostFilterGroup(postFilterGroup);
 						}
-						//add post filter per column that is searchable
-						addPostFilterGroup(postFilterGroup);
+					}
+					if(structKeyExists(column,'attributeID')){
+						for(keyword in getKeywordArray()){
+							
+							var postFilterGroup = {
+								filterGroup = [
+									{
+										propertyIdentifier = column.propertyIdentifier,
+										attributeID = column.attributeID,
+					               		attributeSetObject = column.attributeSetObject,
+										comparisonOperator = "like",
+										value="%#keyword#%"
+									}
+								] 
+							};
+							if(arguments.hasFilterHQL){
+								postFilterGroup.logicalOperator = "OR";
+							}else{
+								arguments.hasFilterHQL = 1;
+							}
+							//add post filter per column that is searchable
+							addPostFilterGroup(postFilterGroup);
+						}
 					}
 				}
 			}
 		}else{
 			//if we don't have columns then we need default properties searching
-			var collectionEntity = getService('hibachiService').invokeMethod('new#arguments.collectionConfig.baseEntityAlias#');
-			for(propertyItem in collectionEntity.getDefaultProperties()){
-				if(propertyItem.ormtype neq 'boolean' ){
+			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityAlias);
+			for(propertyItem in defaultPropertiesWithAttributes){
+				if(structKeyExists(propertyItem,'ormtype') && propertyItem.ormtype neq 'boolean' && propertyItem.ormtype neq 'timestamp' && !structKeyExists(propertyItem,'attributeID') ){
 					for(keyword in getKeywordArray()){
 						var postFilterGroup = {
 							filterGroup = [
@@ -798,6 +822,28 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 							arguments.hasFilterHQL = 1;
 						}
 						//add post filter per column that is searchable
+						addPostFilterGroup(postFilterGroup);
+					}
+				}
+				if(structKeyExists(propertyItem,'attributeID')){
+					for(keyword in getKeywordArray()){
+						var postFilterGroup = {
+							filterGroup = [
+								{
+									propertyIdentifier = '#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#',
+									attributeID = propertyItem.attributeID,
+				               		attributeSetObject = propertyItem.attributeSetObject,
+									comparisonOperator = "like",
+									value="%#keyword#%"
+								}
+							] 
+						};
+						if(arguments.hasFilterHQL){
+							postFilterGroup.logicalOperator = "OR";
+						}else{
+							arguments.hasFilterHQL = 1;
+						}
+						//add post filter per propertyItem that is searchable
 						addPostFilterGroup(postFilterGroup);
 					}
 				}
@@ -936,7 +982,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public any function getDefaultProperties(){
 		return super.getDefaultProperties();
-		//return super.getDefaultProperties('pageRecords,pageRecordsStart,pageRecordsShow,currentPageDeclaration');
 	}
 	
 	// ==============  END: Overridden Implicit Getters ====================

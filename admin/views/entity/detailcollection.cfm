@@ -156,9 +156,7 @@
 	            </form>
 	          </li>-->
 		      <li style="width:200px;">
-		        <form   class="s-table-header-search"
-		        		
-		        >
+		        <form   class="s-table-header-search">
 		          <div class="input-group">
 		            <input  type="text" 
 		            		class="form-control input-sm" 
