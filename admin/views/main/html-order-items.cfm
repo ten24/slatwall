@@ -4,15 +4,28 @@
 </style>
 <div class="row s-body-nav">
 	<nav class="navbar navbar-default" role="navigation">
-		<div class="col-md-4">
+		<div class="col-md-4 s-header-info">
+			<ul class="list-unstyled list-inline">
+				<li><a href="##">Dashboard</a></li>
+				<li><a href="##">Order Items</a></li>
+				<li><a href="##">Order #2635</a></li>
+			</ul>
 			<h1>Order #2635</h1>
 		</div>
+
+		<style media="screen">
+			.s-body-nav .s-header-info ul {font-size:10px;margin-bottom:0px;margin-top:5px;}
+			.s-body-nav .s-header-info ul li a {color:#aaaaaa;}
+			.s-body-nav .s-header-info ul li a:hover {color:#444444;}
+			.s-body-nav .s-header-info h1 {margin-top:0px;}
+			.s-body-nav .s-header-info li:after {font-family: fontAwesome;content:'\f105';padding-right:0px !important;padding-left:0px !important;margin-left:12px;color:#aaaaaa;}
+			.s-body-nav .s-header-info li:last-child:after {content:'';}
+		</style>
+
 		<div class="col-md-8">
 			<div class="btn-toolbar">
 
 				<div class="btn-group btn-group-sm">
-					<button type="button" class="btn s-btn-grey"><i class="fa fa-reply"></i> Products</button>
-
 					<div class="btn-group btn-group-sm">
 						<button type="button" class="btn s-btn-grey dropdown-toggle" data-toggle="dropdown">
 							Actions
@@ -55,30 +68,66 @@
 		<div id="collapseOne" class="panel-collapse collapse">
 			<div class="panel-body s-panel-header-info">
 
-				<div class="col-md-6">
-					<dl class="dl-horizontal">
-						<dt class="title">Active <i class="fa fa-question-circle" ></i></dt>
-						<dd class="value">Yes</dd>
-						<dt class="title" >Published <i class="fa fa-question-circle" ></i></dt>
-						<dd class="value">Yes</dd>
-						<dt class="title" >Product Name <i class="fa fa-question-circle" ></i></dt>
-						<dd class="value">ProgelTM Pleural Air Leak Sealant</dd>
-						<dt class="title" >Product Code <i class="fa fa-question-circle" ></i></dt>
-						<dd class="value">PGPS002</dd>
-						<dt class="title" >URL Title <i class="fa fa-question-circle" ></i></dt>
-						<dd class="value">progeltm-pleural-air-leak-sealant</dd>
-					</dl>
+				<div class="col-md-6 s-header-left">
+					<div class="s-header-detail">
+						<img src="http://placehold.it/500x500">
+						<dl class="dl-horizontal">
+							<dt class="title">Price: <i class="fa fa-question-circle" ></i></dt>
+							<dd class="value">$69.99</dd>
+							<dt class="title">Qty: <i class="fa fa-question-circle" ></i></dt>
+							<dd class="value">1</dd>
+						</dl>
+					</div>
 				</div>
-				<div class="col-md-6">
-					<dl class="dl-horizontal">
-						<dt class="title" >Brand <i class="fa fa-question-circle" ></i></dt>
-						<dd class="value">Mozys</dd>
-						<dt class="title" >Product Type <i class="fa fa-question-circle" ></i></dt>
-						<dd class="value">Main Product</dd>
-						<dt class="title" >Available To Sell <i class="fa fa-question-circle" ></i></dt>
-						<dd class="value">1000</dd>
-					</dl>
+				<div class="col-md-6 s-header-right">
+					<div class="s-header-detail">
+						<h2>Sku Details</h2>
+						<dl class="dl-horizontal">
+							<dt class="title" >Sku Price When Ordered:</dt>
+							<dd class="value">$209.99</dd>
+							<dt class="title" >Current Sku Price:</dt>
+							<dd class="value">$209.99</dd>
+							<dt class="title" >SKU Code:</dt>
+							<dd class="value">CL-00003-1</dd>
+							<dt class="title" >Color:</dt>
+							<dd class="value">Black / Black / Total Crimson</dd>
+							<dt class="title" >Cleat Size ( US - Mens ):</dt>
+							<dd class="value">6</dd>
+						</dl>
+					</div>
+					<div class="s-header-detail">
+						<h2>Status</h2>
+						<dl class="dl-horizontal">
+							<dt class="title" >Order Item Status:</dt>
+							<dd class="value">Processing</dd>
+							<dt class="title" >Qty. Received:</dt>
+							<dd class="value">1</dd>
+							<dt class="title" >Qty. Unreceived:</dt>
+							<dd class="value">0</dd>
+						</dl>
+					</div>
+					<div class="s-header-detail">
+						<h2>Price Totals</h2>
+						<dl class="dl-horizontal">
+							<dt class="title" >Extended Price:</dt>
+							<dd class="value">$69.99</dd>
+							<dt class="title" >Tax Amount:</dt>
+							<dd class="value">$0.00</dd>
+							<dt class="title" >Discounts:</dt>
+							<dd class="value">$0.00</dd>
+							<dt class="title s-total">Total:</dt>
+							<dd class="value s-total">$69.99</dd>
+						</dl>
+					</div>
 				</div>
+
+<style media="screen">
+	.s-panel-header-info .s-header-detail img {padding:4px;background-color:#eee;border-radius:4px;max-width:300px;margin-bottom:10px;}
+	.s-panel-header-info .s-header-detail h2 {font-size: 14px;background-color: #EEE;padding: 6px 15px;}
+	.s-panel-header-info .s-header-detail .s-total {border-top:2px solid #eeeeee;font-weight:bold;padding-top:5px;}
+	.s-panel-header-info .s-header-right .s-header-detail:first-child h2 {margin-top:0px;}
+	body {font-size:12px;}
+</style>
 
 			</div>
 		</div>
@@ -261,6 +310,34 @@
 					</div>
 				</div>
 
+				<div class="col-md-12 s-search-options">
+					<div class="s-search-box">
+						<ul class="list-unstyled">
+							<li class="row">
+								<div class="col-md-12">
+									<div class="form-group" >
+										<label for="">Location:</label>
+										<select class="form-control">
+											<option>All Locations</option>
+											<option>San Diego</option>
+											<option>France</option>
+											<option>Neptune</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for=""></label>
+										<div class="form-group">
+											<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> Only items in stock</label></div>
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+
+
 				<div class="col-xs-12 s-bundle-add-items">
 					<div class="col-xs-12 s-bundle-add-items-inner">
 						<h4 id="j-temp-class">There are no items selected</h4>
@@ -321,31 +398,160 @@
 			<div class="panel-body">
 				<div class="col-xs-12 s-filter-content">
 
-					<!--- Header nav with title starts --->
-					<div class="row s-header-bar">
-						<div class="col-md-12 s-header-nav">
-							<ul class="nav nav-tabs" role="tablist">
-								<li class="active"><a href="##j-default-images" role="tab" data-toggle="tab">Default Images</a></li>
-								<li><a href="##j-alternative" role="tab" data-toggle="tab">Alternative Images</a></li>
+					<div class="form-group">
+						<label for="">Name Etching</label>
+						<input type="text" class="form-control" id="" placeholder="">
+					</div>
+
+					<div class="form-group">
+						<label for="" style="width:100%;">Name Etching</label>
+						<textarea class="form-control" name="Name" rows="6"></textarea>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<a data-toggle="collapse"  href="#collapseComments">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<span>Comments <span>1</span></span>
+					<i class="fa fa-caret-left"></i>
+				</h4>
+			</div>
+		</a>
+		<div id="collapseComments" class="panel-collapse collapse">
+			<div class="table-responsive s-order-item-box">
+				<table class="table" border="1" cellpadding="0" cellspacing="0">
+					<tr>
+						<th>Comment</th>
+						<th>Public</th>
+						<th>Created By</th>
+						<th>Created Date Time</th>
+						<th></th>
+					</tr>
+					<tr class="s-item">
+						<td>
+							<ul class="list-unstyled">
+								<li>
+									<p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec id elit non mi porta gravida at eget metus. Curabitur blandit tempus porttitor. Curabitur blandit tempus porttitor. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+									<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Sed posuere consectetur est at lobortis. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper.</p>
+									<p>Nullam quis risus eget urna mollis ornare vel eu leo. Nulla vitae elit libero, a pharetra augue. Donec ullamcorper nulla non metus auctor fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras mattis consectetur purus sit amet fermentum. Donec id elit non mi porta gravida at eget metus.</p>
+								</li>
 							</ul>
-						</div>
+						</td>
+						<td>
+							<ul class="list-unstyled">
+								<li>No</li>
+							</ul>
+						</td>
+						<td>
+							<ul class="list-unstyled">
+								<li>Reyjay Solares</li>
+							</ul>
+						</td>
+						<td>
+							<ul class="list-unstyled">
+								<li>Sep 23, 2014 10:46 PM</li>
+							</ul>
+						</td>
+						<td class="s-order-edit-group">
+							<ul class="list-unstyled">
+								<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+								<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+							</ul>
+						</td>
+					</tr>
+
+					<tr class="s-item">
+						<td>
+							<ul class="list-unstyled">
+								<li>
+									<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Sed posuere consectetur est at lobortis. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper.</p>
+								</li>
+							</ul>
+						</td>
+						<td>
+							<ul class="list-unstyled">
+								<li>Yes</li>
+							</ul>
+						</td>
+						<td>
+							<ul class="list-unstyled">
+								<li>Pablo Sangla</li>
+							</ul>
+						</td>
+						<td>
+							<ul class="list-unstyled">
+								<li>Dec 2, 2013 4:34 AM</li>
+							</ul>
+						</td>
+						<td class="s-order-edit-group">
+							<ul class="list-unstyled">
+								<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+								<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+							</ul>
+						</td>
+					</tr>
+
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<a data-toggle="collapse"  href="#collapseSystem">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<span>System</span>
+					<i class="fa fa-caret-left"></i>
+				</h4>
+			</div>
+		</a>
+		<div id="collapseSystem" class="panel-collapse collapse">
+			<div class="panel-body">
+				<div class="col-md-6 s-header-left">
+					<div class="s-header-detail">
+						<dl class="dl-horizontal">
+							<dt class="title">Order Item ID:</dt>
+							<dd class="value"></dd>
+							<dt class="title">Remote ID:</dt>
+							<dd class="value">5124bffa4883fc6e0148858cf8da0051</dd>
+						</dl>
 					</div>
-					<!--- //Header nav with title end --->
+				</div>
+				<div class="table-responsive s-order-item-box">
+					<table class="table" border="1" cellpadding="0" cellspacing="0">
+						<tr>
+							<th>Wednesday, September 17, 2014</th>
+							<th></th>
+							<th></th>
+						</tr>
+						<tr class="s-item">
+							<td>
+								<ul class="list-unstyled">
+									<li>
+										<p>05:42 PM - Greg Moser</p>
+									</li>
+								</ul>
+							</td>
+							<td>
+								<ul class="list-unstyled">
+									<li><strong>Updated:</strong> <a href="#">adidas 11Nova Indoor Soccer Shoes - MP-00001-1 </a></li>
+									<li><strong>Changed:</strong> Order Item Status</li>
+								</ul>
+							</td>
+							<td class="s-order-edit-group">
+								<ul class="list-unstyled">
+									<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+									<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+								</ul>
+							</td>
+						</tr>
 
-					<!--- Tab panes for menu options start--->
-					<div class="row s-options">
-						<div class="tab-content" id="j-property-box">
-
-							<div class="tab-pane active" id="j-default-images">
-								<img src="http://placehold.it/280x320" alt="" />
-								<img src="http://placehold.it/280x320" alt="" />
-							</div>
-
-							<div class="tab-pane" id="j-alternative">
-								<img src="http://placehold.it/280x320" alt="" />
-							</div>
-						</div>
-					</div>
+					</table>
 				</div>
 			</div>
 		</div>

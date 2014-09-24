@@ -116,14 +116,6 @@ Notes:
 
 					<a href="#homeLink#" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
 
-					<cfif $.slatwall.getLoggedInAsAdminFlag()>
-						<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
-							<div class="form-group">
-								<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search">
-							</div>
-						</form>
-					</cfif>
-
 					<ul class="nav navbar-nav navbar-right">
 						<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<cf_HibachiActionCallerDropdown title="" icon="user icon-white" dropdownclass="pull-right" type="nav">
@@ -151,6 +143,13 @@ Notes:
 
 		<cfif $.slatwall.getLoggedInAsAdminFlag()>
 			<aside class="sidebar">
+
+				<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
+					<div class="form-group">
+						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search">
+					</div>
+				</form>
+
 			    <nav class="sidebar-nav">
 					<ul id="menu" >
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
