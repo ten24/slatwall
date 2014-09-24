@@ -248,6 +248,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
+		
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
 		
 		var formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers);
@@ -384,10 +385,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		return collectionConfigStruct;
 	}
 	
-	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10){
+	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10,keywords = ""){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
 		collectionEntity.setPageRecordsShow(arguments.pageShow);
+		collectionEntity.setKeywords(arguments.keywords);
 		//if propertyIdentifiers were specified add selects so we can refine what columns to return
 		if(len(arguments.propertyIdentifiersList)){
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
@@ -403,10 +405,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 	
-	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10){
+	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10,keywords=""){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
 		collectionEntity.setPageRecordsShow(arguments.pageShow);
+		collectionEntity.setKeywords(arguments.keywords);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		
 		if(len(arguments.propertyIdentifiersList)){
@@ -429,6 +432,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
 		
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		
 		for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
 			if(isObject(paginatedCollectionOfEntities[1])) {
 				response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
@@ -442,9 +446,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
-	public any function getAPIResponseForCollection(required any collectionEntity, string propertyIdentifiersList = "", numeric currentPage=1, numeric pageShow = 10){
+	public any function getAPIResponseForCollection(required any collectionEntity, string propertyIdentifiersList = "", numeric currentPage=1, numeric pageShow = 10,keywords=""){
 		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
 		collectionEntity.setPageRecordsShow(arguments.pageShow);
+		collectionEntity.setKeywords(arguments.keywords);
 		
 		if(len(arguments.propertyIdentifiersList)){
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.propertyIdentifiersList);
@@ -465,6 +470,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				ArrayAppend(collectionPropertyIdentifiers,piAlias);
 			}
 		}
+		
 		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
 		var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
 		structAppend(response,collectionPaginationStruct);

@@ -24,8 +24,6 @@ $log
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 	
 	//get url param to retrieve collection listing
-	console.log('$slatwall');
-	console.log($slatwall);
 	$scope.collectionID = $location.search().collectionID;
 	$scope.currentPage= paginationService.getCurrentPage();
 	$scope.pageShow = paginationService.getPageShow();
@@ -79,12 +77,20 @@ $log
 		}
 	};
 	
+	$scope.keywords = "";
+	$scope.searchCollection = function(){
+		$log.debug('search with keywords');
+		$log.debug($scope.keywords);
+		$scope.getCollection();
+	};
+	
 	$scope.getCollection = function(){
 		var pageShow = 50;
 		if($scope.pageShow !== 'Auto'){
 			pageShow = $scope.pageShow;
 		}
-		var collectionListingPromise = $slatwall.getEntity('collection',$scope.collectionID,$scope.currentPage,pageShow);
+		
+		var collectionListingPromise = $slatwall.getEntity('collection',$scope.collectionID,$scope.currentPage,pageShow,$scope.keywords);
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();

@@ -66,7 +66,6 @@ $log){
 						if(angular.isDefined(closeDialog) && closeDialog === true){
 							$scope.addDisplayDialog.toggleDisplayDialog();
 						}
-						
 					}
 				}
 			};
