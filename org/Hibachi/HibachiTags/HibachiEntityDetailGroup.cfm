@@ -73,13 +73,13 @@
 							</div>
 						</a>
 						<div id="collapse#iteration#" class="panel-collapse collapse<cfif tab.open> in</cfif>">
-							<div class="panel-body">
+							<content class="s-body-box">
 								<cfoutput>
 									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
 										#tab.tabcontent#
 									</div>
 								</cfoutput>
-							</div><!--- panel body --->
+							</content><!--- s-body-box --->
 						</div><!--- panel-collapse collapse in --->
 					</div><!--- j-panel panel-default --->
 				</cfloop>
@@ -94,10 +94,10 @@
 							</div>
 						</a>
 						<div id="tabSystem" class="panel-collapse collapse">
-							<div class="panel-body">
+							<content class="s-body-box">
 								<cfoutput>
 									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="tabSystem">
-										<div class="row">
+										
 											<cf_HibachiPropertyList> 
 												<cf_HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
 												<cfif attributes.object.hasProperty('remoteID')>
@@ -120,10 +120,10 @@
 											</cf_HibachiPropertyList>
 											
 											<cf_HibachiTimeline object="#attributes.object#" />
-										</div>
+										
 									</div>
 								</cfoutput>
-							</div><!--- panel body --->
+							</content><!--- s-body-box --->
 						
 					</div><!--- panel panel-default --->
 				</cfif>	
