@@ -223,7 +223,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccount_changePassword(required any account, required any processObject) {
 		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
 		//For now they are just calling this function that handles the actual work. 
-		arguments.account = createNewAccountAuthentication(arguments.account, arguments.processObject);
+		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
 		
 		return arguments.account;
 	}
@@ -276,27 +276,43 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccount_createPassword(required any account, required any processObject) {
 		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
 		//For now they are just calling this function that handles the actual work. 
-		arguments.account = createNewAccountAuthentication(arguments.account, arguments.processObject);
+		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
 		
 		return account;	
 	}
 	
 	public any function processAccount_login(required any account, required any processObject) {
-		
 		// Take the email address and get all of the user accounts by primary e-mail address
-		var accountAuthentications = getInternalAccountAuthenticationsByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
+		var accountAuthentications =getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
 		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
-		
-		if(arrayLen(accountAuthentications)) {
-			for(var i=1; i<=arrayLen(accountAuthentications); i++) {
+	
+		if(!isNull(accountAuthentications)) {
+			//Make sure that the account is not locked 
+			if(isNull(accountAuthentications.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentications.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and 
-				if(!isNull(accountAuthentications[i].getPassword()) && len(accountAuthentications[i].getPassword()) && accountAuthentications[i].getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentications[i].getAccountAuthenticationID())) {
-					getHibachiSessionService().loginAccount( accountAuthentications[i].getAccount(), accountAuthentications[i] );
+				if(!isNull(accountAuthentications.getPassword()) && len(accountAuthentications.getPassword()) && accountAuthentications.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentications.getAccountAuthenticationID())) {
+					getHibachiSessionService().loginAccount( accountAuthentications.getAccount(), accountAuthentications);
+					accountAuthentications.getAccount().setFailedLoginAttemptCount(0); 
+					accountAuthentications.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+					
 					return arguments.account;
 				}
+				
+				arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
+				invalidLoginData.account = accountAuthentications.getAccount();
+				
+				//Log the failed attempt to account.failedLoginAttemptCount
+				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
+				invalidLoginData.account.setFailedLoginAttemptCount(failedLogins); 
+				
+				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
+				if (failedLogins >= 6){
+					this.processAccount(invalidLoginData.account, 30,'lock');
+				}
+			} 
+			else{
+				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
 			}
-			arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
-			invalidLoginData.account = accountAuthentications[1].getAccount();
 		} else {
 			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
 		}
@@ -370,65 +386,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 	
-	private any function checkForDuplicatePasswords(required any newPassword, required array authArray){
+	public any function processAccount_lock(required any account, required any minutes){
+		var expirationDateTime= dateAdd('n',arguments.minutes, Now());
+		arguments.account.setLoginLockExpiresDateTime(expirationDateTime);
 		
-		//Initilize variable to store the number of duplicate passwords
-		var duplicatePasswordCount = 0;
-		
-		//Loop over the existing authentications for this account
-		for(var i=1; i<=arrayLen(arguments.authArray); i++) {
-			if(isNull(arguments.authArray[i].getIntegration()) && !isNull(arguments.authArray[i].getPassword())) {
-				//Check to see if the password for this authentication is the same as the one being created
-				if(arguments.authArray[i].getPassword() == getHashedAndSaltedPassword(arguments.newPassword, authArray[i].getAccountAuthenticationID())){
-					//Because they are the same add 1 to the duplicatePasswordCount
-					duplicatePasswordCount++;
-					
-				}
-			}
-		}
-		
-		return duplicatePasswordCount;
-	}
-	
-	private void function markOldPasswordsInactive(required array authArray){
-		for(var i=1; i<=arrayLen(arguments.authArray); i++) {
-			if(isNull(arguments.authArray[i].getIntegration()) && !isNull(arguments.authArray[i].getPassword()) && arguments.authArray[i].getActiveFlag() == true) {
-				arguments.authArray[i].setActiveFlag(false);
-			}
-		}
-	}
-	
-	private any function createNewAccountAuthentication (required any account, required any processObject ){
-		
-		if(arguments.account.getAdminAccountFlag() == true){
-			
-			//Check to see if the password is a duplicate
-			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), arguments.account.getAccountAuthentications());
-			
-			if(duplicatePasswordCount > 0){
-				arguments.account.addError('changePassword', rbKey('validate.newPassword.duplicatePassword'));
-				return arguments.account;
-			}
-		}
-		
-		//Because we only want to store 5 passwords, this gets old passwords that put the lenth of the limit.
-		if (arrayLen(arguments.account.getAccountAuthentications()) >= 5){
-			deleteAccountAuthentications(arguments, 5);
-		}
-		
-		//Before creating the new password, make sure that all other passwords have an activeFlag of false
-		markOldPasswordsInactive(arguments.account.getAccountAuthentications());
-		
-		//Save the new password
-		var accountAuthentication = this.newAccountAuthentication();
-		accountAuthentication.setAccount( arguments.account );
-		
-		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
-		getHibachiDAO().save(accountAuthentication);
-	
-		// Set the password
-		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
-				
 		return arguments.account;
 	}
 	
@@ -1214,7 +1175,74 @@ component extends="HibachiService" accessors="true" output="false" {
 		return delete(arguments.accountPaymentMethod);
 	}
 	
-	public void function deleteAccountAuthentications(required struct data, required any maxAuthenticationsCount ){
+	
+	// =====================  END: Delete Overrides ===========================
+	
+	// ===================== START: Private Helper Functions ==================
+
+	private any function createNewAccountPassword (required any account, required any processObject ){
+		
+		var existingPasswords = getInternalAccountAuthenticationsByEmailAddress(arguments.account.getPrimaryEmailAddress().getEmailAddress());
+
+		if(arguments.account.getAdminAccountFlag() == true){
+			
+			//Check to see if the password is a duplicate
+			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), existingPasswords);
+			if(duplicatePasswordCount > 0){
+				arguments.account.addError('changePassword', rbKey('validate.newPassword.duplicatePassword'));
+				return arguments.account;
+			}
+		}
+		
+		//Because we only want to store 5 passwords, this gets old passwords that put the lenth of the limit.
+		if (arrayLen(existingPasswords) >= 5){
+			deleteAccountAuthentications(arguments, 5);
+		}
+		
+		//Before creating the new password, make sure that all other passwords have an activeFlag of false
+		markOldPasswordsInactive(existingPasswords);
+		
+		//Save the new password
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+		
+		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
+		getHibachiDAO().save(accountAuthentication);
+	
+		// Set the password
+		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+		return arguments.account;
+	}
+	
+	private any function checkForDuplicatePasswords(required any newPassword, required array authArray){
+		
+		//Initilize variable to store the number of duplicate passwords
+		var duplicatePasswordCount = 0;
+		
+		//Loop over the existing authentications for this account
+		for(authentication in arguments.authArray){
+			if(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword())) {
+				//Check to see if the password for this authentication is the same as the one being created
+				if(authentication.getPassword() == getHashedAndSaltedPassword(arguments.newPassword, authentication.getAccountAuthenticationID())){
+					//Because they are the same add 1 to the duplicatePasswordCount
+					duplicatePasswordCount++;
+					
+				}
+			}
+		}
+		
+		return duplicatePasswordCount;
+	}
+	
+	private void function markOldPasswordsInactive(required array authArray){
+		for(authentication in arguments.authArray){
+			if(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == true) {
+				authentication.setActiveFlag(false);
+			}
+		}
+	}
+
+	private void function deleteAccountAuthentications(required struct data, required any maxAuthenticationsCount ){
 		
 		//First need to get an array of all the accountAuthentications for this account ordered by creationDateTime ASC
 		var accountAuthentications = getAccountAuthenticationSmartList(data=data);
@@ -1230,13 +1258,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
 		while (arrayLength >= arguments.maxAuthenticationsCount){
+			//entityDelete(accountAuthenticationsArray[i]);
 			getAccountDAO().deleteAccountAuthentication(accountAuthenticationsArray[i].getAccountAuthenticationID()); 
 			i++;
 			arrayLength--;
 		}
 	}
-	
-	// =====================  END: Delete Overrides ===========================
+	// =====================  END:  Private Helper Functions ==================
 	
 }
-

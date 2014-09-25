@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="createPassword,changePassword,create,setupInitialAdmin" {
+component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="createPassword,changePassword,create,setupInitialAdmin, lock" {
 	
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -55,7 +55,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" dbdefault="0" ; 
+	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer"; 
 	
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
@@ -122,12 +122,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
-	
-	public void function init(){
-		super.init();
-		variables.failedLoginAttemptCount = 0;
-	}
-	
+
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);	
 	}
