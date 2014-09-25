@@ -93,7 +93,7 @@
 								</h4>
 							</div>
 						</a>
-						<div id="tabSystem" class="panel-collapse collapse<cfif tab.open> in</cfif>">
+						<div id="tabSystem" class="panel-collapse collapse">
 							<div class="panel-body">
 								<cfoutput>
 									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="tabSystem">
