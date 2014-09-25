@@ -268,10 +268,10 @@
 	    		infinite-scroll="appendToCollection()"		
 	    		infinite-scroll-disabled="autoScrollDisabled"
 	    		infinite-scroll-distance="1">
-					<tr class="even-tr" ng-repeat="pageRecord in collection.pageRecords">
+					<tr ng-repeat="pageRecord in collection.pageRecords">
 			            <td> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
 			            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
-			           <td class="s-edit-elements">
+			            <td class="s-edit-elements">
 			              <ul>
 			                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
 			                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
