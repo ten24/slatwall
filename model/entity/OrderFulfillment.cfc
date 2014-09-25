@@ -504,7 +504,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		if(structKeyExists(arguments.data, "accountAddress")
 			&& structKeyExists(arguments.data.accountAddress, "accountAddressID")
 			&& len(arguments.data.accountAddress.accountAddressID)
-			&& (isNull(getAccountAddress()) || getAccountAddress().getAccountAddressID() != arguments.data.accountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "shippingAddress") || !structKeyExists(arguments.data.shippingAddress, "addressID") || !len(arguments.data.shippingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "shippingAddress");
 		}

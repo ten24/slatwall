@@ -314,12 +314,22 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		return variables.billingAddress;
 	}
 	
-	public void function setCreditCardNumber(required string creditCardNumber) {
-		variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
-		setCreditCardLastFour(Right(arguments.creditCardNumber, 4));
-		setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber));
+	public any function afterPopulate() {
 		if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) && getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) {
-			setCreditCardNumberEncrypted(encryptValue(arguments.creditCardNumber));
+			setCreditCardNumberEncrypted(encryptValue(getCreditCardNumber()));
+		}
+	}
+	
+	public void function setCreditCardNumber(required string creditCardNumber) {
+		if(len(arguments.creditCardNumber)) {
+			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
+			setCreditCardLastFour(Right(variables.creditCardNumber, 4));
+			setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(variables.creditCardNumber));
+		} else {
+			structDelete(variables, "creditCardNumber");
+			setCreditCardLastFour(javaCast("null", ""));
+			setCreditCardType(javaCast("null", ""));
+			setCreditCardNumberEncrypted(javaCast("null", ""));
 		}
 	}
 	
