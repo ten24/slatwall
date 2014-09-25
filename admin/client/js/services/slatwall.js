@@ -8,16 +8,19 @@ function(){
 	    {
 	      return {
 	    		//basic entity getter where id is optional, returns a promise
-		  		getEntity:function(entityName,id,currentPage,pageShow){
+		  		getEntity:function(entityName,id,currentPage,pageShow,keywords){
 		  			if(angular.isUndefined(currentPage)){
 		  				currentPage = 1;
 		  			}
 		  			if(angular.isUndefined(pageShow)){
 		  				pageShow = 10;
 		  			}
+		  			if(angular.isUndefined(keywords)){
+		  				keywords = "";
+		  			}
 		  			
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+currentPage+'&P:Show='+pageShow;
+		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+currentPage+'&P:Show='+pageShow+'&keywords='+keywords;
 		  			if(angular.isDefined(id)) {
 		  				urlString += '&entityId='+id;	
 		  			}

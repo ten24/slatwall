@@ -393,7 +393,7 @@ function setupEventHandlers() {
 		var data = {};
 		data[ 'P:Current' ] = jQuery(this).data('page');
 
-		listingDisplayUpdate( jQuery(this).closest('.pagination').data('tableid'), data );
+		listingDisplayUpdate( jQuery(this).closest('.j-pagination').data('tableid'), data );
 
 	});
 	// Listing Display - Paging Show Toggle
@@ -409,7 +409,7 @@ function setupEventHandlers() {
 		var data = {};
 		data[ 'P:Show' ] = jQuery(this).data('show');
 
-		listingDisplayUpdate( jQuery(this).closest('.pagination').data('tableid'), data );
+		listingDisplayUpdate( jQuery(this).closest('.j-pagination').data('tableid'), data );
 	});
 
 	// Listing Display - Multiselect Show / Hide
@@ -1192,7 +1192,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 				}
 
 				// Update the paging nav
-				jQuery('div[class="pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
+				jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
 
 				// Update the saved state ID of the table
 				jQuery('#' + tableID).data('savedstateid', r["savedStateID"]);
@@ -1252,7 +1252,7 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 	recordsCount = parseInt(recordsCount);
 
 	if(totalPages > 1){
-		nav = '<ul>';
+		nav = '<ul class="pagination">';
 
 		var pageStart = 1;
 		var pageCount = 5;

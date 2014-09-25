@@ -17,8 +17,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
-		
-		
 	}
 	
 	public any function getObjectOptions(required struct rc){
@@ -32,6 +30,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		collectionConfigStruct.columns = [
 			{
 				propertyIdentifier="Collection.collectionName"	
+			},
+			{
+				propertyIdentifier="Collection.collectionCode"	
 			},
 			{
 				propertyIdentifier="Collection.collectionConfig"	
@@ -81,12 +82,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			//get entity service by entity name
 			var currentPage = 1;
 			if(structKeyExists(rc,'P:Current')){
-				var currentPage = rc['P:Current'];
+				currentPage = rc['P:Current'];
 			}
 			var pageShow = 10;
 			if(structKeyExists(rc,'P:Show')){
-				var pageShow = rc['P:Show'];
+				pageShow = rc['P:Show'];
 			}
+			
+			var keywords = "";
+			if(structKeyExists(rc,'keywords')){
+				keywords = rc['keywords'];
+			}
+			
 			//considering using all url variables to create a transient collectionConfig for api response
 			var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			if(!structKeyExists(arguments.rc,'entityID')){
@@ -94,7 +101,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
 																			arguments.rc.propertyIdentifiers,
 																			currentPage,
-																			pageShow);
+																			pageShow,
+																			keywords);
 				
 				structAppend(arguments.rc.apiResponse.content,result);
 			}else{
@@ -106,14 +114,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 																				arguments.rc.entityID,
 																				arguments.rc.propertyIdentifiers,
 																				currentPage,
-																				pageShow);
+																				pageShow,
+																				keywords);
 					structAppend(arguments.rc.apiResponse.content,result);
 				}else{
 					//should be able to add select and where filters here
 					var result = getCollectionService().getAPIResponseForCollection(	collectionEntity,
 																				arguments.rc.propertyIdentifiers,
 																				currentPage,
-																				pageShow);
+																				pageShow,
+																				keywords);
 					structAppend(arguments.rc.apiResponse.content,result);
 				}
 			}

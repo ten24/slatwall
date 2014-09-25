@@ -77,6 +77,9 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
 	
+	property name="keywords" type="string" persistent="false";
+	property name="keywordArray" type="array" persistent="false";
+	
 	property name="postFilterGroups" type="array" singularname="postFilterGroup"  persistent="false" hint="where conditions that are added by the user through the UI, applied in addition to the collectionConfig.";
 	property name="postOrderBys" type="array" persistent="false" hint="order bys added by the use in the UI, applied/overried the default collectionConfig order bys";
 	
@@ -121,6 +124,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.currentPageDeclaration = 1;
 		variables.pageRecordsStart = 1;
 		variables.pageRecordsShow = 10;
+		variables.keywords = "";
+		variables.keywordArray = [];
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		variables.collectionConfig = '{}';
@@ -197,9 +202,26 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		return joinHQL;
 	}
 	
+	
 	//the post functions are most likely to be called after a user posts to the server in order to update the base query with user chosen filters from the UI list view
 	public void function addPostFilterGroup(required any postFilterGroup){
 		arrayAppend(variables.postFilterGroups, arguments.postFilterGroup);
+	}
+	
+	/*public void function setKeywords(required string keywords){
+		variables.keywords = arguments.keywords;
+		setKeywordArray();
+	}
+	
+	public void function setKeywordArray(required array keywordArray){
+		variables.keywordArray = arguments.keywordArray;
+	}*/
+	
+	public array function getKeywordArray(){
+		if(!arraylen(variables.keywordArray)){
+			variables.keywordArray = ListToArray(getKeywords(),' ');
+		}
+		return variables.keywordArray;
 	}
 	
 	public void function addPostOrderBy(required any postOrderBy){
@@ -374,8 +396,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	private string function getFilterAttributeHQL(required any filter){
-		var objectname = listFirst(filter.propertyIdentifier,'.'); 
-		var HQL = "(SELECT attributeValue FROM SlatwallAttributeValue WHERE attributeID = '#filter.attributeID#' AND #lcase(objectname)#ID = #objectname#.#lcase(objectname)#ID)";
+		var attributeIdentifier = listDeleteAt(filter.propertyIdentifier,ListLen(filter.propertyIdentifier,'.'),'.');
+		
+		var HQL = "(SELECT attributeValue 
+					FROM SlatwallAttributeValue 
+					WHERE attributeID = '#filter.attributeID#' 
+					AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID)";
 		return HQL;
 	}
 	
@@ -421,6 +447,8 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	public string function getHQL(boolean excludeSelect = false){
 		var collectionConfig = getCollectionConfigStruct();
 		variables.HQLParams = {};
+		variables.postFilterGroups = [];
+		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
 		
 		return HQL;
@@ -498,10 +526,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		if( !structKeyExists(variables, "pageRecords") || arguments.refresh == true) {
+		if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 			saveState();
 			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+			
 		}
+		
 		return variables.pageRecords;
 	}
 	
@@ -608,13 +638,14 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	private any function getColumnAttributeHQL(required struct column){
-		var objectname = listFirst(column.propertyIdentifier,'.'); 
+		
+		var attributeIdentifier = listDeleteAt(column.propertyIdentifier,ListLen(column.propertyIdentifier,'.'),'.');
 		
 		var HQL	=  "(SELECT attributeValue 
 					FROM SlatwallAttributeValue
 					WHERE attribute.attributeID = '"
 					& column.attributeID & 
-					"' AND #lcase(objectname)#ID = #objectname#.#lcase(objectname)#ID) as #listLast(column.propertyIdentifier,'.')#";
+					"' AND #column.attributeSetObject#.#column.attributeSetObject#ID = #attributeIdentifier#.#column.attributeSetObject#ID) as #listLast(column.propertyIdentifier,'.')#";
 		
 		return HQL;	
 	}
@@ -664,6 +695,11 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 		
 		if(!isNull(collectionConfig.baseEntityName)){
+			var selectHQL = "";
+			var fromHQL = "";
+			var filterHQL = "";
+			var postFilterHQL = "";
+			var orderByHQL = "";
 			
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelect eq false){
@@ -671,48 +707,157 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				if(!isNull(collectionConfig.isDistinct)){
 					isDistinct = collectionConfig.isDistinct;
 				}
-				HQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+				selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
 			}
-			//build FROM
-			var joins = [];
-			if(!isnull(collectionConfig.joins)){
-				joins = collectionConfig.joins;
-			}
-			
-			HQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias, joins);
 			
 			//where clauses are actually the collection of all parent/child where clauses
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
 			
 			if(arraylen(filterGroupArray)){
-				HQL &= getFilterHQL(filterGroupArray);
+				filterHQL &= getFilterHQL(filterGroupArray);
 			}
+			
+			addPostFiltersFromKeywords(collectionConfig,len(filterHQL));
 			
 			//check if the user has applied any filters from the ui list view
 			if(arraylen(getPostFilterGroups())){
-				HQL &= getFilterGroupsHQL(postFilterGroups);
+				if(len(filterHQL) eq 0){
+					postFilterHQL &= ' where ';
+				}
+				postFilterHQL &= getFilterGroupsHQL(postFilterGroups);
 			}
 			
 			//override defaultconfig if we have postOrderBys
 			if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
-				HQL &= getOrderByHQL(getPostOrderBys());
+				orderByHQL &= getOrderByHQL(getPostOrderBys());
 			}else{
 				//build Order By
 				if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
-					HQL &= getOrderByHQL(collectionConfig.orderBy);
+					orderByHQL &= getOrderByHQL(collectionConfig.orderBy);
 				}
 			}
+			
+			//build FROM last because we have aquired joins implicitly
+			var joins = [];
+			if(!isnull(collectionConfig.joins)){
+				joins = collectionConfig.joins;
+			}
+			
+			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias, joins);
+			
+			HQL = SelectHQL & FromHQL & filterHQL & postFilterHQL & orderByHQL;
 		}
 		return HQL;
 	}
 	
+	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
+		if(structKeyExists(arguments.collectionConfig,'columns')){
+			for(column in arguments.collectionConfig.columns){
+				if(structKeyExists(column,'isSearchable') && column.isSearchable){
+					//use keywords to create some post filters
+					if(structKeyExists(column,'ormtype') && column.ormtype neq 'boolean' && column.ormtype neq 'timestamp'){
+						for(keyword in getKeywordArray()){
+							
+							var postFilterGroup = {
+								filterGroup = [
+									{
+										propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
+										comparisonOperator = "like",
+										value="%#keyword#%"
+									}
+								]
+							};
+							if(arguments.hasFilterHQL){
+								postFilterGroup.logicalOperator = "OR";
+							}else{
+								arguments.hasFilterHQL = 1;
+							}
+							//add post filter per column that is searchable
+							addPostFilterGroup(postFilterGroup);
+						}
+					}
+					if(structKeyExists(column,'attributeID')){
+						for(keyword in getKeywordArray()){
+							
+							var postFilterGroup = {
+								filterGroup = [
+									{
+										propertyIdentifier = column.propertyIdentifier,
+										attributeID = column.attributeID,
+					               		attributeSetObject = column.attributeSetObject,
+										comparisonOperator = "like",
+										value="%#keyword#%"
+									}
+								] 
+							};
+							if(arguments.hasFilterHQL){
+								postFilterGroup.logicalOperator = "OR";
+							}else{
+								arguments.hasFilterHQL = 1;
+							}
+							//add post filter per column that is searchable
+							addPostFilterGroup(postFilterGroup);
+						}
+					}
+				}
+			}
+		}else{
+			//if we don't have columns then we need default properties searching
+			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityAlias);
+			for(propertyItem in defaultPropertiesWithAttributes){
+				if(structKeyExists(propertyItem,'ormtype') && propertyItem.ormtype neq 'boolean' && propertyItem.ormtype neq 'timestamp' && !structKeyExists(propertyItem,'attributeID') ){
+					for(keyword in getKeywordArray()){
+						var postFilterGroup = {
+							filterGroup = [
+								{
+									propertyIdentifier = 'LOWER(#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#)',
+									comparisonOperator = "like",
+									value="%#keyword#%"
+								}
+							]
+						};
+						if(arguments.hasFilterHQL){
+							postFilterGroup.logicalOperator = "OR";
+						}else{
+							arguments.hasFilterHQL = 1;
+						}
+						//add post filter per column that is searchable
+						addPostFilterGroup(postFilterGroup);
+					}
+				}
+				if(structKeyExists(propertyItem,'attributeID')){
+					for(keyword in getKeywordArray()){
+						var postFilterGroup = {
+							filterGroup = [
+								{
+									propertyIdentifier = '#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#',
+									attributeID = propertyItem.attributeID,
+				               		attributeSetObject = propertyItem.attributeSetObject,
+									comparisonOperator = "like",
+									value="%#keyword#%"
+								}
+							] 
+						};
+						if(arguments.hasFilterHQL){
+							postFilterGroup.logicalOperator = "OR";
+						}else{
+							arguments.hasFilterHQL = 1;
+						}
+						//add post filter per propertyItem that is searchable
+						addPostFilterGroup(postFilterGroup);
+					}
+				}
+			}
+		}
+	}
+	
 	//TODO:write an export/import service so we can share json files of the collectionConfig
 	public void function exportCollectionConfigAsJSON(required string filePath,fileName){
-		fileWrite("#arguments.filePath##arguments.fileName#.json", this.getCollectionConfig());
+		fileWrite("#arguments.filePath##arguments.fileName#.json", getCollectionConfig());
 	}
 	
 	public void function importCollectionConfigAsJSON(required string filePath, fileName){
-		this.setCollectionConfig(fileRead( "#filePath##filename#.json" ));
+		setCollectionConfig(fileRead( "#filePath##filename#.json" ));
 	}
 	
 	// =============== Saved State Logic ===========================
@@ -814,7 +959,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	}
 	
 	public any function deserializeCollectionConfig(){
-		return deserializeJSON(this.getCollectionConfig());
+		return deserializeJSON(getCollectionConfig());
 	}
 	
 	
@@ -837,7 +982,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	
 	public any function getDefaultProperties(){
 		return super.getDefaultProperties();
-		//return super.getDefaultProperties('pageRecords,pageRecordsStart,pageRecordsShow,currentPageDeclaration');
 	}
 	
 	// ==============  END: Overridden Implicit Getters ====================
@@ -862,7 +1006,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	public any function getConfigStructure() {
 		if(!structKeyExists(variables, "configStructure")) {
 			if(!isNull(getCollectionConfig())) {
-				variables.configStructure = deserializeJSON(this.getCollectionConfig());	
+				variables.configStructure = deserializeJSON(getCollectionConfig());	
 			} else {
 				variables.configStructure = {};
 				variables.configStructure['baseEntitytName'] = getBaseEntityName();

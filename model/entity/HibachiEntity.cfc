@@ -352,7 +352,8 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public array function getAttributesArray(){
 		var attributes = [];
-		for(var attributesCode in getAttributesCodeList()){
+		var attributesListArray = listToArray(getAttributesCodeList());
+		for(var attributesCode in attributesListArray){
 			var attribute = getService('attributeService').getAttributeByAttributeCode(attributesCode);
 			
 			ArrayAppend(attributes,attribute);
@@ -367,6 +368,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			attributeProperty['displayPropertyIdentifier'] = attribute.getAttributeName();
 			attributeProperty['name'] = attribute.getAttributeCode();
 			attributeProperty['attributeID'] = attribute.getAttributeID();
+			attributeProperty['attributeSetObject'] = ReReplace(attribute.getAttributeSet().getAttributeSetObject(),"\b(\w)","\L\1","ALL");
 			//TODO: normalize attribute types to separate table
 			attributeProperty['ormtype'] = 'string';
 			ArrayAppend(attributesProperties,attributeProperty);
@@ -380,8 +382,13 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		for(var p=1; p<=arrayLen(properties); p++) {
 			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
 			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
-				properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
-				arrayAppend(defaultProperties,properties[p]);	
+				/* TODO: stripping many-to-many and one-to-many */
+				if(structKeyExists(properties[p],'fieldtype') && (properties[p].fieldtype eq 'many-to-many' || properties[p].fieldtype eq 'one-to-many')){
+					
+				}else{
+					properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+					arrayAppend(defaultProperties,properties[p]);	
+				}
 			}
 		}
 		return defaultProperties;

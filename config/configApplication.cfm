@@ -1,2 +1,2 @@
-<!--- <cfset this.name = "slatwall" & hash(getCurrentTemplatePath()) /> --->
-<cfset this.datasource.name = "slatwall-collections" />
+<cfset this.name = "slatwall" & hash(getCurrentTemplatePath()) />
+<cfset this.datasource.name = "slatwall-new" />
