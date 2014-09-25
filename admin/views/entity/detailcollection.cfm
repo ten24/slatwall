@@ -257,8 +257,7 @@
      
 	<!---TODO: make this list view section a directive that we pass a collection into --->
     <!---list view begin --->
-    <div 	class="table-responsive" 
-    >
+     <div class="table-responsive s-filter-table-box">
 	    <table class="table table-bordered table-striped" > 
 	        <thead>
 	            <tr>
