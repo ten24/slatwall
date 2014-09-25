@@ -48,12 +48,16 @@ Notes:
 --->
 <cfparam name="rc.collectionSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.collectionSmartList#" />
-
-<cf_HibachiListingDisplay smartList="#rc.collectionSmartList#"
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.collectionSmartList#"
 						   recordDetailAction="admin:entity.detailcollection"
 						   recordEditAction="admin:entity.editcollection"
 						   recordDeleteAction="admin:entity.deletecollection">
+						      
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiActionCaller action="admin:entity.createcollection" entity="collection" class="btn btn-primary" icon="plus icon-white" />
+	</cf_HibachiListingDisplayButtonGroup>
+	
 	<cf_HibachiListingColumn propertyIdentifier="collectionName" />
 	<cf_HibachiListingColumn propertyIdentifier="collectionCode" />
 	<cf_HibachiListingColumn propertyIdentifier="collectionObject" />
