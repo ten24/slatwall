@@ -1,35 +1,32 @@
 angular.module('slatwalladmin')
 .directive('swPropertyDisplay', 
-['$http',
-'$compile',
-'$templateCache',
-'collectionService',
+[
 'partialsPath',
 '$log',
-function($http,
-$compile,
-$templateCache,
-collectionService,
+function(
 partialsPath,
 $log){
 	return {
+		require:"^swForm",
 		restrict: 'A',
 		scope:{
 			object:"=",
 			property:"@",
-			isEditable:"="
+			isEditable:"=",
+			isHidden:"="
 		},
-		link: function(scope, element,attrs){
+		templateUrl:partialsPath+"propertydisplay.html",
+		link: function(scope, element,attrs,formController){
 			$log.debug(scope.object);
 			$log.debug(scope.property);
 			$log.debug(scope.isEditable);
-			var Partial = partialsPath+"propertydisplay.html";
-			var templateLoader = $http.get(Partial,{cache:$templateCache});
-			var promise = templateLoader.success(function(html){
-				element.html(html);
-			}).then(function(response){
-				element.replaceWith($compile(element.html())(scope));
-			});
+			
+			$scope.propertyDisplay = {
+				form:formController.formName,
+				errorMessage:{},
+				editing:false
+			
+			};
 		}
 	};
 }]);
