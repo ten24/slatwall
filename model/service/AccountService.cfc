@@ -307,7 +307,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
 				if (failedLogins >= 6){
-					this.processAccount(invalidLoginData.account, 30,'lock');
+					this.processAccount(invalidLoginData.account, 'lock');
 				}
 			} 
 			else{
@@ -386,9 +386,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 	
-	public any function processAccount_lock(required any account, required any minutes){
-		var expirationDateTime= dateAdd('n',arguments.minutes, Now());
+	public any function processAccount_lock(required any account){
+		var expirationDateTime= dateAdd('n', 30, Now());
 		arguments.account.setLoginLockExpiresDateTime(expirationDateTime);
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_unlock(required any account){
+		arguments.account.setLoginLockExpiresDateTime(javacast("null",""));
+		arguments.account.setFailedLoginAttemptCount(0);
 		
 		return arguments.account;
 	}
@@ -1053,7 +1060,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "account", "left" );
 		
+		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "integration", "left");
+		
 		smartList.addKeywordProperty(propertyIdentifier="account.accountID", weight=1 );
+		
+		smartList.addKeywordProperty(propertyIdentifier="integration.integrationID", weight=1 );
 		
 		return smartList;
 	}
@@ -1247,6 +1258,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//First need to get an array of all the accountAuthentications for this account ordered by creationDateTime ASC
 		var accountAuthentications = getAccountAuthenticationSmartList(data=data);
 		accountAuthentications.addFilter("account.accountID", arguments.data.Account.getAccountID());
+		accountAuthentications.addWhereCondition("aslatwallaccountauthentication.password IS NOT NULL AND aslatwallintegration.integrationID IS NULL");
 		accountAuthentications.addOrder("createdDateTime|ASC");
 		
 		//Get the actual records from the SmartList and store in an array

@@ -200,13 +200,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				message = replace(message, "${itemEntityName}", rbKey("entity.#entityName#") );
 			}
 		}
-		
 		showMessage(message=message, messageType=messageType);
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
 		param name="request.context.messages" default="#arrayNew(1)#";
 		
+		message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
 		arrayAppend(request.context.messages, arguments);
 	}
 	
