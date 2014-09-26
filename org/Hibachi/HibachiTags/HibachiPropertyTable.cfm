@@ -6,7 +6,7 @@
 	
 	<cfoutput>
 		<div class="table-responsive">
-			<table class="table table-striped table-bordered table-condensed" id="hibachiPropertyTable#request.propertyTableCount#">
+			<table class="table table-condensed" id="hibachiPropertyTable#request.propertyTableCount#">
 				<tbody>
 	</cfoutput>
 	
