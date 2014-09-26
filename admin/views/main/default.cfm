@@ -50,7 +50,7 @@ Notes:
 <cfparam name="rc.productReviewSmartList" type="any" />
 
 <cfoutput>
-	<div class="alert-warning" >
+	<div class="alert-danger" >
 		<cf_HibachiMessageDisplay />
 	</div>
 	<div class="row">
