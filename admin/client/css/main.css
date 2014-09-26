@@ -1,5 +1,5 @@
 /*Import plugins*/
-@import url("../../../../client/lib/selectBoxIt/selectBoxIt.css");
+@import url("../../../client/lib/selectBoxIt/selectBoxIt.css");
 
 /*Basic style overwrite*/
 body {background-color:#ffffff;font-family: 'Open Sans', sans-serif;color:#666666;padding-top:51px;font-size:12px;}
