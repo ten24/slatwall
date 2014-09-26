@@ -100,6 +100,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 .panel-group .panel-heading {background-color:#606060;color:#fff;border-color:#888;}
 
 /*Bootstrap overwrite*/
+.table>tbody>tr>td {border-top:0px !important;}
 .help-block {font-size:11px;}
 .has-error .form-control {border-color: #A94442 !important;}
 .navbar-inverse .navbar-nav>li>a {color: #999999;padding: 13px;font-size: 22px;}
@@ -133,6 +134,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 .form-control {border-color: #DDD !important;color: #767676;height: 30px;box-shadow:none;box-shadow:none;}
 
 /*Custom CSS*/
+.title {font-weight: bold;}
 .s-pannel-group .panel {overflow:visible;}
 .s-pannel-group .s-body-box {padding: 15px 15px;display: inline-block;width: 100%;}
 .form-group label i.fa-asterisk {color: #A94442;font-size: 6px;position: relative;top: -7px;}
