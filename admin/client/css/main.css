@@ -456,7 +456,7 @@ span.j-tool-tip-item i {color:#ccc;cursor:pointer;}
 
 .s-remove:hover {background-color:#DA5757 !important;border:1px solid #DA5757 !important;color:#ffffff !important;}
 .s-pannel-group .panel-default .panel-heading {background-color:#606060;color:#fff; border-color:#888;}
-.s-pannel-group .panel-default a {text-decoration:none;padding-top:0px;}
+.s-pannel-group .panel-default a {text-decoration:none;}
 .s-pannel-group .s-panel-header-info {display:inline-block;width:100%;}
 .s-panel-header-info .s-header-left {padding:0px;}
 .s-panel-header-info .s-header-right {padding:0px;}
