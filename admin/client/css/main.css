@@ -7,7 +7,7 @@ hr {border-right:1px solid #cccccc;}
 hr.s-dotted {border:none;border-bottom:3px dotted #eee;margin-top:20px;margin-bottom:20px;}
 th {font-weight:600;}
 a {color:#666666;}
-.table-responsive {width:auto !important;}
+.table-responsive {overflow-x:auto !important;}
 a:hover, a:focus {color: #F9AC68; }
 button::-moz-focus-inner {border: 0;}
 input::-moz-focus-inner { border: 0; }
@@ -114,7 +114,6 @@ a:-webkit-any-link {text-decoration:none !important;}
 .panel-default>.panel-heading {background-color:#606060;color:#ffffff;}
 .panel-group .panel-heading+.panel-collapse>.panel-body {border-top: none;}
 .panel-heading {border-top-left-radius: 0px;border-top-right-radius: 0px}
-.table th {white-space: nowrap;}
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
 .table-bordered>thead>tr>th, .table-bordered>thead>tr>td {border-bottom-width:1px;}
 .table-striped {background-color:#ffffff;}
