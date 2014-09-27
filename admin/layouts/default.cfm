@@ -112,7 +112,7 @@ Notes:
 					</span>
 
 					<a href="#homeLink#" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
-
+					
 					<ul class="nav navbar-nav navbar-right">
 						<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<cf_HibachiActionCallerDropdown title="" icon="cog icon-white" dropdownclass="pull-right" type="nav">
@@ -139,14 +139,167 @@ Notes:
 
 
 		<cfif $.slatwall.getLoggedInAsAdminFlag()>
-			<aside class="sidebar">
+			<aside class="sidebar" id="sidebar">
 
 				<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
 					<div class="form-group">
 						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search">
 					</div>
-				</form>
+					<div class="row s-search-results" style="padding-top:15px;">
+						<!--- <div id="s-close-search" style="background"><a href="##"><i class="fa fa-times"></i> Close</a></div> --->
+						<ul class="col-md-12 list-unstyled">
 
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Products</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled" id="j-search-results"	>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Dolor Tortor Tristique Commodo Consectetur</a></li>
+										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
+									</ul>
+								</div>
+							</li>
+
+							<!--- <li>
+								<div class="col-md-4 s-title">
+									<h2>Product Types</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li> --->
+
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Brands</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
+									</ul>
+								</div>
+							</li>
+
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Promotions</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
+									</ul>
+								</div>
+							</li>
+
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Orders</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li>
+
+							<!--- <li>
+								<div class="col-md-4 s-title">
+									<h2>Accounts</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li> --->
+
+							<!--- <li>
+								<div class="col-md-4 s-title">
+									<h2>Vendor Orders</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li> --->
+
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Vendors</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Pharetra Ipsum Cursus Dapibus Nullam</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li>
+
+						</ul>
+					</div>
+				</form>
+<script charset="utf-8">
+	$( '.s-header-search ##global-search' ).focus(function() {
+
+		function hideSearch() {
+			$(document).click(function(e) {
+				var tar = $(e.target);
+			    if ($(tar).parents('.s-search-results').length) {
+					//Do Nothing
+				}else{
+					$('.sidebar').removeClass('s-search-width');
+					$('.s-search-results').hide();
+					$('.sidebar-nav').show();
+			    }
+			});
+		};
+
+		$(this).on('change keyup paste click', function(e){
+			if($(this).val()){
+				hideSearch();
+				$('.s-search-results').show();
+				$('.sidebar').addClass('s-search-width');
+				$('.sidebar-nav').hide();
+			}else{
+				$('.sidebar').removeClass('s-search-width');
+				$('.s-search-results').hide();
+				$('.sidebar-nav').show();
+			};
+		});
+
+	});
+
+
+</script>
+<style media="screen">
+	.s-search-results {display:none;color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
+	.s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
+	.s-search-results > ul > li > .s-title {padding-left:0px;}
+	.s-search-results > ul > li > .s-title h2 {font-size:12px;font-weight:600;display:inline;vertical-align:top;}
+	.s-search-results > ul > li > .s-body {font-size:12px;padding:0px;}
+	.s-search-results > ul > li > .s-body ul li {margin-bottom: 8px;border-bottom: 1px solid ##666;padding-bottom: 8px;}
+	.s-search-results > ul > li > .s-body ul li a {color:##dddddd;}
+	.s-search-results > ul > li > .s-body ul li a:hover {color:##ffffff;}
+	.s-search-width {width:330px;transition: all 0.5s ease;}
+	.s-search-results ##s-close-search {width:100%;text-align:right;margin-bottom:15px;}
+	.s-search-results ##s-close-search a {padding:5px;margin:0px;margin-right:10px;color:##aaaaaa;display:inline-block;}
+	.s-search-results ##s-close-search a:hover {color:##ffffff;}
+
+</style>
 			    <nav class="sidebar-nav">
 					<ul id="menu" >
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
@@ -376,7 +529,7 @@ Notes:
 
 	function mobileNav() {
 		$('.navbar-header').toggle();
-		$('.sidebar').toggle();
+		$('.sidebar').toggleClass('s-sidebarHide');
 		if($('#j-main-content').hasClass('s-body-margin')){
 			$('#j-main-content').removeClass('s-body-margin').css('margin-left','0px !important');
 
@@ -384,6 +537,5 @@ Notes:
 			$('#j-main-content').addClass('s-body-margin').css('margin-left','174px !important');;
 		};
 	};
-
 
 </script>
