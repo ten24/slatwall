@@ -7,6 +7,7 @@ hr {border-right:1px solid #cccccc;}
 hr.s-dotted {border:none;border-bottom:3px dotted #eee;margin-top:20px;margin-bottom:20px;}
 th {font-weight:600;}
 a {color:#666666;}
+.btn,.dropdown-menu {font-size:12px;}
 .table-responsive {overflow-x:auto !important;}
 a:hover, a:focus {color: #F9AC68; }
 button::-moz-focus-inner {border: 0;}
@@ -394,7 +395,7 @@ span.j-tool-tip-item i {color:#ccc;cursor:pointer;}
 
 .s-bundle-group-items .input-group .input-group-btn {z-index:1000;vertical-align:bottom;}
 .s-bundle-group-items .dropdown-menu {border-radius: 0px;margin-top: -1px;}
-.s-bundle-group-items .search-panel button {color:#555;border-radius: 0px;background-color: #EEE;min-width:130px;text-align: right;}
+.s-bundle-group-items .search-panel button {color:#555;border-radius: 0px;background-color: #EEE;text-align: right;width:100%;}
 .s-bundle-group-items .search-panel button:hover, .s-bundle-group-items .search-panel button:active, .s-bundle-group-items .search-panel button:focus {color:#333 !important;border-color:#cccccc!important;background-color:#ccc;}
 .s-bundle-group-items .s-search-input {height: 34px;outline: none;-webkit-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);-moz-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);}
 .s-bundle-group-items .s-search-button {border-radius: 0px;background-color: #EEE;vertical-align:bottom;}

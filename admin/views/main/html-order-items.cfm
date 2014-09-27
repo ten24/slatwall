@@ -271,39 +271,65 @@
 				<!-- Search for product -->
 				<div class="row s-bundle-group-items">
 					<div class="col-xs-12">
-						<div class="input-group">
-							<div class="dropdown input-group-btn search-panel">
-								<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-									<span id="j-search-concept">Any</span>
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-									<li><a href="#all">Any</a></li>
-									<li><a href="#less_than">Product</a></li>
-									<li><a href="#all">Skus</a></li>
-								</ul>
-							</div>
-							<input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku">
-							<span class="input-group-btn">
-								<button class="btn btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
-							</span>
-							<!--- <div class="dropdown input-group-btn search-panel">
-								<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-									<span id="j-search-concept">Any</span>
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-									<li><a href="#all">Any</a></li>
-									<li><a href="#less_than">Product</a></li>
-									<li><a href="#all">Skus</a></li>
-								</ul>
-							</div> --->
 
-							<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> Only items in stock</label></div>
+						<ul class="list-unstyled s-search-bar-box">
+							<li>
+								<div class="dropdown input-group-btn search-panel">
+									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+										<span id="j-search-concept">Any</span>
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+										<li><a href="#all">Any</a></li>
+										<li><a href="#less_than">Product</a></li>
+										<li><a href="#all">Skus</a></li>
+									</ul>
+								</div>
+							</li>
+							<li><input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku"></li>
+							<li>
+								<ul class="list-unstyled">
+									<li>
+										<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> In stock</label></div>
+									</li>
+									<li>
+										<div class="dropdown input-group-btn search-panel">
+											<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+												<span id="j-search-concept">Any</span>
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+												<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+												<li><a href="#all">Any</a></li>
+												<li><a href="#less_than">Product</a></li>
+												<li><a href="#all">Skus</a></li>
+											</ul>
+										</div>
+									</li>
+								</ul>
+							</li>
+						</ul>
+
 <style media="screen">
-	.s-bundle-group-items .input-group .s-checkbox {display: inline-block;height: 34px;background: #EEE;border-right: 1px solid #DDD;border-bottom: 1px solid #DDD;border-top: 1px solid #DDD;vertical-align: bottom;} 
+	.s-search-bar-box {border: 1px solid #CCC;display: inline-block;width: 100%;margin:0px;vertical-align:bottom;}
+	.s-search-bar-box > li {background-color:#eee;height:34px;float:left;}
+	.s-search-bar-box > li {width:60%;}
+	.s-search-bar-box > li > ul > li:first-child {width:60%;float:left;}
+	.s-search-bar-box > li > ul > li:last-child {width:40%;float:left;}
+	.s-search-bar-box > li > ul > li .btn {text-align:left;}
+	.s-search-bar-box > li > ul > li .btn span:last-child {float:right;margin-top: 9px;}
+	.s-search-bar-box > li > ul > li .search-panel {border-left:1px solid #ccc;}
+	.s-search-bar-box > li > ul > li .dropdown-menu {left:auto;}
+	.s-search-bar-box > li > ul > li .dropdown-menu li:first-child {padding:5px;}
+	.s-search-bar-box > li:first-child {width:10%;}
+	.s-search-bar-box > li:last-child {width:30%;}
+	.s-search-bar-box > li:last-child {float:right;}
+	.s-search-bar-box > li .s-search-input {border:0px !important;border-radius:0px;}
+	.s-search-bar-box button {border: none;margin-left: 0px !important;height:34px;}
+	.s-search-bar-box .search-panel {border:0px;width:100%;display:block;border-left:1px solid #ccc;}
+	.s-search-bar-box .s-checkbox {margin-top:8px;}
 </style>
-						</div>
+
 					</div>
 
 					<div class="col-md-12 s-search-options">
