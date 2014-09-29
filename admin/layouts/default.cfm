@@ -111,7 +111,7 @@ Notes:
 						</cfif>
 					</span>
 
-					<a href="#homeLink#" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
+					<a href="#homeLink#" target="_self" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
 					
 					<ul class="nav navbar-nav navbar-right">
 						<cfif $.slatwall.getLoggedInAsAdminFlag()>
