@@ -124,7 +124,11 @@
 
 		<div id="collapseTwo" class="panel-collapse collapse">
 			<content class="s-body-box">
+
+				<h2 style="background: #666;padding: 5px 10px;color: #FFF;margin: 0px;font-size: 12px;">Deck</h2>
 				<div class="table-responsive s-order-item-box">
+					<!--- <p style="border: 1px solid #CCC;border-top: 0px;padding: 14px;margin: auto;text-align: center;font-size: 15px;background: #FFF;font-weight: 700;">There are no items selected</p> --->
+
 					<table class="table" border="1" cellpadding="0" cellspacing="0">
 						<tr>
 							<th></th>
@@ -137,6 +141,7 @@
 							<th>Fullfilment</th>
 							<th></th>
 						</tr>
+
 						<tr class="s-item">
 							<td class="s-image"><img src="http://placehold.it/50x50"></td>
 							<td class="s-sku">bundle-01</td>
@@ -220,8 +225,121 @@
 							</td>
 						</tr>
 
+					</table>
+
+
+				</div>
+
+				<!-- Search for product -->
+				<div class="row s-bundle-group-items">
+					<div class="col-xs-12 s-search-bar">
+
+						<ul class="list-unstyled s-search-bar-box">
+							<li>
+								<div class="dropdown input-group-btn search-panel">
+									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+										<span id="j-search-concept">Any</span>
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+										<li><a href="#all">Any</a></li>
+										<li><a href="#less_than">Product</a></li>
+										<li><a href="#all">Skus</a></li>
+									</ul>
+								</div>
+							</li>
+							<li><input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku"></li>
+							<li>
+								<ul class="list-unstyled">
+									<li>
+										<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> In stock</label></div>
+									</li>
+									<li>
+										<div class="dropdown input-group-btn search-panel">
+											<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+												<span id="j-search-concept">All Locations</span>
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+												<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+												<li><a href="#all">All Locations</a></li>
+												<li><a href="#less_than">San Diego</a></li>
+												<li><a href="#all">New York</a></li>
+												<li><a href="#all">France</a></li>
+											</ul>
+										</div>
+									</li>
+								</ul>
+							</li>
+						</ul>
+
+					</div>
+
+					<div class="col-xs-12 s-bundle-add-items s-hide-trans">
+						<div class="col-xs-12 s-bundle-add-items-inner">
+							<h4 id="j-temp-class">There are no items selected</h4>
+
+							<ul class="list-unstyled s-order-item-options">
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline">
+										<li class="s-item-type">Product</li>
+									</ul>
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+									</ul>
+									<ul class="list-unstyled list-inline s-last">
+										<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
+
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline">
+										<li class="s-item-type">Product</li>
+									</ul>
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+									</ul>
+									<ul class="list-unstyled list-inline s-last">
+										<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
+
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- //Search for product -->
+
+			</content>
+
+			<hr/class="s-dotted">
+
+			<content class="s-body-box">
+
+				<h2 style="background: #666;padding: 5px 10px;color: #FFF;margin: 0px;font-size: 12px;">Trucks</h2>
+				<div class="table-responsive s-order-item-box">
+					<p style="border: 1px solid #CCC;border-top: 0px;padding: 14px;margin: auto;text-align: center;font-size: 15px;background: #FFF;font-weight: 700;">There are no items selected</p>
+					<!--- <table class="table" border="1" cellpadding="0" cellspacing="0">
+						<tr>
+							<th></th>
+							<th>SKU</th>
+							<th>Title</th>
+							<th>Price</th>
+							<th>Qty</th>
+							<th>Discount</th>
+							<th>Total</th>
+							<th>Fullfilment</th>
+							<th></th>
+						</tr>
+
 						<tr class="s-item">
-							<td class="s-image"><img src="http://placehold.it/50x50"></td>
+							<td class="s-image"><img src="http://placehold.it/150x150"></td>
 							<td class="s-sku"><span>bundle-02</span></td>
 							<td class="s-title">
 								<ul class="list-unstyled">
@@ -263,14 +381,13 @@
 							</td>
 						</tr>
 
-					</table>
-				</div>
+					</table> --->
 
-				<hr/class="s-dotted">
+				</div>
 
 				<!-- Search for product -->
 				<div class="row s-bundle-group-items">
-					<div class="col-xs-12">
+					<div class="col-xs-12 s-search-bar">
 
 						<ul class="list-unstyled s-search-bar-box">
 							<li>
@@ -295,14 +412,15 @@
 									<li>
 										<div class="dropdown input-group-btn search-panel">
 											<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-												<span id="j-search-concept">Any</span>
+												<span id="j-search-concept">All Locations</span>
 												<span class="caret"></span>
 											</button>
 											<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 												<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
-												<li><a href="#all">Any</a></li>
-												<li><a href="#less_than">Product</a></li>
-												<li><a href="#all">Skus</a></li>
+												<li><a href="#all">All Locations</a></li>
+												<li><a href="#less_than">San Diego</a></li>
+												<li><a href="#all">New York</a></li>
+												<li><a href="#all">France</a></li>
 											</ul>
 										</div>
 									</li>
@@ -310,61 +428,13 @@
 							</li>
 						</ul>
 
-<style media="screen">
-	.s-search-bar-box {border: 1px solid #CCC;display: inline-block;width: 100%;margin:0px;vertical-align:bottom;}
-	.s-search-bar-box > li {background-color:#eee;height:34px;float:left;}
-	.s-search-bar-box > li {width:60%;}
-	.s-search-bar-box > li > ul > li:first-child {width:60%;float:left;}
-	.s-search-bar-box > li > ul > li:last-child {width:40%;float:left;}
-	.s-search-bar-box > li > ul > li .btn {text-align:left;}
-	.s-search-bar-box > li > ul > li .btn span:last-child {float:right;margin-top: 9px;}
-	.s-search-bar-box > li > ul > li .search-panel {border-left:1px solid #ccc;}
-	.s-search-bar-box > li > ul > li .dropdown-menu {left:auto;}
-	.s-search-bar-box > li > ul > li .dropdown-menu li:first-child {padding:5px;}
-	.s-search-bar-box > li:first-child {width:10%;}
-	.s-search-bar-box > li:last-child {width:30%;}
-	.s-search-bar-box > li:last-child {float:right;}
-	.s-search-bar-box > li .s-search-input {border:0px !important;border-radius:0px;}
-	.s-search-bar-box button {border: none;margin-left: 0px !important;height:34px;}
-	.s-search-bar-box .search-panel {border:0px;width:100%;display:block;border-left:1px solid #ccc;}
-	.s-search-bar-box .s-checkbox {margin-top:8px;}
-</style>
-
 					</div>
 
-					<div class="col-md-12 s-search-options">
-						<div class="s-search-box">
-							<ul class="list-unstyled">
-								<li class="row">
-									<div class="col-md-12">
-										<div class="form-group" >
-											<label for="">Location:</label>
-											<select class="form-control">
-												<option>All Locations</option>
-												<option>San Diego</option>
-												<option>France</option>
-												<option>Neptune</option>
-											</select>
-										</div>
-										<div class="form-group">
-											<label for=""></label>
-											<div class="form-group">
-												<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> Only items in stock</label></div>
-											</div>
-										</div>
-									</div>
-								</li>
-							</ul>
-
-						</div>
-					</div>
-
-
-					<div class="col-xs-12 s-bundle-add-items">
+					<div class="col-xs-12 s-bundle-add-items s-hide-trans">
 						<div class="col-xs-12 s-bundle-add-items-inner">
 							<h4 id="j-temp-class">There are no items selected</h4>
-							<ul class="list-unstyled s-order-item-options">
 
+							<ul class="list-unstyled s-order-item-options">
 								<li class="s-bundle-add-obj">
 									<ul class="list-unstyled list-inline">
 										<li class="s-item-type">Product</li>
@@ -400,6 +470,162 @@
 					</div>
 				</div>
 				<!-- //Search for product -->
+
+			</content>
+
+			<hr/class="s-dotted">
+
+			<content class="s-body-box s-disabled">
+
+				<h2 style="background: #666;padding: 5px 10px;color: #FFF;margin: 0px;font-size: 12px;">Wheels</h2>
+				<div class="table-responsive s-order-item-box">
+					<p style="border: 1px solid #CCC;border-top: 0px;padding: 14px;margin: auto;text-align: center;font-size: 15px;background: #FFF;font-weight: 700;">There are no items selected</p>
+					<!--- <table class="table" border="1" cellpadding="0" cellspacing="0">
+						<tr>
+							<th></th>
+							<th>SKU</th>
+							<th>Title</th>
+							<th>Price</th>
+							<th>Qty</th>
+							<th>Discount</th>
+							<th>Total</th>
+							<th>Fullfilment</th>
+							<th></th>
+						</tr>
+
+						<tr class="s-item">
+							<td class="s-image"><img src="http://placehold.it/150x150"></td>
+							<td class="s-sku"><span>bundle-02</span></td>
+							<td class="s-title">
+								<ul class="list-unstyled">
+									<li><span>Skate Shoe</span> <a href="#" class="j-test-button" ng-click="openPageDialog( 'editorderitems' )"><i class="fa fa-pencil"></i></a></li>
+								</ul>
+							</td>
+							<td class="s-price">
+								<ul class="list-unstyled">
+									<li><span>$59.00</span></li>
+								</ul>
+							</td>
+							<td class="s-qty">
+								<ul class="list-unstyled">
+									<li><span>1</span></li>
+								</ul>
+							</td>
+							<td class="s-discount">
+								<ul class="list-unstyled">
+									<li><span>$0.00</span></li>
+								</ul>
+							</td>
+							<td class="s-total">
+								<ul class="list-unstyled">
+									<li><span>$59.00</span></li>
+								</ul>
+							</td>
+							<td class="s-shipping">
+								<ul class="list-unstyled">
+									<li><span>Ship To:</span> <a href="#"><i class="fa fa-pencil"></i></a></li>
+									<li><span>123 Main St. </span></li>
+									<li><span>Northboro, MA 01532</span></li>
+								</ul>
+							</td>
+							<td class="s-order-edit-group">
+								<ul class="list-unstyled">
+									<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+									<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+								</ul>
+							</td>
+						</tr>
+
+					</table> --->
+
+				</div>
+
+				<!-- Search for product -->
+				<div class="row s-bundle-group-items">
+					<div class="col-xs-12 s-search-bar">
+
+						<ul class="list-unstyled s-search-bar-box">
+							<li>
+								<div class="dropdown input-group-btn search-panel">
+									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+										<span id="j-search-concept">Any</span>
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+										<li><a href="#all">Any</a></li>
+										<li><a href="#less_than">Product</a></li>
+										<li><a href="#all">Skus</a></li>
+									</ul>
+								</div>
+							</li>
+							<li><input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku"></li>
+							<li>
+								<ul class="list-unstyled">
+									<li>
+										<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> In stock</label></div>
+									</li>
+									<li>
+										<div class="dropdown input-group-btn search-panel">
+											<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+												<span id="j-search-concept">All Locations</span>
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+												<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+												<li><a href="#all">All Locations</a></li>
+												<li><a href="#less_than">San Diego</a></li>
+												<li><a href="#all">New York</a></li>
+												<li><a href="#all">France</a></li>
+											</ul>
+										</div>
+									</li>
+								</ul>
+							</li>
+						</ul>
+
+					</div>
+
+					<div class="col-xs-12 s-bundle-add-items s-hide-trans">
+						<div class="col-xs-12 s-bundle-add-items-inner">
+							<h4 id="j-temp-class">There are no items selected</h4>
+
+							<ul class="list-unstyled s-order-item-options">
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline">
+										<li class="s-item-type">Product</li>
+									</ul>
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+									</ul>
+									<ul class="list-unstyled list-inline s-last">
+										<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
+
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline">
+										<li class="s-item-type">Product</li>
+									</ul>
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Howling Wolf T-Shirt <span>WOLF-01</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Qty: <span>4</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+									</ul>
+									<ul class="list-unstyled list-inline s-last">
+										<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
+
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- //Search for product -->
+
 			</content>
 
 		</div>
@@ -694,5 +920,16 @@ $('form').submit(function(){
 <script charset="utf-8">
 	jQuery('body').on('click', '.s-bundle-box .s-bundle-box-head .s-toggle-btn', function(e){
 		$(this).parent().parent().toggleClass('s-active');
+	});
+</script>
+
+<script charset="utf-8">
+	//Hide and show the filter search content depending if search has text
+	$('body').on('keyup','.s-search-bar',function() {
+		if( $(this).find('.s-search-input').val().length > 0 ){
+			$(this).parent().find('.s-bundle-add-items').removeClass('s-hide-trans');
+		}else{
+			$(this).parent().find('.s-bundle-add-items').addClass('s-hide-trans');
+		};
 	});
 </script>
