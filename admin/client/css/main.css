@@ -27,7 +27,7 @@ label {font-weight:600;}
 .container-fluid>.navbar-header a {padding-left: 38px;width: 225px;}
 .navbar .container-fluid {padding-left:0px;text-align:center;}
 
-.sidebar {width: 175px;background: #222;height:100vh;display: block;position: fixed;z-index: 3000;top: 50px;overflow: scroll;padding-bottom: 50px;}
+.sidebar {width: 175px;background: #222;height:100vh;display: block;position: fixed;z-index: 3000;top: 50px;overflow: scroll;padding-bottom: 50px;border-right:1px solid #fff;}
 .sidebar.s-sidebarHide {display:none;}
 .content {display: block;overflow: hidden;width: auto;min-height:100vh;}
 .sidebar .s-header-search {margin:0px;float: left !important;width: 100%;}
@@ -595,41 +595,18 @@ a.disabled > i.hibachi-ui-radio {background-position:-16px -48px !important; cur
 i.hibachi-ui-radio-checked {background-position:0px -64px;}
 a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !important; cursor:pointer;}
 
-
 .s-dialog-container {position:absolute;top:0px;height:100%;width:100%;z-index:10001;background-color:#fff !important;}
 .s-dialog-container .s-dialog-content {position:absolute;top:40px;}
 .s-dialog-container .s-dialog-header {position:fixed;top:0px;height:40px;width:100%;z-index:3000;border-radius:0px;}
 .s-dialog-container .s-dialog-footer {position:fixed;bottom:0px;height:40px;width:100%;margin-bottom:0px;border-radius:0px;z-index:3000;}
 .s-dialog-container .s-create-window-footer {display:inline-block;width:100%;}
 
-
-
 .s-dialog-container.ng-enter,
-.s-dialog-container.ng-leave {
--webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-
-position:absolute;
-top:0;
-left:0;
-right:0;
-bottom:0;
-display:block;
-}
-
-.s-dialog-container.ng-enter {
-top:-100%;
-}
-.s-dialog-container.ng-enter.ng-enter-active {
-top:0;
-}
-.s-dialog-container.ng-leave {
-top:0;
-}
-.s-dialog-container.ng-leave.ng-leave-active {
-top:-100%;
-}
-
+.s-dialog-container.ng-leave {-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;position:absolute;top:0;left:0;right:0;bottom:0;display:block;}
+.s-dialog-container.ng-enter {top:-100%;}
+.s-dialog-container.ng-enter.ng-enter-active {top:0;}
+.s-dialog-container.ng-leave {top:0;}
+.s-dialog-container.ng-leave.ng-leave-active {top:-100%;}
 .s-dialog-container.ng-enter .s-dialog-header,
 .s-dialog-container.ng-enter.ng-enter-active .s-dialog-header,
 .s-dialog-container.ng-enter .s-dialog-footer,
@@ -637,16 +614,11 @@ top:-100%;
 .s-dialog-container.ng-leave .s-dialog-header,
 .s-dialog-container.ng-leave.ng-leave-active .s-dialog-header,
 .s-dialog-container.ng-leave .s-dialog-footer,
-.s-dialog-container.ng-leave.ng-leave-active .s-dialog-footer {
-position:absolute;
-}
-
+.s-dialog-container.ng-leave.ng-leave-active .s-dialog-footer {position:absolute;}
 .s-dialog-container.ng-enter,
 .s-dialog-container.ng-enter.ng-enter-active,
 .s-dialog-container.ng-leave,
-.s-dialog-container.ng-leave.ng-leave-active {
-overflow:hidden;
-}
+.s-dialog-container.ng-leave.ng-leave-active {overflow:hidden;}
 
 /*
 .s-slide-in-page-dialog {
