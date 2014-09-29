@@ -290,8 +290,13 @@ component extends="HibachiService" accessors="true" output="false" {
 			//Make sure that the account is not locked 
 			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and 
-				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {	
-					getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {		
+					if(accountAuthentication.getResetPasswordOnNextLoginFlag() == true){
+						arguments.processObject.addError('passwordUpdateRequired',  rbKey('validate.newPassword.duplicatePassword'));	
+					}else{
+						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+					}
+					
 					accountAuthentication.getAccount().setFailedLoginAttemptCount(0); 
 					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 					
@@ -383,6 +388,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		return arguments.account;
+	}
+	
+	public any function processAccount_updatePassword(required any account, required any processObject){
+		
 	}
 	
 	public any function processAccount_lock(required any account){

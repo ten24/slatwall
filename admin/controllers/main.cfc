@@ -72,6 +72,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.publicMethods=listAppend(this.publicMethods, 'resetPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'setupInitialAdmin');
 	this.publicMethods=listAppend(this.publicMethods, 'changeLanguage');
+	this.publicMethods=listAppend(this.publicMethods, 'updatePassword');
 	
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'default');
@@ -256,6 +257,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		
 		login( rc );
+	}
+	
+	public void function updatePassword(required struct rc){
+		
 	}
 	
 	public void function changeLanguage( required struct rc ){

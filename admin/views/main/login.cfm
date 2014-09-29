@@ -79,37 +79,61 @@ Notes:
 			<div class="well tabable" style="width:400px;margin: 0px auto;">
 				<h3>#$.slatwall.rbKey('define.login')#</h3>
 				<br />
+				
 				<cfset authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login") />
-				<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
-					<input type="hidden" name="slatAction" value="admin:main.authorizelogin" />
-					<cfif structKeyExists(rc, "sRedirectURL")>
-						<input type="hidden" name="sRedirectURL" value="#rc.sRedirectURL#" />
-					</cfif>
-					<fieldset class="dl-horizontal">
+			
+				<cfif authorizeProcessObject.hasError('passwordUpdateRequired')>
+					<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
+						<input type="hidden" name="slatAction" value="admin:main.updatePassword" />
+						<cfif structKeyExists(rc, "sRedirectURL")>
+							<input type="hidden" name="sRedirectURL" value="#rc.sRedirectURL#" />
+						</cfif>
+						
+						<cfset updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword") />
+						
 						<fieldset class="dl-horizontal">
-							<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
-							<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" />
+							<fieldset class="dl-horizontal">
+								<cf_HibachiPropertyDisplay object="#updateProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
+								<cf_HibachiPropertyDisplay object="#updateProcessObject#" property="existingPassword" edit="true" />
+								<cf_HibachiPropertyDisplay object="#updateProcessObject#" property="password" edit="true" />
+								<cf_HibachiPropertyDisplay object="#updateProcessObject#" property="passwordConfirm" edit="true" />
+							</fieldset>
+							<button type="submit" class="btn btn-primary pull-right">#$.slatwall.rbKey('define.login')#</button>
 						</fieldset>
-						<button type="submit" class="btn btn-primary pull-right">#$.slatwall.rbKey('define.login')#</button>
-					</fieldset>
-				</form>
-				<hr />
-				<h5>#$.slatwall.rbKey('admin.main.forgotPassword')#</h5>
-				<cfset forgotPasswordProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("forgotPassword") />
-				<form id="adminForgotPasswordForm" action="?s=1" class="form-horizontal" method="post">
-					<input type="hidden" name="slatAction" value="admin:main.forgotpassword" />
-					<fieldset class="dl-horizontal">
+						
+					</form>
+				<cfelse>
+					<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
+						<input type="hidden" name="slatAction" value="admin:main.authorizelogin" />
+						<cfif structKeyExists(rc, "sRedirectURL")>
+							<input type="hidden" name="sRedirectURL" value="#rc.sRedirectURL#" />
+						</cfif>
 						<fieldset class="dl-horizontal">
-							<cf_HibachiPropertyDisplay object="#forgotPasswordProcessObject#" property="emailAddress" edit="true" />
+							<fieldset class="dl-horizontal">
+								<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
+								<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" />
+							</fieldset>
+							<button type="submit" class="btn btn-primary pull-right">#$.slatwall.rbKey('define.login')#</button>
 						</fieldset>
-						<button type="submit" class="btn btn-primary pull-right">#$.slatwall.rbKey('admin.main.sendPasswordReset')#</button>
-					</fieldset>
-				</form>
-				<!--- Integration Logins --->
-				<cfloop array="#rc.integrationLoginHTMLArray#" index="loginHTML">
+					</form>
 					<hr />
-					#loginHTML#
-				</cfloop>
+					<h5>#$.slatwall.rbKey('admin.main.forgotPassword')#</h5>
+					<cfset forgotPasswordProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("forgotPassword") />
+					<form id="adminForgotPasswordForm" action="?s=1" class="form-horizontal" method="post">
+						<input type="hidden" name="slatAction" value="admin:main.forgotpassword" />
+						<fieldset class="dl-horizontal">
+							<fieldset class="dl-horizontal">
+								<cf_HibachiPropertyDisplay object="#forgotPasswordProcessObject#" property="emailAddress" edit="true" />
+							</fieldset>
+							<button type="submit" class="btn btn-primary pull-right">#$.slatwall.rbKey('admin.main.sendPasswordReset')#</button>
+						</fieldset>
+					</form>
+					<!--- Integration Logins --->
+					<cfloop array="#rc.integrationLoginHTMLArray#" index="loginHTML">
+						<hr />
+						#loginHTML#
+					</cfloop>
+				</cfif>
 			</div>
 		<cfelse>
 			<div class="well" style="width:400px;margin: 0px auto;">
