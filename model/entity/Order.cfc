@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,addSaleOrderItem,placeOrder,createReturn,placeOnHold,takeOffHold,cancelOrder,addPromotionCode" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts" {
 	
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -885,26 +885,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.appliedPromotion.removeOrder( this );
 	}
 
-	// Promotion Codes (many-to-many - owner)
-	public void function addPromotionCode(required any promotionCode) {
-		if(arguments.promotionCode.isNew() or !hasPromotionCode(arguments.promotionCode)) {
-			arrayAppend(variables.promotionCodes, arguments.promotionCode);
-		}
-		if(isNew() or !arguments.promotionCode.hasOrder( this )) {
-			arrayAppend(arguments.promotionCode.getOrders(), this);
-		}
-	}
-	public void function removePromotionCode(required any promotionCode) {
-		var thisIndex = arrayFind(variables.promotionCodes, arguments.promotionCode);
-		if(thisIndex > 0) {
-			arrayDeleteAt(variables.promotionCodes, thisIndex);
-		}
-		var thatIndex = arrayFind(arguments.promotionCode.getOrders(), this);
-		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.promotionCode.getOrders(), thatIndex);
-		}
-	}
-
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
@@ -1014,7 +994,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		if(structKeyExists(arguments.data, "shippingAccountAddress")
 			&& structKeyExists(arguments.data.shippingAccountAddress, "accountAddressID")
 			&& len(arguments.data.shippingAccountAddress.accountAddressID)
-			&& (isNull(getShippingAccountAddress()) || getShippingAccountAddress().getAccountAddressID() != arguments.data.shippingAccountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "shippingAddress") || !structKeyExists(arguments.data.shippingAddress, "addressID") || !len(arguments.data.shippingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "shippingAddress");
 		}
@@ -1023,7 +1003,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		if(structKeyExists(arguments.data, "billingAccountAddress")
 			&& structKeyExists(arguments.data.billingAccountAddress, "accountAddressID")
 			&& len(arguments.data.billingAccountAddress.accountAddressID)
-			&& (isNull(getBillingAccountAddress()) || getBillingAccountAddress().getAccountAddressID() != arguments.data.billingAccountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "billingAddress") || !structKeyExists(arguments.data.billingAddress, "addressID") || !len(arguments.data.billingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "billingAddress");
 		}
