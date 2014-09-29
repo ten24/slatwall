@@ -397,9 +397,7 @@ function setupEventHandlers() {
 
 	});
 	// Listing Display - Paging Show Toggle
-	jQuery('body', function(e){
-		jQuery('.paging-show-toggle').closest('ul').find('.show-option').hide();
-	});
+	pagingShowToggleDefaultHidden();
 	jQuery('body').on('click', '.paging-show-toggle', function(e) {
 		e.preventDefault();
 		jQuery(this).closest('ul').find('.show-option').toggle();
@@ -1195,8 +1193,9 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 				}
 
 				// Update the paging nav
+				
 				jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
-
+				pagingShowToggleDefaultHidden();
 				// Update the saved state ID of the table
 				jQuery('#' + tableID).data('savedstateid', r["savedStateID"]);
 				jQuery('#' + tableID).attr('data-savedstateid', r["savedStateID"]);
@@ -1280,10 +1279,6 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 		nav += '<li><a href="##" class="show-option" data-show="500">500</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
 	
-		
-		nav += '</ul>';
-		
-		nav += '<ul class="pagination">';
 		if(currentPage > 1) {
 			nav += '<li><a href="#" class="listing-pager page-option prev" data-page="' + (currentPage - 1) + '">&laquo;</a></li>';
 		} else {
@@ -1556,6 +1551,12 @@ function updateReport( page ) {
 }
 
 // ========================= START: HELPER METHODS ================================
+
+function pagingShowToggleDefaultHidden(){
+	jQuery('body', function(e){
+		jQuery('.paging-show-toggle').closest('ul').find('.show-option').hide();
+	});
+}
 
 function convertCFMLDateFormat( dateFormat ) {
 	dateFormat = dateFormat.replace('mmm', 'M');

@@ -578,8 +578,7 @@
 					<li><a href="##" class="show-option" data-show="100">100</a></li>
 					<li><a href="##" class="show-option" data-show="500">500</a></li>
 					<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
-				</ul>
-				<ul class="pagination">	
+				
 					<cfif attributes.smartList.getCurrentPage() gt 1>
 						<li><a href="##" class="listing-pager page-option prev" data-page="#attributes.smartList.getCurrentPage() - 1#">&laquo;</a></li>
 					<cfelse>
