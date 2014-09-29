@@ -63,7 +63,7 @@ Notes:
 			<cfset var copyContentExclusionList = "" />
 			
 			<!--- if the meta directory doesn't exist, add it tothe exclusion list--->
-			<cfif !checkForMetaFolderWithoutDismissal()>
+			<cfif !checkForMetaFolderExists()>
 				<cfset copyContentExclusionList = "meta" />
 			</cfif>
 			
@@ -157,6 +157,10 @@ Notes:
 	
 	<cffunction name='dismissMeta'>
 		<cfset fileWrite( expandPath('/Slatwall/custom/config') & '/metaDismiss.txt.cfm', now() ) />
+	</cffunction>
+	
+	<cffunction name="checkForMetaFolderExists">
+		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
 	</cffunction>
 	
 </cfcomponent>
