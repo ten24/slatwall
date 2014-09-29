@@ -1,7 +1,3 @@
-<style media="screen">
-	body {background-color:#eee;}
-	.s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;border:1px solid #DA5757 !important;}
-</style>
 <div class="row s-body-nav">
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="col-md-4">
@@ -46,8 +42,8 @@
 		<a data-toggle="collapse"  href="#collapseOne">
 			<div class="panel-heading">
 				<h4 class="panel-title">
-						<span>Basic</span>
-						<i class="fa fa-caret-left"></i>
+					<span>Basic</span>
+					<i class="fa fa-caret-left"></i>
 				</h4>
 			</div>
 		</a>
