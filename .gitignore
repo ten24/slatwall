@@ -14,3 +14,5 @@ logs/
 WEB-INF
 .rdsTempFiles/
 custom/config/configApplication.cfm
+
+config/configApplication.cfm
