@@ -248,12 +248,6 @@ Notes:
 		
 		<cfreturn accountLoyaltyNumber />
 	</cffunction>
-	
-	<cffunction name="deleteAccountAuthentication" ouptut="false">
-		<cfargument name ="authenticationID" type="string" required="true" />
-		
-		<cfset ormExecuteQuery("DELETE SlatwallAccountAuthentication WHERE accountAuthenticationID = :authenticationID", {authenticationID= arguments.authenticationID}) />
-	</cffunction>
-	
+
 </cfcomponent>
 
