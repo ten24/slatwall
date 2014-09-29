@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="createPassword,changePassword,create,setupInitialAdmin, lock" {
+component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="createPassword,changePassword,create,setupInitialAdmin, lock, unlock" {
 	
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -55,7 +55,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer"; 
+	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false"; 
 	
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";

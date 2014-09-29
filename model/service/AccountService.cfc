@@ -283,23 +283,23 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processAccount_login(required any account, required any processObject) {
 		// Take the email address and get all of the user accounts by primary e-mail address
-		var accountAuthentications =getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
+		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
 		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
-	
-		if(!isNull(accountAuthentications)) {
+
+		if(!isNull(accountAuthentication)) {
 			//Make sure that the account is not locked 
-			if(isNull(accountAuthentications.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentications.getAccount().getLoginLockExpiresDateTime()) == 1 ){
+			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and 
-				if(!isNull(accountAuthentications.getPassword()) && len(accountAuthentications.getPassword()) && accountAuthentications.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentications.getAccountAuthenticationID())) {
-					getHibachiSessionService().loginAccount( accountAuthentications.getAccount(), accountAuthentications);
-					accountAuthentications.getAccount().setFailedLoginAttemptCount(0); 
-					accountAuthentications.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {	
+					getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+					accountAuthentication.getAccount().setFailedLoginAttemptCount(0); 
+					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 					
 					return arguments.account;
 				}
 				
 				arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
-				invalidLoginData.account = accountAuthentications.getAccount();
+				invalidLoginData.account = accountAuthentication.getAccount();
 				
 				//Log the failed attempt to account.failedLoginAttemptCount
 				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
@@ -367,7 +367,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			password = arguments.processObject.getPassword(),
 			passwordConfirm = arguments.processObject.getPasswordConfirm()
 		};
-		
 		arguments.account = this.processAccount(arguments.account, changeProcessData, 'changePassword');
 		
 		// If there are no errors
@@ -1222,6 +1221,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 		// Set the password
 		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+		
+		//Set the expiration date for 90 days for admins
+		if(arguments.account.getAdminAccountFlag() == true){
+			var expirationDateTime= dateAdd('d', 90, Now());
+			accountAuthentication.setExpirationDateTime(expirationDateTime);
+		}
+		
 		return arguments.account;
 	}
 	
@@ -1265,16 +1271,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		accountAuthenticationsArray = accountAuthentications.getPageRecords();
 		
 		//Create a variable to hold the length of the new array
-		var arrayLength = arrayLen(accountAuthenticationsArray);
-		var i = 1;
+		var numberOfRecordsToBeDeleted = arrayLen(accountAuthenticationsArray) - arguments.maxAuthenticationsCount;
 		
 		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
-		while (arrayLength >= arguments.maxAuthenticationsCount){
-			//entityDelete(accountAuthenticationsArray[i]);
-			getAccountDAO().deleteAccountAuthentication(accountAuthenticationsArray[i].getAccountAuthenticationID()); 
-			i++;
-			arrayLength--;
+		for(var i=1; i < numberOfRecordsToBeDeleted; i++){
+			accountAuthenticationsArray[i].removeAccount();
+			entityDelete(accountAuthenticationsArray[i]);
+
 		}
+		
 	}
 	// =====================  END:  Private Helper Functions ==================
 	
