@@ -137,114 +137,27 @@ Notes:
 			</div><!-- /.container-fluid -->
 		</nav><!-- /.navbar -->
 
+<div ng-controller="sidebarController">
 
 		<cfif $.slatwall.getLoggedInAsAdminFlag()>
-			<aside class="sidebar" id="sidebar">
-
+			<aside class="{{sidebarClass}}" id="sidebar">
+			
 				<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
 					<div class="form-group">
-						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search">
+						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search" ng-focus="showResults()">
 					</div>
-					<div class="row s-search-results" style="padding-top:15px;">
-						<!--- <div id="s-close-search" style="background"><a href="##"><i class="fa fa-times"></i> Close</a></div> --->
+					<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
+						<div id="s-close-search" style="background"><a href="##" ng-click="hideResults()"><i class="fa fa-times"></i> Close</a></div>
 						<ul class="col-md-12 list-unstyled">
 
-							<li>
+
+							<li ng-repeat="searchResultSection in searchResultSections">
 								<div class="col-md-4 s-title">
-									<h2>Products</h2>
+									<h2>{{searchResultSection.sectionName}}</h2>
 								</div>
 								<div class="col-md-8 s-body">
 									<ul class="list-unstyled" id="j-search-results"	>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Dolor Tortor Tristique Commodo Consectetur</a></li>
-										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
-									</ul>
-								</div>
-							</li>
-
-							<!--- <li>
-								<div class="col-md-4 s-title">
-									<h2>Product Types</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-									</ul>
-								</div>
-							</li> --->
-
-							<li>
-								<div class="col-md-4 s-title">
-									<h2>Brands</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
-									</ul>
-								</div>
-							</li>
-
-							<li>
-								<div class="col-md-4 s-title">
-									<h2>Promotions</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
-									</ul>
-								</div>
-							</li>
-
-							<li>
-								<div class="col-md-4 s-title">
-									<h2>Orders</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-									</ul>
-								</div>
-							</li>
-
-							<!--- <li>
-								<div class="col-md-4 s-title">
-									<h2>Accounts</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-									</ul>
-								</div>
-							</li> --->
-
-							<!--- <li>
-								<div class="col-md-4 s-title">
-									<h2>Vendor Orders</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-									</ul>
-								</div>
-							</li> --->
-
-							<li>
-								<div class="col-md-4 s-title">
-									<h2>Vendors</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Pharetra Ipsum Cursus Dapibus Nullam</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
+										<li ng-repeat="searchResult in searchResultSection.results"><a href="{{searchResult.link}}">{{searchResult.name}}</a></li>
 									</ul>
 								</div>
 							</li>
@@ -252,6 +165,9 @@ Notes:
 						</ul>
 					</div>
 				</form>
+			
+			
+<!---			
 <script charset="utf-8">
 	$( '.s-header-search ##global-search' ).focus(function() {
 
@@ -282,11 +198,11 @@ Notes:
 		});
 
 	});
-
-
 </script>
+--->
+
 <style media="screen">
-	.s-search-results {display:none;color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
+	.s-search-results {color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
 	.s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
 	.s-search-results > ul > li > .s-title {padding-left:0px;}
 	.s-search-results > ul > li > .s-title h2 {font-size:12px;font-weight:600;display:inline;vertical-align:top;}
@@ -300,7 +216,7 @@ Notes:
 	.s-search-results ##s-close-search a:hover {color:##ffffff;}
 
 </style>
-			    <nav class="sidebar-nav">
+			    <nav class="sidebar-nav" ng-hide="searchResultsOpen">
 					<ul id="menu" >
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
 							<cf_HibachiDividerHider>
@@ -403,7 +319,8 @@ Notes:
 			    </nav>
 			</aside>
 		</cfif>
-
+	</div> <!--  /ng-controller | sidebarController -->
+	
 		<section class="content s-body-margin" id="j-main-content">
 
 			<div class="col-md-12">
@@ -480,6 +397,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collectionstabcontroller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/globalsearch.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
 
 		<!---directives --->
