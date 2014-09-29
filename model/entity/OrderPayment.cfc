@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction" {
+component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction,createTransaction,runPlaceOrderTransaction" {
 	
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -726,12 +726,14 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		if(structKeyExists(arguments.data, "billingAccountAddress")
 			&& structKeyExists(arguments.data.billingAccountAddress, "accountAddressID")
 			&& len(arguments.data.billingAccountAddress.accountAddressID)
-			&& (isNull(getBillingAccountAddress()) || getBillingAccountAddress().getAccountAddressID() != arguments.data.billingAccountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "billingAddress") || !structKeyExists(arguments.data.billingAddress, "addressID") || !len(arguments.data.billingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "billingAddress");
 		}
 		
 		super.populate(argumentCollection=arguments);
+		
+		setupEncryptedProperties();
 	}
 	
 	// ==================  END:  Overridden Methods ========================
