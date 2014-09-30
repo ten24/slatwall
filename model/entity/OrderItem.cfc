@@ -62,7 +62,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="orderItemStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemStatusType" fetch="join";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true" fetch="join";
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
-	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
+	property name="order" hb_populateEnabled="false" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
 	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
@@ -98,6 +98,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="quantityUnreceived" persistent="false";
 	property name="registrants" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
+	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
 
 	public numeric function getMaximumOrderQuantity() {
@@ -232,11 +233,21 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public numeric function getTaxAmount() {
 		var taxAmount = 0;
 		
-		for(var i=1; i<=arrayLen(getAppliedTaxes()); i++) {
-			taxAmount = precisionEvaluate(taxAmount + getAppliedTaxes()[i].getTaxAmount());
+		for(var taxApplied in getAppliedTaxes()) {
+			taxAmount = precisionEvaluate(taxAmount + taxApplied.getTaxAmount());
 		}
 		
 		return taxAmount;
+	}
+	
+	public numeric function getTaxLiabilityAmount() {
+		var taxLiabilityAmount = 0;
+		
+		for(var taxApplied in getAppliedTaxes()) {
+			taxLiabilityAmount = precisionEvaluate(taxLiabilityAmount + taxApplied.getTaxLiabilityAmount());
+		}
+		
+		return taxLiabilityAmount;
 	}
 	
 	public numeric function getQuantityDelivered() {
