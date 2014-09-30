@@ -123,8 +123,8 @@
 		</a>
 
 		<div id="collapseTwo" class="panel-collapse collapse">
-			<content class="s-body-box">
-				<h2 class="s-filter-header s-status">
+			<content class="s-body-box s-status-active">
+				<h2 class="s-filter-header">
 					<span class="s-title">Deck</span>
 					<ul class="list-unstyled list-inline">
 						<li>Min<span>1</span></li>

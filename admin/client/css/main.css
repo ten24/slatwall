@@ -195,12 +195,12 @@ span.j-tool-tip-item i {color:#ccc;cursor:pointer;}
 .s-add-display-field > div > i.fa-plus {top: 4px;position: relative;margin-right: 5px;}
 .s-add-display-field > div button {margin-top: 4px;}
 
-content.s-body-box .s-filter-header {background: #567194;padding: 8px 18px;margin: 0px;font-size: 14px;}
+content.s-body-box .s-filter-header {background: #526375;padding: 8px 18px;margin: 0px;font-size: 14px;}
 content.s-body-box .s-filter-header .s-title {border-right: 1px dotted #FFF;padding-right: 25px;opacity: .9;color: #FFF;}
-content.s-body-box .s-filter-header.s-status:after {font-family: fontAwesome;content: "\f00c";font-size: 20px;position: relative;top: -2px;float: right;right: -9px;color:#ffffff;}
-content.s-body-box .s-filter-header ul {opacity: .5;font-size: 12px;margin-left: 15px;display:inline-block;margin-bottom:0px;}
+content.s-body-box.s-status-active .s-filter-header:after {font-family: fontAwesome;content: "\f00c";font-size: 20px;position: relative;top: -2px;float: right;right: -9px;color:#ffffff;}
+content.s-body-box .s-filter-header ul {opacity: .5;font-size: 11px;margin-left: 15px;display:inline-block;margin-bottom:0px;}
 content.s-body-box .s-filter-header ul li {color:#ffffff;}
-content.s-body-box .s-filter-header ul li span {background: #FFF;border-radius: 2px;padding: 0px 4px;color: #567194;margin-left: 4px;font-size: 10px;font-weight: 800;}
+content.s-body-box .s-filter-header ul li span {background: #FFF;border-radius: 3px;padding: 0px 3px;color: #526375;margin-left: 4px;font-size: 10px;font-weight: 800;}
 content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 14px;margin: auto;text-align: center;font-size: 15px;background: #FFF;font-weight: 700;}
 
 .s-edit-elements {width:60px;}
@@ -507,13 +507,13 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-panel-header-info .s-header-left {padding:0px;}
 .s-panel-header-info .s-header-right {padding:0px;}
 
-.navbar-s-navbar-ten24 { background-color: #F58620;min-height:0px;}
+.navbar-s-navbar-ten24 { background-color: #526375;min-height:0px;}
 .navbar-s-navbar-ten24 li {float:left !important;}
-.navbar-s-navbar-ten24 li.active {border-left: 2px solid #FFB671;}
+.navbar-s-navbar-ten24 li.active {border-left: 2px solid #ffffff;}
 .navbar-s-navbar-ten24 .navbar-nav { margin:0px;}
 .navbar-s-navbar-ten24 .navbar-brand {height:38px;padding:8px;}
-.navbar-s-navbar-ten24 .navbar-nav>.active>a:hover,.navbar-s-navbar-ten24 .navbar-nav>li>a:hover, .navbar-s-navbar-ten24 .navbar-nav>li>a:focus { background-color:#FF9A35}
-.navbar-s-navbar-ten24 .navbar-nav>.active>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover, .navbar-s-navbar-ten24 .navbar-nav>.open>a:focus { background-color: #F58620}
+.navbar-s-navbar-ten24 .navbar-nav>.active>a:hover,.navbar-s-navbar-ten24 .navbar-nav>li>a:hover, .navbar-s-navbar-ten24 .navbar-nav>li>a:focus { background-color:#727E8B}
+.navbar-s-navbar-ten24 .navbar-nav>.active>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover, .navbar-s-navbar-ten24 .navbar-nav>.open>a:focus { background-color: #526375;opacity:.8;}
 .dropdown-menu { background-color: #FFFFFF}
 .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #F58620}
 .navbar-s-navbar-ten24 { background-image: none; }
@@ -541,7 +541,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-create-window .navbar .navbar-nav li a i {font-size:25px;}
 
 /*Add breadcrumbs to the create-window*/
-.s-create-window .s-title {top: -2px;position: relative;margin-right: 25px;}
+.s-create-window .s-create-window-header .s-title {top: -2px;position: relative;margin-right: 25px;}
 .s-create-window .s-bread-crumb ul {font-size:12px;}
 .s-create-window .s-bread-crumb ul li a {color:#ffffff;opacity:0.8;}
 .s-create-window .s-bread-crumb ul li a:hover {color:#ffffff;opacity:1;}
