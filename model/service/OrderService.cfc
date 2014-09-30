@@ -401,7 +401,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitReturn") {
 			
 			// First see if we can use an existing order return
-			var orderReturn = processObject.getOrderReturnID();	
+			var orderReturn = processObject.getOrderReturn();	
 			
 			// Next if we can't use an existing one, then we need to create a new one
 			if(isNull(orderReturn) || orderReturn.getOrder().getOrderID() neq arguments.order.getOrderID()) {
