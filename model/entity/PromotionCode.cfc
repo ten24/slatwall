@@ -137,14 +137,6 @@ component displayname="Promotion Code" entityname="SlatwallPromotionCode" table=
 			arrayDeleteAt(arguments.account.getPromotionCodes(), thatIndex);
 		}
 	}
-    
-	// Orders (many-to-many - inverse)
-	public void function addOrder(required any order) {
-		arguments.order.addPromotionCode( this );
-	}
-	public void function removeOrder(required any order) {
-		arguments.order.removePromotionCode( this );
-	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

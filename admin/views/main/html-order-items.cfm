@@ -1,26 +1,13 @@
-<style media="screen">
-	body {background-color:#eee;}
-	.s-remove:hover {background-color:#DA5757 !important;color:#ffffff !important;border:1px solid #DA5757 !important;}
-</style>
 <div class="row s-body-nav">
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="col-md-4 s-header-info">
 			<ul class="list-unstyled list-inline">
 				<li><a href="##">Dashboard</a></li>
 				<li><a href="##">Order Items</a></li>
-				<li><a href="##">Order #2635</a></li>
+				<li><a href="##">Order ##2635</a></li>
 			</ul>
-			<h1>Order #2635</h1>
+			<h1>Order ##2635</h1>
 		</div>
-
-		<style media="screen">
-			.s-body-nav .s-header-info ul {font-size:10px;margin-bottom:0px;margin-top:5px;}
-			.s-body-nav .s-header-info ul li a {color:#aaaaaa;}
-			.s-body-nav .s-header-info ul li a:hover {color:#444444;}
-			.s-body-nav .s-header-info h1 {margin-top:0px;}
-			.s-body-nav .s-header-info li:after {font-family: fontAwesome;content:'\f105';padding-right:0px !important;padding-left:0px !important;margin-left:12px;color:#aaaaaa;}
-			.s-body-nav .s-header-info li:last-child:after {content:'';}
-		</style>
 
 		<div class="col-md-8">
 			<div class="btn-toolbar">
@@ -300,6 +287,22 @@
 							<span class="input-group-btn">
 								<button class="btn btn-default s-search-button" type="button"><span class="glyphicon glyphicon-search"></span></button>
 							</span>
+							<!--- <div class="dropdown input-group-btn search-panel">
+								<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+									<span id="j-search-concept">Any</span>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+									<li><a href="#all">Any</a></li>
+									<li><a href="#less_than">Product</a></li>
+									<li><a href="#all">Skus</a></li>
+								</ul>
+							</div> --->
+
+							<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked" ><label for="j-checkbox25"> Only items in stock</label></div>
+<style media="screen">
+	.s-bundle-group-items .input-group .s-checkbox {display: inline-block;height: 34px;background: #EEE;border-right: 1px solid #DDD;border-bottom: 1px solid #DDD;border-top: 1px solid #DDD;vertical-align: bottom;} 
+</style>
 						</div>
 					</div>
 

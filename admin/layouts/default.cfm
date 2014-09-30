@@ -1,38 +1,38 @@
 <!---
 
-    Slatwall - An Open Source eCommerce Platform
-    Copyright (C) ten24, LLC
+	Slatwall - An Open Source eCommerce Platform
+	Copyright (C) ten24, LLC
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    Linking this program statically or dynamically with other modules is
-    making a combined work based on this program.  Thus, the terms and
-    conditions of the GNU General Public License cover the whole
-    combination.
+	Linking this program statically or dynamically with other modules is
+	making a combined work based on this program.  Thus, the terms and
+	conditions of the GNU General Public License cover the whole
+	combination.
 
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms
-    of your choice, provided that you follow these specific guidelines:
+	As a special exception, the copyright holders of this program give you
+	permission to combine this program with independent modules and your
+	custom code, regardless of the license terms of these independent
+	modules, and to copy and distribute the resulting program under terms
+	of your choice, provided that you follow these specific guidelines:
 
 	- You also meet the terms and conditions of the license of each
-	  independent module
+	independent module
 	- You must not alter the default display of the Slatwall name or logo from
-	  any part of the application
+	any part of the application
 	- Your custom code must not alter or create any files inside Slatwall,
-	  except in the following directories:
+	except in the following directories:
 		/integrationServices/
 
 	You may copy and distribute the modified version of this program that meets
@@ -40,8 +40,8 @@
 	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
 
-    If you modify this program, you may extend this exception to your version
-    of the program, but you are not obligated to do so.
+	If you modify this program, you may extend this exception to your version
+	of the program, but you are not obligated to do so.
 
 Notes:
 
@@ -62,8 +62,8 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="../../client/lib/font-awesome/css/font-awesome.min.css">
+		<link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
+		<link href="#request.slatwallScope.getBaseURL()#/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.css" rel="stylesheet">
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
@@ -100,9 +100,6 @@ Notes:
 				<cfif not len(homeLink)>
 					<cfset homeLink = "/" />
 				</cfif>
-				<!--- <div class="navbar-header">
-					<a href="#homeLink#" class="navbar-brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;heigh:16px;" title="Slatwall" /></a>
-				</div><!-- .navbar-header --> --->
 
 				<div id="slatwall-primary-nav">
 
@@ -114,8 +111,8 @@ Notes:
 						</cfif>
 					</span>
 
-					<a href="#homeLink#" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
-
+					<a href="#homeLink#" target="_self" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
+					
 					<ul class="nav navbar-nav navbar-right">
 						<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<cf_HibachiActionCallerDropdown title="" icon="cog icon-white" dropdownclass="pull-right" type="nav">
@@ -142,14 +139,167 @@ Notes:
 
 
 		<cfif $.slatwall.getLoggedInAsAdminFlag()>
-			<aside class="sidebar">
+			<aside class="sidebar" id="sidebar">
 
 				<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
 					<div class="form-group">
 						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search">
 					</div>
-				</form>
+					<div class="row s-search-results" style="padding-top:15px;">
+						<!--- <div id="s-close-search" style="background"><a href="##"><i class="fa fa-times"></i> Close</a></div> --->
+						<ul class="col-md-12 list-unstyled">
 
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Products</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled" id="j-search-results"	>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Dolor Tortor Tristique Commodo Consectetur</a></li>
+										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
+									</ul>
+								</div>
+							</li>
+
+							<!--- <li>
+								<div class="col-md-4 s-title">
+									<h2>Product Types</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li> --->
+
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Brands</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
+									</ul>
+								</div>
+							</li>
+
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Promotions</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
+									</ul>
+								</div>
+							</li>
+
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Orders</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li>
+
+							<!--- <li>
+								<div class="col-md-4 s-title">
+									<h2>Accounts</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li> --->
+
+							<!--- <li>
+								<div class="col-md-4 s-title">
+									<h2>Vendor Orders</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li> --->
+
+							<li>
+								<div class="col-md-4 s-title">
+									<h2>Vendors</h2>
+								</div>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled">
+										<li><a href="##">Pharetra Ipsum Cursus Dapibus Nullam</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+										<li><a href="##">Arist AH Hemostat</a></li>
+									</ul>
+								</div>
+							</li>
+
+						</ul>
+					</div>
+				</form>
+<script charset="utf-8">
+	$( '.s-header-search ##global-search' ).focus(function() {
+
+		function hideSearch() {
+			$(document).click(function(e) {
+				var tar = $(e.target);
+			    if ($(tar).parents('.s-search-results').length) {
+					//Do Nothing
+				}else{
+					$('.sidebar').removeClass('s-search-width');
+					$('.s-search-results').hide();
+					$('.sidebar-nav').show();
+			    }
+			});
+		};
+
+		$(this).on('change keyup paste click', function(e){
+			if($(this).val()){
+				hideSearch();
+				$('.s-search-results').show();
+				$('.sidebar').addClass('s-search-width');
+				$('.sidebar-nav').hide();
+			}else{
+				$('.sidebar').removeClass('s-search-width');
+				$('.s-search-results').hide();
+				$('.sidebar-nav').show();
+			};
+		});
+
+	});
+
+
+</script>
+<style media="screen">
+	.s-search-results {display:none;color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
+	.s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
+	.s-search-results > ul > li > .s-title {padding-left:0px;}
+	.s-search-results > ul > li > .s-title h2 {font-size:12px;font-weight:600;display:inline;vertical-align:top;}
+	.s-search-results > ul > li > .s-body {font-size:12px;padding:0px;}
+	.s-search-results > ul > li > .s-body ul li {margin-bottom: 8px;border-bottom: 1px solid ##666;padding-bottom: 8px;}
+	.s-search-results > ul > li > .s-body ul li a {color:##dddddd;}
+	.s-search-results > ul > li > .s-body ul li a:hover {color:##ffffff;}
+	.s-search-width {width:330px;transition: all 0.5s ease;}
+	.s-search-results ##s-close-search {width:100%;text-align:right;margin-bottom:15px;}
+	.s-search-results ##s-close-search a {padding:5px;margin:0px;margin-right:10px;color:##aaaaaa;display:inline-block;}
+	.s-search-results ##s-close-search a:hover {color:##ffffff;}
+
+</style>
 			    <nav class="sidebar-nav">
 					<ul id="menu" >
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
@@ -300,10 +450,10 @@ Notes:
 		<!---displays alerts to the user --->
 		<div ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer" role="alert" ng-repeat="alert in alerts">
 			<!---only show a dismissable button if we are showing info or a warning --->
-	  	<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	  	<!---show check mark only if success, always display message --->
-	  	<i style="display:none;" class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
-    </div>
+		<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<!---show check mark only if success, always display message --->
+		<i style="display:none;" class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
+	</div>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
@@ -381,7 +531,7 @@ Notes:
 
 	function mobileNav() {
 		$('.navbar-header').toggle();
-		$('.sidebar').toggle();
+		$('.sidebar').toggleClass('s-sidebarHide');
 		if($('#j-main-content').hasClass('s-body-margin')){
 			$('#j-main-content').removeClass('s-body-margin').css('margin-left','0px !important');
 
@@ -389,6 +539,5 @@ Notes:
 			$('#j-main-content').addClass('s-body-margin').css('margin-left','174px !important');;
 		};
 	};
-
 
 </script>
