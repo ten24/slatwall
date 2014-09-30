@@ -57,5 +57,6 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="taxJurisdictionName" />
 		<cf_HibachiListingColumn propertyIdentifier="taxRate" />
 		<cf_HibachiListingColumn propertyIdentifier="taxAmount" />
+		<cf_HibachiListingColumn propertyIdentifier="taxLiabilityAmount" />
 	</cf_HibachiListingDisplay>
 </cfoutput>
