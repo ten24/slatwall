@@ -33,10 +33,6 @@
   });
 </script>--->
 
-
-
-
-
 <script charset="utf-8">
   $('.s-filter-item .panel-body').click(function(){
     $(this).parent().parent().parent().siblings('li').toggleClass('s-disabled');

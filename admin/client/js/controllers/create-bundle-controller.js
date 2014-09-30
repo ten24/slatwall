@@ -28,11 +28,15 @@ function(
 	processObjectPromise.then(function(value){
 		$log.debug('getProcessObject');
 		$scope.processObject = value.data;
+		
 		var validation = $slatwall.getValidation('Product_Create');
 		validation.then(function(value){
 			$log.debug('getValidation');
 			$log.debug(value);
 			$scope.processObject.validation = value;
+			
+			formService.setForm($scope.form.createProductBundle);
+			
 		},function(reason){
 			var messages = reason.MESSAGES;
 			var alerts = alertService.formatMessagesToAlerts(messages);
@@ -48,12 +52,19 @@ function(
 	
 	$scope.saveProductBundle = function(closeDialogIndex){
 		$log.debug('saving Product Bundle');
-		$log.debug(productBundleForm);
-		//if valid and we have a close index then close
-		if(angular.isDefined(closeDialogIndex)){
-			$rootScope.closePageDialog(closeDialogIndex);
+		var createProductBundleForm = formService.getForm('form.createProductBundle');
+		$log.debug(createProductBundleForm);
+		//only save the form if it passes validation
+		createProductBundleForm.$submitted = true;
+		if(createProductBundleForm.$valid === true){
+			//if valid and we have a close index then close
+			if(angular.isDefined(closeDialogIndex)){
+				$rootScope.closePageDialog(closeDialogIndex);
+			}
 		}
 	};
+	
+	
 	
 	/*$scope.processObject.bundleGroups = [
 		{

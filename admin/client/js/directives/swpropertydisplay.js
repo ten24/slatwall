@@ -31,10 +31,9 @@ partialsPath
 					if(angular.isDefined(scope.object)){
 						
 						scope.propertyDisplay = {
-							form:formController,
 							object:scope.object,
 							property:scope.property,
-							errorMessages:[],
+							errors:{},
 							editing:scope.editing,
 							isEditable:scope.isEditable,
 							isHidden:scope.isHidden,

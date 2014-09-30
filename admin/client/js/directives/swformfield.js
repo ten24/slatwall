@@ -39,24 +39,6 @@ partialsPath
 		},
 		replace:true,
 		link: function(scope, element,attrs, formController){
-			scope.formFieldChanged = function(value){
-				$log.debug('formfieldChanged');
-				$log.debug(value);
-				scope.propertyDisplay.errorMessages = [];
-				if(formController[scope.propertyDisplay.property].$invalid && formController[scope.propertyDisplay.property].$dirty){
-					for(key in formController[scope.propertyDisplay.property].$error){
-						
-						var errorMessage = '';
-						if(key === 'required'){
-							errorMessage = scope.propertyDisplay.title+' is required';
-						}
-						
-						scope.propertyDisplay.errorMessages.push(errorMessage);
-						console.log(scope.propertyDisplay.errorMessages);
-					}
-				};
-				
-			};
 			
 			//as soon as we get data compile the web componenet
 			var unBindWatch = scope.$watch('propertyDisplay',function(newValue,oldValue){
@@ -82,6 +64,8 @@ partialsPath
 						if(scope.propertyDisplay.type === 'select'){
 				        	scope.propertyDisplay.value = scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0];
 				        }
+						scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
+						scope.propertyDisplay.form = formController;
 				        
 						unBindWatch();
 					});
