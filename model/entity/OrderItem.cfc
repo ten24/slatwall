@@ -95,6 +95,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
+	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
 
 	public numeric function getMaximumOrderQuantity() {
@@ -219,11 +220,21 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public numeric function getTaxAmount() {
 		var taxAmount = 0;
 		
-		for(var i=1; i<=arrayLen(getAppliedTaxes()); i++) {
-			taxAmount = precisionEvaluate(taxAmount + getAppliedTaxes()[i].getTaxAmount());
+		for(var taxApplied in getAppliedTaxes()) {
+			taxAmount = precisionEvaluate(taxAmount + taxApplied.getTaxAmount());
 		}
 		
 		return taxAmount;
+	}
+	
+	public numeric function getTaxLiabilityAmount() {
+		var taxLiabilityAmount = 0;
+		
+		for(var taxApplied in getAppliedTaxes()) {
+			taxLiabilityAmount = precisionEvaluate(taxLiabilityAmount + taxApplied.getTaxLiabilityAmount());
+		}
+		
+		return taxLiabilityAmount;
 	}
 	
 	public numeric function getQuantityDelivered() {
