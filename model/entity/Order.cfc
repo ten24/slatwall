@@ -765,7 +765,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public numeric function getTotal() {
-		return precisionEvaluate(getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getFulfillmentRefundTotal() - getDiscountTotal());
+		return precisionEvaluate(getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal());
 	}
 	
 	public numeric function getTotalItems() {
