@@ -124,10 +124,14 @@
 
 		<div id="collapseTwo" class="panel-collapse collapse">
 			<content class="s-body-box">
-
-				<h2 style="background: #666;padding: 5px 10px;color: #FFF;margin: 0px;font-size: 12px;">Deck</h2>
+				<h2 class="s-filter-header s-status">
+					<span class="s-title">Deck</span>
+					<ul class="list-unstyled list-inline">
+						<li>Min<span>1</span></li>
+						<li>Max<span>2</span></li>
+					</ul>
+				</h2>
 				<div class="table-responsive s-order-item-box">
-					<!--- <p style="border: 1px solid #CCC;border-top: 0px;padding: 14px;margin: auto;text-align: center;font-size: 15px;background: #FFF;font-weight: 700;">There are no items selected</p> --->
 
 					<table class="table" border="1" cellpadding="0" cellspacing="0">
 						<tr>
@@ -227,7 +231,6 @@
 
 					</table>
 
-
 				</div>
 
 				<!-- Search for product -->
@@ -322,9 +325,15 @@
 
 			<content class="s-body-box">
 
-				<h2 style="background: #666;padding: 5px 10px;color: #FFF;margin: 0px;font-size: 12px;">Trucks</h2>
+				<h2 class="s-filter-header">
+					<span class="s-title">Trucks</span>
+					<ul class="list-unstyled list-inline">
+						<li>Min<span>1</span></li>
+						<li>Max<span>2</span></li>
+					</ul>
+				</h2>
 				<div class="table-responsive s-order-item-box">
-					<p style="border: 1px solid #CCC;border-top: 0px;padding: 14px;margin: auto;text-align: center;font-size: 15px;background: #FFF;font-weight: 700;">There are no items selected</p>
+					<p class="s-no-items">There are no items selected</p>
 					<!--- <table class="table" border="1" cellpadding="0" cellspacing="0">
 						<tr>
 							<th></th>
@@ -477,9 +486,15 @@
 
 			<content class="s-body-box s-disabled">
 
-				<h2 style="background: #666;padding: 5px 10px;color: #FFF;margin: 0px;font-size: 12px;">Wheels</h2>
+				<h2 class="s-filter-header">
+					<span class="s-title">Wheels</span>
+					<ul class="list-unstyled list-inline">
+						<li>Min<span>1</span></li>
+						<li>Max<span>2</span></li>
+					</ul>
+				</h2>
 				<div class="table-responsive s-order-item-box">
-					<p style="border: 1px solid #CCC;border-top: 0px;padding: 14px;margin: auto;text-align: center;font-size: 15px;background: #FFF;font-weight: 700;">There are no items selected</p>
+					<p clas="s-no-items">There are no items selected</p>
 					<!--- <table class="table" border="1" cellpadding="0" cellspacing="0">
 						<tr>
 							<th></th>
