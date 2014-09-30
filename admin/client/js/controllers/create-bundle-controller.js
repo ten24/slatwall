@@ -19,17 +19,20 @@ function(
 	formService
 	
 ){
+		
 	var processObjectPromise = $slatwall.getProcessObject(
 		'Product',
 		null,
 		'createBundle',
 		'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType'
 	);
+	var validation = $slatwall.getValidation('Product_Create');
+	
 	processObjectPromise.then(function(value){
 		$log.debug('getProcessObject');
 		$scope.processObject = value.data;
 		
-		var validation = $slatwall.getValidation('Product_Create');
+		
 		validation.then(function(value){
 			$log.debug('getValidation');
 			$log.debug(value);

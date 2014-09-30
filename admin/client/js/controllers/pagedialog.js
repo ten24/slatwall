@@ -3,14 +3,15 @@ angular.module('slatwalladmin').controller('pageDialog', [
 	'$scope',
 	'$location',
 	'$slatwall',
-	'dialogService',
 	'$log',
+	'dialogService',
 function(
 	$scope,
 	$location,
 	$slatwall,
-	dialogService,
-	$log
+	$log,
+	dialogService
+	
 ){
 	
 	//get url param to retrieve collection listing
