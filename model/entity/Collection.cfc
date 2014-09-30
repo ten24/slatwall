@@ -746,7 +746,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			for(column in arguments.collectionConfig.columns){
 				if(structKeyExists(column,'isSearchable') && column.isSearchable){
 					//use keywords to create some post filters
-					if(structKeyExists(column,'ormtype') && column.ormtype neq 'boolean' && column.ormtype neq 'timestamp'){
+					if(structKeyExists(column,'ormtype') 
+						&& column.ormtype neq 'boolean' 
+						&& column.ormtype neq 'timestamp'
+						&& column.ormtype neq 'big_decimal'
+						&& column.ormtype neq 'integer'
+						){
 						for(keyword in getKeywordArray()){
 							
 							var postFilterGroup = {
@@ -796,7 +801,12 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			//if we don't have columns then we need default properties searching
 			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityAlias);
 			for(propertyItem in defaultPropertiesWithAttributes){
-				if(structKeyExists(propertyItem,'ormtype') && propertyItem.ormtype neq 'boolean' && propertyItem.ormtype neq 'timestamp' && !structKeyExists(propertyItem,'attributeID') ){
+				if(structKeyExists(propertyItem,'ormtype') 
+					&& propertyItem.ormtype neq 'boolean' 
+					&& propertyItem.ormtype neq 'timestamp' 
+					&& propertyItem.ormtype neq 'big_decimal'
+					&& propertyItem.ormtype neq 'integer'
+					&& !structKeyExists(propertyItem,'attributeID') ){
 					for(keyword in getKeywordArray()){
 						var postFilterGroup = {
 							filterGroup = [
