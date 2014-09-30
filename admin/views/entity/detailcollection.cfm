@@ -1,6 +1,19 @@
-<cfparam name="rc.collection" type="any">
-<cfparam name="rc.edit" type="boolean">
-
+<div class="row" ng-controller="collections" style="margin-top:12px;">
+  
+  <div class="col-xs-12">
+    <!--- Header nav with title start --->
+   
+    <div class="row s-header-bar">
+      <div class="col-md-7"><h1 ng-bind="collection.collectionName"></h1></div>
+      <div class="col-md-5 s-header-nav">
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
+          <li><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
+          <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
+        </ul>
+      </div>
+    </div>
+    <!--- //Header nav with title end --->
 
     <!--- Tab panes for menu options start--->
     
@@ -265,6 +278,7 @@
     </div>
   </div>
 </div>
+
 
 <script charset="utf-8">
   //activate tooltips
