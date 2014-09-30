@@ -157,7 +157,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public string function capitalCase(required string phrase){
-        return reReplace(arguments.phrase, "\b(\w)(\w*)?\b", "\U\1\L\2", "ALL"); 
+		return UCase(left(arguments.phrase,1)) & Right(arguments.phrase,Len(arguments.phrase)-1);
 	}
 	
 	public any function getTransientCollectionByEntityName(required string entityName){
