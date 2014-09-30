@@ -168,7 +168,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.productTypeOptions = [];
 			
 			for(var i=1; i<=arrayLen(records); i++) {
-				arrayAppend(variables.productTypeOptions, {name=records[i].getSimpleRepresentation(), value=records[i].getProductTypeID()});
+				var recordStruct = {};
+				recordStruct['name'] = records[i].getSimpleRepresentation();
+				recordStruct['value']=records[i].getProductTypeID();
+				arrayAppend(variables.productTypeOptions, recordsStruct);
 			}
 		}
 		
@@ -671,7 +674,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public array function getBrandOptions() {
 		var options = getPropertyOptions( "brand" );
-		options[1].name = rbKey('define.none');
+		options[1]['name'] = rbKey('define.none');
 		return options;
 	}
 	

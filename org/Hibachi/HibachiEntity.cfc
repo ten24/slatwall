@@ -434,7 +434,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			
 			// If this is a many-to-one related property, then add a 'select' to the top of the list
 			if(getPropertyMetaData( propertyName ).fieldType == "many-to-one" && structKeyExists(getPropertyMetaData( propertyName ), "hb_optionsNullRBKey")) {
-				arrayPrepend(variables[ cacheKey ], {value="", name=rbKey(getPropertyMetaData( propertyName ).hb_optionsNullRBKey)});
+				var recordsStruct = {};
+				recordsStruct['value'] = "";
+				recordsStruct['name'] = rbKey(getPropertyMetaData( propertyName ).hb_optionsNullRBKey);
+				arrayPrepend(variables[ cacheKey ], recordsStruct);
 			}
 		}
 		

@@ -1,8 +1,27 @@
 
 <div class="form-group">
-  <label class="col-sm-2 control-label"><!-- property RB key -->Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
-  <div class="col-sm-10">
-    <input ng-disabled="editable" style="display:none" ng-model="object[property]" name="{{property}}" type="text" class="form-control" id="inputPassword" value="" required>
-    <p class="form-control-static" ng-bind="object[property]"><!---property value ---></p>
+  <label class="col-sm-2 control-label">
+  	<!-- property RB key --><span ng-bind="propertyDisplay.title"></span>:
+  	<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="{{propertyDisplay.title}}"> 
+  		<i class="fa fa-question-circle"></i>
+  	</span>
+  </label>
+  <div  class="col-sm-10">
+  	<!-- Model-->
+  	
+  	<span 	sw-form-field
+  			data-property-display="propertyDisplay"
+  	>
+  	</span>
+    
+    <!-- Display -->
+    
+    <p  class="form-control-static" 
+    	ng-if="propertyDisplay.type !== 'hidden'"
+    	ng-bind="propertyDisplay.object[propertyDisplay.property]"
+    	ng-show="!propertyDisplay.editing"
+    >
+    	<!---property value --->
+    </p>
   </div>
 </div>
