@@ -337,6 +337,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	public any function processSubscriptionUsage_addUsageBenefit(required any subscriptionUsage, required any processObject) {
+		
+		var subscriptionBenefit = this.getSubscriptionBenefit(processObject.getSubscriptionBenefitID());
+		
+		if(listFindNoCase("both,initial", arguments.processObject.getBenefitTermType())) {
+			var subscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
+			subscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
+			
+			var subscriptionUsageBenefitAccount = this.newSubscriptionUsageBenefitAccount();
+			subscriptionUsageBenefitAccount.setSubscriptionUsageBenefit( subscriptionUsageBenefit );
+			subscriptionUsageBenefitAccount.setAccount( arguments.subscriptionUsage.getAccount() );
+			
+			arguments.subscriptionUsage.addSubscriptionUsageBenefit( subscriptionUsageBenefit );	
+		}
+		if(listFindNoCase("both,renewal", arguments.processObject.getBenefitTermType())) {
+			var renewalSubscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
+			
+			renewalSubscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
+			
+			arguments.subscriptionUsage.addRenewalSubscriptionUsageBenefit( renewalSubscriptionUsageBenefit );
+		}
+			
+		return arguments.subscriptionUsage;
+	}
+	
 	public any function processSubscriptionUsage_cancel(required any subscriptionUsage, required any processObject) {
 		if(isNull(processObject.getEffectiveDateTime())) {
 			processObject.setEffectiveDateTime( now() );
@@ -521,31 +546,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		return arguments.subscriptionUsage;
-	}
-	
-	public any function processSubscriptionUsage_addUsageBenefit(required any subscriptionUsage, required any processObject) {
-		
-		var subscriptionBenefit = this.getSubscriptionBenefit(processObject.getSubscriptionBenefitID());
-		
-		if(listFindNoCase("both,initial", arguments.processObject.getBenefitTermType())) {
-			var subscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
-			subscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
-			
-			var subscriptionUsageBenefitAccount = this.newSubscriptionUsageBenefitAccount();
-			subscriptionUsageBenefitAccount.setSubscriptionUsageBenefit( subscriptionUsageBenefit );
-			subscriptionUsageBenefitAccount.setAccount( arguments.subscriptionUsage.getAccount() );
-			
-			arguments.subscriptionUsage.addSubscriptionUsageBenefit( subscriptionUsageBenefit );	
-		}
-		if(listFindNoCase("both,renewal", arguments.processObject.getBenefitTermType())) {
-			var renewalSubscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
-			
-			renewalSubscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
-			
-			arguments.subscriptionUsage.addRenewalSubscriptionUsageBenefit( renewalSubscriptionUsageBenefit );
-		}
-			
 		return arguments.subscriptionUsage;
 	}
 	

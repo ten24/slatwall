@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems" {
+component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems,manualFulfillmentCharge" {
 	
 	// Persistent Properties
 	property name="orderFulfillmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -504,7 +504,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		if(structKeyExists(arguments.data, "accountAddress")
 			&& structKeyExists(arguments.data.accountAddress, "accountAddressID")
 			&& len(arguments.data.accountAddress.accountAddressID)
-			&& (isNull(getAccountAddress()) || getAccountAddress().getAccountAddressID() != arguments.data.accountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "shippingAddress") || !structKeyExists(arguments.data.shippingAddress, "addressID") || !len(arguments.data.shippingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "shippingAddress");
 		}

@@ -47,7 +47,6 @@ Notes:
 
 --->
 <cfparam name="rc.productSmartList" type="any" />
-
 <cfset contentDisabled = "" />
 <cfset subscriptionDisabled = "" />
 

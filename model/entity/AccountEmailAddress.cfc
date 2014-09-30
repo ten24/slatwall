@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account Email Address" entityname="SlatwallAccountEmailAddress" table="SwAccountEmailAddress" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountEmailAddresses" {
+component displayname="Account Email Address" entityname="SlatwallAccountEmailAddress" table="SwAccountEmailAddress" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountEmailAddresses" hb_processContext="sendVerificationEmail,verify" {
 	
 	// Persistent Properties
 	property name="accountEmailAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

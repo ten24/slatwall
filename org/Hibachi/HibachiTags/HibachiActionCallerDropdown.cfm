@@ -19,7 +19,7 @@
 		<cfelseif attributes.type eq "nav">
 			<cfoutput>
 				<li class="dropdown">
-					<a href="##" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-#attributes.icon#"></i> #attributes.title# </a>
+					<a href="##" class="dropdown-toggle"><i class="glyphicon glyphicon-#attributes.icon#"></i> #attributes.title# </a>
 					<ul class="dropdown-menu #attributes.dropdownClass#">
 						#thisTag.generatedContent#
 						<cfset thisTag.generatedContent = "" />

@@ -1,35 +1,68 @@
 angular.module('slatwalladmin')
 .directive('swPropertyDisplay', 
-['$http',
-'$compile',
-'$templateCache',
-'collectionService',
-'partialsPath',
+[
 '$log',
-function($http,
-$compile,
-$templateCache,
-collectionService,
-partialsPath,
-$log){
+'partialsPath',
+function(
+$log,
+partialsPath
+){
 	return {
+		require:"^form",
 		restrict: 'A',
 		scope:{
 			object:"=",
+			isEditable:"=",
+			editing:"=",
+			isHidden:"=",
+			value:"=",
+			valueOptions:"@",
+			type:"@",
 			property:"@",
-			isEditable:"="
+			title:"@",
+			toolTip:"@",
+			fieldName:"@",
+			fieldType:"@"
 		},
-		link: function(scope, element,attrs){
-			$log.debug(scope.object);
-			$log.debug(scope.property);
-			$log.debug(scope.isEditable);
-			var Partial = partialsPath+"propertydisplay.html";
-			var templateLoader = $http.get(Partial,{cache:$templateCache});
-			var promise = templateLoader.success(function(html){
-				element.html(html);
-			}).then(function(response){
-				element.replaceWith($compile(element.html())(scope));
+		templateUrl:partialsPath+"propertydisplay.html",
+		link: function(scope, element,attrs,formController){
+			var unBindObjectWatch = scope.$watch('object',function(newValue,oldValue){
+				if(newValue !== oldValue){
+					if(angular.isDefined(scope.object)){
+						
+						scope.propertyDisplay = {
+							form:formController,
+							object:scope.object,
+							property:scope.property,
+							errorMessages:[],
+							editing:scope.editing,
+							isEditable:scope.isEditable,
+							isHidden:scope.isHidden,
+							type:scope.type,
+							value:scope.value,
+							valueOptions:scope.valueOptions,
+							fieldName:scope.fieldName,
+							fieldType:scope.fieldType
+						};
+						
+						if(angular.isDefined(scope.object[scope.property].title)){
+							scope.propertyDisplay.title = scope.object[scope.property].title;
+						}
+						if(angular.isDefined(scope.object[scope.property].value)){
+							scope.propertyDisplay.value = scope.object[scope.property].value;
+						}
+						if(angular.isDefined(scope.object[scope.valueOptions])){
+							console.log('valueOptions');
+							console.log(scope.valueOptions);
+						}
+						unBindObjectWatch();
+					}
+					
+				}
 			});
+			
+			$log.debug('propertyDisplay');
+			$log.debug(scope.propertyDisplay);
 		}
 	};
 }]);

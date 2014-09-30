@@ -1,6 +1,6 @@
-angular.module('slatwalladmin').controller('ngtest', [ '$scope','slatwallService', function($scope,slatwallService){
+angular.module('slatwalladmin').controller('ngtest', [ '$scope','$slatwall', function($scope,$slatwall){
 	$scope.myVal = 'controller value injected';
-	var promise = slatwallService.getEntity('collection','abcd');
+	var promise = $slatwall.getEntity('collection','abcd');
 	console.log(promise);
 	promise.then(function(value){
 		console.log(value);
@@ -13,7 +13,7 @@ angular.module('slatwalladmin').controller('ngtest', [ '$scope','slatwallService
 		context:"save"
 	};
 	
-	var postPromise = slatwallService.saveEntity('collection','abcd',postData);
+	var postPromise = $slatwall.saveEntity('collection','abcd',postData);
 		
 	
 }]);

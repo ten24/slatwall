@@ -46,47 +46,47 @@
 Notes:
 
 */
-component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="printService" hb_permission="this" hb_processContext="addToQueue" {
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="product";
+
+	// Data Properties
+	property name="productType" fieldType="many-to-one" persistent="false" fkcolumn="productTypeID";
+	property name="bundleContentAccessFlag" hb_formFieldType="yesno";
+	property name="contents";
+	property name="options";
+	property name="price";
+	property name="renewalSubscriptionBenefits";
+	property name="subscriptionBenefits";
+	property name="subscriptionTerms";
+	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
+	property name="productTypeOptions";
 	
-	// Persistent Properties
-	property name="printID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="printContent" ormtype="string";
-	
-	// Related Object Properties (many-to-one)
-	
-	// Related Object Properties (one-to-many)
-	
-	// Related Object Properties (many-to-many)
-	
-	// Remote Properties
-	property name="remoteID" ormtype="string";
-	
-	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	
-	// Non-Persistent Properties
-	property name="logPrintFlag" persistent="false"; 
-	
-	// ============ START: Non-Persistent Property Methods =================
-	public boolean function getLogPrintFlag() {
-		if(!structKeyExists(variables, "logPrintFlag")) {
-			variables.logPrintFlag = false;
+	public any function getProductTypeOptions( string baseProductType ) {
+		if(!structKeyExists(variables, "productTypeOptions")) {
+			
+			var smartList = getProduct().getPropertyOptionsSmartList( "productType" );
+			smartList.addLikeFilter( "productTypeIDPath", "#getService('productService').getProductTypeBySystemCode(  'productBundle' ).getProductTypeID()#%" );
+			smartList.addWhereCondition( "NOT EXISTS( SELECT pt FROM SlatwallProductType pt WHERE pt.parentProductType.productTypeID = aslatwallproducttype.productTypeID)");
+			
+			var records = smartList.getRecords();
+			
+			variables.productTypeOptions = [];
+			
+			for(var i=1; i<=arrayLen(records); i++) {
+				var recordStruct = {};
+				recordStruct['name'] = records[i].getSimpleRepresentation();
+				recordStruct['value']=records[i].getProductTypeID();
+				arrayAppend(variables.productTypeOptions, recordStruct);
+			}
 		}
-		return variables.logPrintFlag;
+		
+		return variables.productTypeOptions;
 	}
 	
-	// ============  END:  Non-Persistent Property Methods =================
-		
-	// ============= START: Bidirectional Helper Methods ===================
-
-	// =============  END:  Bidirectional Helper Methods ===================
-
-	// ================== START: Overridden Methods ========================
+	public any function setupDefaults() {
+		variables.generateSkusFlag = true;
+	}
 	
-	// ==================  END:  Overridden Methods ========================
-	
-	// =================== START: ORM Event Hooks  =========================
-	
-	// ===================  END:  ORM Event Hooks  =========================
 }

@@ -549,6 +549,8 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-create-window .s-bread-crumb ul li:last-child:after {content:"";}
 .s-create-window .navbar-brand span {display: inline-block;vertical-align: middle;}
 
+.s-no-tab-wrapper {margin-top:20px;}
+
 .navbar-fixed-top {border:none;}
 .navbar-fixed-bottom {border:none;}
 
