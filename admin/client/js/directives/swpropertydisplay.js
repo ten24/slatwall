@@ -1,32 +1,68 @@
 angular.module('slatwalladmin')
 .directive('swPropertyDisplay', 
 [
-'partialsPath',
 '$log',
+'partialsPath',
 function(
-partialsPath,
-$log){
+$log,
+partialsPath
+){
 	return {
-		require:"^swForm",
+		require:"^form",
 		restrict: 'A',
 		scope:{
 			object:"=",
-			property:"@",
 			isEditable:"=",
-			isHidden:"="
+			editing:"=",
+			isHidden:"=",
+			value:"=",
+			valueOptions:"@",
+			type:"@",
+			property:"@",
+			title:"@",
+			toolTip:"@",
+			fieldName:"@",
+			fieldType:"@"
 		},
 		templateUrl:partialsPath+"propertydisplay.html",
 		link: function(scope, element,attrs,formController){
-			$log.debug(scope.object);
-			$log.debug(scope.property);
-			$log.debug(scope.isEditable);
+			var unBindObjectWatch = scope.$watch('object',function(newValue,oldValue){
+				if(newValue !== oldValue){
+					if(angular.isDefined(scope.object)){
+						
+						scope.propertyDisplay = {
+							form:formController,
+							object:scope.object,
+							property:scope.property,
+							errorMessages:[],
+							editing:scope.editing,
+							isEditable:scope.isEditable,
+							isHidden:scope.isHidden,
+							type:scope.type,
+							value:scope.value,
+							valueOptions:scope.valueOptions,
+							fieldName:scope.fieldName,
+							fieldType:scope.fieldType
+						};
+						
+						if(angular.isDefined(scope.object[scope.property].title)){
+							scope.propertyDisplay.title = scope.object[scope.property].title;
+						}
+						if(angular.isDefined(scope.object[scope.property].value)){
+							scope.propertyDisplay.value = scope.object[scope.property].value;
+						}
+						if(angular.isDefined(scope.object[scope.valueOptions])){
+							console.log('valueOptions');
+							console.log(scope.valueOptions);
+						}
+						unBindObjectWatch();
+					}
+					
+				}
+			});
 			
-			$scope.propertyDisplay = {
-				form:formController.formName,
-				errorMessage:{},
-				editing:false
-			
-			};
+			$log.debug('propertyDisplay');
+			$log.debug(scope.propertyDisplay);
 		}
 	};
 }]);

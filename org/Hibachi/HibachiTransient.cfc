@@ -620,7 +620,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		return validationClass;
 	}
-
+	
 	// @hint public method for getting the title to be used for a property from the rbFactory, this is used a lot by the HibachiPropertyDisplay
 	public string function getPropertyTitle(required string propertyName) {
 

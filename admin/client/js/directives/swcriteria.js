@@ -30,6 +30,7 @@ $filter){
 		}else{
 			var criteriaormtype = selectedFilterProperty.ormtype;
 			var criteriafieldtype = selectedFilterProperty.fieldtype;
+			//TODO: convert all switches to object literals
 	        switch(criteriaormtype){
 	            case 'boolean':
 	               templatePath = partialsPath+"criteriaboolean.html";

@@ -1,0 +1,18 @@
+<select type="{{propertyDisplay.type}}" class="form-control" 
+		    		 ng-model="propertyDisplay.value"
+		    		 ng-disabled="propertyDisplay.editable"
+		    		 ng-show="propertyDisplay.editing"
+		    		 ng-options="propertyDisplayOption.name
+  									 for propertyDisplayOption in propertyDisplay.object[propertyDisplay.valueOptions].value 
+  									 track by propertyDisplayOption.value"
+					 ng-change="formFieldChanged(propertyDisplay.value)"
+></select>
+
+<!-- Error Messages -->
+    
+<span style="color:red"
+  	ng-show="propertyDisplay.errorMessages.length"
+	ng-repeat="errorMessage in propertyDisplay.errorMessages"
+>
+  {{errorMessage}}<br>
+</span>

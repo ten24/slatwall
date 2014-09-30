@@ -42,17 +42,6 @@
 	          </button>
          </span>
          
-         <span  sw-form
-         		data-form-name="collectionForm"
-         >
-         	<span 	sw-property-display
-            		data-object="collection"
-            		data-property="collectionName",
-					data-is-editable="true"
-					data-is-hidden="true"
-            ></span>
-         </span>
-         
           <form  class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
             <input  style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
             <div class="form-group">
