@@ -162,11 +162,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function getTransientCollectionByEntityName(required string entityName){
 		var collectionEntity = this.newCollection();
-		var capitalCaseEntityName = capitalCase(arguments.entityName);
-		collectionEntity.setBaseEntityName('Slatwall#capitalCaseEntityName#');
+		var properlyCasedFullEntityName = getProperlyCasedFullEntityName(arguments.entityName);
+		collectionEntity.setBaseEntityName(properlyCasedFullEntityName);
 		var collectionConfigStruct = {
-			baseEntityName="Slatwall#capitalCaseEntityName#",
-			baseEntityAlias="#capitalCaseEntityName#"
+			baseEntityName=properlyCasedFullEntityName,
+			baseEntityAlias=getProperlyCasedShortEntityName(arguments.entityName)
 		};
 		collectionEntity.setCollectionConfigStruct(collectionConfigStruct);
 		return collectionEntity;

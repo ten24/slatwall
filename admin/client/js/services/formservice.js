@@ -6,6 +6,8 @@ function($log){
 	//properties
 	var _forms = {};
 	
+	
+	
 	function form(name,object,editing){
 		this.name = name;
 		this.object= object;
@@ -14,7 +16,15 @@ function($log){
 	
 	return formService = {
 		
-			
+		clearForm:function(form){
+			$log.debug('clear form');
+			$log.debug(form);
+			for(key in form){
+				if(key.charAt(0) !== '$'){
+					console.log(form[key]);
+				}
+			}
+		},
 		setForm: function(form){
 			_forms[form.$name] = form;
 			

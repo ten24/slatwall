@@ -20,7 +20,7 @@ partialsPath
 			type:"@",
 			property:"@",
 			title:"@",
-			toolTip:"@",
+			hint:"@",
 			fieldName:"@",
 			fieldType:"@"
 		},
@@ -37,13 +37,18 @@ partialsPath
 							editing:scope.editing,
 							isEditable:scope.isEditable,
 							isHidden:scope.isHidden,
+							hint:scope.hint,
 							type:scope.type,
 							value:scope.value,
 							valueOptions:scope.valueOptions,
 							fieldName:scope.fieldName,
-							fieldType:scope.fieldType
 						};
-						
+						if(angular.isDefined(scope.object[scope.property].type)){
+							scope.propertyDisplay.type = scope.object[scope.property].type;
+						}
+						if(angular.isDefined(scope.object[scope.property].hint)){
+							scope.propertyDisplay.hint = scope.object[scope.property].hint;
+						}
 						if(angular.isDefined(scope.object[scope.property].title)){
 							scope.propertyDisplay.title = scope.object[scope.property].title;
 						}

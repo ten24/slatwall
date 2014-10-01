@@ -61,11 +61,13 @@ function(){
 		  			
 		  			return deferred.promise;
 		  		},
-		  		saveEntity:function(entityName,id,params){
+		  		saveEntity:function(entityName,id,params,context){
 		  			$log.debug('save'+ entityName);
 		  			var deferred = $q.defer();
 		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.post&entityName='+entityName+'&entityId='+id;	
-		  				
+		  			if(angular.isDefined(context)){
+		  				params.context = context;
+		  			}
 		  			$http({
 		  				method:'POST',
 		  				url:urlString,

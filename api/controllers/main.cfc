@@ -93,9 +93,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				}
 				if(count eq propertyPathCount && rc.processObject.invokeMethod('get#arguments.rc.entityName#').hasProperty(property)){
 					data[propertyIdentifier]['title'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getPropertyTitle( property );
+					data[propertyIdentifier]['hint'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getPropertyHint( property );
+					data[propertyIdentifier]['type'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getFieldTypeByPropertyIdentifier( property );
+					
 				}
 				count++;
 			}
+			
 			if(!isNull(value)){
 				data[propertyIdentifier]['value'] = value;
 			}

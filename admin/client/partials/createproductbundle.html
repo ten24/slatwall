@@ -3,7 +3,7 @@
     <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
       <span class="navbar-brand" >Create Bundle</span>
       <ul class="nav navbar-nav pull-right">
-        <li class="active"><a ng-href="#" ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
+        <li class="active"><a ng-href="#" ng-click="closePageDialog()"><i class="fa fa-times"></i></a></li>
       </ul>
     </div>
   </header>
@@ -17,7 +17,6 @@
 			> 
 	        <div class="col-xs-6">
 	       	 <span sw-property-display 
-	       	 		data-type="text"
 	          		data-property="product.productName"
 	          		data-object="processObject"
 	          		data-is-editable="true"
@@ -25,7 +24,6 @@
 	          		data-editing="true"
 	          ></span>
 	         <span sw-property-display 
-	       	 		data-type="text"
 	          		data-property="product.productCode"
 	          		data-object="processObject"
 	          		data-is-editable="true"
@@ -33,7 +31,6 @@
 	          		data-editing="true"
 	          ></span>
 	          <span sw-property-display 
-	       	 		data-type="text"
 	          		data-property="product.price"
 	          		data-object="processObject"
 	          		data-is-editable="true"
@@ -44,7 +41,6 @@
 	
 	        <div class="col-xs-6">
 	        	<span sw-property-display 
-	       	 		data-type="select"
 	          		data-property="product.productType"
 	          		data-object="processObject"
 	          		data-is-editable="true"
@@ -53,7 +49,6 @@
 	          		data-value-options="productTypeOptions"
 	          ></span>
 	         <span sw-property-display 
-	       	 		data-type="select"
 	          		data-property="product.brand"
 	          		data-object="processObject"
 	          		data-is-editable="true"
@@ -315,7 +310,7 @@
 	        </li>
 	        <li class="active">
 	        	<a  ng-href="#" style="padding: 9px 12px;font-size: 16px;"
-	        		ng-click="saveProductBundle($index)"
+	        		ng-click="saveProductBundle(closePageDialog())"
 	        	>Save & Finish</a>
 	        </li>
 	      </ul>
