@@ -202,9 +202,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(isObject(arguments.pageRecord)) {
 			var value = arguments.pageRecord.getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier, formatValue=true );
 			if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-				pageRecordStruct[ arguments.pageRecord.getPropertyTitle(arguments.propertyIdentifier) ] = value & " ";
+				pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
 			} else {
-				pageRecordStruct[ arguments.pageRecord.getPropertyTitle(arguments.propertyIdentifier) ] = value;
+				pageRecordStruct[ arguments.propertyIdentifier ] = value;
 			}
 		
 		}else{
