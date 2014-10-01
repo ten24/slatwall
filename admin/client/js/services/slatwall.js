@@ -114,6 +114,6 @@ function(){
 	    }
 	};
 }).config(function ($slatwallProvider) {
-	$slatwallProvider.setBaseUrl('/');
+	$slatwallProvider.setBaseUrl($.slatwall.getConfig().baseURL);
 });
 
