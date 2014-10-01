@@ -506,6 +506,8 @@ span.j-tool-tip-item i {color:#ccc;cursor:pointer;}
 .s-create-window .s-bread-crumb ul li:after {font-family: fontAwesome;content:"\f105";opacity: 0.4;margin-left:11px;}
 .s-create-window .s-bread-crumb ul li:last-child:after {content:"";}
 .s-create-window .navbar-brand span {display: inline-block;vertical-align: middle;}
+.s-close-icon-search {left:290px !important;color:#EEE;position:absolute;font-size:16px !important; top:7px;}
+.s-close-icon-search:hover {color:#FFF;}
 
 .s-no-tab-wrapper {margin-top:20px;}
 

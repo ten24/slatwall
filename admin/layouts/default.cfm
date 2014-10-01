@@ -137,27 +137,26 @@ Notes:
 			</div><!-- /.container-fluid -->
 		</nav><!-- /.navbar -->
 
-<div ng-controller="sidebarController">
+	<div ng-controller="globalSearch">
 
 		<cfif $.slatwall.getLoggedInAsAdminFlag()>
 			<aside class="{{sidebarClass}}" id="sidebar">
 			
 				<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
 					<div class="form-group">
-						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search" ng-focus="showResults()">
+						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search" ng-keyup="showResults()" ng-model="keywords" ng-change="updateSearchResults()">
+							<a ng-hide="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times s-close-icon-search"></i></a>
+						</input>
 					</div>
 					<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
-						<div id="s-close-search" style="background"><a href="##" ng-click="hideResults()"><i class="fa fa-times"></i> Close</a></div>
 						<ul class="col-md-12 list-unstyled">
-
-
-							<li ng-repeat="searchResultSection in searchResultSections">
+							<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length">
 								<div class="col-md-4 s-title">
-									<h2>{{searchResultSection.sectionName}}</h2>
+									<h2>{{ searchResult.title }}</h2>
 								</div>
 								<div class="col-md-8 s-body">
 									<ul class="list-unstyled" id="j-search-results"	>
-										<li ng-repeat="searchResult in searchResultSection.results"><a href="{{searchResult.link}}">{{searchResult.name}}</a></li>
+										<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
 									</ul>
 								</div>
 							</li>

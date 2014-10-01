@@ -1,5 +1,5 @@
 'use strict';
-angular.module('slatwalladmin').controller('sidebarController', [
+angular.module('slatwalladmin').controller('globalSearch', [
 	'$scope',
 	'$slatwall',
 	'$log',
@@ -8,49 +8,79 @@ function(
 	$slatwall,
 	$log
 ){
-	
+	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
-	$scope.searchResultSections = [
-		{
-			'sectionName':'Products',
-			'results': [
-				{
-					'name' : 'Product Name Here',
-					'link' : 'http://www.google.com'
-				},
-				{
-					'name' : 'Product Name Here',
-					'link' : 'http://www.google.com'
-				},
-				{
-					'name' : 'Product Name Here',
-					'link' : 'http://www.google.com'
-				}
-			]
+	$scope.searchResultSection = [];
+	
+	$scope.searchResults = {
+		'brand' : {
+			'title': $.slatwall.rbKey('entity.brand_plural'),
+			'resultNameFilter': function(data) {
+				return data['Brand Name'];
+			},
+			'results' : [],
+			'id' : function(data) {
+				return data['brandID'];
+			}
 		},
-		{
-			'sectionName':'Products Types',
-			'results': [
-				{
-					'name' : 'Product Name Here',
-					'link' : 'http://www.google.com'
-				}
-			]
+		'account' : {
+			'title': $.slatwall.rbKey('entity.account_plural'),
+			'resultNameFilter': function(data) {
+				return data['First Name'] + ' ' + data['Last Name'];
+			},
+			'results' : [],
+			'id' : function(data) {
+				return data['accountID'];
+			}
+		},
+		'vendor' : {
+			'title': $.slatwall.rbKey('entity.vendor_plural'),
+			'resultNameFilter': function(data) {
+				return data['Vendor Name'];
+			},
+			'results' : [],
+			'id' : function(data) {
+				return data['Vendor ID'];
+			}
 		}
-	];
+	};
+	
+	$scope.updateSearchResults = function() {
+		
+		for (var entityName in $scope.searchResults){
+			
+			(function(entityName) {
+				
+				var searchPromise = $slatwall.getEntity(entityName, undefined, 1, 10, $scope.keywords );
+				searchPromise.then(function(data){
+					
+					// clear out the results
+					$scope.searchResults[ entityName ].results = [];
+
+					// push in the new results
+					for(var i in data.pageRecords) {						
+						$scope.searchResults[ entityName ].results.push({
+							'name': $scope.searchResults[ entityName ].resultNameFilter( data.pageRecords[i] ),
+							'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+id(data.pageRecords[i]),
+						});	
+					}
+					$log.debug($scope.searchResults[entityName].results)
+				});
+				
+			})(entityName);
+			
+		}
+
+	};
 	
 	$scope.showResults = function() {
-		$log.debug('showResults function triggered');
-		
 		$scope.searchResultsOpen = true;
 		$scope.sidebarClass = 'sidebar s-search-width';
 		
 	};
 	
-	$scope.hideResults = function() {
-		$log.debug('hideResults function triggered');
-		
+	$scope.hideResults = function() {	
 		$scope.searchResultsOpen = false;
 		$scope.sidebarClass = 'sidebar';
 	};
