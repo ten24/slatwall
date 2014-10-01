@@ -43,10 +43,11 @@
 				</cfif>
 				<cf_HibachiPropertyTableBreak header="Price Totals" />
 				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPrice" edit="false" displayType="table" />
-				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="taxAmount" edit="false" displayType="table" />
 				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="discountAmount" edit="false" displayType="table" />
+				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPriceAfterDiscount" edit="false" displayType="table" />
+				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="taxAmount" edit="false" displayType="table" />
 				<cf_HibachiPropertyTableBreak />
-				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPriceAfterDiscount" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
+				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="itemTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
 				
 			</cf_HibachiPropertyTable>
 			

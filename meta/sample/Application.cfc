@@ -53,7 +53,10 @@ component {
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
 	
+	this.sessionManagement = true;
+	
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/sample/", "");
+	
 	this.ormEnabled = true;
 	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
 	this.ormSettings.dbcreate = "update";

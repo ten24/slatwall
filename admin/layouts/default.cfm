@@ -93,7 +93,7 @@ Notes:
 			</script>
 		</cfif>
 	</head>
-	<body>
+	<body class="<cfif NOT $.slatwall.getLoggedInAsAdminFlag()>s-not-logged-in</cfif>">
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
 				<cfset homeLink = request.slatwallScope.getBaseURL() />
@@ -112,7 +112,7 @@ Notes:
 					</span>
 
 					<a href="#homeLink#" target="_self" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
-					
+
 					<ul class="nav navbar-nav navbar-right">
 						<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<cf_HibachiActionCallerDropdown title="" icon="cog icon-white" dropdownclass="pull-right" type="nav">
@@ -252,54 +252,7 @@ Notes:
 						</ul>
 					</div>
 				</form>
-<script charset="utf-8">
-	$( '.s-header-search ##global-search' ).focus(function() {
 
-		function hideSearch() {
-			$(document).click(function(e) {
-				var tar = $(e.target);
-			    if ($(tar).parents('.s-search-results').length) {
-					//Do Nothing
-				}else{
-					$('.sidebar').removeClass('s-search-width');
-					$('.s-search-results').hide();
-					$('.sidebar-nav').show();
-			    }
-			});
-		};
-
-		$(this).on('change keyup paste click', function(e){
-			if($(this).val()){
-				hideSearch();
-				$('.s-search-results').show();
-				$('.sidebar').addClass('s-search-width');
-				$('.sidebar-nav').hide();
-			}else{
-				$('.sidebar').removeClass('s-search-width');
-				$('.s-search-results').hide();
-				$('.sidebar-nav').show();
-			};
-		});
-
-	});
-
-
-</script>
-<style media="screen">
-	.s-search-results {display:none;color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
-	.s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
-	.s-search-results > ul > li > .s-title {padding-left:0px;}
-	.s-search-results > ul > li > .s-title h2 {font-size:12px;font-weight:600;display:inline;vertical-align:top;}
-	.s-search-results > ul > li > .s-body {font-size:12px;padding:0px;}
-	.s-search-results > ul > li > .s-body ul li {margin-bottom: 8px;border-bottom: 1px solid ##666;padding-bottom: 8px;}
-	.s-search-results > ul > li > .s-body ul li a {color:##dddddd;}
-	.s-search-results > ul > li > .s-body ul li a:hover {color:##ffffff;}
-	.s-search-width {width:330px;transition: all 0.5s ease;}
-	.s-search-results ##s-close-search {width:100%;text-align:right;margin-bottom:15px;}
-	.s-search-results ##s-close-search a {padding:5px;margin:0px;margin-right:10px;color:##aaaaaa;display:inline-block;}
-	.s-search-results ##s-close-search a:hover {color:##ffffff;}
-
-</style>
 			    <nav class="sidebar-nav">
 					<ul id="menu" >
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
@@ -473,7 +426,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
 
-		
+
 		<!---services --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwall.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
@@ -544,5 +497,39 @@ Notes:
 			$('#j-main-content').addClass('s-body-margin').css('margin-left','174px !important');;
 		};
 	};
+
+</script>
+
+<script charset="utf-8">
+	$( '.s-header-search #global-search' ).focus(function() {
+
+		function hideSearch() {
+			$(document).click(function(e) {
+				var tar = $(e.target);
+				if ($(tar).parents('.s-search-results').length) {
+					//Do Nothing
+				}else{
+					$('.sidebar').removeClass('s-search-width');
+					$('.s-search-results').hide();
+					$('.sidebar-nav').show();
+				}
+			});
+		};
+
+		$(this).on('change keyup paste click', function(e){
+			if($(this).val()){
+				hideSearch();
+				$('.s-search-results').show();
+				$('.sidebar').addClass('s-search-width');
+				$('.sidebar-nav').hide();
+			}else{
+				$('.sidebar').removeClass('s-search-width');
+				$('.s-search-results').hide();
+				$('.sidebar-nav').show();
+			};
+		});
+
+	});
+
 
 </script>
