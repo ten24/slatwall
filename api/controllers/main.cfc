@@ -78,6 +78,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.processObject = entity.getProcessObject( rc.context );
 		}
 		
+		data['validation'] = getService('hibachiValidationService').getValidationStruct(rc.processObject);
+		
 		var propertyIdentifiers = ListToArray(rc.propertyIdentifiers);
 		for(propertyIdentifier in propertyIdentifiers){
 			var data[propertyIdentifier] = {};
@@ -104,6 +106,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			if(!isNull(value)){
 				data[propertyIdentifier]['value'] = value;
 			}
+			
 			
 			//data[propertyIdentifier]['fieldType']
 			

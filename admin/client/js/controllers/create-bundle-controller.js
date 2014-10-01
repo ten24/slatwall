@@ -24,29 +24,16 @@ function(
 		var processObjectPromise = $slatwall.getProcessObject(
 			'Product',
 			null,
-			'createBundle',
+			'CreateBundle',
 			'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType'
 		);
 		
-		var validation = $slatwall.getValidation('Product_Create');
 		
 		processObjectPromise.then(function(value){
 			$log.debug('getProcessObject');
 			$scope.processObject = value.data;
-			$scope.revertValue = value.data;
+			$scope.revertValue = angular.copy(value.data);
 			
-			validation.then(function(value){
-				$log.debug('getValidation');
-				$log.debug(value);
-				$scope.processObject.validation = value;
-				
-				formService.setForm($scope.form.createProductBundle);
-				
-			},function(reason){
-				var messages = reason.MESSAGES;
-				var alerts = alertService.formatMessagesToAlerts(messages);
-				alertService.addAlerts(alerts);
-			});
 			$log.debug($scope.processObject);
 		},function(reason){
 			//display error message if getter fails
@@ -70,7 +57,7 @@ function(
 				"product.brand.brandID":createProductBundleForm['product.brand'].$modelValue.value
 			};
 			$log.debug(params);
-			var saveProductBundlePromise = $slatwall.saveEntity('product', null, params,'create');
+			var saveProductBundlePromise = $slatwall.saveEntity('product', null, params,'save');
 			saveProductBundlePromise.then(function(value){
 				$log.debug('saving Product Bundle');
 				var messages = value.MESSAGES;
