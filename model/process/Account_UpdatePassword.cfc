@@ -52,6 +52,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="account";
 
 	// Data Properties
+	property name="emailAddress";
+	property name="existingPassword";
 	property name="password";
 	property name="passwordConfirm";
 }

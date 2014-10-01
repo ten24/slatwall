@@ -49,11 +49,11 @@ Notes:
 <cfparam name="rc.accountAuthenticationExists" type="boolean" />
 <cfparam name="rc.swprid" type="string" default="" />
 <cfparam name="rc.integrationLoginHTMLArray" type="array" />
-		
+
 <cfoutput>
 	<div style="width:100%;">
 		<cf_HibachiMessageDisplay />
-		
+
 		<cfif len(rc.swprid) eq 64>
 			<div class="well" style="width:400px;margin: 0px auto;">
 				<h3>Reset Password</h3>
@@ -77,19 +77,18 @@ Notes:
 			</div>
 		<cfelseif rc.accountAuthenticationExists>
 			<div class="well tabable" style="width:400px;margin: 0px auto;">
-				<h3>#$.slatwall.rbKey('define.login')#</h3>
-				<br />
 				
 				<cfset authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login") />
-			
-				<cfif authorizeProcessObject.hasError('passwordUpdateRequired')>
+				
+				<cfset updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword") />
+				
+				<cfif (authorizeProcessObject.hasError('passwordUpdateRequired') OR updateProcessObject.hasErrors())>
+					<h3>Password Update Required</h3>
+					<br />
+					
 					<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
 						<input type="hidden" name="slatAction" value="admin:main.updatePassword" />
-						<cfif structKeyExists(rc, "sRedirectURL")>
-							<input type="hidden" name="sRedirectURL" value="#rc.sRedirectURL#" />
-						</cfif>
 						
-						<cfset updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword") />
 						
 						<fieldset class="dl-horizontal">
 							<fieldset class="dl-horizontal">
@@ -103,6 +102,9 @@ Notes:
 						
 					</form>
 				<cfelse>
+					<h3>#$.slatwall.rbKey('define.login')#</h3>
+					<br />
+				
 					<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
 						<input type="hidden" name="slatAction" value="admin:main.authorizelogin" />
 						<cfif structKeyExists(rc, "sRedirectURL")>

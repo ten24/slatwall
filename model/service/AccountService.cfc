@@ -285,7 +285,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Take the email address and get all of the user accounts by primary e-mail address
 		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
 		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
-
+		
 		if(!isNull(accountAuthentication)) {
 			//Make sure that the account is not locked 
 			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
@@ -391,7 +391,32 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_updatePassword(required any account, required any processObject){
+		//This function needs to check and make sure that the old password equals is valid
 		
+		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress= arguments.processObject.getEmailAddress() );
+		
+		if(!isNull(accountAuthentication)) {
+			if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getExistingPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {	
+				//create the new pasword the updated password 
+				arguments.account = createNewAccountPassword(accountAuthentication.getAccount(), arguments.processObject);	
+				if(!arguments.account.hasErrors()){
+					if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
+						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+					}else{
+						arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
+					}
+					
+				
+				}
+				
+			}else{
+				arguments.processObject.addError('existingPassword', rbKey('validate.account_authorizeAccount.password.incorrect'));
+			}
+		}else{
+			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
+		}
+		
+		return arguments.account;
 	}
 	
 	public any function processAccount_lock(required any account){
@@ -1200,7 +1225,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Private Helper Functions ==================
 
 	private any function createNewAccountPassword (required any account, required any processObject ){
-		
+	
 		var existingPasswords = getInternalAccountAuthenticationsByEmailAddress(arguments.account.getPrimaryEmailAddress().getEmailAddress());
 
 		if(arguments.account.getAdminAccountFlag() == true){
