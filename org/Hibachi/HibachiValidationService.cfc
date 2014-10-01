@@ -76,12 +76,11 @@
 						
 						for(var constraint in rule) {
 							if(constraint != "contexts" && constraint != "conditions") {
-								var constraintDetails = {
-									constraintType=constraint,
-									constraintValue=rule[ constraint ]
-								};
+								var contstraintDetails = {};
+								constraintDetails['constraintType'] = constraint;
+								constraintDetails['constraintValue'] = rule[ constraint ];
 								if(structKeyExists(rule, "conditions")) {
-									constraintDetails.conditions = rule.conditions;
+									constraintDetails['conditions'] = rule.conditions;
 								}
 								arrayAppend(contextValidations[ property ], constraintDetails);
 							}
