@@ -1243,8 +1243,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		//Because we only want to store 5 passwords, this gets old passwords that put the lenth of the limit.
-		if (arrayLen(existingPasswords) >= 5){
-			deleteAccountAuthentications(arguments, 5);
+		if (arrayLen(existingPasswords) >= 4){
+			deleteAccountPasswords(arguments, 4);
 		}
 		
 		//Before creating the new password, make sure that all other passwords have an activeFlag of false
@@ -1291,7 +1291,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 
-	private void function deleteAccountAuthentications(required struct data, required any maxAuthenticationsCount ){
+	private void function deleteAccountPasswords(required struct data, required any maxAuthenticationsCount ){
 		
 		//First need to get an array of all the accountAuthentications for this account ordered by creationDateTime ASC
 		var accountAuthentications = getAccountAuthenticationSmartList(data=data);
@@ -1303,10 +1303,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		accountAuthenticationsArray = accountAuthentications.getPageRecords();
 		
 		//Create a variable to hold the length of the new array
-		var numberOfRecordsToBeDeleted = arrayLen(accountAuthenticationsArray) - arguments.maxAuthenticationsCount;
+		var numberOfRecordsToBeDeleted = arrayLen(accountAuthenticationsArray) - arguments.maxAuthenticationsCount + 1;
 		
 		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
-		for(var i=1; i < numberOfRecordsToBeDeleted; i++){
+		for(var i=1; i <= numberOfRecordsToBeDeleted; i++){
 			accountAuthenticationsArray[i].removeAccount();
 			entityDelete(accountAuthenticationsArray[i]);
 
