@@ -3,7 +3,6 @@ angular.module('slatwalladmin.services',[])
 .provider('$slatwall',
 function(){
 	var _baseUrl;
-	//var options = {'id':id,'currentPage':currentPage,'pageShow':pageShow,'keywords':keywords};
 	return {
 	    $get:['$q','$http','$log', function ($q,$http,$log)
 	    {
@@ -27,7 +26,10 @@ function(){
 		  			}
 		  			
 		  			var deferred = $q.defer();
-		
+		  			if(angular.isDefined(arguments.id)) {
+		  				urlString += '&entityId='+arguments.id;	
+		  			}
+		  			
 		  			$http.get(urlString)
 		  			.success(function(data){
 		  				deferred.resolve(data);

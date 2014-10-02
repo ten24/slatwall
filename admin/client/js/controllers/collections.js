@@ -61,7 +61,7 @@ $log
 				$scope.autoScrollDisabled = true;
 				$scope.autoScrollPage++;
 				
-				var collectionListingPromise = $slatwall.getEntity('collection',$scope.collectionID,$scope.autoScrollPage,50);
+				var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.autoScrollPage, pageShow:50});
 				collectionListingPromise.then(function(value){
 					
 					$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords);
@@ -85,12 +85,12 @@ $log
 	};
 	
 	$scope.getCollection = function(){
-		var pageShow = 50;
+		var varPageShow = 50;
 		if($scope.pageShow !== 'Auto'){
-			pageShow = $scope.pageShow;
+			varPageShow = $scope.pageShow;
 		}
 		
-		var collectionListingPromise = $slatwall.getEntity('collection',$scope.collectionID,$scope.currentPage,pageShow,$scope.keywords);
+		var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.currentPage, pageShow:varPageShow, keywords:$scope.keywords});
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();
