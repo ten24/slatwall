@@ -17,8 +17,6 @@ function(
 	alertService,
 	dialogService,
 	formService
-	
-	
 ){
 		//if this view is part of the dialog section, call the inherited function
 		if(angular.isDefined($scope.scrollToTopOfDialog)){
