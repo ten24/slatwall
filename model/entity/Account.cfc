@@ -331,15 +331,17 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public any function getActiveAccountAuthentications(){
 		var authentications = getAccountAuthentications();
 	
+		var activeAuthentications = [];
+		
 		for (i = ArrayLen(authentications); i >= 1; i--){
 			var authentication = authentications[i];
 			
-			if(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == false){
-				arrayDelete(authentications, authentication);
+			if( !(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == false)){
+				arrayAppend(activeAuthentications, authentication);
 			}
 		}
 
-		return authentications;
+		return activeAuthentications;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
