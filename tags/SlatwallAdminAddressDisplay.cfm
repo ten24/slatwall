@@ -59,6 +59,9 @@ Notes:
 <cfparam name="attributes.showState" type="boolean" default="true" />
 <cfparam name="attributes.showPostalCode" type="boolean" default="true" />
 
+<cfif isNull(attributes.address.getCountryCode())>
+	<cfset attributes.address.setCountryCode('US') />
+</cfif>
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
