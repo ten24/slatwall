@@ -85,12 +85,12 @@ $log
 	};
 	
 	$scope.getCollection = function(){
-		var varPageShow = 50;
+		var pageShow = 50;
 		if($scope.pageShow !== 'Auto'){
-			varPageShow = $scope.pageShow;
+			pageShow = $scope.pageShow;
 		}
 		
-		var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.currentPage, pageShow:varPageShow, keywords:$scope.keywords});
+		var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.currentPage, pageShow:pageShow, keywords:$scope.keywords});
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();

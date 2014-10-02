@@ -8,7 +8,7 @@ function(){
 	    {
 	      return {
 	    		//basic entity getter where id is optional, returns a promise
-		  		getEntity:function(entityName, arguments){
+		  		getEntity:function(entityName, options){
 		  			/*
 		  			 *
 		  			 * getEntity('Product', '12345-12345-12345-12345');
@@ -16,18 +16,18 @@ function(){
 		  			 * 
 		  			 */
 		  			
-		  			if(typeof arguments === 'String') {
-		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+arguments;
+		  			if(typeof options === 'String') {
+		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
 		  			} else {
-		  				arguments.currentPage = arguments.currentPage || 1;
-		  				arguments.pageShow = arguments.pageShow || 10;
-		  				arguments.keywords = arguments.keywords || '';
-		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+arguments.currentPage+'&P:Show='+arguments.pageShow+'&keywords='+arguments.keywords;
+		  				options.currentPage = options.currentPage || 1;
+		  				options.pageShow = options.pageShow || 10;
+		  				options.keywords = options.keywords || '';
+		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+options.currentPage+'&P:Show='+options.pageShow+'&keywords='+options.keywords;
 		  			}
 		  			
 		  			var deferred = $q.defer();
-		  			if(angular.isDefined(arguments.id)) {
-		  				urlString += '&entityId='+arguments.id;	
+		  			if(angular.isDefined(options.id)) {
+		  				urlString += '&entityId='+options.id;	
 		  			}
 		  			
 		  			$http.get(urlString)
