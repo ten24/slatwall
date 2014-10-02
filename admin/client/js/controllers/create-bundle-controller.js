@@ -32,9 +32,6 @@ function(
 			$log.debug('getProcessObject');
 			$scope.processObject = value.data;
 			formService.setForm($scope.form.createProductBundle);
-			//formService.copyProcessObject($scope.processObject,'Product_CreateBundle');
-			//console.log('getprocessObject');
-			//console.log(formService.getProcessObject('Product_CreateBundle'));
 			$log.debug($scope.processObject);
 		},function(reason){
 			//display error message if getter fails
@@ -68,20 +65,7 @@ function(
 					$rootScope.closePageDialog(closeDialogIndex);
 				}
 				
-				for(key in createProductBundleForm){
-					if(key.charAt(0) !== '$'){
-						if(angular.isDefined(formService.getPristinePropertyValue(key))){
-							createProductBundleForm[key].$setViewValue(formService.getPristinePropertyValue(key));
-						}else{
-							createProductBundleForm[key].$setViewValue('');
-						}
-						createProductBundleForm[key].$render();
-						
-					}
-				}
-				
-				createProductBundleForm.$submitted = false;
-				createProductBundleForm.$setPristine();
+				formService.resetForm(createProductBundleForm);
 				
 			},function(reason){
 				var messages = reason.MESSAGES;

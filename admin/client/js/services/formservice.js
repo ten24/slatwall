@@ -43,6 +43,21 @@ function($log){
 			);
 			this.setForm(_form);
 			return _form;
+		},
+		resetForm:function(form){
+			for(key in form){
+				if(key.charAt(0) !== '$'){
+					if(angular.isDefined(this.getPristinePropertyValue(key))){
+						form[key].$setViewValue(this.getPristinePropertyValue(key));
+					}else{
+						form[key].$setViewValue('');
+					}
+					form[key].$render();
+					
+				}
+			}
+			form.$submitted = false;
+			form.$setPristine();
 		}
 		//private functions
 		
