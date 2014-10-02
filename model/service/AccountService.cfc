@@ -308,13 +308,16 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
 				invalidLoginData.account = accountAuthentication.getAccount();
 				
+				
 				//Log the failed attempt to account.failedLoginAttemptCount
 				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
 				invalidLoginData.account.setFailedLoginAttemptCount(failedLogins); 
 				
-				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
-				if (failedLogins >= 6){
-					this.processAccount(invalidLoginData.account, 'lock');
+				if(accountAuthentication.getAccount().getAdminAccountFlag()){
+					//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
+					if (failedLogins >= 6){
+						this.processAccount(invalidLoginData.account, 'lock');
+					}
 				}
 			} 
 			else{
