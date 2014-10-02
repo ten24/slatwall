@@ -1,8 +1,8 @@
 //collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
-.factory('collectionService',['slatwallService','$filter','$log',
-function(slatwallService,$filter,$log){
+.factory('collectionService',['$filter','$log',
+function($filter,$log){
 	//properties
 	var _collection = null;
 	var _collectionConfig = null;

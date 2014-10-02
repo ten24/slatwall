@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,18 +45,48 @@
 
 Notes:
 
---->
-<cfparam name="rc.orderItem" type="any" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.orderItem.getAppliedTaxesSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryRate.taxCategory.taxCategoryName" />
-		<cf_HibachiListingColumn propertyIdentifier="taxCategoryRate.addressZone.addressZoneName" />
-		<cf_HibachiListingColumn propertyIdentifier="taxCategoryRate.taxIntegration.integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="taxImpositionName" />
-		<cf_HibachiListingColumn propertyIdentifier="taxJurisdictionName" />
-		<cf_HibachiListingColumn propertyIdentifier="taxRate" />
-		<cf_HibachiListingColumn propertyIdentifier="taxAmount" />
-		<cf_HibachiListingColumn propertyIdentifier="taxLiabilityAmount" />
-	</cf_HibachiListingDisplay>
-</cfoutput>
+	// Injected Entity
+	property name="product";
+
+	// Data Properties
+	property name="productType" fieldType="many-to-one" persistent="false" fkcolumn="productTypeID";
+	property name="bundleContentAccessFlag" hb_formFieldType="yesno";
+	property name="contents";
+	property name="options";
+	property name="price";
+	property name="renewalSubscriptionBenefits";
+	property name="subscriptionBenefits";
+	property name="subscriptionTerms";
+	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
+	property name="productTypeOptions";
+	
+	public any function getProductTypeOptions( string baseProductType ) {
+		if(!structKeyExists(variables, "productTypeOptions")) {
+			
+			var smartList = getProduct().getPropertyOptionsSmartList( "productType" );
+			smartList.addLikeFilter( "productTypeIDPath", "#getService('productService').getProductTypeBySystemCode(  'productBundle' ).getProductTypeID()#%" );
+			smartList.addWhereCondition( "NOT EXISTS( SELECT pt FROM SlatwallProductType pt WHERE pt.parentProductType.productTypeID = aslatwallproducttype.productTypeID)");
+			
+			var records = smartList.getRecords();
+			
+			variables.productTypeOptions = [];
+			
+			for(var i=1; i<=arrayLen(records); i++) {
+				var recordStruct = {};
+				recordStruct['name'] = records[i].getSimpleRepresentation();
+				recordStruct['value']=records[i].getProductTypeID();
+				arrayAppend(variables.productTypeOptions, recordStruct);
+			}
+		}
+		
+		return variables.productTypeOptions;
+	}
+	
+	public any function setupDefaults() {
+		variables.generateSkusFlag = true;
+	}
+	
+}

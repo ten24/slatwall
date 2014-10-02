@@ -66,6 +66,47 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.apiResponse.content['entityName'] = rc.entityName;
 	}
 	
+	public any function getProcessObject(required struct rc){
+		//need a Context, an entityName and propertyIdentifiers
+		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
+		var entity = entityService.invokeMethod("new#arguments.rc.entityName#");
+		var processObjectExists = entity.hasProcessObject( rc.context);
+		
+		if(processObjectExists) {
+			// Setup the processObject in the RC so that we can use it for our form
+			rc.processObject = entity.getProcessObject( rc.context );
+		}
+		
+		var propertyIdentifiers = ListToArray(rc.propertyIdentifiers);
+		for(propertyIdentifier in propertyIdentifiers){
+			var data[propertyIdentifier] = {};
+			//entity.invokeMethod('set')rc.processObject.invokeMethod('get#propertyIdentifier#');
+			var propertyPath = listToArray(propertyIdentifier,'.');
+			var count = 1;
+			var value = javacast('null','');
+			var propertyPathCount = arraylen(propertyPath);
+			for(var property in propertyPath ){
+				if(count eq 1){
+					value = rc.processObject.invokeMethod('get#property#');
+				}else{
+					value = value.invokeMethod('get#property#');
+				}
+				if(count eq propertyPathCount && rc.processObject.invokeMethod('get#arguments.rc.entityName#').hasProperty(property)){
+					data[propertyIdentifier]['title'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getPropertyTitle( property );
+				}
+				count++;
+			}
+			if(!isNull(value)){
+				data[propertyIdentifier]['value'] = value;
+			}
+			
+			//data[propertyIdentifier]['fieldType']
+			
+		}
+		
+		arguments.rc.apiResponse.content['data'] = data;
+	}
+	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
 			create a base default properties function that can be overridden at the entity level via function

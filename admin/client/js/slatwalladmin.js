@@ -48,7 +48,11 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
     
     $rootScope.openPageDialog = function( partial ) {
     	dialogService.addPageDialog( partial );
-    }
+    };
+    
+    $rootScope.closePageDialog = function( index ) {
+		dialogService.removePageDialog( index );
+    };
 }]);
 
 

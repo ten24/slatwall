@@ -909,23 +909,19 @@ component extends="HibachiService" accessors="true" {
 	
 	public boolean function deleteProduct(required any product) {
 	
-		// Set the default sku temporarily in this local so we can reset if delete fails
-		var defaultSku = arguments.product.getDefaultSku();
-		
-		// Remove the default sku so that we can delete this entity
-		arguments.product.setDefaultSku(javaCast("null", ""));
-	
-		// Use the base delete method to check validation
-		var deleteOK = super.delete(arguments.product);
-		
-		// If the delete failed, then we just reset the default sku into the product and return false
-		if(!deleteOK) {
-			arguments.product.setDefaultSku(defaultSku);
-		
-			return false;
+		// Check delete validation
+		if(arguments.product.isDeletable()) {
+			
+			// Remove the primary fields so that we can delete this entity
+			arguments.product.setDefaultSku(javaCast("null", ""));
+			
+			// Remove the product relationships
+			getProductDAO().removeProductFromRelatedProducts( arguments.product.getProductID() );
+			
+			
 		}
-	
-		return true;
+		
+		return delete( arguments.product );
 	}
 	
 	// ======================  END: Delete Overrides ==========================

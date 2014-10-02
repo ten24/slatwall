@@ -1,27 +1,66 @@
-<div class="s-create-window">
+<div class="s-create-window" ng-controller="create-bundle-controller">
   <header>
     <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
-      <span class="navbar-brand" href="#">Create Bundle</span>
+      <span class="navbar-brand" >Create Bundle</span>
       <ul class="nav navbar-nav pull-right">
-        <li class="active"><a ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
+        <li class="active"><a ng-href="#" ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
       </ul>
     </div>
   </header>
 
-  <section class="col-xs-12" ng-controller="create-bundle-controller">
+  <section class="col-xs-12" >
 
     <div class="row s-bundle-header">
-
-      <form class="form-horizontal" role="form">
+      <form class="form-horizontal s-properties" 
+			role="form" 
+			name="productBundleForm"
+		> 
         <div class="col-xs-6">
-          <span sw-property-display data-object="product" data-property="productName"></span>
-          <span sw-property-display data-object="product" data-property="productCode"></span>
-          <span sw-property-display data-object="product" data-property="price"></span>
+       	 <span sw-property-display 
+       	 		data-type="text"
+          		data-property="product.productName"
+          		data-object="processObject"
+          		data-is-editable="true"
+          		data-is-hidden="false"
+          		data-editing="true"
+          ></span>
+         <span sw-property-display 
+       	 		data-type="text"
+          		data-property="product.productCode"
+          		data-object="processObject"
+          		data-is-editable="true"
+          		data-is-hidden="false"
+          		data-editing="true"
+          ></span>
+          <span sw-property-display 
+       	 		data-type="text"
+          		data-property="product.price"
+          		data-object="processObject"
+          		data-is-editable="true"
+          		data-is-hidden="false"
+          		data-editing="true"
+          ></span>
         </div>
 
         <div class="col-xs-6">
-          <span sw-property-display data-object="product" data-property="productType"></span>
-          <span sw-property-display data-object="product" data-property="brand"></span>
+        	<span sw-property-display 
+       	 		data-type="select"
+          		data-property="product.productType"
+          		data-object="processObject"
+          		data-is-editable="true"
+          		data-is-hidden="false"
+          		data-editing="true"
+          		data-value-options="productTypeOptions"
+          ></span>
+         <span sw-property-display 
+       	 		data-type="select"
+          		data-property="product.brand"
+          		data-object="processObject"
+          		data-is-editable="true"
+          		data-is-hidden="false"
+          		data-editing="true"
+          		data-value-options="product.brandOptions"
+          ></span>
 		</div>
       </form>
 
@@ -57,7 +96,7 @@
         </li>
       </ul>
     </div>
-	<a ng-click="openPageDialog( 'createproductmerchandise' )">Test</a>
+	<a ng-click="openPageDialog( 'createproductmerchandise' )"></a>
     <button class="btn btn-xs s-btn-grey s-create-bundle-btn" data-toggle="collapse" data-target="#j-edit-filter-1"><i class="fa fa-plus"></i> Bundle Group</button>
 
     <!--- Edit Filter Box --->
@@ -269,8 +308,16 @@
   <footer>
     <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
       <ul class="nav navbar-nav pull-right">
-        <li class="active"><a href="#" style="padding: 9px 12px;font-size: 16px;">Save & New</a></li>
-        <li class="active"><a href="#" style="padding: 9px 12px;font-size: 16px;">Save & Finish</a></li>
+        <li class="active">
+        	<a  ng-href="#" style="padding: 9px 12px;font-size: 16px;"
+        		ng-click="saveProductBundle()"
+        	>Save & New</a>
+        </li>
+        <li class="active">
+        	<a  ng-href="#" style="padding: 9px 12px;font-size: 16px;"
+        		ng-click="saveProductBundle($index)"
+        	>Save & Finish</a>
+        </li>
       </ul>
     </div>
   </footer>

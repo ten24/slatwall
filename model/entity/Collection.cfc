@@ -208,15 +208,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		arrayAppend(variables.postFilterGroups, arguments.postFilterGroup);
 	}
 	
-	/*public void function setKeywords(required string keywords){
-		variables.keywords = arguments.keywords;
-		setKeywordArray();
-	}
-	
-	public void function setKeywordArray(required array keywordArray){
-		variables.keywordArray = arguments.keywordArray;
-	}*/
-	
 	public array function getKeywordArray(){
 		if(!arraylen(variables.keywordArray)){
 			variables.keywordArray = ListToArray(getKeywords(),' ');

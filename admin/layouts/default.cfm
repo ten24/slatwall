@@ -93,7 +93,7 @@ Notes:
 			</script>
 		</cfif>
 	</head>
-	<body>
+	<body class="<cfif NOT $.slatwall.getLoggedInAsAdminFlag()>s-not-logged-in</cfif>">
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
 				<cfset homeLink = request.slatwallScope.getBaseURL() />
@@ -112,7 +112,7 @@ Notes:
 					</span>
 
 					<a href="#homeLink#" target="_self" class="navbar-brand s-centered-logo"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;height:16px;" title="Slatwall" /></a>
-					
+
 					<ul class="nav navbar-nav navbar-right">
 						<cfif $.slatwall.getLoggedInAsAdminFlag()>
 							<cf_HibachiActionCallerDropdown title="" icon="cog icon-white" dropdownclass="pull-right" type="nav">
@@ -164,41 +164,6 @@ Notes:
 						</ul>
 					</div>
 				</form>
-			
-			
-<!---			
-<script charset="utf-8">
-	$( '.s-header-search ##global-search' ).focus(function() {
-
-		function hideSearch() {
-			$(document).click(function(e) {
-				var tar = $(e.target);
-			    if ($(tar).parents('.s-search-results').length) {
-					//Do Nothing
-				}else{
-					$('.sidebar').removeClass('s-search-width');
-					$('.s-search-results').hide();
-					$('.sidebar-nav').show();
-			    }
-			});
-		};
-
-		$(this).on('change keyup paste click', function(e){
-			if($(this).val()){
-				hideSearch();
-				$('.s-search-results').show();
-				$('.sidebar').addClass('s-search-width');
-				$('.sidebar-nav').hide();
-			}else{
-				$('.sidebar').removeClass('s-search-width');
-				$('.s-search-results').hide();
-				$('.sidebar-nav').show();
-			};
-		});
-
-	});
-</script>
---->
 
 <style media="screen">
 	.s-search-results {color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
@@ -383,14 +348,15 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
 
+
 		<!---services --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwall.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/collectionservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/paginationservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/dialogservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/formservice.js"></script>
 
 		<!---controllers --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
@@ -416,6 +382,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swscrolltrigger.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swexportaction.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swformfield.js"></script>
 
 	</body>
 </html>

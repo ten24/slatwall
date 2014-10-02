@@ -415,6 +415,21 @@ Notes:
 			return result;
 		}
 	</cfscript>
+	
+	<cffunction name="removeProductFromRelatedProducts">
+		<cfargument name="productID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			DELETE FROM
+				SwRelatedProduct
+			WHERE
+				productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#" />
+			  OR
+			  	relatedProductID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#" />
+		</cfquery>
+	</cffunction>
 	 
 </cfcomponent>
 

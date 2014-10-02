@@ -58,7 +58,7 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	property name="baseObject" ormType="string";
 	property name="baseID" ormType="string";
 	property name="data" ormType="string" length="8000";
-	property name="title" ormType="string" length="200";
+	property name="title" ormType="string" length="1000";
 	
 	property name="sessionIPAddress" ormType="string";
 	property name="sessionAccountID" ormType="string" length="32";
