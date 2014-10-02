@@ -13,6 +13,16 @@ function(
 	$scope.sidebarClass = 'sidebar';
 	
 	$scope.searchResults = {
+		'product' : {
+			'title': $.slatwall.rbKey('entity.product_plural'),
+			'resultNameFilter': function(data) {
+				return data['productName'];
+			},
+			'results' : [],
+			'id' : function(data) {
+				return data['productID'];
+			}
+		},
 		'brand' : {
 			'title': $.slatwall.rbKey('entity.brand_plural'),
 			'resultNameFilter': function(data) {
