@@ -18,7 +18,13 @@ function(
 	dialogService,
 	formService
 	
+	
 ){
+		//if this view is part of the dialog section, call the inherited function
+		if(angular.isDefined($scope.scrollToTopOfDialog)){
+			$scope.scrollToTopOfDialog();
+		}
+		
 		
 		$log.debug('getProductBundleProcessObject ');
 		var processObjectPromise = $slatwall.getProcessObject(
@@ -76,8 +82,6 @@ function(
 			
 		}
 	};
-	
-	
 	
 	/*$scope.processObject.bundleGroups = [
 		{

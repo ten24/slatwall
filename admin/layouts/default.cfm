@@ -322,11 +322,12 @@ Notes:
 		</div>
 
 		<!--- Page Dialog Controller --->
-		<div ng-controller="pageDialog">
-			<span style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs">
-				<span ng-include="pageDialog.path"></span>
+		<div ng-controller="pageDialog" >
+			<span id="topOfPageDialog">
+				<span style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
+					<span  ng-include="pageDialog.path"></span>
+				</span>
 			</span>
-			
 		</div>
 
 		<!---displays alerts to the user --->
