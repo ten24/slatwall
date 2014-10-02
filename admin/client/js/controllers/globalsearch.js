@@ -11,13 +11,12 @@ function(
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
-	$scope.searchResultSection = [];
 	
 	$scope.searchResults = {
 		'brand' : {
 			'title': $.slatwall.rbKey('entity.brand_plural'),
 			'resultNameFilter': function(data) {
-				return data['Brand Name'];
+				return data['brandName'];
 			},
 			'results' : [],
 			'id' : function(data) {
@@ -27,7 +26,7 @@ function(
 		'account' : {
 			'title': $.slatwall.rbKey('entity.account_plural'),
 			'resultNameFilter': function(data) {
-				return data['First Name'] + ' ' + data['Last Name'];
+				return data['firstName'] + ' ' + data['lastName'];
 			},
 			'results' : [],
 			'id' : function(data) {
@@ -37,11 +36,11 @@ function(
 		'vendor' : {
 			'title': $.slatwall.rbKey('entity.vendor_plural'),
 			'resultNameFilter': function(data) {
-				return data['Vendor Name'];
+				return data['vendorName'];
 			},
 			'results' : [],
 			'id' : function(data) {
-				return data['Vendor ID'];
+				return data['vendorID'];
 			}
 		}
 	};

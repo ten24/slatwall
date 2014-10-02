@@ -164,22 +164,8 @@ Notes:
 						</ul>
 					</div>
 				</form>
-
-<style media="screen">
-	.s-search-results {color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
-	.s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
-	.s-search-results > ul > li > .s-title {padding-left:0px;}
-	.s-search-results > ul > li > .s-title h2 {font-size:12px;font-weight:600;display:inline;vertical-align:top;}
-	.s-search-results > ul > li > .s-body {font-size:12px;padding:0px;}
-	.s-search-results > ul > li > .s-body ul li {margin-bottom: 8px;border-bottom: 1px solid ##666;padding-bottom: 8px;}
-	.s-search-results > ul > li > .s-body ul li a {color:##dddddd;}
-	.s-search-results > ul > li > .s-body ul li a:hover {color:##ffffff;}
-	.s-search-width {width:330px;transition: all 0.5s ease;}
-	.s-search-results ##s-close-search {width:100%;text-align:right;margin-bottom:15px;}
-	.s-search-results ##s-close-search a {padding:5px;margin:0px;margin-right:10px;color:##aaaaaa;display:inline-block;}
-	.s-search-results ##s-close-search a:hover {color:##ffffff;}
-
-</style>
+				<!--- End of Search --->
+				<!--- Side Nav --->
 			    <nav class="sidebar-nav" ng-hide="searchResultsOpen">
 					<ul id="menu" >
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
@@ -322,18 +308,25 @@ Notes:
 		</div>
 
 		<!--- Page Dialog Controller --->
-		<div ng-controller="pageDialog">
-			<span class="s-dialog-container" ng-repeat="pageDialog in pageDialogs">
-				<span ng-include="pageDialog.path"></span>
+		<div ng-controller="pageDialog" >
+			<span id="topOfPageDialog">
+				<span style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
+					<span  ng-include="pageDialog.path"></span>
+				</span>
 			</span>
 		</div>
 
 		<!---displays alerts to the user --->
-		<div ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer" role="alert" ng-repeat="alert in alerts">
-			<!---only show a dismissable button if we are showing info or a warning --->
-		<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-		<!---show check mark only if success, always display message --->
-		<i style="display:none;" class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
+		<span ng-controller="alertController" >
+			<span ng-repeat="alert in alerts">
+				<div style="z-index:5000" ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer" role="alert" >
+					<!---only show a dismissable button if we are showing info or a warning --->
+					<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<!---show check mark only if success, always display message --->
+					<i style="display:none;" class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
+				</div>
+			</span>
+		</span>
 	</div>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
@@ -362,6 +355,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collectionstabcontroller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/alertcontroller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/globalsearch.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/preprocessaccount_addaccountpayment.js"></script>
@@ -369,7 +363,6 @@ Notes:
 		<!---directives --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swheaderwithtabs.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdirective.js"></script>
-
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroups.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfilteritem.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swaddfilterbuttons.js"></script>
@@ -384,7 +377,6 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swexportaction.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swformfield.js"></script>
-
 	</body>
 </html>
 </cfoutput>

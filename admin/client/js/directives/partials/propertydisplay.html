@@ -2,7 +2,12 @@
 <div class="form-group">
   <label class="col-sm-2 control-label">
   	<!-- property RB key --><span ng-bind="propertyDisplay.title"></span>:
-  	<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="{{propertyDisplay.title}}"> 
+  	<span 	class="j-tool-tip-item" 
+  			data-toggle="tooltip" 
+  			data-placement="top" 
+  			data-original-title="{{propertyDisplay.hint}}"
+  			ng-show="propertyDisplay.hint.length"
+  	> 
   		<i class="fa fa-question-circle"></i>
   	</span>
   </label>

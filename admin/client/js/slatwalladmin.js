@@ -42,9 +42,6 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	
 }]).run(['$rootScope','dialogService', function($rootScope, dialogService) {
 	
-	//adding alerts to the root Scope
-    $rootScope.alerts = [];
-    
     
     $rootScope.openPageDialog = function( partial ) {
     	dialogService.addPageDialog( partial );
