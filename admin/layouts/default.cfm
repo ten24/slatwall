@@ -137,114 +137,26 @@ Notes:
 			</div><!-- /.container-fluid -->
 		</nav><!-- /.navbar -->
 
+	<div ng-controller="globalSearch">
 
 		<cfif $.slatwall.getLoggedInAsAdminFlag()>
-			<aside class="sidebar" id="sidebar">
-
+			<aside class="{{sidebarClass}}" id="sidebar">
+			
 				<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
 					<div class="form-group">
-						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search">
+						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search" ng-keyup="showResults()" ng-model="keywords" ng-change="updateSearchResults()">
+							<a ng-hide="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times s-close-icon-search"></i></a>
+						</input>
 					</div>
-					<div class="row s-search-results" style="padding-top:15px;">
-						<!--- <div id="s-close-search" style="background"><a href="##"><i class="fa fa-times"></i> Close</a></div> --->
+					<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
 						<ul class="col-md-12 list-unstyled">
-
-							<li>
+							<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length">
 								<div class="col-md-4 s-title">
-									<h2>Products</h2>
+									<h2>{{ searchResult.title }}</h2>
 								</div>
 								<div class="col-md-8 s-body">
 									<ul class="list-unstyled" id="j-search-results"	>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Dolor Tortor Tristique Commodo Consectetur</a></li>
-										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
-									</ul>
-								</div>
-							</li>
-
-							<!--- <li>
-								<div class="col-md-4 s-title">
-									<h2>Product Types</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-									</ul>
-								</div>
-							</li> --->
-
-							<li>
-								<div class="col-md-4 s-title">
-									<h2>Brands</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
-									</ul>
-								</div>
-							</li>
-
-							<li>
-								<div class="col-md-4 s-title">
-									<h2>Promotions</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Vestibulum id ligula porta felis euismod semper.</a></li>
-									</ul>
-								</div>
-							</li>
-
-							<li>
-								<div class="col-md-4 s-title">
-									<h2>Orders</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-									</ul>
-								</div>
-							</li>
-
-							<!--- <li>
-								<div class="col-md-4 s-title">
-									<h2>Accounts</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-									</ul>
-								</div>
-							</li> --->
-
-							<!--- <li>
-								<div class="col-md-4 s-title">
-									<h2>Vendor Orders</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-									</ul>
-								</div>
-							</li> --->
-
-							<li>
-								<div class="col-md-4 s-title">
-									<h2>Vendors</h2>
-								</div>
-								<div class="col-md-8 s-body">
-									<ul class="list-unstyled">
-										<li><a href="##">Pharetra Ipsum Cursus Dapibus Nullam</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
-										<li><a href="##">Arist AH Hemostat</a></li>
+										<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
 									</ul>
 								</div>
 							</li>
@@ -253,7 +165,22 @@ Notes:
 					</div>
 				</form>
 
-			    <nav class="sidebar-nav">
+<style media="screen">
+	.s-search-results {color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
+	.s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
+	.s-search-results > ul > li > .s-title {padding-left:0px;}
+	.s-search-results > ul > li > .s-title h2 {font-size:12px;font-weight:600;display:inline;vertical-align:top;}
+	.s-search-results > ul > li > .s-body {font-size:12px;padding:0px;}
+	.s-search-results > ul > li > .s-body ul li {margin-bottom: 8px;border-bottom: 1px solid ##666;padding-bottom: 8px;}
+	.s-search-results > ul > li > .s-body ul li a {color:##dddddd;}
+	.s-search-results > ul > li > .s-body ul li a:hover {color:##ffffff;}
+	.s-search-width {width:330px;transition: all 0.5s ease;}
+	.s-search-results ##s-close-search {width:100%;text-align:right;margin-bottom:15px;}
+	.s-search-results ##s-close-search a {padding:5px;margin:0px;margin-right:10px;color:##aaaaaa;display:inline-block;}
+	.s-search-results ##s-close-search a:hover {color:##ffffff;}
+
+</style>
+			    <nav class="sidebar-nav" ng-hide="searchResultsOpen">
 					<ul id="menu" >
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
 							<cf_HibachiDividerHider>
@@ -356,7 +283,8 @@ Notes:
 			    </nav>
 			</aside>
 		</cfif>
-
+	</div> <!--  /ng-controller | sidebarController -->
+	
 		<section class="content s-body-margin" id="j-main-content">
 
 			<div class="col-md-12">
@@ -441,7 +369,9 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collectionstabcontroller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/alertcontroller.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/globalsearch.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/preprocessaccount_addaccountpayment.js"></script>
 
 		<!---directives --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swheaderwithtabs.js"></script>
@@ -497,39 +427,5 @@ Notes:
 			$('#j-main-content').addClass('s-body-margin').css('margin-left','174px !important');;
 		};
 	};
-
-</script>
-
-<script charset="utf-8">
-	$( '.s-header-search #global-search' ).focus(function() {
-
-		function hideSearch() {
-			$(document).click(function(e) {
-				var tar = $(e.target);
-				if ($(tar).parents('.s-search-results').length) {
-					//Do Nothing
-				}else{
-					$('.sidebar').removeClass('s-search-width');
-					$('.s-search-results').hide();
-					$('.sidebar-nav').show();
-				}
-			});
-		};
-
-		$(this).on('change keyup paste click', function(e){
-			if($(this).val()){
-				hideSearch();
-				$('.s-search-results').show();
-				$('.sidebar').addClass('s-search-width');
-				$('.sidebar-nav').hide();
-			}else{
-				$('.sidebar').removeClass('s-search-width');
-				$('.s-search-results').hide();
-				$('.sidebar-nav').show();
-			};
-		});
-
-	});
-
 
 </script>
