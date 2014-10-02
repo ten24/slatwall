@@ -9,10 +9,7 @@ function(){
 	    {
 	      return {
 	    		//basic entity getter where id is optional, returns a promise
-	    	  
-	    	  
-	    	  
-		  		getEntity:function(entityName, data){
+		  		getEntity:function(entityName, arguments){
 		  			/*
 		  			 *
 		  			 * getEntity('Product', '12345-12345-12345-12345');
@@ -20,14 +17,13 @@ function(){
 		  			 * 
 		  			 */
 		  			
-		  			if(typeof data === 'String') {
-		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+data;
+		  			if(typeof arguments === 'String') {
+		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+arguments;
 		  			} else {
-		  				data.id = data.id || undefined;
-		  				data.currentPage = data.currentPage || 1;
-		  				data.pageShow = data.pageShow || 10;
-		  				data.keywords = data.keywords || '';
-		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+data.currentPage+'&P:Show='+data.pageShow+'&keywords='+data.keywords+'&entityID='+data.id;
+		  				arguments.currentPage = arguments.currentPage || 1;
+		  				arguments.pageShow = arguments.pageShow || 10;
+		  				arguments.keywords = arguments.keywords || '';
+		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+arguments.currentPage+'&P:Show='+arguments.pageShow+'&keywords='+arguments.keywords;
 		  			}
 		  			
 		  			var deferred = $q.defer();
