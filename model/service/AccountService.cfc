@@ -291,7 +291,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and 
 				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {		
-					if(accountAuthentication.getResetPasswordOnNextLoginFlag() == true){
+					if(accountAuthentication.getResetPasswordOnNextLoginFlag() == true || ( accountAuthentication.getAccount().getAdminAccountFlag() && dateCompare(Now(), dateAdd('d', 90, accountAuthentication.getCreatedDateTime()))  == 1)){
 						arguments.processObject.addError('passwordUpdateRequired',  rbKey('validate.newPassword.duplicatePassword'));	
 					}else{
 						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
@@ -1257,12 +1257,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 		// Set the password
 		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
-		
-		//Set the expiration date for 90 days for admins
-		if(arguments.account.getAdminAccountFlag() == true){
-			var expirationDateTime= dateAdd('d', 90, Now());
-			accountAuthentication.setExpirationDateTime(expirationDateTime);
-		}
 		
 		// If the accountId is different then the created by account, set the resetPasswordOnNextLoginFlag to true
 		if( accountAuthentication.getAccount().getAdminAccountFlag() && !isNull(accountAuthentication.getCreatedByAccount()) && accountAuthentication.getCreatedByAccount().getAccountID() != accountAuthentication.getAccount().getAccountId()){
