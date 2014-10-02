@@ -406,7 +406,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-active radio {float:left;margin-right:10px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items {margin-bottom:20px;margin-bottom:10px;}
 
-.s-search-results {display:none;color: #FFF;background: #555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
+.s-search-results {color: #FFF;background: #555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
 .s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
 .s-search-results > ul > li > .s-title {padding-left:0px;}
 .s-search-results > ul > li > .s-title h2 {font-size:12px;font-weight:600;display:inline;vertical-align:top;}
