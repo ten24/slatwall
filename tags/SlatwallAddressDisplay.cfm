@@ -70,6 +70,10 @@ Notes:
 
 <cfset thisAddressID = createUUID() />
 
+<cfif isNull(attributes.address.getCountryCode())>
+	<cfset attributes.address.setCountryCode('US') />
+</cfif>
+
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
 		<div id="#thisAddressID#" class="addressDisplay">
