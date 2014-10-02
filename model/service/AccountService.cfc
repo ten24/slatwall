@@ -290,8 +290,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			//Make sure that the account is not locked 
 			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and 
-				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {		
-					if(accountAuthentication.getResetPasswordOnNextLoginFlag() == true || ( accountAuthentication.getAccount().getAdminAccountFlag() && dateCompare(Now(), dateAdd('d', 90, accountAuthentication.getCreatedDateTime()))  == 1)){
+				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {							
+					
+					//Check to see if a password reset is required
+					if(checkPasswordResetRequired(accountAuthentication, arguments.processObject)){
 						arguments.processObject.addError('passwordUpdateRequired',  rbKey('validate.newPassword.duplicatePassword'));	
 					}else{
 						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
@@ -1258,11 +1260,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Set the password
 		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
 		
-		// If the accountId is different then the created by account, set the resetPasswordOnNextLoginFlag to true
-		if( accountAuthentication.getAccount().getAdminAccountFlag() && !isNull(accountAuthentication.getCreatedByAccount()) && accountAuthentication.getCreatedByAccount().getAccountID() != accountAuthentication.getAccount().getAccountId()){
-			accountAuthentication.setResetPasswordOnNextLoginFlag(true);
-		}
-
 		return arguments.account;
 	}
 	
@@ -1315,6 +1312,22 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		}
 		
+	}
+
+	private boolean function checkPasswordResetRequired(required any accountAuthentication, required any processObject){
+		if (accountAuthentication.getResetPasswordOnNextLoginFlag() == true 
+			|| ( accountAuthentication.getAccount().getAdminAccountFlag() && 
+					( dateCompare(Now(), dateAdd('d', 90, accountAuthentication.getCreatedDateTime()))  == 1 
+					|| !REFind("^.*(?=.{7,})(?=.*[0-9])(?=.*[a-zA-Z]).*$" , arguments.processObject.getPassword()) 
+					|| ( !isNull(accountAuthentication.getCreatedByAccount()) && accountAuthentication.getCreatedByAccount().getAccountID() != accountAuthentication.getAccount().getAccountId())
+					)
+				)
+			)
+		{ 
+			return true;
+		}
+				
+		return false;	
 	}
 	// =====================  END:  Private Helper Functions ==================
 	
