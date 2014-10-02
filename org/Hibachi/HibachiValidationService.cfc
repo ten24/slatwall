@@ -76,7 +76,7 @@
 						
 						for(var constraint in rule) {
 							if(constraint != "contexts" && constraint != "conditions") {
-								var contstraintDetails = {};
+								var constraintDetails = {};
 								constraintDetails['constraintType'] = constraint;
 								constraintDetails['constraintValue'] = rule[ constraint ];
 								if(structKeyExists(rule, "conditions")) {
