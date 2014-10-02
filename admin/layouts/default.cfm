@@ -164,22 +164,8 @@ Notes:
 						</ul>
 					</div>
 				</form>
-
-<style media="screen">
-	.s-search-results {color: ##FFF;background: ##555;padding-bottom:15px;padding-top: 15px;margin-top: 10px}
-	.s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
-	.s-search-results > ul > li > .s-title {padding-left:0px;}
-	.s-search-results > ul > li > .s-title h2 {font-size:12px;font-weight:600;display:inline;vertical-align:top;}
-	.s-search-results > ul > li > .s-body {font-size:12px;padding:0px;}
-	.s-search-results > ul > li > .s-body ul li {margin-bottom: 8px;border-bottom: 1px solid ##666;padding-bottom: 8px;}
-	.s-search-results > ul > li > .s-body ul li a {color:##dddddd;}
-	.s-search-results > ul > li > .s-body ul li a:hover {color:##ffffff;}
-	.s-search-width {width:330px;transition: all 0.5s ease;}
-	.s-search-results ##s-close-search {width:100%;text-align:right;margin-bottom:15px;}
-	.s-search-results ##s-close-search a {padding:5px;margin:0px;margin-right:10px;color:##aaaaaa;display:inline-block;}
-	.s-search-results ##s-close-search a:hover {color:##ffffff;}
-
-</style>
+				<!--- End of Search --->
+				<!--- Side Nav --->
 			    <nav class="sidebar-nav" ng-hide="searchResultsOpen">
 					<ul id="menu" >
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="sidenav">
