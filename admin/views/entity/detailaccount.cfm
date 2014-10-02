@@ -91,7 +91,7 @@ Notes:
 					<!--- Authentication Details --->
 					<cf_HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.authenticationDetails')#" hint="#$.slatwall.rbKey("admin.entity.detailaccount.authenticationDetails_hint")#" />
 					<cf_HibachiPropertyDisplay object="#rc.account#" property="guestAccountFlag" edit="false" displayType="table">
-					<cfloop array="#rc.account.getAccountAuthentications()#" index="accountAuthentication">
+					<cfloop array="#rc.account.getActiveAccountAuthentications()#" index="accountAuthentication">
 						<cfsavecontent variable="thisValue">
 							<cf_HibachiActionCaller text="#$.slatwall.rbKey('define.remove')#" action="admin:entity.deleteAccountAuthentication" queryString="accountAuthenticationID=#accountAuthentication.getAccountAuthenticationID()#&redirectAction=admin:entity.detailAccount&accountID=#rc.account.getAccountID()#" />
 						</cfsavecontent>

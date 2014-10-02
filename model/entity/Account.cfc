@@ -328,6 +328,20 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.unenrolledAccountLoyaltyOptions;
 	}
 	
+	public any function getActiveAccountAuthentications(){
+		var authentications = getAccountAuthentications();
+	
+		for (i = ArrayLen(authentications); i >= 1; i--){
+			var authentication = authentications[i];
+			
+			if(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == false){
+				arrayDelete(authentications, authentication);
+			}
+		}
+
+		return authentications;
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
