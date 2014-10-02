@@ -399,7 +399,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getExistingPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {	
 				//create the new pasword the updated password 
 				arguments.account = createNewAccountPassword(accountAuthentication.getAccount(), arguments.processObject);	
-				if(!arguments.account.hasErrors()){
+				if(!arguments.processObject.hasErrors()){
 					if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
 					}else{
@@ -1232,8 +1232,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			//Check to see if the password is a duplicate
 			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), existingPasswords);
+			
 			if(duplicatePasswordCount > 0){
-				arguments.account.addError('changePassword', rbKey('validate.newPassword.duplicatePassword'));
+				arguments.processObject.addError('password', rbKey('validate.newPassword.duplicatePassword'));
+				
 				return arguments.account;
 			}
 		}
@@ -1262,6 +1264,11 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountAuthentication.setExpirationDateTime(expirationDateTime);
 		}
 		
+		// If the accountId is different then the created by account, set the resetPasswordOnNextLoginFlag to true
+		if( accountAuthentication.getAccount().getAdminAccountFlag() && !isNull(accountAuthentication.getCreatedByAccount()) && accountAuthentication.getCreatedByAccount().getAccountID() != accountAuthentication.getAccount().getAccountId()){
+			accountAuthentication.setResetPasswordOnNextLoginFlag(true);
+		}
+
 		return arguments.account;
 	}
 	
