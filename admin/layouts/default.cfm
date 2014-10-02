@@ -145,7 +145,7 @@ Notes:
 				<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
 					<div class="form-group">
 						<input id="global-search" type="text" name="serach" class="form-control search-query col-xs-2" placeholder="Search" ng-keyup="showResults()" ng-model="keywords" ng-change="updateSearchResults()">
-							<a ng-hide="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times s-close-icon-search"></i></a>
+							<a ng-show="searchResultsOpen" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times s-close-icon-search"></i></a>
 						</input>
 					</div>
 					<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
