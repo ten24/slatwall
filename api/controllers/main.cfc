@@ -1,8 +1,9 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	
 	property name="fw" type="any";
-	property name="hibachiService" type="any";
 	property name="collectionService" type="any";
+	property name="hibachiService" type="any";
+	property name="hibachiUtilityService" type="any";
 	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -76,6 +77,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			// Setup the processObject in the RC so that we can use it for our form
 			rc.processObject = entity.getProcessObject( rc.context );
 		}
+		data['validation'] = getService('hibachiValidationService').getValidationStruct(rc.processObject);
 		
 		var propertyIdentifiers = ListToArray(rc.propertyIdentifiers);
 		for(propertyIdentifier in propertyIdentifiers){
@@ -93,12 +95,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				}
 				if(count eq propertyPathCount && rc.processObject.invokeMethod('get#arguments.rc.entityName#').hasProperty(property)){
 					data[propertyIdentifier]['title'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getPropertyTitle( property );
+					data[propertyIdentifier]['hint'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getPropertyHint( property );
+					data[propertyIdentifier]['type'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getFieldTypeByPropertyIdentifier( property );
+					
 				}
 				count++;
 			}
+			
 			if(!isNull(value)){
 				data[propertyIdentifier]['value'] = value;
 			}
+			
 			
 			//data[propertyIdentifier]['fieldType']
 			
@@ -214,31 +221,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 		}else{
 			arguments.rc.apiResponse.content.success = true;
-			//
-			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "success");
-			var successMessageData = {message = rc.messages[1].message, type=rc.messages[1].messageType};
-			arrayAppend(arguments.rc.apiResponse.content.messages,successMessageData);
-		}
-		
-		if(!isnull(entity.getHibachiMessages()) && structCount(entity.getHibachiMessages().getMessages())){
-			var messages = entity.getHibachiMessages().getMessages();
 			
-			for(message in messages){
-				var messageData ={
-					message = messages[message],
-					messageType = ""
-				};
-				arrayAppend(arguments.rc.apiResponse.content.messages,messageData);	
-			}
+			// Setup success response message
+			var replaceValues = {
+				entityName = rbKey('entity.#arguments.rc.entityName#')
+			};
+			
+			var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entityName#.#rc.context#_success" ), replaceValues);
+			getHibachiScope().showMessage( successMessage, "success" );
+			
+			
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "success");
 		}
 		
 		if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
 			arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "error");
-			for(message in rc.messages){
-				var failureMessageData = {message = rc.messages[1].message, type=rc.messages[1].messageType};
-				arrayAppend(arguments.rc.apiResponse.content.messages,failureMessageData);	
-			}
 		}
 	}
 	

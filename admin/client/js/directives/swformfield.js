@@ -39,28 +39,35 @@ partialsPath
 		},
 		replace:true,
 		link: function(scope, element,attrs, formController){
-			scope.formFieldChanged = function(value){
-				$log.debug('formfieldChanged');
-				$log.debug(value);
-				scope.propertyDisplay.errorMessages = [];
-				if(formController[scope.propertyDisplay.property].$invalid && formController[scope.propertyDisplay.property].$dirty){
-					for(key in formController[scope.propertyDisplay.property].$error){
+		
+		//revert values when they are set to pristine
+		/*scope.registerWatch = function(){
+			scope.$watch('formController.$pristine',function(){
+				console.log('form is pristine!');
+				console.log(scope.propertyDisplay);
+				if(angular.isDefined(scope.propertyDisplay)){
+					
+					if(angular.isDefined(scope.revertValue.value)){
 						
-						var errorMessage = '';
-						if(key === 'required'){
-							errorMessage = scope.propertyDisplay.title+' is required';
+						scope.propertyDisplay.value = scope.revertValue.value;
+					}else{
+						if(scope.revertValue.type === 'text'){
+							scope.propertyDisplay.value = '';
+						}
+						if(scope.revertValue.type === 'select'){
+							scope.propertyDisplay.value = scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0];
 						}
 						
-						scope.propertyDisplay.errorMessages.push(errorMessage);
-						console.log(scope.propertyDisplay.errorMessages);
 					}
-				};
-				
-			};
-			
+					console.log(scope.propertyDisplay);
+				}
+			});
+		};*/
 			//as soon as we get data compile the web componenet
 			var unBindWatch = scope.$watch('propertyDisplay',function(newValue,oldValue){
 				if(newValue !== oldValue){
+					scope.revertValue = angular.copy(newValue);
+					
 					var templateLoader = getTemplate(newValue.type);
 			    	var promise = templateLoader.success(function(html){
 			    		var formfield = angular.element(html);
@@ -81,10 +88,21 @@ partialsPath
 						$compile(element.contents())(scope);
 						if(scope.propertyDisplay.type === 'select'){
 				        	scope.propertyDisplay.value = scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0];
+				        	formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
 				        }
+						if(scope.propertyDisplay.type === 'text'){
+							formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.value);
+						}
+						
+						scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
+						scope.propertyDisplay.form = formController;
 				        
+						
+						//scope.registerWatch();
 						unBindWatch();
 					});
+			    	
+			    	
 				}
 			});
 		}
