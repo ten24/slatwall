@@ -183,6 +183,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.entityID" default="";
 		param name="arguments.rc.apiResponse.content.errors" default="";
 		
+		
 		if(isNull(arguments.rc.apiResponse.content.messages)){
 			arguments.rc.apiResponse.content.messages = [];
 		}

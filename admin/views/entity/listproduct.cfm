@@ -77,7 +77,5 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</cf_HibachiListingDisplay>
 	
-	<button type="button" class="btn btn-default j-test-button" style="margin-top:40px;width:100%;" ng-click="openPageDialog( 'createproductbundle' )">Create Product Bundle</button>
-	<button type="button" class="btn btn-default j-test-button" style="margin-top:10px;width:100%;" ng-click="openPageDialog( 'createproductbundleexample' )">Create Product Bundle Example</button>
-	
+	<button type="button" class="btn btn-default j-test-button" style="margin-top:40px;width:100%;" ng-click="openPageDialog( 'createproductbundle/createproductbundle' )">Create Product Bundle</button>
 </cfoutput>

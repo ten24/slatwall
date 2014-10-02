@@ -64,14 +64,22 @@ function(){
 		  		saveEntity:function(entityName,id,params,context){
 		  			$log.debug('save'+ entityName);
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.post&entityName='+entityName+'&entityId='+id;	
+		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.post';	
+		  			
+		  			if(angular.isDefined(entityName)){
+		  				params.entityName = entityName;
+		  			}
+		  			if(angular.isDefined(id)){
+		  				params.entityID = id;
+		  			}
 		  			if(angular.isDefined(context)){
 		  				params.context = context;
 		  			}
+		  			
 		  			$http({
-		  				method:'POST',
 		  				url:urlString,
-		  				params: params,
+		  				method:'POST',
+		  				data: $.param(params),
 		  				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		  			})
 		  			.success(function(data){
