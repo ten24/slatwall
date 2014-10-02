@@ -3,28 +3,35 @@ angular.module('slatwalladmin.services',[])
 .provider('$slatwall',
 function(){
 	var _baseUrl;
+	//var options = {'id':id,'currentPage':currentPage,'pageShow':pageShow,'keywords':keywords};
 	return {
 	    $get:['$q','$http','$log', function ($q,$http,$log)
 	    {
 	      return {
 	    		//basic entity getter where id is optional, returns a promise
-		  		getEntity:function(entityName,id,currentPage,pageShow,keywords){
-		  			if(angular.isUndefined(currentPage)){
-		  				currentPage = 1;
-		  			}
-		  			if(angular.isUndefined(pageShow)){
-		  				pageShow = 10;
-		  			}
-		  			if(angular.isUndefined(keywords)){
-		  				keywords = "";
+	    	  
+	    	  
+	    	  
+		  		getEntity:function(entityName, data){
+		  			/*
+		  			 *
+		  			 * getEntity('Product', '12345-12345-12345-12345');
+		  			 * getEntity('Product', {keywords='Hello'});
+		  			 * 
+		  			 */
+		  			
+		  			if(typeof data === 'String') {
+		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+data;
+		  			} else {
+		  				data.id = data.id || undefined;
+		  				data.currentPage = data.currentPage || 1;
+		  				data.pageShow = data.pageShow || 10;
+		  				data.keywords = data.keywords || '';
+		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+data.currentPage+'&P:Show='+data.pageShow+'&keywords='+data.keywords+'&entityID='+data.id;
 		  			}
 		  			
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+currentPage+'&P:Show='+pageShow+'&keywords='+keywords;
-		  			if(angular.isDefined(id)) {
-		  				urlString += '&entityId='+id;	
-		  			}
-		  				
+		
 		  			$http.get(urlString)
 		  			.success(function(data){
 		  				deferred.resolve(data);
