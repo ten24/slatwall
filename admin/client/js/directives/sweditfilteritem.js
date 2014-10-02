@@ -276,6 +276,9 @@ $filter){
 					if(angular.isDefined(selectedFilterProperty.fieldtype)){
 						filterItem.fieldtype = selectedFilterProperty.fieldtype;
 					}
+					for(var siblingIndex in filterItem.$$siblingItems){
+						filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+					}
 					
 					filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
 					
