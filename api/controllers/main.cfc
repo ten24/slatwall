@@ -77,7 +77,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			// Setup the processObject in the RC so that we can use it for our form
 			rc.processObject = entity.getProcessObject( rc.context );
 		}
-		
+		/*writeDump(var=getService('hibachiValidationService').getValidationsByContext(rc.processObject.getProduct(),'Create'),top=2);
+		writeDump(var=getService('hibachiValidationService').getValidationStruct(rc.processObject.getProduct()),top=2);
+		abort;*/
 		data['validation'] = getService('hibachiValidationService').getValidationStruct(rc.processObject);
 		
 		var propertyIdentifiers = ListToArray(rc.propertyIdentifiers);

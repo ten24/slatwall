@@ -3,7 +3,7 @@
     <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
       <span class="navbar-brand" >Create Bundle</span>
       <ul class="nav navbar-nav pull-right">
-        <li class="active"><a ng-href="#" ng-click="closePageDialog()"><i class="fa fa-times"></i></a></li>
+        <li class="active"><a ng-href="#" ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
       </ul>
     </div>
   </header>
@@ -310,7 +310,7 @@
 	        </li>
 	        <li class="active">
 	        	<a  ng-href="#" style="padding: 9px 12px;font-size: 16px;"
-	        		ng-click="saveProductBundle(closePageDialog())"
+	        		ng-click="saveProductBundle($index)"
 	        	>Save & Finish</a>
 	        </li>
 	      </ul>

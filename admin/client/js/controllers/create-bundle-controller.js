@@ -28,12 +28,13 @@ function(
 			'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType'
 		);
 		
-		
 		processObjectPromise.then(function(value){
 			$log.debug('getProcessObject');
 			$scope.processObject = value.data;
-			$scope.revertValue = angular.copy(value.data);
-			
+			formService.setForm($scope.form.createProductBundle);
+			//formService.copyProcessObject($scope.processObject,'Product_CreateBundle');
+			//console.log('getprocessObject');
+			//console.log(formService.getProcessObject('Product_CreateBundle'));
 			$log.debug($scope.processObject);
 		},function(reason){
 			//display error message if getter fails
@@ -57,7 +58,7 @@ function(
 				"product.brand.brandID":createProductBundleForm['product.brand'].$modelValue.value
 			};
 			$log.debug(params);
-			var saveProductBundlePromise = $slatwall.saveEntity('product', null, params,'save');
+			var saveProductBundlePromise = $slatwall.saveEntity('product', null, params,'create');
 			saveProductBundlePromise.then(function(value){
 				$log.debug('saving Product Bundle');
 				var messages = value.MESSAGES;
@@ -67,13 +68,20 @@ function(
 					$rootScope.closePageDialog(closeDialogIndex);
 				}
 				
-				createProductBundleForm.$setPristine();
-				/*for(key in createProductBundleForm){
+				for(key in createProductBundleForm){
 					if(key.charAt(0) !== '$'){
-						createProductBundleForm[key].$modelValue = $scope.revertValue
+						if(angular.isDefined(formService.getPristinePropertyValue(key))){
+							createProductBundleForm[key].$setViewValue(formService.getPristinePropertyValue(key));
+						}else{
+							createProductBundleForm[key].$setViewValue('');
+						}
+						createProductBundleForm[key].$render();
+						
 					}
-				}*/
-				//createProductBundleForm.$rollbackViewValue();
+				}
+				
+				createProductBundleForm.$submitted = false;
+				createProductBundleForm.$setPristine();
 				
 			},function(reason){
 				var messages = reason.MESSAGES;

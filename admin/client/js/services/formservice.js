@@ -5,8 +5,7 @@ angular.module('slatwalladmin.services')
 function($log){
 	//properties
 	var _forms = {};
-	
-	
+	var _pristinePropertyValue = {};
 	
 	function form(name,object,editing){
 		this.name = name;
@@ -15,7 +14,12 @@ function($log){
 	};
 	
 	return formService = {
-		
+		setPristinePropertyValue:function(property,value){
+			_pristinePropertyValue[property] = value;
+		},
+		getPristinePropertyValue:function(property){
+			return _pristinePropertyValue[property];
+		},
 		clearForm:function(form){
 			$log.debug('clear form');
 			$log.debug(form);
@@ -27,7 +31,6 @@ function($log){
 		},
 		setForm: function(form){
 			_forms[form.$name] = form;
-			
 		},
 		getForm:function(formName){
 			return _forms[formName];

@@ -48,6 +48,9 @@ partialsPath
 						}
 						if(angular.isDefined(scope.object[scope.property].hint)){
 							scope.propertyDisplay.hint = scope.object[scope.property].hint;
+							$(function(){
+							    $('.j-tool-tip-item').tooltip();
+							  });
 						}
 						if(angular.isDefined(scope.object[scope.property].title)){
 							scope.propertyDisplay.title = scope.object[scope.property].title;
@@ -59,6 +62,8 @@ partialsPath
 							console.log('valueOptions');
 							console.log(scope.valueOptions);
 						}
+						
+						
 						unBindObjectWatch();
 					}
 					
