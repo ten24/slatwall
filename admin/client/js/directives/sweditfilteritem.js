@@ -147,6 +147,9 @@ $filter){
 				//scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
 				scope.filterItem.setItemInUse(false);
 				scope.filterItem.$$isClosed = true;
+				for(var siblingIndex in scope.filterItem.$$siblingItems){
+					scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+				}
 				if(scope.filterItem.$$isNew === true){
 					scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
 				}

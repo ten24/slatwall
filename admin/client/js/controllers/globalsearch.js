@@ -13,6 +13,16 @@ function(
 	$scope.sidebarClass = 'sidebar';
 	
 	$scope.searchResults = {
+		'product' : {
+			'title': $.slatwall.rbKey('entity.product_plural'),
+			'resultNameFilter': function(data) {
+				return data['productName'];
+			},
+			'results' : [],
+			'id' : function(data) {
+				return data['productID'];
+			}
+		},
 		'brand' : {
 			'title': $.slatwall.rbKey('entity.brand_plural'),
 			'resultNameFilter': function(data) {
@@ -51,7 +61,7 @@ function(
 			
 			(function(entityName) {
 				
-				var searchPromise = $slatwall.getEntity(entityName, undefined, 1, 10, $scope.keywords );
+				var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
 				searchPromise.then(function(data){
 					
 					// clear out the results

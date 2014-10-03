@@ -8,23 +8,28 @@ function(){
 	    {
 	      return {
 	    		//basic entity getter where id is optional, returns a promise
-		  		getEntity:function(entityName,id,currentPage,pageShow,keywords){
-		  			if(angular.isUndefined(currentPage)){
-		  				currentPage = 1;
-		  			}
-		  			if(angular.isUndefined(pageShow)){
-		  				pageShow = 10;
-		  			}
-		  			if(angular.isUndefined(keywords)){
-		  				keywords = "";
+		  		getEntity:function(entityName, options){
+		  			/*
+		  			 *
+		  			 * getEntity('Product', '12345-12345-12345-12345');
+		  			 * getEntity('Product', {keywords='Hello'});
+		  			 * 
+		  			 */
+		  			
+		  			if(typeof options === 'String') {
+		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
+		  			} else {
+		  				options.currentPage = options.currentPage || 1;
+		  				options.pageShow = options.pageShow || 10;
+		  				options.keywords = options.keywords || '';
+		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+options.currentPage+'&P:Show='+options.pageShow+'&keywords='+options.keywords;
 		  			}
 		  			
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+currentPage+'&P:Show='+pageShow+'&keywords='+keywords;
-		  			if(angular.isDefined(id)) {
-		  				urlString += '&entityId='+id;	
+		  			if(angular.isDefined(options.id)) {
+		  				urlString += '&entityId='+options.id;	
 		  			}
-		  				
+		  			
 		  			$http.get(urlString)
 		  			.success(function(data){
 		  				deferred.resolve(data);
