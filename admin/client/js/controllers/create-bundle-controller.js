@@ -18,32 +18,35 @@ function(
 	dialogService,
 	formService
 ){
-		//if this view is part of the dialog section, call the inherited function
-		if(angular.isDefined($scope.scrollToTopOfDialog)){
-			$scope.scrollToTopOfDialog();
-		}
+	//if this view is part of the dialog section, call the inherited function
+	if(angular.isDefined($scope.scrollToTopOfDialog)){
+		$scope.scrollToTopOfDialog();
+	}
+	
+	
+	$log.debug('getProductBundleProcessObject ');
+	var processObjectPromise = $slatwall.getProcessObject(
+		'Product',
+		null,
+		'CreateBundle',
+		'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType,productBundleGroups'
+	);
+	
+	processObjectPromise.then(function(value){
+		$log.debug('getProcessObject');
+		$scope.processObject = value.data;
+		formService.setForm($scope.form.createProductBundle);
+		$log.debug($scope.processObject);
+	},function(reason){
+		//display error message if getter fails
+		var messages = reason.MESSAGES;
+		var alerts = alertService.formatMessagesToAlerts(messages);
+		alertService.addAlerts(alerts);
+	});
+	
+	$scope.addBundleGroup = function(){
 		
-		
-		$log.debug('getProductBundleProcessObject ');
-		var processObjectPromise = $slatwall.getProcessObject(
-			'Product',
-			null,
-			'CreateBundle',
-			'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType'
-		);
-		
-		processObjectPromise.then(function(value){
-			$log.debug('getProcessObject');
-			$scope.processObject = value.data;
-			formService.setForm($scope.form.createProductBundle);
-			$log.debug($scope.processObject);
-		},function(reason){
-			//display error message if getter fails
-			var messages = reason.MESSAGES;
-			var alerts = alertService.formatMessagesToAlerts(messages);
-			alertService.addAlerts(alerts);
-		});
-		
+	};
 	
 	$scope.saveProductBundle = function(closeDialogIndex){
 		

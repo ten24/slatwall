@@ -5,13 +5,13 @@ angular.module('slatwalladmin')
 '$compile',
 '$templateCache',
 'collectionService',
-'partialsPath',
+'collectionPartialsPath',
 '$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath,
+collectionPartialsPath,
 $log){
 	return {
 		restrict: 'A',
@@ -23,7 +23,7 @@ $log){
 			filterItemIndex:"=",
 			saveCollection:"&"
 		},
-		templateUrl:partialsPath+"filteritem.html",
+		templateUrl:collectionPartialsPath+"filteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
 			console.log(scope.filterPropertiesList);
 			scope.baseEntityAlias = collectionService.getBaseEntityAlias();

@@ -5,17 +5,17 @@ angular.module('slatwalladmin')
 '$compile',
 '$templateCache',
 'collectionService',
-'partialsPath',
+'collectionPartialsPath',
 
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath){
+collectionPartialsPath){
 	return {
 		require:'^swFilterGroups',
 		restrict: 'A',
-		templateUrl:partialsPath+"addfilterbuttons.html",
+		templateUrl:collectionPartialsPath+"addfilterbuttons.html",
 		scope:{
 			itemInUse:"="
 		},

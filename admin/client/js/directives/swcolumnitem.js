@@ -5,13 +5,13 @@ angular.module('slatwalladmin')
 '$compile',
 '$templateCache',
 'collectionService',
-'partialsPath',
+'collectionPartialsPath',
 '$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath,
+collectionPartialsPath,
 $log){
 	return {
 		restrict: 'A',
@@ -22,7 +22,7 @@ $log){
 			saveCollection:"&",
 			propertiesList:"="
 		},
-		templateUrl:partialsPath+"columnitem.html",
+		templateUrl:collectionPartialsPath+"columnitem.html",
 		link: function(scope, element,attrs,displayOptionsController){
 			$log.debug('displayOptionsController');
 			if(angular.isUndefined(scope.column.sorting)){

@@ -4,7 +4,7 @@ angular.module('slatwalladmin')
 ['$http',
 '$compile',
 '$templateCache',
-'partialsPath',
+'collectionPartialsPath',
 '$log',
 '$slatwall',
 'collectionService',
@@ -13,7 +13,7 @@ angular.module('slatwalladmin')
 function($http,
 $compile,
 $templateCache,
-partialsPath,
+collectionPartialsPath,
 $log,
 $slatwall,
 collectionService,
@@ -30,7 +30,7 @@ $filter){
 			filterItemIndex:"="
 		
 		},
-		templateUrl:partialsPath+"editfilteritem.html",
+		templateUrl:collectionPartialsPath+"editfilteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
 			
 			scope.baseEntityAlias = collectionService.getBaseEntityAlias();

@@ -4,7 +4,7 @@ angular.module('slatwalladmin')
 ['$http',
 '$compile',
 '$templateCache',
-'partialsPath',
+'collectionPartialsPath',
 '$log',
 '$slatwall',
 'collectionService',
@@ -13,7 +13,7 @@ angular.module('slatwalladmin')
 function($http,
 $compile,
 $templateCache,
-partialsPath,
+collectionPartialsPath,
 $log,
 $slatwall,
 collectionService,
@@ -26,35 +26,35 @@ $filter){
 		var templatePath = '';
 		
 		if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
-			templatePath = partialsPath+"criteria.html";
+			templatePath = collectionPartialsPath+"criteria.html";
 		}else{
 			var criteriaormtype = selectedFilterProperty.ormtype;
 			var criteriafieldtype = selectedFilterProperty.fieldtype;
 			//TODO: convert all switches to object literals
 	        switch(criteriaormtype){
 	            case 'boolean':
-	               templatePath = partialsPath+"criteriaboolean.html";
+	               templatePath = collectionPartialsPath+"criteriaboolean.html";
 	                break;
 	            case 'string':
-	                templatePath = partialsPath+"criteriastring.html";
+	                templatePath = collectionPartialsPath+"criteriastring.html";
 	                break;
 	            case 'timestamp':
-	                templatePath = partialsPath+"criteriadate.html";
+	                templatePath = collectionPartialsPath+"criteriadate.html";
 	                break;
 	            case 'big_decimal':
-	            	templatePath = partialsPath+"criteriabigdecimal.html";
+	            	templatePath = collectionPartialsPath+"criteriabigdecimal.html";
 	            	break;
 	        }
 	        
 	        switch(criteriafieldtype){
 		        case "many-to-one":
-		        	templatePath = partialsPath+"criteriamanytoone.html";
+		        	templatePath = collectionPartialsPath+"criteriamanytoone.html";
 					break;
 				case "many-to-many":
-					templatePath = partialsPath+"criteriamanytomany.html";
+					templatePath = collectionPartialsPath+"criteriamanytomany.html";
 					break;
 				case "one-to-many":
-					templatePath = partialsPath+"criteriaonetomany.html";
+					templatePath = collectionPartialsPath+"criteriaonetomany.html";
 					break;
 		    }
 		}

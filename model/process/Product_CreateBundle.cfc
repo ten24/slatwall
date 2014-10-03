@@ -62,6 +62,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="subscriptionTerms";
 	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
 	property name="productTypeOptions";
+	property name="productBundleGroups" fieldType="many-to-one" persistent="false" fkcolumn="productBundleGroupID";
 	
 	public any function getProductTypeOptions( string baseProductType ) {
 		if(!structKeyExists(variables, "productTypeOptions")) {
@@ -83,6 +84,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		
 		return variables.productTypeOptions;
+	}
+	
+	public any function getProductBundleGroups() {
+		if(!structKeyExists(variables, "productBundleGroups")) {
+			variables.productBundleGroups = [];
+		}
+		
+		return variables.productBundleGroups;
 	}
 	
 	public any function setupDefaults() {

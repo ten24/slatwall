@@ -4,7 +4,7 @@ angular.module('slatwalladmin')
 ['$http',
 '$compile',
 '$templateCache',
-'partialsPath',
+'collectionPartialsPath',
 '$log',
 '$slatwall',
 'collectionService',
@@ -13,7 +13,7 @@ angular.module('slatwalladmin')
 function($http,
 $compile,
 $templateCache,
-partialsPath,
+collectionPartialsPath,
 $log,
 $slatwall,
 collectionService,
@@ -29,7 +29,7 @@ $filter){
 			selectedPropertyChanged:"&"
 			
 		},
-		templateUrl:partialsPath+"displayitem.html",
+		templateUrl:collectionPartialsPath+"displayitem.html",
 		link: function(scope, element,attrs,displayOptionsController){
 			scope.showDisplayItem = false;
 			

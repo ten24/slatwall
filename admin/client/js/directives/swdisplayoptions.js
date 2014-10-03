@@ -4,13 +4,13 @@ angular.module('slatwalladmin')
 '$compile',
 '$templateCache',
 'collectionService',
-'partialsPath',
+'collectionPartialsPath',
 '$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath,
+collectionPartialsPath,
 $log){
 	return {
 		restrict: 'A',
@@ -21,7 +21,7 @@ $log){
 			saveCollection:"&",
 			baseEntityAlias:"="
 		},
-		templateUrl:partialsPath+"displayoptions.html",
+		templateUrl:collectionPartialsPath+"displayoptions.html",
 		controller: function($scope,$element,$attrs){
 			$log.debug('display options initialize');
 			

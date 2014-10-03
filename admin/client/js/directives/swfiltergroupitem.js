@@ -5,13 +5,13 @@ angular.module('slatwalladmin')
 '$compile',
 '$templateCache',
 'collectionService',
-'partialsPath',
+'collectionPartialsPath',
 '$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath,
+collectionPartialsPath,
 $log){
 	return {
 		restrict: 'A',
@@ -24,7 +24,7 @@ $log){
 			saveCollection:"&"
 		},
 		link: function(scope, element,attrs,filterGroupsController){
-			var Partial = partialsPath+"filtergroupitem.html";
+			var Partial = collectionPartialsPath+"filtergroupitem.html";
 			var templateLoader = $http.get(Partial,{cache:$templateCache});
 			var promise = templateLoader.success(function(html){
 				element.html(html);
