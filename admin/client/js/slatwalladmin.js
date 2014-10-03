@@ -2,10 +2,12 @@
 angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAnimate', function($locationProvider){
 	$locationProvider.html5Mode(true);
 }]).config(["$provide",'$logProvider','$filterProvider', function ($provide, $logProvider,$filterProvider) {
-	//constants
-	$provide.constant("partialsPath", '/admin/client/js/directives/partials/');
-	$provide.constant("productBundlePartialsPath", '/admin/client/js/directives/partials/productbundle/');
-	$provide.constant("collectionPartialsPath", '/admin/client/js/directives/partials/collection/');
+	
+	var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
+	
+	$provide.constant("partialsPath", _partialsPath);
+	$provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
+	$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
 	
 	// TODO: configure log provider on/off based on server side rules? 
 	var debugEnabled = true;

@@ -27,7 +27,7 @@ label {font-weight:600;}
 .container-fluid>.navbar-header a {padding-left: 38px;width: 225px;}
 .navbar .container-fluid {padding-left:0px;text-align:center;}
 
-.sidebar {width: 175px;background: #222;height:100vh;display: block;position: fixed;z-index: 3000;top: 50px;overflow: scroll;padding-bottom: 50px;border-right:1px solid #fff;}
+.sidebar {width: 190px;background: #222;height:100vh;display: block;position: fixed;z-index: 3000;top: 50px;overflow-x: hidden;overflow-y: auto;padding-bottom: 50px;border-right:1px solid #fff;}
 .sidebar.s-sidebarHide {display:none;}
 .content {display: block;overflow: hidden;width: auto;min-height:100vh;}
 .sidebar .s-header-search {margin:0px;float: left !important;width: 100%;}
@@ -58,7 +58,7 @@ label {font-weight:600;}
 .navbar-header {float: left;}
 .navbar-nav > li {float: left;}
 .s-not-logged-in .s-body-margin {margin-left:0px;margin-top:20px;}
-.s-body-margin {margin-left: 174px;}
+.s-body-margin {margin-left: 189px;}
 
 .s-login-box h2 {font-size:18px;font-weight:600;}
 
@@ -75,6 +75,8 @@ label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;te
 .btn-group {float:right;}
 .btn-toolbar {float:right; margin-top:10px;}
 .listing-display-header {background-color:#fff;}
+.listing-display-header .s-content-left {padding-left:0px;}
+.listing-display-header .s-content-right {padding-right:0px;}
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
 .table>thead>tr>td.admin.admin2, .table>tbody>tr>td.admin.admin2, .table>thead>tr>td.admin.admin1, .table>tbody>tr>td.admin.admin1 {text-align:center;width:75px;}
 .table>thead>tr>td.admin.admin3, .table>tbody>tr>td.admin.admin3 {text-align:center;width:100px;}
