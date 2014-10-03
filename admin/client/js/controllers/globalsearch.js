@@ -13,7 +13,6 @@ function(
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
-	$scope.$window = $window;
 	
 	$scope.searchResults = {
 		'product' : {
@@ -77,7 +76,6 @@ function(
 							'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
 						});	
 					}
-					$log.debug($scope.searchResults[entityName].results)
 				});
 				
 			})(entityName);
@@ -86,16 +84,19 @@ function(
 
 	};
 	
+
 	$scope.showResults = function() {
 		$scope.searchResultsOpen = true;
 		$scope.sidebarClass = 'sidebar s-search-width';
 		if($scope.searchResultsOpen){
-			$scope.$window.onclick = function(){
-				$scope.hideResults();
-				$scope.$apply();
+			$window.onclick = function(){
+				var _targetClassOfSearch = event.target.classList.contains('j-searchbox');
+				if(!_targetClassOfSearch){
+					$scope.hideResults();
+					$scope.$apply();
+				}
 			};
-		}
-		
+		}	
 	};
 	
 	$scope.hideResults = function() {
