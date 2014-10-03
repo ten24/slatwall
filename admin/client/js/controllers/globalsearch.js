@@ -89,7 +89,7 @@ function(
 		$scope.searchResultsOpen = true;
 		$scope.sidebarClass = 'sidebar s-search-width';
 		$window.onclick = function(event){
-			var _targetClassOfSearch = event.target.classList.contains('j-searchbox');
+			var _targetClassOfSearch = event.target.parentElement.offsetParent.classList.contains('sidebar');
 			if(!_targetClassOfSearch){
 				$scope.hideResults();
 				$scope.$apply();

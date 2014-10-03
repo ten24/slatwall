@@ -142,21 +142,21 @@ Notes:
 		<cfif $.slatwall.getLoggedInAsAdminFlag()>
 			<aside class="{{sidebarClass}}" id="sidebar">
 			
-				<form name="search" class="navbar-form navbar-right s-header-search j-searchbox" action="/" onSubmit="return false;">
-					<div class="form-group j-searchbox">
-						<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2 j-searchbox" placeholder="Search" ng-keyup="showResults()" ng-model="keywords" ng-change="updateSearchResults()">
-							<a ng-show="searchResultsOpen" class="s-close-icon-search j-searchbox" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times searchbox"></i></a>
+				<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
+					<div class="form-group">
+						<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-keyup="showResults()" ng-model="keywords" ng-change="updateSearchResults()">
+							<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 						</input>
 					</div>
-					<div class="row s-search-results j-searchbox" style="padding-top:15px;" ng-show="searchResultsOpen">
-						<ul class="col-md-12 list-unstyled j-searchbox">
-							<li class="j-searchbox" ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length">
-								<div class="col-md-4 s-title j-searchbox">
-									<h2 class="j-searchbox">{{ searchResult.title }}</h2>
+					<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
+						<ul class="col-md-12 list-unstyled">
+							<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length">
+								<div class="col-md-4 s-title">
+									<h2>{{ searchResult.title }}</h2>
 								</div>
-								<div class="col-md-8 s-body j-searchbox">
-									<ul class="list-unstyled j-searchbox" id="j-search-results"	>
-										<li class="j-searchbox" ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
+								<div class="col-md-8 s-body">
+									<ul class="list-unstyled" id="j-search-results"	>
+										<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
 									</ul>
 								</div>
 							</li>
