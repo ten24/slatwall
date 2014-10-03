@@ -3,14 +3,17 @@ angular.module('slatwalladmin').controller('globalSearch', [
 	'$scope',
 	'$slatwall',
 	'$log',
+	'$window',
 function(
 	$scope,
 	$slatwall,
-	$log
+	$log,
+	$window
 ){
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
+	$scope.$window = $window;
 	
 	$scope.searchResults = {
 		'product' : {
@@ -86,6 +89,12 @@ function(
 	$scope.showResults = function() {
 		$scope.searchResultsOpen = true;
 		$scope.sidebarClass = 'sidebar s-search-width';
+		if($scope.searchResultsOpen){
+			$scope.$window.onclick = function(){
+				$scope.hideResults();
+				$scope.$apply();
+			};
+		}
 		
 	};
 	
