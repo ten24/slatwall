@@ -313,12 +313,18 @@ component extends="HibachiService" accessors="true" output="false" {
 				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
 				invalidLoginData.account.setFailedLoginAttemptCount(failedLogins); 
 				
+				//Get the max number of failed attempts before the account is locked based on account type 
 				if(accountAuthentication.getAccount().getAdminAccountFlag()){
-					//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
-					if (failedLogins >= 6){
-						this.processAccount(invalidLoginData.account, 'lock');
-					}
+					var maxLoginAttempts = arguments.account.setting('accountFailedAdminLoginAttemptCount');
+				}else{
+					var maxLoginAttempts = arguments.account.setting('accountFailedPublicLoginAttemptCount');
+				}	
+						
+				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
+				if (!isNull(maxLoginAttempts) && maxLoginAttempts > 0 && failedLogins >= maxLoginAttempts){
+					this.processAccount(invalidLoginData.account, 'lock');
 				}
+				
 			} 
 			else{
 				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
@@ -1232,7 +1238,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	private any function createNewAccountPassword (required any account, required any processObject ){
 	
 		var existingPasswords = getInternalAccountAuthenticationsByEmailAddress(arguments.account.getPrimaryEmailAddress().getEmailAddress());
-
+		
 		if(arguments.account.getAdminAccountFlag() == true){
 			
 			//Check to see if the password is a duplicate
