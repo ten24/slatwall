@@ -89,11 +89,12 @@ function(
 		$scope.searchResultsOpen = true;
 		$scope.sidebarClass = 'sidebar s-search-width';
 		if($scope.searchResultsOpen){
-			$window.onclick = function(){
+			$window.onclick = function(event){
 				var _targetClassOfSearch = event.target.classList.contains('j-searchbox');
 				if(!_targetClassOfSearch){
 					$scope.hideResults();
 					$scope.$apply();
+					$window.onclick = null;
 				}
 			};
 		}	
