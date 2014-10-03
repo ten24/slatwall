@@ -88,16 +88,13 @@ function(
 	$scope.showResults = function() {
 		$scope.searchResultsOpen = true;
 		$scope.sidebarClass = 'sidebar s-search-width';
-		if($scope.searchResultsOpen){
-			$window.onclick = function(event){
-				var _targetClassOfSearch = event.target.classList.contains('j-searchbox');
-				if(!_targetClassOfSearch){
-					$scope.hideResults();
-					$scope.$apply();
-					$window.onclick = null;
-				}
-			};
-		}	
+		$window.onclick = function(event){
+			var _targetClassOfSearch = event.target.classList.contains('j-searchbox');
+			if(!_targetClassOfSearch){
+				$scope.hideResults();
+				$scope.$apply();
+			}
+		};	
 	};
 	
 	$scope.hideResults = function() {
@@ -105,6 +102,7 @@ function(
 		$scope.sidebarClass = 'sidebar';
 		$scope.search.$setPristine();
 		$scope.keywords = "";
+		$window.onclick = null;
 	};
 	
 }]);
