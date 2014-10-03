@@ -140,7 +140,7 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	
 	public struct function getAuditablePropertiesStruct() {
 		// Clears cached auditablePropertiesStruct because 'settingValue' inclusion/exclusion changes based on instance
-		setApplicationValue('classAuditablePropertyStructCache_#getClassFullname()#', javacast("null", ""));
+		clearApplicationValue('classAuditablePropertyStructCache_#getClassFullname()#');
 		return super.getAuditablePropertiesStruct();
 	}
 	

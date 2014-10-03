@@ -213,6 +213,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		data["hasErrors"] = getAccount().hasErrors();
 		data["errors"] = getAccount().getErrors();
 		
+		// add process object error messages
+		data[ 'processObjects' ] = {};
+		for(var key in getAccount().getProcessObjects()) {
+			data[ 'processObjects' ][ key ] = {};
+			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getAccount().getProcessObjects()[ key ].hasErrors();
+			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
+		}
+		
 		return data;
 	}
 
@@ -244,6 +252,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();
 		data["errors"] = getCart().getErrors();
+		
+		// add process object error messages
+		data[ 'processObjects' ] = {};
+		for(var key in getAccount().getProcessObjects()) {
+			data[ 'processObjects' ][ key ] = {};
+			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getAccount().getProcessObjects()[ key ].hasErrors();
+			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
+		}
 		
 		return data;
 	}
