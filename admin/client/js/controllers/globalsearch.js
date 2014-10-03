@@ -92,6 +92,8 @@ function(
 	$scope.hideResults = function() {
 		$scope.searchResultsOpen = false;
 		$scope.sidebarClass = 'sidebar';
+		$scope.search.$setPristine();
+		$scope.keywords = "";
 	};
 	
 }]);
