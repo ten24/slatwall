@@ -7,6 +7,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 	'$rootScope',
 	'alertService',
 	'dialogService',
+	'productBundleService',
 	'formService',
 function(
 	$scope,
@@ -16,6 +17,7 @@ function(
 	$rootScope,
 	alertService,
 	dialogService,
+	productBundleService,
 	formService
 ){
 	//if this view is part of the dialog section, call the inherited function
@@ -44,8 +46,13 @@ function(
 		alertService.addAlerts(alerts);
 	});
 	
-	$scope.addBundleGroup = function(){
-		
+	
+	
+	$scope.addProductBundleGroup = function(){
+		$log.debug('add bundle group');
+		var productBundleGroup = productBundleService.newProductBundle();
+		$scope.processObject.productBundleGroups.value.push(productBundleGroup);
+		$log.debug($scope.processObject.productBundleGroups);
 	};
 	
 	$scope.saveProductBundle = function(closeDialogIndex){
@@ -62,7 +69,7 @@ function(
 				"product.brand.brandID":createProductBundleForm['product.brand'].$modelValue.value
 			};
 			$log.debug(params);
-			var saveProductBundlePromise = $slatwall.saveEntity('product', null, params,'create');
+			var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,'CreateBundle');
 			saveProductBundlePromise.then(function(value){
 				$log.debug('saving Product Bundle');
 				var messages = value.MESSAGES;

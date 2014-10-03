@@ -351,6 +351,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/paginationservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/dialogservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/formservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/productbundleservice.js"></script>
 		<!---services END --->
 
 		<!---controllers BEGIN--->
@@ -383,7 +384,8 @@ Notes:
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayitem.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcolumnitem.js"></script>
 			<!---product bundle --->
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swaddeditproductbundlegroup.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegroups.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegroup.js"></script>
 		<!---directives END --->
 	</body>
 </html>

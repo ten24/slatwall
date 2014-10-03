@@ -5,6 +5,14 @@ angular.module('slatwalladmin.services')
 function($log){
 	//properties
 	var _productBundle = null;
+	var _newProductBundle = {
+		minimumQuantity:1,
+		maximumQuantity:1,
+		active:true,
+		productBundleGroupType:{
+			typeName:null
+		}
+	};
 	
 	return productBundleService = {
 			
@@ -13,7 +21,12 @@ function($log){
 		},
 		setProductBundle: function(productBundle){
 			_productBundle = productBundle;
+		},
+		newProductBundle:function(){
+			
+			return _newProductBundle;
 		}
+		
 		//private functions
 		
 	};
