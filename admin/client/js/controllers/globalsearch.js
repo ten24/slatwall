@@ -65,17 +65,23 @@ function(
 				
 				var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
 				searchPromise.then(function(data){
-					
-					// clear out the results
-					$scope.searchResults[ entityName ].results = [];
-					
-					// push in the new results
-					for(var i in data.pageRecords) {
-						$scope.searchResults[ entityName ].results.push({
-							'name': $scope.searchResults[ entityName ].resultNameFilter( data.pageRecords[i] ),
-							'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
-						});	
+					if($scope.keywords == ''){
+						// clear out the results
+						$scope.searchResults[ entityName ].results = [];
+						$scope.hideResults();
+					}else {
+						// clear out the results
+						$scope.searchResults[ entityName ].results = [];
+						
+						// push in the new results
+						for(var i in data.pageRecords) {
+							$scope.searchResults[ entityName ].results.push({
+								'name': $scope.searchResults[ entityName ].resultNameFilter( data.pageRecords[i] ),
+								'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
+							});	
+						}	
 					}
+					
 				});
 				
 			})(entityName);
