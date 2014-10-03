@@ -1160,6 +1160,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		return delete( arguments.account );
 	}
 	
+	public boolean function deleteAccountAuthentication(required any accountAuthentication) {
+		// Check delete validation
+		if(arguments.accountAuthentication.isDeletable()) {
+			
+			// Remove the primary fields so that we can delete this entity
+			getAccountDAO().removeAccountAuthenticationFromSessions( arguments.accountAuthentication.getAccountAuthenticationID() );
+			
+		}
+		
+		return delete( arguments.accountAuthentication );
+	}
+	
 	public boolean function deleteAccountEmailAddress(required any accountEmailAddress) {
 		
 		// Check delete validation
@@ -1317,8 +1329,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
 		for(var i=1; i <= numberOfRecordsToBeDeleted; i++){
 			accountAuthenticationsArray[i].removeAccount();
-			entityDelete(accountAuthenticationsArray[i]);
-
+			this.deleteAccountAuthentication( accountAuthenticationsArray[i] );
 		}
 		
 	}

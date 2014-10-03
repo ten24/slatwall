@@ -58,6 +58,22 @@ Notes:
 		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
 	</cffunction>
 	
+	<cffunction name="removeAccountAuthenticationFromSessions">
+		<cfargument name="accountAuthenticationID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			UPDATE
+				SwSession
+			SET
+				accountAuthenticationID = null,
+				accountID = null
+			WHERE
+				accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" /> 
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="removeAccountAddressFromOrderFulfillments">
 		<cfargument name="accountAddressID" type="string" required="true" >
 		
