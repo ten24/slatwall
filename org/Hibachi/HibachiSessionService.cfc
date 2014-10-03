@@ -34,6 +34,9 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Populate the hibachi scope with the session
 		getHibachiScope().setSession( sessionEntity );
 		
+		// Variable to store the last request dateTime of a session
+		var previousRequestDateTime = getHibachiScope().getSession().getLastRequestDateTime();
+
 		// update the sessionScope with the ID for the next request
 		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
@@ -48,7 +51,13 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// If the session has an account but no authentication, then remove the account
 		// Check to see if this session has an accountAuthentication, if it does then we need to verify that the authentication shouldn't be auto logged out
 		// If there was an integration, then check the verify method for any custom auto-logout logic
-		if((sessionFoundWithCookie && getHibachiScope().getLoggedInFlag()) || (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) || (isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getLoggedInFlag())) {
+		// If the sessions account is and admin and last request by the session was 15 min or longer ago. 
+		if(
+			(sessionFoundWithCookie && getHibachiScope().getLoggedInFlag()) 
+			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
+			|| (isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getLoggedInFlag())
+			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccount().getAdminAccountFlag() && DateDiff('n', previousRequestDateTime, Now()) >= 15 )
+			) {
 			logoutAccount();
 		}
 	}
