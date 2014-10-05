@@ -1,9 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Base Template</name>
-<help></help>
-<starttext><![CDATA[/*
-
+/*
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -51,43 +46,14 @@ Notes:
 
 */
 
-component extends="HibachiService" accessors="true" output="false" {
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Status Methods ===========================
-	
-	// ======================  END: Status Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-	// ===================== START: Delete Overrides ==========================
-	
-	// =====================  END: Delete Overrides ===========================
-	
-	// ===================== START: Private Helper Functions ==================
-	
-	// =====================  END:  Private Helper Functions ==================
-}]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="account";
+
+	// Data Properties
+	property name="emailAddress";
+	property name="existingPassword";
+	property name="password";
+	property name="passwordConfirm";
+}

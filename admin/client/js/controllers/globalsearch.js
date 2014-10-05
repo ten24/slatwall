@@ -3,10 +3,12 @@ angular.module('slatwalladmin').controller('globalSearch', [
 	'$scope',
 	'$slatwall',
 	'$log',
+	'$window',
 function(
 	$scope,
 	$slatwall,
-	$log
+	$log,
+	$window
 ){
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
@@ -74,7 +76,6 @@ function(
 							'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
 						});	
 					}
-					$log.debug($scope.searchResults[entityName].results)
 				});
 				
 			})(entityName);
@@ -83,15 +84,25 @@ function(
 
 	};
 	
+
 	$scope.showResults = function() {
 		$scope.searchResultsOpen = true;
 		$scope.sidebarClass = 'sidebar s-search-width';
-		
+		$window.onclick = function(event){
+			var _targetClassOfSearch = event.target.parentElement.offsetParent.classList.contains('sidebar');
+			if(!_targetClassOfSearch){
+				$scope.hideResults();
+				$scope.$apply();
+			}
+		};	
 	};
 	
 	$scope.hideResults = function() {
 		$scope.searchResultsOpen = false;
 		$scope.sidebarClass = 'sidebar';
+		$scope.search.$setPristine();
+		$scope.keywords = "";
+		$window.onclick = null;
 	};
 	
 }]);
