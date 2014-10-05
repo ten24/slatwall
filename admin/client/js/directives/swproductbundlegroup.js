@@ -8,7 +8,6 @@ function($http,
 $log,
 productBundlePartialsPath){
 	return {
-		require:"^swProductBundleGroups",
 		restrict: 'A',
 		templateUrl:productBundlePartialsPath+"productbundlegroup.html",
 		scope:{
@@ -20,7 +19,7 @@ productBundlePartialsPath){
 			$log.debug(scope.productBundleGroup);
 			
 			scope.removeProductBundleGroup = function(){
-				
+				productBundleGroupsController.removeProductBundleGroup(scope.index);
 			};
 		}
 	};

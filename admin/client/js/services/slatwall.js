@@ -17,12 +17,12 @@ function(){
 		  			 */
 		  			
 		  			if(typeof options === 'String') {
-		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
+		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
 		  			} else {
 		  				options.currentPage = options.currentPage || 1;
 		  				options.pageShow = options.pageShow || 10;
 		  				options.keywords = options.keywords || '';
-		  				var urlString = _baseUrl+'index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+options.currentPage+'&P:Show='+options.pageShow+'&keywords='+options.keywords;
+		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+options.currentPage+'&P:Show='+options.pageShow+'&keywords='+options.keywords;
 		  			}
 		  			
 		  			var deferred = $q.defer();
@@ -41,7 +41,7 @@ function(){
 		  		},
 		  		getValidation:function(validationFileName){
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'model/validation/'+validationFileName+'.json';
+		  			var urlString = _baseUrl+'/model/validation/'+validationFileName+'.json';
 		  			$http.get(urlString)
 		  			.success(function(data){
 		  				deferred.resolve(data);
@@ -53,7 +53,7 @@ function(){
 		  		},
 		  		getProcessObject:function(entityName,id,context,propertyIdentifiers){
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.getProcessObject&entityName='+entityName+'&context='+context+'&propertyIdentifiers='+propertyIdentifiers;
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getProcessObject&entityName='+entityName+'&context='+context+'&propertyIdentifiers='+propertyIdentifiers;
 		  			if(angular.isDefined(id)) {
 		  				urlString += '&entityId='+id;	
 		  			}
@@ -69,7 +69,8 @@ function(){
 		  		saveEntity:function(entityName,id,params,context){
 		  			$log.debug('save'+ entityName);
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.post';	
+
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.post';	
 		  			
 		  			if(angular.isDefined(entityName)){
 		  				params.entityName = entityName;
@@ -77,6 +78,7 @@ function(){
 		  			if(angular.isDefined(id)){
 		  				params.entityID = id;
 		  			}
+
 		  			if(angular.isDefined(context)){
 		  				params.context = context;
 		  			}
@@ -97,7 +99,7 @@ function(){
 		  		},
 		  		getExistingCollectionsByBaseEntity:function(entityName){
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName=Slatwall'+entityName;
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName=Slatwall'+entityName;
 		  			
 		  			$http.get(urlString)
 		  			.success(function(data){
@@ -110,7 +112,7 @@ function(){
 		  		},
 		  		getFilterPropertiesByBaseEntityName:function(entityName){
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
 		  			
 		  			$http.get(urlString)
 		  			.success(function(data){
