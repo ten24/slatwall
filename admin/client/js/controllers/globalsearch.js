@@ -79,7 +79,8 @@ function(
 								'name': $scope.searchResults[ entityName ].resultNameFilter( data.pageRecords[i] ),
 								'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
 							});	
-						}	
+						}
+					
 					}
 					
 				});
