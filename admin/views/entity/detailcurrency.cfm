@@ -63,11 +63,10 @@ Notes:
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
 		
-		<!---
+		
 		<cf_HibachiTabGroup object="#rc.currency#">
-			<!--- <cf_HibachiTab view="admin:section/tabsfolder/view" /> --->
+			<cf_HibachiTab property="currencyrates" />
 		</cf_HibachiTabGroup>
-		--->
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

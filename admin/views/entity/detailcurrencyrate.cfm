@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,18 +45,41 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
+--->
+<cfparam name="rc.currencyRate" type="any" />
+<cfparam name="rc.currencyCode" type="any" default="" />
+<cfparam name="rc.edit" type="boolean" />
 
-	// @hint put things in here that you want to run befor EACH test
-	public void function setUp() {
-		super.setup();
+<cfsilent>
+	<cfif !len(rc.currencyCode) and not isNull(rc.currencyRate.getCurrency())>
+		<cfset rc.currencyCode = rc.currencyRate.getCurrency().getCurrencyCode() />
+	</cfif>
+	
+	<cfset local.conversionCurrencyOptionsSmartList = $.slatwall.getSmartList('currency') />
+	
+	<cfset local.conversionCurrencyOptionsSmartList.addSelect('currencyName', 'name') />
+	<cfset local.conversionCurrencyOptionsSmartList.addSelect('currencyCode', 'value') />
+	
+	<cfset local.conversionCurrencyOptionsSmartList.addFilter('activeFlag', 1) />
+	<cfset local.conversionCurrencyOptionsSmartList.addWhereCondition("aslatwallcurrency.currencyCode <> '#rc.currencyCode#'") />
+	
+	<cfset local.conversionCurrencyOptions = local.conversionCurrencyOptionsSmartList.getRecords() />
+	<cfset arrayPrepend(local.conversionCurrencyOptions, {name=$.slatwall.rbKey('define.select'), value=""}) />
+</cfsilent>
+
+<cfoutput>
+	<cf_HibachiEntityDetailForm object="#rc.currencyRate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailcurrency" saveActionQueryString="currencyCode=#rc.currencyCode#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.currencyRate#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
 		
-		variables.entityService = "addressService";
-		variables.entity = request.slatwallScope.getService( variables.entityService ).newAddress();
-	}
-	
-	
-}
-
-
+		<input type="hidden" name="currency.currencyCode" value="#rc.currencyCode#" />
+		
+		<cf_HibachiPropertyRow>
+			<cf_HibachiPropertyList>
+				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="conversionCurrency" edit="#rc.edit#" valueOptions="#local.conversionCurrencyOptions#">
+				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="conversionRate" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="effectiveStartDateTime" edit="#rc.edit#">
+			</cf_HibachiPropertyList>
+		</cf_HibachiPropertyRow>
+		
+	</cf_HibachiEntityDetailForm>
+</cfoutput>
