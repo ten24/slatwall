@@ -46,26 +46,27 @@
 Notes:
 
 */
-component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="currencyService" hb_permission="this" {
+component entityname="SlatwallCurrencyRate" table="SwCurrencyRate" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="currencyService" {
 	
 	// Persistent Properties
-	property name="currencyCode" ormtype="string" fieldtype="id" unique="true" generated="never";
-	property name="currencyISONumber" ormtype="integer";
-	property name="activeFlag" ormtype="boolean";
-	property name="currencyName" ormtype="string";
-	property name="currencySymbol" ormtype="string";
+	property name="currencyRateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="conversionRate" ormtype="float";
+	property name="effectiveStartDateTime" ormtype="timestamp" hb_nullRBKey="define.now";
 	
+	// Calculated Properties
+
 	// Related Object Properties (many-to-one)
+	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
+	property name="conversionCurrency" cfc="Currency" fieldtype="many-to-one" fkcolumn="conversionCurrencyCode";
 	
 	// Related Object Properties (one-to-many)
-	property name="currencyRates" singularname="currencyRate" cfc="CurrencyRate" type="array" fieldtype="one-to-many" fkcolumn="currencyCode" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
 	
 	// Remote Properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -74,29 +75,43 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="currencyLocalOptions" persistent="false";
-	property name="formattedExample" persistent="false" hb_formatType="currency"; 
+	
+	// Deprecated Properties
 
+
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================
-	public array function getCurrencyLocalOptions() {
-		return ['Chinese (China)','Chinese (Hong Kong)','Chinese (Taiwan)','Dutch (Belgian)','Dutch (Standard)','English (Australian)','English (Canadian)','English (New Zealand)','English (UK)','English (US)','French (Belgian)','French (Canadian)','French (Standard)','French (Swiss)','German (Austrian)','German (Standard)','German (Swiss)','Italian (Standard)', 'Italian (Swiss)','Japanese','Korean','Norwegian (Bokmal)','Norwegian (Nynorsk)','Portuguese (Brazilian)','Portuguese (Standard)','Spanish (Mexican)','Spanish (Modern)','Spanish (Standard)','Swedish'];
-	}
 	
-	public string function getFormattedExample() {
-		return 12345.67;
+	public any function getConversionCurrencyOptionsSmartList() {
+		if(!structKeyExists(variables, "conversionCurrencyOptionsSmartList")) {
+			variables.conversionCurrencyOptionsSmartList = getPropertyOptionsSmartList('conversionCurrency');
+		}
+		return variables.conversionCurrencyOptionsSmartList;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Currency Rates (one-to-many)    
-	public void function addCurrencyRate(required any currencyRate) {    
-		arguments.currencyRate.setCurrency( this );    
+	// Currency (many-to-one)    
+	public void function setCurrency(required any currency) {    
+		variables.currency = arguments.currency;    
+		if(isNew() or !arguments.currency.hasCurrencyRate( this )) {    
+			arrayAppend(arguments.currency.getCurrencyRates(), this);    
+		}    
 	}    
-	public void function removeCurrencyRate(required any currencyRate) {    
-		arguments.currencyRate.removeCurrency( this );    
+	public void function removeCurrency(any currency) {    
+		if(!structKeyExists(arguments, "currency")) {    
+			arguments.currency = variables.currency;    
+		}    
+		var index = arrayFind(arguments.currency.getCurrencyRates(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.currency.getCurrencyRates(), index);    
+		}    
+		structDelete(variables, "currency");    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
@@ -108,6 +123,14 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	// =============== START: Custom Formatting Methods ====================
 	
 	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
 	
@@ -115,9 +138,17 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	
 	// =================== START: ORM Event Hooks  =========================
 	
+	public void function preInsert(){
+		if(isNull(getEffectiveStartDateTime())) {
+			setEffectiveStartDateTime( now() );
+		}
+		super.preInsert();
+	}
+	
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================
+	
 }

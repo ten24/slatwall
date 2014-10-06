@@ -1,0 +1,7 @@
+{
+	"properties":{
+		"conversionCurrency":		[{"contexts":"save","required":true}],
+		"conversionRate":			[{"contexts":"save","required":true,"dataType":"numeric"}],
+		"effectiveStartDateTime":	[{"contexts":"save","gtNow":true}],
+	}
+}

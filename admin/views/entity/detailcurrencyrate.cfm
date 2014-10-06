@@ -46,27 +46,40 @@
 Notes:
 
 --->
-<cfparam name="rc.currency" type="any" />
+<cfparam name="rc.currencyRate" type="any" />
+<cfparam name="rc.currencyCode" type="any" default="" />
 <cfparam name="rc.edit" type="boolean" />
 
+<cfsilent>
+	<cfif !len(rc.currencyCode) and not isNull(rc.currencyRate.getCurrency())>
+		<cfset rc.currencyCode = rc.currencyRate.getCurrency().getCurrencyCode() />
+	</cfif>
+	
+	<cfset local.conversionCurrencyOptionsSmartList = $.slatwall.getSmartList('currency') />
+	
+	<cfset local.conversionCurrencyOptionsSmartList.addSelect('currencyName', 'name') />
+	<cfset local.conversionCurrencyOptionsSmartList.addSelect('currencyCode', 'value') />
+	
+	<cfset local.conversionCurrencyOptionsSmartList.addFilter('activeFlag', 1) />
+	<cfset local.conversionCurrencyOptionsSmartList.addWhereCondition("aslatwallcurrency.currencyCode <> '#rc.currencyCode#'") />
+	
+	<cfset local.conversionCurrencyOptions = local.conversionCurrencyOptionsSmartList.getRecords() />
+	<cfset arrayPrepend(local.conversionCurrencyOptions, {name=$.slatwall.rbKey('define.select'), value=""}) />
+</cfsilent>
+
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#" sRedirectAction="admin:entity.listcurrency">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<cf_HibachiEntityDetailForm object="#rc.currencyRate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailcurrency" saveActionQueryString="currencyCode=#rc.currencyCode#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.currencyRate#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+		
+		<input type="hidden" name="currency.currencyCode" value="#rc.currencyCode#" />
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyCode">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyName">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencySymbol" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="formattedExample">
+				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="conversionCurrency" edit="#rc.edit#" valueOptions="#local.conversionCurrencyOptions#">
+				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="conversionRate" edit="#rc.edit#">
+				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="effectiveStartDateTime" edit="#rc.edit#">
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
-		
-		
-		<cf_HibachiTabGroup object="#rc.currency#">
-			<cf_HibachiTab property="currencyrates" />
-		</cf_HibachiTabGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
