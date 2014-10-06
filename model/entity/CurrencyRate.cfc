@@ -56,8 +56,8 @@ component entityname="SlatwallCurrencyRate" table="SwCurrencyRate" persistent="t
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
-	property name="conversionCurrency" cfc="Currency" fieldtype="many-to-one" fkcolumn="conversionCurrencyCode";
+	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode" length="255";
+	property name="conversionCurrency" cfc="Currency" fieldtype="many-to-one" fkcolumn="conversionCurrencyCode" length="255";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -66,8 +66,8 @@ component entityname="SlatwallCurrencyRate" table="SwCurrencyRate" persistent="t
 	// Related Object Properties (many-to-many - inverse)
 	
 	// Quick Lookup Properties
-	property name="currencyCode" length="32" insert="false" update="false";
-	property name="conversionCurrencyCode" length="32" insert="false" update="false";
+	property name="currencyCode" insert="false" update="false" length="255";
+	property name="conversionCurrencyCode" insert="false" update="false" length="255";
 	
 	// Remote Properties
 	property name="remoteID" hb_populateEnabled="false" ormtype="string";

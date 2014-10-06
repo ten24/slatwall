@@ -88,6 +88,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'about');
 	this.secureMethods=listAppend(this.secureMethods, 'update');
 	this.secureMethods=listAppend(this.secureMethods, 'log');
+	this.secureMethods=listAppend(this.secureMethods, 'unlockAccount');
 	
 	public void function before(required struct rc) {
 		rc.pagetitle = rc.$.slatwall.rbKey(replace(rc.slatAction, ':', '.', 'all'));
