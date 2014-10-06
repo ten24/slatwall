@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Base Template</name>
-<help></help>
-<starttext><![CDATA[<!---
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -52,6 +48,35 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO" accessors="true" output="false">
 	
-</cfcomponent>]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>
+	<cffunction name="getCurrentCurrencyRateByCurrencyCodes" output="false" access="public" returntype="any">
+		<cfargument name="originalCurrencyCode" type="string" required="true" />
+		<cfargument name="convertToCurrencyCode" type="string" required="true" />
+		
+		<!--- Setup HQL --->
+		<cfset var hql="SELECT currencyrate FROM SlatwallCurrencyRate currencyrate
+			WHERE
+			  	currencyrate.effectiveStartDateTime < :now
+			  AND
+			  	(
+					(currencyrate.currencyCode = :originalCurrencyCode AND currencyrate.conversionCurrencyCode = :convertToCurrencyCode)
+				  OR
+				  	(currencyrate.currencyCode = :convertToCurrencyCode AND currencyrate.conversionCurrencyCode = :originalCurrencyCode)			  		
+			  	)
+			ORDER BY
+				currencyrate.effectiveStartDateTime DESC" />
+		
+		<!--- Setup HQL Params --->
+		<cfset hqlParams = {} />
+		<cfset hqlParams['now'] = now() />
+		<cfset hqlParams['originalCurrencyCode'] = arguments.originalCurrencyCode />
+		<cfset hqlParams['convertToCurrencyCode'] = arguments.convertToCurrencyCode />
+		
+		<!--- Get Results --->
+		<cfset var results = ormExecuteQuery(hql, hqlParams, {maxResults=1}) />
+		
+		<cfif arrayLen(results)>
+			<cfreturn results[1] />
+		</cfif>
+	</cffunction>
+	
+</cfcomponent>

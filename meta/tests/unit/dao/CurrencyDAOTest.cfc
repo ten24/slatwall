@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Base Template</name>
-<help></help>
-<starttext><![CDATA[<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -49,9 +45,23 @@
 
 Notes:
 
---->
-<cfcomponent extends="HibachiDAO" accessors="true" output="false">
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+
+	public void function setUp() {
+		super.setup();
+		
+		variables.dao = request.slatwallScope.getDAO("currencyDAO");
+	}
 	
-</cfcomponent>]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>
+	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
+		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
+		
+		assert(isNull(currencyRate));
+	}
+	
+	
+}
+
+

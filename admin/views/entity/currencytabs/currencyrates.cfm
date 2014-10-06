@@ -40,6 +40,10 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
+	
+	<cfset local.ratesSmartList = rc.currency.getCurrencyRatesSmartList() />
+	<cfset local.ratesSmartList.addOrder('effectiveStartDateTime|DESC') />
+	
 	<cf_HibachiListingDisplay smartList="#rc.currency.getCurrencyRatesSmartList()#"
 								<!---
 								Detail isn't needed because all data values are in the listing 

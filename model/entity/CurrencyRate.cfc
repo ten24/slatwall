@@ -65,6 +65,10 @@ component entityname="SlatwallCurrencyRate" table="SwCurrencyRate" persistent="t
 
 	// Related Object Properties (many-to-many - inverse)
 	
+	// Quick Lookup Properties
+	property name="currencyCode" length="32" insert="false" update="false";
+	property name="conversionCurrencyCode" length="32" insert="false" update="false";
+	
 	// Remote Properties
 	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
