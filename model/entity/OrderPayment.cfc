@@ -57,8 +57,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="checkNumberEncrypted" ormType="string";
 	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string" hb_auditable="false";
-	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false";
-	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false";
+	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="creditCardNumberEncryptDT";
+	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false" column="creditCardNumberEncryptGen";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
 	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
