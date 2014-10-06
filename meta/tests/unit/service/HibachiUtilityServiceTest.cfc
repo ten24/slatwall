@@ -119,6 +119,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(2, structCount(data));
 	}
 	
+	/*
 	public void function createPasswordBasedEncryptionKey_runs_with_defaults() {
 		var password = "this is my custom seed name";
 		var entityID = "30E69FFF9067343922F6FF15BD9434A139AEEAB5";
@@ -131,6 +132,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(expectedValue, resultDecrypt, "Expected the decrypted value to match the initial value.");
 	}
+	*/
 	
 	public void function decryptValue_using_password_derived_and_legacy_keys() {
 		var plaintext = "my secret key";
