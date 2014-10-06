@@ -49,7 +49,7 @@ Notes:
 component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="currencyService" hb_permission="this" {
 	
 	// Persistent Properties
-	property name="currencyCode" length="3" ormtype="string" fieldtype="id" unique="true" generated="never";
+	property name="currencyCode" ormtype="string" fieldtype="id" unique="true" generated="never";
 	property name="currencyISONumber" ormtype="integer";
 	property name="activeFlag" ormtype="boolean";
 	property name="currencyName" ormtype="string";
