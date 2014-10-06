@@ -69,6 +69,10 @@
 <cfparam name="attributes.fieldList" type="string" default="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode" />
 <cfparam name="attributes.fieldClass" type="string" default="" />
 
+<cfif isNull(attributes.address.getCountryCode())>
+	<cfset attributes.address.setCountryCode('US') />
+</cfif>
+
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
 		<!--- We place all of thse values into a 'sw-address' div so that the jQuery below updates the address fields based on --->

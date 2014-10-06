@@ -114,8 +114,7 @@ component extends="AdminTestBase" {
 		
 		assert( assertionBoolean );
 	}
-	*/
-
+	
 	//Tests Tax Address Lookup order
 	function taxCategoryRateAddressLookupWorks(){
 
@@ -158,7 +157,8 @@ component extends="AdminTestBase" {
 		
 		}
 
-	}	
+	}
+	*/	
 	//============= Helpers ======================
 
 	// Ensure that the sku setting uses the correct tax category

@@ -75,7 +75,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function addTaxAddressesStructBillingAddressKey_sets_struct_billingAddress_key_from_order_billingAddress(){
 		//Creates a new Address and a new Order then sets the address to the order's billing address
-		var address = request.slatwallScope.getService("Address");
+		var address = request.slatwallScope.newEntity("Address");
+		address.setCountryCode('US');
+		address.setName('Greg Moser');
+		address.setStreetAddress('555 Main Street');
+		address.setCity('New York');
+		address.setStateCode('NY');
+		address.setPostalCode('11111');
+		
 		var newOrder = request.slatwallScope.newEntity('Order');
 		newOrder.setBillingAddress( address );
 		
