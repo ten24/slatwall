@@ -1328,6 +1328,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
 		for(var i=1; i <= numberOfRecordsToBeDeleted; i++){
+			//if the password that is going to be deleted is how the user logged in, updated the session to the new active password
+			if( !isNull(getHibachiScope().getSession().getAccountAuthentication()) && accountAuthenticationsArray[i].getAccountAuthenticationID() == getHibachiScope().getSession().getAccountAuthentication().getAccountAuthenticationID()){
+				var activePassword = getAccountDAO().getActivePasswordByAccountID(arguments.data.Account.getAccountID());
+				getHibachiScope().getSession().setAccountAuthentication(activePassword);
+			}
 			accountAuthenticationsArray[i].removeAccount();
 			this.deleteAccountAuthentication( accountAuthenticationsArray[i] );
 		}
