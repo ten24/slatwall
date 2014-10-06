@@ -53,6 +53,10 @@ Notes:
 <cfset rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList() />
 <cfset rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList() />
 
+<cfif !isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 >
+	<cfset rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' ) />
+</cfif>
+
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.account#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">

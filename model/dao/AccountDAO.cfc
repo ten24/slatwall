@@ -58,6 +58,22 @@ Notes:
 		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
 	</cffunction>
 	
+	<cffunction name="removeAccountAuthenticationFromSessions">
+		<cfargument name="accountAuthenticationID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			UPDATE
+				SwSession
+			SET
+				accountAuthenticationID = null,
+				accountID = null
+			WHERE
+				accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" /> 
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="removeAccountAddressFromOrderFulfillments">
 		<cfargument name="accountAddressID" type="string" required="true" >
 		
@@ -133,6 +149,13 @@ Notes:
 		
 		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)}) />
 	</cffunction>
+	
+	<cffunction name="getActivePasswordByEmailAddress" returntype="any" access="public">
+		<cfargument name="emailAddress" required="true" type="string" />
+		
+		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true", {emailAddress=lcase(arguments.emailAddress)}, true) />
+	</cffunction>
+	
 	
 	<cffunction name="getAccountAuthenticationExists" returntype="any" access="public">
 		<cfset var aaCount = ormExecuteQuery("SELECT count(aa.accountAuthenticationID) FROM SlatwallAccountAuthentication aa") />
@@ -241,6 +264,6 @@ Notes:
 		
 		<cfreturn accountLoyaltyNumber />
 	</cffunction>
-	
+
 </cfcomponent>
 

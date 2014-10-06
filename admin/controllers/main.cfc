@@ -72,6 +72,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.publicMethods=listAppend(this.publicMethods, 'resetPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'setupInitialAdmin');
 	this.publicMethods=listAppend(this.publicMethods, 'changeLanguage');
+	this.publicMethods=listAppend(this.publicMethods, 'updatePassword');
 	
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'default');
@@ -258,6 +259,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		login( rc );
 	}
 	
+	public void function updatePassword(required struct rc){
+		getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "updatePassword");
+		
+		if(!rc.$.slatwall.getAccount().hasErrors()) {
+			rc.$.slatwall.showMessageKey("admin.main.encryption.updatePassword_success");
+			getFW().redirect(action="admin:main.default", preserve="messages");
+		}
+	
+		login(rc);
+	}
+	
 	public void function changeLanguage( required struct rc ){
 		param name="arguments.rc.rbLocale" default="";
 		param name="arguments.rc.redirectURL" default="";
@@ -283,6 +295,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.$.slatwall.showMessageKey( 'admin.metadismissed_info' );
 		
 		getFW().redirect(action="admin:main.default", preserve="messages");
+	}
+
+	public void function unlockAccount(){
+		
+		var account = getService("HibachiService").getAccountByAccountID(url.accountid);
+		
+		account = getAccountService().processAccount(account, "unlock");
+		
+		rc.$.slatwall.showMessageKey( 'admin.main.unlockAccount_info' );
+		
+		getFW().redirect(action="?slatAction=entity.detailaccount&accountID=" & url.accountid, preserve="messages");
+
 	}
 
 }
