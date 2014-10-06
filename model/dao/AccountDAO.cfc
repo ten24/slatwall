@@ -156,6 +156,11 @@ Notes:
 		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true", {emailAddress=lcase(arguments.emailAddress)}, true) />
 	</cffunction>
 	
+	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">
+		<cfargument name="accountID" required="true" type="string" />
+		
+		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a WHERE aa.password is not null AND aa.integration.integrationID is null AND a.accountID=:accountid AND aa.activeFlag = true", {accountid=arguments.accountID}, true) />
+	</cffunction>
 	
 	<cffunction name="getAccountAuthenticationExists" returntype="any" access="public">
 		<cfset var aaCount = ormExecuteQuery("SELECT count(aa.accountAuthenticationID) FROM SlatwallAccountAuthentication aa") />

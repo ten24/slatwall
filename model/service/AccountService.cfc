@@ -431,7 +431,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_lock(required any account){
-		var expirationDateTime= dateAdd('n', 30, Now());
+		var expirationDateTime= dateAdd('n', arguments.account.setting('accountLockMinutes'), Now());
 		arguments.account.setLoginLockExpiresDateTime(expirationDateTime);
 		
 		return arguments.account;
@@ -1328,6 +1328,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
 		for(var i=1; i <= numberOfRecordsToBeDeleted; i++){
+			//if the password that is going to be deleted is how the user logged in, updated the session to the new active password
+			if( !isNull(getHibachiScope().getSession().getAccountAuthentication()) && accountAuthenticationsArray[i].getAccountAuthenticationID() == getHibachiScope().getSession().getAccountAuthentication().getAccountAuthenticationID()){
+				var activePassword = getAccountDAO().getActivePasswordByAccountID(arguments.data.Account.getAccountID());
+				getHibachiScope().getSession().setAccountAuthentication(activePassword);
+			}
 			accountAuthenticationsArray[i].removeAccount();
 			this.deleteAccountAuthentication( accountAuthenticationsArray[i] );
 		}
@@ -1337,7 +1342,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	private boolean function checkPasswordResetRequired(required any accountAuthentication, required any processObject){
 		if (accountAuthentication.getResetPasswordOnNextLoginFlag() == true 
 			|| ( accountAuthentication.getAccount().getAdminAccountFlag() && 
-					( dateCompare(Now(), dateAdd('d', 90, accountAuthentication.getCreatedDateTime()))  == 1 
+					( dateCompare(Now(), dateAdd('d', arguments.accountAuthentication.getAccount().setting('accountAdminForcePasswordResetAfterDays'), accountAuthentication.getCreatedDateTime()))  == 1 
 					|| !REFind("^.*(?=.{7,})(?=.*[0-9])(?=.*[a-zA-Z]).*$" , arguments.processObject.getPassword()) 
 					|| ( !isNull(accountAuthentication.getCreatedByAccount()) && accountAuthentication.getCreatedByAccount().getAccountID() != accountAuthentication.getAccount().getAccountId())
 					)
