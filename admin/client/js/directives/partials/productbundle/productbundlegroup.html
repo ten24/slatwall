@@ -88,23 +88,24 @@
 							<label class="control-label">Active: </label>
 							<div class="radio">
 								<input  type="radio"
-										name="radio1" 
+										id="j-active-radio1"
+										name="j-active-radio" 
 										checked="checked" 
-										ng-model="productBundleGroup.active"
+										ng-value="productBundleGroup.active"
 										value="true"
 								>
-								<label for="radio1">
+								<label for="j-active-radio1">
 										Yes
 								</label>
 							</div>
 							<div class="radio">
-								<input  type="radio" 
-										name="radio1" 
-										id="radio2" 
-										ng-model="productBundleGroup.active"
+								<input  type="radio"
+										name="j-active-radio" 
+										id="j-active-radio2" 
+										ng-value="productBundleGroup.active"
 										value="false"
 								>
-								<label for="radio2">
+								<label for="j-active-radio2">
 										No
 								</label>
 							</div>
