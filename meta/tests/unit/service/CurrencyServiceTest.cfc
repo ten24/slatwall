@@ -46,17 +46,17 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
 		
-		variables.entityService = "addressService";
-		variables.entity = request.slatwallScope.getService( variables.entityService ).newAddress();
+		variables.service = request.slatwallScope.getBean("currencyService");
 	}
 	
-	
+	public void function convertCurrency_returns_an_amount() {
+		var convertedAmount = variables.service.convertCurrency(amount=100, originalCurrencyCode='USD', convertToCurrencyCode='CAD');
+		
+		assert(isNumeric(convertedAmount));
+	}
 }
-
-

@@ -143,7 +143,7 @@ Notes:
 				
 					<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
 						<div class="form-group">
-							<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-keyup="showResults()" ng-model="keywords" ng-change="updateSearchResults()">
+							<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults(); showResults()">
 								<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 							</input>
 						</div>

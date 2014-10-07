@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,18 +45,38 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
-
-	// @hint put things in here that you want to run befor EACH test
-	public void function setUp() {
-		super.setup();
+--->
+<cfcomponent extends="HibachiDAO" accessors="true" output="false">
+	
+	<cffunction name="getCurrentCurrencyRateByCurrencyCodes" output="false" access="public" returntype="any">
+		<cfargument name="originalCurrencyCode" type="string" required="true" />
+		<cfargument name="convertToCurrencyCode" type="string" required="true" />
 		
-		variables.entityService = "addressService";
-		variables.entity = request.slatwallScope.getService( variables.entityService ).newAddress();
-	}
+		<!--- Setup HQL --->
+		<cfset var hql="SELECT currencyrate FROM SlatwallCurrencyRate currencyrate
+			WHERE
+			  	currencyrate.effectiveStartDateTime < :now
+			  AND
+			  	(
+					(currencyrate.currencyCode = :originalCurrencyCode AND currencyrate.conversionCurrencyCode = :convertToCurrencyCode)
+				  OR
+				  	(currencyrate.currencyCode = :convertToCurrencyCode AND currencyrate.conversionCurrencyCode = :originalCurrencyCode)			  		
+			  	)
+			ORDER BY
+				currencyrate.effectiveStartDateTime DESC" />
+		
+		<!--- Setup HQL Params --->
+		<cfset hqlParams = {} />
+		<cfset hqlParams['now'] = now() />
+		<cfset hqlParams['originalCurrencyCode'] = arguments.originalCurrencyCode />
+		<cfset hqlParams['convertToCurrencyCode'] = arguments.convertToCurrencyCode />
+		
+		<!--- Get Results --->
+		<cfset var results = ormExecuteQuery(hql, hqlParams, {maxResults=1}) />
+		
+		<cfif arrayLen(results)>
+			<cfreturn results[1] />
+		</cfif>
+	</cffunction>
 	
-	
-}
-
-
+</cfcomponent>

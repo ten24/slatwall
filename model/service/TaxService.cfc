@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="addressService" type="any";
+	property name="hibachiValidationService" type="any";
 	property name="integrationService" type="any";
 	
 	public void function updateOrderAmountsWithTaxes(required any order) {
@@ -106,8 +107,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// Setup the orderItem level taxShippingAddress
 					structDelete(taxAddresses, "taxShippingAddress");
-					if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress())) {
-						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
+					if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+						taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getShippingAddress();
 					}
 					
 					// Loop over the rates of that category, to potentially apply
@@ -256,12 +257,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxAddresses = {};
 		
 		// If the order has a billing address, use that to potentially calculate taxes for all items
-		if(!isNull(arguments.order.getBillingAddress())) {
+		if(!isNull(arguments.order.getBillingAddress()) && !getHibachiValidationService().validate(object=arguments.order.getBillingAddress(), context="full", setErrors=false).hasErrors()) {
 			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
 		} else {
 			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
 			for(var orderPayment in arguments.order.getOrderPayments()) {
-				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !orderPayment.getBillingAddress().getNewFlag()) {
+				if(orderPayment.getOrderPaymentStatusType().getSystemCode() == 'opstActive' && !getHibachiValidationService().validate(object=orderPayment.getBillingAddress(), context="full", setErrors=false).hasErrors()) {
 					taxAddresses.taxBillingAddress = orderPayment.getBillingAddress();
 					break;
 				}

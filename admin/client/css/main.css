@@ -300,7 +300,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
 .s-add-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #ffffff;font-size:14px;}
 .s-add-filter > .row {padding-top:0px !important;}
-.s-add-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;margin-right: 20px;padding-right: 40px;padding-left: 40px;margin-left: 16px;margin-bottom: 15px;min-height:140px;}
+.s-add-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;padding-right: 40px;padding-left: 40px;margin-bottom: 15px;min-height:140px;}
 .s-add-filter .s-button-select-group {text-align:center;}
 .s-add-filter .s-checkbox {margin-top:15px;}
 .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}

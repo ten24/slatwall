@@ -268,7 +268,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 								if(!isNull(thisEntity)) {
 									// Set the value of the property as the loaded entity
-									_setProperty(currentProperty.name, thisEntity );
+									_setProperty(currentProperty.name, thisEntity );	
 								}
 
 							}

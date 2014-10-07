@@ -84,15 +84,6 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="salutationOptions" persistent="false" type="array";
 	property name="stateCodeOptions" persistent="false" type="array";
 	
-	public any function init() {
-		if(isNull(variables.countryCode)) {
-			variables.countryCode = "US";
-		}
-		
-		return super.init();
-	}
-	
-	
 	// ==================== START: Logical Methods =========================
 	
 	public boolean function getAddressMatchFlag( required any address ) {
@@ -161,10 +152,12 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getCountry() {
-		if(!structKeyExists(variables, "country")) {
+		if(!structKeyExists(variables, "country") && !isNull(getCountryCode())) {
 			variables.country = getService("addressService").getCountry(getCountryCode());
 		}
-		return variables.country;
+		if(structKeyExists(variables, "country")) {
+			return variables.country;	
+		}
 	}
 	
 	public array function getCountryCodeOptions() {
@@ -185,7 +178,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 			var smartList = getService("addressService").getStateSmartList();
 			smartList.addSelect(propertyIdentifier="stateName", alias="name");
 			smartList.addSelect(propertyIdentifier="stateCode", alias="value");
-			smartList.addFilter("countryCode", getCountryCode()); 
+			if(!isNull(getCountryCode())) {
+				smartList.addFilter("countryCode", getCountryCode());	
+			}
 			smartList.addOrder("stateName|ASC");
 			variables.stateCodeOptions = smartList.getRecords();
 			arrayPrepend(variables.stateCodeOptions, {value="", name=rbKey('define.select')});

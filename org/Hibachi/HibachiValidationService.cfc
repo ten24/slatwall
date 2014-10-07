@@ -441,7 +441,7 @@
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
 		}
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now()) eq 1) {
+		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq 1) {
 			return true;
 		}
 		return false;
@@ -452,7 +452,7 @@
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
 		}
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now()) eq -1) {
+		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq -1) {
 			return true;
 		}
 		return false;
