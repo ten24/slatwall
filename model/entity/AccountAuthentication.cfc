@@ -58,7 +58,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	property name="integrationAccessTokenExpiration" ormtype="string" column="integrationAccessTokenExp";
 	property name="integrationRefreshToken" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
-	property name="resetPasswordOnNextLoginFlag" ormtype="boolean";
+	property name="updatePasswordOnNextLoginFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
