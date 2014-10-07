@@ -433,13 +433,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccount_lock(required any account){
 		var expirationDateTime= dateAdd('n', arguments.account.setting('accountLockMinutes'), Now());
 		arguments.account.setLoginLockExpiresDateTime(expirationDateTime);
+		arguments.account.setFailedLoginAttemptCount(0);
 		
 		return arguments.account;
 	}
 	
 	public any function processAccount_unlock(required any account){
 		arguments.account.setLoginLockExpiresDateTime(javacast("null",""));
-		arguments.account.setFailedLoginAttemptCount(0);
 		
 		return arguments.account;
 	}
