@@ -179,7 +179,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.stateCode')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<cfif arrayLen(attributes.address.getCountry().getStateCodeOptions())>
+							<cfif arrayLen(attributes.address.getStateCodeOptions())>
 								<sw:formField type="select" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" valueOptions="#attributes.address.getCountry().getStateCodeOptions()#" class="#attributes.fieldClass#" />
 							<cfelse>
 								<sw:formField type="text" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" class="#attributes.fieldClass#" />
