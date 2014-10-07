@@ -76,7 +76,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionName = 'RyansAccountOrders',
 			collectionConfig = '{}
 			',
-			baseEntityName = "SlatwallAccount"
+			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		
@@ -95,7 +95,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionName = 'RyansAccountOrders',
 			collectionConfig = '{}
 			',
-			baseEntityName = "SlatwallAccount"
+			collectionObject = "SlatwallAccount"
 			
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
@@ -220,7 +220,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					
 				}
 			',
-			baseEntityName = "SlatwallAccount"
+			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		var deserializedCollectionConfig = collectionEntity.deserializeCollectionConfig();
@@ -233,7 +233,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionid = '',
 			collectionCode = 'RyansAccountOrders',
 			collectionName = 'RyansAccountOrders',
-			baseEntityName = 'SlatwallAccount',
+			collectionObject = 'SlatwallAccount',
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
@@ -508,7 +508,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
 			collectionCode = 'BestAccountEmailAddresses',
-			baseEntityName="Account",
+			collectionObject="Account",
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
@@ -997,7 +997,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
 			collectionCode = 'BestAccountEmailAddresses',
-			baseEntityName="SlatwallAccount",
+			collectionObject="SlatwallAccount",
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
@@ -1143,7 +1143,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}'
 		};
 		var parentCollectionEntity = createTestEntity('collection',parentCollectionEntityData);
-		parentCollectionEntity.setCollectionObject(collectionEntity);
+		parentCollectionEntity.setParentCollection(collectionEntity);
 		
 		var parentOfParentCollectionEntityData = {
 			collectionid = '',

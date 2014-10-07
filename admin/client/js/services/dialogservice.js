@@ -1,5 +1,7 @@
 angular.module('slatwalladmin.services').factory('dialogService', [
+'partialsPath',
 function(
+partialsPath
 ){
 	var _pageDialogs = [];
 	
@@ -7,7 +9,7 @@ function(
 		
 		addPageDialog: function( name ){
 			var newDialog = {
-				'path' : 'admin/client/partials/' + name + '.html'
+				'path' : partialsPath + name + '.html'
 			};
 			_pageDialogs.push( newDialog );
 		},

@@ -7,6 +7,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 	'$rootScope',
 	'alertService',
 	'dialogService',
+	'productBundleService',
 	'formService',
 function(
 	$scope,
@@ -16,34 +17,42 @@ function(
 	$rootScope,
 	alertService,
 	dialogService,
+	productBundleService,
 	formService
 ){
+	$scope.$id="create-bundle-controller";
 		//if this view is part of the dialog section, call the inherited function
-		if(angular.isDefined($scope.scrollToTopOfDialog)){
-			$scope.scrollToTopOfDialog();
-		}
-		
-		
-		$log.debug('getProductBundleProcessObject ');
-		var processObjectPromise = $slatwall.getProcessObject(
-			'Product',
-			null,
-			'CreateBundle',
-			'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType'
-		);
-		
-		processObjectPromise.then(function(value){
-			$log.debug('getProcessObject');
-			$scope.processObject = value.data;
-			formService.setForm($scope.form.createProductBundle);
-			$log.debug($scope.processObject);
-		},function(reason){
-			//display error message if getter fails
-			var messages = reason.MESSAGES;
-			var alerts = alertService.formatMessagesToAlerts(messages);
-			alertService.addAlerts(alerts);
-		});
-		
+	if(angular.isDefined($scope.scrollToTopOfDialog)){
+		$scope.scrollToTopOfDialog();
+	}
+	
+	
+	$log.debug('getProductBundleProcessObject ');
+	var processObjectPromise = $slatwall.getProcessObject(
+		'Product',
+		null,
+		'CreateBundle',
+		'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType,productBundleGroups'
+	);
+	
+	processObjectPromise.then(function(value){
+		$log.debug('getProcessObject');
+		$scope.processObject = value.data;
+		formService.setForm($scope.form.createProductBundle);
+		$log.debug($scope.processObject);
+	},function(reason){
+		//display error message if getter fails
+		var messages = reason.MESSAGES;
+		var alerts = alertService.formatMessagesToAlerts(messages);
+		alertService.addAlerts(alerts);
+	});
+	
+	$scope.addProductBundleGroup = function(){
+		$log.debug('add bundle group');
+		var productBundleGroup = productBundleService.newProductBundle();
+		$scope.processObject.productBundleGroups.value.push(productBundleGroup);
+		$log.debug($scope.processObject.productBundleGroups);
+	};
 	
 	$scope.saveProductBundle = function(closeDialogIndex){
 		
@@ -59,7 +68,7 @@ function(
 				"product.brand.brandID":createProductBundleForm['product.brand'].$modelValue.value
 			};
 			$log.debug(params);
-			var saveProductBundlePromise = $slatwall.saveEntity('product', null, params,'create');
+			var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,'CreateBundle');
 			saveProductBundlePromise.then(function(value){
 				$log.debug('saving Product Bundle');
 				var messages = value.MESSAGES;

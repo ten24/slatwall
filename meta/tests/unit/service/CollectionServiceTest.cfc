@@ -74,7 +74,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getTransientCollectionByEntityNameTest(){
 		var entityName = 'product';
 		var collectionEntity = variables.service.getTransientCollectionByEntityName(entityName);
-		assertEquals('SlatwallProduct',collectionEntity.getBaseEntityName());
+		assertEquals('SlatwallProduct',collectionEntity.getCollectionObject());
 		assertEquals('SlatwallProduct',collectionEntity.getCollectionConfigStruct().baseentityname);
 		assertEquals('Product',collectionEntity.getCollectionConfigStruct().baseentityalias);
 	}
@@ -145,7 +145,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			baseEntityName = 'Account'
 		};
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		var collectionEntityProperties = variables.service.getEntityNameProperties(collectionEntity.getBaseEntityName());
+		var collectionEntityProperties = variables.service.getEntityNameProperties(collectionEntity.getCollectionObject());
 		request.debug(collectionEntityProperties);
 		assert(isArray(collectionEntityProperties));
 	}

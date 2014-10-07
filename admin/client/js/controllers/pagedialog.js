@@ -15,7 +15,8 @@ function(
 	dialogService
 	
 ){
-	
+	$scope.$id = 'pageDialogController';
+		
 	//get url param to retrieve collection listing
 	$scope.pageDialogs = dialogService.getPageDialogs();
 	$scope.scrollToTopOfDialog = function(){

@@ -624,6 +624,8 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
+	
+	
 	public any function processProduct_addSku(required any product, required any processObject, any data) {
 		getSkuService().saveSku(arguments.processObject.getNewSku());
 		
@@ -798,7 +800,8 @@ component extends="HibachiService" accessors="true" {
 					product.setDefaultSku( thisSku );	
 				}
 			}
-		}
+		} 
+		
 		
 		// Generate the URL Title
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
@@ -807,7 +810,7 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
-		
+		writeDump(var=arguments.product,top=2);abort;
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 		
@@ -815,6 +818,32 @@ component extends="HibachiService" accessors="true" {
 		arguments.product = this.saveProduct(arguments.product);
 		
         // Return the product
+		return arguments.product;
+	}
+	
+	//routed from processProduct_create
+	public any function processProduct_createBundle(required any product, required any processObject, any data){
+		
+		//arguments.product = this.processProduct_create(arguments.product,arguments.processObject);
+		
+		//add default sku
+		var thisSku = this.newSku();
+		thisSku.setProduct(arguments.product);
+		thisSku.setPrice(arguments.processObject.getPrice()); 
+		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+			thisSku.setListPrice(arguments.product.getlistPrice());	
+		}
+		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+		//add product group bundles to sku
+		
+		var productBundleGroups = arguments.processObject.getProductBundleGroups;
+		
+		thisSku.setProductBundleGroups(productBundleGroups);
+		//set sku to product
+		arguments.product.setDefaultSku( thisSku );
+		
+		
+		
 		return arguments.product;
 	}
 	

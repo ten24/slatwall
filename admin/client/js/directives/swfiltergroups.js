@@ -5,13 +5,13 @@ angular.module('slatwalladmin')
 '$compile',
 '$templateCache',
 'collectionService',
-'partialsPath',
+'collectionPartialsPath',
 '$log',
 function($http,
 $compile,
 $templateCache,
 collectionService,
-partialsPath,
+collectionPartialsPath,
 $log){
 	return {
 		restrict: 'A',
@@ -21,7 +21,7 @@ $log){
 			saveCollection:"&",
 			filterGroup:"="
 		},
-		templateUrl:partialsPath+"filtergroups.html",
+		templateUrl:collectionPartialsPath+"filtergroups.html",
 		controller: function($scope, $element,$attrs){
 			$scope.itemInUse = false;
 			

@@ -163,7 +163,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getTransientCollectionByEntityName(required string entityName){
 		var collectionEntity = this.newCollection();
 		var properlyCasedFullEntityName = getProperlyCasedFullEntityName(arguments.entityName);
-		collectionEntity.setBaseEntityName(properlyCasedFullEntityName);
+		collectionEntity.setCollectionObject(properlyCasedFullEntityName);
 		var collectionConfigStruct = {
 			baseEntityName=properlyCasedFullEntityName,
 			baseEntityAlias=getProperlyCasedShortEntityName(arguments.entityName)
@@ -336,10 +336,16 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function getTransientCollectionConfigStructByURLParams(required any rc){
 		//propertyIdentifers
-		var collectionConfigStruct = {
+		collectionConfigStruct = {};
+		collectionConfigStruct = {
 			baseEntityName = 'Slatwall#arguments.rc.entityName#',
 			baseEntityAlias = rc.entityName
 		};
+		
+		if(!isnull(arguments.rc.filterConfig)){
+			collectionConfigStruct.filterGroups = deserializeJson(arguments.rc.filterConfig);
+		}
+		
 		
 		//adds to columns section if preceeded by a period then add to joins section, check for parenthesis for aggregates
 		//&propertyIdentifiers=propertyIdentifier,join.propertyIdentifier,aggregate|join.propertyIdentifier
@@ -385,7 +391,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return collectionConfigStruct;
 	}
 	
-	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10,keywords = ""){
+	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10,keywords = "", string filterGroupsConfig){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
 		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
 		collectionEntity.setPageRecordsShow(arguments.pageShow);
@@ -393,6 +399,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		//if propertyIdentifiers were specified add selects so we can refine what columns to return
 		if(len(arguments.propertyIdentifiersList)){
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
+		}
+		
+		if(len(arguments.filterGroupsConfig)){
+			collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(arguments.filterGroupsConfig);
 		}
 		
 		if(len(arguments.propertyIdentifiersList)){
@@ -462,7 +472,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		//get default property identifiers for the records that the collection refers to
-		var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getBaseEntityName());
+		var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
 		
 		for (var column in collectionEntity.getCollectionConfigStruct().columns){
 			var piAlias = ListLast(column.propertyIdentifier,'.');
