@@ -309,6 +309,8 @@
 					</div>
 					<!--- //Edit Filter Box --->
 
+					<div class="clearfix"></div>
+
 				</div>
 
 			</content>
@@ -431,6 +433,8 @@
 									</div>
 								</div>
 								<!--- //Edit Filter Box --->
+
+								<div class="clearfix"></div>
 
 							</div>
 
@@ -1479,7 +1483,7 @@
 									</div>
 								</div>
 								<!--- //Edit Filter Box --->
-
+								<div class="clearfix"></div>
 							</div>
 
 						</div>

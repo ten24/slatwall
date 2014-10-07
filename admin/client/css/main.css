@@ -293,7 +293,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-setting-options-body .s-setting-and-or {width: 100%;padding: 10px 0px 16px 0px;display: block;font-weight: 700;}
 .s-setting-options-body .s-setting-and-or .btn {min-width:52px;text-align:center;}
 
-.s-add-filter {background:#ffffff;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;float:none;}
+.s-add-filter {background:#ffffff;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;margin-top:15px;}
 .s-add-filter h4 i {float:right;cursor:pointer;font-size:18px;color:#dddddd;}
 .s-add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;font-size:16px;text-align:left;}
 .s-add-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;font-size:16px;text-align:left;}
