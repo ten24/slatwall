@@ -1340,7 +1340,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	private boolean function checkPasswordResetRequired(required any accountAuthentication, required any processObject){
-		if (accountAuthentication.getupdatetPasswordOnNextLoginFlag() == true 
+		if (accountAuthentication.getUpdatePasswordOnNextLoginFlag() == true 
 			|| ( accountAuthentication.getAccount().getAdminAccountFlag() && 
 					( dateCompare(Now(), dateAdd('d', arguments.accountAuthentication.getAccount().setting('accountAdminForcePasswordResetAfterDays'), accountAuthentication.getCreatedDateTime()))  == 1 
 					|| !REFind("^.*(?=.{7,})(?=.*[0-9])(?=.*[a-zA-Z]).*$" , arguments.processObject.getPassword()) 
