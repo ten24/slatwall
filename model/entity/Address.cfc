@@ -180,6 +180,8 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 			smartList.addSelect(propertyIdentifier="stateCode", alias="value");
 			if(!isNull(getCountryCode())) {
 				smartList.addFilter("countryCode", getCountryCode());	
+			} else {
+				smartList.addFilter("countryCode", 'US');
 			}
 			smartList.addOrder("stateName|ASC");
 			variables.stateCodeOptions = smartList.getRecords();
