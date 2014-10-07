@@ -36,17 +36,15 @@
 Notes:
 
 */
-component entityname="SlatwallCollection" table="SwCollection" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
+component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
 	//TODO:add permission base property. public/protected/private?
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string" unique="true" index="PI_COLLECTIONCODE";
 	property name="description" ormtype="string";
-	property name="baseEntityName" ormtype="string" hb_formFieldType="select";
-	property name="CollectionObject" ormtype="string" hb_formFieldType="select";
-	property name="parentCollection" cfc="collection" ;
-	
+	property name="collectionObject" ormtype="string" hb_formFieldType="select";
+	property name="parentCollection" cfc="collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
 	
 	property name="collectionConfig" ormtype="string" length="4000" hint="json object used to construct the base collection HQL query";
 	
@@ -93,22 +91,22 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 	property name="savedStateID" type="string" persistent="false";
 	
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
-	property name="baseEntityNameOptions" persistent="false";
+	property name="collectionObjectOptions" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	//returns an array of name/value structs for 
-	public array function getBaseEntitynameOptions() {
-		if(!structKeyExists(variables, "BaseEntitynameOptions")) {
+	public array function getCollectionObjectOptions() {
+		if(!structKeyExists(variables, "collectionObjectOptions")) {
 			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
 			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
 			arraySort(entitiesMetaDataArray,"text");
-			variables.BaseEntitynameOptions = [];
+			variables.collectionObjectOptions = [];
 			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
-				arrayAppend(variables.BaseEntitynameOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
+				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
 			}
 		}
-		return variables.BaseEntitynameOptions;
+		return variables.collectionObjectOptions;
 	}
 	
 	public any function init(){
@@ -131,24 +129,24 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		variables.collectionConfig = '{}';
 	}
 	
-	public void function setBaseEntityName(required string baseEntityName){
+	public void function setCollectionObject(required string collectionObject){
 		var slatwallBaseEntity = "";
-		if(find('Slatwall',arguments.baseEntityName)){
-			slatwallBaseEntity = arguments.baseEntityName;
+		if(find('Slatwall',arguments.collectionObject)){
+			slatwallBaseEntity = arguments.collectionObject;
 		}else{
-			slatwallBaseEntity = "Slatwall#arguments.baseEntityName#";
+			slatwallBaseEntity = "Slatwall#arguments.collectionObject#";
 		}
 		
-		variables.baseEntityName = "#slatwallBaseEntity#";
+		variables.collectionObject = "#slatwallBaseEntity#";
 		if(variables.collectionConfig eq '{}' ){
 			//get default columns
-			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.baseEntityName).invokeMethod("new#arguments.baseEntityName#");
+			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
 			var defaultProperties = newEntity.getDefaultProperties();
 			
 			var columnsArray = []; 
 			for(defaultProperty in defaultProperties){
 				var columnStruct = {};
-				columnStruct['propertyIdentifier'] = arguments.baseEntityName & '.' & defaultProperty.name;
+				columnStruct['propertyIdentifier'] = arguments.collectionObject & '.' & defaultProperty.name;
 				columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
 				columnStruct['isVisible'] = true;
 				columnStruct['isSearchable'] = true;
@@ -165,7 +163,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			var columnsJson = serializeJson(columnsArray);
 			variables.collectionConfig = '{
 				"baseEntityName":"#slatwallBaseEntity#",
-				"baseEntityAlias":"#arguments.baseEntityName#",
+				"baseEntityAlias":"#arguments.collectionObject#",
 				"columns":#columnsJson#
 			}';
 		}
@@ -326,16 +324,16 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		}
 	}
 	
-	public array function getFilterGroupArrayFromAncestors(required any collectionObject){
-		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
+	public array function getFilterGroupArrayFromAncestors(required any collectionEntity){
+		var collectionConfig = arguments.collectionEntity.getCollectionConfigStruct();
 		var filterGroupArray = [];
 		if(!isnull(collectionConfig.filterGroups) && arraylen(collectionConfig.filterGroups)){
 			filterGroupArray = collectionConfig.filterGroups;
 		}
 		
-		if(!isnull(arguments.collectionObject.getCollectionObject())){
+		if(!isnull(arguments.collectionEntity.getParentCollection())){
 			
-			var parentFilterGroupArray = getFilterGroupArrayFromAncestors(arguments.collectionObject.getCollectionObject());
+			var parentFilterGroupArray = getFilterGroupArrayFromAncestors(arguments.collectionEntity.getParentCollection());
 			
 			for(parentFilterGroup in parentFilterGroupArray){
 				if(!arrayFind(filterGroupArray,parentFilterGroup)){
@@ -452,27 +450,27 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 		
 		var collectionEntity = getService('collectionService').getCollectionByCollectionCode(arguments.filter.collectionCode);
 		var mainCollectionAlias = listFirst(arguments.filter.propertyIdentifier,'.');
-		var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getBaseEntityName(),maincollectionAlias).name;
+		var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getCollectionObject(),maincollectionAlias).name;
 		
 		//None,One,All
 		/*withaliases
 		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
-			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getHQLAliases()['#collectionEntity.getBaseEntityName()#']#.#collectionProperty# ';
+			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getHQLAliases()['#collectionEntity.getCollectionObject()#']#.#collectionProperty# ';
 		}else{
-			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getBaseEntityName());
+			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
 			
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getBaseEntityName()#) FROM #fullEntityName# as #collectionEntity.getBaseEntityName()# WHERE #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) 
-			= (SELECT count(#collectionEntity.getBaseEntityName()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getHQLAliases()['#collectionEntity.getBaseEntityName()#']#.#collectionProperty# = #mainCollectionAlias#) ';
+			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) 
+			= (SELECT count(#collectionEntity.getCollectionObject()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getHQLAliases()['#collectionEntity.getCollectionObject()#']#.#collectionProperty# = #mainCollectionAlias#) ';
 		}
 		*/
 		
 		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
-			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getBaseEntityName()#.#collectionProperty# ';
+			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getCollectionObject()#.#collectionProperty# ';
 		}else{
-			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getBaseEntityName());
+			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
 			
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getBaseEntityName()#) FROM #fullEntityName# as #collectionEntity.getBaseEntityName()# WHERE #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) 
-			= (SELECT count(#collectionEntity.getBaseEntityName()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getBaseEntityName()#.#collectionProperty# = #mainCollectionAlias#) ';
+			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) 
+			= (SELECT count(#collectionEntity.getCollectionObject()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) ';
 		}
 		
 		//add all params from subqueries to parent HQL
@@ -703,7 +701,6 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 			
 			//where clauses are actually the collection of all parent/child where clauses
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
-			
 			if(arraylen(filterGroupArray)){
 				filterHQL &= getFilterHQL(filterGroupArray);
 			}
@@ -1010,7 +1007,7 @@ component entityname="SlatwallCollection" table="SwCollection" persistent="true"
 				variables.configStructure = deserializeJSON(getCollectionConfig());	
 			} else {
 				variables.configStructure = {};
-				variables.configStructure['baseEntitytName'] = getBaseEntityName();
+				variables.configStructure['baseEntitytName'] = getCollectionObject();
 			}
 		}
 		return variables.configStructure;

@@ -52,8 +52,8 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="settingName" ormtype="string";
 	property name="settingValue" ormtype="string" length="4000";
-	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false";
-	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false";
+	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="settingValueEncryptDT";
+	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false" column="settingValueEncryptGen";
 
 	// Non-Constrained related entity
 	property name="cmsContentID" ormtype="string";

@@ -66,7 +66,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getAccountData_without_any_propertyList_returns_all_available_properties() {
 		var ad = request.slatwallScope.getAccountData();
 		
-		assertEquals(structCount(ad), 10);
+		assertEquals(structCount(ad), 11);
 	}
 	
 	public void function getAccountData_returns_errors_set_on_account() {
@@ -91,27 +91,27 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(ad.errors.lastName[2], "The Last Name must be xyz", "The correct error message exists");
 	}
 	
-	public void function getAccountData_always_includes_hasErrors_and_errors() {
+	public void function getAccountData_always_includes_hasErrors_and_errors_and_processObjects() {
 		var ad = request.slatwallScope.getAccountData( 'accountID' );
-		
-		// Should be 5... the 1 listed above, plus 'hasErrors' and 'errors'
-		assertEquals(structCount(ad), 3);
 		
 		// hasErrors check
 		assert(structKeyExists(ad, 'hasErrors'), "The 'hasErrors' key doesn't exist in response data");
-		assert(!ad.hasErrors, "The value for 'hasErrors' is set to #ad.hasErrors# when it should be set to false... here are the errors: #serializeJSON(ad.errors)#");
+		assert(isBoolean(ad.hasErrors), "The data in the 'hasErrors' key isn't a boolean");
 		
 		// errors check
 		assert(structKeyExists(ad, 'errors'), "The 'errors' key exists in response data");
-		assert(isStruct(ad.errors), "The data in the 'errors' key is a structure");
-		assertEquals(structCount(ad.errors), 0, "The error keys come back as an empty struct by default");
+		assert(isStruct(ad.errors), "The data in the 'errors' key isn't a structure");
+		
+		// errors check
+		assert(structKeyExists(ad, 'processObjects'), "The 'processObjects' key doesn't exist in response data");
+		assert(isStruct(ad.processObjects), "The data in the 'processObjects' key isn't a structure");
 	}
 	
 	public void function getAccountData_with_specific_propertyList_returns_only_those_keys() {
 		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
 		
-		// Should be 5... the 3 listed above, plus 'hasErrors' and 'errors'
-		assertEquals(structCount(ad), 5);
+		// Should be 5... the 3 listed above, plus 'hasErrors', 'errors' & 'processObjects'
+		assertEquals(structCount(ad), 6);
 	}
 	
 	public void function getAccountData_with_specific_propertyList_returns_correct_values() {
@@ -120,7 +120,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
 		
-		assertEquals(structCount(ad), 5);
+		assertEquals( 6, structCount(ad));
 		
 		// Check that each of the specific ones are there
 		assert(structKeyExists(ad, 'accountID'));
@@ -136,7 +136,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getAccountData_passing_invalid_property_wont_add_to_return() {
 		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName,createdDateTime' );
 		
-		assertEquals(structCount(ad), 5);
+		assertEquals( 6, structCount(ad));
 		
 		assertFalse( structKeyExists(ad, "createdDateTime") );
 	}
@@ -150,7 +150,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getCartData_without_any_propertyList_returns_all_available_properties() {
 		var cd = request.slatwallScope.getCartData();
 		
-		assertEquals(structCount(cd), 8);
+		assertEquals(16, structCount(cd));
 	}
 	
 	
@@ -174,8 +174,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getCartData_always_includes_hasErrors_and_errors() {
 		var cd = request.slatwallScope.getCartData( 'orderid' );
 		
-		// Should be 5... the 1 listed above, plus 'hasErrors' and 'errors'
-		assertEquals(structCount(cd), 3);
+		// Should be 5... the 1 listed above, plus 'hasErrors', 'errors' and 'processObjects'
+		assertEquals(4, structCount(cd));
 		
 		// hasErrors check
 		assert(structKeyExists(cd, 'hasErrors'), "The 'hasErrors' key exists in response data");
@@ -184,20 +184,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// errors check
 		assert(structKeyExists(cd, 'errors'), "The 'errors' key exists in response data");
 		assert(isStruct(cd.errors), "The data in the 'errors' key is a structure");
-		assertEquals(structCount(cd.errors), 0, "The error keys come back as an empty struct by default");
+		assertEquals(0, structCount(cd.errors), "The error keys come back as an empty struct by default");
 	}
 	
 	public void function getCartData_with_specific_propertyList_returns_only_those_keys() {
 		var cd = request.slatwallScope.getCartData( 'orderid' );
 		
-		// Should be 3... the 1 listed above, plus 'hasErrors' and 'errors'
-		assertEquals(structCount(cd), 3);
+		// Should be 4... the 1 listed above, plus 'hasErrors', 'errors' and 'processObjects'
+		assertEquals( 4, structCount(cd));
 	}
 	
 	public void function getCartData_passing_invalid_property_wont_add_to_return() {
 		var cd = request.slatwallScope.getCartData( 'orderID,hushpuppy' );
 		
-		assertEquals(structCount(cd), 3);
+		assertEquals(4, structCount(cd));
 		
 		assertFalse( structKeyExists(cd, "hushbuppy") );
 	}

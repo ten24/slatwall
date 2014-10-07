@@ -49,6 +49,8 @@ Notes:
 
 component  extends="HibachiService" accessors="true" {
 
+	property name="currencyDAO" type="any";
+
 	// Cached in Application Scope
 	property name="europeanCentralBankRates" type="struct";
 
@@ -77,9 +79,15 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode) {
-		// If an integration exists for currency conversion, then pass to that integration
-		// TODO: Add integration support
-		
+		// First, check to see if there is a conversion record stored locally.
+		var currencyRate = getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=arguments.originalCurrencyCode, convertToCurrencyCode=arguments.convertToCurrencyCode);
+		if(!isNull(currencyRate)) {
+			if(currencyRate.getConversionCurrencyCode() == arguments.convertToCurrencyCode) {
+				return precisionEvaluate(arguments.amount * currencyRate.getConversionRate());
+			} else if (currencyRate.getCurrencyCode() == arguments.convertToCurrencyCode) {
+				return precisionEvaluate(arguments.amount / currencyRate.getConversionRate());
+			}
+		}
 		
 		// If both currencyCodes exist in the European Central Bank list then convert based on that info
 		var cbRates = getEuropeanCentralBankRates();

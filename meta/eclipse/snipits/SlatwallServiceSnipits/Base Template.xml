@@ -85,6 +85,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// =====================  END: Delete Overrides ===========================
 	
+	// ===================== START: Private Helper Functions ==================
+	
+	// =====================  END:  Private Helper Functions ==================
 }]]></starttext>
 <endtext><![CDATA[]]></endtext>
 </snippet>

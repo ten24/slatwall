@@ -18,6 +18,7 @@ partialsPath
 	var getTemplate = function(templateType){
 		var templatePath = '';
 		switch(templateType){
+			case 'hidden':
 			case 'text':
 				templatePath = partialsPath + 'formfields/text.html';
 				break;
@@ -39,7 +40,6 @@ partialsPath
 		},
 		replace:true,
 		link: function(scope, element,attrs, formController){
-		
 		//revert values when they are set to pristine
 		/*scope.registerWatch = function(){
 			scope.$watch('formController.$pristine',function(){
@@ -51,10 +51,10 @@ partialsPath
 						
 						scope.propertyDisplay.value = scope.revertValue.value;
 					}else{
-						if(scope.revertValue.type === 'text'){
+						if(scope.revertValue.fieldType === 'text'){
 							scope.propertyDisplay.value = '';
 						}
-						if(scope.revertValue.type === 'select'){
+						if(scope.revertValue.fieldType === 'select'){
 							scope.propertyDisplay.value = scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0];
 						}
 						
@@ -63,48 +63,42 @@ partialsPath
 				}
 			});
 		};*/
-			//as soon as we get data compile the web componenet
-			var unBindWatch = scope.$watch('propertyDisplay',function(newValue,oldValue){
-				if(newValue !== oldValue){
-					scope.revertValue = angular.copy(newValue);
 					
-					var templateLoader = getTemplate(newValue.type);
-			    	var promise = templateLoader.success(function(html){
-			    		var formfield = angular.element(html);
-			    		//dynamic formfield name mapping
-			    		formfield.attr('name',scope.propertyDisplay.property);
-			    		if(angular.isDefined(scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()])){
-			    			var validationProperties = scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()];
-			    			for(i in validationProperties){
-			    				for(key in validationProperties[i]){
-			    					var validationProperty = validationProperties[i];
-			    					if(key === 'required'){
-			    						formfield.attr(key,validationProperty[key]);
-			    					}
-			    				}
-			    			}
-			    		}
-			    		element.html(formfield);
-						$compile(element.contents())(scope);
-						if(scope.propertyDisplay.type === 'select'){
-				        	scope.propertyDisplay.value = scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0];
-				        	formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
-				        }
-						if(scope.propertyDisplay.type === 'text'){
-							formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.value);
-						}
-						
-						scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
-						scope.propertyDisplay.form = formController;
-				        
-						
-						//scope.registerWatch();
-						unBindWatch();
-					});
-			    	
-			    	
-				}
-			});
+				
+		scope.revertValue = angular.copy(scope.propertyDisplay);
+		
+		var templateLoader = getTemplate(scope.propertyDisplay.fieldType);
+    	var promise = templateLoader.success(function(html){
+    		var formfield = angular.element(html);
+    		//dynamic formfield name mapping
+    		formfield.attr('name',scope.propertyDisplay.property);
+    		if(angular.isDefined(scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()])){
+    			var validationProperties = scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()];
+    			for(i in validationProperties){
+    				for(key in validationProperties[i]){
+    					var validationProperty = validationProperties[i];
+    					if(key === 'required'){
+    						formfield.attr(key,validationProperty[key]);
+    					}
+    				}
+    			}
+    		}
+    		element.html(formfield);
+			$compile(element.contents())(scope);
+			if(scope.propertyDisplay.fieldType === 'select'){
+	        	scope.propertyDisplay.value = scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0];
+	        	formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
+	        }
+			if(scope.propertyDisplay.fieldType === 'text' || scope.propertyDisplay.fieldType === 'hidden'){
+				formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.value);
+			}
+			if(angular.isDefined(formController[scope.propertyDisplay.property])){
+				scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
+			}
+			
+			scope.propertyDisplay.form = formController;
+					
+		});
 		}
 	};
 }]);

@@ -6,6 +6,9 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
 	
 	$provide.constant("partialsPath", _partialsPath);
+	$provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
+	$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
+	
 	// TODO: configure log provider on/off based on server side rules? 
 	var debugEnabled = true;
 	$logProvider.debugEnabled(debugEnabled);

@@ -220,8 +220,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     }
     
     public boolean function getRequiredShippingInfoExistsFlag() {
-    	var eb = getShippingAddress().validate(context="full", setErrors=false);
-    	return !eb.hasErrors();
+    	return !getService('hibachiValidationService').validate(object=getShippingAddress(), context="full", setErrors=false).hasErrors();
     }
     
     public any function getShippingMethodOptions() {
