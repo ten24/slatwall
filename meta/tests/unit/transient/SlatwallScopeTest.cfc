@@ -150,7 +150,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getCartData_without_any_propertyList_returns_all_available_properties() {
 		var cd = request.slatwallScope.getCartData();
 		
-		assertEquals(structCount(cd), 9);
+		assertEquals(16, structCount(cd));
 	}
 	
 	

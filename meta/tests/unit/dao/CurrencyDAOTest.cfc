@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,28 +45,23 @@
 
 Notes:
 
---->
-<cfparam name="rc.currency" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#" sRedirectAction="admin:entity.listcurrency">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+
+	public void function setUp() {
+		super.setup();
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyCode">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyName">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencySymbol" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="formattedExample">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		variables.dao = request.slatwallScope.getDAO("currencyDAO");
+	}
+	
+	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
+		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
 		
-		
-		<cf_HibachiTabGroup object="#rc.currency#">
-			<cf_HibachiTab property="currencyrates" />
-		</cf_HibachiTabGroup>
-		
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+		assert(isNull(currencyRate));
+	}
+	
+	
+}
+
+

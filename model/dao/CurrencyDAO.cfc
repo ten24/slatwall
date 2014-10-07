@@ -46,27 +46,37 @@
 Notes:
 
 --->
-<cfparam name="rc.currency" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#" sRedirectAction="admin:entity.listcurrency">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+<cfcomponent extends="HibachiDAO" accessors="true" output="false">
+	
+	<cffunction name="getCurrentCurrencyRateByCurrencyCodes" output="false" access="public" returntype="any">
+		<cfargument name="originalCurrencyCode" type="string" required="true" />
+		<cfargument name="convertToCurrencyCode" type="string" required="true" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyCode">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyName">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencySymbol" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="formattedExample">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<!--- Setup HQL --->
+		<cfset var hql="SELECT currencyrate FROM SlatwallCurrencyRate currencyrate
+			WHERE
+			  	currencyrate.effectiveStartDateTime < :now
+			  AND
+			  	(
+					(currencyrate.currencyCode = :originalCurrencyCode AND currencyrate.conversionCurrencyCode = :convertToCurrencyCode)
+				  OR
+				  	(currencyrate.currencyCode = :convertToCurrencyCode AND currencyrate.conversionCurrencyCode = :originalCurrencyCode)			  		
+			  	)
+			ORDER BY
+				currencyrate.effectiveStartDateTime DESC" />
 		
+		<!--- Setup HQL Params --->
+		<cfset hqlParams = {} />
+		<cfset hqlParams['now'] = now() />
+		<cfset hqlParams['originalCurrencyCode'] = arguments.originalCurrencyCode />
+		<cfset hqlParams['convertToCurrencyCode'] = arguments.convertToCurrencyCode />
 		
-		<cf_HibachiTabGroup object="#rc.currency#">
-			<cf_HibachiTab property="currencyrates" />
-		</cf_HibachiTabGroup>
+		<!--- Get Results --->
+		<cfset var results = ormExecuteQuery(hql, hqlParams, {maxResults=1}) />
 		
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+		<cfif arrayLen(results)>
+			<cfreturn results[1] />
+		</cfif>
+	</cffunction>
+	
+</cfcomponent>
