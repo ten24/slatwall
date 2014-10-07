@@ -54,8 +54,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService";
 	property name="commentService";
 	property name="emailService";
-	property name="locationService";
 	property name="fulfillmentService";
+	property name="hibachiUtilityService";
+	property name="locationService";
 	property name="paymentService";
 	property name="priceGroupService";
 	property name="promotionService";
@@ -109,21 +110,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return orderRequirementsList;
-	}
-
-	public any function forceItemQuantityUpdate(required any order, required any messageBean) {
-		// Loop over each order Item
-		for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--)	{
-			if(!arguments.order.getOrderItems()[i].hasQuantityWithinMaxOrderQuantity())	{
-				if(arguments.order.getOrderItems()[i].getMaximumOrderQuantity() > 0) {
-					arguments.messageBean.addMessage(messageName="forcedItemQuantityAdjusted", message="#arguments.order.getOrderItems()[i].getSku().getProduct().getTitle()# #arguments.order.getOrderItems()[i].getSku().displayOptions()# on your order had the quantity updated from #arguments.order.getOrderItems()[i].getQuantity()# to #arguments.order.getOrderItems()[i].getMaximumOrderQuantity()# because of inventory constraints.");
-					arguments.order.getOrderItems()[i].setQuantity(arguments.order.getOrderItems()[i].getMaximumOrderQuantity());
-				} else {
-					arguments.messageBean.addMessage(messageName="forcedItemRemoved", message="#arguments.order.getOrderItems()[i].getSku().getProduct().getTitle()# #arguments.order.getOrderItems()[i].getSku().displayOptions()# was removed from your order because of inventory constraints");
-					arguments.order.getOrderItems()[i].removeOrder();
-				}
-			}
-		}
 	}
 	
 	public any function duplicateOrder(required any order, boolean saveNewFlag=false, boolean copyPersonalDataFlag=false) {
@@ -816,6 +802,57 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
+	}
+	
+	public any function processOrder_forceItemQuantityUpdate(required any order) {
+		
+		var itemFound = false;
+		
+		// Loop over each order Item
+		for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--)	{
+			
+			var orderItem = arguments.order.getOrderItems()[i];
+			
+			// If this orderItem is higher than the maximum order quantity
+			if(!orderItem.hasQuantityWithinMaxOrderQuantity())	{
+				
+				itemFound = true;
+				
+				// If the max order quantity is gt 0 then just adjust the quantity of the item
+				if(orderItem.getMaximumOrderQuantity() > 0) {
+					
+					
+					var messageReplaceKeys = {
+						oldQuantity = orderItem.getQuantity(),
+						newQuantity = orderItem.getMaximumOrderQuantity()
+					};
+					orderItem.setQuantity( orderItem.getMaximumOrderQuantity() );
+					
+					var message = getHibachiUtilityService().replaceStringTemplate(rbKey('validate.processOrder_forceItemQuantityUpdate.forcedItemQuantityAdjusted'), messageReplaceKeys);
+					message = orderItem.stringReplace(message);
+					
+					// Add the error to both the order and the orderItem
+					orderItem.addError('forcedItemQuantityAdjusted', message, true);
+					arguments.order.addError('forceItemQuantityUpdate', message, true);
+					
+				// Otherwise remove it from the order
+				} else {
+					
+					orderItem.removeOrder();
+					var message = orderItem.stringReplace(rbKey('validate.processOrder_forceItemQuantityUpdate.forcedItemRemoved'));
+					 
+					// Add the error to both the order and the orderItem
+					orderItem.addError('forcedItemRemoved', message, true);
+					arguments.order.addError('forceItemQuantityUpdate', message, true);
+				}
+			}
+		}
+		
+		if(itemFound) {
+			arguments.order.addError('forceItemQuantityUpdate', rbKey('validate.processOrder_forceItemQuantityUpdate'), true);
+		}
+		
+		return arguments.order;
 	}
 	
 	public any function processOrder_placeOrder(required any order, required struct data) {
@@ -1824,5 +1861,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// =====================  END: Delete Overrides ===========================
+	
+	// =================== START: Deprecated Functions ========================
+	
+	public any function forceItemQuantityUpdate(required any order, required any messageBean) {
+		arguments.order = this.processOrder(order, 'forceItemQuantityUpdate');
+		
+		if(arguments.order.hasError('forceItemQuantityUpdate')) {
+			for(var errorMessage in arguments.order.getErrors()['forceItemQuantityUpdate']) {
+				arguments.messageBean.addMessage(messageName="forcedItemQuantityAdjusted", message=errorMessage);
+			}	
+		}
+	}
+	
+	// ===================  END: Deprecated Functions =========================
 	
 }
