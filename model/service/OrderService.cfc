@@ -1435,7 +1435,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// If there was a subscriptionOrderItem attached to referenced order item, we can cancel that subscription usage
 			var subscriptionOrderItem = getSubscriptionService().getSubscriptionOrderItem({orderItem=stockReceiverItem.getOrderItem().getReferencedOrderItem()}); 
 			if(!isNull(subscriptionOrderItem)) {
-				getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');
+				var errorBean = getHibachiValidationService().validate( subscriptionOrderItem.getSubscriptionUsage(), 'cancel', false );
+				if(!errorBean.hasErrors()) {
+					getSubscriptionService().processSubscriptionUsage(subscriptionOrderItem.getSubscriptionUsage(), {}, 'cancel');	
+				}
 			}
 			
 			// If there was an accountContentAccess associated with the referenced orderItem then we need to remove it.
