@@ -3,9 +3,11 @@ angular.module('slatwalladmin')
 [
 '$log',
 'partialsPath',
+'propertyDisplayService',
 function(
 $log,
-partialsPath
+partialsPath,
+propertyDisplayService
 ){
 	return {
 		require:"^form",
@@ -17,58 +19,55 @@ partialsPath
 			isHidden:"=",
 			value:"=",
 			valueOptions:"@",
-			type:"@",
+			fieldType:"@",
 			property:"@",
 			title:"@",
 			hint:"@",
-			fieldName:"@",
-			fieldType:"@"
+			fieldName:"@"
 		},
 		templateUrl:partialsPath+"propertydisplay.html",
 		link: function(scope, element,attrs,formController){
-			var unBindObjectWatch = scope.$watch('object',function(newValue,oldValue){
-				if(newValue !== oldValue){
-					if(angular.isDefined(scope.object)){
 						
-						scope.propertyDisplay = {
-							object:scope.object,
-							property:scope.property,
-							errors:{},
-							editing:scope.editing,
-							isEditable:scope.isEditable,
-							isHidden:scope.isHidden,
-							hint:scope.hint,
-							type:scope.type,
-							value:scope.value,
-							valueOptions:scope.valueOptions,
-							fieldName:scope.fieldName,
-						};
-						if(angular.isDefined(scope.object[scope.property].type)){
-							scope.propertyDisplay.type = scope.object[scope.property].type;
-						}
-						if(angular.isDefined(scope.object[scope.property].hint)){
-							scope.propertyDisplay.hint = scope.object[scope.property].hint;
-							$(function(){
-							    $('.j-tool-tip-item').tooltip();
-							  });
-						}
-						if(angular.isDefined(scope.object[scope.property].title)){
-							scope.propertyDisplay.title = scope.object[scope.property].title;
-						}
-						if(angular.isDefined(scope.object[scope.property].value)){
-							scope.propertyDisplay.value = scope.object[scope.property].value;
-						}
-						if(angular.isDefined(scope.object[scope.valueOptions])){
-							console.log('valueOptions');
-							console.log(scope.valueOptions);
-						}
+			var propertyDisplay = {
+				object:scope.object,
+				property:scope.property,
+				errors:{},
+				editing:scope.editing,
+				isEditable:scope.isEditable,
+				isHidden:scope.isHidden,
+				hint:scope.hint,
+				fieldType:scope.fieldType,
+				value:scope.value,
+				valueOptions:scope.valueOptions,
+				fieldName:scope.fieldName,
+				title:scope.title,
+				fieldType:scope.fieldType
+			};
+			
+			scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
+			console.log('propertyDisplaytest');
+			console.log(propertyDisplay);
+			console.log(scope.propertyDisplay);
+			console.log(scope.propertyDisplay.fieldType);
+			if(!scope.propertyDisplay.fieldType.length && angular.isDefined(scope.object[scope.property].fieldType)){
+				scope.propertyDisplay.fieldType = scope.object[scope.property].fieldType;
+			}
+			if(angular.isDefined(scope.object[scope.property].hint)){
+				scope.propertyDisplay.hint = scope.object[scope.property].hint;
+				$(function(){
+				    $('.j-tool-tip-item').tooltip();
+				  });
+			}
+			
+			if(!scope.propertyDisplay.title.length && angular.isDefined(scope.object[scope.property].title)){
+				scope.propertyDisplay.title = scope.object[scope.property].title;
+			}
+			if(angular.isDefined(scope.object[scope.property].value)){
+				scope.propertyDisplay.value = scope.object[scope.property].value;
+			}
+			if(angular.isDefined(scope.object[scope.valueOptions])){
+			}
 						
-						
-						unBindObjectWatch();
-					}
-					
-				}
-			});
 			
 			$log.debug('propertyDisplay');
 			$log.debug(scope.propertyDisplay);

@@ -1,0 +1,86 @@
+<div class="row form-group" >
+	<div class="col-xs-4">
+		<label for="">Bundle Group Type:</label>
+		<div class="btn-group s-search-filter">
+			<span class="s-search-input" >
+			<!--   -->
+				<input  type="text" 
+						ng-model="productBundleGroup.productBundleGroupType.typeName" 
+						placeholder="Search" 
+						ng-change="productBundleGroupTypes.getTypesByKeyword(productBundleGroup.productBundleGroupType.typeName)"
+						class="form-control"
+						typeahead="type for type in productBundleGroupTypes.value | filter:$viewValue | limitTo:8"
+				>
+				<div class="s-add-bundle-type">
+					<button type="button" 
+							class="btn s-btn-dgrey" 
+							data-toggle="collapse" 
+							data-target="#j-toggle-add-bundle-type"
+							ng-click="productBundleGroupTypes.setAdding(true)"
+					>
+						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.typeName}}"
+					</button>
+					<div id="j-toggle-add-bundle-type" class="collapse">
+						<form 	ng-if="productBundleGroupTypes.$$adding && processObject" 
+								style="background-color: #FFF;border: 1px solid #DDD;padding:20px;"
+								name="form.addProductBundleGroupType"
+						>
+							 <span sw-property-display 
+					          		data-property="type.type"
+					          		data-object="processObject"
+					          		data-is-editable="true"
+					          		data-is-hidden="false"
+					          		data-editing="true"
+					          		data-title="Group Name"
+					          		data-value="productBundleGroup.productBundleGroupType.typeName"
+					          ></span>
+					          <span sw-property-display 
+					          		data-property="systemCode"
+					          		data-object="processObject"
+					          		data-is-editable="true"
+					          		data-is-hidden="false"
+					          		data-editing="true"
+					          ></span>
+					          <span sw-property-display 
+					          		data-property="typeDescription"
+					          		data-object="processObject"
+					          		data-is-editable="true"
+					          		data-is-hidden="false"
+					          		data-editing="true"
+					          ></span>
+					          <span sw-property-display 
+					          		data-property="parentType.TypeID"
+					          		data-object="processObject"
+					          		data-is-editable="true"
+					          		data-is-hidden="true"
+					          		data-field-type="hidden"
+					          		data-editing="true"
+					          ></span>
+							<!-- <div class="form-group has-error">
+								<label for="">Group Name <i class="fa fa-asterisk"></i></label>
+								<input type="text" class="form-control" ng-model="productBundleGroup.productBundleGroupType.typeName">
+							</div>
+							<div class="form-group">
+								<label for="">Group Code</label>
+								<input type="text" class="form-control" ng-model="productBundleGroup.productBundleGroupType.systemCode">
+							</div>
+							<div class="form-group">
+								<label for="">Group Description</label>
+								<textarea class="field form-control" id="textarea" rows="4" ng-model="productBundleGroup.productBundleGroupType.typeDescription"></textarea>
+							</div> -->
+							<div class="form-group">
+								<button type="button" 
+										class="btn btn-sm s-btn-ten24"
+										ng-click="saveProductBundleGroupType()"
+								>
+									<i class="fa fa-plus"></i> Add Group Type
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</span>
+		</div>
+	</div>
+</div>
+

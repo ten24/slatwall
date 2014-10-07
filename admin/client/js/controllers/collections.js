@@ -22,7 +22,7 @@ $log
 	
 	//init values
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
-	
+	$scope.$id="collectionsController";
 	//get url param to retrieve collection listing
 	$scope.collectionID = $location.search().collectionID;
 	$scope.currentPage= paginationService.getCurrentPage();
@@ -163,7 +163,7 @@ $log
 				var alerts = alertService.formatMessagesToAlerts(messages);
 				alertService.addAlerts(alerts);
 				$scope.errorMessage = {};
-				$scope.collectionForm.$setPristine();
+				//$scope.collectionForm.$setPristine();
 				$scope.getCollection();
 				$scope.collectionDetails.isOpen = false;
 				//$scope.collectionConfig = $scope.collectionConfigCopy;

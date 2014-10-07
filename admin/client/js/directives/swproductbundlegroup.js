@@ -4,10 +4,13 @@ angular.module('slatwalladmin')
 ['$http',
  '$log',
 'productBundlePartialsPath',
+'productBundleService',
 function($http,
 $log,
-productBundlePartialsPath){
+productBundlePartialsPath,
+productBundleService){
 	return {
+		require:"^swProductBundleGroups",
 		restrict: 'A',
 		templateUrl:productBundlePartialsPath+"productbundlegroup.html",
 		scope:{

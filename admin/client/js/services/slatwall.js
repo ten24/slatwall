@@ -1,6 +1,6 @@
 //services return promises which can be handled uniquely based on success or failure by the controller
 angular.module('slatwalladmin.services',[])
-.provider('$slatwall',
+.provider('$slatwall',[
 function(){
 	var _baseUrl;
 	return {
@@ -15,14 +15,15 @@ function(){
 		  			 * getEntity('Product', {keywords='Hello'});
 		  			 * 
 		  			 */
-		  			
+		  			var params = {};
 		  			if(typeof options === 'String') {
 		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
 		  			} else {
-		  				options.currentPage = options.currentPage || 1;
-		  				options.pageShow = options.pageShow || 10;
-		  				options.keywords = options.keywords || '';
-		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&P:Current='+options.currentPage+'&P:Show='+options.pageShow+'&keywords='+options.keywords;
+		  				params.currentPage = options.currentPage || 1;
+		  				params.pageShow = options.pageShow || 10;
+		  				params.keywords = options.keywords || '';
+		  				params.filterGroupsConfig = options.filterGroupsConfig || '';
+		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 		  			}
 		  			
 		  			var deferred = $q.defer();
@@ -30,7 +31,7 @@ function(){
 		  				urlString += '&entityId='+options.id;	
 		  			}
 		  			
-		  			$http.get(urlString)
+		  			$http.get(urlString,{params:params})
 		  			.success(function(data){
 		  				deferred.resolve(data);
 		  			}).error(function(reason){
@@ -53,11 +54,15 @@ function(){
 		  		},
 		  		getProcessObject:function(entityName,id,context,propertyIdentifiers){
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getProcessObject&entityName='+entityName+'&context='+context+'&propertyIdentifiers='+propertyIdentifiers;
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getProcessObject&entityName='+entityName;
 		  			if(angular.isDefined(id)) {
 		  				urlString += '&entityId='+id;	
 		  			}
-		  			$http.get(urlString)
+		  			var params = {
+		  				context:context,
+		  				propertyIdentifiers:propertyIdentifiers
+		  			};
+		  			$http.get(urlString,{params:params})
 		  			.success(function(data){
 		  				deferred.resolve(data);
 		  			}).error(function(reason){
@@ -128,7 +133,7 @@ function(){
 	    	_baseUrl=baseUrl;
 	    }
 	};
-}).config(function ($slatwallProvider) {
+}]).config(function ($slatwallProvider) {
 	$slatwallProvider.setBaseUrl($.slatwall.getConfig().baseURL);
 });
 

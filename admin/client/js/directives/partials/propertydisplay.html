@@ -1,6 +1,6 @@
 
-<div class="form-group">
-  <label class="col-sm-2 control-label">
+<div class="form-group" ng-if="propertyDisplay">
+  <label class="col-sm-2 control-label" ng-if="propertyDisplay.fieldType !== 'hidden'">
   	<!-- property RB key --><span ng-bind="propertyDisplay.title"></span>:
   	<span 	class="j-tool-tip-item" 
   			data-toggle="tooltip" 
@@ -22,7 +22,7 @@
     <!-- Display -->
     
     <p  class="form-control-static" 
-    	ng-if="propertyDisplay.type !== 'hidden'"
+    	ng-if="propertyDisplay.fieldType !== 'hidden'"
     	ng-bind="propertyDisplay.object[propertyDisplay.property]"
     	ng-show="!propertyDisplay.editing"
     >

@@ -96,7 +96,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				if(count eq propertyPathCount && rc.processObject.invokeMethod('get#arguments.rc.entityName#').hasProperty(property)){
 					data[propertyIdentifier]['title'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getPropertyTitle( property );
 					data[propertyIdentifier]['hint'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getPropertyHint( property );
-					data[propertyIdentifier]['type'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getFieldTypeByPropertyIdentifier( property );
+					data[propertyIdentifier]['fieldType'] = rc.processObject.invokeMethod('get#arguments.rc.entityName#').getFieldTypeByPropertyIdentifier( property );
 					
 				}
 				count++;
@@ -106,13 +106,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				data[propertyIdentifier]['value'] = value;
 			}
 			
-			
-			//data[propertyIdentifier]['fieldType']
-			
 		}
 		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
+	
 	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
@@ -141,16 +139,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			if(structKeyExists(rc,'keywords')){
 				keywords = rc['keywords'];
 			}
+			var filterGroupsConfig = ""; 
+			if(structKeyExists(rc,'filterGroupsConfig')){
+				filterGroupsConfig = rc['filterGroupsConfig'];
+			}
 			
 			//considering using all url variables to create a transient collectionConfig for api response
-			var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
+			//var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
 																			arguments.rc.propertyIdentifiers,
 																			currentPage,
 																			pageShow,
-																			keywords);
+																			keywords,
+																			filterGroupsConfig);
 				
 				structAppend(arguments.rc.apiResponse.content,result);
 			}else{

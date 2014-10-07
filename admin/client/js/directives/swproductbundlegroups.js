@@ -4,22 +4,26 @@ angular.module('slatwalladmin')
 ['$http',
  '$log',
 'productBundlePartialsPath',
+'productBundleService',
 function($http,
 $log,
-productBundlePartialsPath){
+productBundlePartialsPath,
+productBundleService){
 	return {
 		restrict: 'A',
 		templateUrl:productBundlePartialsPath+"productbundlegroups.html",
 		scope:{
-			productBundleGroups:"="
+			productBundleGroups:"=" 
 		},
-		link: function(scope, element,attrs){
+		controller: function($scope, $element,$attrs){
 			$log.debug('productBundleGroups');
-			$log.debug(scope.productBundleGroups);
+			$log.debug($scope.productBundleGroups);
 			
-			scope.removeProductBundleGroup = function(index){
-				delete scope.productBundleGroups[index];
+			this.removeProductBundleGroup = function(index){
+				//delete $scope.productBundleGroups[index];
+				$scope.productBundleGroups.splice(index,1);
 			};
+			
 		}
 	};
 }]);

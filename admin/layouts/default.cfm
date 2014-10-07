@@ -351,6 +351,8 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/dialogservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/formservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/productbundleservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/propertydisplayservice.js"></script>
+		
 		<!---services END --->
 
 		<!---controllers BEGIN--->
@@ -385,6 +387,7 @@ Notes:
 			<!---product bundle --->
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegroups.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegroup.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegrouptype.js"></script>
 		<!---directives END --->
 	</body>
 </html>

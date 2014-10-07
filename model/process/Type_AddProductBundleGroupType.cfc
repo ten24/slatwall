@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,30 +45,19 @@
 
 Notes:
 
---->
-<cfparam name="rc.collection" type="any">
-<cfparam name="rc.edit" type="boolean">
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<table class="sw-collection-display table" sw-collection-display="{'collectionObject': '#rc.collection.getCollectionObject()#', 'collectionID': '#rc.collection.getCollectionID()#'}">
-			<tr>
-				<th ng-repeat="pi in collection.propertyIdentifiers">{{pi}}</th>
-			</tr>
-			<tr ng-repeat="r in collection.pageRecords">
-				<td ng-repeat="pi in collection.propertyIdentifiers"><a ng-click="addFilter( pi )">{{r[pi]}}</a></td>
-			</tr>
-		</table>
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+	// Injected Entity
+	property name="type";
 
+	// Data Properties
+	property name="systemCode";
+	property name="typeDescription";
+	property name="parentType";
+	
+	// Scheduling-related properties
+	public any function setupDefaults() {
+		variables.parentType=getService("settingService").getTypeBySystemCode("productBundleGroupType");
+	}
+}

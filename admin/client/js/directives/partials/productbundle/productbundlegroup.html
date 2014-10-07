@@ -18,17 +18,27 @@
     </div>
     <div class="col-xs-4">
       <div class="btn-group s-bundle-group-options">
-        <a class="btn btn-default s-edit j-tool-tip-item" data-toggle="collapse" data-target="#demo" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">
+        <a  class="btn btn-default s-edit j-tool-tip-item" 
+        	data-toggle="tooltip" 
+        	data-placement="bottom" 
+        	data-original-title="Edit"
+        	ng-click="productBundleGroup.toggleEdit()"
+        >
         	<i class="fa fa-pencil"></i>
         </a>
-        <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove">
+        <a  class="btn btn-default s-remove j-tool-tip-item" 
+        	data-toggle="tooltip" 
+        	data-placement="bottom" 
+        	data-original-title="Remove"
+        	ng-click="removeProductBundleGroup()"
+        >
         	<i class="fa fa-times"></i>
         </a>
       </div>
     </div>
   </div>
   
-  <div id="demo" class="collapse s-bundle-group-dropdown">
+  <div ng-show="productBundleGroup.$$editing" class="s-bundle-group-dropdown">
 	<div class="s-bundle-group-dropdown-content">
 
 		<div class="s-filter-content">
@@ -49,33 +59,51 @@
 				<div class="tab-content" id="j-property-box">
 
 					<div class="tab-pane active" id="j-default-tab">
-						<div class="form-group">
-							<label for="">Bundle Group Type:</label>
-							<input type="text" class="form-control" value="T-Shirts: Closeout Selections">
-						</div>
+						<span   sw-product-bundle-group-type
+								data-product-bundle-group="productBundleGroup"
+						>
+						</span>
 
 						<div class="row form-group">
 							<div class="col-xs-2">
 								<label for="">Minimum Quantity:</label>
-								<input type="number" class="form-control" value="1">
+								<input  type="number" 
+										class="form-control" 
+										ng-model="productBundleGroup.minimumQuantity"
+										ng-change="productBundleGroup.setMinimumQuantity(productBundleGroup.minimumQuantity)"
+								>
 							</div>
 
 							<div class="col-xs-2">
 								<label for="">Maximum Quantity:</label>
-								<input type="number" class="form-control" value="1">
+								<input  type="number" 
+										class="form-control"
+										ng-model="productBundleGroup.maximumQuantity"
+										ng-change="productBundleGroup.setMaximumQuantity(productBundleGroup.maximumQuantity)"
+								>
 							</div>
 						</div>
 
 						<div class="form-group s-bundle-group-active">
 							<label class="control-label">Active: </label>
 							<div class="radio">
-								<input type="radio" name="radio1" id="radio1" checked="checked" value="option2">
+								<input  type="radio"
+										name="radio1" 
+										checked="checked" 
+										ng-model="productBundleGroup.active"
+										value="true"
+								>
 								<label for="radio1">
 										Yes
 								</label>
 							</div>
 							<div class="radio">
-								<input type="radio" name="radio1" id="radio2" value="option2">
+								<input  type="radio" 
+										name="radio1" 
+										id="radio2" 
+										ng-model="productBundleGroup.active"
+										value="false"
+								>
 								<label for="radio2">
 										No
 								</label>
