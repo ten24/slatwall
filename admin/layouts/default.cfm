@@ -141,7 +141,7 @@ Notes:
 			<cfif $.slatwall.getLoggedInAsAdminFlag()>
 				<aside class="{{sidebarClass}}" id="sidebar">
 
-					<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
+					<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off">
 						<div class="form-group">
 							<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults(); showResults()">
 								<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
@@ -269,7 +269,7 @@ Notes:
 				</aside>
 			</cfif>
 		</div> <!--  /ng-controller | sidebarController -->
-	
+
 		<section class="content s-body-margin" id="j-main-content">
 
 			<div class="col-md-12">
