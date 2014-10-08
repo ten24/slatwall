@@ -145,10 +145,8 @@
 									<div class="col-xs-3">
 
 										<div class="s-create-obj-window">
-
+											<h4>Trigger Type:</h4>
 											<div class="form-group">
-												<label>Type:</label>
-
 												<div class="radio">
 													<input type="radio" name="radio3" id="radio2" value="option2" checked="checked">
 													<label for="radio2">
@@ -167,7 +165,7 @@
 									</div>
 									<div class="col-xs-6 s-criteria">
 
-
+										<h4>Select Trigger Event:</h4>
 										<!--- Filter Criteria Start --->
 										<form action="index.html" method="post">
 
@@ -176,12 +174,101 @@
 												<div class="form-group form-group-sm">
 													<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Order Items:</label>
 													<div class="col-sm-12 s-no-paddings">
-														<select class="form-control input-sm">
-															<option value="- Select Order Item Event"> --Select Order Item Event-- </option>
-															<option value="OnOrderItemUpdate">OnOrderItemUpdate</option>
-															<option value="OnOrderItemCancel">OnOrderItemCancel</option>
-															<option value="OnOrderItemDelete">OnOrderItemDelete</option>
-														</select>
+
+														<!--- search --->
+														<div class="s-search-filter">
+															<div class="input-group">
+																<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
+																<ul class="dropdown-menu s-search-options">
+																	<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
+																	<li><a>On Order Item Save</a></li>
+																	<li><a>On Order Item Update</a></li>
+																	<li><a>On Order Item Cancel</a></li>
+																	<li><a>On Order Item Delete</a></li>
+																	<li><hr/></li>
+																	<li id="j-placeholder-trigger"><a>On Order Item Event</a></li>
+																	<li><a>On Order Fulfillment Event</a></li>
+																</ul>
+																<div class="input-group-btn">
+																	<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																</div>
+															</div>
+
+															<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
+																<form id="form_id" action="index.html" method="post" >
+																	<div class="form-group has-error">
+																		<label for="">Group Name <i class="fa fa-asterisk"></i></label>
+																		<input type="text" class="form-control" id="" value="" placeholder="">
+																		<p class="help-block">Example Of Error</p>
+																	</div>
+																	<div class="form-group">
+																		<label for="">Group Code</label>
+																		<input type="text" class="form-control" id="" value="" placeholder="">
+																	</div>
+																	<div class="form-group">
+																		<label for="">Group Description</label>
+																		<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
+																	</div>
+																	<div class="form-group">
+																		<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
+																	</div>
+																</form>
+															</div>
+
+														</div>
+														<!--- // search --->
+
+													</div>
+													<div class="clearfix"></div>
+												</div>
+
+												<div class="form-group form-group-sm" id="j-placeholder-trigger-select" style="display:none;">
+													<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">On Order Item Event:</label>
+													<div class="col-sm-12 s-no-paddings">
+
+														<!--- search --->
+														<div class="s-search-filter">
+															<div class="input-group">
+																<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
+																<ul class="dropdown-menu s-search-options">
+																	<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
+																	<li><a>On Order Item Save</a></li>
+																	<li><a>On Order Item Update</a></li>
+																	<li><a>On Order Item Cancel</a></li>
+																	<li><a>On Order Item Delete</a></li>
+																	<li><hr/></li>
+																	<li id="j-placeholder-trigger"><a>On Order Item Event</a></li>
+																	<li><a>On Order Fulfillment Event</a></li>
+																</ul>
+																<div class="input-group-btn">
+																	<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																</div>
+															</div>
+
+															<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
+																<form id="form_id" action="index.html" method="post" >
+																	<div class="form-group has-error">
+																		<label for="">Group Name <i class="fa fa-asterisk"></i></label>
+																		<input type="text" class="form-control" id="" value="" placeholder="">
+																		<p class="help-block">Example Of Error</p>
+																	</div>
+																	<div class="form-group">
+																		<label for="">Group Code</label>
+																		<input type="text" class="form-control" id="" value="" placeholder="">
+																	</div>
+																	<div class="form-group">
+																		<label for="">Group Description</label>
+																		<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
+																	</div>
+																	<div class="form-group">
+																		<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
+																	</div>
+																</form>
+															</div>
+
+														</div>
+														<!--- // search --->
+
 													</div>
 													<div class="clearfix"></div>
 												</div>
@@ -191,7 +278,7 @@
 										</form>
 										<!--- //Filter Criteria End --->
 
-										/// Example Schedule ///
+										<h4>Select Trigger Schedule:</h4>
 
 										<!--- Filter Criteria Start --->
 										<form action="index.html" method="post">
@@ -199,91 +286,136 @@
 											<div class="s-filter-group-item">
 
 												<div class="form-group form-group-sm">
+													<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Order Collection:</label>
 													<div class="col-sm-12 s-no-paddings">
-														<select class="form-control input-sm">
-															<option value="- Select Order Collection"> --Select Order Collection-- </option>
-															<option value="Unassigned Orders">Unassigned Orders</option>
-															<option selected="" value="Todays Orders">Todays Orders</option>
-														</select>
+
+														<!--- search --->
+														<div class="s-search-filter">
+															<div class="input-group">
+																<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
+																<ul class="dropdown-menu s-search-options">
+																	<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
+																	<li><a>Unassigned Orders</a></li>
+																	<li><a>Todays Orders</a></li>
+																</ul>
+																<div class="input-group-btn">
+																	<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																</div>
+															</div>
+
+															<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
+																<form id="form_id" action="index.html" method="post" >
+																	<div class="form-group has-error">
+																		<label for="">Group Name <i class="fa fa-asterisk"></i></label>
+																		<input type="text" class="form-control" id="" value="" placeholder="">
+																		<p class="help-block">Example Of Error</p>
+																	</div>
+																	<div class="form-group">
+																		<label for="">Group Code</label>
+																		<input type="text" class="form-control" id="" value="" placeholder="">
+																	</div>
+																	<div class="form-group">
+																		<label for="">Group Description</label>
+																		<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
+																	</div>
+																	<div class="form-group">
+																		<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
+																	</div>
+																</form>
+															</div>
+
+														</div>
+														<!--- // search --->
+
 													</div>
 													<div class="clearfix"></div>
 												</div>
 
 												<div class="form-group form-group-sm">
+													<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Frequency:</label>
 													<div class="col-sm-12 s-no-paddings">
-														<select class="form-control input-sm">
-															<option value="- Select Schedule Frequency"> --Select Schedule Frequency-- </option>
-															<option selected="" value="Every Monday">Every Monday</option>
-															<option value="Bob's Daily Schedule">Bob's Daily Schedule</option>
-														</select>
+
+														<!--- search --->
+														<div class="s-search-filter">
+															<div class="input-group">
+																<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
+																<ul class="dropdown-menu s-search-options">
+																	<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type3"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
+																	<li><a>Every Monday</a></li>
+																	<li><a>Bob's Daily Schedule</a></li>
+																</ul>
+																<div class="input-group-btn">
+																	<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																</div>
+															</div>
+
+															<div class="s-add-content collapse" id="j-toggle-add-bundle-type3">
+																<form id="form_id" action="index.html" method="post">
+																	<div class="form-group form-group-sm">
+																		<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Name:</label>
+																		<div class="col-sm-12 s-no-paddings">
+																			<input type="text" class="form-control" id="input">
+																		</div>
+																		<div class="clearfix"></div>
+																	</div>
+
+																	<div class="form-group">
+																		<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Type:</label>
+																		<select class="form-control input-sm">
+																			<option value="-- Select">--Select--</option>
+																			<option selected="" value="Daily">Daily</option>
+																			<option value="Days of the Week">Days of the Week</option>
+																			<option value="Days of the Month">Days of the Month</option>
+																		</select>
+																	</div>
+
+																	<div class="row">
+																		<div class="form-group form-group-sm col-sm-6">
+																			<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Time:</label>
+																			<div class="col-sm-12 s-no-paddings">
+																				<input type="text" class="form-control" id="input">
+																			</div>
+																			<div class="clearfix"></div>
+																		</div>
+
+																		<div class="form-group form-group-sm col-sm-6">
+																			<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Time:</label>
+																			<div class="col-sm-12 s-no-paddings">
+																				<input type="text" class="form-control" id="input">
+																			</div>
+																			<div class="clearfix"></div>
+																		</div>
+																	</div>
+
+																	<hr/>
+
+																	<div class="form-group">
+
+																		<label class="col-sm-12 s-no-paddings" for="formGroupInputSmall">End Time:</label>
+																		<div class="controls col-sm-6 s-checkbox">
+																			<input type="checkbox" id="j-checkbox1" checked="checked" ><label for="j-checkbox1"> Sunday</label>
+																			<input type="checkbox" id="j-checkbox2" checked="checked" ><label for="j-checkbox2"> Monday</label>
+																			<input type="checkbox" id="j-checkbox3" checked="checked" ><label for="j-checkbox3"> Tuesday</label>
+																			<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Wednesday</label>
+																		</div>
+
+																		<div class="controls col-sm-6 s-checkbox">
+																			<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Thursday</label>
+																			<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox5"> Friday</label>
+																			<input type="checkbox" id="j-checkbox6" checked="checked" ><label for="j-checkbox6"> Saturday</label>
+																		</div>
+
+																	</div>
+
+																	<button name="button" class="btn s-btn-ten24 btn-xs" style="width:100%;"> Save Schedule</button>
+																</form>
+															</div>
+
+														</div>
+														<!--- // search --->
+
 													</div>
 													<div class="clearfix"></div>
-												</div>
-
-												<button type="button" class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-new-schedule">New Schedule Frequency</button>
-
-												<div class="row s-add-display-field collapse" id="j-new-schedule">
-													<div class="col-xs-12">
-
-														<div class="form-group form-group-sm">
-															<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Name:</label>
-															<div class="col-sm-12 s-no-paddings">
-																<input type="text" class="form-control" id="input">
-															</div>
-															<div class="clearfix"></div>
-														</div>
-
-														<div class="form-group">
-															<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Type:</label>
-															<select class="form-control input-sm">
-																<option value="-- Select">--Select--</option>
-																<option selected="" value="Daily">Daily</option>
-																<option value="Days of the Week">Days of the Week</option>
-																<option value="Days of the Month">Days of the Month</option>
-															</select>
-														</div>
-
-														<div class="row">
-															<div class="form-group form-group-sm col-sm-6">
-																<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Time:</label>
-																<div class="col-sm-12 s-no-paddings">
-																	<input type="text" class="form-control" id="input">
-																</div>
-																<div class="clearfix"></div>
-															</div>
-
-															<div class="form-group form-group-sm col-sm-6">
-																<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Time:</label>
-																<div class="col-sm-12 s-no-paddings">
-																	<input type="text" class="form-control" id="input">
-																</div>
-																<div class="clearfix"></div>
-															</div>
-														</div>
-
-														<hr/>
-
-														<div class="form-group">
-
-														    <label class="col-sm-12 s-no-paddings" for="formGroupInputSmall">End Time:</label>
-														    <div class="controls col-sm-6 s-checkbox">
-														        <input type="checkbox" id="j-checkbox1" checked="checked" ><label for="j-checkbox1"> Sunday</label>
-																<input type="checkbox" id="j-checkbox2" checked="checked" ><label for="j-checkbox2"> Monday</label>
-																<input type="checkbox" id="j-checkbox3" checked="checked" ><label for="j-checkbox3"> Tuesday</label>
-																<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Wednesday</label>
-														    </div>
-
-															<div class="controls col-sm-6 s-checkbox">
-																<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Thursday</label>
-																<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox5"> Friday</label>
-																<input type="checkbox" id="j-checkbox6" checked="checked" ><label for="j-checkbox6"> Saturday</label>
-															</div>
-
-														</div>
-
-														<button name="button" class="btn s-btn-ten24 btn-xs" style="width:100%;"> Save Schedule</button>
-
-													</div>
 												</div>
 
 											</div>
@@ -1612,10 +1744,34 @@ $('form').submit(function(){
 <script charset="utf-8">
 	//Hide and show the filter search content depending if search has text
 	$('body').on('keyup','.s-search-bar',function() {
-		if( $(this).find('.s-search-input').val().length > 0 ){
+		if( $(this).find('.j-search-input').val().length > 0 ){
 			$(this).parent().find('.s-bundle-add-items').removeClass('s-hide-trans');
 		}else{
 			$(this).parent().find('.s-bundle-add-items').addClass('s-hide-trans');
 		};
+	});
+</script>
+
+<script charset="utf-8">
+	$('.j-search-input').keyup(function(){
+		if($(this).val().length > 0){
+			$(this).parent().parent().find('.s-search-options').show();
+		}else{
+			$(this).parent().parent().find('.s-search-options').hide();
+			$(this).parent().parent().find('.s-add-content').hide();
+		};
+	});
+	$('.s-search-options li:first-child').click(function(){
+		$(this).parent().parent().find('.s-search-options').hide();
+	});
+	$('.j-dropdown-options').click(function(){
+		$(this).parent().parent().parent().find('.s-search-options').toggle();
+	});
+</script>
+
+<script charset="utf-8">
+	$('#j-placeholder-trigger').click(function(){
+		$('#j-placeholder-trigger-select').toggle();
+		$('.s-search-options').hide();
 	});
 </script>

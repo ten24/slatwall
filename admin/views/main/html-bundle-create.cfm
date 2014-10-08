@@ -1,4 +1,6 @@
 <div class="s-create-window">
+
+
 	<header>
 		<div class="navbar navbar-s-navbar-ten24 navbar-fixed-top">
 			<span class="navbar-brand" href="#">Create Bundle</span>
@@ -7,6 +9,45 @@
 			</ul>
 		</div>
 	</header>
+
+
+
+	<div class="btn-group s-search-filter">
+		<span class="s-search-input" ng-controller="TypeaheadCtrl">
+			<input type="text" ng-model="selected" placeholder="Search" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
+			<div class="s-add-bundle-type">
+				<button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button>
+				<div id="j-toggle-add-bundle-type" class="collapse">
+					<form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
+						<div class="form-group has-error">
+							<label for="">Group Name <i class="fa fa-asterisk"></i></label>
+							<input type="text" class="form-control" id="" value="" placeholder="">
+							<p class="help-block">Example Of Error</p>
+						</div>
+						<div class="form-group">
+							<label for="">Group Code</label>
+							<input type="text" class="form-control" id="" value="" placeholder="">
+						</div>
+						<div class="form-group">
+							<label for="">Group Description</label>
+							<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
+						</div>
+						<div class="form-group">
+							<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</span>
+	</div>
+
+
+
+
+
+
+
+
 
 	<section class="col-xs-12">
 
@@ -975,13 +1016,19 @@
 	});
 </script>
 
-
 <script charset="utf-8">
-	angular.module('filterSelect', ['ui.bootstrap']);
-	function TypeaheadCtrl($scope, $http) {
-
-		$scope.selected = undefined;
-		$scope.states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Dakota', 'North Carolina', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
-
-	}
+	$('#s-search-input').keyup(function(){
+		if($(this).val().length > 0){
+			$(this).parent().parent().find('.s-search-options').show();
+		}else{
+			$(this).parent().parent().find('.s-search-options').hide();
+			$(this).parent().parent().find('.s-add-content').hide();
+		};
+	});
+	$('.s-search-options li:first-child').click(function(){
+		$(this).parent().parent().find('.s-search-options').hide();
+	});
+	$('#j-dropdown-options').click(function(){
+		$(this).parent().parent().parent().find('.s-search-options').toggle();
+	});
 </script>

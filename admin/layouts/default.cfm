@@ -361,6 +361,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/alertcontroller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/globalsearch.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/globalsearch.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/preprocessaccount_addaccountpayment.js"></script>
 		<!---controllers END --->
