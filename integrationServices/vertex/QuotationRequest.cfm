@@ -92,10 +92,10 @@
 					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
 								<cfif !isNull(arguments.requestBean.getAccount())>
-						      		<urn:FlexibleCodeField fieldId="7">#arguments.requestBean.getAccount().getFullName()#</urn:FlexibleCodeField>
+						      		<urn:FlexibleCodeField fieldId="7">#left(arguments.requestBean.getAccount().getFullName(), 40)#</urn:FlexibleCodeField>
 								</cfif>
 					      		<urn:FlexibleCodeField fieldId="11">#taxRequestItem.getTaxCategoryRateCode()#</urn:FlexibleCodeField>
-					      		<urn:FlexibleCodeField fieldId="12">#taxRequestItem.getOrderItem().getSku().getProduct().getTitle()#</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="12">#left(taxRequestItem.getOrderItem().getSku().getProduct().getProductName(), 40)#</urn:FlexibleCodeField>
 					    	</urn:FlexibleFields>
 					  	</urn:LineItem>
 					</cfloop>			 
