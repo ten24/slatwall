@@ -1,35 +1,38 @@
 'use strict';
 angular.module('slatwalladmin')
 .directive('swProductBundleGroupType', 
-['$http',
- '$log',
- '$slatwall',
- 'alertService',
- 'formService',
-'productBundlePartialsPath',
-'productBundleService',
-function($http,
-$log,
-$slatwall,
-alertService,
-formService,
-productBundlePartialsPath,
-productBundleService){
+[
+	'$http',
+	'$log',
+	'$slatwall',
+	'alertService',
+	'formService',
+	'productBundlePartialsPath',
+	'productBundleService',
+function(
+	$http,
+	$log,
+	$slatwall,
+	alertService,
+	formService,
+	productBundlePartialsPath,
+	productBundleService
+){
 	return {
 		restrict: 'A',
 		templateUrl:productBundlePartialsPath+"productbundlegrouptype.html",
 		scope:{
 			productBundleGroup:"="
 		},
-		link: function(scope, element,attrs,productBundleGroupsController){
+		controller: function($scope, $element,$attrs){
 			$log.debug('productBundleGrouptype');
-			$log.debug(scope.productBundleGroup);
-			scope.productBundleGroupTypes = {};
-			scope.$$id="productBundleGroupType";
-			scope.productBundleGroupTypes.value = [];
-			scope.productBundleGroupTypes.$$adding = false;
-			scope.productBundleGroupTypes.setAdding = function(isAdding){
-				scope.productBundleGroupTypes.$$adding = isAdding;
+			$log.debug($scope.productBundleGroup);
+			$scope.productBundleGroupTypes = {};
+			$scope.$$id="productBundleGroupType";
+			$scope.productBundleGroupTypes.value = [];
+			$scope.productBundleGroupTypes.$$adding = false;
+			$scope.productBundleGroupTypes.setAdding = function(isAdding){
+				$scope.productBundleGroupTypes.$$adding = isAdding;
 				var processObjectPromise = $slatwall.getProcessObject(
 					'Type',
 					null,
@@ -39,9 +42,10 @@ productBundleService){
 				
 				processObjectPromise.then(function(value){
 					$log.debug('getProcessObject');
-					scope.processObject = value.data;
-					formService.setForm(scope.form.addProductBundleGroup);
-					$log.debug(scope.processObject);
+					$scope.processObject = value.data;
+					$log.debug($scope.processObject);
+					console.log($scope.form);
+					formService.setForm($scope.form.addProductBundleGroupType);
 				},function(reason){
 					//display error message if getter fails
 					var messages = reason.MESSAGES;
@@ -51,14 +55,46 @@ productBundleService){
 				
 			};
 			
-			scope.saveProductBundleGroupType = function(){
+			
+			$scope.saveProductBundleGroupType = function(){
 				console.log('saveProductBundleGroupTYpe');
-				console.log(scope.productBundleGroup.productBundleGroupType);
-				var productBundleGroupType = productBundleService.newProductBundleGroupType(scope.productBundleGroup.productBundleGroupType);
-				console.log(productBundleGroupType);
+				var addProductBundleGroupTypeForm = formService.getForm('form.addProductBundleGroupType');
+				console.log(addProductBundleGroupTypeForm );
+				//only save the form if it passes validation
+				addProductBundleGroupTypeForm.$submitted = true;
+				if(addProductBundleGroupTypeForm.$valid === true){
+					console.log('valid');
+					var params = {
+						"type":addProductBundleGroupTypeForm["type.type"].$modelValue,
+						"parentType.typeID":addProductBundleGroupTypeForm["parentType.TypeID"].$modelValue,
+						"typeDescription":addProductBundleGroupTypeForm['typeDescription'].$modelValue,
+						"systemCode":addProductBundleGroupTypeForm['systemCode'].$modelValue,
+					};
+					$log.debug(params);
+					var saveProductBundleTypePromise = $slatwall.saveEntity('Type', null, params,'Save');
+					saveProductBundleTypePromise.then(function(value){
+						$log.debug('saving Product Bundle Group Type');
+						console.log(value);
+						var messages = value.MESSAGES;
+						var alerts = alertService.formatMessagesToAlerts(messages);
+						alertService.addAlerts(alerts);
+						$scope.productBundleGroupTypes.$$adding = false;
+						formService.resetForm(addProductBundleGroupTypeForm);
+						
+					},function(reason){
+						var messages = reason.MESSAGES;
+						var alerts = alertService.formatMessagesToAlerts(messages);
+						alertService.addAlerts(alerts);
+					});
+					//if valid and we have a close index then close
+					
+				}
+				
+				//var productBundleGroupType = productBundleService.newProductBundleGroupType($scope.productBundleGroup.productBundleGroupType);
+				//console.log(productBundleGroupType);
 			}
 			
-			scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
+			$scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
 				$log.debug('getTypesByKeyword');
 				var filterGroupsConfig = '['+  
 				  ' {  '+
@@ -80,18 +116,18 @@ productBundleService){
 				     ' ]'+
 				  ' }'+
 				']';
-				var typesByKeywordPromise = $slatwall.getEntity('type', {filterGroupsConfig:filterGroupsConfig.trim()});
-				typesByKeywordPromise.then(function(value){
+				return $slatwall.getEntity('type', {filterGroupsConfig:filterGroupsConfig.trim()})
+				.then(function(value){
 					$log.debug('typesByKeyword');
 					$log.debug(value);
-					scope.productBundleGroupTypes.value = value;
+					$scope.productBundleGroupTypes.value = value.pageRecords;
 					var myLength = keyword.length;
 					if (myLength > 0) {
 						$('.s-add-bundle-type').show();
 					}else{
 						$('.s-add-bundle-type').hide();
 					}
-					
+					return $scope.productBundleGroupTypes.value
 				},function(reason){
 					//display error message if getter fails
 					var messages = reason.MESSAGES;

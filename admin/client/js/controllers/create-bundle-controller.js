@@ -90,6 +90,7 @@ function(
 		}
 	};
 	
+	
 	/*$scope.processObject.bundleGroups = [
 		{
 			'minimumQuantity': 1,

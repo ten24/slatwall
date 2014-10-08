@@ -263,6 +263,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .radio-success input[type=radio]:checked + label:before{border-color:#5cb85c}
 .radio-success input[type=radio]:checked + label:after{background-color:#5cb85c}
 
+
 .s-filter-table-box tr td:first-child {width:46px;}
 
 .pagination {margin: 8px 0;}
@@ -442,7 +443,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-bundle-add-obj .s-last {float:right;}
 
 .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj > ul > li:nth-child(2) {font-weight:600;}
-.s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 4px;line-height: 33px;width: 75px;text-align: center;background-color: #666;color: #EEE;font-size: 11px;}
+.s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 4px;line-height: 33px;text-align: center;background-color: #666;color: #EEE;font-size: 11px;}
 .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details span {color:#aaaaaa;margin-left:10px;font-weight:normal;}
 .s-bundle-group-items .s-bundle-add-items .s-order-item-options .s-bundle-add-obj {background-color:#ffffff;}
 .s-bundle-group-items .s-bundle-add-items .s-order-item-options ::-webkit-scrollbar {display:none; }
