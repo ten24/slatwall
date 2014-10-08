@@ -305,6 +305,20 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-add-filter .s-checkbox {margin-top:15px;}
 .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
 
+.s-edit-filter {background:#ffffff;-moz-box-shadow: inset 0 0 2px #CCCCCC;-webkit-box-shadow: inset 0 0 2px #CCCCCC;box-shadow: inset 0 0 2px #CCCCCC;}
+.s-edit-filter h4 i {float:right;cursor:pointer;font-size:18px;color:#dddddd;}
+.s-setting-options-body .s-edit-filter h4 {border-bottom: 1px solid #dddddd;margin-bottom:15px;font-size:16px;}
+.s-setting-options-body .s-edit-filter label {font-weight:normal;font-size:12px;}
+.s-edit-filter label {font-size:12px;font-weight:normal;padding-left:0px;}
+
+.s-edit-filter-box .s-and-or-box {margin-top: 20px;margin-bottom: 8px;}
+.s-edit-filter > .row > h4 {background-color: #FFF;margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #ffffff;font-size:14px;}
+.s-edit-filter > .row {padding-top:0px !important;}
+.s-edit-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;padding-right: 40px;padding-left: 40px;margin-bottom: 15px;min-height:140px;}
+.s-edit-filter .s-button-select-group {text-align:center;}
+.s-edit-filter .s-checkbox {margin-top:15px;}
+.s-edit-filter .s-or-box {margin-bottom:10px;margin-top:10px;}*/
+
 /* Custom Slatwall Styles */
 .s-table-header-nav {margin-top:20px;margin-bottom:10px;}
 .s-table-header-nav ul {vertical-align:bottom;margin-bottom:0px;margin-top:0px;}
