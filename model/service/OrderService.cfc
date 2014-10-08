@@ -490,6 +490,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderPayment.setTermPaymentAccount( arguments.order.getAccount() );
 		}
 		
+		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
+		arguments.order = this.processOrder( arguments.order, {}, 'updateOrderAmounts');
+		
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		
