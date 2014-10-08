@@ -57,8 +57,8 @@
 									<option value="option">Acount</option>
 								</select>
 							</dd>
-							<dt class="title">Active: <i class="fa fa-question-circle" ></i></dt>
-							<dd class="value">1</dd>
+							<dt class="title">Active: <i class="fa fa-question-circle"></i></dt>
+							<dd class="value">Yes</dd>
 						</dl>
 					</div>
 				</div>
@@ -88,11 +88,10 @@
 
 						<li class="s-bundle-add-obj">
 							<ul class="list-unstyled list-inline">
-								<li class="s-item-type">1</li>
+								<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Event"><i class="fa fa-flag"></i></li>
 							</ul>
 							<ul class="list-unstyled list-inline s-middle">
-								<li class="j-tool-tip-item s-bundle-details">Type: <span>Event</span></li>
-								<li class="j-tool-tip-item s-bundle-details">Details: <span>Order - Save Order Success</span></li>
+								<li class="j-tool-tip-item s-bundle-details">Order - Save Order Success</li>
 							</ul>
 							<ul class="list-unstyled list-inline s-last">
 								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
@@ -102,11 +101,10 @@
 
 						<li class="s-bundle-add-obj">
 							<ul class="list-unstyled list-inline">
-								<li class="s-item-type">2</li>
+								<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Schedule"><i class="fa fa-calendar"></i></li>
 							</ul>
 							<ul class="list-unstyled list-inline s-middle">
-								<li class="j-tool-tip-item s-bundle-details">Type: <span>Event</span></li>
-								<li class="j-tool-tip-item s-bundle-details">Details: <span>Order - Save Order Success</span></li>
+								<li class="j-tool-tip-item s-bundle-details">Order - Save Order Success</li>
 							</ul>
 							<ul class="list-unstyled list-inline s-last">
 								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
@@ -116,11 +114,10 @@
 
 						<li class="s-bundle-add-obj s-no-edit">
 							<ul class="list-unstyled list-inline">
-								<li class="s-item-type">R</li>
+								<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Reference">R</li>
 							</ul>
 							<ul class="list-unstyled list-inline s-middle">
-								<li class="j-tool-tip-item s-bundle-details">Type: <span>Related Workflow</span></li>
-								<li class="j-tool-tip-item s-bundle-details">Details: <span>Order Update Workflow</span></li>
+								<li class="j-tool-tip-item s-bundle-details">Order Update Workflow</li>
 							</ul>
 							<ul class="list-unstyled list-inline s-last">
 								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey"><i class="fa fa-pencil"></i></a></li>
@@ -129,11 +126,8 @@
 						</li>
 
 					</ul>
-					<ul class="list-unstyled list-inline s-helper-text">
-						<li><span>R</span> = Reference</li>
-					</ul>
 
-					<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-create-new-trigger"><i class="fa fa-plus"></i> Create New Task</button>
+					<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-create-new-trigger"><i class="fa fa-plus"></i> Add Trigger</button>
 
 					<!--- Edit Filter Box --->
 					<div class="col-xs-12 collapse s-add-filter" id="j-create-new-trigger">
@@ -425,12 +419,16 @@
 
 									</div>
 									<div class="col-xs-3">
-										<h4>Estimated Schedule</h4>
-										<ul>
-											<li>September 29th, 2014</li>
-											<li>October 6th, 2014</li>
-											<li>September 29th, 2014</li>
-										</ul>
+
+										<div class="s-default-list">
+											<h2>Estimated Schedule</h2>
+											<dl class="dl-horizontal">
+												<dt class="title">September 29th, 2014:</dt>
+												<dt class="title">October 6th, 2014</dt>
+												<dt class="title">September 29th, 2014</dt>
+											</dl>
+										</div>
+
 										<div class="s-button-select-group">
 											<button type="button" class="btn btn-sm s-btn-ten24" style="width:100%;">Save Trigger</button>
 										</div>
@@ -1514,7 +1512,7 @@
 								<div class="form-group">
 
 									<select class="form-control input-sm">
-										<option selected="" value="ORDERS">ORDERS</option>
+										<option selected="" value="ORDERS">Orders</option>
 										<option value="--- Related Objects">--- Related Objects</option>
 										<option value="- Account">- Account</option>
 										<option value="- Order Item">- Order Item</option>
@@ -1771,7 +1769,7 @@ $('form').submit(function(){
 
 <script charset="utf-8">
 	$('#j-placeholder-trigger').click(function(){
-		$('#j-placeholder-trigger-select').toggle();
+		$('#j-placeholder-trigger-select').fadeIn( "slow");
 		$('.s-search-options').hide();
 	});
 </script>
