@@ -711,8 +711,8 @@ top:50px;
 
 .autocomplete-options {
 	position:absolute;
-	top:28px;
-	left:-130px;
+	top:183px !important;
+	left:216px !important;
 	margin:3px 0px 0px 0px;
 	width:350px;
 	max-height:300px;
@@ -732,7 +732,7 @@ top:50px;
 			list-style:none;
 			background-color: #ffffff;
 			a {
-				display:block;
+				display:block !important;
 				color:#333;
 				text-decoration:none;
 				height:55px;
