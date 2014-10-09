@@ -339,7 +339,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		collectionConfigStruct = {};
 		collectionConfigStruct = {
 			baseEntityName = 'Slatwall#arguments.rc.entityName#',
-			baseEntityAlias = rc.entityName
+			baseEntityAlias = '_' & lcase(rc.entityName)
 		};
 		
 		if(!isnull(arguments.rc.filterConfig)){

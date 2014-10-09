@@ -84,7 +84,7 @@
 	              <label for="inputPassword" class="col-sm-2 control-label">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
 	              <div class="col-sm-10">
 	                <input ng-show="collectionDetails.isOpen" disabled="disabled"  ng-model="collectionConfig.baseEntityAlias" type="text" class="form-control" value="" >
-	                <p ng-show="!collectionDetails.isOpen" ng-bind="collectionConfig.baseEntityAlias" class="form-control-static"><!---collection base entity alias ---></p>
+	                <p ng-show="!collectionDetails.isOpen" ng-bind="collectionConfig.baseEntityAlias  | AliasDisplayName" class="form-control-static"><!---collection base entity alias ---></p>
 	              	
 	              </div>
 	            </div>
