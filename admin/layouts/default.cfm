@@ -137,11 +137,11 @@ Notes:
 		</nav><!-- /.navbar -->
 
 		<div ng-controller="globalSearch">
-	
+
 			<cfif $.slatwall.getLoggedInAsAdminFlag()>
 				<aside class="{{sidebarClass}}" id="sidebar">
-				
-					<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;">
+
+					<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off">
 						<div class="form-group">
 							<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults(); showResults()">
 								<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
@@ -159,7 +159,7 @@ Notes:
 										</ul>
 									</div>
 								</li>
-	
+
 							</ul>
 						</div>
 					</form>
@@ -174,13 +174,13 @@ Notes:
 									<cf_HibachiActionCaller action="admin:entity.listbrand" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listsku" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listproductreview" type="list">
-	
+
 									<cf_HibachiActionCaller action="admin:entity.listoptiongroup" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listcategory" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listcontent" type="list">
-	
+
 									<cf_HibachiActionCaller action="admin:entity.listpromotion" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listpricegroup" type="list">
 								</cf_HibachiDividerHider>
@@ -193,7 +193,7 @@ Notes:
 									<cf_HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listorderpayment" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
-	
+
 									<cf_HibachiActionCaller action="admin:entity.listvendororder" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
 								</cf_HibachiDividerHider>
@@ -203,10 +203,10 @@ Notes:
 									<cf_HibachiActionCaller action="admin:entity.listaccount" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listsubscriptionusage" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listpermissiongroup" type="list">
-	
+
 									<cf_HibachiActionCaller action="admin:entity.listloyalty" type="list">
 									<cf_HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
-	
+
 									<cf_HibachiActionCaller action="admin:entity.listvendor" type="list">
 								</cf_HibachiDividerHider>
 							</cf_HibachiActionCallerDropdown>
@@ -269,7 +269,7 @@ Notes:
 				</aside>
 			</cfif>
 		</div> <!--  /ng-controller | sidebarController -->
-	
+
 		<section class="content s-body-margin" id="j-main-content">
 
 			<div class="col-md-12">
@@ -336,7 +336,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
 		<!---lib END --->
-		
+
 		<!---modules BEGIN--->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
@@ -352,7 +352,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/formservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/productbundleservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/propertydisplayservice.js"></script>
-		
+
 		<!---services END --->
 
 		<!---controllers BEGIN--->

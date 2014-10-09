@@ -37,7 +37,53 @@
 	<div class="col-md-12"><a href="#" class="openall">Open All</a> / <a href="#" class="closeall">Close All</a></div>
 </div>
 
+
+
+
+
 <div class="panel-group s-pannel-group" id="accordion">
+
+
+
+	<div class="panel panel-default">
+		<a data-toggle="collapse"  href="#collapseOne">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<span>Bundle Detail</span>
+					<i class="fa fa-caret-left"></i>
+				</h4>
+			</div>
+		</a>
+
+		<div id="collapseOne" class="panel-collapse collapse">
+			<div class="panel-body s-panel-header-info">
+
+				<div class="col-md-6">
+					<dl class="dl-horizontal">
+						<dt class="title">Product Name: <i class="fa fa-question-circle" ></i></dt>
+						<dd class="value">Skateboard</dd>
+						<dt class="title" >Product Code: <i class="fa fa-question-circle" ></i></dt>
+						<dd class="value">6765456</dd>
+						<dt class="title" >Price: <i class="fa fa-question-circle" ></i></dt>
+						<dd class="value">$75</dd>
+					</dl>
+				</div>
+				<div class="col-md-6">
+					<dl class="dl-horizontal">
+						<dt class="title" >Product Type: <i class="fa fa-question-circle" ></i></dt>
+						<dd class="value">Merch</dd>
+						<dt class="title" >Brand: <i class="fa fa-question-circle" ></i></dt>
+						<dd class="value">Kingo</dd>
+					</dl>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+
+
 	<div class="panel panel-default">
 		<a data-toggle="collapse"  href="#collapseOne">
 			<div class="panel-heading">
