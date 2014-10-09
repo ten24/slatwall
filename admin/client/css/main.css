@@ -14,6 +14,7 @@ button::-moz-focus-inner {border: 0;}
 input::-moz-focus-inner { border: 0; }
 a, a:active, a:focus {outline: none;}
 label {font-weight:600;}
+.s-width-100 {width:100%;}
 .btn {border-radius:2px;}
 .btn-sm, .btn-group-sm>.btn {border-radius:2px;}
 .tooltip {z-index:3500;}
@@ -189,7 +190,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 .s-options .tab-pane .dl-horizontal{text-align:left;}
 .s-filters-selected .s-new-filter .s-filter-item {margin-top:30px !important;}
 .s-filters-selected .s-filter-item .panel .panel-header a i{float:right;color:#AAA;margin-top:3px;}
-.s-setting-options-body .panel-heading a{color:#aaa;float:right;}
+.s-setting-options-body .panel-heading a{color:#aaa;float:right;border-bottom-right-radius:0px;border-bottom-left-radius:0px;}
 .s-setting-options li {display:inline;}
 .s-setting-options li:last-child {margin-left:10px;}
 .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;border:1px solid #dddddd;}
@@ -445,8 +446,10 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details {font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;}
 .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details:first-child {font-weight:600;}
 .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details:last-child {border:0px;}
-.s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details-add {display:inline-block;width:auto;float:right;font-size: 12px;height: 33px;border-top-right-radius: 2px;border-bottom-right-radius: 2px;}
+.s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details-add {display:inline-block;width:auto;float:left;font-size: 12px;height: 33px;border-top-right-radius: 2px;border-bottom-right-radius: 2px;width: 36px;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a {border-top-left-radius: 0px;border-bottom-left-radius: 0px;border-top-right-radius: 2px;border-bottom-right-radius: 2px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 8px;}
+.s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit {background-color: #EEE;border: 0px;border-top: 1px solid #DDD;border-bottom: 1px solid #DDD;border-radius: 0px;}
+.s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit:hover {background-color:#E7E5E5;}
 .s-bundle-add-obj ul {float:left;}
 .s-bundle-add-obj .s-middle {white-space: nowrap;overflow: scroll;float:left;width:67%;margin-left:4px;}
 .s-bundle-add-obj .s-last {float:right;}
@@ -456,8 +459,11 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 5px;line-height: 33px;width: 75px;text-align: center;background-color: #666;color: #EEE;font-size: 11px;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details span {color:#aaaaaa;margin-left:10px;font-weight:normal;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj {background-color:#ffffff;}
-.s-bundle-add-items .s-order-item-options.s-negative-obj .s-bundle-add-obj {background-color:#eeeeee;border-radius: 2px;}
+.s-bundle-add-items .s-order-item-options.s-negative-obj > .s-bundle-add-obj {background-color:#eeeeee;border-radius: 2px;}
 .s-bundle-add-items .s-order-item-options ::-webkit-scrollbar {display:none; }
+
+.s-bundle-add-items .s-order-item-options .s-bundle-edit-obj {width:100%;position: relative;top: -4px;}
+.s-bundle-add-items .s-order-item-options .s-bundle-edit-obj .s-body-box {-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;padding-top: 0px;padding-bottom: 0px;}
 
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {width:32px;border-top-left-radius: 2px;border-bottom-left-radius: 2px;}
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type:nth-child(2) {background-color:#ffffff;width:10px;color:#cccccc;}
