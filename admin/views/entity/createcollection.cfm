@@ -50,8 +50,10 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
+	
 	<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
+		<div class="s-top-spacer">
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
@@ -69,6 +71,7 @@ Notes:
 				<td ng-repeat="pi in collection.propertyIdentifiers"><a ng-click="addFilter( pi )">{{r[pi]}}</a></td>
 			</tr>
 		</table>
+		</div>
 	</cf_HibachiEntityDetailForm>
 </cfoutput>
 
