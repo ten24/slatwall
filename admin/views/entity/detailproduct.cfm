@@ -75,8 +75,12 @@ Notes:
 			<!--- Basic --->
 			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
 			
+			<!--- TODO: We need to show "Bundle Groups" if this is a bundle product, and "Skus" if this is any other type of product --->
+			<!--- Bundle Groups --->
+			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
 			<!--- Skus --->
 			<cf_HibachiEntityDetailItem property="skus" />
+			<!--- TODO: END --->
 			
 			<!--- Event Registrations --->
 			<cfif rc.product.getBaseProductType() EQ "event">

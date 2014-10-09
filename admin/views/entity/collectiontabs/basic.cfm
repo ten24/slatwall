@@ -84,7 +84,7 @@
 	              <label for="inputPassword" class="col-sm-2 control-label">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
 	              <div class="col-sm-10">
 	                <input ng-show="collectionDetails.isOpen" disabled="disabled"  ng-model="collectionConfig.baseEntityAlias" type="text" class="form-control" value="" >
-	                <p ng-show="!collectionDetails.isOpen" ng-bind="collectionConfig.baseEntityAlias" class="form-control-static"><!---collection base entity alias ---></p>
+	                <p ng-show="!collectionDetails.isOpen" ng-bind="collectionConfig.baseEntityAlias  | AliasDisplayName" class="form-control-static"><!---collection base entity alias ---></p>
 	              	
 	              </div>
 	            </div>
@@ -273,8 +273,7 @@
 			            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
 			            <td class="s-edit-elements">
 			              <ul>
-			                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
-			                <li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+			                <li><a href="?slatAction=admin:entity.detailorder&orderID={{pageRecord.orderID}}" target="_self"><i class="fa fa-eye"></i></a></li>
 			              </ul>
 			            </td>
 		          	</tr>

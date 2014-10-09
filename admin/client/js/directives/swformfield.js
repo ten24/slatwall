@@ -40,30 +40,8 @@ partialsPath
 		},
 		replace:true,
 		link: function(scope, element,attrs, formController){
-		//revert values when they are set to pristine
-		/*scope.registerWatch = function(){
-			scope.$watch('formController.$pristine',function(){
-				console.log('form is pristine!');
-				console.log(scope.propertyDisplay);
-				if(angular.isDefined(scope.propertyDisplay)){
-					
-					if(angular.isDefined(scope.revertValue.value)){
-						
-						scope.propertyDisplay.value = scope.revertValue.value;
-					}else{
-						if(scope.revertValue.fieldType === 'text'){
-							scope.propertyDisplay.value = '';
-						}
-						if(scope.revertValue.fieldType === 'select'){
-							scope.propertyDisplay.value = scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0];
-						}
-						
-					}
-					console.log(scope.propertyDisplay);
-				}
-			});
-		};*/
-					
+		
+		scope.$id = 'formField:'+scope.propertyDisplay.property;			
 				
 		scope.revertValue = angular.copy(scope.propertyDisplay);
 		

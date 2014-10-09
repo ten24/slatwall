@@ -8,65 +8,65 @@
     </div>
   </header>
   <span ng-controller="create-bundle-controller">
-		 <form class="form-horizontal s-properties" 
+		
+		  <section class="col-xs-12" >
+		
+		    <div class="row s-bundle-header" >
+		     	 <form class="form-horizontal s-properties" 
 					role="form" 
 					name="form.createProductBundle"
 				> 
-		  <section class="col-xs-12" >
-		
-		    <div class="row s-bundle-header" ng-if="processObject">
-		     
-		        <div class="col-xs-6">
-		       	 <span sw-property-display 
-		          		data-property="product.productName"
-		          		data-object="processObject"
-		          		data-is-editable="true"
-		          		data-is-hidden="false"
-		          		data-editing="true"
-		          ></span>
-		         <span sw-property-display 
-		          		data-property="product.productCode"
-		          		data-object="processObject"
-		          		data-is-editable="true"
-		          		data-is-hidden="false"
-		          		data-editing="true"
-		          ></span>
-		          <span sw-property-display 
-		          		data-property="product.price"
-		          		data-object="processObject"
-		          		data-is-editable="true"
-		          		data-is-hidden="false"
-		          		data-editing="true"
-		          ></span>
-		        </div>
-		
-		        <div class="col-xs-6">
-		        	<span sw-property-display 
-		          		data-property="product.productType"
-		          		data-object="processObject"
-		          		data-is-editable="true"
-		          		data-is-hidden="false"
-		          		data-editing="true"
-		          		data-value-options="productTypeOptions"
-		          ></span>
-		         <span sw-property-display 
-		          		data-property="product.brand"
-		          		data-object="processObject"
-		          		data-is-editable="true"
-		          		data-is-hidden="false"
-		          		data-editing="true"
-		          		data-value-options="product.brandOptions"
-		          ></span>
-				</div>
-		     
-		
+					<span ng-if="processObject">
+				        <div class="col-xs-6">
+				       	 <span sw-property-display 
+				          		data-property="product.productName"
+				          		data-object="processObject"
+				          		data-is-editable="true"
+				          		data-is-hidden="false"
+				          		data-editing="true"
+				          ></span>
+				         <span sw-property-display 
+				          		data-property="product.productCode"
+				          		data-object="processObject"
+				          		data-is-editable="true"
+				          		data-is-hidden="false"
+				          		data-editing="true"
+				          ></span>
+				          <span sw-property-display 
+				          		data-property="product.price"
+				          		data-object="processObject"
+				          		data-is-editable="true"
+				          		data-is-hidden="false"
+				          		data-editing="true"
+				          ></span>
+				        </div>
+				
+				        <div class="col-xs-6">
+				        	<span sw-property-display 
+				          		data-property="product.productType"
+				          		data-object="processObject"
+				          		data-is-editable="true"
+				          		data-is-hidden="false"
+				          		data-editing="true"
+				          		data-value-options="productTypeOptions"
+				          ></span>
+				         <span sw-property-display 
+				          		data-property="product.brand"
+				          		data-object="processObject"
+				          		data-is-editable="true"
+				          		data-is-hidden="false"
+				          		data-editing="true"
+				          		data-value-options="product.brandOptions"
+				          ></span>
+						</div>
+					</span>
+				</form>
 		    </div><!-- //bundle head -->
 		    
 		    <span 	sw-product-bundle-groups
 		    		data-product-bundle-groups="processObject.productBundleGroups.value"
 		    >
 		    </span>
-			<!-- <a ng-click="openPageDialog( 'createproductmerchandise' )"></a> -->
 		    <button class="btn btn-xs s-btn-grey s-create-bundle-btn"
 		    		data-toggle="collapse" 
 		    		ng-click="addProductBundleGroup()"
@@ -74,7 +74,6 @@
 		    	<i class="fa fa-plus"></i> Bundle Group
 		    </button>
 		  </section>
-	  </form>
 	  <footer>
 	    <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
 	      <ul class="nav navbar-nav pull-right">

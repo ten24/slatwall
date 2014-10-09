@@ -173,7 +173,7 @@
 				<div class="autoselect-container">
 					<input type="hidden" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" />
 					<input type="text" name="#attributes.fieldName#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass#" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
-					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="icon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
+					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="glyphicon glyphicon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
 					<div class="autocomplete-options" style="display:none;">
 						<ul class="#listLast(lcase(attributes.fieldName),".")#" id="#suggestionsID#">
 							<cfif len(attributes.value)>
