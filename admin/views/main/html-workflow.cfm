@@ -383,7 +383,7 @@
 
 																	<hr/>
 
-																	<div class="form-group">
+																	<div class="form-group s-workflow-checkbox">
 
 																		<label class="col-sm-12 s-no-paddings" for="formGroupInputSmall">End Time:</label>
 																		<div class="controls col-sm-6 s-checkbox">
@@ -457,8 +457,87 @@
 			</div>
 		</a>
 		<div id="collapseTasks" class="panel-collapse collapse">
-			<div class="panel-body">
-				<div class="col-xs-12 s-filter-content">
+			<div class="s-body-box">
+
+
+
+
+
+				<div class="s-bundle-add-items s-workflow-objs">
+					<ul class="list-unstyled s-order-item-options s-negative-obj">
+
+						<li class="s-bundle-add-obj">
+							<ul class="list-unstyled list-inline">
+								<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Event"><i class="fa fa-flag"></i></li>
+							</ul>
+							<ul class="list-unstyled list-inline s-middle">
+								<li class="j-tool-tip-item s-bundle-details">Order - Save Order Success</li>
+							</ul>
+							<ul class="list-unstyled list-inline s-last">
+								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
+							</ul>
+							<div class="clearfix"></div>
+						</li>
+
+						<li class="s-bundle-add-obj">
+							<ul class="list-unstyled list-inline">
+								<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Schedule"><i class="fa fa-calendar"></i></li>
+							</ul>
+							<ul class="list-unstyled list-inline s-middle">
+								<li class="j-tool-tip-item s-bundle-details">Order - Save Order Success</li>
+							</ul>
+							<ul class="list-unstyled list-inline s-last">
+								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
+							</ul>
+							<div class="clearfix"></div>
+						</li>
+
+						<li class="s-bundle-add-obj s-no-edit">
+							<ul class="list-unstyled list-inline">
+								<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Reference">R</li>
+							</ul>
+							<ul class="list-unstyled list-inline s-middle">
+								<li class="j-tool-tip-item s-bundle-details">Order Update Workflow</li>
+							</ul>
+							<ul class="list-unstyled list-inline s-last">
+								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-pencil"></i></a></li>
+							</ul>
+							<div class="clearfix">
+
+							<div class="s-bundle-edit-obj collapse" id="s-add-obj-1" style="width:100%;">
+
+								<div class="s-body-box">
+									<p>
+										Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur blandit tempus porttitor. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis.
+
+Donec sed odio dui. Nulla vitae elit libero, a pharetra augue. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Donec sed odio dui.
+									</p>
+
+								</div>
+
+							</div>
+						</div>
+
+						</li>
+					</ul>
+				</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				<!--- <div class="col-xs-12 s-filter-content">
 
 					<!--- Header nav with title starts --->
 					<div class="row s-header-bar">
@@ -1618,7 +1697,7 @@
 
 						</div>
 					</div>
-				</div>
+				</div> --->
 			</div>
 		</div>
 	</div>
