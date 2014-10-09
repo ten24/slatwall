@@ -708,6 +708,14 @@ top:0;
 top:50px;
 }
 */
+.autocomplete-selected {
+	position:absolute;
+	float:left;
+	top:2px;
+	left:15px;
+	width:206px;
+	padding:4px 5px 4px 5px;
+}
 
 .autocomplete-options {
 	position:absolute;
