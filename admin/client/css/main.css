@@ -30,6 +30,7 @@ label {font-weight:600;}
 .s-default-list h2 {font-size: 14px;background-color: #EEE;padding: 6px 15px;margin-top:0px;}
 .s-default-list .dl-horizontal dt {font-weight: 600;}
 
+
 /* Navigation Sidebar */
 #menu a > .fa.arrow {-webkit-transition: all .5s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;transition: all .2s ease-out;}
 .active > a > .fa.arrow {-webkit-transform: rotate(-90deg);-moz-transform: rotate(-90deg);-o-transform: rotate(-90deg);-webkit-transition: all .5s ease-in;-moz-transition: all .2s ease-in;-ms-transition: all .2s ease-in;-o-transition: all .2s ease-in;transition: all .2s ease-in;}
@@ -274,6 +275,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .radio-success input[type=radio] + label:after{background-color:#5cb85c}
 .radio-success input[type=radio]:checked + label:before{border-color:#5cb85c}
 .radio-success input[type=radio]:checked + label:after{background-color:#5cb85c}
+
 
 .s-filter-table-box tr td:first-child {width:46px;}
 

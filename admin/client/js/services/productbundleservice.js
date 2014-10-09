@@ -49,6 +49,10 @@ function(
 				 
 			}
 		},
+		setActive:function(value){
+			console.log('test');
+			this.active=value;
+		},
 		toggleEdit:function(){
 			if(angular.isUndefined(this.$$editing) || this.$$editing === false){
 				this.$$editing = true;
@@ -65,6 +69,14 @@ function(
 		},
 		newProductBundleGroupType:function(productBundleGroupType){
 			return new _productBundleGroupType(productBundleGroupType);
+		},
+		formatProductBundleGroupFilters:function(productBundelGroupFilters,filterTerm){
+			console.log('formatProductBundleGroupFilters');
+			for(i in productBundelGroupFilters){
+				productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm+'Name'];
+				productBundelGroupFilters[i].type = filterTerm;
+			}
+			return productBundelGroupFilters;
 		}
 	};
 }]);

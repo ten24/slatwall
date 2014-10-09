@@ -810,7 +810,6 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
-		writeDump(var=arguments.product,top=2);abort;
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 		
@@ -836,13 +835,74 @@ component extends="HibachiService" accessors="true" {
 		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
 		//add product group bundles to sku
 		
-		var productBundleGroups = arguments.processObject.getProductBundleGroups;
+		//var productBundleGroups = arguments.processObject.getProductBundleGroups;
 		
-		thisSku.setProductBundleGroups(productBundleGroups);
+		//deserialize productBundleGroups so we can persist it
+		var productBundleGroupsStruct = deserializeJson(data.productBundleGroups);
+		for(var productBundleGroupStruct in productBundleGroupsStruct){
+			var productBundleGroup = this.newProductBundleGroup();
+			productBundleGroup.setActiveFlag(productBundleGroupStruct.active);
+			productBundleGroup.setMaximumQuantity(productBundleGroupStruct.maximumQuantity);
+			productBundleGroup.setMinimumQuantity(productBundleGroupStruct.minimumQuantity);
+			productBundleGroup.setProductBundleSku(thisSku);
+			
+			//save productBundleGroupType
+			//productBundleGroup.setProductBundleGroupType();
+			
+			//process productBundleGroupFilters to make the skuCollectionConfig;
+			
+			var skuCollectionConfigStruct = {};
+			skuCollectionConfigStruct['baseEntityName'] = "SlatwallSku";
+			skuCollectionConfigStruct['baseEntityAlias'] = "Sku";
+			skuCollectionConfigStruct['filterGroups'] = [];
+			
+			var filterGroup = {};
+			filterGroup['filterGroup'] = [];
+			var filterCount = 0;
+			for(var productBundleGroupFilter in productBundleGroupStruct.productBundleGroupFilters){
+				var filter = {}; 
+				switch(productBundleGroupFilter.type){
+					case "productType":
+						filter['propertyIdentifier'] = "Sku.product.productType.productTypeID";
+						filter['comparisonOperator'] = '=';
+						filter['value'] = productBundleGroupFilter.productTypeID;
+						break;
+					case "collection":
+						break;
+					case "brand":
+						filter['propertyIdentifier'] = "Sku.product.brand.brandID";
+						filter['comparisonOperator'] = '=';
+						filter['value'] = productBundleGroupFilter.brandID;
+						break;
+					case "product":
+						filter['propertyIdentifier'] = "Sku.product.productID";
+						filter['comparisonOperator'] = '=';
+						filter['value'] = productBundleGroupFilter.productID;
+						break;
+					case "sku":
+						filter['propertyIdentifier'] = "Sku.skuID";
+						filter['comparisonOperator'] = '=';
+						filter['value'] = productBundleGroupFilter.skuID;
+						break;
+				}
+				if(filterCount > 0){
+					filter['logicalOperator'] = 'OR';
+				}
+				ArrayAppend(filterGroup['filterGroup'],filter);
+				filterCount++;
+			}
+			ArrayAppend(skuCollectionConfigStruct['filterGroups'],filterGroup);
+			
+			productBundleGroup.setSkuCollectionConfig(serializeJson(skuCollectionConfigStruct));
+			productBundleGroup.setProductBundleSku(thisSku);
+		}
+		
 		//set sku to product
 		arguments.product.setDefaultSku( thisSku );
+		//writeDump(var=arguments.product.getDefaultSku().getProductBundleGroups(),top=2);abort;
 		
-		
+		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		arguments.product = this.saveProduct(arguments.product);
 		
 		return arguments.product;
 	}

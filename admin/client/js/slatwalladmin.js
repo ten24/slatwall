@@ -22,6 +22,17 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 		};
 	});
 	
+	$filterProvider.register('AliasDisplayName',function(){
+		return function(text){
+			
+			if(angular.isDefined(text)){
+				text = text.replace('_', '');
+				text = text.charAt(0).toUpperCase() + text.slice(1);
+				return text;
+			}
+		};
+	});
+	
 	$filterProvider.register('truncate',function(){
 		return function (input, chars, breakOnWord) {
             if (isNaN(chars)) return input;
