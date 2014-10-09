@@ -84,7 +84,7 @@ Notes:
 			SELECT
 				settingID,
 				settingValue,
-				settingValueEncryptedGenerator
+				settingValueEncryptGen
 			FROM
 				SwSetting
 			WHERE
