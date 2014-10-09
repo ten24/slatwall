@@ -79,7 +79,7 @@ label {font-weight:600;}
 .s-centered-logo {position: absolute;margin-left: -110px !important;}
 
 /* Detail Views */
-.dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;position:relative;text-align:left;left:15px;}
+.dl-horizontal dt, .dl-horizontal dd {margin-bottom:10px;position:relative;text-align:left;left:15px;min-height:20px;}
 label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;text-align:left;left:15px;}
 
 .btn-group {float:right;}
