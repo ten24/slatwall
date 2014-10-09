@@ -16,6 +16,7 @@ productBundleService){
 			productBundleGroups:"=" 
 		},
 		controller: function($scope, $element,$attrs){
+			$scope.$id = 'productBundleGroups';
 			$log.debug('productBundleGroups');
 			$log.debug($scope.productBundleGroups);
 			

@@ -473,11 +473,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		//get default property identifiers for the records that the collection refers to
 		var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
-		
-		for (var column in collectionEntity.getCollectionConfigStruct().columns){
-			var piAlias = ListLast(column.propertyIdentifier,'.');
-			if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
-				ArrayAppend(collectionPropertyIdentifiers,piAlias);
+		if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
+			for (var column in collectionEntity.getCollectionConfigStruct().columns){
+				var piAlias = ListLast(column.propertyIdentifier,'.');
+				if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
+					ArrayAppend(collectionPropertyIdentifiers,piAlias);
+				}
 			}
 		}
 		

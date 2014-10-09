@@ -220,7 +220,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//GETTER FUNCTIONS
 	//limiting return values to prevent ORM injection
 	private string function getAggregateHQL(required any aggregate, required string propertyIdentifier){
-		
 		var aggregateFunction = '';
 		switch(arguments.aggregate.aggregateFunction){
 			

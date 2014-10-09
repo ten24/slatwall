@@ -20,6 +20,7 @@ productBundleService){
 			index:"="
 		},
 		link: function(scope, element,attrs,productBundleGroupsController){
+			scope.$id = 'productBundleGroup';
 			$log.debug('productBundleGroup');
 			$log.debug(scope.productBundleGroup);
 			
@@ -87,7 +88,7 @@ productBundleService){
 					var alerts = alertService.formatMessagesToAlerts(messages);
 					alertService.addAlerts(alerts);
 				});
-			}
+			};
 			
 			scope.addFilterToProductBundle = function(filterItem){
 				scope.productBundleGroup.productBundleGroupFilters.push(filterItem);
@@ -95,7 +96,7 @@ productBundleService){
 			
 			scope.removeProductBundleGroupFilter = function(index){
 				scope.productBundleGroup.productBundleGroupFilters.splice(index,1);
-			}
+			};
 		}
 	};
 }]);

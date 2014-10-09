@@ -65,7 +65,8 @@ function(
 				"product.productType.productTypeID":createProductBundleForm["product.productType"].$modelValue.value,
 				"product.productName":createProductBundleForm['product.productName'].$modelValue,
 				"product.productCode":createProductBundleForm['product.productCode'].$modelValue,
-				"product.brand.brandID":createProductBundleForm['product.brand'].$modelValue.value
+				"product.brand.brandID":createProductBundleForm['product.brand'].$modelValue.value,
+				"productBundleGroups":angular.toJson($scope.processObject.productBundleGroups.value)
 			};
 			$log.debug(params);
 			var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,'CreateBundle');

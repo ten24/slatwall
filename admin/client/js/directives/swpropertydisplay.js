@@ -28,6 +28,7 @@ propertyDisplayService
 		templateUrl:partialsPath+"propertydisplay.html",
 		link: function(scope, element,attrs,formController){
 						
+			
 			var propertyDisplay = {
 				object:scope.object,
 				property:scope.property,
@@ -44,6 +45,8 @@ propertyDisplayService
 				fieldType:scope.fieldType
 			};
 			
+			scope.$id = 'propertyDisplay:'+scope.property ;
+			console.log(scope.$id);
 			scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
 			if(!scope.propertyDisplay.fieldType.length && angular.isDefined(scope.object[scope.property].fieldType)){
 				scope.propertyDisplay.fieldType = scope.object[scope.property].fieldType;
