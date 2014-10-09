@@ -9,7 +9,7 @@
 			<cfif rc.edit>
 				<cf_HibachiPropertyDisplay object="#rc.order#" property="account" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="true">
 			<cfelseif !isNull(rc.order.getAccount())>
-				<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.order.getAccount().getAccountID()#">
+				<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.order.getAccount().getAccountID()#" title="#$.slatwall.rbKey('entity.account')#">
 				<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="emailAddress" valuelink="mailto:#rc.order.getAccount().getEmailAddress()#">
 				<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="phoneNumber">
 			</cfif>
@@ -26,6 +26,13 @@
 			<!--- Referenced Order --->
 			<cfif !isNull(rc.order.getReferencedOrder())>
 				<cf_HibachiPropertyDisplay object="#rc.order#" property="referencedOrder" valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.order.getReferencedOrder().getOrderID()#">
+			</cfif>
+			
+			<!--- Assigned Account --->
+			<cfif rc.edit>
+				<cf_HibachiPropertyDisplay object="#rc.order#" property="assignedAccount" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="true">
+			<cfelseif !isNull(rc.order.getAssignedAccount())>
+				<cf_HibachiPropertyDisplay object="#rc.order.getAssignedAccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.order.getAccount().getAccountID()#" title="#$.slatwall.rbKey('entity.order.assignedAccount')#">
 			</cfif>
 			
 		</cf_HibachiPropertyList>
