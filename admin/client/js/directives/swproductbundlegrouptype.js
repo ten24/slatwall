@@ -44,7 +44,6 @@ function(
 					$log.debug('getProcessObject');
 					$scope.processObject = value.data;
 					$log.debug($scope.processObject);
-					console.log($scope.form);
 					formService.setForm($scope.form.addProductBundleGroupType);
 				},function(reason){
 					//display error message if getter fails
@@ -54,8 +53,6 @@ function(
 				});
 				
 			};
-			
-			
 			
 			$scope.saveProductBundleGroupType = function(){
 				var addProductBundleGroupTypeForm = formService.getForm('form.addProductBundleGroupType');
@@ -86,12 +83,7 @@ function(
 						var alerts = alertService.formatMessagesToAlerts(messages);
 						alertService.addAlerts(alerts);
 					});
-					//if valid and we have a close index then close
-					
 				}
-				
-				//var productBundleGroupType = productBundleService.newProductBundleGroupType($scope.productBundleGroup.productBundleGroupType);
-				//console.log(productBundleGroupType);
 			};
 			
 			$scope.showAddProductBundleGroupTypeBtn = false;
@@ -131,6 +123,12 @@ function(
 					}else{
 						$scope.showAddProductBundleGroupTypeBtn = false;
 						//$('.s-add-bundle-type').hide();
+					}
+					
+					for(var i in $scope.productBundleGroupTypes.value){
+						if($scope.productBundleGroupTypes.value[i].type === $scope.productBundleGroup.productBundleGroupType.type){
+							$scope.showAddProductBundleGroupTypeBtn = false;
+						}
 					}
 					return $scope.productBundleGroupTypes.value;
 				},function(reason){
