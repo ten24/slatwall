@@ -5,10 +5,11 @@
 			<span class="s-search-input" >
 			<!--   -->
 				<input  type="text" 
-						ng-model="productBundleGroup.productBundleGroupType.typeName" 
+						ng-model="productBundleGroup.productBundleGroupType.type" 
 						placeholder="Search" 
 						class="form-control"
 						typeahead="type.type for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
+						typeahead-on-select='selectProductBundleGroupType($item, $model, $label)'
 				>
 				<div class="s-add-bundle-type">
 					<button type="button" 
@@ -17,7 +18,7 @@
 							data-target="#j-toggle-add-bundle-type"
 							ng-click="productBundleGroupTypes.setAdding(true)"
 					>
-						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.typeName}}"
+						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.type}}"
 					</button>
 					<div id="j-toggle-add-bundle-type" class="collapse">
 						<form 	
@@ -33,7 +34,7 @@
 						          		data-is-hidden="false"
 						          		data-editing="true"
 						          		data-title="Group Name"
-						          		data-value="productBundleGroup.productBundleGroupType.typeName"
+						          		data-value="productBundleGroup.productBundleGroupType.type"
 						          ></span>
 						          <span sw-property-display 
 						          		data-property="systemCode"

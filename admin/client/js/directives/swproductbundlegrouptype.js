@@ -92,7 +92,7 @@ function(
 				
 				//var productBundleGroupType = productBundleService.newProductBundleGroupType($scope.productBundleGroup.productBundleGroupType);
 				//console.log(productBundleGroupType);
-			}
+			};
 			
 			$scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
 				$log.debug('getTypesByKeyword');
@@ -127,14 +127,21 @@ function(
 					}else{
 						$('.s-add-bundle-type').hide();
 					}
-					return $scope.productBundleGroupTypes.value
+					return $scope.productBundleGroupTypes.value;
 				},function(reason){
 					//display error message if getter fails
 					var messages = reason.MESSAGES;
 					var alerts = alertService.formatMessagesToAlerts(messages);
 					alertService.addAlerts(alerts);
 				});
-			}
+			};
+			
+			$scope.selectProductBundleGroupType = function ($item, $model, $label) {
+			    $scope.$item = $item;
+			    $scope.$model = $model;
+			    $scope.$label = $label;
+			    $scope.productBundleGroup.productBundleGroupType = $item;
+			};
 		}
 	};
 }]);
