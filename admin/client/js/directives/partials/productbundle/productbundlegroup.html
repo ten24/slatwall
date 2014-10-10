@@ -11,7 +11,7 @@
           <li ng-bind="productBundleGroup.maximumQuantity"></li>
         </ul>
       </div>
-      <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.productBundleGroupType.typeName"></span>
+      <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.productBundleGroupType.type"></span>
       <span class="s-bundle-group-title-edit"><input type="text" class="form-control" value="T-Shirts: Closeout Selections">
       	<button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
       </span>
@@ -116,7 +116,7 @@
 					<div class="tab-pane" ng-class="{active:navigation.value ==='Selections'}" ng-show="navigation.value === 'Selections'">
 						<content class="s-body-box s-status">
 							<h2 class="s-filter-header">
-								<span class="s-title" ng-bind="productBundleGroup.productBundleGroupType.typeName"></span>
+								<span class="s-title" ng-bind="productBundleGroup.productBundleGroupType.type"></span>
 								<ul class="list-unstyled list-inline">
 									<li>Min<span ng-bind="productBundleGroup.minimumQuantity">1</span></li>
 									<li>Max<span ng-bind="productBundleGroup.maximumQuantity">2</span></li>

@@ -14,7 +14,7 @@ function(
 	//properties
 	function _productBundleGroupType(productBundleGroupType){
 		this.parentTypeID = '154dcdd2f3fd4b5ab5498e93470957b8';
-		this.typeName=productBundleGroupType.typeName;
+		this.type=productBundleGroupType.type;
 		this.systemCode=productBundleGroupType.systemCode;
 		this.typeDescription=productBundleGroupType.typeDescription;
 	}
@@ -24,7 +24,7 @@ function(
 		this.maximumQuantity=1;
 		this.active=true;
 		this.productBundleGroupType={
-			typeName:null
+			type:null
 		};
 		this.$$editing=true;
 	}

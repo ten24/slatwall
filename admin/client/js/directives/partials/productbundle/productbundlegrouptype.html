@@ -5,21 +5,21 @@
 			<span class="s-search-input" >
 			<!--   -->
 				<input  type="text" 
-						ng-model="productBundleGroup.productBundleGroupType.typeName" 
+						ng-model="productBundleGroup.productBundleGroupType.type" 
 						placeholder="Search" 
 						class="form-control"
 						typeahead="type.type for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
+						typeahead-on-select='selectProductBundleGroupType($item, $model, $label)'
 				>
-				<div class="s-add-bundle-type">
+				<div ng-show="showAddProductBundleGroupTypeBtn">
 					<button type="button" 
 							class="btn s-btn-dgrey" 
-							data-toggle="collapse" 
-							data-target="#j-toggle-add-bundle-type"
+							ng-show="showAddProductBundleGroupTypeBtn"
 							ng-click="productBundleGroupTypes.setAdding(true)"
 					>
-						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.typeName}}"
+						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.type}}"
 					</button>
-					<div id="j-toggle-add-bundle-type" class="collapse">
+					<div ng-show="productBundleGroupTypes.$$adding">
 						<form 	
 								style="background-color: #FFF;border: 1px solid #DDD;padding:20px;"
 								role="form"
@@ -33,7 +33,7 @@
 						          		data-is-hidden="false"
 						          		data-editing="true"
 						          		data-title="Group Name"
-						          		data-value="productBundleGroup.productBundleGroupType.typeName"
+						          		data-value="productBundleGroup.productBundleGroupType.type"
 						          ></span>
 						          <span sw-property-display 
 						          		data-property="systemCode"
@@ -57,15 +57,14 @@
 						          		data-field-type="hidden"
 						          		data-editing="true"
 						          ></span>
-					          
-							<div class="form-group">
-								<button type="button" 
-										class="btn btn-sm s-btn-ten24"
-										ng-click="saveProductBundleGroupType(form)"
-								>
-									<i class="fa fa-plus"></i> Add Group Type
-								</button>
-							</div>
+								<div class="form-group">
+									<button type="button" 
+											class="btn btn-sm s-btn-ten24"
+											ng-click="saveProductBundleGroupType(form)"
+									>
+										<i class="fa fa-plus"></i> Add Group Type
+									</button>
+								</div>
 							</span>
 						</form>
 					</div>

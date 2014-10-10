@@ -847,7 +847,8 @@ component extends="HibachiService" accessors="true" {
 			productBundleGroup.setProductBundleSku(thisSku);
 			
 			//save productBundleGroupType
-			//productBundleGroup.setProductBundleGroupType();
+			var productBundleGroupType = this.getTypeByTypeID(productBundleGroupStruct.productBundleGroupType.typeID);
+			productBundleGroup.setProductBundleGroupType(productBundleGroupType);
 			
 			//process productBundleGroupFilters to make the skuCollectionConfig;
 			
@@ -899,7 +900,6 @@ component extends="HibachiService" accessors="true" {
 		
 		//set sku to product
 		arguments.product.setDefaultSku( thisSku );
-		//writeDump(var=arguments.product.getDefaultSku().getProductBundleGroups(),top=2);abort;
 		
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		arguments.product = this.saveProduct(arguments.product);
