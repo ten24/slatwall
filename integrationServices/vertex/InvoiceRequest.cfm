@@ -91,9 +91,11 @@
 					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItemID()#">
 					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
-					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
-					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>
-					      		<urn:FlexibleCodeField fieldId="12">PRODUCT_NAME</urn:FlexibleCodeField>
+								<cfif !isNull(arguments.requestBean.getAccount())>
+						      		<urn:FlexibleCodeField fieldId="7">#left(arguments.requestBean.getAccount().getFullName(), 40)#</urn:FlexibleCodeField>
+								</cfif>
+					      		<urn:FlexibleCodeField fieldId="11">#taxRequestItem.getTaxCategoryRateCode()#</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="12">#left(taxRequestItem.getOrderItem().getSku().getProduct().getProductName(), 40)#</urn:FlexibleCodeField>
 					    	</urn:FlexibleFields>
 					  	</urn:LineItem>
 					</cfloop>		 

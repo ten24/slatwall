@@ -126,7 +126,7 @@ Notes:
 				  INNER JOIN
 				  	SwTaxCategoryRate on SwTaxApplied.taxCategoryRateID = SwTaxCategoryRate.taxCategoryRateID
 				  INNER JOIN
-				  	SwTaxCategory on SwTaxCategoryRate.taxCategoryID = SwTaxCategoryRate.taxCategoryID 
+				  	SwTaxCategory on SwTaxCategoryRate.taxCategoryID = SwTaxCategory.taxCategoryID 
 				  INNER JOIN
 					SwOrderItem on SwTaxApplied.orderItemID = SwOrderItem.orderItemID
 				  INNER JOIN
