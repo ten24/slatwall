@@ -58,6 +58,10 @@ Notes:
 		<cf_HibachiEntityActionBar type="preprocess" object="#rc.email#">
 		</cf_HibachiEntityActionBar>
 		
+		<cfif not isNull(rc.email.getEmailBodyText()) and len(rc.email.getEmailBodyText())>
+			<input type="hidden" name="EmailBodyText" value="#rc.email.getEmailBodyText()#" />
+		</cfif>
+		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
 				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">

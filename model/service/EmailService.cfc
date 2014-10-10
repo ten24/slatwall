@@ -68,9 +68,7 @@ Notes:
 					<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
 				</cfmailpart>
 				<cfmailpart type="text/html">
-					<html>
-						<body><cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput></body>
-					</html>
+					<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
 				</cfmailpart>
 			</cfmail>
 		<!--- Send HTML Only E-mail --->
@@ -82,9 +80,7 @@ Notes:
 				bcc="#arguments.email.getEmailBCC()#"
 				charset="utf-8"
 				type="text/html">
-				<html>
-					<body><cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput></body>
-				</html>
+				<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
 			</cfmail>
 		<!--- Send Text Only E-mail --->
 		<cfelseif len(arguments.email.getEmailBodyText())>

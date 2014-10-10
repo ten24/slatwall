@@ -445,7 +445,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getStockAdjustmentSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallStockAdjustment";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallStockAdjustment", "fromLocation", "left");
 		smartList.joinRelatedProperty("SlatwallStockAdjustment", "toLocation", "left");
