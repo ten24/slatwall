@@ -59,6 +59,7 @@ function(
 				//only save the form if it passes validation
 				addProductBundleGroupTypeForm.$submitted = true;
 				if(addProductBundleGroupTypeForm.$valid === true){
+					
 					var params = {
 						"type":addProductBundleGroupTypeForm["type.type"].$modelValue,
 						"parentType.typeID":addProductBundleGroupTypeForm["parentType.TypeID"].$modelValue,
