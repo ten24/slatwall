@@ -462,7 +462,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj.s-no-edit .s-item-type {background-color:#aaa;}
 
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj > ul > li:nth-child(2) {font-weight:600;}
-.s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 5px;line-height: 33px;width: 75px;text-align: center;background-color: #666;color: #EEE;font-size: 11px;}
+.s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 5px;line-height: 33px;text-align: center;background-color: #666;color: #EEE;font-size: 11px;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details span {color:#aaaaaa;margin-left:10px;font-weight:normal;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj {background-color:#ffffff;}
 .s-bundle-add-items .s-order-item-options.s-negative-obj > .s-bundle-add-obj {background-color:#eeeeee;border-radius: 2px;}
