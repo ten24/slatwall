@@ -56,29 +56,29 @@ function(
 			};
 			
 			
+			
 			$scope.saveProductBundleGroupType = function(){
-				console.log('saveProductBundleGroupTYpe');
 				var addProductBundleGroupTypeForm = formService.getForm('form.addProductBundleGroupType');
-				console.log(addProductBundleGroupTypeForm );
 				//only save the form if it passes validation
 				addProductBundleGroupTypeForm.$submitted = true;
 				if(addProductBundleGroupTypeForm.$valid === true){
-					console.log('valid');
 					var params = {
 						"type":addProductBundleGroupTypeForm["type.type"].$modelValue,
 						"parentType.typeID":addProductBundleGroupTypeForm["parentType.TypeID"].$modelValue,
 						"typeDescription":addProductBundleGroupTypeForm['typeDescription'].$modelValue,
 						"systemCode":addProductBundleGroupTypeForm['systemCode'].$modelValue,
+						"propertyIdentifiers":"typeID,type"
 					};
 					$log.debug(params);
 					var saveProductBundleTypePromise = $slatwall.saveEntity('Type', null, params,'Save');
 					saveProductBundleTypePromise.then(function(value){
 						$log.debug('saving Product Bundle Group Type');
-						console.log(value);
 						var messages = value.MESSAGES;
 						var alerts = alertService.formatMessagesToAlerts(messages);
 						alertService.addAlerts(alerts);
 						$scope.productBundleGroupTypes.$$adding = false;
+						$scope.showAddProductBundleGroupTypeBtn = false;
+						$scope.productBundleGroup.productBundleGroupType = value.DATA
 						formService.resetForm(addProductBundleGroupTypeForm);
 						
 					},function(reason){
@@ -93,6 +93,8 @@ function(
 				//var productBundleGroupType = productBundleService.newProductBundleGroupType($scope.productBundleGroup.productBundleGroupType);
 				//console.log(productBundleGroupType);
 			};
+			
+			$scope.showAddProductBundleGroupTypeBtn = false;
 			
 			$scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
 				$log.debug('getTypesByKeyword');
@@ -122,10 +124,13 @@ function(
 					$log.debug(value);
 					$scope.productBundleGroupTypes.value = value.pageRecords;
 					var myLength = keyword.length;
+					
 					if (myLength > 0) {
-						$('.s-add-bundle-type').show();
+						$scope.showAddProductBundleGroupTypeBtn = true;
+						//$('.s-add-bundle-type').show();
 					}else{
-						$('.s-add-bundle-type').hide();
+						$scope.showAddProductBundleGroupTypeBtn = false;
+						//$('.s-add-bundle-type').hide();
 					}
 					return $scope.productBundleGroupTypes.value;
 				},function(reason){
@@ -141,6 +146,7 @@ function(
 			    $scope.$model = $model;
 			    $scope.$label = $label;
 			    $scope.productBundleGroup.productBundleGroupType = $item;
+			    $scope.showAddProductBundleGroupTypeBtn = false;
 			};
 		}
 	};
