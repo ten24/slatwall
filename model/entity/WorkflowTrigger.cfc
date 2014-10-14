@@ -41,7 +41,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	// Persistent Properties
 	property name="workflowTriggerID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="triggerType" ormtype="string";
-	property name="triggerObject" ormtype="string";
+	property name="objectPropertyIdentifier" ormtype="string";
 	property name="triggerEvent" ormtype="string";
 	
 	// Calculated Properties
