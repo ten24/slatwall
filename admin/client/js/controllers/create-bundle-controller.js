@@ -28,27 +28,85 @@ function(
 	
 	$log.debug('getProductBundleProcessObject ');
 	
-	var options = {
-		context:'CreateBundle',
-		propertyIdentifiersList:'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType,productBundleGroups'
-	};
-	var processObjectPromise = $slatwall.getProcessObject(
-		'Product',
-		options
-	);
+	var productID = $location.search().productID;
+	
+	if(angular.isDefined(productID)){
+		var filterGroupsConfig = '[{"filterGroup":[{"propertyIdentifier":"ProductBundleGroup.productBundleSku.product.productID","comparisonOperator":"=","value":"'+productID+'"}]}]';
+		
+		var productBundleGroupsOptions = {
+				context:'edit',
+				filterGroupsConfig:filterGroupsConfig.trim()
+		};
+		
+		$scope.processObject ={ 
+			productBundleGroups:{
+				value:[]
+			}
+		};
+			
+		var productBundleGroupPromise = $slatwall.getEntity(
+			'ProductBundleGroup',
+			productBundleGroupsOptions
+		);
+		
+		productBundleGroupPromise.then(function(value){
+			$log.debug('getProcessObject');
+			$scope.processObject.productBundleGroups.value = value.pageRecords;
+			for(var i in $scope.processObject.productBundleGroups.value){
+				var productBundleGroupTypeOptions = {
+						propertyIdentifiersList:'ProductBundleGroup.productBundleGroupType',
+						id:$scope.processObject.productBundleGroups.value[i].productBundleGroupID
+				};
+				
+				var productBundleGroupTypePromise = $slatwall.getEntity(
+					'productBundleGroup',
+					productBundleGroupTypeOptions
+				);
+				
+				productBundleGroupTypePromise.then(function(value){
+					console.log();
+					$scope.processObject.productBundleGroups.value[i].productBundleGroupType = value.pageRecords[0].productBundleGroupType[0];
+					
+				},function(reason){
+					//display error message if getter fails
+					var messages = reason.MESSAGES;
+					var alerts = alertService.formatMessagesToAlerts(messages);
+					alertService.addAlerts(alerts);
+				});
+				
+			}
+			$log.debug($scope.productBundleGroups);
+		},function(reason){
+			//display error message if getter fails
+			var messages = reason.MESSAGES;
+			var alerts = alertService.formatMessagesToAlerts(messages);
+			alertService.addAlerts(alerts);
+		});
+	}else{
+		var options = {
+			context:'CreateBundle',
+			propertyIdentifiersList:'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType,productBundleGroups'
+		};
+		var processObjectPromise = $slatwall.getProcessObject(
+			'Product',
+			options
+		);
+		
+		
+		processObjectPromise.then(function(value){
+			$log.debug('getProcessObject');
+			$scope.processObject = value.data;
+			formService.setForm($scope.form.createProductBundle);
+			$log.debug($scope.processObject);
+		},function(reason){
+			//display error message if getter fails
+			var messages = reason.MESSAGES;
+			var alerts = alertService.formatMessagesToAlerts(messages);
+			alertService.addAlerts(alerts);
+		});
+	}
 	
 	
-	processObjectPromise.then(function(value){
-		$log.debug('getProcessObject');
-		$scope.processObject = value.data;
-		formService.setForm($scope.form.createProductBundle);
-		$log.debug($scope.processObject);
-	},function(reason){
-		//display error message if getter fails
-		var messages = reason.MESSAGES;
-		var alerts = alertService.formatMessagesToAlerts(messages);
-		alertService.addAlerts(alerts);
-	});
 	
 	$scope.addProductBundleGroup = function(){
 		$log.debug('add bundle group');

@@ -1,9 +1,10 @@
- <span ng-controller="edit-bundle-controller">
+ <span ng-controller="create-bundle-controller">
 		
 	  <section class="col-xs-12" >
 	
 	    
-	    <span 	sw-product-bundle-groups
+	    <span 	ng-if="processObject.productBundleGroups.value"
+	    		sw-product-bundle-groups
 	    		data-product-bundle-groups="processObject.productBundleGroups.value"
 	    >
 	    </span>

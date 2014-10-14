@@ -22,8 +22,10 @@ function(){
 		  				params.currentPage = options.currentPage || 1;
 		  				params.pageShow = options.pageShow || 10;
 		  				params.keywords = options.keywords || '';
+		  				params.columnsConfig = options.columnsConfig || '';
 		  				params.filterGroupsConfig = options.filterGroupsConfig || '';
 		  				params.joinsConfig = options.joinsConfig || '';
+		  				params.isDistinct = options.isDistinct || false;
 		  				params.propertyIdentifiersList = options.propertyIdentifiersList || ''
 		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 		  			}

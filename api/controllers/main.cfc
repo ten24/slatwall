@@ -158,13 +158,25 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				propertyIdentifiersList = arguments.rc['propertyIdentifiersList'];
 			}
 			
+			var columnsConfig = "";
+			if(structKeyExists(arguments.rc,'columnsConfig')){
+				columnsConfig = arguments.rc['columnsConfig'];
+			}
+			
+			var isDistinct = false;
+			if(structKeyExists(arguments.rc, "isDistinct")){
+				isDistinct = arguments.rc['isDistinct'];
+			}
+			
 			var collectionOptions = {
 				currentPage=currentPage,
 				pageShow=pageShow,
 				keywords=keywords,
 				filterGroupsConfig=filterGroupsConfig,
 				joinsConfig=joinsConfig,
-				propertyIdentifiersList=propertyIdentifiersList
+				propertyIdentifiersList=propertyIdentifiersList,
+				isDistinct=isDistinct,
+				columnsConfig=columnsConfig
 			};
 			
 			//considering using all url variables to create a transient collectionConfig for api response

@@ -350,6 +350,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			collectionConfigStruct.joins = deserializeJson(arguments.rc.joinsConfig);
 		}
 		
+		if(!isNull(arguments.rc.columnsConfig)){
+			collectionConfigStruct.columns = deserializeJson(arguments.rc.columnsConfig);
+		}
+		
 		
 		//adds to columns section if preceeded by a period then add to joins section, check for parenthesis for aggregates
 		//&propertyIdentifiers=propertyIdentifier,join.propertyIdentifier,aggregate|join.propertyIdentifier
@@ -410,6 +414,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!structKeyExists(collectionConfigStruct,'joins')){
 			collectionConfigStruct.joins = [];
 		}
+		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
+			collectionConfigStruct.isDistinct = false;
+		}
 		var capitalCaseEntityName = capitalCase(arguments.entityName);
 		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
@@ -436,9 +443,15 @@ component extends="HibachiService" accessors="true" output="false" {
 			collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(arguments.collectionOptions.filterGroupsConfig);
 		}
 		
+		if(len(arguments.collectionOptions.columnsConfig)){
+			collectionEntity.getCollectionConfigStruct().columns = deserializeJson(arguments.collectionOptions.columnsConfig);
+		}
+		
 		if(len(arguments.collectionOptions.joinsConfig)){
 			collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
 		}
+		
+		collectionEntity.getCollectionConfigStruct().isDistinct = arguments.collectionOptions.isDistinct;
 		
 		
 		var response = {};
