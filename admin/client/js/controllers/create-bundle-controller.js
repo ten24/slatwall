@@ -53,6 +53,8 @@ function(
 			$log.debug('getProcessObject');
 			$scope.processObject.productBundleGroups.value = value.pageRecords;
 			for(var i in $scope.processObject.productBundleGroups.value){
+				$scope.processObject.productBundleGroups.value[i] = productBundleService.formatProductBundleGroup($scope.processObject.productBundleGroups.value[i]);
+				$scope.processObject.productBundleGroups.value[i].$$editing = false;
 				var productBundleGroupTypeOptions = {
 						propertyIdentifiersList:'ProductBundleGroup.productBundleGroupType',
 						id:$scope.processObject.productBundleGroups.value[i].productBundleGroupID
