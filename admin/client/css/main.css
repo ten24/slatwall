@@ -23,6 +23,11 @@ label {font-weight:600;}
 .s-dotted-border-bottom {border-bottom: 3px dotted #EEE;padding-bottom: 20px !important;margin-bottom: 20px !important;}
 .s-hide-trans {display:none;-webkit-transition: all .5s ease-in-out;-moz-transition: all .5s ease-in-out;-ms-transition: all .5s ease-in-out;-o-transition: all .5s ease-in-out;transition: all .5s ease-in-out;}
 
+.s-zero-top {padding-top:0px!important;margin-top:0px !important;}
+.s-zero-bottom {padding-bottom:0px!important;margin-bottom:0px !important;}
+.s-zero-right {padding-right:0px!important;margin-right:0px !important;}
+.s-zero-left {padding-left:0px!important;margin-left:0px !important;}
+
 .s-top-spacer {margin-top:25px;}
 
 .s-helper-text {color: #aaaaaa;font-size: 10px;}
@@ -200,7 +205,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 .s-setting-options li:last-child {margin-left:10px;}
 .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;border:1px solid #dddddd;}
 .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:#ccc;}
-.s-filters-selected .s-filter-item .btn-group-vertical{float: left;margin-top: 20px;margin-right: 21px;margin-left:17px;}
+.s-filters-selected .s-filter-item .btn-group-vertical{float: left;margin-top: 15px;margin-right: 21px;margin-left:17px;}
 .s-filters-selected .s-filter-item .btn-group-vertical .btn {font-size:10px;}
 .s-filters-selected .s-filter-item .btn-group-vertical .btn.active {box-shadow:none;}
 .s-filters-selected .s-and-or-box .btn-group{background-color:#eee;position:relative;top:-4px;}
@@ -298,6 +303,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-setting-options-body .filter-group .s-filter-item:last-child {margin-right:0px;}
 
 .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid;}
+.s-add-filter .selectboxit-container, .s-add-filter .selectboxit-container .selectboxit, .s-add-filter .selectboxit-container .selectboxit-options {width:100% !important;}
 
 .s-setting-options-body .panel {display:inline-block;width:190px;margin-bottom:5px;border:none;}
 .s-setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;border-bottom:none;}
@@ -318,8 +324,14 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-add-filter > .row > h4 {margin-top: 0px;padding: 8px 15px;background-color: #606060;color: #ffffff;font-size:14px;border-top-left-radius: 2px;border-top-right-radius: 2px;}
 .s-add-filter > .row {padding-top:0px !important;}
 .s-add-filter .s-criteria {border: 3px dotted #DDD;border-bottom: none;border-top: none;padding-right: 40px;padding-left: 40px;margin-bottom: 15px;min-height:140px;}
+.s-add-filter .s-criteria .selectboxit-container .selectboxit {width:100% !important;}
+.s-add-filter .s-criteria .selectboxit-container {width:100% !important;}
+.s-add-filter .s-criteria .selectboxit-container .selectboxit-options {width:100% !important;}
 .s-add-filter .s-button-select-group {text-align:center;}
 .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
+
+.s-tab-layout.s-tab-layout > .row > h4 {margin-bottom:0px;}
+.s-tab-layout.s-tab-layout  > .row > .s-body-box {padding-top:0px;}
 
 /* Custom Slatwall Styles */
 .s-table-header-nav {margin-top:20px;margin-bottom:10px;}
