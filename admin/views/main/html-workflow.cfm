@@ -421,7 +421,7 @@
 									<div class="col-xs-3">
 
 										<div class="s-default-list">
-											<h4>Estimated Schedule</h4>
+											<h4>Estimated Schedule:</h4>
 
 											<div class="agenda">
 										        <div class="table-responsive">
