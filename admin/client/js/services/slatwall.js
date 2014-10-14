@@ -17,12 +17,14 @@ function(){
 		  			 */
 		  			var params = {};
 		  			if(typeof options === 'String') {
-		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
+		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
 		  			} else {
 		  				params.currentPage = options.currentPage || 1;
 		  				params.pageShow = options.pageShow || 10;
 		  				params.keywords = options.keywords || '';
 		  				params.filterGroupsConfig = options.filterGroupsConfig || '';
+		  				params.joinsConfig = options.joinsConfig || '';
+		  				params.propertyIdentifiersList = options.propertyIdentifiersList || ''
 		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 		  			}
 		  			
@@ -52,15 +54,26 @@ function(){
 		  			
 		  			return deferred.promise;
 		  		},
-		  		getProcessObject:function(entityName,id,context,propertyIdentifiers){
+		  		/*
+	  			 *
+	  			 * getProcessObject(entityName, options);
+	  			 * options = {
+	  			 * 				id:id,
+	  			 * 				context:context,
+	  			 * 				propertyIdentifiers
+	  			 * 			}
+	  			 * 
+	  			 */
+		  		getProcessObject:function(entityName,options){
 		  			var deferred = $q.defer();
 		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getProcessObject&entityName='+entityName;
-		  			if(angular.isDefined(id)) {
-		  				urlString += '&entityId='+id;	
+		  			
+		  			if(angular.isDefined(options.id)) {
+		  				urlString += '&entityId='+options.id;	
 		  			}
 		  			var params = {
-		  				context:context,
-		  				propertyIdentifiers:propertyIdentifiers
+		  				context:options.context,
+		  				propertyIdentifiersList:options.propertyIdentifiersList
 		  			};
 		  			$http.get(urlString,{params:params})
 		  			.success(function(data){

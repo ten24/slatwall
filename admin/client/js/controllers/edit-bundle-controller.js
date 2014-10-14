@@ -1,5 +1,5 @@
 'use strict';
-angular.module('slatwalladmin').controller('create-bundle-controller', [
+angular.module('slatwalladmin').controller('edit-bundle-controller', [
 	'$scope',
 	'$location',
 	'$slatwall',
@@ -20,23 +20,45 @@ function(
 	productBundleService,
 	formService
 ){
-	$scope.$id="create-bundle-controller";
+	var productID = $location.search().productID;
+	
+	var filterGroupsConfig = '[{"filterGroup":[{"propertyIdentifier":"_productbundlegroup.productBundleSku.product.productID","comparisonOperator":"=","value":"'+productID+'"}]}]';
+	
+	var options = {
+			context:'edit',
+			filterGroupConfig:filterGroupsConfig.trim(),
+	};
+		
+	var processObjectPromise = $slatwall.getEntity(
+		'ProductBundleGroup',
+		options
+	);
+	
+	processObjectPromise.then(function(value){
+		$log.debug('getProcessObject');
+		$scope.processObject = value.data;
+		//formService.setForm($scope.form.createProductBundle);
+		$log.debug($scope.processObject);
+	},function(reason){
+		//display error message if getter fails
+		var messages = reason.MESSAGES;
+		var alerts = alertService.formatMessagesToAlerts(messages);
+		alertService.addAlerts(alerts);
+	});
+	/*$scope.$id="create-bundle-controller";
 		//if this view is part of the dialog section, call the inherited function
 	if(angular.isDefined($scope.scrollToTopOfDialog)){
 		$scope.scrollToTopOfDialog();
 	}
 	
-	$log.debug('getProductBundleProcessObject ');
 	
-	var options = {
-		context:'CreateBundle',
-		propertyIdentifiersList:'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType,productBundleGroups'
-	};
+	$log.debug('getProductBundleProcessObject ');
 	var processObjectPromise = $slatwall.getProcessObject(
 		'Product',
-		options
+		null,
+		'CreateBundle',
+		'productTypeOptions,product.brandOptions,product.productCode,product.productName,product.price,product.brand,product.productType,productBundleGroups'
 	);
-	
 	
 	processObjectPromise.then(function(value){
 		$log.debug('getProcessObject');
@@ -117,5 +139,5 @@ function(
 			}
 		}
 		return isValid;
-	};
+	};*/
 }]);

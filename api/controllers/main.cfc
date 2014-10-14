@@ -70,7 +70,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public any function getProcessObject(required struct rc){
 		//need a Context, an entityName and propertyIdentifiers
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
-		var entity = entityService.invokeMethod("new#arguments.rc.entityName#");
+		if(isNull(rc.entityID)){
+			var entity = entityService.invokeMethod("new#arguments.rc.entityName#");
+		}else{
+			var entity = entityService.invokeMethod( "get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true} );
+		}
+		
 		var processObjectExists = entity.hasProcessObject( rc.context);
 		
 		if(processObjectExists) {
@@ -79,7 +84,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		data['validation'] = getService('hibachiValidationService').getValidationStruct(rc.processObject);
 		
-		var propertyIdentifiers = ListToArray(rc.propertyIdentifiers);
+		var propertyIdentifiers = ListToArray(rc.propertyIdentifiersList);
 		for(propertyIdentifier in propertyIdentifiers){
 			var data[propertyIdentifier] = {};
 			//entity.invokeMethod('set')rc.processObject.invokeMethod('get#propertyIdentifier#');
@@ -127,33 +132,47 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		} else {
 			//get entity service by entity name
 			var currentPage = 1;
-			if(structKeyExists(rc,'P:Current')){
-				currentPage = rc['P:Current'];
+			if(structKeyExists(arguments.rc,'P:Current')){
+				currentPage = arguments.rc['P:Current'];
 			}
 			var pageShow = 10;
-			if(structKeyExists(rc,'P:Show')){
-				pageShow = rc['P:Show'];
+			if(structKeyExists(arguments.rc,'P:Show')){
+				pageShow = arguments.rc['P:Show'];
 			}
 			
 			var keywords = "";
-			if(structKeyExists(rc,'keywords')){
-				keywords = rc['keywords'];
+			if(structKeyExists(arguments.rc,'keywords')){
+				keywords = arguments.rc['keywords'];
 			}
 			var filterGroupsConfig = ""; 
-			if(structKeyExists(rc,'filterGroupsConfig')){
-				filterGroupsConfig = rc['filterGroupsConfig'];
+			if(structKeyExists(arguments.rc,'filterGroupsConfig')){
+				filterGroupsConfig = arguments.rc['filterGroupsConfig'];
 			}
+			var joinsConfig = ""; 
+			if(structKeyExists(arguments.rc,'joinsConfig')){
+				joinsConfig = arguments.rc['joinsConfig'];
+			}
+			
+			var propertyIdentifiersList = "";
+			if(structKeyExists(arguments.rc,"propertyIdentifiersList")){
+				propertyIdentifiersList = arguments.rc['propertyIdentifiersList'];
+			}
+			
+			var collectionOptions = {
+				currentPage=currentPage,
+				pageShow=pageShow,
+				keywords=keywords,
+				filterGroupsConfig=filterGroupsConfig,
+				joinsConfig=joinsConfig,
+				propertyIdentifiersList=propertyIdentifiersList
+			};
 			
 			//considering using all url variables to create a transient collectionConfig for api response
 			//var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
-																			arguments.rc.propertyIdentifiers,
-																			currentPage,
-																			pageShow,
-																			keywords,
-																			filterGroupsConfig);
+																			collectionOptions);
 				
 				structAppend(arguments.rc.apiResponse.content,result);
 			}else{
@@ -163,18 +182,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					//should only be able to add selects (&propertyIdentifier=)
 					var result = getCollectionService().getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
 																				arguments.rc.entityID,
-																				arguments.rc.propertyIdentifiers,
-																				currentPage,
-																				pageShow,
-																				keywords);
+																				collectionOptions);
 					structAppend(arguments.rc.apiResponse.content,result);
 				}else{
 					//should be able to add select and where filters here
 					var result = getCollectionService().getAPIResponseForCollection(	collectionEntity,
-																				arguments.rc.propertyIdentifiers,
-																				currentPage,
-																				pageShow,
-																				keywords);
+																				collectionOptions);
 					structAppend(arguments.rc.apiResponse.content,result);
 				}
 			}
