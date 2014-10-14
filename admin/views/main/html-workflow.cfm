@@ -1489,52 +1489,27 @@
 															<div class="row">
 																<div class="col-xs-3">
 
-																	<div class="form-group">
-																		<label class="s-width-100">Select Action Type:</label>
+																	<div class="form-group form-group-sm">
+																		<label for="" class="s-width-100">Select Action Type:</label>
+																		<select class="form-control input-sm">
+																			<option>Print</option>
+																			<option>Email</option>
+																			<option>Update</option>
+																			<option>Process</option>
+																			<option>Import</option>
+																			<option>Export</option>
+																			<option>Delete</option>
+																		</select>
+																	</div>
 
-																		<!--- search --->
-																		<div class="s-search-filter">
-																			<div class="input-group">
-																				<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-																				<ul class="dropdown-menu s-search-options">
-																					<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-																					<li><a>Print</a></li>
-																					<li><a>Email</a></li>
-																					<li><a>Update</a></li>
-																					<li><a>Process</a></li>
-																					<li><a>Import</a></li>
-																					<li><a>Export</a></li>
-																					<li><a>Delete</a></li>
-																				</ul>
-																				<div class="input-group-btn">
-																					<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
-																				</div>
-																			</div>
-
-																			<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-																				<form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
-																					<div class="form-group has-error">
-																						<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-																						<input type="text" class="form-control" id="" value="" placeholder="">
-																						<p class="help-block">Example Of Error</p>
-																					</div>
-																					<div class="form-group">
-																						<label for="">Group Code</label>
-																						<input type="text" class="form-control" id="" value="" placeholder="">
-																					</div>
-																					<div class="form-group">
-																						<label for="">Group Description</label>
-																						<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-																					</div>
-																					<div class="form-group">
-																						<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
-																					</div>
-																				</form>
-																			</div>
-
-																		</div>
-																		<!--- // search --->
-
+																	<div class="form-group form-group-sm">
+																		<label for="" class="s-width-100">Select Object:</label>
+																		<select class="form-control input-sm">
+																			<option>Orders</option>
+																			<option>Related Objects</option>
+																			<option>Account</option>
+																			<option>Order Item</option>
+																		</select>
 																	</div>
 
 																</div>
@@ -2739,52 +2714,27 @@
 															<div class="row">
 																<div class="col-xs-3">
 
-																	<div class="form-group">
-																		<label class="s-width-100">Select Action Type:</label>
+																	<div class="form-group form-group-sm">
+																		<label for="" class="s-width-100">Select Action Type:</label>
+																		<select class="form-control input-sm">
+																			<option>Print</option>
+																			<option>Email</option>
+																			<option>Update</option>
+																			<option>Process</option>
+																			<option>Import</option>
+																			<option>Export</option>
+																			<option>Delete</option>
+																		</select>
+																	</div>
 
-																		<!--- search --->
-																		<div class="s-search-filter">
-																			<div class="input-group">
-																				<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-																				<ul class="dropdown-menu s-search-options">
-																					<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-																					<li><a>Print</a></li>
-																					<li><a>Email</a></li>
-																					<li><a>Update</a></li>
-																					<li><a>Process</a></li>
-																					<li><a>Import</a></li>
-																					<li><a>Export</a></li>
-																					<li><a>Delete</a></li>
-																				</ul>
-																				<div class="input-group-btn">
-																					<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
-																				</div>
-																			</div>
-
-																			<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-																				<form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
-																					<div class="form-group has-error">
-																						<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-																						<input type="text" class="form-control" id="" value="" placeholder="">
-																						<p class="help-block">Example Of Error</p>
-																					</div>
-																					<div class="form-group">
-																						<label for="">Group Code</label>
-																						<input type="text" class="form-control" id="" value="" placeholder="">
-																					</div>
-																					<div class="form-group">
-																						<label for="">Group Description</label>
-																						<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-																					</div>
-																					<div class="form-group">
-																						<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
-																					</div>
-																				</form>
-																			</div>
-
-																		</div>
-																		<!--- // search --->
-
+																	<div class="form-group form-group-sm">
+																		<label for="" class="s-width-100">Select Object:</label>
+																		<select class="form-control input-sm">
+																			<option>Orders</option>
+																			<option>Related Objects</option>
+																			<option>Account</option>
+																			<option>Order Item</option>
+																		</select>
 																	</div>
 
 																</div>

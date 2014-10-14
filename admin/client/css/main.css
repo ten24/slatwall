@@ -303,6 +303,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-setting-options-body .filter-group .s-filter-item:last-child {margin-right:0px;}
 
 .s-setting-options-body .s-add-filter-button-box {border-bottom:1px solid;}
+.s-add-filter .selectboxit-container, .s-add-filter .selectboxit-container .selectboxit, .s-add-filter .selectboxit-container .selectboxit-options {width:100% !important;}
 
 .s-setting-options-body .panel {display:inline-block;width:190px;margin-bottom:5px;border:none;}
 .s-setting-options-body .panel-heading {padding: 5px 15px;background-color:#606060;color:#ffffff;border-bottom:none;}
