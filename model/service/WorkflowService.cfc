@@ -63,18 +63,18 @@ component extends="HibachiService" accessors="true" output="false" {
 			// Run all workflows inside of a thread
 			thread action="run" name="#createUUID()#" threadData=arguments {
 				
-				var workflowTriggers = getDAO().getWorkflowTriggersForEvent( eventName=arguments.eventName );
+				var workflowTriggers = getWorflowDAO().getWorkflowTriggersForEvent( eventName=arguments.eventName );
 				
 				for(var workflowTrigger in workflowTriggers) {
 					
 					var processData = {};
 					
 					// If the triggerObject is the same as this event, then we just use it
-					if(workflowTrigger.getTriggerObject() == threadData.entity.getClassName()) {
+					if(isNull(workflowTrigger.getTriggerObject()) || !len(workflowTrigger.getTriggerObject())) {
 						processData.entity = threadData.entity;
 					
 					} else {
-						processData.entity = getValueByPropertyIdentifier(workflowTrigger.getObjectPropertyIdentifier());
+						processData.entity = getValueByPropertyIdentifier(arguments.entity, workflowTrigger.getObjectPropertyIdentifier());
 						
 					}
 					
@@ -82,7 +82,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					if(structKeyExists(processData, "entity") && !isNull(processData.entity) && isObject(processData.entity) && processData.entity.getClassName() == workflowTrigger.getWorkflow().getWorkflowObject()) {
 						processData.workflowTrigger = workflowTrigger;
 						
-						this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'runWorkflow');
+						this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 					}
 					
 				}
@@ -101,13 +101,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Process Methods ===========================
 	
-	public any function processWorkflow_runWorkflow(required any workflow, required struct data) {
+	public any function processWorkflow_execute(required any workflow, required struct data) {
 		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			
-			// Check to see if the entity object passes the conditions validation
-			if(entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfig())) {
+			// Check to see if the task is active and the entity object passes the conditions validation
+			if(workflowTask.getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfig())) {
 			
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
@@ -187,6 +187,7 @@ component extends="HibachiService" accessors="true" output="false" {
         					
         					break;
         			}
+        			
 				}
 				
 			}
@@ -203,6 +204,21 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ====================== START: Save Overrides ===========================
 	
+	public any function saveWorkflowTrigger(required any entity, struct data={}) {
+		// Call the default save logic
+		arguments.entity = super.save(argumentcollection=arguments);
+		
+		// If there aren't any errors then flush, and clear cache
+		if(!getHibachiScope().getORMHasErrors()) {
+			
+			getHibachiDAO().flushORMSession();
+			
+			getHibachiCacheService().resetCachedKey('workflowDAO_getWorkflowTriggerEventsArray');
+		}
+		
+		return arguments.entity;
+	}
+	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
@@ -214,6 +230,21 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ======================  END: Get Overrides =============================
 	
 	// ===================== START: Delete Overrides ==========================
+	
+	public boolean function deleteWorkflowTrigger(required any entity) {
+		
+		var deleteResult = super.delete(argumentcollection=arguments); 
+		
+		// If there aren't any errors then flush, and clear cache
+		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
+			
+			getHibachiDAO().flushORMSession();
+			
+			getHibachiCacheService().resetCachedKey('workflowDAO_getWorkflowTriggerEventsArray');
+		}
+		
+		return deleteResult;
+	}
 	
 	// =====================  END: Delete Overrides ===========================
 	
@@ -255,20 +286,36 @@ component extends="HibachiService" accessors="true" output="false" {
 		TODO this needs to loop over all of the stuct keys, figure out the type of dynamicData
 		here are some example of dynamic data
 		
+		arguments.dynamicData = {
+			'orderExpectedShipDate' = {
+				'dynamicType' = 'dateAddNow',
+				'datePart' = 'd',
+				'number' = 3,
+			},
+			'account.lastOrderPlacedDateTime' = {
+				'dynamicType' = 'copyProperty',
+				'dynamicParam' = 'orderPlacedDateTime'
+			},
+			'account.totalHighTicketOrdersPlaced' = {
+				'dynamicType' = 'increaseInt',
+				'increaseAmount' = 1
+			}
+		}
+		
 		for(var key in arguments.dynamicData) {
 			
-			var originalValue = arguments.entity.getValueByPropertyIdentifier('key');
+			var originalValue = arguments.entity.getValueByPropertyIdentifier( key );
 			
 			if(arguments.dynamicData[ key ].dynamicType == 'dateAdd') {
 				newValue = dateAdd('d', ?, originalValue);
 				
-			} else if(arguments.dynamicData[ key ].dynamicDataType == 'dateAddFromNow') {
+			} else if(arguments.dynamicData[ key ].dynamicType == 'dateAddFromNow') {
 				newValue = dateAdd('d', ?, originalValue);
 				
-			} else if(arguments.dynamicData[ key ].dynamicDataType == 'increaseInt') {
+			} else if(arguments.dynamicData[ key ].dynamicType == 'increaseInt') {
 				newValue = originalValue + 1;
 				
-			} else if(arguments.dynamicData[ key ].dynamicDataType == 'decreaseInt') {
+			} else if(arguments.dynamicData[ key ].dynamicType == 'decreaseInt') {
 				newValue = originalValue - 1;
 				
 			} else if(arguments.dynamicData[ key ].dynamicDataType == 'stringReplace') {

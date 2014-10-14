@@ -52,6 +52,7 @@ Notes:
 	<cffunction name="getWorkflowTriggerEventsArray" returntype="array" access="public">
 		
 		<!--- TODO: This needs to query DB and return an array of ALL workflow events --->
+		<!--- ['onOrderSaveSuccess','onOrderProcess_placeOrderSuccess'] --->
 		<cfreturn [] />
 	</cffunction>
 	
