@@ -546,16 +546,15 @@
 
 																		<!--- Filter display --->
 																		<div class="s-filter-item">
-																			<div class="panel panel-default">
-																				<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																				<div data-toggle="collapse" data-target="#j-edit-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																					Male <a href="##"><i class="fa fa-pencil-square-o"></i></a>
-																				</div>
-																			</div>
-																			<div class="btn-group-vertical">
+																			<!--- <div class="btn-group-vertical">
 																				<button class="btn btn-xs btn-default">OR</button>
 																				<button class="btn btn-xs btn-default active">AND</button>
-
+																			</div> --->
+																			<div class="panel panel-default">
+																				<div class="panel-heading">Filter 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+																				<div data-toggle="collapse" data-target="#j-edit-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+																					Example 1 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+																				</div>
 																			</div>
 																		</div>
 																		<!--- //Filter display --->
@@ -1018,13 +1017,16 @@
 
 																		<!--- Filter display --->
 																		<div class="s-filter-item">
+																			<div class="btn-group-vertical">
+																				<button class="btn btn-xs btn-default">OR</button>
+																				<button class="btn btn-xs btn-default active">AND</button>
+																			</div>
 																			<div class="panel panel-default s-filter-group-style">
-																				<div class="panel-heading">Filter Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+																				<div class="panel-heading">Example Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
 																				<div data-toggle="collapse" data-target="#j-nested-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
 																					(3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
 																				</div>
 																			</div>
-
 																		</div>
 																		<!--- //Filter display --->
 
@@ -1038,15 +1040,15 @@
 
 																						<!--- Nested Filter Display --->
 																						<div class="s-filter-item">
+																							<!--- <div class="btn-group-vertical btn-toggle">
+																								<button class="btn btn-xs btn-default">AND</button>
+																								<button class="btn btn-xs btn-defualt active">OR</button>adsf
+																							</div> --->
 																							<div class="panel panel-default">
 																								<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
 																								<div data-toggle="collapse" data-target="#j-edit-filter-1-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
 																									Male 2 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
 																								</div>
-																							</div>
-																							<div class="btn-group-vertical btn-toggle">
-																								<button class="btn btn-xs btn-default">AND</button>
-																								<button class="btn btn-xs btn-defualt active">OR</button>
 																							</div>
 																						</div>
 																						<!--- //Nested Filter Display --->
@@ -1121,128 +1123,6 @@
 																					</li>
 																					<!--- //Filter display --->
 
-																					<!--- Filter display --->
-																					<li >
-
-																						<!--- Nested Filter Display --->
-																						<div class="s-filter-item">
-																							<div class="panel panel-default s-filter-group-style">
-																								<div class="panel-heading">Filter Group 2 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																								<div data-toggle="collapse" data-target="#j-nested-filter-1-1-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																									(3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
-																								</div>
-																							</div>
-
-																						</div>
-																						<!--- //Nested Filter Display --->
-
-																						<!---Nested Filter Box --->
-																						<div class="col-xs-12 collapse" id="j-nested-filter-1-1-1">
-																							<div class="row">
-																								<ul class="col-xs-12 list-unstyled s-no-paddings">
-
-																									<!--- Filter display --->
-																									<li >
-
-																										<!--- Nested Filter Display --->
-																										<div class="s-filter-item">
-																											<div class="panel panel-default">
-																												<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																												<div data-toggle="collapse" data-target="#j-edit-filter-1-1-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																													Male 3 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
-																												</div>
-																											</div>
-
-																										</div>
-																										<!--- //Nested Filter Display --->
-
-																										<!--- Edit Filter Box --->
-																										<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1-1">
-																											<div class="row">
-																												<div class="col-xs-12">
-																													<h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
-																													<div class="row">
-																														<div class="col-xs-4">
-																															Select From Orders
-																															<div class="option-dropdown">
-																																<select class="form-control input-sm">
-																																	<option disabled="disabled" selected="selected">Select From Orders </option>
-																																	<option value="one">One</option>
-																																	<option value="two">Two</option>
-																																	<option value="three">Three</option>
-																																	<option value="four">Four</option>
-																																	<option value="five">Five</option>
-																																</select>
-																															</div>
-																														</div>
-																														<div class="col-xs-4 s-criteria">
-																															<h4>Criteria</h4>
-
-																															<!--- Filter Criteria Start --->
-																															<form action="index.html" method="post">
-																																<div class="s-filter-group-item">
-
-																																	<div class="form-group form-group-sm">
-																																		<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-																																		<div class="col-sm-12 s-no-paddings">
-																																			<select class="form-control input-sm">
-																																				<option>1 week</option>
-																																				<option>2 week</option>
-																																				<option>3 week</option>
-																																				<option>4 week</option>
-																																				<option>5 week</option>
-																																			</select>
-																																		</div>
-																																		<div class="clearfix"></div>
-																																	</div>
-																																	<div class="form-group form-group-sm">
-																																		<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-																																		<div class="col-sm-12 s-no-paddings">
-																																			<input type="text" class="form-control" id="input" placeholder="12">
-																																		</div>
-																																		<div class="clearfix"></div>
-																																	</div>
-																																</div>
-																															</form>
-																															<!--- //Filter Criteria End --->
-
-																														</div>
-																														<div class="col-xs-4">
-																															<div class="s-button-select-group">
-																																<button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
-																																<div class="s-or-box">OR</div>
-																																<button type="button" class="btn s-btn-ten24">Save & Finish</button>
-																															</div>
-																															<div class="form-group">
-																																<div class="s-checkbox"><input type="checkbox" id="j-checkbox41"><label for="j-checkbox41"> Add To New Group</label></div>
-																															</div>
-																														</div>
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																										<!--- //Edit Filter Box --->
-
-																									</li>
-																									<!--- //Filter display --->
-
-																									<li class="s-new-filter">
-																										<!--- New Filter Panel Buttons --->
-																										<div class="s-filter-item">
-																											<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Save & Add Another</button>
-																											<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Save & Finish</button>
-																										</div>
-																										<!--- //New Filter Panel Buttons --->
-																									</li>
-
-																								</ul>
-																							</div>
-																						</div>
-																						<!---//Nested Filter Box --->
-
-																					</li>
-																					<!--- //Filter display --->
-
 																					<li class="s-new-filter">
 																						<!--- New Filter Panel Buttons --->
 																						<div class="s-filter-item">
@@ -1262,8 +1142,8 @@
 																	<li class="s-new-filter">
 																		<!--- New Filter Panel Buttons --->
 																		<div class="s-filter-item">
-																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-con3"><i class="fa fa-plus"></i> Add</button>
-																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-cond3"><i class="fa fa-plus"></i> Add a New Group</button>
+																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-2"><i class="fa fa-plus"></i> Add</button>
+																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-2"><i class="fa fa-plus"></i> Add a New Group</button>
 																		</div>
 																		<!--- //New Filter Panel Buttons --->
 																	</li>
@@ -1275,9 +1155,9 @@
 															<div class="s-add-filter-box">
 
 																<!--- Edit Filter Box --->
-																<div class="col-xs-12 collapse s-add-filter" id="j-add-another-cond3">
+																<div class="col-xs-12 collapse s-add-filter" id="j-add-2">
 																	<div class="row">
-																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-cond3"></i></h4>
+																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-2"></i></h4>
 																		<div class="col-xs-12">
 
 																			<div class="row">
@@ -1351,9 +1231,9 @@
 																<!--- //Edit Filter Box --->
 
 																<!--- Edit Filter Box --->
-																<div class="col-xs-12 collapse s-add-filter" id="j-add-another-cond3">
+																<div class="col-xs-12 collapse s-add-filter" id="j-add-another-2">
 																	<div class="row">
-																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-cond3"></i></h4>
+																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-2"></i></h4>
 																		<div class="col-xs-12">
 
 																			<div class="row">
@@ -1771,24 +1651,23 @@
 
 																		<!--- Filter display --->
 																		<div class="s-filter-item">
-																			<div class="panel panel-default">
-																				<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																				<div data-toggle="collapse" data-target="#j-edit-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																					Male <a href="##"><i class="fa fa-pencil-square-o"></i></a>
-																				</div>
-																			</div>
-																			<div class="btn-group-vertical">
+																			<!--- <div class="btn-group-vertical">
 																				<button class="btn btn-xs btn-default">OR</button>
 																				<button class="btn btn-xs btn-default active">AND</button>
-
+																			</div> --->
+																			<div class="panel panel-default">
+																				<div class="panel-heading">Filter 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+																				<div data-toggle="collapse" data-target="#j-edit-filter-d" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+																					Example 1 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+																				</div>
 																			</div>
 																		</div>
 																		<!--- //Filter display --->
 
 																		<!--- Edit Filter Box --->
-																		<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-b">
+																		<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-d">
 																			<div class="row">
-																				<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-b"></i></h4>
+																				<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-d"></i></h4>
 																				<div class="col-xs-12">
 
 																					<div class="row">
@@ -2243,18 +2122,21 @@
 
 																		<!--- Filter display --->
 																		<div class="s-filter-item">
+																			<div class="btn-group-vertical">
+																				<button class="btn btn-xs btn-default">OR</button>
+																				<button class="btn btn-xs btn-default active">AND</button>
+																			</div>
 																			<div class="panel panel-default s-filter-group-style">
-																				<div class="panel-heading">Filter Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																				<div data-toggle="collapse" data-target="#j-nested-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+																				<div class="panel-heading">Example Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+																				<div data-toggle="collapse" data-target="#j-nested-filter-c" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
 																					(3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
 																				</div>
 																			</div>
-
 																		</div>
 																		<!--- //Filter display --->
 
 																		<!---Nested Filter Box --->
-																		<div class="col-xs-12 collapse" id="j-nested-filter-b">
+																		<div class="col-xs-12 collapse" id="j-nested-filter-c">
 																			<div class="row">
 																				<ul class="col-xs-12 list-unstyled s-no-paddings">
 
@@ -2263,24 +2145,24 @@
 
 																						<!--- Nested Filter Display --->
 																						<div class="s-filter-item">
+																							<!--- <div class="btn-group-vertical btn-toggle">
+																								<button class="btn btn-xs btn-default">AND</button>
+																								<button class="btn btn-xs btn-defualt active">OR</button>adsf
+																							</div> --->
 																							<div class="panel panel-default">
 																								<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																								<div data-toggle="collapse" data-target="#j-edit-filter-1-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+																								<div data-toggle="collapse" data-target="#j-edit-filter-2" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
 																									Male 2 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
 																								</div>
-																							</div>
-																							<div class="btn-group-vertical btn-toggle">
-																								<button class="btn btn-xs btn-default">AND</button>
-																								<button class="btn btn-xs btn-defualt active">OR</button>
 																							</div>
 																						</div>
 																						<!--- //Nested Filter Display --->
 
 																						<!--- Edit Filter Box --->
-																						<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1">
+																						<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-2">
 																							<div class="row">
 																								<div class="col-xs-12">
-																									<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-nested-filter-b"></i></h4>
+																									<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-2"></i></h4>
 																									<div class="row">
 																										<div class="col-xs-4">
 																											Select From Orders
@@ -2346,128 +2228,6 @@
 																					</li>
 																					<!--- //Filter display --->
 
-																					<!--- Filter display --->
-																					<li >
-
-																						<!--- Nested Filter Display --->
-																						<div class="s-filter-item">
-																							<div class="panel panel-default s-filter-group-style">
-																								<div class="panel-heading">Filter Group 2 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																								<div data-toggle="collapse" data-target="#j-nested-filter-1-1-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																									(3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
-																								</div>
-																							</div>
-
-																						</div>
-																						<!--- //Nested Filter Display --->
-
-																						<!---Nested Filter Box --->
-																						<div class="col-xs-12 collapse" id="j-nested-filter-1-1-1">
-																							<div class="row">
-																								<ul class="col-xs-12 list-unstyled s-no-paddings">
-
-																									<!--- Filter display --->
-																									<li >
-
-																										<!--- Nested Filter Display --->
-																										<div class="s-filter-item">
-																											<div class="panel panel-default">
-																												<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																												<div data-toggle="collapse" data-target="#j-edit-filter-1-1-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																													Male 3 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
-																												</div>
-																											</div>
-
-																										</div>
-																										<!--- //Nested Filter Display --->
-
-																										<!--- Edit Filter Box --->
-																										<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1-1">
-																											<div class="row">
-																												<div class="col-xs-12">
-																													<h4> Define Filter: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-add-filter3"></i></h4>
-																													<div class="row">
-																														<div class="col-xs-4">
-																															Select From Orders
-																															<div class="option-dropdown">
-																																<select class="form-control input-sm">
-																																	<option disabled="disabled" selected="selected">Select From Orders </option>
-																																	<option value="one">One</option>
-																																	<option value="two">Two</option>
-																																	<option value="three">Three</option>
-																																	<option value="four">Four</option>
-																																	<option value="five">Five</option>
-																																</select>
-																															</div>
-																														</div>
-																														<div class="col-xs-4 s-criteria">
-																															<h4>Criteria</h4>
-
-																															<!--- Filter Criteria Start --->
-																															<form action="index.html" method="post">
-																																<div class="s-filter-group-item">
-
-																																	<div class="form-group form-group-sm">
-																																		<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-																																		<div class="col-sm-12 s-no-paddings">
-																																			<select class="form-control input-sm">
-																																				<option>1 week</option>
-																																				<option>2 week</option>
-																																				<option>3 week</option>
-																																				<option>4 week</option>
-																																				<option>5 week</option>
-																																			</select>
-																																		</div>
-																																		<div class="clearfix"></div>
-																																	</div>
-																																	<div class="form-group form-group-sm">
-																																		<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-																																		<div class="col-sm-12 s-no-paddings">
-																																			<input type="text" class="form-control" id="input" placeholder="12">
-																																		</div>
-																																		<div class="clearfix"></div>
-																																	</div>
-																																</div>
-																															</form>
-																															<!--- //Filter Criteria End --->
-
-																														</div>
-																														<div class="col-xs-4">
-																															<div class="s-button-select-group">
-																																<button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
-																																<div class="s-or-box">OR</div>
-																																<button type="button" class="btn s-btn-ten24">Save & Finish</button>
-																															</div>
-																															<div class="form-group">
-																																<div class="s-checkbox"><input type="checkbox" id="j-checkbox41"><label for="j-checkbox41"> Add To New Group</label></div>
-																															</div>
-																														</div>
-																													</div>
-																												</div>
-																											</div>
-																										</div>
-																										<!--- //Edit Filter Box --->
-
-																									</li>
-																									<!--- //Filter display --->
-
-																									<li class="s-new-filter">
-																										<!--- New Filter Panel Buttons --->
-																										<div class="s-filter-item">
-																											<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Save & Add Another</button>
-																											<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Save & Finish</button>
-																										</div>
-																										<!--- //New Filter Panel Buttons --->
-																									</li>
-
-																								</ul>
-																							</div>
-																						</div>
-																						<!---//Nested Filter Box --->
-
-																					</li>
-																					<!--- //Filter display --->
-
 																					<li class="s-new-filter">
 																						<!--- New Filter Panel Buttons --->
 																						<div class="s-filter-item">
@@ -2487,8 +2247,8 @@
 																	<li class="s-new-filter">
 																		<!--- New Filter Panel Buttons --->
 																		<div class="s-filter-item">
-																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-cond"><i class="fa fa-plus"></i> Add</button>
-																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-cond2"><i class="fa fa-plus"></i> Add a New Group</button>
+																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-4"><i class="fa fa-plus"></i> Add</button>
+																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-4"><i class="fa fa-plus"></i> Add a New Group</button>
 																		</div>
 																		<!--- //New Filter Panel Buttons --->
 																	</li>
@@ -2500,9 +2260,9 @@
 															<div class="s-add-filter-box">
 
 																<!--- Edit Filter Box --->
-																<div class="col-xs-12 collapse s-add-filter" id="j-add-another-cond">
+																<div class="col-xs-12 collapse s-add-filter" id="j-add-4">
 																	<div class="row">
-																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-cond"></i></h4>
+																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-2"></i></h4>
 																		<div class="col-xs-12">
 
 																			<div class="row">
@@ -2576,9 +2336,9 @@
 																<!--- //Edit Filter Box --->
 
 																<!--- Edit Filter Box --->
-																<div class="col-xs-12 collapse s-add-filter" id="j-add-another-cond2">
+																<div class="col-xs-12 collapse s-add-filter" id="j-add-another-4">
 																	<div class="row">
-																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-cond2"></i></h4>
+																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-2"></i></h4>
 																		<div class="col-xs-12">
 
 																			<div class="row">
