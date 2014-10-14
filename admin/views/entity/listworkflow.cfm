@@ -46,23 +46,19 @@
 Notes:
 
 --->
-<cfparam name="rc.collection" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.workflowSmartList" type="any" />
 
-<cfoutput>
+<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.workflowSmartList#"
+						   recordDetailAction="admin:entity.detailworkflow"
+						   recordEditAction="admin:entity.editworkflow"
+						   recordDeleteAction="admin:entity.deleteworkflow">
+						      
+	<!--- Create ---> 
+	<cf_HibachiListingDisplayButtonGroup >
+		<cf_HibachiActionCaller action="admin:entity.createworkflow" class="btn btn-primary" icon="plus icon-white" />
+	</cf_HibachiListingDisplayButtonGroup>
 	
-	<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
-		<div class="s-top-spacer">
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
-		</div>
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
-
+	<cf_HibachiListingColumn propertyIdentifier="workflowName" />
+	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+	<cf_HibachiListingColumn propertyIdentifier="workflowObject" />
+</cf_HibachiListingDisplay>

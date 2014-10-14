@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Base Template</name>
-<help></help>
-<starttext><![CDATA[/*
+/*
 
     Slatwall - An e-commerce plugin for Mura CMS
     Copyright (C) 2011 ten24, LLC
@@ -40,16 +36,21 @@
 Notes:
 
 */
-component entityname="$${EntityName}" table="$${TableName}" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="$${serviceName}" hb_permission="$${permission}" {
+component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="workflow.workflowTasks" {
 	
 	// Persistent Properties
-	property name="$${idPropertyName}" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="workflowTaskID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="activeFlag" ormtype="boolean";
+	property name="taskName" ormtype="string";
+	property name="taskConditionsConfig" ormtype="string" length="8000";
 
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="workflow" cfc="Workflow" fieldtype="many-to-one" fkcolumn="workflowID";
 	
 	// Related Object Properties (one-to-many)
+	property name="workflowTaskActions" singularname="workflowTaskAction" cfc="WorkflowTaskAction" type="array" fieldtype="one-to-many" fkcolumn="workflowTaskID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -106,6 +107,4 @@ component entityname="$${EntityName}" table="$${TableName}" persistent="true" ac
 	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================
-}]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>
+}

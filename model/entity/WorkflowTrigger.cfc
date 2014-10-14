@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Base Template</name>
-<help></help>
-<starttext><![CDATA[/*
+/*
 
     Slatwall - An e-commerce plugin for Mura CMS
     Copyright (C) 2011 ten24, LLC
@@ -40,14 +36,20 @@
 Notes:
 
 */
-component entityname="$${EntityName}" table="$${TableName}" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="$${serviceName}" hb_permission="$${permission}" {
+component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="workflow.workflowTriggers" {
 	
 	// Persistent Properties
-	property name="$${idPropertyName}" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-
+	property name="workflowTriggerID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="triggerType" ormtype="string";
+	property name="triggerObject" ormtype="string";
+	property name="triggerEvent" ormtype="string";
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="schedule" cfc="Schedule" fieldtype="many-to-one" fkcolumn="scheduleID";
+	property name="scheduleCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="scheduleCollectionID";
+	property name="workflow" cfc="Workflow" fieldtype="many-to-one" fkcolumn="workflowID";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -106,6 +108,4 @@ component entityname="$${EntityName}" table="$${TableName}" persistent="true" ac
 	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================
-}]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>
+}

@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Base Template</name>
-<help></help>
-<starttext><![CDATA[/*
+/*
 
     Slatwall - An e-commerce plugin for Mura CMS
     Copyright (C) 2011 ten24, LLC
@@ -40,14 +36,19 @@
 Notes:
 
 */
-component entityname="$${EntityName}" table="$${TableName}" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="$${serviceName}" hb_permission="$${permission}" {
+component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="workflowTask.workflowTaskActions" {
 	
 	// Persistent Properties
-	property name="$${idPropertyName}" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-
+	property name="workflowTaskActionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="actionType" ormtype="string";
+	property name="updateData" ormtype="string" length="8000";
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID";
+	property name="printTemplate" cfc="PrintTemplate" fieldtype="many-to-one" fkcolumn="printTemplateID";
+	property name="workflowTask" cfc="WorkflowTask" fieldtype="many-to-one" fkcolumn="workflowTaskID";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -106,6 +107,4 @@ component entityname="$${EntityName}" table="$${TableName}" persistent="true" ac
 	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================
-}]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>
+}

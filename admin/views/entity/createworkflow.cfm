@@ -46,20 +46,20 @@
 Notes:
 
 --->
-<cfparam name="rc.collection" type="any">
+<cfparam name="rc.workflow" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
 	
-	<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
+	<cf_HibachiEntityDetailForm object="#rc.workflow#" edit="#rc.edit#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.workflow#" edit="#rc.edit#" />
 		<div class="s-top-spacer">
 			<cf_HibachiPropertyRow>
 				<cf_HibachiPropertyList>
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.workflow#" property="workflowName" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.workflow#" property="workflowObject" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.workflow#" property="activeFlag" edit="#rc.edit#">
+					
 				</cf_HibachiPropertyList>
 			</cf_HibachiPropertyRow>
 		</div>
