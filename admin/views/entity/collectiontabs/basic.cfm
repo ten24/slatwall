@@ -259,7 +259,7 @@
 		    <table class="table table-bordered table-striped" > 
 		        <thead>
 		            <tr>
-		                <th>Row</span></th>
+		                <th style="display:none">Row</span></th>
 		                <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.title" ng-show="column.isVisible"></th>
 		                <th></th>
 		            </tr>
@@ -269,7 +269,7 @@
 	    		infinite-scroll-disabled="autoScrollDisabled"
 	    		infinite-scroll-distance="1">
 					<tr ng-repeat="pageRecord in collection.pageRecords">
-			            <td> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
+			            <td style="display:none"> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
 			            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
 			            <td class="s-edit-elements">
 			              <ul>

@@ -576,9 +576,9 @@ function setupEventHandlers() {
 		e.preventDefault();
 
 		// If this is an expand Icon
-		if(jQuery(this).children('i').hasClass('icon-plus')) {
+		if(jQuery(this).children('i').hasClass('glyphicon glyphicon-plus')) {
 
-			jQuery(this).children('i').removeClass('icon-plus').addClass('icon-minus');
+			jQuery(this).children('i').removeClass('glyphicon glyphicon-plus').addClass('glyphicon glyphicon-minus');
 
 			if( !showLoadedRows( jQuery(this).closest('table').attr('ID'), jQuery(this).closest('tr').attr('id') ) ) {
 				var data = {};
@@ -590,9 +590,9 @@ function setupEventHandlers() {
 			}
 
 		// If this is a colapse icon
-		} else if (jQuery(this).children('i').hasClass('icon-minus')) {
+		} else if (jQuery(this).children('i').hasClass('glyphicon glyphicon-minus')) {
 
-			jQuery(this).children('i').removeClass('icon-minus').addClass('icon-plus');
+			jQuery(this).children('i').removeClass('glyphicon glyphicon-minus').addClass('glyphicon glyphicon-plus');
 
 			//jQuery(this).closest('tbody').find('tr[data-parentid="' + jQuery(this).closest('tr').attr('id') + '"]').hide();
 			hideLoadedRows( jQuery(this).closest('table').attr('ID'), jQuery(this).closest('tr').attr('id') );
