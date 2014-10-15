@@ -38,7 +38,14 @@ label {font-weight:600;}
 .s-default-list h2 {font-size: 14px;background-color: #EEE;padding: 6px 15px;margin-top:0px;}
 .s-default-list .dl-horizontal dt {font-weight: 600;}
 
-
+.agenda table {margin-bottom: 0px;border-color:#dddddd;}
+.agenda .table-responsive {border-radius: 2px;}
+.agenda button {margin: 0px;border-radius: 0px;width: 100%;border-top: 0px;border-color: #dddddd;}
+.agenda button:hover {border-color:#F58620;}
+.agenda .agenda-date {width: 170px;}
+.agenda .agenda-date .dayofmonth {width: 40px;font-size: 30px;line-height: 30px;float: left;text-align: right;margin-right: 10px;}
+.agenda .agenda-date .dayofweek {font-size: 0.75em;}
+.agenda .agenda-time {width: 140px;vertacal-align:middle;}
 
 /* Navigation Sidebar */
 #menu a > .fa.arrow {-webkit-transition: all .5s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;transition: all .2s ease-out;}
@@ -262,7 +269,7 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
 .s-checkbox input[type=checkbox]:disabled + label:before{background-color:#eeeeee;cursor:not-allowed;}
 .radio {margin-top:0px;margin-bottom:5px;}
-.radio label{display:inline-block;position:relative;padding-left:5px}
+.radio label{display:inline-block;position:relative;padding-left:5px;font-weight:normal !important;}
 .radio label:before{content:"";display:inline-block;position:absolute;width:17px;height:17px;left:0;margin-left:-20px;border:1px solid #ccc;border-radius:50%;background-color:#fff;-webkit-transition:border .15s ease-in-out;-o-transition:border .15s ease-in-out;transition:border .15s ease-in-out}
 .radio label:after{display:inline-block;position:absolute;content:" ";width:11px;height:11px;left:3px;top:3px;margin-left:-20px;border-radius:50%;background-color:#555;-webkit-transform:scale(0,0);-ms-transform:scale(0,0);-o-transform:scale(0,0);transform:scale(0,0);-webkit-transition:-webkit-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-moz-transition:-moz-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-o-transition:-o-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);transition:transform .1s cubic-bezier(0.8,-0.33,0.2,1.33)}
 .radio input[type=radio]{display:none}
@@ -327,8 +334,12 @@ content.s-body-box .s-no-items {border: 1px solid #CCC;border-top: 0px;padding: 
 .s-add-filter .s-criteria .selectboxit-container .selectboxit {width:100% !important;}
 .s-add-filter .s-criteria .selectboxit-container {width:100% !important;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit-options {width:100% !important;}
-.s-add-filter .s-button-select-group {text-align:center;}
+.s-add-filter .s-button-select-group {text-align:center;margin-bottom: 20px;}
 .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
+
+.s-add-filter .s-criteria .s-filter-group-item > span {float:right;}
+.s-add-filter .s-criteria .btn-group {float:none;}
+.s-add-filter .s-criteria .s-account-field-select {margin-bottom:10px;}
 
 .s-tab-layout.s-tab-layout > .row > h4 {margin-bottom:0px;}
 .s-tab-layout.s-tab-layout  > .row > .s-body-box {padding-top:0px;}
