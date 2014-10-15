@@ -66,16 +66,13 @@ function(
 				);
 				
 				productBundleGroupTypePromise.then(function(value){
-					console.log();
-					$scope.processObject.productBundleGroups.value[i].productBundleGroupType = value.pageRecords[0].productBundleGroupType[0];
-					
+					$scope.processObject.productBundleGroups.value[i].productBundleGroupType = value.productBundleGroupType[0];
 				},function(reason){
 					//display error message if getter fails
 					var messages = reason.MESSAGES;
 					var alerts = alertService.formatMessagesToAlerts(messages);
 					alertService.addAlerts(alerts);
 				});
-				
 			}
 			$log.debug($scope.productBundleGroups);
 		},function(reason){
@@ -94,7 +91,6 @@ function(
 			options
 		);
 		
-		
 		processObjectPromise.then(function(value){
 			$log.debug('getProcessObject');
 			$scope.processObject = value.data;
@@ -108,8 +104,6 @@ function(
 		});
 	}
 	
-	
-	
 	$scope.addProductBundleGroup = function(){
 		$log.debug('add bundle group');
 		var productBundleGroup = productBundleService.newProductBundle();
@@ -118,7 +112,6 @@ function(
 	};
 	
 	$scope.saveProductBundle = function(closeDialogIndex){
-		
 		var createProductBundleForm = formService.getForm('form.createProductBundle');
 		//only save the form if it passes validation
 		createProductBundleForm.$submitted = true;
@@ -131,7 +124,7 @@ function(
 					"product.productName":createProductBundleForm['product.productName'].$modelValue,
 					"product.productCode":createProductBundleForm['product.productCode'].$modelValue,
 					"product.brand.brandID":createProductBundleForm['product.brand'].$modelValue.value,
-					"productBundleGroups":angular.toJson($scope.processObject.productBundleGroups.value)
+					"product.defaultSku.productBundleGroups":angular.toJson($scope.processObject.productBundleGroups.value)
 				};
 				$log.debug(params);
 				var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,'CreateBundle');
