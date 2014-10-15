@@ -928,7 +928,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionid = '',
 			collectionCode = 'RyansTen24Accounts',
 			collectionName = 'RyansTen24Accounts',
-			baseEntityName = 'SlatwallAccount',
+			collectionObject = 'SlatwallAccount',
 			collectionConfig = '{
 					"baseEntityName":"SlatwallAccount",
 					"baseEntityAlias":"Account",
@@ -991,6 +991,41 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		request.debug(collectionEntity.getHQL());
+	}
+	
+	public void function HQLTestJoins(){
+			
+		var CollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansTen24Product',
+			collectionName = 'RyansTen24Product',
+			collectionObject = 'SlatwallProduct',
+			collectionConfig = '{
+					"baseEntityName":"SlatwallProduct",
+					"baseEntityAlias":"Product",
+					"columns":[
+						{
+							"propertyIdentifier":"Product.defaultSku.productBundleGroups"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"defaultSku",
+							"alias":"Product_defaultSku",
+							"joins":[
+								{
+									"associationName":"productBundleGroups",
+									"alias":"Product_defaultSku_productBundleGroups"
+								}
+							]
+						}
+					]
+					
+				}'
+		};
+		
+		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
+		request.debug(collectionEntity.getPageRecords());
 	}
 	
 	public void function getHQLForCollectionFilterTest(){

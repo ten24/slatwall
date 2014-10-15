@@ -129,12 +129,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionConfig = '{}';
 	}
 	
-	public void function setCollectionObject(required string collectionObject){
+	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
 		var slatwallBaseEntity = "";
 		if(find('Slatwall',arguments.collectionObject)){
 			slatwallBaseEntity = arguments.collectionObject;
 		}else{
-			slatwallBaseEntity = "Slatwall#arguments.collectionObject#";
+			slatwallBaseEntity = getService('hibachiService').getProperlyCasedFullEntityName(arguments.collectionObject);
 		}
 		
 		variables.collectionObject = "#slatwallBaseEntity#";
@@ -144,22 +144,25 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var defaultProperties = newEntity.getDefaultProperties();
 			
 			var columnsArray = []; 
-			for(defaultProperty in defaultProperties){
-				var columnStruct = {};
-				columnStruct['propertyIdentifier'] = '_' &lcase(arguments.collectionObject) & '.' & defaultProperty.name;
-				columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
-				columnStruct['isVisible'] = true;
-				columnStruct['isSearchable'] = true;
-				columnStruct['isExportable'] = true;
-				if(structKeyExists(defaultProperty,"ormtype")){
-					columnStruct['ormtype'] = defaultProperty.ormtype;
+			if(addDefaultColumns){
+				for(defaultProperty in defaultProperties){
+					var columnStruct = {};
+					columnStruct['propertyIdentifier'] = '_' &lcase(arguments.collectionObject) & '.' & defaultProperty.name;
+					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
+					columnStruct['isVisible'] = true;
+					columnStruct['isSearchable'] = true;
+					columnStruct['isExportable'] = true;
+					if(structKeyExists(defaultProperty,"ormtype")){
+						columnStruct['ormtype'] = defaultProperty.ormtype;
+					}
+					if(structKeyExists(defaultProperty,"fieldtype")){
+						columnStruct['ormtype'] = defaultProperty.fieldtype;
+					}
+					
+					arrayAppend(columnsArray,columnStruct);
 				}
-				if(structKeyExists(defaultProperty,"fieldtype")){
-					columnStruct['ormtype'] = defaultProperty.fieldtype;
-				}
-				
-				arrayAppend(columnsArray,columnStruct);
 			}
+			
 			var columnsJson = serializeJson(columnsArray);
 			variables.collectionConfig = '{
 				"baseEntityName":"#slatwallBaseEntity#",
@@ -438,7 +441,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
-		
 		return HQL;
 	}
 	
@@ -517,7 +519,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 			saveState();
 			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
-			
 		}
 		
 		return variables.pageRecords;
@@ -661,7 +662,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					
 				}else{
-					HQL &= ' #column.propertyIdentifier# as #listLast(column.propertyIdentifier,'.')#';
+					var columnAlias = listLast(column.propertyIdentifier,'.');
+					
+					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
 				}
 			}
 			

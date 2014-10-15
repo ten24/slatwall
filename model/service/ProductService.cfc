@@ -902,6 +902,15 @@ component extends="HibachiService" accessors="true" {
 		arguments.product.setDefaultSku( thisSku );
 		
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		
+		// If some skus were created, then set the default sku to the first one
+		if(arrayLen(arguments.product.getSkus())) {
+			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
+		}
+		// Generate Image Files
+		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		
+		
 		arguments.product = this.saveProduct(arguments.product);
 		
 		return arguments.product;
