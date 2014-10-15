@@ -5,8 +5,13 @@
 	<cf_HibachiEntityActionBar type="detail" object="#rc.workflow#" edit="#rc.edit#" />
 	
 	<cf_HibachiEntityDetailGroup object="#rc.workflow#">
-		<cf_HibachiEntityDetailItem view="admin:entity/workflowtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<cf_HibachiEntityDetailItem view="admin:entity/workflowtabs/triggers" text="#$.slatwall.rbKey('entity.workflowTrigger_plural')#" showOnCreateFlag=true />
-		<cf_HibachiEntityDetailItem view="admin:entity/workflowtabs/tasks" text="#$.slatwall.rbKey('entity.workflowTask_plural')#" showOnCreateFlag=true />
+		<form  
+					role="form" 
+					name="form.workFlow"
+				> 
+			<cf_HibachiEntityDetailItem view="admin:entity/workflowtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/workflowtabs/triggers" text="#$.slatwall.rbKey('entity.workflowTrigger_plural')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/workflowtabs/tasks" text="#$.slatwall.rbKey('entity.workflowTask_plural')#" showOnCreateFlag=true />
+		</form>
 	</cf_HibachiEntityDetailGroup>		
 </cf_HibachiEntityDetailForm>
