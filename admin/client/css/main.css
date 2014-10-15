@@ -22,6 +22,7 @@ label {font-weight:600;}
 .s-disabled {opacity: .4;pointer-events: none;}
 .s-dotted-border-bottom {border-bottom: 3px dotted #EEE;padding-bottom: 20px !important;margin-bottom: 20px !important;}
 .s-hide-trans {display:none;-webkit-transition: all .5s ease-in-out;-moz-transition: all .5s ease-in-out;-ms-transition: all .5s ease-in-out;-o-transition: all .5s ease-in-out;transition: all .5s ease-in-out;}
+.s-flex-col {display: -webkit-box;display: -moz-box;display: -ms-flexbox;display: -webkit-flex; display: flex;}
 
 .s-zero-top {padding-top:0px!important;margin-top:0px !important;}
 .s-zero-bottom {padding-bottom:0px!important;margin-bottom:0px !important;}
@@ -39,9 +40,9 @@ label {font-weight:600;}
 .s-default-list .dl-horizontal dt {font-weight: 600;}
 
 .agenda .agenda-date {width: 170px;}
-.agenda .agenda-date .dayofmonth {width: 40px;font-size: 36px;line-height: 36px;float: left;text-align: right;margin-right: 10px;}
+.agenda .agenda-date .dayofmonth {width: 40px;font-size: 30px;line-height: 30px;float: left;text-align: right;margin-right: 10px;}
 .agenda .agenda-date .dayofweek {font-size: 0.75em;}
-.agenda .agenda-time {width: 140px;}
+.agenda .agenda-time {width: 140px;vertical-align:middle;}
 
 /* Navigation Sidebar */
 #menu a > .fa.arrow {-webkit-transition: all .5s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;transition: all .2s ease-out;}

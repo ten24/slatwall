@@ -135,7 +135,7 @@
 							<h4> New Trigger <i class="fa fa-times" data-toggle="collapse" data-target="#j-create-new-trigger"></i></h4>
 							<div class="col-xs-12">
 
-								<div class="row">
+								<div class="row s-flex-col">
 									<div class="col-xs-3">
 
 										<div class="s-create-obj-window">
@@ -421,51 +421,74 @@
 									<div class="col-xs-3">
 
 										<div class="s-default-list">
-											<h4>Estimated Schedule:</h4>
+											<h4>Preview Next 5 Run Times:</h4>
 
 											<div class="agenda">
 										        <div class="table-responsive">
 										            <table class="table table-condensed table-bordered">
-										                <thead>
+										                <!--- <thead>
 										                    <tr>
 										                        <th>Date</th>
 										                        <th>Time</th>
 										                    </tr>
-										                </thead>
+										                </thead> --->
 										                <tbody>
-										                    <!-- Single event in a single day -->
+
 										                    <tr>
 										                        <td class="agenda-date" class="active" rowspan="1">
 										                            <div class="dayofmonth">26</div>
 										                            <div class="shortdate">July, 2014</div>
-										                            <div class="dayofweek text-muted">Saturday</div>
+										                            <div class="dayofweek text-muted">Monday</div>
 										                        </td>
 										                        <td class="agenda-time">
-										                            5:30 AM
+										                            9:00 AM
 										                        </td>
 										                    </tr>
 
-										                    <!-- Multiple events in a single day (note the rowspan) -->
 										                    <tr>
-										                        <td class="agenda-date" class="active" rowspan="3">
-										                            <div class="dayofmonth">24</div>
+										                        <td class="agenda-date" class="active" rowspan="1">
+										                            <div class="dayofmonth">26</div>
 										                            <div class="shortdate">July, 2014</div>
-										                            <div class="dayofweek text-muted">Thursday</div>
+										                            <div class="dayofweek text-muted">Monday</div>
 										                        </td>
 										                        <td class="agenda-time">
-										                            8:00 AM
+										                            5:00 PM
 										                        </td>
 										                    </tr>
-										                    <tr>
-										                        <td class="agenda-time">
-										                            10:15 AM
-										                        </td>
-										                    </tr>
-										                    <tr>
-										                        <td class="agenda-time">
-										                            7:00 AM
-										                        </td>
-										                    </tr>
+
+															<tr>
+																<td class="agenda-date" class="active" rowspan="1">
+																	<div class="dayofmonth">27</div>
+																	<div class="shortdate">July, 2014</div>
+																	<div class="dayofweek text-muted">Tuesday</div>
+																</td>
+																<td class="agenda-time">
+																	9:00 am
+																</td>
+															</tr>
+
+															<tr>
+																<td class="agenda-date" class="active" rowspan="1">
+																	<div class="dayofmonth">27</div>
+																	<div class="shortdate">July, 2014</div>
+																	<div class="dayofweek text-muted">Tuesday</div>
+																</td>
+																<td class="agenda-time">
+																	5:00 PM
+																</td>
+															</tr>
+
+															<tr>
+																<td class="agenda-date" class="active" rowspan="1">
+																	<div class="dayofmonth">28</div>
+																	<div class="shortdate">July, 2014</div>
+																	<div class="dayofweek text-muted">Wednesday</div>
+																</td>
+																<td class="agenda-time">
+																	9:00 AM
+																</td>
+															</tr>
+
 										                </tbody>
 										            </table>
 										        </div>
@@ -609,8 +632,8 @@
 																				<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-z"></i></h4>
 																				<div class="col-xs-12">
 
-																					<div class="row">
-																						<div class="col-xs-2">
+																					<div class="row s-flex-col">
+																						<div class="col-xs-3">
 																							<div class="form-group form-group-sm">
 																								<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders</label>
 																								<div class="col-sm-12 s-no-paddings">
@@ -835,7 +858,7 @@
 																								<div class="col-xs-12">
 																									<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-j"></i></h4>
 																									<div class="row">
-																										<div class="col-xs-4">
+																										<div class="col-xs-3">
 																											Select From Orders
 																											<div class="option-dropdown">
 																												<select class="form-control input-sm">
@@ -848,7 +871,7 @@
 																												</select>
 																											</div>
 																										</div>
-																										<div class="col-xs-4 s-criteria">
+																										<div class="col-xs-6 s-criteria">
 																											<h4>Criteria</h4>
 
 																											<!--- Filter Criteria Start --->
@@ -880,15 +903,15 @@
 																											<!--- //Filter Criteria End --->
 
 																										</div>
-																										<div class="col-xs-4">
+																										<div class="col-xs-3">
 																											<div class="s-button-select-group">
 																												<button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
 																												<div class="s-or-box">OR</div>
 																												<button type="button" class="btn s-btn-ten24">Save & Finish</button>
 																											</div>
-																											<div class="form-group">
+																											<!--- <div class="form-group">
 																												<div class="s-checkbox"><input type="checkbox" id="j-checkbox31"><label for="j-checkbox31"> Add To New Group</label></div>
-																											</div>
+																											</div> --->
 																										</div>
 																									</div>
 																								</div>
@@ -936,7 +959,7 @@
 																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-5"></i></h4>
 																		<div class="col-xs-12">
 
-																			<div class="row">
+																			<div class="rown s-flex-col">
 																				<div class="col-xs-3">
 
 																					<div>
@@ -1012,7 +1035,7 @@
 																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-5"></i></h4>
 																		<div class="col-xs-12">
 
-																			<div class="row">
+																			<div class="row s-flex-col">
 																				<div class="col-xs-3">
 
 																					<div>
@@ -1142,7 +1165,7 @@
 														<h4> Add Action <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-action-b"></i></h4>
 														<div class="col-xs-12">
 
-															<div class="row">
+															<div class="row s-flex-col">
 																<div class="col-xs-3">
 
 																	<div class="form-group form-group-sm">
@@ -1454,8 +1477,8 @@
 																				<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-b"></i></h4>
 																				<div class="col-xs-12">
 
-																					<div class="row">
-																						<div class="col-xs-2">
+																					<div class="row s-flex-col">
+																						<div class="col-xs-3">
 																							<div class="form-group form-group-sm">
 																								<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders</label>
 																								<div class="col-sm-12 s-no-paddings">
@@ -1663,9 +1686,9 @@
 																								<div class="s-or-box">OR-</div>
 																								<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
 																							</div>
-																							<div class="form-group">
+																							<!--- <div class="form-group">
 																								<div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
-																							</div>
+																							</div> --->
 																						</div>
 																					</div>
 																				</div>
@@ -1720,8 +1743,8 @@
 																							<div class="row">
 																								<div class="col-xs-12">
 																									<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-nested-filter-b"></i></h4>
-																									<div class="row">
-																										<div class="col-xs-4">
+																									<div class="row s-flex-col">
+																										<div class="col-xs-3">
 																											Select From Orders
 																											<div class="option-dropdown">
 																												<select class="form-control input-sm">
@@ -1734,7 +1757,7 @@
 																												</select>
 																											</div>
 																										</div>
-																										<div class="col-xs-4 s-criteria">
+																										<div class="col-xs-6 s-criteria">
 																											<h4>Criteria</h4>
 
 																											<!--- Filter Criteria Start --->
@@ -1766,15 +1789,15 @@
 																											<!--- //Filter Criteria End --->
 
 																										</div>
-																										<div class="col-xs-4">
+																										<div class="col-xs-3">
 																											<div class="s-button-select-group">
 																												<button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
 																												<div class="s-or-box">OR</div>
 																												<button type="button" class="btn s-btn-ten24">Save & Finish</button>
 																											</div>
-																											<div class="form-group">
+																											<!--- <div class="form-group">
 																												<div class="s-checkbox"><input type="checkbox" id="j-checkbox31"><label for="j-checkbox31"> Add To New Group</label></div>
-																											</div>
+																											</div> --->
 																										</div>
 																									</div>
 																								</div>
@@ -1822,7 +1845,7 @@
 																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-2"></i></h4>
 																		<div class="col-xs-12">
 
-																			<div class="row">
+																			<div class="row s-flex-col">
 																				<div class="col-xs-3">
 
 																					<div>
@@ -1898,7 +1921,7 @@
 																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-2"></i></h4>
 																		<div class="col-xs-12">
 
-																			<div class="row">
+																			<div class="row s-flex-col">
 																				<div class="col-xs-3">
 
 																					<div>
@@ -2028,7 +2051,7 @@
 														<h4> Add Action <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-action-b"></i></h4>
 														<div class="col-xs-12">
 
-															<div class="row">
+															<div class="row s-flex-col">
 																<div class="col-xs-3">
 
 																	<div class="form-group form-group-sm">
@@ -2267,8 +2290,8 @@
 
 											<div class="tab-pane active" id="j-basic-3">
 
-												<div class="row">
-													<div class="col-xs-4">
+												<div class="row s-flex-col">
+													<div class="col-xs-3">
 
 														<div class="s-create-obj-window">
 
@@ -2335,8 +2358,8 @@
 																				<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-d"></i></h4>
 																				<div class="col-xs-12">
 
-																					<div class="row">
-																						<div class="col-xs-2">
+																					<div class="row s-flex-col">
+																						<div class="col-xs-3">
 																							<div class="form-group form-group-sm">
 																								<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders</label>
 																								<div class="col-sm-12 s-no-paddings">
@@ -2503,9 +2526,9 @@
 																								<div class="s-or-box">OR-</div>
 																								<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
 																							</div>
-																							<div class="form-group">
+																							<!--- <div class="form-group">
 																								<div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
-																							</div>
+																							</div> --->
 																						</div>
 																					</div>
 																				</div>
@@ -2560,8 +2583,8 @@
 																							<div class="row">
 																								<div class="col-xs-12">
 																									<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-2"></i></h4>
-																									<div class="row">
-																										<div class="col-xs-4">
+																									<div class="row s-flex-col">
+																										<div class="col-xs-3">
 																											Select From Orders
 																											<div class="option-dropdown">
 																												<select class="form-control input-sm">
@@ -2574,7 +2597,7 @@
 																												</select>
 																											</div>
 																										</div>
-																										<div class="col-xs-4 s-criteria">
+																										<div class="col-xs-6 s-criteria">
 																											<h4>Criteria</h4>
 
 																											<!--- Filter Criteria Start --->
@@ -2606,15 +2629,15 @@
 																											<!--- //Filter Criteria End --->
 
 																										</div>
-																										<div class="col-xs-4">
+																										<div class="col-xs-3">
 																											<div class="s-button-select-group">
 																												<button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
 																												<div class="s-or-box">OR</div>
 																												<button type="button" class="btn s-btn-ten24">Save & Finish</button>
 																											</div>
-																											<div class="form-group">
+																											<!--- <div class="form-group">
 																												<div class="s-checkbox"><input type="checkbox" id="j-checkbox31"><label for="j-checkbox31"> Add To New Group</label></div>
-																											</div>
+																											</div> --->
 																										</div>
 																									</div>
 																								</div>
@@ -2662,7 +2685,7 @@
 																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-2"></i></h4>
 																		<div class="col-xs-12">
 
-																			<div class="row">
+																			<div class="row s-flex-col">
 																				<div class="col-xs-3">
 
 																					<div>
@@ -2738,7 +2761,7 @@
 																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-2"></i></h4>
 																		<div class="col-xs-12">
 
-																			<div class="row">
+																			<div class="row s-flex-col">
 																				<div class="col-xs-3">
 
 																					<div>
@@ -2868,7 +2891,7 @@
 														<h4> Add Action <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-action-c"></i></h4>
 														<div class="col-xs-12">
 
-															<div class="row">
+															<div class="row s-flex-col">
 																<div class="col-xs-3">
 
 																	<div class="form-group form-group-sm">
