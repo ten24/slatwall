@@ -1129,7 +1129,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 								newtd += '<td class="' + jQuery(cv).attr('class') + '">No</td>';
 							} else {
 								if(jQuery(cv).hasClass('primary') && afterRowID) {
-									newtd += '<td class="' + jQuery(cv).attr('class') + '"><a href="#" class="table-action-expand depth' + nextRowDepth + '" data-depth="' + nextRowDepth + '"><i class="icon-plus"></i></a> ' + jQuery.trim(rv[jQuery(cv).data('propertyidentifier')]) + '</td>';
+									newtd += '<td class="' + jQuery(cv).attr('class') + '"><a href="#" class="table-action-expand depth' + nextRowDepth + '" data-depth="' + nextRowDepth + '"><i class="glyphicon glyphicon-plus"></i></a> ' + jQuery.trim(rv[jQuery(cv).data('propertyidentifier')]) + '</td>';
 								} else {
 									if(jQuery(cv).data('propertyidentifier') !== undefined) {
 										newtd += '<td class="' + jQuery(cv).attr('class') + '">' + jQuery.trim(rv[jQuery(cv).data('propertyidentifier')]) + '</td>';
